@@ -39,6 +39,25 @@
 				</configuration>
 			</plugin>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>3.1.0</version>
+				<executions>
+					<execution>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<unzip src="${project.basedir}/../CPL/src/main/resources/cfparse.jar"
+									dest="${project.build.outputDirectory}" />
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<executions>
 					<execution>
@@ -51,17 +70,12 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<addClasspath>true</addClasspath>
-							<classpathPrefix>${project.build.finalName}.lib/</classpathPrefix>
 							<mainClass>ptidej.viewer.ProjectViewer</mainClass>
 						</manifest>
-						<manifestEntries>
-							<Multi-Release>true</Multi-Release>
-						</manifestEntries>
 					</archive>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
+					<descriptors>
+						<descriptor>src/assembly/jar-with-dependencies.xml</descriptor>
+					</descriptors>
 				</configuration>
 			</plugin>
 		</plugins>

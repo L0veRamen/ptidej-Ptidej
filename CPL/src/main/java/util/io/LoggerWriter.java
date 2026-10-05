@@ -22,7 +22,7 @@ public class LoggerWriter extends Writer {
 
 	public LoggerWriter(final String loggerType) {
 		this.loggerLevelType = loggerType;
-		this.logger = LogManager.getLogger();
+		this.logger = LogManager.getLogger(LoggerWriter.class);
 	}
 
 	public Logger getLoggerWriter() {

@@ -1,0 +1,29 @@
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/2.6"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/2.6 http://maven.apache.org/xsd/assembly-2.6.xsd">
+	<id>jar-with-dependencies</id>
+	<formats>
+		<format>jar</format>
+	</formats>
+	<includeBaseDirectory>false</includeBaseDirectory>
+	<dependencySets>
+		<dependencySet>
+			<useProjectArtifact>true</useProjectArtifact>
+			<scope>runtime</scope>
+			<unpack>true</unpack>
+			<unpackOptions>
+				<excludes>
+					<exclude>org/osgi/**</exclude>
+				</excludes>
+			</unpackOptions>
+		</dependencySet>
+		<dependencySet>
+			<useProjectArtifact>false</useProjectArtifact>
+			<scope>runtime</scope>
+			<includes>
+				<include>org.eclipse.platform:org.eclipse.osgi</include>
+			</includes>
+			<unpack>true</unpack>
+		</dependencySet>
+	</dependencySets>
+</assembly>
