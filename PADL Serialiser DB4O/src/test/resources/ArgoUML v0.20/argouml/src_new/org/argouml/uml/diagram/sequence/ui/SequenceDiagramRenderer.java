@@ -24,11 +24,9 @@
 
 // $Id: SequenceDiagramRenderer.java,v 1.21 2005/11/20 01:15:08 bobtarling Exp $
 
-
 package org.argouml.uml.diagram.sequence.ui;
 
 import java.util.Map;
-
 import org.apache.log4j.Logger;
 import org.argouml.model.Model;
 import org.argouml.uml.diagram.UmlDiagramRenderer;
@@ -43,79 +41,66 @@ import org.tigris.gef.presentation.FigNode;
 /**
  * This class renders a sequence diagram.
  *
- *
  * @author 5eichler
  */
 public class SequenceDiagramRenderer extends UmlDiagramRenderer {
-    /**
-     * Logger.
-     */
-    private static final Logger LOG =
-        Logger.getLogger(SequenceDiagramRenderer.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(SequenceDiagramRenderer.class);
 
-    /**
-     * Return a Fig that can be used to represent the given node.
-     *
-     * @see org.tigris.gef.graph.GraphNodeRenderer#getFigNodeFor(
-     *         org.tigris.gef.graph.GraphModel, org.tigris.gef.base.Layer,
-     *         java.lang.Object, java.util.Map)
-     */
-    public FigNode getFigNodeFor(GraphModel gm, Layer lay, Object node,
-				 Map styleAttributes) {
-        FigNode result = null;
-        if (Model.getFacade().isAClassifierRole(node)) {
-            result = new FigClassifierRole(node);
-        } else if (Model.getFacade().isAComment(node)) {
-            result = new FigComment(gm, node);
-        }
-        LOG.debug("SequenceDiagramRenderer getFigNodeFor " + result);
-        return result;
+  /**
+   * Return a Fig that can be used to represent the given node.
+   *
+   * @see org.tigris.gef.graph.GraphNodeRenderer#getFigNodeFor( org.tigris.gef.graph.GraphModel,
+   *     org.tigris.gef.base.Layer, java.lang.Object, java.util.Map)
+   */
+  public FigNode getFigNodeFor(GraphModel gm, Layer lay, Object node, Map styleAttributes) {
+    FigNode result = null;
+    if (Model.getFacade().isAClassifierRole(node)) {
+      result = new FigClassifierRole(node);
+    } else if (Model.getFacade().isAComment(node)) {
+      result = new FigComment(gm, node);
     }
+    LOG.debug("SequenceDiagramRenderer getFigNodeFor " + result);
+    return result;
+  }
 
-    /**
-     * Return a Fig that can be used to represent the given edge.
-     *
-     * @see org.tigris.gef.graph.GraphEdgeRenderer#getFigEdgeFor(
-     *         org.tigris.gef.graph.GraphModel, org.tigris.gef.base.Layer,
-     *         java.lang.Object, java.util.Map)
-     */
-    public FigEdge getFigEdgeFor(GraphModel gm, Layer lay, Object edge,
-				 Map styleAttributes) {
-        if (edge instanceof CommentEdge) {
-            return new FigEdgeNote(edge, lay);
-        }
-        return getFigEdgeFor(edge, styleAttributes);
+  /**
+   * Return a Fig that can be used to represent the given edge.
+   *
+   * @see org.tigris.gef.graph.GraphEdgeRenderer#getFigEdgeFor( org.tigris.gef.graph.GraphModel,
+   *     org.tigris.gef.base.Layer, java.lang.Object, java.util.Map)
+   */
+  public FigEdge getFigEdgeFor(GraphModel gm, Layer lay, Object edge, Map styleAttributes) {
+    if (edge instanceof CommentEdge) {
+      return new FigEdgeNote(edge, lay);
     }
+    return getFigEdgeFor(edge, styleAttributes);
+  }
 
-    /**
-     * Return a Fig that can be used to represent the given edge.
-     *
-     * @see org.tigris.gef.graph.GraphEdgeRenderer#getFigEdgeFor(
-     *         org.tigris.gef.graph.GraphModel, org.tigris.gef.base.Layer,
-     *         java.lang.Object, java.util.Map)
-     */
-    public FigEdge getFigEdgeFor(Object edge, Map styleAttributes) {
-        if (edge == null) {
-            throw new IllegalArgumentException("A model edge must be supplied");
-        }
-        if (Model.getFacade().isAMessage(edge)) {
-            Object action = Model.getFacade().getAction(edge);
-            FigEdge result = null;
-            if (Model.getFacade().isACallAction(action)) {
-                result = new FigCallActionMessage(edge);
-            } else if (Model.getFacade().isAReturnAction(action)) {
-                result = new FigReturnActionMessage(edge);
-            } else if (Model.getFacade().isADestroyAction(action)) {
-                result = new FigDestroyActionMessage(edge);
-            } else if (Model.getFacade().isACreateAction(action)) {
-                result = new FigCreateActionMessage(edge);
-            }
-            return result;
-        }
-        throw new IllegalArgumentException("Failed to construct a FigEdge for "
-					   + edge);
+  /**
+   * Return a Fig that can be used to represent the given edge.
+   *
+   * @see org.tigris.gef.graph.GraphEdgeRenderer#getFigEdgeFor( org.tigris.gef.graph.GraphModel,
+   *     org.tigris.gef.base.Layer, java.lang.Object, java.util.Map)
+   */
+  public FigEdge getFigEdgeFor(Object edge, Map styleAttributes) {
+    if (edge == null) {
+      throw new IllegalArgumentException("A model edge must be supplied");
     }
-
-
+    if (Model.getFacade().isAMessage(edge)) {
+      Object action = Model.getFacade().getAction(edge);
+      FigEdge result = null;
+      if (Model.getFacade().isACallAction(action)) {
+        result = new FigCallActionMessage(edge);
+      } else if (Model.getFacade().isAReturnAction(action)) {
+        result = new FigReturnActionMessage(edge);
+      } else if (Model.getFacade().isADestroyAction(action)) {
+        result = new FigDestroyActionMessage(edge);
+      } else if (Model.getFacade().isACreateAction(action)) {
+        result = new FigCreateActionMessage(edge);
+      }
+      return result;
+    }
+    throw new IllegalArgumentException("Failed to construct a FigEdge for " + edge);
+  }
 } /* end class SequenceDiagramRenderer */
-

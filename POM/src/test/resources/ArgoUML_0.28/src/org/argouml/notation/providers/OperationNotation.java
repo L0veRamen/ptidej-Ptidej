@@ -26,88 +26,80 @@ package org.argouml.notation.providers;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import org.argouml.model.AddAssociationEvent;
 import org.argouml.model.Model;
 import org.argouml.model.RemoveAssociationEvent;
 import org.argouml.notation.NotationProvider;
 
 /**
- * This abstract class forms the basis of all Notation providers
- * for the text shown in the operation compartment of a Class.
- * Subclass this for all languages.
+ * This abstract class forms the basis of all Notation providers for the text shown in the operation
+ * compartment of a Class. Subclass this for all languages.
  *
  * @author mvw@tigris.org
  */
 public abstract class OperationNotation extends NotationProvider {
 
-    /**
-     * The constructor.
-     *
-     * @param operation The operation.
-     */
-    public OperationNotation(Object operation) {
-        if (!Model.getFacade().isAOperation(operation) 
-                && !Model.getFacade().isAReception(operation)) {
-            throw new IllegalArgumentException(
-                    "This is not an Operation or Reception.");
-        }
+  /**
+   * The constructor.
+   *
+   * @param operation The operation.
+   */
+  public OperationNotation(Object operation) {
+    if (!Model.getFacade().isAOperation(operation) && !Model.getFacade().isAReception(operation)) {
+      throw new IllegalArgumentException("This is not an Operation or Reception.");
     }
+  }
 
-    @Override
-    public void initialiseListener(PropertyChangeListener listener, 
-            Object modelElement) {
-        addElementListener(listener, modelElement);
-        if (Model.getFacade().isAOperation(modelElement)) {
-            // We also show stereotypes
-            for (Object uml : Model.getFacade().getStereotypes(modelElement)) {
-                addElementListener(listener, uml);
-            }
-            // We also show parameters
-            for (Object uml : Model.getFacade().getParameters(modelElement)) {
-                addElementListener(listener, uml);
-                // We also show the type (of which e.g. the name may change)
-                Object type = Model.getFacade().getType(uml);
-                if (type != null) {
-                    addElementListener(listener, type);
-                }
-            }
-            // We also show tagged values
-            for (Object uml : Model.getFacade()
-                    .getTaggedValuesCollection(modelElement)) {
-                addElementListener(listener, uml);
-            }
+  @Override
+  public void initialiseListener(PropertyChangeListener listener, Object modelElement) {
+    addElementListener(listener, modelElement);
+    if (Model.getFacade().isAOperation(modelElement)) {
+      // We also show stereotypes
+      for (Object uml : Model.getFacade().getStereotypes(modelElement)) {
+        addElementListener(listener, uml);
+      }
+      // We also show parameters
+      for (Object uml : Model.getFacade().getParameters(modelElement)) {
+        addElementListener(listener, uml);
+        // We also show the type (of which e.g. the name may change)
+        Object type = Model.getFacade().getType(uml);
+        if (type != null) {
+          addElementListener(listener, type);
         }
+      }
+      // We also show tagged values
+      for (Object uml : Model.getFacade().getTaggedValuesCollection(modelElement)) {
+        addElementListener(listener, uml);
+      }
     }
+  }
 
-    @Override
-    public void updateListener(PropertyChangeListener listener, 
-            Object modelElement, PropertyChangeEvent pce) {
-        if (pce.getSource() == modelElement
-                && ("stereotype".equals(pce.getPropertyName()) 
-                        || "parameter".equals(pce.getPropertyName())
-                        || "taggedValue".equals(pce.getPropertyName()))) {
-            if (pce instanceof AddAssociationEvent) {
-                addElementListener(listener, pce.getNewValue());
-            }
-            if (pce instanceof RemoveAssociationEvent) {
-                removeElementListener(listener, pce.getOldValue());
-            }
-        }
-        if (!Model.getUmlFactory().isRemoved(modelElement)) {
-            //  We also show types of parameters
-            for (Object param : Model.getFacade().getParameters(modelElement)) {
-                if (pce.getSource() == param
-                        && ("type".equals(pce.getPropertyName()))) {
-                    if (pce instanceof AddAssociationEvent) {
-                        addElementListener(listener, pce.getNewValue());
-                    }
-                    if (pce instanceof RemoveAssociationEvent) {
-                        removeElementListener(listener, pce.getOldValue());
-                    }
-                }
-            }
-        }
+  @Override
+  public void updateListener(
+      PropertyChangeListener listener, Object modelElement, PropertyChangeEvent pce) {
+    if (pce.getSource() == modelElement
+        && ("stereotype".equals(pce.getPropertyName())
+            || "parameter".equals(pce.getPropertyName())
+            || "taggedValue".equals(pce.getPropertyName()))) {
+      if (pce instanceof AddAssociationEvent) {
+        addElementListener(listener, pce.getNewValue());
+      }
+      if (pce instanceof RemoveAssociationEvent) {
+        removeElementListener(listener, pce.getOldValue());
+      }
     }
-
+    if (!Model.getUmlFactory().isRemoved(modelElement)) {
+      //  We also show types of parameters
+      for (Object param : Model.getFacade().getParameters(modelElement)) {
+        if (pce.getSource() == param && ("type".equals(pce.getPropertyName()))) {
+          if (pce instanceof AddAssociationEvent) {
+            addElementListener(listener, pce.getNewValue());
+          }
+          if (pce instanceof RemoveAssociationEvent) {
+            removeElementListener(listener, pce.getOldValue());
+          }
+        }
+      }
+    }
+  }
 }

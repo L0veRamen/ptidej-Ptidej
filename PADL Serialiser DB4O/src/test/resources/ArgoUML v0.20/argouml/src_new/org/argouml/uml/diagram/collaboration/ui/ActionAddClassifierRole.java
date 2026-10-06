@@ -32,36 +32,29 @@ import org.tigris.gef.base.Globals;
 import org.tigris.gef.graph.GraphModel;
 
 /**
- * Action to add a classifier role to a collaboration diagram.
- * Based on org.argouml.uml.diagram.sequence.ui.ActionAddClassifierRole
+ * Action to add a classifier role to a collaboration diagram. Based on
+ * org.argouml.uml.diagram.sequence.ui.ActionAddClassifierRole
  */
 public class ActionAddClassifierRole extends CmdCreateNode {
 
-    /**
-     * The constructor.
-     */
-    public ActionAddClassifierRole() {
-        super(Model.getMetaTypes().getClassifierRole(),
-                false, "button.new-classifierrole");
-    }
+  /** The constructor. */
+  public ActionAddClassifierRole() {
+    super(Model.getMetaTypes().getClassifierRole(), false, "button.new-classifierrole");
+  }
 
-    /**
-     * @see org.tigris.gef.graph.GraphFactory#makeNode()
-     */
-    public Object makeNode() {
-        Object node = null;
-        Editor ce = Globals.curEditor();
-        GraphModel gm = ce.getGraphModel();
-        if (gm instanceof CollabDiagramGraphModel) {
-            Object collaboration =
-                ((CollabDiagramGraphModel) gm).getHomeModel();
-            node =
-                Model.getCollaborationsFactory().buildClassifierRole(
-                        collaboration);
-        } else {
-            throw new IllegalStateException("Graphmodel is not a "
-                    + "collaboration diagram graph model");
-        }
-        return node;
+  /**
+   * @see org.tigris.gef.graph.GraphFactory#makeNode()
+   */
+  public Object makeNode() {
+    Object node = null;
+    Editor ce = Globals.curEditor();
+    GraphModel gm = ce.getGraphModel();
+    if (gm instanceof CollabDiagramGraphModel) {
+      Object collaboration = ((CollabDiagramGraphModel) gm).getHomeModel();
+      node = Model.getCollaborationsFactory().buildClassifierRole(collaboration);
+    } else {
+      throw new IllegalStateException("Graphmodel is not a " + "collaboration diagram graph model");
     }
+    return node;
+  }
 }

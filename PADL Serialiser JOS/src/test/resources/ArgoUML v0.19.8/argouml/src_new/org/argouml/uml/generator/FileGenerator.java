@@ -24,25 +24,19 @@
 
 package org.argouml.uml.generator;
 
-/** This class is the interface that tells that a certain generator
- * can generate a file.
- */
+/** This class is the interface that tells that a certain generator can generate a file. */
 public interface FileGenerator {
 
-    /**
-     * The fileseperation for this operating system.
-     */
-    public static final String FILE_SEPARATOR =
-	System.getProperty("file.separator");
+  /** The fileseperation for this operating system. */
+  public static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
-    /** Generates a file for this classifier.
-     * TODO:
-     * This will only work for languages that have each node
-     * in a separate files (one or more).
-     *
-     * @param node the node
-     * @param path the path
-     * @return filename the generated file
-     */
-    public String generateFile2(Object node, String path);
+  /**
+   * Generates a file for this classifier. TODO: This will only work for languages that have each
+   * node in a separate files (one or more).
+   *
+   * @param node the node
+   * @param path the path
+   * @return filename the generated file
+   */
+  public String generateFile2(Object node, String path);
 }

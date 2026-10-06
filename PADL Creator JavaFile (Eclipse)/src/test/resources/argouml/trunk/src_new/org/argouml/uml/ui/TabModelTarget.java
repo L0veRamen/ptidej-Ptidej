@@ -26,9 +26,5 @@ package org.argouml.uml.ui;
 
 import org.argouml.ui.TabTarget;
 
-/**
- * Empty interface used to tag Tabbed panels that accept a Model Element Target.
- */
-public interface TabModelTarget extends TabTarget {
-
-}
+/** Empty interface used to tag Tabbed panels that accept a Model Element Target. */
+public interface TabModelTarget extends TabTarget {}

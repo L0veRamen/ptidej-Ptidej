@@ -32,7 +32,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
-
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.Model;
@@ -46,118 +45,122 @@ import org.argouml.uml.ui.UMLComboBoxModel2;
  */
 public class UMLStructuralFeatureTypeComboBoxModel extends UMLComboBoxModel2 {
 
-    /**
-     * Constructor for UMLStructuralFeatureTypeComboBoxModel.
-     */
-    public UMLStructuralFeatureTypeComboBoxModel() {
-        super("type", false);
-        /* TODO: Investigate if the following is needed, and if so, adapt the
-         * propertyChange() below.  */
-//        Model.getPump().addClassModelEventListener(this,
-//                Model.getMetaTypes().getNamespace(), "ownedElement");
+  /** Constructor for UMLStructuralFeatureTypeComboBoxModel. */
+  public UMLStructuralFeatureTypeComboBoxModel() {
+    super("type", false);
+    /* TODO: Investigate if the following is needed, and if so, adapt the
+     * propertyChange() below.  */
+    //        Model.getPump().addClassModelEventListener(this,
+    //                Model.getMetaTypes().getNamespace(), "ownedElement");
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().isAClass(element)
+        || Model.getFacade().isAInterface(element)
+        || Model.getFacade().isADataType(element);
+  }
+
+  /**
+   * Helper method for buildModelList.
+   *
+   * <p>Adds those elements from source that do not have the same path as any path in paths to
+   * elements, and its path to paths. Thus elements will never contain two objects with the same
+   * path, unless they are added by other means.
+   *
+   * @param elements the Set with the results
+   * @param paths the Set with the paths
+   * @param source a Collection with elements to add
+   */
+  private static void addAllUniqueModelElementsFrom(Set elements, Set paths, Collection source) {
+    Iterator it2 = source.iterator();
+
+    while (it2.hasNext()) {
+      Object obj = it2.next();
+      Object path = Model.getModelManagementHelper().getPath(obj);
+      if (!paths.contains(path)) {
+        paths.add(path);
+        elements.add(obj);
+      }
     }
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().isAClass(element)
-                || Model.getFacade().isAInterface(element)
-                || Model.getFacade().isADataType(element);
-    }
-
-    /**
-     * Helper method for buildModelList.
-     * <p>
-     * Adds those elements from source that do not have the same path as any
-     * path in paths to elements, and its path to paths. Thus elements will
-     * never contain two objects with the same path, unless they are added by
-     * other means.
-     *
-     * @param elements the Set with the results
-     * @param paths the Set with the paths
-     * @param source a Collection with elements to add
-     */
-    private static void addAllUniqueModelElementsFrom(Set elements, Set paths,
-            Collection source) {
-        Iterator it2 = source.iterator();
-
-        while (it2.hasNext()) {
-            Object obj = it2.next();
-            Object path = Model.getModelManagementHelper().getPath(obj);
-            if (!paths.contains(path)) {
-                paths.add(path);
-                elements.add(obj);
-            }
-        }
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        Set paths = new HashSet();
-        Set elements = new TreeSet(new Comparator() {
-            public int compare(Object o1, Object o2) {
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    Set paths = new HashSet();
+    Set elements =
+        new TreeSet(
+            new Comparator() {
+              public int compare(Object o1, Object o2) {
                 String name1 = getName(o1);
                 String name2 = getName(o2);
 
                 return name1.compareTo(name2);
-            }
-        });
+              }
+            });
 
-        Project p = ProjectManager.getManager().getCurrentProject();
-        if (p == null) {
-            return;
-        }
-        Iterator it = (new ArrayList(p.getUserDefinedModels())).iterator();
+    Project p = ProjectManager.getManager().getCurrentProject();
+    if (p == null) {
+      return;
+    }
+    Iterator it = (new ArrayList(p.getUserDefinedModels())).iterator();
 
-        while (it.hasNext()) {
-            Object model = /* (MModel) */it.next();
+    while (it.hasNext()) {
+      Object model = /* (MModel) */ it.next();
 
-            addAllUniqueModelElementsFrom(elements, paths, Model
-                    .getModelManagementHelper().getAllModelElementsOfKind(
-                            model, Model.getMetaTypes().getUMLClass()));
-            addAllUniqueModelElementsFrom(elements, paths, Model
-                    .getModelManagementHelper().getAllModelElementsOfKind(
-                            model, Model.getMetaTypes().getInterface()));
-            addAllUniqueModelElementsFrom(elements, paths, Model
-                    .getModelManagementHelper().getAllModelElementsOfKind(
-                            model, Model.getMetaTypes().getDataType()));
-        }
-
-        addAllUniqueModelElementsFrom(elements, paths, Model
-                .getModelManagementHelper().getAllModelElementsOfKind(
-                        p.getDefaultModel(),
-                        Model.getMetaTypes().getClassifier()));
-
-        setElements(elements);
+      addAllUniqueModelElementsFrom(
+          elements,
+          paths,
+          Model.getModelManagementHelper()
+              .getAllModelElementsOfKind(model, Model.getMetaTypes().getUMLClass()));
+      addAllUniqueModelElementsFrom(
+          elements,
+          paths,
+          Model.getModelManagementHelper()
+              .getAllModelElementsOfKind(model, Model.getMetaTypes().getInterface()));
+      addAllUniqueModelElementsFrom(
+          elements,
+          paths,
+          Model.getModelManagementHelper()
+              .getAllModelElementsOfKind(model, Model.getMetaTypes().getDataType()));
     }
 
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
+    addAllUniqueModelElementsFrom(
+        elements,
+        paths,
+        Model.getModelManagementHelper()
+            .getAllModelElementsOfKind(p.getDefaultModel(), Model.getMetaTypes().getClassifier()));
+
+    setElements(elements);
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
+   */
+  protected Object getSelectedModelElement() {
+    Object o = null;
+    if (getTarget() != null) {
+      o = Model.getFacade().getType(getTarget());
+    }
+    if (o == null) {
+      o = " ";
+    }
+    return o;
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#propertyChange(java.beans.PropertyChangeEvent)
+   */
+  public void propertyChange(PropertyChangeEvent evt) {
+    /*
+     * The default behavior for super implementation is
+     * to add/remove elements from the list, but it isn't
+     * that complex here, because there is no need to
+     * change the list on a simple type change.
      */
-    protected Object getSelectedModelElement() {
-        Object o = null;
-        if (getTarget() != null) {
-            o = Model.getFacade().getType(getTarget());
-        }
-        if (o == null) {
-            o = " ";
-        }
-        return o;
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#propertyChange(java.beans.PropertyChangeEvent)
-     */
-    public void propertyChange(PropertyChangeEvent evt) {
-        /*
-         * The default behavior for super implementation is
-         * to add/remove elements from the list, but it isn't
-         * that complex here, because there is no need to
-         * change the list on a simple type change.
-         */
-    }
-
+  }
 }

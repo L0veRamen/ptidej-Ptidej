@@ -14,56 +14,42 @@ package bean;
 
 class Point {
 
-    protected int x = 0;
-    protected int y = 0;
+  protected int x = 0;
+  protected int y = 0;
 
-    /**
-     * Return the X coordinate
-     */
-    public int getX(){
-        return x;
-    }
+  /** Return the X coordinate */
+  public int getX() {
+    return x;
+  }
 
-    /**
-     * Return the y coordinate
-     */
-    public int getY(){
-        return y;
-    }
+  /** Return the y coordinate */
+  public int getY() {
+    return y;
+  }
 
-    /**
-     * Set the x and y coordinates
-     */
-    public void setRectangular(int newX, int newY){
-        setX(newX);
-        setY(newY);
-    }
+  /** Set the x and y coordinates */
+  public void setRectangular(int newX, int newY) {
+    setX(newX);
+    setY(newY);
+  }
 
-    /**
-     * Set the X coordinate
-     */
-    public void setX(int newX) {
-        x = newX;
-    }
+  /** Set the X coordinate */
+  public void setX(int newX) {
+    x = newX;
+  }
 
-    /**
-     * set the y coordinate
-     */
-    public void setY(int newY) {
-        y = newY;
-    }
+  /** set the y coordinate */
+  public void setY(int newY) {
+    y = newY;
+  }
 
-    /**
-     * Move the point by the specified x and y offset
-     */
-    public void offset(int deltaX, int deltaY){
-        setRectangular(x + deltaX, y + deltaY);
-    }
+  /** Move the point by the specified x and y offset */
+  public void offset(int deltaX, int deltaY) {
+    setRectangular(x + deltaX, y + deltaY);
+  }
 
-    /**
-     * Make a string of this
-     */
-    public String toString(){
-        return "(" + getX() + ", " + getY() + ")" ;
-    }
+  /** Make a string of this */
+  public String toString() {
+    return "(" + getX() + ", " + getY() + ")";
+  }
 }

@@ -28,21 +28,21 @@ import org.eclipse.osgi.util.NLS;
 
 /**
  * Provides message bundle for the package.
+ *
  * @author Bogdan Pistol
  */
 public class MessageBundle extends NLS {
 
-    private static final String BUNDLE_NAME = 
-        "org.argouml.argoeclipse.internal.rcp.MessageBundle"; //$NON-NLS-1$
-    
-    public static String fileMenu;
-    public static String editMenu;
-    public static String windowMenu;
-    public static String helpMenu;
-    public static String applicationTitle;    
-    
-    static {
-        NLS.initializeMessages(BUNDLE_NAME, MessageBundle.class);
-    }
-    
+  private static final String BUNDLE_NAME =
+      "org.argouml.argoeclipse.internal.rcp.MessageBundle"; //$NON-NLS-1$
+
+  public static String fileMenu;
+  public static String editMenu;
+  public static String windowMenu;
+  public static String helpMenu;
+  public static String applicationTitle;
+
+  static {
+    NLS.initializeMessages(BUNDLE_NAME, MessageBundle.class);
+  }
 }

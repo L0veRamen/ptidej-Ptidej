@@ -29,23 +29,21 @@ package org.argouml.model.euml;
 import org.argouml.model.NotImplementedException;
 
 /**
- * Runtime exception for things in eUML implementation which are not
- * yet implemented.  We use NotImplementedException for things which we
- * never plan to implement and NotYetImplemented for things which we
- * plan to implement but haven't gotten around to yet.
- * <p>
- * When the implementation is complete this class may be removed.
- * 
+ * Runtime exception for things in eUML implementation which are not yet implemented. We use
+ * NotImplementedException for things which we never plan to implement and NotYetImplemented for
+ * things which we plan to implement but haven't gotten around to yet.
+ *
+ * <p>When the implementation is complete this class may be removed.
+ *
  * @author Tom Morris
  */
 class NotYetImplementedException extends NotImplementedException {
 
-    NotYetImplementedException() {
-        super();
-    }
-    
-    NotYetImplementedException(String message) {
-        super(message);
-    }
+  NotYetImplementedException() {
+    super();
+  }
 
+  NotYetImplementedException(String message) {
+    super(message);
+  }
 }

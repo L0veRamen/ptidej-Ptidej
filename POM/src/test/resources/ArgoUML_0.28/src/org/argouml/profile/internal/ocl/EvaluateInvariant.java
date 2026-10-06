@@ -29,73 +29,66 @@ import tudresden.ocl.parser.node.AConstraint;
 import tudresden.ocl.parser.node.PConstraintBody;
 
 /**
- * Evaluates OCL invariants, this class should not depend on the model
- * subsystem.
- * 
+ * Evaluates OCL invariants, this class should not depend on the model subsystem.
+ *
  * @author maurelio1234
  */
 public class EvaluateInvariant extends DepthFirstAdapter {
 
-    /**
-     * Is this invariant satified?
-     */
-    private boolean ok = true;
+  /** Is this invariant satified? */
+  private boolean ok = true;
 
-    /**
-     * The Expression Evaluator
-     */
-    private EvaluateExpression expEvaluator = null;
+  /** The Expression Evaluator */
+  private EvaluateExpression expEvaluator = null;
 
-    private Object modelElement;
+  private Object modelElement;
 
-    private ModelInterpreter mi;
+  private ModelInterpreter mi;
 
-    /**
-     * Constructor
-     * 
-     * @param element self
-     * @param interpreter model interpreter
-     */
-    public EvaluateInvariant(Object element, ModelInterpreter interpreter) {
-        this.modelElement = element;
-        this.mi = interpreter;
-        this.expEvaluator = new EvaluateExpression(element, interpreter);
+  /**
+   * Constructor
+   *
+   * @param element self
+   * @param interpreter model interpreter
+   */
+  public EvaluateInvariant(Object element, ModelInterpreter interpreter) {
+    this.modelElement = element;
+    this.mi = interpreter;
+    this.expEvaluator = new EvaluateExpression(element, interpreter);
+  }
+
+  /**
+   * @return is the invariant ok?
+   */
+  public boolean isOK() {
+    return ok;
+  }
+
+  /** Interpreter Code * */
+
+  /*
+   * @see tudresden.ocl.parser.analysis.DepthFirstAdapter#caseAConstraint(tudresden.ocl.parser.node.AConstraint)
+   */
+  @Override
+  public void caseAConstraint(AConstraint node) {
+    inAConstraint(node);
+    if (node.getContextDeclaration() != null) {
+      node.getContextDeclaration().apply(this);
     }
+    {
+      boolean localOk = true;
 
-    /**
-     * @return is the invariant ok?
-     */
-    public boolean isOK() {
-        return ok;
+      Object temp[] = node.getConstraintBody().toArray();
+      for (int i = 0; i < temp.length; i++) {
+        expEvaluator.reset(modelElement, mi);
+        ((PConstraintBody) temp[i]).apply(expEvaluator);
+
+        Object val = expEvaluator.getValue();
+        localOk &= val != null && (val instanceof Boolean) && (Boolean) val;
+      }
+
+      ok = localOk;
     }
-
-    /** Interpreter Code * */
-
-    /*
-     * @see tudresden.ocl.parser.analysis.DepthFirstAdapter#caseAConstraint(tudresden.ocl.parser.node.AConstraint)
-     */
-    @Override
-    public void caseAConstraint(AConstraint node) {
-        inAConstraint(node);
-        if (node.getContextDeclaration() != null) {
-            node.getContextDeclaration().apply(this);
-        }
-        {
-            boolean localOk = true;
-
-            Object temp[] = node.getConstraintBody().toArray();
-            for (int i = 0; i < temp.length; i++) {
-                expEvaluator.reset(modelElement, mi);
-                ((PConstraintBody) temp[i]).apply(expEvaluator);
-
-                Object val = expEvaluator.getValue();
-                localOk &= val != null && (val instanceof Boolean)
-                        && (Boolean) val;
-            }
-
-            ok = localOk;
-        }
-        outAConstraint(node);
-    }
-
+    outAConstraint(node);
+  }
 }

@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xerces" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -59,64 +59,55 @@ package org.apache.xerces.domx.events;
 import org.w3c.dom.DOMException;
 
 /**
- * The <code>EventTarget</code> interface is implemented by all 
- * <code>Node</code>s in  an implementation which supports the DOM Event 
- * Model.  The interface allows registration and removal of 
- * <code>EventListener</code>s on an <code>EventTarget</code> and dispatch of 
- * events to that <code>EventTarget</code>.
+ * The <code>EventTarget</code> interface is implemented by all <code>Node</code>s in an
+ * implementation which supports the DOM Event Model. The interface allows registration and removal
+ * of <code>EventListener</code>s on an <code>EventTarget</code> and dispatch of events to that
+ * <code>EventTarget</code>.
+ *
  * @since DOM Level 2
  */
 public interface EventTarget {
   /**
-   * This method allows the registration of event listeners on the event 
-   * target.  
+   * This method allows the registration of event listeners on the event target.
+   *
    * @param type The event type for which the user is registering
-   * @param listener The <code>listener</code> parameter takes an interface 
-   *   implemented by the user which contains the methods to be called when 
-   *   the event occurs.
-   * @param useCapture If true, <code>useCapture</code> indicates that the 
-   *   user wishes to initiate capture.  After initiating capture, all events 
-   *   of the specified type will be  dispatched to the registered 
-   *   <code>EventListener</code> before being dispatched to any 
-   *   <code>EventTarget</code>s beneath them in the tree.  Events which are 
-   *   bubbling upward through the tree will not trigger an 
-   *   <code>EventListener</code> designated to use capture.
+   * @param listener The <code>listener</code> parameter takes an interface implemented by the user
+   *     which contains the methods to be called when the event occurs.
+   * @param useCapture If true, <code>useCapture</code> indicates that the user wishes to initiate
+   *     capture. After initiating capture, all events of the specified type will be dispatched to
+   *     the registered <code>EventListener</code> before being dispatched to any <code>EventTarget
+   *     </code>s beneath them in the tree. Events which are bubbling upward through the tree will
+   *     not trigger an <code>EventListener</code> designated to use capture.
    */
-  public void               addEventListener(String type, 
-											 EventListener listener, 
-											 boolean useCapture); 
+  public void addEventListener(String type, EventListener listener, boolean useCapture);
+
   /**
-   * This method allows the dispatch of events into the implementations event 
-   * model.  Events dispatched in this manner will have the same capturing 
-   * and bubbling behavior as events dispatched directly by the 
-   * implementation.  The target of the event is the <code> EventTarget</code>
-   *  on which <code>dispatchEvent</code> is called. 
-   * @param evt Specifies the event type, behavior, and contextual information 
-   *   to be used in processing the event.
-   * @return The return value of <code>dispatchEvent</code> indicates whether 
-   *   any of the listeners which handled the event called 
-   *   <code>preventDefault</code>.  If <code>preventDefault</code> was 
-   *   called the value is false, else the value is true. 
-   * @exception DOMException
-   *   UNSPECIFIED_EVENT_TYPE: Raised if the <code>Event</code>'s type was 
-   *   not specified before <code>dispatchEvent</code> was called.
+   * This method allows the dispatch of events into the implementations event model. Events
+   * dispatched in this manner will have the same capturing and bubbling behavior as events
+   * dispatched directly by the implementation. The target of the event is the <code> EventTarget
+   * </code> on which <code>dispatchEvent</code> is called.
+   *
+   * @param evt Specifies the event type, behavior, and contextual information to be used in
+   *     processing the event.
+   * @return The return value of <code>dispatchEvent</code> indicates whether any of the listeners
+   *     which handled the event called <code>preventDefault</code>. If <code>preventDefault</code>
+   *     was called the value is false, else the value is true.
+   * @exception DOMException UNSPECIFIED_EVENT_TYPE: Raised if the <code>Event</code>'s type was not
+   *     specified before <code>dispatchEvent</code> was called.
    */
-  public boolean            dispatchEvent(Event evt)
-										  throws DOMException;  
+  public boolean dispatchEvent(Event evt) throws DOMException;
+
   /**
-   * This method allows the removal of event listeners from the event target.  
-   * If an <code>EventListener</code> is removed from an 
-   * <code>EventTarget</code> while it is  processing an event, it will 
-   * complete its current actions but will not be triggered again during any 
-   * later stages of event flow. 
-   * @param type Specifies the event type of the <code>EventListener</code> 
-   *   being removed. 
-   * @param listener The <code>EventListener</code> parameter indicates the 
-   *   <code>EventListener </code> to be removed. 
-   * @param useCapture Specifies whether the <code>EventListener</code> being 
-   *   removed is a capturing listener or not. 
+   * This method allows the removal of event listeners from the event target. If an <code>
+   * EventListener</code> is removed from an <code>EventTarget</code> while it is processing an
+   * event, it will complete its current actions but will not be triggered again during any later
+   * stages of event flow.
+   *
+   * @param type Specifies the event type of the <code>EventListener</code> being removed.
+   * @param listener The <code>EventListener</code> parameter indicates the <code>EventListener
+   *     </code> to be removed.
+   * @param useCapture Specifies whether the <code>EventListener</code> being removed is a capturing
+   *     listener or not.
    */
-  public void               removeEventListener(String type, 
-												EventListener listener, 
-												boolean useCapture);
+  public void removeEventListener(String type, EventListener listener, boolean useCapture);
 }

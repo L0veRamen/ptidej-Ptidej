@@ -28,83 +28,68 @@ import org.argouml.model.InvalidElementException;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLComboBoxModel2;
 
-/**
- * The model behind the UMLMessageActivatorComboBox.
- */
+/** The model behind the UMLMessageActivatorComboBox. */
 public class UMLMessageActivatorComboBoxModel extends UMLComboBoxModel2 {
 
-    private Object interaction = null;
+  private Object interaction = null;
 
-    /**
-     * Constructor for UMLMessageActivatorComboBoxModel.
-     */
-    public UMLMessageActivatorComboBoxModel() {
-        super("activator", false);
-    }
+  /** Constructor for UMLMessageActivatorComboBoxModel. */
+  public UMLMessageActivatorComboBoxModel() {
+    super("activator", false);
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        Object target = getTarget();
-        if (Model.getFacade().isAMessage(target)) {
-            Object mes = target;
-            removeAllElements();
-            // fill the list with items
-            setElements(Model.getCollaborationsHelper()
-                    .getAllPossibleActivators(mes));
-        }
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    Object target = getTarget();
+    if (Model.getFacade().isAMessage(target)) {
+      Object mes = target;
+      removeAllElements();
+      // fill the list with items
+      setElements(Model.getCollaborationsHelper().getAllPossibleActivators(mes));
     }
+  }
 
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object m) {
+    try {
+      return ((Model.getFacade().isAMessage(m))
+          && m != getTarget()
+          && !Model.getFacade().getPredecessors(getTarget()).contains(m)
+          && Model.getFacade().getInteraction(m) == Model.getFacade().getInteraction(getTarget()));
+    } catch (InvalidElementException e) {
+      return false;
+    }
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object m) {
-        try {
-            return ((Model.getFacade().isAMessage(m))
-                    && m != getTarget()
-                    && !Model.getFacade().getPredecessors(getTarget())
-                            .contains(m) 
-                            && Model.getFacade().getInteraction(m) == Model
-                    .getFacade().getInteraction(getTarget()));
-        } catch (InvalidElementException e) {
-            return false;
-        }
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
+   */
+  protected Object getSelectedModelElement() {
+    if (getTarget() != null) {
+      return Model.getFacade().getActivator(getTarget());
     }
+    return null;
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
-     */
-    protected Object getSelectedModelElement() {
-        if (getTarget() != null) {
-            return Model.getFacade().getActivator(getTarget());
-        }
-        return null;
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#setTarget(java.lang.Object)
+   */
+  public void setTarget(Object target) {
+    if (Model.getFacade().isAMessage(getTarget())) {
+      if (interaction != null) {
+        Model.getPump().removeModelEventListener(this, interaction, "message");
+      }
     }
-    
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#setTarget(java.lang.Object)
-     */
-    public void setTarget(Object target) {
-        if (Model.getFacade().isAMessage(getTarget())) {
-            if (interaction != null) {
-                Model.getPump().removeModelEventListener(
-                    this,
-                    interaction,
-                    "message");
-            }
-        }
-        super.setTarget(target);
-        if (Model.getFacade().isAMessage(target)) {
-            interaction = Model.getFacade().getInteraction(target);
-            if (interaction != null) {
-                Model.getPump().addModelEventListener(
-                    this,
-                    interaction,
-                    "message");
-            }
-        }
+    super.setTarget(target);
+    if (Model.getFacade().isAMessage(target)) {
+      interaction = Model.getFacade().getInteraction(target);
+      if (interaction != null) {
+        Model.getPump().addModelEventListener(this, interaction, "message");
+      }
     }
+  }
 }
-

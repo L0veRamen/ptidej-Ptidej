@@ -31,24 +31,20 @@ import org.argouml.model.Model;
  * @since Nov 2, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class UMLParameterTypeComboBoxModel
-    extends UMLStructuralFeatureTypeComboBoxModel {
+public class UMLParameterTypeComboBoxModel extends UMLStructuralFeatureTypeComboBoxModel {
 
-    /**
-     * Constructor for UMLParameterTypeComboBoxModel.
-     */
-    public UMLParameterTypeComboBoxModel() {
-        super();
+  /** Constructor for UMLParameterTypeComboBoxModel. */
+  public UMLParameterTypeComboBoxModel() {
+    super();
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
+   */
+  protected Object getSelectedModelElement() {
+    if (getTarget() != null) {
+      return Model.getFacade().getType(getTarget());
     }
-
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
-     */
-    protected Object getSelectedModelElement() {
-	if (getTarget() != null) {
-            return Model.getFacade().getType(getTarget());
-        }
-        return null;
-    }
-
+    return null;
+  }
 }

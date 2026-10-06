@@ -25,128 +25,106 @@
 package org.argouml.model;
 
 import java.util.Collection;
-
 import junit.framework.TestCase;
 
 /**
- * Tests some specific methods in Facade.<p>
+ * Tests some specific methods in Facade.
  *
- * This is a complement to the tests in
- * {@link TestModelFacade3} that makes a lot more general tests.<p>
+ * <p>This is a complement to the tests in {@link TestModelFacade3} that makes a lot more general
+ * tests.
  *
- * As opposed to the tests in
- * {@link TestModelFacade3} that are run on a whole set of objects,
+ * <p>As opposed to the tests in {@link TestModelFacade3} that are run on a whole set of objects,
  * these tests are maintained manually.
  *
  * @author Linus Tolke
  */
 public class TestModelFacade2 extends TestCase {
 
-    /**
-     * Constructor for TestModelFacade2.
-     *
-     * @param arg0 name of test case
-     */
-    public TestModelFacade2(String arg0) {
-	super(arg0);
+  /**
+   * Constructor for TestModelFacade2.
+   *
+   * @param arg0 name of test case
+   */
+  public TestModelFacade2(String arg0) {
+    super(arg0);
+  }
+
+  /** Test that the correct error is thrown for isAsynchronous. */
+  public void testErrorThrownInIsAsynchronous() {
+    try {
+      Model.getFacade().isAsynchronous(new Object());
+      assertTrue("Error was not thrown", false);
+    } catch (IllegalArgumentException e) {
+      // We expected an error to be thrown.
     }
+  }
 
-    /**
-     * Test that the correct error is thrown for isAsynchronous.
-     */
-    public void testErrorThrownInIsAsynchronous() {
-	try {
-	    Model.getFacade().isAsynchronous(new Object());
-	    assertTrue("Error was not thrown", false);
-	} catch (IllegalArgumentException e) {
-	    // We expected an error to be thrown.
-	}
-    }
+  /** Test that the correct error is thrown for a setName with illegal name. */
+  public void testSetName() {
+    Object ob = Model.getCoreFactory().buildClass("initial");
+    final String correctValue = "correct";
+    Model.getCoreHelper().setName(ob, correctValue);
+    assertEquals(correctValue, Model.getFacade().getName(ob));
+  }
 
-    /**
-     * Test that the correct error is thrown for a setName with illegal name.
-     */
-    public void testSetName() {
-        Object ob = Model.getCoreFactory().buildClass("initial");
-        final String correctValue = "correct";
-        Model.getCoreHelper().setName(ob, correctValue);
-        assertEquals(correctValue, Model.getFacade().getName(ob));
-    }
+  /** Test for setModelElementContainer. */
+  public void testSetModelElementContainer() {
+    Object container = Model.getActivityGraphsFactory().createActivityGraph();
+    Object partition = Model.getActivityGraphsFactory().createPartition();
 
+    Model.getCoreHelper().setModelElementContainer(partition, container);
 
-    /**
-     * Test for setModelElementContainer.
-     */
-    public void testSetModelElementContainer() {
-	Object container =
-	    Model.getActivityGraphsFactory().createActivityGraph();
-	Object partition = Model.getActivityGraphsFactory().createPartition();
+    Collection collection = Model.getFacade().getPartitions(container);
+    assertTrue(collection.contains(partition));
+    assertTrue(container.equals(Model.getFacade().getModelElementContainer(partition)));
+  }
 
-	Model.getCoreHelper().setModelElementContainer(partition, container);
+  /** Test getModelElementContainer. */
+  public void testGetModelElementContainer() {
+    StateMachinesFactory factory = Model.getStateMachinesFactory();
+    StateMachinesHelper helper = Model.getStateMachinesHelper();
 
-	Collection collection = Model.getFacade().getPartitions(container);
-	assertTrue(collection.contains(partition));
-        assertTrue(container.equals(Model.getFacade().getModelElementContainer(
-                partition)));
-    }
+    Object stateMachine = factory.createStateMachine();
+    Object state = factory.createSimpleState();
+    Object action = Model.getCommonBehaviorFactory().createCallAction();
+    helper.setStateMachine(state, stateMachine);
+    helper.setEntry(state, action);
 
-    /**
-     * Test getModelElementContainer.
-     */
-    public void testGetModelElementContainer() {
-        StateMachinesFactory factory = Model.getStateMachinesFactory();
-        StateMachinesHelper helper = Model.getStateMachinesHelper();
+    Object parentComposite = Model.getFacade().getModelElementContainer(action);
+    assertTrue(state.equals(parentComposite));
+    assertTrue(stateMachine.equals(Model.getFacade().getModelElementContainer(parentComposite)));
+  }
 
-        Object stateMachine = factory.createStateMachine();
-        Object state = factory.createSimpleState();
-        Object action = Model.getCommonBehaviorFactory().createCallAction();
-        helper.setStateMachine(state, stateMachine);
-        helper.setEntry(state, action);
+  /** Test some Tagged Value functions. */
+  public void testTaggedValue() {
+    Model.getModelManagementFactory().setRootModel(Model.getModelManagementFactory().createModel());
+    Object cls = Model.getCoreFactory().buildClass();
 
-        Object parentComposite =
-            Model.getFacade().getModelElementContainer(action);
-        assertTrue(state.equals(parentComposite));
-        assertTrue(stateMachine.equals(Model.getFacade()
-                .getModelElementContainer(parentComposite)));
-    }
+    assertNull(Model.getFacade().getTaggedValue(cls, "fooValue"));
+    Model.getCoreHelper().setTaggedValue(cls, "fooValue", "foo");
+    assertEquals(
+        Model.getFacade().getValueOfTag(Model.getFacade().getTaggedValue(cls, "fooValue")), "foo");
+    Model.getCoreHelper().removeTaggedValue(cls, "fooValue");
+    Model.getCoreHelper().removeTaggedValue(cls, "nonExistingValue");
+    assertNull(Model.getFacade().getTaggedValue(cls, "fooValue"));
+  }
 
-    /**
-     * Test some Tagged Value functions.
-     */
-    public void testTaggedValue() {
-        Model.getModelManagementFactory().setRootModel(
-                Model.getModelManagementFactory().createModel());
-        Object cls = Model.getCoreFactory().buildClass();
+  /** Test the stereotypes. */
+  public void testGetStereotypes() {
+    Object cls = Model.getCoreFactory().buildClass();
+    Model.getCoreHelper().setNamespace(cls, Model.getModelManagementFactory().createPackage());
+    Collection coll1 = Model.getFacade().getStereotypes(cls);
+    assertEquals(0, coll1.size());
 
-	assertNull(Model.getFacade().getTaggedValue(cls, "fooValue"));
-	Model.getCoreHelper().setTaggedValue(cls, "fooValue", "foo");
-	assertEquals(Model.getFacade().getValueOfTag(
-		Model.getFacade().getTaggedValue(cls, "fooValue")), "foo");
-	Model.getCoreHelper().removeTaggedValue(cls, "fooValue");
-	Model.getCoreHelper().removeTaggedValue(cls, "nonExistingValue");
-	assertNull(Model.getFacade().getTaggedValue(cls, "fooValue"));
-    }
+    Object stereotype =
+        Model.getExtensionMechanismsFactory()
+            .buildStereotype("TestStereotype", Model.getFacade().getNamespace(cls));
 
-    /**
-     * Test the stereotypes.
-     */
-    public void testGetStereotypes() {
-        Object cls = Model.getCoreFactory().buildClass();
-        Model.getCoreHelper().setNamespace(cls,
-        		Model.getModelManagementFactory().createPackage());
-        Collection coll1 = Model.getFacade().getStereotypes(cls);
-        assertEquals(0, coll1.size());
+    Model.getCoreHelper().addStereotype(cls, stereotype);
 
-        Object stereotype =
-            Model.getExtensionMechanismsFactory().buildStereotype(
-                    "TestStereotype",
-                    Model.getFacade().getNamespace(cls));
+    Collection coll2 = Model.getFacade().getStereotypes(cls);
 
-        Model.getCoreHelper().addStereotype(cls, stereotype);
-
-        Collection coll2 = Model.getFacade().getStereotypes(cls);
-
-        assertEquals(1, coll2.size());
-        assertTrue(coll2.contains(stereotype));
-    }
+    assertEquals(1, coll2.size());
+    assertTrue(coll2.contains(stereotype));
+  }
 }

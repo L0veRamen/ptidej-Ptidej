@@ -25,35 +25,28 @@
 package org.argouml.cognitive.ui;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.cognitive.Poster;
 import org.argouml.cognitive.ToDoItem;
 
-/**
- * The action to snooze the critics, i.e. temporarily disable them.
- *
- */
+/** The action to snooze the critics, i.e. temporarily disable them. */
 public class ActionSnooze extends ToDoItemAction {
 
-    /**
-     * The constructor.
-     */
-    public ActionSnooze() {
-        super("action.snooze-critic", true);
-    }
+  /** The constructor. */
+  public ActionSnooze() {
+    super("action.snooze-critic", true);
+  }
 
-    /*
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    @Override
-    public void actionPerformed(ActionEvent ae) {
-    	super.actionPerformed(ae);
-	if (!(getRememberedTarget() instanceof ToDoItem)) return;
+  /*
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
+  public void actionPerformed(ActionEvent ae) {
+    super.actionPerformed(ae);
+    if (!(getRememberedTarget() instanceof ToDoItem)) return;
 
-	ToDoItem item = (ToDoItem) getRememberedTarget();
-	Poster p = item.getPoster();
-	p.snooze();
-	TabToDo.incrementNumHushes();
-    }
+    ToDoItem item = (ToDoItem) getRememberedTarget();
+    Poster p = item.getPoster();
+    p.snooze();
+    TabToDo.incrementNumHushes();
+  }
 }
-

@@ -25,7 +25,6 @@
 package org.argouml.uml.notation.uml;
 
 import java.text.ParseException;
-
 import org.argouml.i18n.Translator;
 import org.argouml.ui.ProjectBrowser;
 import org.argouml.uml.generator.GeneratorDisplay;
@@ -37,47 +36,44 @@ import org.argouml.uml.notation.StateBodyNotation;
  */
 public class StateBodyNotationUml extends StateBodyNotation {
 
-    /**
-     * The constructor.
-     * 
-     * @param state the state represented by the notation
-     */
-    public StateBodyNotationUml(Object state) {
-        super(state);
-    }
+  /**
+   * The constructor.
+   *
+   * @param state the state represented by the notation
+   */
+  public StateBodyNotationUml(Object state) {
+    super(state);
+  }
 
-    /**
-     * @see org.argouml.notation.NotationProvider4#parse(java.lang.String)
-     */
-    public String parse(String text) {
-        try {
-            //TODO: Make the next call inline - replace ParserDisplay
-            ParserDisplay.SINGLETON.parseStateBody(myState, text);
-        } catch (ParseException pe) {
-            String msg = "statusmsg.bar.error.parsing.statebody";
-            Object[] args = {
-                    pe.getLocalizedMessage(),
-                    new Integer(pe.getErrorOffset()),
-            };
-            ProjectBrowser.getInstance().getStatusBar().showStatus(
-                    Translator.messageFormat(msg, args));
-        }
-        return toString();
+  /**
+   * @see org.argouml.notation.NotationProvider4#parse(java.lang.String)
+   */
+  public String parse(String text) {
+    try {
+      // TODO: Make the next call inline - replace ParserDisplay
+      ParserDisplay.SINGLETON.parseStateBody(myState, text);
+    } catch (ParseException pe) {
+      String msg = "statusmsg.bar.error.parsing.statebody";
+      Object[] args = {
+        pe.getLocalizedMessage(), new Integer(pe.getErrorOffset()),
+      };
+      ProjectBrowser.getInstance().getStatusBar().showStatus(Translator.messageFormat(msg, args));
     }
+    return toString();
+  }
 
-    /**
-     * @see org.argouml.notation.NotationProvider4#getParsingHelp()
-     */
-    public String getParsingHelp() {
-        return "parsing.help.fig-statebody";
-    }
+  /**
+   * @see org.argouml.notation.NotationProvider4#getParsingHelp()
+   */
+  public String getParsingHelp() {
+    return "parsing.help.fig-statebody";
+  }
 
-    /**
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-        /* TODO: copy this here inline! Replace GeneratorDisplay. */
-        return GeneratorDisplay.getInstance().generateStateBody(myState);
-    }
-
+  /**
+   * @see java.lang.Object#toString()
+   */
+  public String toString() {
+    /* TODO: copy this here inline! Replace GeneratorDisplay. */
+    return GeneratorDisplay.getInstance().generateStateBody(myState);
+  }
 }

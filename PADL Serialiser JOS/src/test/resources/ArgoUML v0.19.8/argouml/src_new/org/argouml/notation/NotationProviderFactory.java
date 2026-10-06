@@ -27,7 +27,6 @@ package org.argouml.notation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
-
 import org.apache.log4j.Logger;
 import org.argouml.application.api.Argo;
 import org.argouml.application.api.PluggableNotation;
@@ -44,139 +43,132 @@ import org.argouml.uml.generator.GeneratorDisplay;
  * @author Thierry Lach
  * @since 0.9.4
  */
-public final class NotationProviderFactory
-    implements ArgoModuleEventListener {
-    /**
-     * Logger.
-     */
-    private static final Logger LOG =
-        Logger.getLogger(NotationProviderFactory.class);
+public final class NotationProviderFactory implements ArgoModuleEventListener {
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(NotationProviderFactory.class);
 
-    /**
-     * The singleton representing this class.
-     */
-    private static final NotationProviderFactory SINGLETON =
-        new NotationProviderFactory();
+  /** The singleton representing this class. */
+  private static final NotationProviderFactory SINGLETON = new NotationProviderFactory();
 
-    /**
-     * @return the singleton
-     */
-    public static NotationProviderFactory getInstance() { return SINGLETON; }
+  /**
+   * @return the singleton
+   */
+  public static NotationProviderFactory getInstance() {
+    return SINGLETON;
+  }
 
-    private List providers = new ArrayList();
-    
-    /**
-     * Constructor to disallow other to create this.
-     */
-    private NotationProviderFactory() {
-	providers = new ArrayList();
-	ListIterator iterator =
-	    Argo.getPlugins(PluggableNotation.class).listIterator();
-	while (iterator.hasNext()) {
-            Object o = iterator.next();
-            if (o instanceof NotationProvider2) {
-	        NotationProvider2 np = (NotationProvider2) o;
-                LOG.debug ("added provider:" + np);
-                providers.add(np);
-                fireEvent(ArgoEventTypes.NOTATION_PROVIDER_ADDED, np);
-	    }
-	}
-	ArgoEventPump.addListener(ArgoEventTypes.ANY_NOTATION_EVENT, this);
-	ArgoEventPump.addListener(ArgoEventTypes.ANY_MODULE_EVENT, this);
+  private List providers = new ArrayList();
+
+  /** Constructor to disallow other to create this. */
+  private NotationProviderFactory() {
+    providers = new ArrayList();
+    ListIterator iterator = Argo.getPlugins(PluggableNotation.class).listIterator();
+    while (iterator.hasNext()) {
+      Object o = iterator.next();
+      if (o instanceof NotationProvider2) {
+        NotationProvider2 np = (NotationProvider2) o;
+        LOG.debug("added provider:" + np);
+        providers.add(np);
+        fireEvent(ArgoEventTypes.NOTATION_PROVIDER_ADDED, np);
+      }
+    }
+    ArgoEventPump.addListener(ArgoEventTypes.ANY_NOTATION_EVENT, this);
+    ArgoEventPump.addListener(ArgoEventTypes.ANY_MODULE_EVENT, this);
+  }
+
+  /**
+   * Remove the notation change listener. <code>finalize</code> should never happen, but play it
+   * safe.
+   *
+   * @throws Throwable if something goes wrong in the super finalize.
+   */
+  protected void finalize() throws Throwable {
+    ArgoEventPump.removeListener(ArgoEventTypes.ANY_NOTATION_EVENT, this);
+    super.finalize();
+  }
+
+  /**
+   * @param nn the name of the notation
+   * @return the notation provider class
+   */
+  public NotationProvider2 getProvider(NotationName nn) {
+    NotationName n = nn;
+    if (nn == null) {
+      n = Notation.getConfigueredNotation();
     }
 
-    /**
-     * Remove the notation change listener.
-     * <code>finalize</code> should never happen, but play it safe.
-     *
-     * @throws Throwable if something goes wrong in the super finalize.
-     */
-    protected void finalize() throws Throwable {
-	ArgoEventPump.removeListener(ArgoEventTypes.ANY_NOTATION_EVENT, this);
-	super.finalize();
+    LOG.debug("looking for " + n);
+    ListIterator iterator = providers.listIterator();
+    while (iterator.hasNext()) {
+      NotationProvider2 np = (NotationProvider2) iterator.next();
+      LOG.debug("Checking " + np + ", " + np.getNotation());
+      if (np.getNotation().sameNotationAs(n)) {
+        LOG.debug("found provider " + np);
+        return np;
+      }
     }
+    return GeneratorDisplay.getInstance();
+  }
 
+  /**
+   * @return the list of all providers
+   */
+  public List getProviders() {
+    return providers;
+  }
 
-    /**
-     * @param nn the name of the notation
-     * @return the notation provider class
-     */
-    public NotationProvider2 getProvider(NotationName nn) {
-        NotationName n = nn;
-        if (nn == null) {
-            n = Notation.getConfigueredNotation();
-        }
-
-	LOG.debug ("looking for " + n);
-        ListIterator iterator = providers.listIterator();
-        while (iterator.hasNext()) {
-            NotationProvider2 np = (NotationProvider2) iterator.next();
-	    LOG.debug ("Checking " + np + ", " + np.getNotation());
-	    if (np.getNotation().sameNotationAs(n)) {
-	        LOG.debug ("found provider " + np);
-	        return np;
-	    }
-	}
-        return GeneratorDisplay.getInstance();
+  /**
+   * @return the list of all notations
+   */
+  public List getNotations() {
+    List nots = new ArrayList();
+    ListIterator iterator = providers.listIterator();
+    while (iterator.hasNext()) {
+      NotationProvider2 np = (NotationProvider2) iterator.next();
+      nots.add(np.getNotation());
     }
+    return nots;
+  }
 
-    /**
-     * @return the list of all providers
-     */
-    public List getProviders() { return providers; }
-
-    /**
-     * @return the list of all notations
-     */
-    public List getNotations() {
-        List nots = new ArrayList();
-        ListIterator iterator = providers.listIterator();
-        while (iterator.hasNext()) {
-            NotationProvider2 np = (NotationProvider2) iterator.next();
-	    nots.add(np.getNotation());
-	}
-        return nots;
+  /**
+   * @see
+   *     org.argouml.application.events.ArgoModuleEventListener#moduleLoaded(org.argouml.application.events.ArgoModuleEvent)
+   */
+  public void moduleLoaded(ArgoModuleEvent event) {
+    LOG.debug(event);
+    if (event.getSource() instanceof NotationProvider2) {
+      NotationProvider2 np = (NotationProvider2) event.getSource();
+      LOG.debug("added:" + np);
+      providers.add(np);
+      fireEvent(ArgoEventTypes.NOTATION_PROVIDER_ADDED, np);
     }
+  }
 
-    /**
-     * @see org.argouml.application.events.ArgoModuleEventListener#moduleLoaded(org.argouml.application.events.ArgoModuleEvent)
-     */
-    public void moduleLoaded(ArgoModuleEvent event) {
-	LOG.debug (event);
-	if (event.getSource() instanceof NotationProvider2) {
-	    NotationProvider2 np = (NotationProvider2) event.getSource();
-	    LOG.debug ("added:" + np);
-	    providers.add(np);
-	    fireEvent(ArgoEventTypes.NOTATION_PROVIDER_ADDED, np);
-	}
-    }
+  /**
+   * @see
+   *     org.argouml.application.events.ArgoModuleEventListener#moduleUnloaded(org.argouml.application.events.ArgoModuleEvent)
+   */
+  public void moduleUnloaded(ArgoModuleEvent event) {}
 
-    /**
-     * @see org.argouml.application.events.ArgoModuleEventListener#moduleUnloaded(org.argouml.application.events.ArgoModuleEvent)
-     */
-    public void moduleUnloaded(ArgoModuleEvent event) {
-    }
+  /**
+   * @see
+   *     org.argouml.application.events.ArgoModuleEventListener#moduleEnabled(org.argouml.application.events.ArgoModuleEvent)
+   */
+  public void moduleEnabled(ArgoModuleEvent event) {}
 
-    /**
-     * @see org.argouml.application.events.ArgoModuleEventListener#moduleEnabled(org.argouml.application.events.ArgoModuleEvent)
-     */
-    public void moduleEnabled(ArgoModuleEvent event) {
-    }
+  /**
+   * @see
+   *     org.argouml.application.events.ArgoModuleEventListener#moduleDisabled(org.argouml.application.events.ArgoModuleEvent)
+   */
+  public void moduleDisabled(ArgoModuleEvent event) {}
 
-    /**
-     * @see org.argouml.application.events.ArgoModuleEventListener#moduleDisabled(org.argouml.application.events.ArgoModuleEvent)
-     */
-    public void moduleDisabled(ArgoModuleEvent event) {
-    }
-
-    /**
-     * Send an event to the {@link ArgoEventPump}.
-     *
-     * @param eventType The event type.
-     * @param provider The source of the event.
-     */
-    private void fireEvent(int eventType,  NotationProvider2 provider) {
-	ArgoEventPump.fireEvent(new ArgoNotationEvent(eventType, provider));
-    }
-
+  /**
+   * Send an event to the {@link ArgoEventPump}.
+   *
+   * @param eventType The event type.
+   * @param provider The source of the event.
+   */
+  private void fireEvent(int eventType, NotationProvider2 provider) {
+    ArgoEventPump.fireEvent(new ArgoNotationEvent(eventType, provider));
+  }
 }

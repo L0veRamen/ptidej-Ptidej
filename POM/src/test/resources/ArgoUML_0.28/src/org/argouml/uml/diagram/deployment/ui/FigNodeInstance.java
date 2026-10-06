@@ -27,7 +27,6 @@ package org.argouml.uml.diagram.deployment.ui;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Collection;
-
 import org.argouml.model.Model;
 import org.argouml.notation.NotationProviderFactory2;
 import org.argouml.uml.diagram.DiagramSettings;
@@ -37,130 +36,125 @@ import org.tigris.gef.graph.GraphModel;
 import org.tigris.gef.presentation.Fig;
 
 /**
- * Class to display graphics for a UML NodeInstance in a diagram.<p>
+ * Class to display graphics for a UML NodeInstance in a diagram.
+ *
+ * <p>
  *
  * @author 5eichler@informatik.uni-hamburg.de
  */
 public class FigNodeInstance extends AbstractFigNode {
 
-    /**
-     * Constructor
-     * @deprecated by for 0.27.4 by tfmorris. Use
-     *             {@link #FigNodeInstance(Object, Rectangle, DiagramSettings)}.
-     */
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    public FigNodeInstance() {
-        super();
-        getNameFig().setUnderline(true);
-    }
+  /**
+   * Constructor
+   *
+   * @deprecated by for 0.27.4 by tfmorris. Use {@link #FigNodeInstance(Object, Rectangle,
+   *     DiagramSettings)}.
+   */
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  public FigNodeInstance() {
+    super();
+    getNameFig().setUnderline(true);
+  }
 
-    /**
-     * Constructor which hooks the new Fig into an existing UML element.
-     * 
-     * @param gm ignored
-     * @param node the UML element
-     * @deprecated by for 0.27.4 by tfmorris. Use
-     *             {@link #FigNodeInstance(Object, Rectangle, DiagramSettings)}.
-     */
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    public FigNodeInstance(GraphModel gm, Object node) {
-        super(gm, node);
-        getNameFig().setUnderline(true);
-    }
+  /**
+   * Constructor which hooks the new Fig into an existing UML element.
+   *
+   * @param gm ignored
+   * @param node the UML element
+   * @deprecated by for 0.27.4 by tfmorris. Use {@link #FigNodeInstance(Object, Rectangle,
+   *     DiagramSettings)}.
+   */
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  public FigNodeInstance(GraphModel gm, Object node) {
+    super(gm, node);
+    getNameFig().setUnderline(true);
+  }
 
-    
-    /**
-     * Construct a new FigNodeInstance.
-     * 
-     * @param owner owning UML element
-     * @param bounds position and size
-     * @param settings render settings
-     */
-    public FigNodeInstance(Object owner, Rectangle bounds,
-            DiagramSettings settings) {
-        super(owner, bounds, settings);
-        getNameFig().setUnderline(true);
-    }
-    
-    @Override
-    protected int getNotationProviderType() {
-        return NotationProviderFactory2.TYPE_NODEINSTANCE;
-    }
+  /**
+   * Construct a new FigNodeInstance.
+   *
+   * @param owner owning UML element
+   * @param bounds position and size
+   * @param settings render settings
+   */
+  public FigNodeInstance(Object owner, Rectangle bounds, DiagramSettings settings) {
+    super(owner, bounds, settings);
+    getNameFig().setUnderline(true);
+  }
 
-    @Override
-    public Object clone() {
-        Object clone = super.clone();
-        return clone;
-    }
+  @Override
+  protected int getNotationProviderType() {
+    return NotationProviderFactory2.TYPE_NODEINSTANCE;
+  }
 
+  @Override
+  public Object clone() {
+    Object clone = super.clone();
+    return clone;
+  }
 
-    /*
-     * @see org.tigris.gef.presentation.Fig#makeSelection()
-     */
-    @Override
-    public Selection makeSelection() {
-        return new SelectionNodeInstance(this);
-    }
-    
+  /*
+   * @see org.tigris.gef.presentation.Fig#makeSelection()
+   */
+  @Override
+  public Selection makeSelection() {
+    return new SelectionNodeInstance(this);
+  }
 
-    /*
-     * @see org.tigris.gef.presentation.Fig#setEnclosingFig(org.tigris.gef.presentation.Fig)
-     */
-    @Override
-    public void setEnclosingFig(Fig encloser) {
-        if (getOwner() != null) {
-            Object nod = getOwner();
-            if (encloser != null) {
-                Object comp = encloser.getOwner();
-                if (Model.getFacade().isAComponentInstance(comp)) {
-                    if (Model.getFacade().getComponentInstance(nod) != comp) {
-                        Model.getCommonBehaviorHelper()
-                                .setComponentInstance(nod, comp);
-                        super.setEnclosingFig(encloser);
-                    }
-                } else if (Model.getFacade().isANode(comp)) {
-                    super.setEnclosingFig(encloser);
-                }
-            } else if (encloser == null) {
-                if (isVisible()
-                        // If we are not visible most likely
-                        // we're being deleted.
-                        // TODO: This indicates a more fundamental problem that
-                        // should be investigated - tfm - 20061230
-                        && Model.getFacade().getComponentInstance(nod) != null) {
-                    Model.getCommonBehaviorHelper()
-                            .setComponentInstance(nod, null);
-                    super.setEnclosingFig(encloser);
-                }
-            }
+  /*
+   * @see org.tigris.gef.presentation.Fig#setEnclosingFig(org.tigris.gef.presentation.Fig)
+   */
+  @Override
+  public void setEnclosingFig(Fig encloser) {
+    if (getOwner() != null) {
+      Object nod = getOwner();
+      if (encloser != null) {
+        Object comp = encloser.getOwner();
+        if (Model.getFacade().isAComponentInstance(comp)) {
+          if (Model.getFacade().getComponentInstance(nod) != comp) {
+            Model.getCommonBehaviorHelper().setComponentInstance(nod, comp);
+            super.setEnclosingFig(encloser);
+          }
+        } else if (Model.getFacade().isANode(comp)) {
+          super.setEnclosingFig(encloser);
         }
-
-        if (getLayer() != null) {
-            // elementOrdering(figures);
-            Collection contents = new ArrayList(getLayer().getContents());
-            for (Object o : contents) {
-                if (o instanceof FigEdgeModelElement) {
-                    FigEdgeModelElement figedge = (FigEdgeModelElement) o;
-                    figedge.getLayer().bringToFront(figedge);
-                }
-            }
+      } else if (encloser == null) {
+        if (isVisible()
+            // If we are not visible most likely
+            // we're being deleted.
+            // TODO: This indicates a more fundamental problem that
+            // should be investigated - tfm - 20061230
+            && Model.getFacade().getComponentInstance(nod) != null) {
+          Model.getCommonBehaviorHelper().setComponentInstance(nod, null);
+          super.setEnclosingFig(encloser);
         }
+      }
     }
 
-     /*
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement#updateListeners(java.lang.Object)
-     */
-    @Override
-    protected void updateListeners(Object oldOwner, Object newOwner) {
-        super.updateListeners(oldOwner, newOwner);
-        if (newOwner != null) {
-            for (Object classifier 
-                    : Model.getFacade().getClassifiers(newOwner)) {
-                addElementListener(classifier, "name");
-            }
+    if (getLayer() != null) {
+      // elementOrdering(figures);
+      Collection contents = new ArrayList(getLayer().getContents());
+      for (Object o : contents) {
+        if (o instanceof FigEdgeModelElement) {
+          FigEdgeModelElement figedge = (FigEdgeModelElement) o;
+          figedge.getLayer().bringToFront(figedge);
         }
+      }
     }
+  }
 
+  /*
+   * @see org.argouml.uml.diagram.ui.FigNodeModelElement#updateListeners(java.lang.Object)
+   */
+  @Override
+  protected void updateListeners(Object oldOwner, Object newOwner) {
+    super.updateListeners(oldOwner, newOwner);
+    if (newOwner != null) {
+      for (Object classifier : Model.getFacade().getClassifiers(newOwner)) {
+        addElementListener(classifier, "name");
+      }
+    }
+  }
 }

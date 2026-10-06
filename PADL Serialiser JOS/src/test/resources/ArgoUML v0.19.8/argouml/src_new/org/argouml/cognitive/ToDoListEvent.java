@@ -22,34 +22,33 @@
 // CALIFORNIA HAS NO OBLIGATIONS TO PROVIDE MAINTENANCE, SUPPORT,
 // UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
-
 package org.argouml.cognitive;
 
 import java.util.Vector;
 
-/**
- * Event issued when the todo list changes.
- *
- */
+/** Event issued when the todo list changes. */
 public class ToDoListEvent {
 
-    private Vector items;
+  private Vector items;
 
-    /**
-     * The constructor.
-     *
-     */
-    public ToDoListEvent() { items = null; }
-    /**
-     * The constructor.
-     *
-     * @param i the todo list events
-     */
-    public ToDoListEvent(Vector i) { items = i; }
+  /** The constructor. */
+  public ToDoListEvent() {
+    items = null;
+  }
 
-    /**
-     * @return the todo list events
-     */
-    public Vector getToDoItems() { return items; }
+  /**
+   * The constructor.
+   *
+   * @param i the todo list events
+   */
+  public ToDoListEvent(Vector i) {
+    items = i;
+  }
 
+  /**
+   * @return the todo list events
+   */
+  public Vector getToDoItems() {
+    return items;
+  }
 } /* end class ToDoListEvent */

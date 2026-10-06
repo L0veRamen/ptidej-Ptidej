@@ -27,36 +27,25 @@ package org.argouml.uml.ui.foundation.core;
 import org.argouml.i18n.Translator;
 import org.argouml.uml.ui.ActionNavigateNamespace;
 
-/**
- * The properties panel for a Abstraction.
- */
+/** The properties panel for a Abstraction. */
 public class PropPanelAbstraction extends PropPanelDependency {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = 595724551744206773L;
+  /** The serial version. */
+  private static final long serialVersionUID = 595724551744206773L;
 
-    /**
-     * Construct a new property panel for an Abstraction.
-     */
-    public PropPanelAbstraction() {
-        super("label.abstraction", lookupIcon("Abstraction"));
+  /** Construct a new property panel for an Abstraction. */
+  public PropPanelAbstraction() {
+    super("label.abstraction", lookupIcon("Abstraction"));
 
-        addField(Translator.localize("label.name"), getNameTextField());
-        addField(Translator.localize("label.namespace"),
-                getNamespaceSelector());
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.namespace"), getNamespaceSelector());
 
-        addSeparator();
+    addSeparator();
 
-        addField(Translator.localize("label.suppliers"),
-                getSupplierScroll());
-        addField(Translator.localize("label.clients"),
-                getClientScroll());
+    addField(Translator.localize("label.suppliers"), getSupplierScroll());
+    addField(Translator.localize("label.clients"), getClientScroll());
 
-        addAction(new ActionNavigateNamespace());
-        addAction(getDeleteAction());
-    }
-
+    addAction(new ActionNavigateNamespace());
+    addAction(getDeleteAction());
+  }
 }
-

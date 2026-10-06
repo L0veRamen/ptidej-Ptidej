@@ -35,32 +35,21 @@ import org.argouml.util.ConfigLoader;
  */
 public class PropPanelSynchState extends PropPanelStateVertex {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = -6671890304679263593L;
+  /** The serial version. */
+  private static final long serialVersionUID = -6671890304679263593L;
 
-    /**
-     * Construct a property panel for a Synch State.
-     */
-    public PropPanelSynchState() {
-        super("Synch State",
-            lookupIcon("SynchState"),
-            ConfigLoader.getTabPropsOrientation());
+  /** Construct a property panel for a Synch State. */
+  public PropPanelSynchState() {
+    super("Synch State", lookupIcon("SynchState"), ConfigLoader.getTabPropsOrientation());
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.container"),
-                getContainerScroll());
-        addField(Translator.localize("label.bound"),
-                new UMLTextField2(new UMLSynchStateBoundDocument()));
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.container"), getContainerScroll());
+    addField(
+        Translator.localize("label.bound"), new UMLTextField2(new UMLSynchStateBoundDocument()));
 
-        addSeparator();
+    addSeparator();
 
-        addField(Translator.localize("label.incoming"),
-                getIncomingScroll());
-        addField(Translator.localize("label.outgoing"),
-                getOutgoingScroll());
-    }
-
+    addField(Translator.localize("label.incoming"), getIncomingScroll());
+    addField(Translator.localize("label.outgoing"), getOutgoingScroll());
+  }
 }

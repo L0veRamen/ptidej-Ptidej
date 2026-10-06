@@ -24,29 +24,24 @@
 
 package org.argouml.uml.generator;
 
-/** 
- * This class is the interface that tells that a certain generator
- * can generate a file.
- * 
- * @deprecated in 0.23.3 by thn.  Not used in core ArgoUML any more, but
- * may be used by third party code generator modules.
+/**
+ * This class is the interface that tells that a certain generator can generate a file.
+ *
+ * @deprecated in 0.23.3 by thn. Not used in core ArgoUML any more, but may be used by third party
+ *     code generator modules.
  */
 public interface FileGenerator {
 
-    /**
-     * The file seperator for this operating system.
-     */
-    public static final String FILE_SEPARATOR =
-	System.getProperty("file.separator");
+  /** The file seperator for this operating system. */
+  public static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
-    /** Generates a file for this classifier.
-     * TODO:
-     * This will only work for languages that have each node
-     * in a separate files (one or more).
-     *
-     * @param node the node
-     * @param path the path
-     * @return filename the generated file
-     */
-    public String generateFile2(Object node, String path);
+  /**
+   * Generates a file for this classifier. TODO: This will only work for languages that have each
+   * node in a separate files (one or more).
+   *
+   * @param node the node
+   * @param path the path
+   * @return filename the generated file
+   */
+  public String generateFile2(Object node, String path);
 }

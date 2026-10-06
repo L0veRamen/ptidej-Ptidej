@@ -26,7 +26,6 @@ package org.argouml.uml.ui.behavior.state_machines;
 
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.swingext.ToolBarUtility;
 import org.argouml.uml.diagram.state.ui.ButtonActionNewCallEvent;
@@ -55,91 +54,72 @@ import org.argouml.util.ConfigLoader;
  */
 public class PropPanelTransition extends PropPanelModelElement {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = 7249233994894343728L;
+  /** The serial version. */
+  private static final long serialVersionUID = 7249233994894343728L;
 
-    /**
-     * Construct a new property panel for a Transition.
-     */
-    public PropPanelTransition() {
-        super("Transition",
-            lookupIcon("Transition"),
-            ConfigLoader.getTabPropsOrientation());
+  /** Construct a new property panel for a Transition. */
+  public PropPanelTransition() {
+    super("Transition", lookupIcon("Transition"), ConfigLoader.getTabPropsOrientation());
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        JList statemachineList = new UMLLinkedList(
-                new UMLTransitionStatemachineListModel());
-        statemachineList.setVisibleRowCount(1);
-        addField(Translator.localize("label.statemachine"),
-                new JScrollPane(statemachineList));
-        JList stateList = new UMLLinkedList(new UMLTransitionStateListModel());
-        stateList.setVisibleRowCount(1);
-        addField(Translator.localize("label.state"),
-                new JScrollPane(stateList));
+    addField(Translator.localize("label.name"), getNameTextField());
+    JList statemachineList = new UMLLinkedList(new UMLTransitionStatemachineListModel());
+    statemachineList.setVisibleRowCount(1);
+    addField(Translator.localize("label.statemachine"), new JScrollPane(statemachineList));
+    JList stateList = new UMLLinkedList(new UMLTransitionStateListModel());
+    stateList.setVisibleRowCount(1);
+    addField(Translator.localize("label.state"), new JScrollPane(stateList));
 
-        addSeparator();
+    addSeparator();
 
-        JList sourceList =
-            new UMLLinkedList(new UMLTransitionSourceListModel());
-        sourceList.setVisibleRowCount(1);
-        addField(Translator.localize("label.source"),
-                new JScrollPane(sourceList));
-        JList targetList =
-            new UMLLinkedList(new UMLTransitionTargetListModel());
-        targetList.setVisibleRowCount(1);
-        addField(Translator.localize("label.target"),
-                new JScrollPane(targetList));
-        JList triggerList = new UMLTransitionTriggerList(
-                new UMLTransitionTriggerListModel());
-        triggerList.setVisibleRowCount(1);
-        addField(Translator.localize("label.trigger"),
-                new JScrollPane(triggerList));
-        JList guardList = new UMLMutableLinkedList(
-                new UMLTransitionGuardListModel(), null,
-                ActionNewGuard.getSingleton());
-        guardList.setVisibleRowCount(1);
-        addField(Translator.localize("label.guard"),
-                new JScrollPane(guardList));
-        JList effectList = new UMLTransitionEffectList(
-                new UMLTransitionEffectListModel());
-        effectList.setVisibleRowCount(1);
-        addField(Translator.localize("label.effect"),
-                new JScrollPane(effectList));
+    JList sourceList = new UMLLinkedList(new UMLTransitionSourceListModel());
+    sourceList.setVisibleRowCount(1);
+    addField(Translator.localize("label.source"), new JScrollPane(sourceList));
+    JList targetList = new UMLLinkedList(new UMLTransitionTargetListModel());
+    targetList.setVisibleRowCount(1);
+    addField(Translator.localize("label.target"), new JScrollPane(targetList));
+    JList triggerList = new UMLTransitionTriggerList(new UMLTransitionTriggerListModel());
+    triggerList.setVisibleRowCount(1);
+    addField(Translator.localize("label.trigger"), new JScrollPane(triggerList));
+    JList guardList =
+        new UMLMutableLinkedList(
+            new UMLTransitionGuardListModel(), null, ActionNewGuard.getSingleton());
+    guardList.setVisibleRowCount(1);
+    addField(Translator.localize("label.guard"), new JScrollPane(guardList));
+    JList effectList = new UMLTransitionEffectList(new UMLTransitionEffectListModel());
+    effectList.setVisibleRowCount(1);
+    addField(Translator.localize("label.effect"), new JScrollPane(effectList));
 
-        addAction(new ActionNavigateContainerElement());
-        addAction(getTriggerActions());
-        addAction(new ButtonActionNewGuard());
-        addAction(getEffectActions());
-        addAction(new ActionNewStereotype());
-        addAction(getDeleteAction());
-    }
-    
-    private Object[] getTriggerActions() {
-        Object[] actions = {
-            new ButtonActionNewCallEvent(),
-            new ButtonActionNewChangeEvent(),
-            new ButtonActionNewSignalEvent(),
-            new ButtonActionNewTimeEvent(),
-        };
-        ToolBarUtility.manageDefault(actions, "transition.state.trigger");
-        return actions;
-    }
+    addAction(new ActionNavigateContainerElement());
+    addAction(getTriggerActions());
+    addAction(new ButtonActionNewGuard());
+    addAction(getEffectActions());
+    addAction(new ActionNewStereotype());
+    addAction(getDeleteAction());
+  }
 
-    protected Object[] getEffectActions() {
-        Object[] actions = {
-                ActionNewCallAction.getButtonInstance(),
-                ActionNewCreateAction.getButtonInstance(),
-                ActionNewDestroyAction.getButtonInstance(),
-                ActionNewReturnAction.getButtonInstance(),
-                ActionNewSendAction.getButtonInstance(),
-                ActionNewTerminateAction.getButtonInstance(),
-                ActionNewUninterpretedAction.getButtonInstance(),
-                ActionNewActionSequence.getButtonInstance(),
-        };
-        ToolBarUtility.manageDefault(actions, "transition.state.effect");
-        return actions;
-    }
+  private Object[] getTriggerActions() {
+    Object[] actions = {
+      new ButtonActionNewCallEvent(),
+      new ButtonActionNewChangeEvent(),
+      new ButtonActionNewSignalEvent(),
+      new ButtonActionNewTimeEvent(),
+    };
+    ToolBarUtility.manageDefault(actions, "transition.state.trigger");
+    return actions;
+  }
+
+  protected Object[] getEffectActions() {
+    Object[] actions = {
+      ActionNewCallAction.getButtonInstance(),
+      ActionNewCreateAction.getButtonInstance(),
+      ActionNewDestroyAction.getButtonInstance(),
+      ActionNewReturnAction.getButtonInstance(),
+      ActionNewSendAction.getButtonInstance(),
+      ActionNewTerminateAction.getButtonInstance(),
+      ActionNewUninterpretedAction.getButtonInstance(),
+      ActionNewActionSequence.getButtonInstance(),
+    };
+    ToolBarUtility.manageDefault(actions, "transition.state.effect");
+    return actions;
+  }
 } /* end class PropPanelTransition */

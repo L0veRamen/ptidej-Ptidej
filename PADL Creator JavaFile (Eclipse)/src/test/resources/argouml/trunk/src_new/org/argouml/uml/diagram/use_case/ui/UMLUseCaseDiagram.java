@@ -25,9 +25,7 @@
 package org.argouml.uml.diagram.use_case.ui;
 
 import java.beans.PropertyVetoException;
-
 import javax.swing.Action;
-
 import org.apache.log4j.Logger;
 import org.argouml.i18n.Translator;
 import org.argouml.kernel.ProjectManager;
@@ -45,403 +43,418 @@ import org.tigris.gef.base.LayerPerspectiveMutable;
 import org.tigris.gef.base.ModeCreatePolyEdge;
 
 /**
- * The base class of the use case diagram.<p>
+ * The base class of the use case diagram.
  *
- * Defines the toolbar, provides for its initialization and provides
- * constructors for a top level diagram and one within a defined
- * namespace.<p>
+ * <p>Defines the toolbar, provides for its initialization and provides constructors for a top level
+ * diagram and one within a defined namespace.
+ *
+ * <p>
  */
 public class UMLUseCaseDiagram extends UMLDiagram {
 
-    private static final Logger LOG = Logger.getLogger(UMLUseCaseDiagram.class);
+  private static final Logger LOG = Logger.getLogger(UMLUseCaseDiagram.class);
 
-    // Actions specific to the use case diagram toolbar
+  // Actions specific to the use case diagram toolbar
 
-    /**
-     * Tool to add an actor node.<p>
-     */
-    private Action actionActor;
+  /**
+   * Tool to add an actor node.
+   *
+   * <p>
+   */
+  private Action actionActor;
 
-    /**
-     * Tool to add a use case node.<p>
-     */
-    private Action actionUseCase;
+  /**
+   * Tool to add a use case node.
+   *
+   * <p>
+   */
+  private Action actionUseCase;
 
-    /**
-     * Tool to create an association between UML artifacts using a
-     * polyedge.<p>
-     */
-    private Action actionAssociation;
-    private Action actionAggregation;
-    private Action actionComposition;
-    private Action actionUniAssociation;
-    private Action actionUniAggregation;
-    private Action actionUniComposition;
+  /**
+   * Tool to create an association between UML artifacts using a polyedge.
+   *
+   * <p>
+   */
+  private Action actionAssociation;
 
-    /**
-     * Tool to create a generalization between UML artifacts using a
-     * polyedge.<p>
-     */
-    private Action actionGeneralize;
+  private Action actionAggregation;
+  private Action actionComposition;
+  private Action actionUniAssociation;
+  private Action actionUniAggregation;
+  private Action actionUniComposition;
 
-    /**
-     * Tool to create an extend relationship between UML use cases
-     * using a polyedge.<p>
-     */
-    private Action actionExtend;
+  /**
+   * Tool to create a generalization between UML artifacts using a polyedge.
+   *
+   * <p>
+   */
+  private Action actionGeneralize;
 
-    /**
-     * Tool to create an include relationship between UML use cases
-     * using a polyedge.<p>
-     */
-    private Action actionInclude;
+  /**
+   * Tool to create an extend relationship between UML use cases using a polyedge.
+   *
+   * <p>
+   */
+  private Action actionExtend;
 
-    /**
-     * Tool to create a dependency between UML artifacts using a
-     * polyedge.<p>
-     */
-    private Action actionDependency;
+  /**
+   * Tool to create an include relationship between UML use cases using a polyedge.
+   *
+   * <p>
+   */
+  private Action actionInclude;
 
-    private Action actionExtensionPoint;
+  /**
+   * Tool to create a dependency between UML artifacts using a polyedge.
+   *
+   * <p>
+   */
+  private Action actionDependency;
 
-    // constructors
+  private Action actionExtensionPoint;
 
-    /**
-     * Construct a new use case diagram with no defined namespace.<p>
-     *
-     * Note we must never call this directly, since defining the
-     * namespace is what makes everything work. However GEF will call
-     * it directly when loading a new diagram, so it must remain
-     * public.<p>
-     *
-     * A unique name is constructed by using the serial index.
-     * We allow for the possibility
-     * that setting this may fail, in which case no name is set.<p>
-     */
-    public UMLUseCaseDiagram() {
-        try {
-            setName(getNewDiagramName());
-        } catch (PropertyVetoException pve) { }
+  // constructors
+
+  /**
+   * Construct a new use case diagram with no defined namespace.
+   *
+   * <p>Note we must never call this directly, since defining the namespace is what makes everything
+   * work. However GEF will call it directly when loading a new diagram, so it must remain public.
+   *
+   * <p>A unique name is constructed by using the serial index. We allow for the possibility that
+   * setting this may fail, in which case no name is set.
+   *
+   * <p>
+   */
+  public UMLUseCaseDiagram() {
+    try {
+      setName(getNewDiagramName());
+    } catch (PropertyVetoException pve) {
+    }
+  }
+
+  /**
+   * Construct a new use case diagram with in a defined namespace.
+   *
+   * <p>Invokes the generic constructor {@link #UMLUseCaseDiagram()}, then intialises the namespace
+   * (which initializes all the graphics).
+   *
+   * <p>This is the constructor which should always be used.
+   *
+   * <p>
+   *
+   * @param m the desired namespace for this diagram.
+   */
+  public UMLUseCaseDiagram(Object m) {
+
+    this();
+
+    if (!Model.getFacade().isANamespace(m)) {
+      throw new IllegalArgumentException();
     }
 
-    /**
-     * Construct a new use case diagram with in a defined namespace.<p>
-     *
-     * Invokes the generic constructor {@link #UMLUseCaseDiagram()},
-     * then intialises the namespace (which initializes all the
-     * graphics).<p>
-     *
-     * This is the constructor which should always be used.<p>
-     *
-     * @param m  the desired namespace for this diagram.
-     */
-    public UMLUseCaseDiagram(Object m) {
+    setNamespace(m);
+  }
 
-        this();
+  /**
+   * Constructor.
+   *
+   * @param name the name for the diagram
+   * @param namespace the namespace for the diagram
+   */
+  public UMLUseCaseDiagram(String name, Object namespace) {
+    this(namespace);
 
-        if (!Model.getFacade().isANamespace(m)) {
-            throw new IllegalArgumentException();
-        }
-
-        setNamespace(m);
+    if (!Model.getFacade().isANamespace(namespace)) {
+      throw new IllegalArgumentException();
     }
 
-    /**
-     * Constructor.
-     *
-     * @param name the name for the diagram
-     * @param namespace the namespace for the diagram
-     */
-    public UMLUseCaseDiagram(String name, Object namespace) {
-        this(namespace);
+    try {
+      setName(name);
+    } catch (PropertyVetoException v) {
+    }
+  }
 
-        if (!Model.getFacade().isANamespace(namespace)) {
-            throw new IllegalArgumentException();
-        }
+  /**
+   * Perform a number of important initializations of a <em>Use Case Diagram</em>.
+   *
+   * <p>Creates a new graph model for the diagram, settings its namespace to that supplied.
+   *
+   * <p>Changed <em>lay</em> from <em>LayerPerspective</em> to <em>LayerPerspectiveMutable</em>.
+   * This class is a child of <em>LayerPerspective</em> and was implemented to correct some
+   * difficulties in changing the model. <em>lay</em> is used mainly in <em>LayerManager</em>(GEF)
+   * to control the adding, changing and deleting of items in a layer of the diagram.
+   *
+   * <p>Set a renderer suitable for the use case diagram.
+   *
+   * <p><em>Note</em>. This is declared as public. Not clear that other classes should be allowed to
+   * invoke this method.
+   *
+   * <p>
+   *
+   * @param handle Namespace to be used for this diagram.
+   * @author psager@tigris.org Jan 24, 2002
+   */
+  public void setNamespace(Object handle) {
+    if (!Model.getFacade().isANamespace(handle)) {
+      LOG.error("Illegal argument. Object " + handle + " is not a namespace");
+      throw new IllegalArgumentException(
+          "Illegal argument. Object " + handle + " is not a namespace");
+    }
+    Object m = /*(MNamespace)*/ handle;
+    super.setNamespace(m);
 
-        try {
-            setName(name);
-        } catch (PropertyVetoException v) { }
-    }
+    UseCaseDiagramGraphModel gm = new UseCaseDiagramGraphModel();
+    gm.setHomeModel(m);
+    LayerPerspective lay = new LayerPerspectiveMutable(Model.getFacade().getName(m), gm);
+    UseCaseDiagramRenderer rend = new UseCaseDiagramRenderer();
+    lay.setGraphNodeRenderer(rend);
+    lay.setGraphEdgeRenderer(rend);
+    setLayer(lay);
 
-    /**
-     * Perform a number of important initializations of a <em>Use Case
-     * Diagram</em>.<p>
-     *
-     * Creates a new graph model for the diagram, settings its
-     * namespace to that supplied.<p>
-     *
-     * Changed <em>lay</em> from <em>LayerPerspective</em> to
-     * <em>LayerPerspectiveMutable</em>. This class is a child of
-     * <em>LayerPerspective</em> and was implemented to correct some
-     * difficulties in changing the model. <em>lay</em> is used mainly
-     * in <em>LayerManager</em>(GEF) to control the adding, changing
-     * and deleting of items in a layer of the diagram.<p>
-     *
-     * Set a renderer suitable for the use case diagram.<p>
-     *
-     * <em>Note</em>. This is declared as public. Not clear that other
-     * classes should be allowed to invoke this method.<p>
-     *
-     * @param handle Namespace to be used for this diagram.
-     *
-     * @author   psager@tigris.org  Jan 24, 2002
-     */
-    public void setNamespace(Object handle) {
-        if (!Model.getFacade().isANamespace(handle)) {
-            LOG.error(
-                "Illegal argument. Object " + handle + " is not a namespace");
-            throw new IllegalArgumentException(
-                "Illegal argument. Object " + handle + " is not a namespace");
-        }
-        Object m = /*(MNamespace)*/ handle;
-        super.setNamespace(m);
+    // The renderer should be a singleton
 
-        UseCaseDiagramGraphModel gm = new UseCaseDiagramGraphModel();
-        gm.setHomeModel(m);
-        LayerPerspective lay =
-            new LayerPerspectiveMutable(Model.getFacade().getName(m), gm);
-        UseCaseDiagramRenderer rend = new UseCaseDiagramRenderer();
-        lay.setGraphNodeRenderer(rend);
-        lay.setGraphEdgeRenderer(rend);
-        setLayer(lay);
+  }
 
-        // The renderer should be a singleton
+  /**
+   * Get the actions from which to create a toolbar or equivilent graphic triggers.
+   *
+   * @see org.argouml.uml.diagram.ui.UMLDiagram#getUmlActions()
+   */
+  protected Object[] getUmlActions() {
+    Object[] actions = {
+      getActionActor(),
+      getActionUseCase(),
+      null,
+      getAssociationActions(),
+      getActionDependency(),
+      getActionGeneralize(),
+      getActionExtend(),
+      getActionInclude(),
+      null,
+      getActionExtensionPoint(),
+    };
+    return actions;
+  }
 
-    }
+  private Object[] getAssociationActions() {
+    Object[][] actions = {
+      {getActionAssociation(), getActionUniAssociation()},
+      {getActionAggregation(), getActionUniAggregation()},
+      {getActionComposition(), getActionUniComposition()},
+    };
+    ToolBarUtility.manageDefault(actions, "diagram.usecase.association");
+    return actions;
+  }
 
-    /**
-     * Get the actions from which to create a toolbar or equivilent
-     * graphic triggers.
-     *
-     * @see org.argouml.uml.diagram.ui.UMLDiagram#getUmlActions()
-     */
-    protected Object[] getUmlActions() {
-        Object[] actions =
-        {
-            getActionActor(),
-            getActionUseCase(),
-	    null,
-	    getAssociationActions(),
-	    getActionDependency(),
-	    getActionGeneralize(),
-	    getActionExtend(),
-	    getActionInclude(),
-	    null,
-	    getActionExtensionPoint(),
-	};
-        return actions;
+  /**
+   * @return a new unique name for the diagram
+   */
+  protected String getNewDiagramName() {
+    String name = getLabelName() + " " + getNextDiagramSerial();
+    if (!(ProjectManager.getManager().getCurrentProject().isValidDiagramName(name))) {
+      name = getNewDiagramName();
     }
+    return name;
+  }
 
-    private Object[] getAssociationActions() {
-        Object[][] actions = {
-	    {getActionAssociation(), getActionUniAssociation() },
-	    {getActionAggregation(), getActionUniAggregation() },
-	    {getActionComposition(), getActionUniComposition() },
-        };
-        ToolBarUtility.manageDefault(actions, "diagram.usecase.association");
-        return actions;
-    }
+  /**
+   * @see org.argouml.uml.diagram.ui.UMLDiagram#getLabelName()
+   */
+  public String getLabelName() {
+    return Translator.localize("label.usecase-diagram");
+  }
 
-    /**
-     * @return a new unique name for the diagram
-     */
-    protected String getNewDiagramName() {
-        String name = getLabelName() + " " + getNextDiagramSerial();
-        if (!(ProjectManager.getManager().getCurrentProject()
-	          .isValidDiagramName(name))) {
-            name = getNewDiagramName();
-        }
-        return name;
+  /**
+   * @return Returns the actionActor.
+   */
+  protected Action getActionActor() {
+    if (actionActor == null) {
+      actionActor =
+          new RadioAction(new CmdCreateNode(Model.getMetaTypes().getActor(), "button.new-actor"));
     }
+    return actionActor;
+  }
 
-    /**
-     * @see org.argouml.uml.diagram.ui.UMLDiagram#getLabelName()
-     */
-    public String getLabelName() {
-        return Translator.localize("label.usecase-diagram");
+  /**
+   * @return Returns the actionAggregation.
+   */
+  protected Action getActionAggregation() {
+    if (actionAggregation == null) {
+      actionAggregation =
+          new RadioAction(
+              new ActionSetAddAssociationMode(
+                  Model.getAggregationKind().getAggregate(), false, "button.new-aggregation"));
     }
+    return actionAggregation;
+  }
 
-    /**
-     * @return Returns the actionActor.
-     */
-    protected Action getActionActor() {
-        if (actionActor == null) {
-            actionActor = new RadioAction(new CmdCreateNode(
-                    Model.getMetaTypes().getActor(), "button.new-actor"));
-        }
-        return actionActor;
+  /**
+   * @return Returns the actionAssociation.
+   */
+  protected Action getActionAssociation() {
+    if (actionAssociation == null) {
+      actionAssociation =
+          new RadioAction(
+              new ActionSetAddAssociationMode(
+                  Model.getAggregationKind().getNone(), false, "button.new-association"));
     }
-    /**
-     * @return Returns the actionAggregation.
-     */
-    protected Action getActionAggregation() {
-        if (actionAggregation == null) {
-            actionAggregation = new RadioAction(
-                    new ActionSetAddAssociationMode(
-                        Model.getAggregationKind().getAggregate(),
-                        false,
-                        "button.new-aggregation"));
-        }
-        return actionAggregation;
-    }
-    /**
-     * @return Returns the actionAssociation.
-     */
-    protected Action getActionAssociation() {
-        if (actionAssociation == null) {
-            actionAssociation = new RadioAction(
-                    new ActionSetAddAssociationMode(
-                        Model.getAggregationKind().getNone(),
-                        false,
-                        "button.new-association"));
-        }
-        return actionAssociation;
-    }
-    /**
-     * @return Returns the actionComposition.
-     */
-    protected Action getActionComposition() {
-        if (actionComposition == null) {
-            actionComposition = new RadioAction(
-                    new ActionSetAddAssociationMode(
-                        Model.getAggregationKind().getComposite(),
-                        false,
-                        "button.new-composition"));
-        }
-        return actionComposition;
-    }
-    /**
-     * @return Returns the actionDependency.
-     */
-    protected Action getActionDependency() {
-        if (actionDependency == null) {
-            actionDependency = new RadioAction(
-                    new CmdSetMode(
-                        ModeCreatePolyEdge.class,
-                        "edgeClass",
-                        Model.getMetaTypes().getDependency(),
-                        "button.new-dependency"));
-        }
-        return actionDependency;
-    }
-    /**
-     * @return Returns the actionExtend.
-     */
-    protected Action getActionExtend() {
-        if (actionExtend == null) {
-            actionExtend = new RadioAction(
-                    new CmdSetMode(
-                        ModeCreatePolyEdge.class,
-                        "edgeClass",
-                        Model.getMetaTypes().getExtend(),
-                        "button.new-extend"));
-        }
-        return actionExtend;
-    }
-    /**
-     * @return Returns the actionGeneralize.
-     */
-    protected Action getActionGeneralize() {
-        if (actionGeneralize == null) {
-            actionGeneralize = new RadioAction(
-                    new CmdSetMode(
-                        ModeCreatePolyEdge.class,
-                        "edgeClass",
-                        Model.getMetaTypes().getGeneralization(),
-                        "button.new-generalization"));
-        }
-        return actionGeneralize;
-    }
-    /**
-     * @return Returns the actionInclude.
-     */
-    protected Action getActionInclude() {
-        if (actionInclude == null) {
-            actionInclude = new RadioAction(
-                    new CmdSetMode(
-                        ModeCreatePolyEdge.class,
-                        "edgeClass",
-                        Model.getMetaTypes().getInclude(),
-                        "button.new-include"));
-        }
-        return actionInclude;
-    }
-    /**
-     * @return Returns the actionUniAggregation.
-     */
-    protected Action getActionUniAggregation() {
-        if (actionUniAggregation == null) {
-            actionUniAggregation  = new RadioAction(
-                    new ActionSetAddAssociationMode(
-                            Model.getAggregationKind().getAggregate(),
-                            true,
-                            "button.new-uniaggregation"));
-        }
-        return actionUniAggregation;
-    }
-    /**
-     * @return Returns the actionUniAssociation.
-     */
-    protected Action getActionUniAssociation() {
-        if (actionUniAssociation == null) {
-            actionUniAssociation  = new RadioAction(
-                    new ActionSetAddAssociationMode(
-                            Model.getAggregationKind().getNone(),
-                            true,
-                            "button.new-uniassociation"));
-        }
-        return actionUniAssociation;
-    }
-    /**
-     * @return Returns the actionUniComposition.
-     */
-    protected Action getActionUniComposition() {
-        if (actionUniComposition == null) {
-            actionUniComposition  = new RadioAction(
-                    new ActionSetAddAssociationMode(
-                            Model.getAggregationKind().getComposite(),
-                            true,
-                            "button.new-unicomposition"));
-        }
-        return actionUniComposition;
-    }
-    /**
-     * @return Returns the actionUseCase.
-     */
-    protected Action getActionUseCase() {
-        if (actionUseCase == null) {
-            actionUseCase = new RadioAction(new CmdCreateNode(
-                    Model.getMetaTypes().getUseCase(), "button.new-usecase"));
-        }
-        return actionUseCase;
-    }
+    return actionAssociation;
+  }
 
-    /**
-     * @return the action to create an extension point
-     */
-    protected Action getActionExtensionPoint() {
-        if (actionExtensionPoint == null) {
-            actionExtensionPoint = ActionAddExtensionPoint.singleton();
-        }
-        return actionExtensionPoint;
+  /**
+   * @return Returns the actionComposition.
+   */
+  protected Action getActionComposition() {
+    if (actionComposition == null) {
+      actionComposition =
+          new RadioAction(
+              new ActionSetAddAssociationMode(
+                  Model.getAggregationKind().getComposite(), false, "button.new-composition"));
     }
+    return actionComposition;
+  }
 
-    /**
-     * @see org.argouml.uml.diagram.ui.UMLDiagram#isRelocationAllowed(java.lang.Object)
-     */
-    public boolean isRelocationAllowed(Object base)  {
-    	return false;
-		/* TODO: We may return the following when the
-		 * relocate() has been implemented. */
-//    	Model.getFacade().isAPackage(base)
-//        	|| Model.getFacade().isAClassifier(base);
+  /**
+   * @return Returns the actionDependency.
+   */
+  protected Action getActionDependency() {
+    if (actionDependency == null) {
+      actionDependency =
+          new RadioAction(
+              new CmdSetMode(
+                  ModeCreatePolyEdge.class,
+                  "edgeClass",
+                  Model.getMetaTypes().getDependency(),
+                  "button.new-dependency"));
     }
+    return actionDependency;
+  }
 
-    /**
-     * @see org.argouml.uml.diagram.ui.UMLDiagram#relocate(java.lang.Object)
-     */
-    public boolean relocate(Object base) {
-        return false;
+  /**
+   * @return Returns the actionExtend.
+   */
+  protected Action getActionExtend() {
+    if (actionExtend == null) {
+      actionExtend =
+          new RadioAction(
+              new CmdSetMode(
+                  ModeCreatePolyEdge.class,
+                  "edgeClass",
+                  Model.getMetaTypes().getExtend(),
+                  "button.new-extend"));
     }
+    return actionExtend;
+  }
+
+  /**
+   * @return Returns the actionGeneralize.
+   */
+  protected Action getActionGeneralize() {
+    if (actionGeneralize == null) {
+      actionGeneralize =
+          new RadioAction(
+              new CmdSetMode(
+                  ModeCreatePolyEdge.class,
+                  "edgeClass",
+                  Model.getMetaTypes().getGeneralization(),
+                  "button.new-generalization"));
+    }
+    return actionGeneralize;
+  }
+
+  /**
+   * @return Returns the actionInclude.
+   */
+  protected Action getActionInclude() {
+    if (actionInclude == null) {
+      actionInclude =
+          new RadioAction(
+              new CmdSetMode(
+                  ModeCreatePolyEdge.class,
+                  "edgeClass",
+                  Model.getMetaTypes().getInclude(),
+                  "button.new-include"));
+    }
+    return actionInclude;
+  }
+
+  /**
+   * @return Returns the actionUniAggregation.
+   */
+  protected Action getActionUniAggregation() {
+    if (actionUniAggregation == null) {
+      actionUniAggregation =
+          new RadioAction(
+              new ActionSetAddAssociationMode(
+                  Model.getAggregationKind().getAggregate(), true, "button.new-uniaggregation"));
+    }
+    return actionUniAggregation;
+  }
+
+  /**
+   * @return Returns the actionUniAssociation.
+   */
+  protected Action getActionUniAssociation() {
+    if (actionUniAssociation == null) {
+      actionUniAssociation =
+          new RadioAction(
+              new ActionSetAddAssociationMode(
+                  Model.getAggregationKind().getNone(), true, "button.new-uniassociation"));
+    }
+    return actionUniAssociation;
+  }
+
+  /**
+   * @return Returns the actionUniComposition.
+   */
+  protected Action getActionUniComposition() {
+    if (actionUniComposition == null) {
+      actionUniComposition =
+          new RadioAction(
+              new ActionSetAddAssociationMode(
+                  Model.getAggregationKind().getComposite(), true, "button.new-unicomposition"));
+    }
+    return actionUniComposition;
+  }
+
+  /**
+   * @return Returns the actionUseCase.
+   */
+  protected Action getActionUseCase() {
+    if (actionUseCase == null) {
+      actionUseCase =
+          new RadioAction(
+              new CmdCreateNode(Model.getMetaTypes().getUseCase(), "button.new-usecase"));
+    }
+    return actionUseCase;
+  }
+
+  /**
+   * @return the action to create an extension point
+   */
+  protected Action getActionExtensionPoint() {
+    if (actionExtensionPoint == null) {
+      actionExtensionPoint = ActionAddExtensionPoint.singleton();
+    }
+    return actionExtensionPoint;
+  }
+
+  /**
+   * @see org.argouml.uml.diagram.ui.UMLDiagram#isRelocationAllowed(java.lang.Object)
+   */
+  public boolean isRelocationAllowed(Object base) {
+    return false;
+    /* TODO: We may return the following when the
+     * relocate() has been implemented. */
+    //    	Model.getFacade().isAPackage(base)
+    //        	|| Model.getFacade().isAClassifier(base);
+  }
+
+  /**
+   * @see org.argouml.uml.diagram.ui.UMLDiagram#relocate(java.lang.Object)
+   */
+  public boolean relocate(Object base) {
+    return false;
+  }
 } /* end class UMLUseCaseDiagram */

@@ -9,7 +9,7 @@
 <!-- QuickNotepad dockable windows -->
 
 <DOCKABLES>
-	<DOCKABLE NAME="quicknotepad">
-		new QuickNotepad(view, position);
-	</DOCKABLE>
+    <DOCKABLE NAME="quicknotepad">
+        new QuickNotepad(view, position);
+    </DOCKABLE>
 </DOCKABLES>

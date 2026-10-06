@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc  and others, see in file; API and its implementation
  ******************************************************************************/
@@ -39,44 +39,44 @@ import ptidej.solver.claire.test.simple.StrictInheritanceTest;
 import ptidej.solver.claire.test.simple.UseTest;
 
 public final class TestPtidejSolver3 extends TestSuite {
-	public static TestSuite suite() {
-		final TestPtidejSolver3 suite = new TestPtidejSolver3();
-		suite.setName(TestPtidejSolver3.class.getName());
+  public static TestSuite suite() {
+    final TestPtidejSolver3 suite = new TestPtidejSolver3();
+    suite.setName(TestPtidejSolver3.class.getName());
 
-		suite.addTestSuite(BadCompositionTest.class);
-		suite.addTestSuite(BadInheritanceTest.class);
-		suite.addTestSuite(CompositeTest.class);
-		suite.addTestSuite(FacadeTest.class);
-		suite.addTestSuite(FactoryMethodTest.class);
-		suite.addTestSuite(MediatorTest.class);
+    suite.addTestSuite(BadCompositionTest.class);
+    suite.addTestSuite(BadInheritanceTest.class);
+    suite.addTestSuite(CompositeTest.class);
+    suite.addTestSuite(FacadeTest.class);
+    suite.addTestSuite(FactoryMethodTest.class);
+    suite.addTestSuite(MediatorTest.class);
 
-		suite.addTestSuite(BadComposition1Test.class);
-		suite.addTestSuite(BadComposition2Test.class);
-		suite.addTestSuite(BadComposition3Test.class);
+    suite.addTestSuite(BadComposition1Test.class);
+    suite.addTestSuite(BadComposition2Test.class);
+    suite.addTestSuite(BadComposition3Test.class);
 
-		suite.addTestSuite(AssociationDistanceAssociationPatternTest.class);
-		// TODO Add this test back
-		//	suite.addTestSuite(AssociationDistanceComposite2.class);
-		suite.addTestSuite(InheritanceTreeDepthComposite2Test.class);
+    suite.addTestSuite(AssociationDistanceAssociationPatternTest.class);
+    // TODO Add this test back
+    //	suite.addTestSuite(AssociationDistanceComposite2.class);
+    suite.addTestSuite(InheritanceTreeDepthComposite2Test.class);
 
-		suite.addTestSuite(Composite1Test.class);
-		suite.addTestSuite(Composite2Test.class);
-		suite.addTestSuite(Composite3Test.class);
-		suite.addTestSuite(Composite4Test.class);
-		suite.addTestSuite(Composite5Test.class);
+    suite.addTestSuite(Composite1Test.class);
+    suite.addTestSuite(Composite2Test.class);
+    suite.addTestSuite(Composite3Test.class);
+    suite.addTestSuite(Composite4Test.class);
+    suite.addTestSuite(Composite5Test.class);
 
-		suite.addTestSuite(CompleteRoundtripTest.class);
-		suite.addTestSuite(HalfRoundtripTest.class);
+    suite.addTestSuite(CompleteRoundtripTest.class);
+    suite.addTestSuite(HalfRoundtripTest.class);
 
-		suite.addTestSuite(CompositionTest.class);
-		suite.addTestSuite(CreationTest.class);
-		suite.addTestSuite(GoodInheritanceTest.class);
-		suite.addTestSuite(IgnoranceTest.class);
-		suite.addTestSuite(InheritanceTest.class);
-		suite.addTestSuite(InheritancePathTest.class);
-		suite.addTestSuite(UseTest.class);
-		suite.addTestSuite(StrictInheritanceTest.class);
+    suite.addTestSuite(CompositionTest.class);
+    suite.addTestSuite(CreationTest.class);
+    suite.addTestSuite(GoodInheritanceTest.class);
+    suite.addTestSuite(IgnoranceTest.class);
+    suite.addTestSuite(InheritanceTest.class);
+    suite.addTestSuite(InheritancePathTest.class);
+    suite.addTestSuite(UseTest.class);
+    suite.addTestSuite(StrictInheritanceTest.class);
 
-		return suite;
-	}
+    return suite;
+  }
 }

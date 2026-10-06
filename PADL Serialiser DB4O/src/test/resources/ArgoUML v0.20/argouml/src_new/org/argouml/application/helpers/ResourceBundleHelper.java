@@ -23,9 +23,9 @@
 // UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 package org.argouml.application.helpers;
+
 import java.util.ListResourceBundle;
 import java.util.Vector;
-
 import org.argouml.application.api.PluggableResourceBundle;
 import org.tigris.gef.util.Localizer;
 
@@ -33,42 +33,49 @@ import org.tigris.gef.util.Localizer;
  * Helper object for Pluggable Resource Bundles
  *
  * @author Thierry Lach
- * @since  0.9.4
+ * @since 0.9.4
  */
 public abstract class ResourceBundleHelper extends ListResourceBundle
     implements PluggableResourceBundle {
-    /**
-     * @see org.argouml.application.api.ArgoModule#setModuleEnabled(boolean)
-     */
-    public void setModuleEnabled(boolean v) { }
+  /**
+   * @see org.argouml.application.api.ArgoModule#setModuleEnabled(boolean)
+   */
+  public void setModuleEnabled(boolean v) {}
 
-    /**
-     * @see org.argouml.application.api.ArgoModule#initializeModule()
-     */
-    public boolean initializeModule() {
-       	Localizer.addResource(getModuleName(), getClass().getName());
-	return true;
-    }
+  /**
+   * @see org.argouml.application.api.ArgoModule#initializeModule()
+   */
+  public boolean initializeModule() {
+    Localizer.addResource(getModuleName(), getClass().getName());
+    return true;
+  }
 
-    /**
-     * @see org.argouml.application.api.Pluggable#inContext(java.lang.Object[])
-     */
-    public boolean inContext(Object[] o) { return true; }
+  /**
+   * @see org.argouml.application.api.Pluggable#inContext(java.lang.Object[])
+   */
+  public boolean inContext(Object[] o) {
+    return true;
+  }
 
-    /**
-     * @see org.argouml.application.api.ArgoModule#isModuleEnabled()
-     */
-    public boolean isModuleEnabled() { return true; }
+  /**
+   * @see org.argouml.application.api.ArgoModule#isModuleEnabled()
+   */
+  public boolean isModuleEnabled() {
+    return true;
+  }
 
-    /**
-     * @see org.argouml.application.api.ArgoModule#getModulePopUpActions(
-     * java.util.Vector, java.lang.Object)
-     */
-    public Vector getModulePopUpActions(Vector v, Object o) { return null; }
+  /**
+   * @see org.argouml.application.api.ArgoModule#getModulePopUpActions( java.util.Vector,
+   *     java.lang.Object)
+   */
+  public Vector getModulePopUpActions(Vector v, Object o) {
+    return null;
+  }
 
-    /**
-     * @see org.argouml.application.api.ArgoModule#shutdownModule()
-     */
-    public boolean shutdownModule() { return true; }
+  /**
+   * @see org.argouml.application.api.ArgoModule#shutdownModule()
+   */
+  public boolean shutdownModule() {
+    return true;
+  }
 }
-

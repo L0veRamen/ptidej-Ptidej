@@ -26,17 +26,17 @@ package org.argouml.profile.internal.ocl;
 
 /**
  * Exception thrown when an invalid ocl is set
- * 
+ *
  * @author maurelio1234
  */
 public class InvalidOclException extends Exception {
 
-    /**
-     * Default Constructor
-     * 
-     * @param ocl the invalid ocl expression
-     */
-    public InvalidOclException(String ocl) {
-        super(ocl);
-    }
+  /**
+   * Default Constructor
+   *
+   * @param ocl the invalid ocl expression
+   */
+  public InvalidOclException(String ocl) {
+    super(ocl);
+  }
 }

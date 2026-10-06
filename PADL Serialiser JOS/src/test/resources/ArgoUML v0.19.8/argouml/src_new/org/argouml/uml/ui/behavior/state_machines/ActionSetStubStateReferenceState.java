@@ -24,13 +24,11 @@
 
 package org.argouml.uml.ui.behavior.state_machines;
 
+import java.awt.event.ActionEvent;
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLAction;
 import org.argouml.uml.ui.UMLComboBox2;
-
-import java.awt.event.ActionEvent;
-
 
 /**
  * Action to set the reference state of a stubstate.
@@ -39,38 +37,33 @@ import java.awt.event.ActionEvent;
  */
 public class ActionSetStubStateReferenceState extends UMLAction {
 
-    private static final ActionSetStubStateReferenceState SINGLETON =
-            new ActionSetStubStateReferenceState();
+  private static final ActionSetStubStateReferenceState SINGLETON =
+      new ActionSetStubStateReferenceState();
 
-    /**
-     * The constructor.
-     */
-    protected ActionSetStubStateReferenceState() {
-        super(Translator.localize("action.set"), true, NO_ICON);
+  /** The constructor. */
+  protected ActionSetStubStateReferenceState() {
+    super(Translator.localize("action.set"), true, NO_ICON);
+  }
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    if (e.getSource() instanceof UMLComboBox2) {
+      UMLComboBox2 box = (UMLComboBox2) e.getSource();
+      Object o = box.getSelectedItem();
+      if (o != null) {
+        String name = Model.getStateMachinesHelper().getPath(o);
+        if (name != null) Model.getStateMachinesHelper().setReferenceState(box.getTarget(), name);
+      }
     }
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        if (e.getSource() instanceof UMLComboBox2) {
-            UMLComboBox2 box = (UMLComboBox2) e.getSource();
-            Object o = box.getSelectedItem();
-            if (o != null) {
-                String name = Model.getStateMachinesHelper().getPath(o);
-                if (name != null)
-                    Model.getStateMachinesHelper()
-                            .setReferenceState(box.getTarget(), name);
-            }
-        }
-    }
-
-    /**
-     * @return Returns the sINGLETON.
-     */
-    public static ActionSetStubStateReferenceState getInstance() {
-        return SINGLETON;
-    }
-
+  /**
+   * @return Returns the sINGLETON.
+   */
+  public static ActionSetStubStateReferenceState getInstance() {
+    return SINGLETON;
+  }
 }

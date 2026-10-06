@@ -4,18 +4,16 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
 package padl.test.setter;
 
-import org.junit.Assert;
 import junit.framework.TestCase;
+import org.junit.Assert;
 import padl.analysis.UnsupportedSourceModelException;
 import padl.analysis.repository.AACRelationshipsAnalysis;
-import padl.kernel.Cardinality;
-import padl.kernel.Constants;
 import padl.kernel.ICodeLevelModel;
 import padl.kernel.IFirstClassEntity;
 import padl.kernel.IIdiomLevelModel;
@@ -27,88 +25,67 @@ import util.io.ProxyConsole;
 
 /**
  * @author Yann-Gaël Guéhéneuc
- * @since  2006/11/28
+ * @since 2006/11/28
  */
 public class GetterTest extends TestCase {
-	private static IIdiomLevelModel IdiomLevelModel;
-	public GetterTest(final String name) {
-		super(name);
-	}
-	public void setUp() {
-		if (GetterTest.IdiomLevelModel == null) {
-			try {
-				final char[] entityName = "A".toCharArray();
-				final IFirstClassEntity entity =
-					Factory.getInstance().createClass(entityName, entityName);
+  private static IIdiomLevelModel IdiomLevelModel;
 
-				final char[] parameterName = "a".toCharArray();
-				final IParameter aParameter1 =
-					Factory.getInstance().createParameter(
-						entity,
-						parameterName,
-						1);
-				final IMethod aGetter =
-					Factory.getInstance().createMethod(
-						"get".toCharArray(),
-						"get".toCharArray());
-				aGetter.setReturnType(entityName);
-				aGetter.addConstituent(aParameter1);
+  public GetterTest(final String name) {
+    super(name);
+  }
 
-				final IParameter aParameter2 =
-					Factory.getInstance().createParameter(
-						entity,
-						parameterName,
-						1);
-				final IMethod aSetter =
-					Factory.getInstance().createMethod(
-						"set".toCharArray(),
-						"set".toCharArray());
-				aSetter.addConstituent(aParameter2);
+  public void setUp() {
+    if (GetterTest.IdiomLevelModel == null) {
+      try {
+        final char[] entityName = "A".toCharArray();
+        final IFirstClassEntity entity = Factory.getInstance().createClass(entityName, entityName);
 
-				entity.addConstituent(aGetter);
-				entity.addConstituent(aSetter);
+        final char[] parameterName = "a".toCharArray();
+        final IParameter aParameter1 =
+            Factory.getInstance().createParameter(entity, parameterName, 1);
+        final IMethod aGetter =
+            Factory.getInstance().createMethod("get".toCharArray(), "get".toCharArray());
+        aGetter.setReturnType(entityName);
+        aGetter.addConstituent(aParameter1);
 
-				final IPackage aPackage =
-					Factory.getInstance().createPackage("p".toCharArray());
-				aPackage.addConstituent(entity);
+        final IParameter aParameter2 =
+            Factory.getInstance().createParameter(entity, parameterName, 1);
+        final IMethod aSetter =
+            Factory.getInstance().createMethod("set".toCharArray(), "set".toCharArray());
+        aSetter.addConstituent(aParameter2);
 
-				final ICodeLevelModel aCodeLevelModel =
-					Factory.getInstance().createCodeLevelModel("Model");
-				aCodeLevelModel.addConstituent(aPackage);
+        entity.addConstituent(aGetter);
+        entity.addConstituent(aSetter);
 
-				GetterTest.IdiomLevelModel =
-					(IIdiomLevelModel) new AACRelationshipsAnalysis()
-						.invoke(aCodeLevelModel);
-			}
-			catch (final UnsupportedSourceModelException e) {
-				e.printStackTrace(ProxyConsole.getInstance().errorOutput());
-			}
-		}
-	}
-	public void testClass() {
-		Assert.assertEquals(
-			"Class A exists",
-			1,
-			GetterTest.IdiomLevelModel.getNumberOfTopLevelEntities());
-	}
-	public void testMethods() {
-		final IFirstClassEntity firstClassEntity =
-			(IFirstClassEntity) GetterTest.IdiomLevelModel
-				.getTopLevelEntityFromID("A");
-		Assert.assertEquals(
-			"Getter and setter exist",
-			2,
-			firstClassEntity.getNumberOfConstituents());
-	}
-	public void testParameters() {
-		final IFirstClassEntity firstClassEntity =
-			(IFirstClassEntity) GetterTest.IdiomLevelModel
-				.getTopLevelEntityFromID("A");
-		final IMethod getter =
-			(IMethod) firstClassEntity.getConstituentFromID("get");
-		Assert.assertEquals(
-			"Parameter exists",
-			1,
-			getter.getNumberOfConstituents());
-	}
+        final IPackage aPackage = Factory.getInstance().createPackage("p".toCharArray());
+        aPackage.addConstituent(entity);
+
+        final ICodeLevelModel aCodeLevelModel = Factory.getInstance().createCodeLevelModel("Model");
+        aCodeLevelModel.addConstituent(aPackage);
+
+        GetterTest.IdiomLevelModel =
+            (IIdiomLevelModel) new AACRelationshipsAnalysis().invoke(aCodeLevelModel);
+      } catch (final UnsupportedSourceModelException e) {
+        e.printStackTrace(ProxyConsole.getInstance().errorOutput());
+      }
+    }
+  }
+
+  public void testClass() {
+    Assert.assertEquals(
+        "Class A exists", 1, GetterTest.IdiomLevelModel.getNumberOfTopLevelEntities());
+  }
+
+  public void testMethods() {
+    final IFirstClassEntity firstClassEntity =
+        (IFirstClassEntity) GetterTest.IdiomLevelModel.getTopLevelEntityFromID("A");
+    Assert.assertEquals("Getter and setter exist", 2, firstClassEntity.getNumberOfConstituents());
+  }
+
+  public void testParameters() {
+    final IFirstClassEntity firstClassEntity =
+        (IFirstClassEntity) GetterTest.IdiomLevelModel.getTopLevelEntityFromID("A");
+    final IMethod getter = (IMethod) firstClassEntity.getConstituentFromID("get");
+    Assert.assertEquals("Parameter exists", 1, getter.getNumberOfConstituents());
+  }
 }

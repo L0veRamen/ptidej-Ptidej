@@ -26,60 +26,49 @@ package org.argouml.ui.cmd;
 
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-
 import javax.swing.AbstractAction;
 import javax.swing.JDialog;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-
 import org.argouml.i18n.Translator;
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
 import org.argouml.persistence.PersistenceManager;
 import org.argouml.ui.ProjectBrowser;
 
-/**
- * Action that shows an XML dump of the current project contents.
- */
+/** Action that shows an XML dump of the current project contents. */
 class ActionShowXMLDump extends AbstractAction {
-    /**
-     * Insets in pixels.
-     */
-    private static final int INSET_PX = 3;
+  /** Insets in pixels. */
+  private static final int INSET_PX = 3;
 
-    /**
-     * Constructor.
-     */
-    public ActionShowXMLDump() {
-        super(Translator.localize("action.show-saved"));
-    }
+  /** Constructor. */
+  public ActionShowXMLDump() {
+    super(Translator.localize("action.show-saved"));
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-	ProjectBrowser pb = ProjectBrowser.getInstance();
-	Project project = ProjectManager.getManager().getCurrentProject();
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    ProjectBrowser pb = ProjectBrowser.getInstance();
+    Project project = ProjectManager.getManager().getCurrentProject();
 
-	String data =
-	    PersistenceManager.getInstance().getQuickViewDump(project);
+    String data = PersistenceManager.getInstance().getQuickViewDump(project);
 
-	JDialog pw = new JDialog(pb, Translator.localize("action.show-saved"),
-            false);
+    JDialog pw = new JDialog(pb, Translator.localize("action.show-saved"), false);
 
-	JTextArea a = new JTextArea(data, 50, 80);
-	a.setEditable(false);
-	a.setLineWrap(true);
-	a.setWrapStyleWord(true);
-	a.setMargin(new Insets(INSET_PX, INSET_PX, INSET_PX, INSET_PX));
-	a.setCaretPosition(0);
+    JTextArea a = new JTextArea(data, 50, 80);
+    a.setEditable(false);
+    a.setLineWrap(true);
+    a.setWrapStyleWord(true);
+    a.setMargin(new Insets(INSET_PX, INSET_PX, INSET_PX, INSET_PX));
+    a.setCaretPosition(0);
 
-	pw.getContentPane().add(new JScrollPane(a));
+    pw.getContentPane().add(new JScrollPane(a));
 
-	pw.setSize(400, 500);
+    pw.setSize(400, 500);
 
-	pw.setLocationRelativeTo(pb);
-	pw.setVisible(true);
-    }
+    pw.setLocationRelativeTo(pb);
+    pw.setVisible(true);
+  }
 }
-

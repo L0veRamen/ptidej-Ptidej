@@ -25,57 +25,47 @@
 package org.argouml.uml.ui.foundation.extension_mechanisms;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.SwingUtilities;
-
 import org.apache.log4j.Logger;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLAction;
 import org.argouml.uml.ui.UMLComboBox2;
 
 /**
- *
  * @author mkl
- *
  */
 public class ActionSetTagDefinitionOwner extends UMLAction {
 
-    private Logger LOG = Logger.getLogger(ActionSetTagDefinitionOwner.class);
-  
-    /**
-     * The Singleton.
-     */
-    public static final ActionSetTagDefinitionOwner SINGLETON =
-    new ActionSetTagDefinitionOwner();
-    
-    /**
-     * Constructor.
-     */
-    public ActionSetTagDefinitionOwner() {
-        super("Set", HAS_ICON);
-    }
+  private Logger LOG = Logger.getLogger(ActionSetTagDefinitionOwner.class);
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        Object source = e.getSource();
-        LOG.info("Receiving "+e+"/"+e.getID()+"/"+e.getActionCommand());
-        if (source instanceof UMLComboBox2 
-                && e.getModifiers()==ActionEvent.MOUSE_EVENT_MASK) {
-            UMLComboBox2 combo = (UMLComboBox2) source;
-            final Object o = combo.getSelectedItem();
-            final Object tagDefinition = combo.getTarget();
-            LOG.info("Set owner to "+o);
-            if (Model.getFacade().isAStereotype(o) &&
-            		Model.getFacade().isATagDefinition(tagDefinition)) {
-                   SwingUtilities.invokeLater(new Runnable() {
-                       public void run() {
-                        Model.getCoreHelper().setOwner(tagDefinition,o);
-                       }
-                   });
-            }
-        }
+  /** The Singleton. */
+  public static final ActionSetTagDefinitionOwner SINGLETON = new ActionSetTagDefinitionOwner();
+
+  /** Constructor. */
+  public ActionSetTagDefinitionOwner() {
+    super("Set", HAS_ICON);
+  }
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    Object source = e.getSource();
+    LOG.info("Receiving " + e + "/" + e.getID() + "/" + e.getActionCommand());
+    if (source instanceof UMLComboBox2 && e.getModifiers() == ActionEvent.MOUSE_EVENT_MASK) {
+      UMLComboBox2 combo = (UMLComboBox2) source;
+      final Object o = combo.getSelectedItem();
+      final Object tagDefinition = combo.getTarget();
+      LOG.info("Set owner to " + o);
+      if (Model.getFacade().isAStereotype(o) && Model.getFacade().isATagDefinition(tagDefinition)) {
+        SwingUtilities.invokeLater(
+            new Runnable() {
+              public void run() {
+                Model.getCoreHelper().setOwner(tagDefinition, o);
+              }
+            });
+      }
     }
+  }
 }

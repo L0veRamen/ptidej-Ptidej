@@ -23,7 +23,6 @@
 package com.noelios.restlet.container;
 
 import java.util.logging.Level;
-
 import org.restlet.Client;
 import org.restlet.Router;
 import org.restlet.Scorer;
@@ -32,74 +31,72 @@ import org.restlet.data.Request;
 import org.restlet.data.Response;
 
 /**
- * Router scorer based on a target VirtualHost. 
+ * Router scorer based on a target VirtualHost.
+ *
  * @author Jerome Louvel (contact@noelios.com)
  */
-public class ClientScorer extends Scorer
-{
-	/**
-	 * Constructor.
-	 * @param router The parent router.
-	 * @param target The target client.
-	 */
-	public ClientScorer(Router router, Client target)
-	{
-		super(router, target);
-	}
+public class ClientScorer extends Scorer {
+  /**
+   * Constructor.
+   *
+   * @param router The parent router.
+   * @param target The target client.
+   */
+  public ClientScorer(Router router, Client target) {
+    super(router, target);
+  }
 
-	/**
-	 * Returns the target client.
-	 * @return The target client.
-	 */
-	public Client getClient()
-	{
-		return (Client) getNext();
-	}
+  /**
+   * Returns the target client.
+   *
+   * @return The target client.
+   */
+  public Client getClient() {
+    return (Client) getNext();
+  }
 
-	/**
-	 * Sets the next client.
-	 * @param next The next client.
-	 */
-	public void setNext(Client next)
-	{
-		super.setNext(next);
-	}
+  /**
+   * Sets the next client.
+   *
+   * @param next The next client.
+   */
+  public void setNext(Client next) {
+    super.setNext(next);
+  }
 
-	/**
-	 * Returns the score for a given call (between 0 and 1.0).
-	 * @param request The request to score.
-	 * @param response The response to score.
-	 * @return The score for a given call (between 0 and 1.0).
-	 */
-	public float score(Request request, Response response)
-	{
-		float result = 0F;
+  /**
+   * Returns the score for a given call (between 0 and 1.0).
+   *
+   * @param request The request to score.
+   * @param response The response to score.
+   * @return The score for a given call (between 0 and 1.0).
+   */
+  public float score(Request request, Response response) {
+    float result = 0F;
 
-		// Add the protocol score
-		Protocol protocol = request.getProtocol();
-		if (protocol == null)
-		{
-			// Attempt to guess the protocol to use
-			// from the target reference scheme
-			protocol = request.getResourceRef().getSchemeProtocol();
-		}
+    // Add the protocol score
+    Protocol protocol = request.getProtocol();
+    if (protocol == null) {
+      // Attempt to guess the protocol to use
+      // from the target reference scheme
+      protocol = request.getResourceRef().getSchemeProtocol();
+    }
 
-		if (protocol == null)
-		{
-			getLogger().warning("Unable to determine the protocol to use for this call.");
-		}
-		else if (getClient().getProtocols().contains(protocol))
-		{
-			result = 1.0F;
-		}
+    if (protocol == null) {
+      getLogger().warning("Unable to determine the protocol to use for this call.");
+    } else if (getClient().getProtocols().contains(protocol)) {
+      result = 1.0F;
+    }
 
-		if (getLogger().isLoggable(Level.FINER))
-		{
-			getLogger().finer(
-					"Call score for the \"" + getClient().getProtocols().toString()
-							+ "\" client: " + result);
-		}
+    if (getLogger().isLoggable(Level.FINER)) {
+      getLogger()
+          .finer(
+              "Call score for the \""
+                  + getClient().getProtocols().toString()
+                  + "\" client: "
+                  + result);
+    }
 
-		return result;
-	}
+    return result;
+  }
 }

@@ -4,34 +4,31 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
 package modec.test.observer.example;
 
-//package src.OBSERVER;
+// package src.OBSERVER;
 // CONCRETE OBSERVER
 import java.awt.*;
-import javax.swing.*;
 import java.util.*;
+import javax.swing.*;
 
 public class YTDChart extends JFrame implements Observer {
-  /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+  /** */
+  private static final long serialVersionUID = 1L;
 
-public static final String newline = "\n";
+  public static final String newline = "\n";
 
-//  private JPanel pSearchCriteria;
-//  private JLabel lblSalesFigure;
+  //  private JPanel pSearchCriteria;
+  //  private JLabel lblSalesFigure;
   private ReportManager objReportManager;
   private String department = "";
   private boolean fromRefresh;
 
-  public YTDChart(ReportManager inp_objReportManager)
-  throws Exception {
+  public YTDChart(ReportManager inp_objReportManager) throws Exception {
     super("Observer Pattern - Example");
     this.objReportManager = inp_objReportManager;
 
@@ -49,7 +46,7 @@ public static final String newline = "\n";
 
   public void refreshData(Observable subject) {
     if (subject == this.objReportManager) {
-      //get subject's state
+      // get subject's state
       this.department = this.objReportManager.getDepartment().trim();
 
       clear();
@@ -57,6 +54,7 @@ public static final String newline = "\n";
       repaint();
     }
   }
+
   public void clear() {
     Graphics g = getGraphics();
     Dimension d = getSize();
@@ -67,7 +65,7 @@ public static final String newline = "\n";
   }
 
   public void paint(Graphics g) {
-//    Insets insets = insets();
+    //    Insets insets = insets();
 
     plotMonths(g);
 
@@ -77,7 +75,7 @@ public static final String newline = "\n";
       int h = 20;
 
       int[] totals = getYTDTotals(this.department);
-      //current month
+      // current month
       Calendar cal = Calendar.getInstance();
       cal.setTime(new Date());
       int month = cal.get(Calendar.MONTH) + 1;
@@ -85,10 +83,9 @@ public static final String newline = "\n";
       for (int i = 0; i < month; i++) {
         g.setColor(Color.blue);
         if (totals[i] > 0) {
-          w = (int)(totals[i] / 50);
+          w = (int) (totals[i] / 50);
           g.fillRect(x, y, w, h);
-          g.drawString ("$" + totals[i], x + w + 5,
-                        y + 15);
+          g.drawString("$" + totals[i], x + w + 5, y + 15);
         }
         y = y + 30;
       }
@@ -97,15 +94,16 @@ public static final String newline = "\n";
   }
 
   private void plotMonths(Graphics g) {
-    if ((this.department != null) &&
-        (this.department.trim().length() > 0)) {
-      g.drawString(this.department + " YTD Report",150, 50);
+    if ((this.department != null) && (this.department.trim().length() > 0)) {
+      g.drawString(this.department + " YTD Report", 150, 50);
     } else {
-      g.drawString(this.department + "YTD Report",150, 50);
+      g.drawString(this.department + "YTD Report", 150, 50);
     }
-    String[] months = {"Jan","Feb","Mar","Apr",
-                       "May","Jun","Jul","Aug",
-                       "Sep","Oct","Nov","Dec"};
+    String[] months = {
+      "Jan", "Feb", "Mar", "Apr",
+      "May", "Jun", "Jul", "Aug",
+      "Sep", "Oct", "Nov", "Dec"
+    };
 
     int x = 50, y = 115;
     for (int j = 0; j < months.length; j++) {
@@ -113,16 +111,16 @@ public static final String newline = "\n";
       g.drawString(months[j], x, y);
       y = y + 30;
     }
-
   }
+
   private int[] getYTDTotals(String department) {
-    int[] totals = {1000, 0, 2000, 0, 0, 0, 0, 0, 0, 0, 0,
-                    0};
+    int[] totals = {1000, 0, 2000, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     for (int i = 0; i < 12; i++) {
       totals[i] = getMonthlyTotal(i + 1, department);
     }
     return totals;
   }
+
   private int getMonthlyTotal(int month, String department) {
     FileUtil futil = new FileUtil();
     Vector allRows = futil.fileToVector("Data/Transactions.dat");
@@ -133,12 +131,11 @@ public static final String newline = "\n";
     for (int i = 0; i < allRows.size(); i++) {
       String str = (String) allRows.elementAt(i);
       if (str.indexOf(searchStr) > -1) {
-        StringTokenizer st =
-          new StringTokenizer(str, ",");
-        st.nextToken();//bypass the department
-        st.nextToken();//bypass the month
-        st.nextToken();//bypass the date
-        st.nextToken();//bypass items
+        StringTokenizer st = new StringTokenizer(str, ",");
+        st.nextToken(); // bypass the department
+        st.nextToken(); // bypass the month
+        st.nextToken(); // bypass the date
+        st.nextToken(); // bypass items
         String amount = st.nextToken();
 
         total = total + Integer.valueOf(amount).intValue();
@@ -146,6 +143,4 @@ public static final String newline = "\n";
     }
     return total;
   }
-
-}// end of class YTDChart
-
+} // end of class YTDChart

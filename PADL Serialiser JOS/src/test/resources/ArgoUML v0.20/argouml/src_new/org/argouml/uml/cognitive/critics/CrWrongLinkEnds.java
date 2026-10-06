@@ -26,7 +26,6 @@ package org.argouml.uml.cognitive.critics;
 
 import java.util.Collection;
 import java.util.Iterator;
-
 import org.argouml.cognitive.Designer;
 import org.argouml.cognitive.ListSet;
 import org.argouml.cognitive.ToDoItem;
@@ -37,109 +36,98 @@ import org.argouml.uml.diagram.deployment.ui.UMLDeploymentDiagram;
 import org.argouml.uml.diagram.static_structure.ui.FigLink;
 
 /**
- * A critic to detect when in a deployment-diagram
- * the FigObject of the first MLinkEnd is inside a FigComponent
- * and the FigObject of the other MLinkEnd is inside a FigComponentInstance
+ * A critic to detect when in a deployment-diagram the FigObject of the first MLinkEnd is inside a
+ * FigComponent and the FigObject of the other MLinkEnd is inside a FigComponentInstance
  *
  * @author 5eichler
  */
 public class CrWrongLinkEnds extends CrUML {
 
-    /**
-     * The constructor.
-     */
-    public CrWrongLinkEnds() {
-        setupHeadAndDesc();
-	addSupportedDecision(UMLDecision.PATTERNS);
+  /** The constructor. */
+  public CrWrongLinkEnds() {
+    setupHeadAndDesc();
+    addSupportedDecision(UMLDecision.PATTERNS);
+  }
+
+  /**
+   * @see org.argouml.uml.cognitive.critics.CrUML#predicate2( java.lang.Object,
+   *     org.argouml.cognitive.Designer)
+   */
+  public boolean predicate2(Object dm, Designer dsgr) {
+    if (!(dm instanceof UMLDeploymentDiagram)) return NO_PROBLEM;
+    UMLDeploymentDiagram dd = (UMLDeploymentDiagram) dm;
+    ListSet offs = computeOffenders(dd);
+    if (offs == null) return NO_PROBLEM;
+    return PROBLEM_FOUND;
+  }
+
+  /**
+   * @see org.argouml.cognitive.critics.Critic#toDoItem( java.lang.Object,
+   *     org.argouml.cognitive.Designer)
+   */
+  public ToDoItem toDoItem(Object dm, Designer dsgr) {
+    UMLDeploymentDiagram dd = (UMLDeploymentDiagram) dm;
+    ListSet offs = computeOffenders(dd);
+    return new UMLToDoItem(this, offs, dsgr);
+  }
+
+  /**
+   * @see org.argouml.cognitive.Poster#stillValid( org.argouml.cognitive.ToDoItem,
+   *     org.argouml.cognitive.Designer)
+   */
+  public boolean stillValid(ToDoItem i, Designer dsgr) {
+    if (!isActive()) return false;
+    ListSet offs = i.getOffenders();
+    UMLDeploymentDiagram dd = (UMLDeploymentDiagram) offs.firstElement();
+    // if (!predicate(dm, dsgr)) return false;
+    ListSet newOffs = computeOffenders(dd);
+    boolean res = offs.equals(newOffs);
+    return res;
+  }
+
+  /**
+   * If there are links that are going from inside a FigComponent to inside a FigComponentInstance
+   * the returned vector-set is not null. Then in the vector-set are the UMLDeploymentDiagram and
+   * all FigLinks with this characteristic and their FigObjects described over the links MLinkEnds
+   *
+   * @param deploymentDiagram the diagram to check
+   * @return the set of offenders
+   */
+  public ListSet computeOffenders(UMLDeploymentDiagram deploymentDiagram) {
+    Collection figs = deploymentDiagram.getLayer().getContents();
+    ListSet offs = null;
+    Iterator figIter = figs.iterator();
+    while (figIter.hasNext()) {
+      Object obj = figIter.next();
+      if (!(obj instanceof FigLink)) {
+        continue;
+      }
+      FigLink figLink = (FigLink) obj;
+      if (!(Model.getFacade().isALink(figLink.getOwner()))) continue;
+      Object link = figLink.getOwner();
+      Collection ends = Model.getFacade().getConnections(link);
+      if (ends != null && (ends.size() > 0)) {
+        int count = 0;
+        Iterator it = ends.iterator();
+        while (it.hasNext()) {
+          Object instance = Model.getFacade().getInstance(it.next());
+          Collection residencies = Model.getFacade().getResidents(instance);
+          if (residencies != null && (residencies.size() > 0)) count = count + 2;
+
+          Object component = Model.getFacade().getComponentInstance(instance);
+          if (component != null) count = count + 1;
+        }
+        if (count == 3) {
+          if (offs == null) {
+            offs = new ListSet();
+            offs.addElement(deploymentDiagram);
+          }
+          offs.addElement(figLink);
+          offs.addElement(figLink.getSourcePortFig());
+          offs.addElement(figLink.getDestPortFig());
+        }
+      }
     }
-
-    /**
-     * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
-     * java.lang.Object, org.argouml.cognitive.Designer)
-     */
-    public boolean predicate2(Object dm, Designer dsgr) {
-	if (!(dm instanceof UMLDeploymentDiagram)) return NO_PROBLEM;
-	UMLDeploymentDiagram dd = (UMLDeploymentDiagram) dm;
-	ListSet offs = computeOffenders(dd);
-	if (offs == null) return NO_PROBLEM;
-	return PROBLEM_FOUND;
-    }
-
-    /**
-     * @see org.argouml.cognitive.critics.Critic#toDoItem(
-     * java.lang.Object, org.argouml.cognitive.Designer)
-     */
-    public ToDoItem toDoItem(Object dm, Designer dsgr) {
-	UMLDeploymentDiagram dd = (UMLDeploymentDiagram) dm;
-	ListSet offs = computeOffenders(dd);
-	return new UMLToDoItem(this, offs, dsgr);
-    }
-
-    /**
-     * @see org.argouml.cognitive.Poster#stillValid(
-     * org.argouml.cognitive.ToDoItem, org.argouml.cognitive.Designer)
-     */
-    public boolean stillValid(ToDoItem i, Designer dsgr) {
-	if (!isActive()) return false;
-	ListSet offs = i.getOffenders();
-	UMLDeploymentDiagram dd = (UMLDeploymentDiagram) offs.firstElement();
-	//if (!predicate(dm, dsgr)) return false;
-	ListSet newOffs = computeOffenders(dd);
-	boolean res = offs.equals(newOffs);
-	return res;
-    }
-
-    /**
-     * If there are links that are going from inside a FigComponent to
-     * inside a FigComponentInstance the returned vector-set is not
-     * null.  Then in the vector-set are the UMLDeploymentDiagram and
-     * all FigLinks with this characteristic and their FigObjects
-     * described over the links MLinkEnds
-     *
-     * @param deploymentDiagram the diagram to check
-     * @return the set of offenders
-     */
-    public ListSet computeOffenders(UMLDeploymentDiagram deploymentDiagram) {
-	Collection figs = deploymentDiagram.getLayer().getContents();
-	ListSet offs = null;
-        Iterator figIter = figs.iterator();
-	while (figIter.hasNext()) {
-	    Object obj = figIter.next();
-	    if (!(obj instanceof FigLink)) {
-                continue;
-            }
-	    FigLink figLink = (FigLink) obj;
-	    if (!(Model.getFacade().isALink(figLink.getOwner()))) continue;
-	    Object link = figLink.getOwner();
-	    Collection ends = Model.getFacade().getConnections(link);
-	    if (ends != null && (ends.size() > 0)) {
-		int count = 0;
-		Iterator it = ends.iterator();
-		while (it.hasNext()) {
-                    Object instance = Model.getFacade().getInstance(it.next());
-                    Collection residencies =
-                        Model.getFacade().getResidents(instance);
-		    if (residencies != null
-			&& (residencies.size() > 0))
-			count = count + 2;
-
-                    Object component =
-                        Model.getFacade().getComponentInstance(instance);
-		    if (component != null)
-			count = count + 1;
-		}
-		if (count == 3) {
-		    if (offs == null) {
-			offs = new ListSet();
-			offs.addElement(deploymentDiagram);
-		    }
-		    offs.addElement(figLink);
-		    offs.addElement(figLink.getSourcePortFig());
-		    offs.addElement(figLink.getDestPortFig());
-		}
-	    }
-	}
-	return offs;
-    }
-
+    return offs;
+  }
 } /* end class CrWrongLinkEnds.java */

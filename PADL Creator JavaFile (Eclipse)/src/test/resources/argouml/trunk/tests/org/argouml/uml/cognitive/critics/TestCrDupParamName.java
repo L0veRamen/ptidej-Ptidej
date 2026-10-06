@@ -25,46 +25,41 @@
 package org.argouml.uml.cognitive.critics;
 
 import junit.framework.TestCase;
-
 import org.argouml.model.Model;
 
 public class TestCrDupParamName extends TestCase {
 
-    private CrUML cr = null;
+  private CrUML cr = null;
 
-    public TestCrDupParamName(String arg0) {
-        super(arg0);
-    }
+  public TestCrDupParamName(String arg0) {
+    super(arg0);
+  }
 
-    protected void setUp() throws Exception {
-        super.setUp();
-        cr = new CrDupParamName();
-    }
+  protected void setUp() throws Exception {
+    super.setUp();
+    cr = new CrDupParamName();
+  }
 
-    public void testPredicate2() {
-        Object oper = Model.getCoreFactory().createOperation();
-        assertFalse(cr.predicate2(oper, null));
-        Object p1 = Model.getCoreFactory().createParameter();
-        Model.getCoreHelper().setName(p1, "param1");
-        Model.getCoreHelper().setKind(p1,
-                Model.getDirectionKind().getInParameter());
-        assertFalse(cr.predicate2(oper, null));
-        Model.getCoreHelper().addParameter(oper, p1);
-        assertFalse(cr.predicate2(oper, null));
-        Object p2 = Model.getCoreFactory().createParameter();
-        Model.getCoreHelper().setName(p2, "param2");
-        Model.getCoreHelper().setKind(p2,
-                Model.getDirectionKind().getInParameter());
-        Model.getCoreHelper().addParameter(oper, p2);
-        assertFalse(cr.predicate2(oper, null));
-        Model.getCoreHelper().setName(p2, "param1");
-        assertTrue(cr.predicate2(oper, null));
+  public void testPredicate2() {
+    Object oper = Model.getCoreFactory().createOperation();
+    assertFalse(cr.predicate2(oper, null));
+    Object p1 = Model.getCoreFactory().createParameter();
+    Model.getCoreHelper().setName(p1, "param1");
+    Model.getCoreHelper().setKind(p1, Model.getDirectionKind().getInParameter());
+    assertFalse(cr.predicate2(oper, null));
+    Model.getCoreHelper().addParameter(oper, p1);
+    assertFalse(cr.predicate2(oper, null));
+    Object p2 = Model.getCoreFactory().createParameter();
+    Model.getCoreHelper().setName(p2, "param2");
+    Model.getCoreHelper().setKind(p2, Model.getDirectionKind().getInParameter());
+    Model.getCoreHelper().addParameter(oper, p2);
+    assertFalse(cr.predicate2(oper, null));
+    Model.getCoreHelper().setName(p2, "param1");
+    assertTrue(cr.predicate2(oper, null));
 
-        // test for return parameters. they can ALSO fail!
-        Model.getCoreHelper().setKind(p1,
-                Model.getDirectionKind().getReturnParameter());
-        Model.getCoreHelper().setKind(p2,
-                Model.getDirectionKind().getReturnParameter());
-        assertTrue(cr.predicate2(oper, null));
-    }
+    // test for return parameters. they can ALSO fail!
+    Model.getCoreHelper().setKind(p1, Model.getDirectionKind().getReturnParameter());
+    Model.getCoreHelper().setKind(p2, Model.getDirectionKind().getReturnParameter());
+    assertTrue(cr.predicate2(oper, null));
+  }
 }

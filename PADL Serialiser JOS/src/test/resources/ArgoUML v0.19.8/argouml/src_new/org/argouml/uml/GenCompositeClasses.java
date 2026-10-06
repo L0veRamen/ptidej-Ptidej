@@ -28,66 +28,56 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Vector;
-
 import org.argouml.model.Model;
 import org.tigris.gef.util.ChildGenerator;
 
 /**
- * Utility class to generate a list of the children of a class.  In this case
- * the "children" of a class are the other classes that are
- * associated with the parent class, and that MAssociation has a
- * COMPOSITE end at the parent.  This is used in one of the critics.
+ * Utility class to generate a list of the children of a class. In this case the "children" of a
+ * class are the other classes that are associated with the parent class, and that MAssociation has
+ * a COMPOSITE end at the parent. This is used in one of the critics.
  *
  * @see org.argouml.uml.cognitive.critics.CrCircularComposition
  * @stereotype singleton
  */
 public class GenCompositeClasses implements ChildGenerator {
-    /**
-     * This SINGLETON is used in CrCircularComposition.
-     *
-     */
-    private static final GenCompositeClasses SINGLETON =
-        new GenCompositeClasses();
+  /** This SINGLETON is used in CrCircularComposition. */
+  private static final GenCompositeClasses SINGLETON = new GenCompositeClasses();
 
-    /**
-     * @return Returns the sINGLETON.
-     */
-    public static GenCompositeClasses getSINGLETON() {
-        return SINGLETON;
+  /**
+   * @return Returns the sINGLETON.
+   */
+  public static GenCompositeClasses getSINGLETON() {
+    return SINGLETON;
+  }
+
+  /**
+   * @see org.tigris.gef.util.ChildGenerator#gen(java.lang.Object)
+   */
+  public Enumeration gen(Object o) {
+    Vector res = new Vector();
+    if (!(Model.getFacade().isAClassifier(o))) {
+      return res.elements();
     }
-    /**
-     * @see org.tigris.gef.util.ChildGenerator#gen(java.lang.Object)
-     */
-    public Enumeration gen(Object o) {
-	Vector res = new Vector();
-	if (!(Model.getFacade().isAClassifier(o))) {
-	    return res.elements();
-	}
-	Object cls = /*(MClassifier)*/ o;
-	Vector ends = new Vector(Model.getFacade().getAssociationEnds(cls));
-	if (ends == null) {
-	    return res.elements();
-	}
-	Iterator assocEnds = ends.iterator();
-	while (assocEnds.hasNext()) {
-	    Object ae = /*(MAssociationEnd)*/ assocEnds.next();
-	    if (Model.getAggregationKind().getComposite().equals(
-	            Model.getFacade().getAggregation(ae))) {
-		Object asc = Model.getFacade().getAssociation(ae);
-		ArrayList conn = 
-		    new ArrayList(Model.getFacade().getConnections(asc));
-		if (conn == null || conn.size() != 2) {
-		    continue;
-		}
-		Object otherEnd =
-		    (ae == conn.get(0)) ? conn.get(1) : conn.get(0);
-		if (Model.getFacade().getType(ae) 
-		        != Model.getFacade().getType(otherEnd)) {
-		    res.add(Model.getFacade().getType(otherEnd));
-		}
-	    }
-	}
-	return res.elements();
+    Object cls = /*(MClassifier)*/ o;
+    Vector ends = new Vector(Model.getFacade().getAssociationEnds(cls));
+    if (ends == null) {
+      return res.elements();
     }
+    Iterator assocEnds = ends.iterator();
+    while (assocEnds.hasNext()) {
+      Object ae = /*(MAssociationEnd)*/ assocEnds.next();
+      if (Model.getAggregationKind().getComposite().equals(Model.getFacade().getAggregation(ae))) {
+        Object asc = Model.getFacade().getAssociation(ae);
+        ArrayList conn = new ArrayList(Model.getFacade().getConnections(asc));
+        if (conn == null || conn.size() != 2) {
+          continue;
+        }
+        Object otherEnd = (ae == conn.get(0)) ? conn.get(1) : conn.get(0);
+        if (Model.getFacade().getType(ae) != Model.getFacade().getType(otherEnd)) {
+          res.add(Model.getFacade().getType(otherEnd));
+        }
+      }
+    }
+    return res.elements();
+  }
 } /* end class GenCompositeClasses */
-

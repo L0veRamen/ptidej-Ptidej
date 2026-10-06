@@ -22,59 +22,50 @@
 // CALIFORNIA HAS NO OBLIGATIONS TO PROVIDE MAINTENANCE, SUPPORT,
 // UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
-
 package org.argouml.uml.ui.behavior.collaborations;
 
 import org.argouml.model.Model;
 import org.argouml.uml.ui.ActionSetMultiplicity;
 
-
 /**
- *
  * @author mkl
- *
  */
 public class ActionSetClassifierRoleMultiplicity extends ActionSetMultiplicity {
 
-    private static final ActionSetClassifierRoleMultiplicity SINGLETON =
-        new ActionSetClassifierRoleMultiplicity();
+  private static final ActionSetClassifierRoleMultiplicity SINGLETON =
+      new ActionSetClassifierRoleMultiplicity();
 
-    /**
-     *
-     */
-    public ActionSetClassifierRoleMultiplicity() {
-        super();
-    }
+  /** */
+  public ActionSetClassifierRoleMultiplicity() {
+    super();
+  }
 
-    /**
-     * @see org.argouml.uml.ui.ActionSetMultiplicity#setSelectedItem(
-     * java.lang.Object, java.lang.Object)
-     */
-    public void setSelectedItem(Object item, Object target) {
-        if (target != null
-                && Model.getFacade().isAClassifierRole(target)) {
-            if (Model.getFacade().isAMultiplicity(item)) {
-                if (!Model.getFacade().getMultiplicity(target).equals(item)) {
-                    Model.getCoreHelper().setMultiplicity(target, item);
-                }
-            } else if (item instanceof String) {
-                if (!item.equals(Model.getFacade().toString(
-                        Model.getFacade().getMultiplicity(target)))) {
-                    Model.getCoreHelper().setMultiplicity(
-                            target,
-                            Model.getDataTypesFactory().createMultiplicity(
-                                    (String) item));
-                }
-            } else {
-                Model.getCoreHelper().setMultiplicity(target, null);
-            }
+  /**
+   * @see org.argouml.uml.ui.ActionSetMultiplicity#setSelectedItem( java.lang.Object,
+   *     java.lang.Object)
+   */
+  public void setSelectedItem(Object item, Object target) {
+    if (target != null && Model.getFacade().isAClassifierRole(target)) {
+      if (Model.getFacade().isAMultiplicity(item)) {
+        if (!Model.getFacade().getMultiplicity(target).equals(item)) {
+          Model.getCoreHelper().setMultiplicity(target, item);
         }
+      } else if (item instanceof String) {
+        if (!item.equals(Model.getFacade().toString(Model.getFacade().getMultiplicity(target)))) {
+          Model.getCoreHelper()
+              .setMultiplicity(
+                  target, Model.getDataTypesFactory().createMultiplicity((String) item));
+        }
+      } else {
+        Model.getCoreHelper().setMultiplicity(target, null);
+      }
     }
+  }
 
-    /**
-     * @return Returns the SINGLETON.
-     */
-    public static ActionSetClassifierRoleMultiplicity getInstance() {
-        return SINGLETON;
-    }
+  /**
+   * @return Returns the SINGLETON.
+   */
+  public static ActionSetClassifierRoleMultiplicity getInstance() {
+    return SINGLETON;
+  }
 }

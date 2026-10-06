@@ -24,10 +24,8 @@
 
 package org.argouml.uml.cognitive.critics;
 
-import org.argouml.model.Model;
-
 import junit.framework.TestCase;
-
+import org.argouml.model.Model;
 
 /**
  * Tests for {@link CrUnconventionalClassName}.
@@ -35,39 +33,34 @@ import junit.framework.TestCase;
  * @author mkl
  */
 public class TestCrUnconventionalClassName extends TestCase {
-    /**
-     * An instance of the class to test.
-     */
-    private CrUnconventionalClassName cr = new CrUnconventionalClassName();
+  /** An instance of the class to test. */
+  private CrUnconventionalClassName cr = new CrUnconventionalClassName();
 
-    /**
-     * Constructor.
-     *
-     * @param arg0 The test case name.
-     */
-    public TestCrUnconventionalClassName(String arg0) {
-        super(arg0);
-    }
+  /**
+   * Constructor.
+   *
+   * @param arg0 The test case name.
+   */
+  public TestCrUnconventionalClassName(String arg0) {
+    super(arg0);
+  }
 
-    /**
-     * Testing the computation of suggestions.
-     */
-    public void testComputeSuggestion() {
-        assertEquals("", cr.computeSuggestion(null));
-        assertEquals("Test", cr.computeSuggestion("test"));
-        assertEquals("A", cr.computeSuggestion("a"));
-        assertEquals("Fdfdfd", cr.computeSuggestion("23232fdfdfd"));
-        assertEquals("", cr.computeSuggestion("12345"));
-        assertEquals("Foo2354foo", cr.computeSuggestion("foo2354foo"));
-    }
-    
-    public void testPredicate2() {
-        Object me = Model.getCoreFactory().createClass();
-        Model.getCoreHelper().setName(me, null);
-        assertFalse(cr.predicate2(me, null));
-        
-        Model.getCoreHelper().setName(me, "lowerCase");
-        assertTrue(cr.predicate2(me, null));
-    }
+  /** Testing the computation of suggestions. */
+  public void testComputeSuggestion() {
+    assertEquals("", cr.computeSuggestion(null));
+    assertEquals("Test", cr.computeSuggestion("test"));
+    assertEquals("A", cr.computeSuggestion("a"));
+    assertEquals("Fdfdfd", cr.computeSuggestion("23232fdfdfd"));
+    assertEquals("", cr.computeSuggestion("12345"));
+    assertEquals("Foo2354foo", cr.computeSuggestion("foo2354foo"));
+  }
 
+  public void testPredicate2() {
+    Object me = Model.getCoreFactory().createClass();
+    Model.getCoreHelper().setName(me, null);
+    assertFalse(cr.predicate2(me, null));
+
+    Model.getCoreHelper().setName(me, "lowerCase");
+    assertTrue(cr.predicate2(me, null));
+  }
 }

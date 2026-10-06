@@ -26,7 +26,6 @@ package org.argouml.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
-
 import junit.framework.TestCase;
 
 /**
@@ -35,120 +34,104 @@ import junit.framework.TestCase;
  */
 public class TestModelManagementHelper extends TestCase {
 
-    private Object theModel;
-    private Object theGoodPackage;
-    private Object theBadPackage;
-    private Object theStereotype;
-    private Object theTagDefinition;
-    private Object theClass;
-    private Collection tdPath = new ArrayList();
+  private Object theModel;
+  private Object theGoodPackage;
+  private Object theBadPackage;
+  private Object theStereotype;
+  private Object theTagDefinition;
+  private Object theClass;
+  private Collection tdPath = new ArrayList();
 
-    /**
-     * Constructor for TestModelManagementHelper.
-     *
-     * @param arg0 is the name of the test case.
-     */
-    public TestModelManagementHelper(String arg0) {
-	super(arg0);
-    }
+  /**
+   * Constructor for TestModelManagementHelper.
+   *
+   * @param arg0 is the name of the test case.
+   */
+  public TestModelManagementHelper(String arg0) {
+    super(arg0);
+  }
 
-    /**
-     * Test getting the metamodel name.
-     */
-    public void testGetMetaModelName() {
-	CheckUMLModelHelper.metaModelNameCorrect(
-			 Model.getModelManagementFactory(),
-			 TestModelManagementFactory.getAllModelElements());
-    }
+  /** Test getting the metamodel name. */
+  public void testGetMetaModelName() {
+    CheckUMLModelHelper.metaModelNameCorrect(
+        Model.getModelManagementFactory(), TestModelManagementFactory.getAllModelElements());
+  }
 
-    /**
-     * Test stereotypes.
-     */
-    public void testIsValidStereoType() {
-	CheckUMLModelHelper.isValidStereoType(
-		      Model.getModelManagementFactory(),
-		      TestModelManagementFactory.getAllModelElements());
-    }
-    
-    private void setUpTestsOfTagDefinitionContainedInStereotype() {
-        theModel = Model.getModelManagementFactory().createModel();
-        Model.getCoreHelper().setName(theModel, "TheModel");
-        Model.getModelManagementFactory().setRootModel(theModel);
-        
-        theGoodPackage = Model.getModelManagementFactory().createPackage();
-        Model.getCoreHelper().setName(theGoodPackage, "TheGoodPackage");
-        Model.getCoreHelper().setNamespace(theGoodPackage, theModel);
-        
-        theBadPackage = Model.getModelManagementFactory().createPackage();
-        Model.getCoreHelper().setName(theBadPackage, "TheBadPackage");
-        Model.getCoreHelper().setNamespace(theBadPackage, theModel);
-        
-        theClass = Model.getCoreFactory().buildClass("TheClass", 
-                    theGoodPackage);
-        theStereotype = Model.getExtensionMechanismsFactory().buildStereotype(
-                theClass, "containedStereotype", theGoodPackage);
-        theTagDefinition = Model.getExtensionMechanismsFactory()
-                .buildTagDefinition("TagDefinition", theStereotype, null);
+  /** Test stereotypes. */
+  public void testIsValidStereoType() {
+    CheckUMLModelHelper.isValidStereoType(
+        Model.getModelManagementFactory(), TestModelManagementFactory.getAllModelElements());
+  }
 
-        // Note: the containing model is not included in the returned path
-        tdPath.add("TheGoodPackage");
-        tdPath.add("containedStereotype");
-        tdPath.add("TagDefinition");
-    }
-    
-    /**
-     * Test getAllModelElementsOfKind() for tag definitions contained in 
-     * stereotypes. Issue #3829.
-     */
-    public void testGetAllModelElementsOfKindForTagDefinitionInStereotype() {
-        setUpTestsOfTagDefinitionContainedInStereotype();
-        Model.getCoreHelper().addStereotype(theClass, theStereotype);
-        assertTrue(Model.getFacade().getStereotypes(theClass).
-            contains(theStereotype));
-        Collection col = Model.getModelManagementHelper().
-            getAllModelElementsOfKind(
-                theGoodPackage, Model.getMetaTypes().getTagDefinition());
-        assertTrue("Tag definition should be contained in the model!", 
-            col.contains(theTagDefinition));
-    }
-    
-    /**
-     * Test getAllModelElementsOfKind() to make sure that it doesn't
-     * return elements which are not in the requested namespace.
-     */
-    public void testGetAllModelElementsOfKindNamespaceContraint() {
-        setUpTestsOfTagDefinitionContainedInStereotype();
-        Model.getCoreHelper().addStereotype(theClass, theStereotype);
-        Collection elements = Model.getModelManagementHelper()
-                .getAllModelElementsOfKind(theBadPackage,
-                        Model.getMetaTypes().getTagDefinition());
-        assertTrue("Elements not in namespace returned", elements.isEmpty());
-        elements = Model.getModelManagementHelper().getAllModelElementsOfKind(
-                theBadPackage, Model.getMetaTypes().getUMLClass());
-        assertTrue("Elements not in namespace returned", elements.isEmpty());
-    }
-    
-    /**
-     * Test to make sure that we can get UmlClass since its name is different
-     */
-    public void testGetUmlClassModelElements() {
-        setUpTestsOfTagDefinitionContainedInStereotype();
-        Collection col = Model.getModelManagementHelper()
-                .getAllModelElementsOfKind(theGoodPackage,
-                        Model.getMetaTypes().getUMLClass());
-        assertTrue("Failed to get UmlClass ModelElement", col
-                .contains(theClass));
-    }
-    
-    /**
-     * Test the getPath method with a tag definition contained in a stereotype.
-     */
-    public void testGetPathForTagDefinitionInStereotype() {
-        setUpTestsOfTagDefinitionContainedInStereotype();
+  private void setUpTestsOfTagDefinitionContainedInStereotype() {
+    theModel = Model.getModelManagementFactory().createModel();
+    Model.getCoreHelper().setName(theModel, "TheModel");
+    Model.getModelManagementFactory().setRootModel(theModel);
 
-        Collection path = Model.getModelManagementHelper().getPath(
-                theTagDefinition);
-        assertTrue("Wrong path returned for TagDefinition", 
-                tdPath.equals(path));
-    }
+    theGoodPackage = Model.getModelManagementFactory().createPackage();
+    Model.getCoreHelper().setName(theGoodPackage, "TheGoodPackage");
+    Model.getCoreHelper().setNamespace(theGoodPackage, theModel);
+
+    theBadPackage = Model.getModelManagementFactory().createPackage();
+    Model.getCoreHelper().setName(theBadPackage, "TheBadPackage");
+    Model.getCoreHelper().setNamespace(theBadPackage, theModel);
+
+    theClass = Model.getCoreFactory().buildClass("TheClass", theGoodPackage);
+    theStereotype =
+        Model.getExtensionMechanismsFactory()
+            .buildStereotype(theClass, "containedStereotype", theGoodPackage);
+    theTagDefinition =
+        Model.getExtensionMechanismsFactory()
+            .buildTagDefinition("TagDefinition", theStereotype, null);
+
+    // Note: the containing model is not included in the returned path
+    tdPath.add("TheGoodPackage");
+    tdPath.add("containedStereotype");
+    tdPath.add("TagDefinition");
+  }
+
+  /** Test getAllModelElementsOfKind() for tag definitions contained in stereotypes. Issue #3829. */
+  public void testGetAllModelElementsOfKindForTagDefinitionInStereotype() {
+    setUpTestsOfTagDefinitionContainedInStereotype();
+    Model.getCoreHelper().addStereotype(theClass, theStereotype);
+    assertTrue(Model.getFacade().getStereotypes(theClass).contains(theStereotype));
+    Collection col =
+        Model.getModelManagementHelper()
+            .getAllModelElementsOfKind(theGoodPackage, Model.getMetaTypes().getTagDefinition());
+    assertTrue("Tag definition should be contained in the model!", col.contains(theTagDefinition));
+  }
+
+  /**
+   * Test getAllModelElementsOfKind() to make sure that it doesn't return elements which are not in
+   * the requested namespace.
+   */
+  public void testGetAllModelElementsOfKindNamespaceContraint() {
+    setUpTestsOfTagDefinitionContainedInStereotype();
+    Model.getCoreHelper().addStereotype(theClass, theStereotype);
+    Collection elements =
+        Model.getModelManagementHelper()
+            .getAllModelElementsOfKind(theBadPackage, Model.getMetaTypes().getTagDefinition());
+    assertTrue("Elements not in namespace returned", elements.isEmpty());
+    elements =
+        Model.getModelManagementHelper()
+            .getAllModelElementsOfKind(theBadPackage, Model.getMetaTypes().getUMLClass());
+    assertTrue("Elements not in namespace returned", elements.isEmpty());
+  }
+
+  /** Test to make sure that we can get UmlClass since its name is different */
+  public void testGetUmlClassModelElements() {
+    setUpTestsOfTagDefinitionContainedInStereotype();
+    Collection col =
+        Model.getModelManagementHelper()
+            .getAllModelElementsOfKind(theGoodPackage, Model.getMetaTypes().getUMLClass());
+    assertTrue("Failed to get UmlClass ModelElement", col.contains(theClass));
+  }
+
+  /** Test the getPath method with a tag definition contained in a stereotype. */
+  public void testGetPathForTagDefinitionInStereotype() {
+    setUpTestsOfTagDefinitionContainedInStereotype();
+
+    Collection path = Model.getModelManagementHelper().getPath(theTagDefinition);
+    assertTrue("Wrong path returned for TagDefinition", tdPath.equals(path));
+  }
 }

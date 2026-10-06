@@ -24,49 +24,47 @@
 
 package org.argouml.model;
 
-/**
- * The different PseudostateKinds.
- */
+/** The different PseudostateKinds. */
 public interface PseudostateKind {
-    /**
-     * @return Returns the Branch PseudostateKind.
-     * @deprecated UML 1.3 - use getChoice
-     */
-    Object getBranch();
+  /**
+   * @return Returns the Branch PseudostateKind.
+   * @deprecated UML 1.3 - use getChoice
+   */
+  Object getBranch();
 
-    /**
-     * @return Returns the Choice (Branch in UML 1.3) PseudostateKind.
-     * @since UML 1.4
-     */
-    Object getChoice();
+  /**
+   * @return Returns the Choice (Branch in UML 1.3) PseudostateKind.
+   * @since UML 1.4
+   */
+  Object getChoice();
 
-    /**
-     * @return Returns the DeepHistory PseudostateKind.
-     */
-    Object getDeepHistory();
+  /**
+   * @return Returns the DeepHistory PseudostateKind.
+   */
+  Object getDeepHistory();
 
-    /**
-     * @return Returns the Fork PseudostateKind.
-     */
-    Object getFork();
+  /**
+   * @return Returns the Fork PseudostateKind.
+   */
+  Object getFork();
 
-    /**
-     * @return Returns the Initial PseudostateKind.
-     */
-    Object getInitial();
+  /**
+   * @return Returns the Initial PseudostateKind.
+   */
+  Object getInitial();
 
-    /**
-     * @return Returns the Join PseudostateKind.
-     */
-    Object getJoin();
+  /**
+   * @return Returns the Join PseudostateKind.
+   */
+  Object getJoin();
 
-    /**
-     * @return Returns the Junction PseudostateKind.
-     */
-    Object getJunction();
+  /**
+   * @return Returns the Junction PseudostateKind.
+   */
+  Object getJunction();
 
-    /**
-     * @return Returns the ShallowHistory PseudostateKind.
-     */
-    Object getShallowHistory();
+  /**
+   * @return Returns the ShallowHistory PseudostateKind.
+   */
+  Object getShallowHistory();
 }

@@ -1,11 +1,9 @@
 public class B extends Object {
 
-	private C _c0;
+  private C _c0;
 
-	public B() {
+  public B() {
 
-		this._c0 = new C();
-
-	}
-
+    this._c0 = new C();
+  }
 }

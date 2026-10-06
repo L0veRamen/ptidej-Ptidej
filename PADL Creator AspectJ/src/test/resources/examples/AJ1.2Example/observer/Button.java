@@ -10,31 +10,31 @@ This software is made available AS IS, and Xerox Corporation makes no warranty
 about the software, its performance or its conformity to any specification.
 */
 
-
 package observer;
 
 import java.awt.Color;
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 class Button extends java.awt.Button {
 
-    static final Color  defaultBackgroundColor = Color.gray;
-    static final Color  defaultForegroundColor = Color.black;
-    static final String defaultText = "cycle color";
+  static final Color defaultBackgroundColor = Color.gray;
+  static final Color defaultForegroundColor = Color.black;
+  static final String defaultText = "cycle color";
 
-    Button(Display display) {
-        super();
-        setLabel(defaultText);
-        setBackground(defaultBackgroundColor);
-        setForeground(defaultForegroundColor);
-        addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    Button.this.click();
-                }
-            });
-        display.addToFrame(this);
-    }
+  Button(Display display) {
+    super();
+    setLabel(defaultText);
+    setBackground(defaultBackgroundColor);
+    setForeground(defaultForegroundColor);
+    addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Button.this.click();
+          }
+        });
+    display.addToFrame(this);
+  }
 
-    public void click() {}
+  public void click() {}
 }

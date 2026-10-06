@@ -35,27 +35,23 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  */
 public class UMLEventParameterListModel extends UMLModelElementListModel2 {
 
+  /** Constructor for UMLEventParameterListModel. */
+  public UMLEventParameterListModel() {
+    super("parameter");
+  }
 
-    /**
-     * Constructor for UMLEventParameterListModel.
-     */
-    public UMLEventParameterListModel() {
-        super("parameter");
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    // setAllElements(((MEvent)getTarget()).getParameters());
+    setAllElements(Model.getFacade().getParameters(getTarget()));
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        //setAllElements(((MEvent)getTarget()).getParameters());
-        setAllElements(Model.getFacade().getParameters(getTarget()));
-    }
-
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().getParameters(getTarget()).contains(element);
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().getParameters(getTarget()).contains(element);
+  }
 }

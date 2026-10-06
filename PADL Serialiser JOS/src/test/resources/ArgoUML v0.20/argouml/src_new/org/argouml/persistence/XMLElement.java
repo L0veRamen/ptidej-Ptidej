@@ -32,92 +32,105 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class XMLElement {
 
-    ////////////////////////////////////////////////////////////////
-    // instance variables
+  ////////////////////////////////////////////////////////////////
+  // instance variables
 
-    private String        name       = null;
-    private StringBuffer  text       = new StringBuffer(100);
-    private Attributes    attributes = null;
+  private String name = null;
 
-    /**
-     * Constructor.
-     *
-     * @param n The name of the element.
-     * @param a The attributes.
-     */
-    public XMLElement(String n, Attributes a) {
-	name = n;
-	attributes = new AttributesImpl(a);
-    }
+  private StringBuffer text = new StringBuffer(100);
+  private Attributes attributes = null;
 
-    ////////////////////////////////////////////////////////////////
-    // accessors
+  /**
+   * Constructor.
+   *
+   * @param n The name of the element.
+   * @param a The attributes.
+   */
+  public XMLElement(String n, Attributes a) {
+    name = n;
+    attributes = new AttributesImpl(a);
+  }
 
-    /**
-     * @return the name of this element
-     */
-    public String getName()            { return name; }
-    /**
-     * @param n the name of this element
-     */
-    public void   setName(String n) { name = n; }
+  ////////////////////////////////////////////////////////////////
+  // accessors
 
-    /**
-     * @param t the text to be appended
-     */
-    public void   addText(String t) { text = text.append(t); }
+  /**
+   * @return the name of this element
+   */
+  public String getName() {
+    return name;
+  }
 
-    /**
-     * @param t the new text
-     */
-    public void   setText(String t) { text = new StringBuffer(t); }
+  /**
+   * @param n the name of this element
+   */
+  public void setName(String n) {
+    name = n;
+  }
 
-    /**
-     * Erase the text of this element.
-     */
-    public void   resetText()          { text.setLength(0); }
+  /**
+   * @param t the text to be appended
+   */
+  public void addText(String t) {
+    text = text.append(t);
+  }
 
-    /**
-     * @return the text of this element
-     */
-    public String getText()            { return text.toString(); }
+  /**
+   * @param t the new text
+   */
+  public void setText(String t) {
+    text = new StringBuffer(t);
+  }
 
-    /**
-     * Change the attributes for this element.
-     *
-     * @param a The new list of attributes.
-     */
-    public void   setAttributes(Attributes a) {
-	attributes = new AttributesImpl(a);
-    }
+  /** Erase the text of this element. */
+  public void resetText() {
+    text.setLength(0);
+  }
 
-    /**
-     * @param attribute the attribute name
-     * @return the attribute value
-     */
-    public String getAttribute(String attribute) {
-	return attributes.getValue(attribute);
-    }
+  /**
+   * @return the text of this element
+   */
+  public String getText() {
+    return text.toString();
+  }
 
-    /**
-     * @param i the index for the list of attributes
-     * @return the attribute name for the attribute at the given index
-     */
-    public String getAttributeName(int i) {
-        return attributes.getLocalName(i);
-    }
+  /**
+   * Change the attributes for this element.
+   *
+   * @param a The new list of attributes.
+   */
+  public void setAttributes(Attributes a) {
+    attributes = new AttributesImpl(a);
+  }
 
-    /**
-     * @param i the index for the list of attributes
-     * @return the attribute value for the attribute at the given index
-     */
-    public String getAttributeValue(int i) {
-        return attributes.getValue(i);
-    }
+  /**
+   * @param attribute the attribute name
+   * @return the attribute value
+   */
+  public String getAttribute(String attribute) {
+    return attributes.getValue(attribute);
+  }
 
-    /**
-     * @return the number of attributes
-     */
-    public int    getNumAttributes() { return attributes.getLength(); }
+  /**
+   * @param i the index for the list of attributes
+   * @return the attribute name for the attribute at the given index
+   */
+  public String getAttributeName(int i) {
+    return attributes.getLocalName(i);
+  }
 
+  /**
+   * @param i the index for the list of attributes
+   * @return the attribute value for the attribute at the given index
+   */
+  public String getAttributeValue(int i) {
+    return attributes.getValue(i);
+  }
+
+  /**
+   * @return the number of attributes
+   */
+  public int getNumAttributes() {
+    return attributes.getLength();
+  }
 } /* end class XMLElement */

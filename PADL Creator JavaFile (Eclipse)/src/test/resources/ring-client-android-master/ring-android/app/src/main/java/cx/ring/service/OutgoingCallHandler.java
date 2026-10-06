@@ -26,44 +26,40 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.preference.PreferenceManager;
-import android.util.Log;
-
 import cx.ring.R;
 import cx.ring.client.CallActivity;
-import cx.ring.fragments.SettingsFragment;
 import cx.ring.model.SipUri;
 
-public class OutgoingCallHandler extends BroadcastReceiver
-{
-    private static final String TAG = OutgoingCallHandler.class.getSimpleName();
-    public static final String KEY_CACHE_HAVE_RINGACCOUNT = "cache_haveRingAccount";
-    public static final String KEY_CACHE_HAVE_SIPACCOUNT = "cache_haveSipAccount";
+public class OutgoingCallHandler extends BroadcastReceiver {
+  private static final String TAG = OutgoingCallHandler.class.getSimpleName();
+  public static final String KEY_CACHE_HAVE_RINGACCOUNT = "cache_haveRingAccount";
+  public static final String KEY_CACHE_HAVE_SIPACCOUNT = "cache_haveSipAccount";
 
-    @Override
-    public void onReceive(Context context, Intent intent)
-    {
-        String phoneNumber = getResultData();
-        if (phoneNumber == null)
-            phoneNumber = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
+  @Override
+  public void onReceive(Context context, Intent intent) {
+    String phoneNumber = getResultData();
+    if (phoneNumber == null) phoneNumber = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        boolean systemDialer = sharedPreferences.getBoolean(context.getString(R.string.pref_systemDialer_key), false);
-        if (systemDialer) {
-            boolean systemDialerSip = sharedPreferences.getBoolean(KEY_CACHE_HAVE_SIPACCOUNT, false);
-            boolean systemDialerRing = sharedPreferences.getBoolean(KEY_CACHE_HAVE_RINGACCOUNT, false);
+    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+    boolean systemDialer =
+        sharedPreferences.getBoolean(context.getString(R.string.pref_systemDialer_key), false);
+    if (systemDialer) {
+      boolean systemDialerSip = sharedPreferences.getBoolean(KEY_CACHE_HAVE_SIPACCOUNT, false);
+      boolean systemDialerRing = sharedPreferences.getBoolean(KEY_CACHE_HAVE_RINGACCOUNT, false);
 
-            SipUri sipUri = new SipUri(phoneNumber);
-            boolean isRingId = sipUri.isRingId();
-            if ((!isRingId && systemDialerSip) || (isRingId && systemDialerRing) || sipUri.isSingleIp()) {
-                Intent i = new Intent(CallActivity.ACTION_CALL)
-                        .setClass(context, CallActivity.class)
-                        .setData(Uri.parse(phoneNumber))
-                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+      SipUri sipUri = new SipUri(phoneNumber);
+      boolean isRingId = sipUri.isRingId();
+      if ((!isRingId && systemDialerSip) || (isRingId && systemDialerRing) || sipUri.isSingleIp()) {
+        Intent i =
+            new Intent(CallActivity.ACTION_CALL)
+                .setClass(context, CallActivity.class)
+                .setData(Uri.parse(phoneNumber))
+                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                context.startActivity(i);
+        context.startActivity(i);
 
-                setResultData(null);
-            }
-        }
+        setResultData(null);
+      }
     }
+  }
 }

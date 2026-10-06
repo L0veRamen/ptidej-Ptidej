@@ -27,12 +27,10 @@ package org.argouml.ui;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
-
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
-
 import org.argouml.i18n.Translator;
 import org.argouml.uml.diagram.ui.FigNodeModelElement;
 
@@ -40,107 +38,94 @@ import org.argouml.uml.diagram.ui.FigNodeModelElement;
  * A ComboBox that contains the set of possible Shadow Width values.
  *
  * @author Jeremy Jones
-**/
+ */
 public class ShadowComboBox extends JComboBox {
 
-    private static ShadowFig[]  shadowFigs = null;
+  private static ShadowFig[] shadowFigs = null;
 
-    /**
-     * The constructor.
-     *
-     */
-    public ShadowComboBox() {
-        super();
+  /** The constructor. */
+  public ShadowComboBox() {
+    super();
 
-        addItem(Translator.localize("label.stylepane.no-shadow"));
-        addItem("1");
-        addItem("2");
-        addItem("3");
-        addItem("4");
-        addItem("5");
-        addItem("6");
-        addItem("7");
-        addItem("8");
+    addItem(Translator.localize("label.stylepane.no-shadow"));
+    addItem("1");
+    addItem("2");
+    addItem("3");
+    addItem("4");
+    addItem("5");
+    addItem("6");
+    addItem("7");
+    addItem("8");
 
-        setRenderer(new ShadowRenderer());
+    setRenderer(new ShadowRenderer());
+  }
+
+  /**
+   * Renders each combo box entry as a shadowed diagram figure with the associated level of shadow.
+   */
+  private class ShadowRenderer extends JComponent implements ListCellRenderer {
+
+    private ShadowFig currentFig = null;
+
+    public ShadowRenderer() {
+      super();
     }
 
-    /**
-     * Renders each combo box entry as a shadowed diagram figure with the
-     * associated level of shadow.
-    **/
-    private class ShadowRenderer
-	extends JComponent
-	implements ListCellRenderer {
+    public Component getListCellRendererComponent(
+        JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 
-        private ShadowFig  currentFig = null;
+      if (shadowFigs == null) {
+        shadowFigs = new ShadowFig[ShadowComboBox.this.getItemCount()];
 
-        public ShadowRenderer() {
-            super();
+        for (int i = 0; i < shadowFigs.length; ++i) {
+          shadowFigs[i] = new ShadowFig();
+          shadowFigs[i].setShadowSize(i);
+          shadowFigs[i].getNameFig().setText((String) ShadowComboBox.this.getItemAt(i));
         }
+      }
 
-        public Component getListCellRendererComponent(
-            JList list,
-            Object value,
-            int index,
-            boolean isSelected,
-            boolean cellHasFocus) {
+      if (isSelected) {
+        setBackground(list.getSelectionBackground());
+      } else {
+        setBackground(list.getBackground());
+      }
 
-            if (shadowFigs == null) {
-                shadowFigs = new ShadowFig[ShadowComboBox.this.getItemCount()];
-
-                for (int i = 0; i < shadowFigs.length; ++i) {
-                    shadowFigs[i] = new ShadowFig();
-                    shadowFigs[i].setShadowSize(i);
-                    shadowFigs[i].getNameFig().setText(
-                        (String) ShadowComboBox.this.getItemAt(i));
-                }
-            }
-
-            if (isSelected) {
-                setBackground(list.getSelectionBackground());
-            }
-            else {
-                setBackground(list.getBackground());
-            }
-
-            int figIndex = index;
-            if (figIndex < 0) {
-                for (int i = 0; i < shadowFigs.length; ++i) {
-                    if (value == ShadowComboBox.this.getItemAt(i)) {
-                        figIndex = i;
-                    }
-                }
-            }
-
-            if (figIndex >= 0) {
-                currentFig = shadowFigs[figIndex];
-                setPreferredSize(new Dimension(
-                    currentFig.getWidth() + figIndex + 4,
-                    currentFig.getHeight() + figIndex + 2));
-            }
-            else {
-                currentFig = null;
-            }
-
-            return this;
+      int figIndex = index;
+      if (figIndex < 0) {
+        for (int i = 0; i < shadowFigs.length; ++i) {
+          if (value == ShadowComboBox.this.getItemAt(i)) {
+            figIndex = i;
+          }
         }
+      }
 
-        protected void paintComponent(Graphics g) {
-            g.setColor(getBackground());
-            g.fillRect(0, 0, getWidth(), getHeight());
-            if (currentFig != null) {
-                currentFig.setLocation(2, 1);
-                currentFig.paint(g);
-            }
-        }
+      if (figIndex >= 0) {
+        currentFig = shadowFigs[figIndex];
+        setPreferredSize(
+            new Dimension(
+                currentFig.getWidth() + figIndex + 4, currentFig.getHeight() + figIndex + 2));
+      } else {
+        currentFig = null;
+      }
+
+      return this;
     }
 
-    private class ShadowFig extends FigNodeModelElement {
-        public ShadowFig() {
-            super();
-            addFig(getBigPort());
-            addFig(getNameFig());
-        }
+    protected void paintComponent(Graphics g) {
+      g.setColor(getBackground());
+      g.fillRect(0, 0, getWidth(), getHeight());
+      if (currentFig != null) {
+        currentFig.setLocation(2, 1);
+        currentFig.paint(g);
+      }
     }
+  }
+
+  private class ShadowFig extends FigNodeModelElement {
+    public ShadowFig() {
+      super();
+      addFig(getBigPort());
+      addFig(getNameFig());
+    }
+  }
 }

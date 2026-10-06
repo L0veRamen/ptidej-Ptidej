@@ -14,64 +14,53 @@ package tracing.version1;
 
 import java.io.PrintStream;
 
-/**
- *
- * This class provides some basic functionality for printing trace messages
- * into a stream.
- *
- */
+/** This class provides some basic functionality for printing trace messages into a stream. */
 public class Trace {
-    /**
-     * There are 3 trace levels (values of TRACELEVEL):
-     * 0 - No messages are printed
-     * 1 - Trace messages are printed, but there is no indentation
-     *     according to the call stack
-     * 2 - Trace messages are printed, and they are indented
-     *     according to the call stack
-     */
-    public static int TRACELEVEL = 0;
-    protected static PrintStream stream = null;
-    protected static int callDepth = 0;
+  /**
+   * There are 3 trace levels (values of TRACELEVEL): 0 - No messages are printed 1 - Trace messages
+   * are printed, but there is no indentation according to the call stack 2 - Trace messages are
+   * printed, and they are indented according to the call stack
+   */
+  public static int TRACELEVEL = 0;
 
-    /**
-     * Initialization.
-     */
-    public static void initStream(PrintStream s) {
-        stream = s;
-    }
+  protected static PrintStream stream = null;
+  protected static int callDepth = 0;
 
-    /**
-     * Prints an "entering" message. It is intended to be called in the
-     * beginning of the blocks to be traced.
-     */
-    public static void traceEntry(String str) {
-        if (TRACELEVEL == 0) return;
-        if (TRACELEVEL == 2) callDepth++;
-        printEntering(str);
-    }
+  /** Initialization. */
+  public static void initStream(PrintStream s) {
+    stream = s;
+  }
 
-    /**
-     * Prints an "exiting" message. It is intended to be called in the
-     * end of the blocks to be traced.
-     */
-    public static void traceExit(String str) {
-        if (TRACELEVEL == 0) return;
-        printExiting(str);
-        if (TRACELEVEL == 2) callDepth--;
-    }
+  /**
+   * Prints an "entering" message. It is intended to be called in the beginning of the blocks to be
+   * traced.
+   */
+  public static void traceEntry(String str) {
+    if (TRACELEVEL == 0) return;
+    if (TRACELEVEL == 2) callDepth++;
+    printEntering(str);
+  }
 
-    private static void printEntering(String str) {
-        printIndent();
-        stream.println("--> " + str);
-    }
+  /**
+   * Prints an "exiting" message. It is intended to be called in the end of the blocks to be traced.
+   */
+  public static void traceExit(String str) {
+    if (TRACELEVEL == 0) return;
+    printExiting(str);
+    if (TRACELEVEL == 2) callDepth--;
+  }
 
-    private static void printExiting(String str) {
-        printIndent();
-        stream.println("<-- " + str);
-    }
+  private static void printEntering(String str) {
+    printIndent();
+    stream.println("--> " + str);
+  }
 
-    private static void printIndent() {
-        for (int i = 0; i < callDepth; i++)
-            stream.print("  ");
-    }
+  private static void printExiting(String str) {
+    printIndent();
+    stream.println("<-- " + str);
+  }
+
+  private static void printIndent() {
+    for (int i = 0; i < callDepth; i++) stream.print("  ");
+  }
 }

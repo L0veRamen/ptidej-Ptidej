@@ -1,5 +1,3 @@
 package padl.example.interfaz;
 
-public interface SuperInterface1 {
-
-}
+public interface SuperInterface1 {}

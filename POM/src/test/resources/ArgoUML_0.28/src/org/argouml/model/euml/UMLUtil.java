@@ -42,150 +42,146 @@ import org.eclipse.uml2.uml.Property;
 import org.eclipse.uml2.uml.Type;
 
 /**
- * This class exposes protected methods from
- * {@link org.eclipse.uml2.uml.UMLUtil} and adds additional util methods
- * 
+ * This class exposes protected methods from {@link org.eclipse.uml2.uml.UMLUtil} and adds
+ * additional util methods
+ *
  * @author Bogdan Pistol
  */
 public class UMLUtil extends org.eclipse.uml2.uml.util.UMLUtil {
 
-    /**
-     * The default URI used for eUML
-     */
-    public static final URI DEFAULT_URI = URI.createURI("http://argouml.tigris.org/euml/resource/default_uri.xmi"); //$NON-NLS-1$
-        
-    /**
-     * Getter for the attributes of a Type
-     * 
-     * @param type
-     *                The Type that owns the attributes
-     * @return the attributes or null
-     */
-    public static EList<Property> getOwnedAttributes(Type type) {
-        if (type instanceof AssociationClass) {
-            return ((AssociationClass) type).getOwnedAttributes();
-        } else if (type instanceof Association) {
-            return ((Association) type).getOwnedEnds();
-        } else {
-            return org.eclipse.uml2.uml.util.UMLUtil.getOwnedAttributes(type);
-        }
-    }
+  /** The default URI used for eUML */
+  public static final URI DEFAULT_URI =
+      URI.createURI("http://argouml.tigris.org/euml/resource/default_uri.xmi"); // $NON-NLS-1$
 
-    /**
-     * Getter for the operations of a Type
-     * 
-     * @param type
-     *                The Type that owns the operations
-     * @return the operations or null
-     */
-    public static EList<Operation> getOwnedOperations(Type type) {
-        return org.eclipse.uml2.uml.util.UMLUtil.getOwnedOperations(type);
+  /**
+   * Getter for the attributes of a Type
+   *
+   * @param type The Type that owns the attributes
+   * @return the attributes or null
+   */
+  public static EList<Property> getOwnedAttributes(Type type) {
+    if (type instanceof AssociationClass) {
+      return ((AssociationClass) type).getOwnedAttributes();
+    } else if (type instanceof Association) {
+      return ((Association) type).getOwnedEnds();
+    } else {
+      return org.eclipse.uml2.uml.util.UMLUtil.getOwnedAttributes(type);
     }
+  }
 
-    /**
-     * Copy a tree of UML elements into a destination location
-     * 
-     * @param modelImplementation
-     *                the eUML model implementation
-     * @param source
-     *                the tree of UML elements to be copied
-     * @param destination
-     *                the destination container
-     * @return the root of the newly copied tree of UML elements or null
-     */
-    public static Element copy(EUMLModelImplementation modelImplementation,
-            Element source, Element destination) {
-        Command copyToClipboard = CopyToClipboardCommand.create(
-                modelImplementation.getEditingDomain(), source);
-        Command pasteFromClipboard = PasteFromClipboardCommand.create(
-                modelImplementation.getEditingDomain(), destination, null);
-        StrictCompoundCommand copyCommand = new StrictCompoundCommand() {
-            {
-                isPessimistic = true;
-            }
+  /**
+   * Getter for the operations of a Type
+   *
+   * @param type The Type that owns the operations
+   * @return the operations or null
+   */
+  public static EList<Operation> getOwnedOperations(Type type) {
+    return org.eclipse.uml2.uml.util.UMLUtil.getOwnedOperations(type);
+  }
+
+  /**
+   * Copy a tree of UML elements into a destination location
+   *
+   * @param modelImplementation the eUML model implementation
+   * @param source the tree of UML elements to be copied
+   * @param destination the destination container
+   * @return the root of the newly copied tree of UML elements or null
+   */
+  public static Element copy(
+      EUMLModelImplementation modelImplementation, Element source, Element destination) {
+    Command copyToClipboard =
+        CopyToClipboardCommand.create(modelImplementation.getEditingDomain(), source);
+    Command pasteFromClipboard =
+        PasteFromClipboardCommand.create(modelImplementation.getEditingDomain(), destination, null);
+    StrictCompoundCommand copyCommand =
+        new StrictCompoundCommand() {
+          {
+            isPessimistic = true;
+          }
         };
-        copyCommand.append(copyToClipboard);
-        copyCommand.append(pasteFromClipboard);
-        copyCommand.setLabel("Copy a tree of UML elements to a destination");
-        if (copyCommand.canExecute()) {
-            modelImplementation.getModelEventPump().getRootContainer().setHoldEvents(
-                    true);
-            modelImplementation.getEditingDomain().getCommandStack().execute(
-                    copyCommand);
-            if (modelImplementation.getEditingDomain().getCommandStack().getMostRecentCommand().getAffectedObjects().size() == 1) {
-                modelImplementation.getModelEventPump().getRootContainer().setHoldEvents(
-                        false);
-                return (Element) modelImplementation.getEditingDomain().getCommandStack().getMostRecentCommand().getAffectedObjects().iterator().next();
-            } else {
-                modelImplementation.getEditingDomain().getCommandStack().undo();
-                modelImplementation.getModelEventPump().getRootContainer().clearHeldEvents();
-                modelImplementation.getModelEventPump().getRootContainer().setHoldEvents(
-                        false);
-            }
-        }
-        return null;
+    copyCommand.append(copyToClipboard);
+    copyCommand.append(pasteFromClipboard);
+    copyCommand.setLabel("Copy a tree of UML elements to a destination");
+    if (copyCommand.canExecute()) {
+      modelImplementation.getModelEventPump().getRootContainer().setHoldEvents(true);
+      modelImplementation.getEditingDomain().getCommandStack().execute(copyCommand);
+      if (modelImplementation
+              .getEditingDomain()
+              .getCommandStack()
+              .getMostRecentCommand()
+              .getAffectedObjects()
+              .size()
+          == 1) {
+        modelImplementation.getModelEventPump().getRootContainer().setHoldEvents(false);
+        return (Element)
+            modelImplementation
+                .getEditingDomain()
+                .getCommandStack()
+                .getMostRecentCommand()
+                .getAffectedObjects()
+                .iterator()
+                .next();
+      } else {
+        modelImplementation.getEditingDomain().getCommandStack().undo();
+        modelImplementation.getModelEventPump().getRootContainer().clearHeldEvents();
+        modelImplementation.getModelEventPump().getRootContainer().setHoldEvents(false);
+      }
     }
-    
-    /**
-     * Returns information about an Object.
-     * <p>
-     * If it's an Element it returns its metaclass name, and if it's a
-     * NamedElement it appends its name.
-     * 
-     * @param o
-     *                The object
-     * @return the String description
-     */
-    public static String toString(Object o) {
-        if (o == null) {
-            return "null"; //$NON-NLS-1$
-        }
-        if (!(o instanceof Element)) {
-            return o.toString();
-        }
-        
-        StringBuilder sb = new StringBuilder("'"); //$NON-NLS-1$
-        boolean named = false;
-        
-        if (o instanceof NamedElement && ((NamedElement) o).getName() != null
-                && !((NamedElement) o).getName().equals("")) { //$NON-NLS-1$
-            named = true;
-            sb.append(((NamedElement) o).getName() + " ["); //$NON-NLS-1$
-        }
-        
-        sb.append(((Element) o).eClass().getName());
-        
-        if (named) {
-            sb.append("]"); //$NON-NLS-1$
-        }
-        
-        sb.append("'"); //$NON-NLS-1$
-        
-        return sb.toString();
+    return null;
+  }
+
+  /**
+   * Returns information about an Object.
+   *
+   * <p>If it's an Element it returns its metaclass name, and if it's a NamedElement it appends its
+   * name.
+   *
+   * @param o The object
+   * @return the String description
+   */
+  public static String toString(Object o) {
+    if (o == null) {
+      return "null"; //$NON-NLS-1$
     }
-    
-    /**
-     * Returns the Resource associated with an URI or creates the resource if it
-     * does not exist
-     * 
-     * @param modelImplementation
-     *                the eUML implementation
-     * @param uri
-     *                the URI which identifies the resource
-     * @return the retrieved or created resource
-     */
-    static Resource getResource(
-            EUMLModelImplementation modelImplementation, URI uri,
-            boolean readOnly) {
-        Resource r = modelImplementation.getEditingDomain().getResourceSet()
-                .getResource(uri, false);
-        if (r == null) {
-            r = modelImplementation.getEditingDomain().getResourceSet()
-                    .createResource(uri);
-        }
-        modelImplementation.getReadOnlyMap().put(r, Boolean.valueOf(readOnly));
-        return r;
+    if (!(o instanceof Element)) {
+      return o.toString();
     }
 
+    StringBuilder sb = new StringBuilder("'"); // $NON-NLS-1$
+    boolean named = false;
 
+    if (o instanceof NamedElement
+        && ((NamedElement) o).getName() != null
+        && !((NamedElement) o).getName().equals("")) { // $NON-NLS-1$
+      named = true;
+      sb.append(((NamedElement) o).getName() + " ["); // $NON-NLS-1$
+    }
+
+    sb.append(((Element) o).eClass().getName());
+
+    if (named) {
+      sb.append("]"); // $NON-NLS-1$
+    }
+
+    sb.append("'"); // $NON-NLS-1$
+
+    return sb.toString();
+  }
+
+  /**
+   * Returns the Resource associated with an URI or creates the resource if it does not exist
+   *
+   * @param modelImplementation the eUML implementation
+   * @param uri the URI which identifies the resource
+   * @return the retrieved or created resource
+   */
+  static Resource getResource(
+      EUMLModelImplementation modelImplementation, URI uri, boolean readOnly) {
+    Resource r = modelImplementation.getEditingDomain().getResourceSet().getResource(uri, false);
+    if (r == null) {
+      r = modelImplementation.getEditingDomain().getResourceSet().createResource(uri);
+    }
+    modelImplementation.getReadOnlyMap().put(r, Boolean.valueOf(readOnly));
+    return r;
+  }
 }

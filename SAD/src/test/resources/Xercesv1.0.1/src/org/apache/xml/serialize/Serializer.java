@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xerces" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -55,47 +55,35 @@
  * <http://www.apache.org/>.
  */
 
-
 package org.apache.xml.serialize;
 
-
-import java.io.Writer;
 import java.io.OutputStream;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-
-import org.w3c.dom.Element;
+import java.io.Writer;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.xml.sax.DocumentHandler;
 
-
 /**
- * Interface for a DOM serializer implementation, factory for DOM and SAX
- * serializers, and static methods for serializing DOM documents.
- * <p>
- * To serialize a document using SAX events, create a compatible serializer
- * using {@link #makeSAXSerializer} and pass it around as a {@link
- * DocumentHandler}. If an I/O error occurs while serializing, it will
- * be thrown by {@link DocumentHandler#endDocument}. The SAX serializer
- * may also be used as {@link DTDHandler}, {@link DeclHandler} and
- * {@link LexicalHandler}.
- * <p>
- * To serialize a DOM document or DOM element, create a compatible
- * serializer using {@link #makeSerializer} and call it's {@link
- * #serialize(Document)} or {@link #serialize(Element)} methods.
- * Both methods would produce a full XML document, to serizlie only
- * the portion of the document use {@link OutputFormat#setOmitXMLDeclaration}
- * and specify no document type.
- * <p>
- * The convenience method {@link #serialize(Document,Writer,OutputFormat)}
- * creates a serializer and calls {@link #serizlie(Document)} on that
- * serialized.
- * <p>
- * The {@link OutputFormat} dictates what underlying serialized is used
- * to serialize the document based on the specified method. If the output
- * format or method are missing, the default is an XML serializer with
- * UTF-8 encoding and now indentation.
- * 
+ * Interface for a DOM serializer implementation, factory for DOM and SAX serializers, and static
+ * methods for serializing DOM documents.
+ *
+ * <p>To serialize a document using SAX events, create a compatible serializer using {@link
+ * #makeSAXSerializer} and pass it around as a {@link DocumentHandler}. If an I/O error occurs while
+ * serializing, it will be thrown by {@link DocumentHandler#endDocument}. The SAX serializer may
+ * also be used as {@link DTDHandler}, {@link DeclHandler} and {@link LexicalHandler}.
+ *
+ * <p>To serialize a DOM document or DOM element, create a compatible serializer using {@link
+ * #makeSerializer} and call it's {@link #serialize(Document)} or {@link #serialize(Element)}
+ * methods. Both methods would produce a full XML document, to serizlie only the portion of the
+ * document use {@link OutputFormat#setOmitXMLDeclaration} and specify no document type.
+ *
+ * <p>The convenience method {@link #serialize(Document,Writer,OutputFormat)} creates a serializer
+ * and calls {@link #serizlie(Document)} on that serialized.
+ *
+ * <p>The {@link OutputFormat} dictates what underlying serialized is used to serialize the document
+ * based on the specified method. If the output format or method are missing, the default is an XML
+ * serializer with UTF-8 encoding and now indentation.
  *
  * @version
  * @author <a href="mailto:arkin@exoffice.com">Assaf Arkin</a>
@@ -104,58 +92,38 @@ import org.xml.sax.DocumentHandler;
  * @see OutputFormat
  * @see DOMSerializer
  */
-public interface Serializer
-{
+public interface Serializer {
 
+  /**
+   * Specifies an output stream to which the document should be serialized. This method should not
+   * be called while the serializer is in the process of serializing a document.
+   */
+  public void setOutputByteStream(OutputStream output) throws UnsupportedEncodingException;
 
-    /**
-     * Specifies an output stream to which the document should be
-     * serialized. This method should not be called while the
-     * serializer is in the process of serializing a document.
-     */
-    public void setOutputByteStream(OutputStream output)
-      throws UnsupportedEncodingException;
+  /**
+   * Specifies a writer to which the document should be serialized. This method should not be called
+   * while the serializer is in the process of serializing a document.
+   */
+  public void setOutputCharStream(Writer output);
 
+  /**
+   * Specifies an output format for this serializer. It the serializer has already been associated
+   * with an output format, it will switch to the new format. This method should not be called while
+   * the serializer is in the process of serializing a document.
+   *
+   * @param format The output format to use
+   */
+  public void setOutputFormat(OutputFormat format);
 
-    /**
-     * Specifies a writer to which the document should be serialized.
-     * This method should not be called while the serializer is in
-     * the process of serializing a document.
-     */
-    public void setOutputCharStream( Writer output );
+  /**
+   * Return a {@link DocumentHandler} interface into this serializer. If the serializer does not
+   * support the {@link DocumentHandler} interface, it should return null.
+   */
+  public DocumentHandler asDocumentHandler();
 
-
-    /**
-     * Specifies an output format for this serializer. It the
-     * serializer has already been associated with an output format,
-     * it will switch to the new format. This method should not be
-     * called while the serializer is in the process of serializing
-     * a document.
-     *
-     * @param format The output format to use
-     */
-    public void setOutputFormat( OutputFormat format );
-
-
-    /**
-     * Return a {@link DocumentHandler} interface into this serializer.
-     * If the serializer does not support the {@link DocumentHandler}
-     * interface, it should return null.
-     */
-    public DocumentHandler asDocumentHandler();
-
-
-    /**
-     * Return a {@link DOMSerializer} interface into this serializer.
-     * If the serializer does not support the {@link DOMSerializer}
-     * interface, it should return null.
-     */
-    public DOMSerializer asDOMSerializer();
-
-
+  /**
+   * Return a {@link DOMSerializer} interface into this serializer. If the serializer does not
+   * support the {@link DOMSerializer} interface, it should return null.
+   */
+  public DOMSerializer asDOMSerializer();
 }
-
-
-
-
-

@@ -29,71 +29,66 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
 import org.argouml.cognitive.Critic;
 import org.argouml.cognitive.Designer;
 import org.argouml.model.Model;
 import org.argouml.uml.cognitive.UMLDecision;
 
 /**
- * Well-formedness rule [1] for BehavioralFeature. See page 28 of UML 1.1
- * Semantics. OMG document ad/97-08-04.
- * 
- * Well-formedness rule [1] for Behavioral. See page 53 of UML 1.4
- * Semantics. OMG document UML 1.4.2 formal/04-07-02.
+ * Well-formedness rule [1] for BehavioralFeature. See page 28 of UML 1.1 Semantics. OMG document
+ * ad/97-08-04.
+ *
+ * <p>Well-formedness rule [1] for Behavioral. See page 53 of UML 1.4 Semantics. OMG document UML
+ * 1.4.2 formal/04-07-02.
  *
  * @author jrobbins
  */
 public class CrDupParamName extends CrUML {
 
-    /**
-     * The constructor.
-     *
-     */
-    public CrDupParamName() {
-        setupHeadAndDesc();
-	addSupportedDecision(UMLDecision.CONTAINMENT);
-	setKnowledgeTypes(Critic.KT_SYNTAX);
+  /** The constructor. */
+  public CrDupParamName() {
+    setupHeadAndDesc();
+    addSupportedDecision(UMLDecision.CONTAINMENT);
+    setKnowledgeTypes(Critic.KT_SYNTAX);
+  }
+
+  /*
+   * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
+   *      java.lang.Object, org.argouml.cognitive.Designer)
+   */
+  @Override
+  public boolean predicate2(Object dm, Designer dsgr) {
+    if (!Model.getFacade().isABehavioralFeature(dm)) {
+      return NO_PROBLEM;
     }
 
-    /*
-     * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
-     *      java.lang.Object, org.argouml.cognitive.Designer)
-     */
-    @Override
-    public boolean predicate2(Object dm, Designer dsgr) {
-	if (!Model.getFacade().isABehavioralFeature(dm)) {
-	    return NO_PROBLEM;
-	}
+    Object bf = dm;
+    Collection<String> namesSeen = new ArrayList<String>();
+    Iterator params = Model.getFacade().getParameters(bf).iterator();
+    while (params.hasNext()) {
+      Object p = params.next();
 
-	Object bf = dm;
-	Collection<String> namesSeen = new ArrayList<String>();
-	Iterator params = Model.getFacade().getParameters(bf).iterator();
-	while (params.hasNext()) {
-	    Object p = params.next();
+      String pName = Model.getFacade().getName(p);
+      if (pName == null || "".equals(pName)) {
+        continue;
+      }
 
-	    String pName = Model.getFacade().getName(p);
-	    if (pName == null || "".equals(pName)) {
-		continue;
-	    }
+      if (namesSeen.contains(pName)) {
+        return PROBLEM_FOUND;
+      }
 
-	    if (namesSeen.contains(pName)) {
-		return PROBLEM_FOUND;
-	    }
-
-	    namesSeen.add(pName);
-	}
-
-	return NO_PROBLEM;
+      namesSeen.add(pName);
     }
 
-    /*
-     * @see org.argouml.uml.cognitive.critics.CrUML#getCriticizedDesignMaterials()
-     */
-    public Set<Object> getCriticizedDesignMaterials() {
-        Set<Object> ret = new HashSet<Object>();
-        ret.add(Model.getMetaTypes().getOperation());
-        return ret;
-    }
-    
+    return NO_PROBLEM;
+  }
+
+  /*
+   * @see org.argouml.uml.cognitive.critics.CrUML#getCriticizedDesignMaterials()
+   */
+  public Set<Object> getCriticizedDesignMaterials() {
+    Set<Object> ret = new HashSet<Object>();
+    ret.add(Model.getMetaTypes().getOperation());
+    return ret;
+  }
 }

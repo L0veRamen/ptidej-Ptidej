@@ -27,39 +27,32 @@ package org.argouml.uml.ui.foundation.core;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
-
 /**
  * The list model for the annotated modelelements of a comment.
  *
  * @author mvw@tigris.org
  */
-public class UMLConstraintConstrainedElementListModel
-    extends UMLModelElementListModel2 {
+public class UMLConstraintConstrainedElementListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLConstraintConstrainedElementListModel.
-     */
-    public UMLConstraintConstrainedElementListModel() {
-        super("constrainedElement");
+  /** Constructor for UMLConstraintConstrainedElementListModel. */
+  public UMLConstraintConstrainedElementListModel() {
+    super("constrainedElement");
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (getTarget() != null) {
+      setAllElements(Model.getFacade().getConstrainedElements(getTarget()));
     }
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (getTarget() != null) {
-            setAllElements(Model.getFacade()
-                    .getConstrainedElements(getTarget()));
-        }
-    }
-
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().isAModelElement(element)
-        	&& Model.getFacade().getConstrainedElements(getTarget())
-        		.contains(element);
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().isAModelElement(element)
+        && Model.getFacade().getConstrainedElements(getTarget()).contains(element);
+  }
 }

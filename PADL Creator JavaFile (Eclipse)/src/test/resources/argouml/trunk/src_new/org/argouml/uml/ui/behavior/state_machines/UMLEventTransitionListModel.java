@@ -28,33 +28,29 @@ import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
 /**
- * The listmodel behind the transition property for an event on the event's
- * property panel.
+ * The listmodel behind the transition property for an event on the event's property panel.
  *
  * @author mkl
  */
 public class UMLEventTransitionListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLGuardTransitionListModel.
-     */
-    public UMLEventTransitionListModel() {
-        super("transition");
-    }
+  /** Constructor for UMLGuardTransitionListModel. */
+  public UMLEventTransitionListModel() {
+    super("transition");
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        removeAllElements();
-        addAll(Model.getFacade().getTransitions(getTarget()));
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    removeAllElements();
+    addAll(Model.getFacade().getTransitions(getTarget()));
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ element) {
-        return Model.getFacade().getTransitions(getTarget()).contains(element);
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ element) {
+    return Model.getFacade().getTransitions(getTarget()).contains(element);
+  }
 }

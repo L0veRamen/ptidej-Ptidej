@@ -25,7 +25,6 @@
 package org.argouml.uml.ui.foundation.core;
 
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.ActionNavigateContainerElement;
@@ -35,70 +34,62 @@ import org.argouml.uml.ui.UMLTextArea2;
 import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
 
 /**
- * Proppanel for Constraints . <p>
-
+ * Proppanel for Constraints .
+ *
+ * <p>
  */
 public class PropPanelConstraint extends PropPanelModelElement {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = -7621484706045787046L;
+  /** The serial version. */
+  private static final long serialVersionUID = -7621484706045787046L;
 
-    /**
-     * Construct a property panel for Constraint elements.
-     */
-    public PropPanelConstraint() {
-        super("label.constraint", lookupIcon("Constraint"));
+  /** Construct a property panel for Constraint elements. */
+  public PropPanelConstraint() {
+    super("label.constraint", lookupIcon("Constraint"));
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
+    addField(Translator.localize("label.name"), getNameTextField());
 
-//        addField(Translator.localize("label.language"), Model.getFacade()
-//                .getLanguage(Model.getFacade().getBody(getTarget())));
+    //        addField(Translator.localize("label.language"), Model.getFacade()
+    //                .getLanguage(Model.getFacade().getBody(getTarget())));
 
-        addField(Translator.localize("label.constrained-elements"),
-            new JScrollPane(new UMLLinkedList(
-                    new UMLConstraintConstrainedElementListModel())));
+    addField(
+        Translator.localize("label.constrained-elements"),
+        new JScrollPane(new UMLLinkedList(new UMLConstraintConstrainedElementListModel())));
 
-        addSeparator();
+    addSeparator();
 
-        UMLTextArea2 text = new UMLTextArea2(new UMLConstraintBodyDocument());
-        text.setEditable(false);
-        text.setLineWrap(false);
-        text.setRows(5);
-        JScrollPane pane = new JScrollPane(text);
-        addField(Translator.localize("label.constraint.body"), pane);
+    UMLTextArea2 text = new UMLTextArea2(new UMLConstraintBodyDocument());
+    text.setEditable(false);
+    text.setLineWrap(false);
+    text.setRows(5);
+    JScrollPane pane = new JScrollPane(text);
+    addField(Translator.localize("label.constraint.body"), pane);
 
-        addAction(new ActionNavigateContainerElement());
-        addAction(new ActionNewStereotype());
-        addAction(getDeleteAction());
-    }
+    addAction(new ActionNavigateContainerElement());
+    addAction(new ActionNewStereotype());
+    addAction(getDeleteAction());
+  }
 }
 
 // TODO: replace this with TabConstraint code...
 class UMLConstraintBodyDocument extends UMLPlainTextDocument {
-    
-    /**
-     * Construct a document for a constraint body.
-     */
-    public UMLConstraintBodyDocument() {
-        super("body"); 
-    }
-    
-    /*
-     * @see org.argouml.uml.ui.UMLPlainTextDocument#setProperty(java.lang.String)
-     */
-    protected void setProperty(String text) {
-        //Model.getCoreHelper().setBody(getTarget(), text);
-    }
-    
-    /*
-     * @see org.argouml.uml.ui.UMLPlainTextDocument#getProperty()
-     */
-    protected String getProperty() {
-        return (String) Model.getFacade().getBody(
-                Model.getFacade().getBody(getTarget()));
-    }
-    
+
+  /** Construct a document for a constraint body. */
+  public UMLConstraintBodyDocument() {
+    super("body");
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLPlainTextDocument#setProperty(java.lang.String)
+   */
+  protected void setProperty(String text) {
+    // Model.getCoreHelper().setBody(getTarget(), text);
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLPlainTextDocument#getProperty()
+   */
+  protected String getProperty() {
+    return (String) Model.getFacade().getBody(Model.getFacade().getBody(getTarget()));
+  }
 }

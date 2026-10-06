@@ -28,36 +28,29 @@ import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
 /**
- *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 26, 2003
  */
-public class UMLClassifierStructuralFeatureListModel
-    extends UMLModelElementListModel2 {
+public class UMLClassifierStructuralFeatureListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLClassifierStructuralFeatureListModel.
-     */
-    public UMLClassifierStructuralFeatureListModel() {
-        super("structuralFeature");
+  /** Constructor for UMLClassifierStructuralFeatureListModel. */
+  public UMLClassifierStructuralFeatureListModel() {
+    super("structuralFeature");
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (getTarget() != null) {
+      setAllElements(Model.getFacade().getStructuralFeatures(getTarget()));
     }
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (getTarget() != null) {
-            setAllElements(
-                    Model.getFacade().getStructuralFeatures(getTarget()));
-        }
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ element) {
-        return Model.getFacade().getStructuralFeatures(getTarget())
-        	.contains(element);
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ element) {
+    return Model.getFacade().getStructuralFeatures(getTarget()).contains(element);
+  }
 }

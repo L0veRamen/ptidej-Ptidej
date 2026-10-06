@@ -26,82 +26,73 @@ package org.argouml.uml.reveng.classfile;
 
 import antlr.*;
 
-/**
- * A class representing a Token that is a byte.
- *
- */
+/** A class representing a Token that is a byte. */
 public class ByteToken extends Token {
 
-    //////////////////////
-    // Instance variables.
+  //////////////////////
+  // Instance variables.
 
-    private byte val = 0;
+  private byte val = 0;
 
+  ///////////////
+  // Constructors
 
-    ///////////////
-    // Constructors
+  /**
+   * Create a new ByteToken instance with a given type.
+   *
+   * @param type The type of the ByteToken.
+   */
+  public ByteToken(int type) {
+    super(type);
+  }
 
-    /**
-     * Create a new ByteToken instance with a given type.
-     *
-     * @param type The type of the ByteToken.
-     */
-    public ByteToken( int type) {
-	super(type);
-    }
+  /**
+   * Create a new ByteToken instance with a given type and byte value.
+   *
+   * @param type The type of the token.
+   * @param value The byte value of the token.
+   */
+  public ByteToken(int type, byte value) {
+    this(type);
+    setValue(value);
+  }
 
-    /**
-     * Create a new ByteToken instance with a given type and
-     * byte value.
-     *
-     * @param type The type of the token.
-     * @param value The byte value of the token.
-     */
-    public ByteToken( int type, byte value) {
-	this(type);
-	setValue(value);
-    }
+  //////////
+  // Methods
 
+  /**
+   * Set the byte value of this token.
+   *
+   * @param value The new byte value.
+   */
+  final void setValue(byte value) {
+    val = value;
+  }
 
-    //////////
-    // Methods
+  /**
+   * Get the byte value of this token.
+   *
+   * @return the byte value of this token.
+   */
+  final byte getValue() {
+    return val;
+  }
 
-    /**
-     * Set the byte value of this token.
-     *
-     * @param value The new byte value.
-     */
-    final void setValue( byte value) {
-	val = value;
-    }
+  /**
+   * Get the value of the byte as a masked short (no sign extension if < 0).
+   *
+   * @return The byte value of this token as a masked sort.
+   */
+  final short getShortValue() {
+    return (short) ((short) val & (short) 0xff);
+  }
 
-    /**
-     * Get the byte value of this token.
-     *
-     * @return the byte value of this token.
-     */
-    final byte getValue() {
-	return val;
-    }
-
-    /**
-     * Get the value of the byte as a masked short (no sign extension if < 0).
-     *
-     * @return The byte value of this token as a masked sort.
-     */
-    final short getShortValue() {
-	return (short) ((short) val & (short) 0xff);
-    }
-
-    /**
-     * Get the value of the byte as a masked int (no sign extension if < 0).
-     *
-     * @return The byte value of this token as a masked int.
-     */
-    final int getIntValue() {
-	return (int) val & 0xff;
-    }
+  /**
+   * Get the value of the byte as a masked int (no sign extension if < 0).
+   *
+   * @return The byte value of this token as a masked int.
+   */
+  final int getIntValue() {
+    return (int) val & 0xff;
+  }
 }
-
-
-

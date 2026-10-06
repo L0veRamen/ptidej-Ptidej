@@ -4,14 +4,13 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc  and others, see in file; API and its implementation
  ******************************************************************************/
 package ptidej.solver.claire.test.roundtrip;
 
 import java.lang.reflect.InvocationTargetException;
-
 import org.junit.Assert;
 import padl.motif.repository.AbstractFactory;
 import padl.motif.repository.Composite;
@@ -24,292 +23,306 @@ import ptidej.solver.claire.OccurrenceGenerator;
 import ptidej.solver.claire.test.Primitive;
 
 public final class CompleteRoundtripTest extends Primitive {
-	public CompleteRoundtripTest(final String name) {
-		super(name);
-	}
+  public CompleteRoundtripTest(final String name) {
+    super(name);
+  }
 
-	/*
-	 * Composite.
-	 */
-	private void testCompositeDesignPattern(final Occurrence[] builtSolutions) {
-		Assert.assertEquals("Number of solutions", 1, builtSolutions.length);
+  /*
+   * Composite.
+   */
+  private void testCompositeDesignPattern(final Occurrence[] builtSolutions) {
+    Assert.assertEquals("Number of solutions", 1, builtSolutions.length);
 
-		Assert.assertEquals(
-			"Solution with all constraints",
-			100,
-			builtSolutions[0].getConfidence());
-		Assert.assertEquals(
-			"Component is the component",
-			"Component",
-			builtSolutions[0]
-				.getComponent(Composite.COMPONENT)
-				.getDisplayValue());
-		Assert.assertEquals(
-			"Composite is the composite",
-			"Composite",
-			builtSolutions[0]
-				.getComponent(Composite.COMPOSITE)
-				.getDisplayValue());
-		Assert.assertEquals("Leaf is the leaf", "Leaf", builtSolutions[0]
-			.getComponent(Composite.LEAF)
-			.getDisplayValue());
-	}
-	public void testCompositeDesignPattern1() throws IllegalAccessException,
-			InstantiationException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+    Assert.assertEquals("Solution with all constraints", 100, builtSolutions[0].getConfidence());
+    Assert.assertEquals(
+        "Component is the component",
+        "Component",
+        builtSolutions[0].getComponent(Composite.COMPONENT).getDisplayValue());
+    Assert.assertEquals(
+        "Composite is the composite",
+        "Composite",
+        builtSolutions[0].getComponent(Composite.COMPOSITE).getDisplayValue());
+    Assert.assertEquals(
+        "Leaf is the leaf",
+        "Leaf",
+        builtSolutions[0].getComponent(Composite.LEAF).getDisplayValue());
+  }
 
-		final Occurrence[] builtSolutions =
-			this.testDesignPattern(
-				CompleteRoundtripTest.class,
-				Primitive.CANONICAL_SOLUTIONS,
-				Composite.class,
-				Composite.class,
-				SolverKinds.SOLVER_AUTOMATIC,
-				OccurrenceGenerator.PROBLEM_AC4);
+  public void testCompositeDesignPattern1()
+      throws IllegalAccessException,
+          InstantiationException,
+          IllegalArgumentException,
+          InvocationTargetException,
+          NoSuchMethodException,
+          SecurityException {
 
-		this.testCompositeDesignPattern(builtSolutions);
-	}
-	public void testCompositeDesignPattern2() throws IllegalAccessException,
-			InstantiationException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+    final Occurrence[] builtSolutions =
+        this.testDesignPattern(
+            CompleteRoundtripTest.class,
+            Primitive.CANONICAL_SOLUTIONS,
+            Composite.class,
+            Composite.class,
+            SolverKinds.SOLVER_AUTOMATIC,
+            OccurrenceGenerator.PROBLEM_AC4);
 
-		// Yann 2005/07/11: Bug?!
-		// It seems that the automatic solver with the custom problem
-		// return an extra approximate solution wrt. AC4...
-		final Occurrence[] builtSolutions =
-			new Occurrence[] { this.testDesignPattern(
-				CompleteRoundtripTest.class,
-				Primitive.CANONICAL_SOLUTIONS,
-				Composite.class,
-				Composite.class,
-				SolverKinds.SOLVER_AUTOMATIC,
-				OccurrenceGenerator.PROBLEM_CUSTOM)[0] };
+    this.testCompositeDesignPattern(builtSolutions);
+  }
 
-		this.testCompositeDesignPattern(builtSolutions);
-	}
+  public void testCompositeDesignPattern2()
+      throws IllegalAccessException,
+          InstantiationException,
+          IllegalArgumentException,
+          InvocationTargetException,
+          NoSuchMethodException,
+          SecurityException {
 
-	/*
-	 * Facade.
-	 */
-	private void testFacadeDesignPattern(final Occurrence[] builtSolutions) {
-		Assert.assertEquals("Number of solutions", 1, builtSolutions.length);
+    // Yann 2005/07/11: Bug?!
+    // It seems that the automatic solver with the custom problem
+    // return an extra approximate solution wrt. AC4...
+    final Occurrence[] builtSolutions =
+        new Occurrence[] {
+          this.testDesignPattern(
+              CompleteRoundtripTest.class,
+              Primitive.CANONICAL_SOLUTIONS,
+              Composite.class,
+              Composite.class,
+              SolverKinds.SOLVER_AUTOMATIC,
+              OccurrenceGenerator.PROBLEM_CUSTOM)[0]
+        };
 
-		Assert.assertEquals(
-			"One solution with all constraints",
-			100,
-			builtSolutions[0].getConfidence());
+    this.testCompositeDesignPattern(builtSolutions);
+  }
 
-		Assert.assertEquals("Facade is the facade", "Facade", builtSolutions[0]
-			.getComponent(Facade.FACADE)
-			.getDisplayValue());
-		Assert.assertEquals(
-			"SubsystemEntity is the subsystem entity",
-			"SubsystemEntity",
-			builtSolutions[0]
-				.getComponent(Facade.SUBSYSTEM_ENTITY)
-				.getDisplayValue());
-		Assert.assertEquals("Client is the Client", "Client", builtSolutions[0]
-			.getComponent(Facade.CLIENT)
-			.getDisplayValue());
-	}
-	public void testFacadeDesignPattern1() throws IllegalAccessException,
-			InstantiationException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+  /*
+   * Facade.
+   */
+  private void testFacadeDesignPattern(final Occurrence[] builtSolutions) {
+    Assert.assertEquals("Number of solutions", 1, builtSolutions.length);
 
-		final Occurrence[] builtSolutions =
-			this.testDesignPattern(
-				CompleteRoundtripTest.class,
-				Primitive.CANONICAL_SOLUTIONS,
-				Facade.class,
-				Facade.class,
-				SolverKinds.SOLVER_AUTOMATIC,
-				OccurrenceGenerator.PROBLEM_AC4);
+    Assert.assertEquals(
+        "One solution with all constraints", 100, builtSolutions[0].getConfidence());
 
-		this.testFacadeDesignPattern(builtSolutions);
-	}
-	public void testFacadeDesignPattern2() throws IllegalAccessException,
-			InstantiationException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+    Assert.assertEquals(
+        "Facade is the facade",
+        "Facade",
+        builtSolutions[0].getComponent(Facade.FACADE).getDisplayValue());
+    Assert.assertEquals(
+        "SubsystemEntity is the subsystem entity",
+        "SubsystemEntity",
+        builtSolutions[0].getComponent(Facade.SUBSYSTEM_ENTITY).getDisplayValue());
+    Assert.assertEquals(
+        "Client is the Client",
+        "Client",
+        builtSolutions[0].getComponent(Facade.CLIENT).getDisplayValue());
+  }
 
-		final Occurrence[] builtSolutions =
-			this.testDesignPattern(
-				CompleteRoundtripTest.class,
-				Primitive.CANONICAL_SOLUTIONS,
-				Facade.class,
-				Facade.class,
-				SolverKinds.SOLVER_AUTOMATIC,
-				OccurrenceGenerator.PROBLEM_CUSTOM);
+  public void testFacadeDesignPattern1()
+      throws IllegalAccessException,
+          InstantiationException,
+          IllegalArgumentException,
+          InvocationTargetException,
+          NoSuchMethodException,
+          SecurityException {
 
-		this.testFacadeDesignPattern(builtSolutions);
-	}
+    final Occurrence[] builtSolutions =
+        this.testDesignPattern(
+            CompleteRoundtripTest.class,
+            Primitive.CANONICAL_SOLUTIONS,
+            Facade.class,
+            Facade.class,
+            SolverKinds.SOLVER_AUTOMATIC,
+            OccurrenceGenerator.PROBLEM_AC4);
 
-	/*
-	 * Factory Method.
-	 */
-	private void testFactoryMethodDesignPattern(
-		final Occurrence[] builtSolutions,
-		final int aPercentage) {
+    this.testFacadeDesignPattern(builtSolutions);
+  }
 
-		Assert.assertEquals("Number of solutions", 1, builtSolutions.length);
+  public void testFacadeDesignPattern2()
+      throws IllegalAccessException,
+          InstantiationException,
+          IllegalArgumentException,
+          InvocationTargetException,
+          NoSuchMethodException,
+          SecurityException {
 
-		Assert.assertEquals(
-			"Solution with all constraints",
-			aPercentage,
-			builtSolutions[0].getConfidence());
+    final Occurrence[] builtSolutions =
+        this.testDesignPattern(
+            CompleteRoundtripTest.class,
+            Primitive.CANONICAL_SOLUTIONS,
+            Facade.class,
+            Facade.class,
+            SolverKinds.SOLVER_AUTOMATIC,
+            OccurrenceGenerator.PROBLEM_CUSTOM);
 
-		Assert.assertEquals(
-			"Creator is the abstract creator",
-			"Creator",
-			builtSolutions[0]
-				.getComponent(AbstractFactory.CREATOR)
-				.getDisplayValue());
-		Assert.assertEquals(
-			"ConcreteCreator is the concrete creator",
-			"ConcreteCreator",
-			builtSolutions[0]
-				.getComponent(AbstractFactory.CONCRETE_CREATOR)
-				.getDisplayValue());
-		Assert.assertEquals(
-			"Product is the abstract product",
-			"Product",
-			builtSolutions[0]
-				.getComponent(AbstractFactory.PRODUCT)
-				.getDisplayValue());
-		Assert.assertEquals(
-			"ConcreteProduct is the concrete product",
-			"ConcreteProduct",
-			builtSolutions[0]
-				.getComponent(AbstractFactory.CONCRETE_PRODUCT)
-				.getDisplayValue());
-	}
-	public void testFactoryMethodDesignPattern1()
-			throws IllegalAccessException, InstantiationException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+    this.testFacadeDesignPattern(builtSolutions);
+  }
 
-		final Occurrence[] builtSolutions =
-			this.testDesignPattern(
-				CompleteRoundtripTest.class,
-				Primitive.CANONICAL_SOLUTIONS,
-				FactoryMethod.class,
-				FactoryMethod.class,
-				SolverKinds.SOLVER_AUTOMATIC,
-				OccurrenceGenerator.PROBLEM_AC4);
+  /*
+   * Factory Method.
+   */
+  private void testFactoryMethodDesignPattern(
+      final Occurrence[] builtSolutions, final int aPercentage) {
 
-		this.testFactoryMethodDesignPattern(builtSolutions, 100);
-	}
-	public void testFactoryMethodDesignPattern2()
-			throws IllegalAccessException, InstantiationException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+    Assert.assertEquals("Number of solutions", 1, builtSolutions.length);
 
-		final Occurrence[] builtSolutions =
-			this.testDesignPattern(
-				CompleteRoundtripTest.class,
-				Primitive.CANONICAL_SOLUTIONS,
-				FactoryMethod.class,
-				FactoryMethod.class,
-				SolverKinds.SOLVER_AUTOMATIC,
-				OccurrenceGenerator.PROBLEM_CUSTOM);
+    Assert.assertEquals(
+        "Solution with all constraints", aPercentage, builtSolutions[0].getConfidence());
 
-		this.testFactoryMethodDesignPattern(builtSolutions, 30);
-	}
+    Assert.assertEquals(
+        "Creator is the abstract creator",
+        "Creator",
+        builtSolutions[0].getComponent(AbstractFactory.CREATOR).getDisplayValue());
+    Assert.assertEquals(
+        "ConcreteCreator is the concrete creator",
+        "ConcreteCreator",
+        builtSolutions[0].getComponent(AbstractFactory.CONCRETE_CREATOR).getDisplayValue());
+    Assert.assertEquals(
+        "Product is the abstract product",
+        "Product",
+        builtSolutions[0].getComponent(AbstractFactory.PRODUCT).getDisplayValue());
+    Assert.assertEquals(
+        "ConcreteProduct is the concrete product",
+        "ConcreteProduct",
+        builtSolutions[0].getComponent(AbstractFactory.CONCRETE_PRODUCT).getDisplayValue());
+  }
 
-	/*
-	 * Mediator.
-	 */
-	public void testMediatorDesignPattern1() throws IllegalAccessException,
-			InstantiationException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+  public void testFactoryMethodDesignPattern1()
+      throws IllegalAccessException,
+          InstantiationException,
+          IllegalArgumentException,
+          InvocationTargetException,
+          NoSuchMethodException,
+          SecurityException {
 
-		final Occurrence[] builtSolutions =
-			this.testDesignPattern(
-				CompleteRoundtripTest.class,
-				Primitive.CANONICAL_SOLUTIONS,
-				Mediator.class,
-				Mediator.class,
-				SolverKinds.SOLVER_AUTOMATIC,
-				OccurrenceGenerator.PROBLEM_AC4);
+    final Occurrence[] builtSolutions =
+        this.testDesignPattern(
+            CompleteRoundtripTest.class,
+            Primitive.CANONICAL_SOLUTIONS,
+            FactoryMethod.class,
+            FactoryMethod.class,
+            SolverKinds.SOLVER_AUTOMATIC,
+            OccurrenceGenerator.PROBLEM_AC4);
 
-		Assert.assertEquals("Number of solutions", 2, builtSolutions.length);
+    this.testFactoryMethodDesignPattern(builtSolutions, 100);
+  }
 
-		Assert.assertEquals(
-			"Solution with all constraints",
-			100,
-			builtSolutions[0].getConfidence());
-		Assert.assertEquals(
-			"Solution with all constraints",
-			100,
-			builtSolutions[1].getConfidence());
+  public void testFactoryMethodDesignPattern2()
+      throws IllegalAccessException,
+          InstantiationException,
+          IllegalArgumentException,
+          InvocationTargetException,
+          NoSuchMethodException,
+          SecurityException {
 
-		Assert
-			.assertEquals(
-				"Mediator is the mediator",
-				"Mediator",
-				builtSolutions[0]
-					.getComponent(Mediator.MEDIATOR)
-					.getDisplayValue());
-		Assert.assertEquals("Client1 is a client", "Client1", builtSolutions[0]
-			.getComponent(Mediator.CLIENT1)
-			.getDisplayValue());
-		Assert.assertEquals("Client2 is a client", "Client2", builtSolutions[0]
-			.getComponent(Mediator.CLIENT2)
-			.getDisplayValue());
+    final Occurrence[] builtSolutions =
+        this.testDesignPattern(
+            CompleteRoundtripTest.class,
+            Primitive.CANONICAL_SOLUTIONS,
+            FactoryMethod.class,
+            FactoryMethod.class,
+            SolverKinds.SOLVER_AUTOMATIC,
+            OccurrenceGenerator.PROBLEM_CUSTOM);
 
-		Assert
-			.assertEquals(
-				"Mediator is the mediator",
-				"Mediator",
-				builtSolutions[1]
-					.getComponent(Mediator.MEDIATOR)
-					.getDisplayValue());
-		Assert.assertEquals("Client2 is a client", "Client2", builtSolutions[1]
-			.getComponent(Mediator.CLIENT1)
-			.getDisplayValue());
-		Assert.assertEquals("Client1 is a client", "Client1", builtSolutions[1]
-			.getComponent(Mediator.CLIENT2)
-			.getDisplayValue());
-	}
-	public void testMediatorDesignPattern2() throws IllegalAccessException,
-			InstantiationException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+    this.testFactoryMethodDesignPattern(builtSolutions, 30);
+  }
 
-		final Occurrence[] builtSolutions =
-			this.testDesignPattern(
-				CompleteRoundtripTest.class,
-				Primitive.CANONICAL_SOLUTIONS,
-				Mediator.class,
-				Mediator.class,
-				SolverKinds.SOLVER_AUTOMATIC,
-				OccurrenceGenerator.PROBLEM_CUSTOM);
+  /*
+   * Mediator.
+   */
+  public void testMediatorDesignPattern1()
+      throws IllegalAccessException,
+          InstantiationException,
+          IllegalArgumentException,
+          InvocationTargetException,
+          NoSuchMethodException,
+          SecurityException {
 
-		Assert.assertEquals("Number of solutions", 2, builtSolutions.length);
+    final Occurrence[] builtSolutions =
+        this.testDesignPattern(
+            CompleteRoundtripTest.class,
+            Primitive.CANONICAL_SOLUTIONS,
+            Mediator.class,
+            Mediator.class,
+            SolverKinds.SOLVER_AUTOMATIC,
+            OccurrenceGenerator.PROBLEM_AC4);
 
-		Assert.assertEquals(
-			"Solution with all constraints",
-			100,
-			builtSolutions[0].getConfidence());
-		Assert.assertEquals(
-			"Solution with all constraints",
-			100,
-			builtSolutions[1].getConfidence());
+    Assert.assertEquals("Number of solutions", 2, builtSolutions.length);
 
-		Assert
-			.assertEquals(
-				"Mediator is the mediator",
-				"Mediator",
-				builtSolutions[0]
-					.getComponent(Mediator.MEDIATOR)
-					.getDisplayValue());
-		Assert.assertEquals("Client1 is a client", "Client1", builtSolutions[0]
-			.getComponent(Mediator.CLIENT1)
-			.getDisplayValue());
-		Assert.assertEquals("Client2 is a client", "Client2", builtSolutions[0]
-			.getComponent(Mediator.CLIENT2)
-			.getDisplayValue());
+    Assert.assertEquals("Solution with all constraints", 100, builtSolutions[0].getConfidence());
+    Assert.assertEquals("Solution with all constraints", 100, builtSolutions[1].getConfidence());
 
-		Assert
-			.assertEquals(
-				"Mediator is the mediator",
-				"Mediator",
-				builtSolutions[1]
-					.getComponent(Mediator.MEDIATOR)
-					.getDisplayValue());
-		Assert.assertEquals("Client2 is a client", "Client2", builtSolutions[1]
-			.getComponent(Mediator.CLIENT1)
-			.getDisplayValue());
-		Assert.assertEquals("Client1 is a client", "Client1", builtSolutions[1]
-			.getComponent(Mediator.CLIENT2)
-			.getDisplayValue());
-	}
+    Assert.assertEquals(
+        "Mediator is the mediator",
+        "Mediator",
+        builtSolutions[0].getComponent(Mediator.MEDIATOR).getDisplayValue());
+    Assert.assertEquals(
+        "Client1 is a client",
+        "Client1",
+        builtSolutions[0].getComponent(Mediator.CLIENT1).getDisplayValue());
+    Assert.assertEquals(
+        "Client2 is a client",
+        "Client2",
+        builtSolutions[0].getComponent(Mediator.CLIENT2).getDisplayValue());
+
+    Assert.assertEquals(
+        "Mediator is the mediator",
+        "Mediator",
+        builtSolutions[1].getComponent(Mediator.MEDIATOR).getDisplayValue());
+    Assert.assertEquals(
+        "Client2 is a client",
+        "Client2",
+        builtSolutions[1].getComponent(Mediator.CLIENT1).getDisplayValue());
+    Assert.assertEquals(
+        "Client1 is a client",
+        "Client1",
+        builtSolutions[1].getComponent(Mediator.CLIENT2).getDisplayValue());
+  }
+
+  public void testMediatorDesignPattern2()
+      throws IllegalAccessException,
+          InstantiationException,
+          IllegalArgumentException,
+          InvocationTargetException,
+          NoSuchMethodException,
+          SecurityException {
+
+    final Occurrence[] builtSolutions =
+        this.testDesignPattern(
+            CompleteRoundtripTest.class,
+            Primitive.CANONICAL_SOLUTIONS,
+            Mediator.class,
+            Mediator.class,
+            SolverKinds.SOLVER_AUTOMATIC,
+            OccurrenceGenerator.PROBLEM_CUSTOM);
+
+    Assert.assertEquals("Number of solutions", 2, builtSolutions.length);
+
+    Assert.assertEquals("Solution with all constraints", 100, builtSolutions[0].getConfidence());
+    Assert.assertEquals("Solution with all constraints", 100, builtSolutions[1].getConfidence());
+
+    Assert.assertEquals(
+        "Mediator is the mediator",
+        "Mediator",
+        builtSolutions[0].getComponent(Mediator.MEDIATOR).getDisplayValue());
+    Assert.assertEquals(
+        "Client1 is a client",
+        "Client1",
+        builtSolutions[0].getComponent(Mediator.CLIENT1).getDisplayValue());
+    Assert.assertEquals(
+        "Client2 is a client",
+        "Client2",
+        builtSolutions[0].getComponent(Mediator.CLIENT2).getDisplayValue());
+
+    Assert.assertEquals(
+        "Mediator is the mediator",
+        "Mediator",
+        builtSolutions[1].getComponent(Mediator.MEDIATOR).getDisplayValue());
+    Assert.assertEquals(
+        "Client2 is a client",
+        "Client2",
+        builtSolutions[1].getComponent(Mediator.CLIENT1).getDisplayValue());
+    Assert.assertEquals(
+        "Client1 is a client",
+        "Client1",
+        builtSolutions[1].getComponent(Mediator.CLIENT2).getDisplayValue());
+  }
 }

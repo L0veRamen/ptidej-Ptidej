@@ -21,13 +21,13 @@
  */
 package com.noelios.restlet.ext.asyncweb;
 
+import com.noelios.restlet.http.HttpServerCall;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import java.util.logging.Logger;
-
 import org.restlet.data.Parameter;
 import org.restlet.data.ParameterList;
 import org.safehaus.asyncweb.http.HttpRequest;
@@ -37,127 +37,114 @@ import org.safehaus.asyncweb.http.internal.HttpHeaders;
 import org.safehaus.asyncweb.http.internal.Request;
 import org.safehaus.asyncweb.http.internal.Response;
 
-import com.noelios.restlet.http.HttpServerCall;
-
 /**
  * HttpServerCall implementation used by the AsyncServer.
+ *
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
-public class AsyncWebServerCall extends HttpServerCall
-{
-	/** AsyncWeb request. */
-	private Request request;
+public class AsyncWebServerCall extends HttpServerCall {
+  /** AsyncWeb request. */
+  private Request request;
 
-	/** Indicates if the request headers were parsed and added. */
-	private boolean requestHeadersAdded;
+  /** Indicates if the request headers were parsed and added. */
+  private boolean requestHeadersAdded;
 
-	/**
-	 * AsyncWeb response.
-	 */
-	private Response response;
+  /** AsyncWeb response. */
+  private Response response;
 
-	/**
-	 * Constructor.
-	 * @param logger The logger to use.
-	 * @param request The AsyncWebRequest.
-	 * @param response The AsyncWebResponse.
-	 * @param confidential Indicates if the server is acting in HTTPS mode.
-	 * @param address IP address of the server.
-	 */
-	public AsyncWebServerCall(Logger logger, HttpRequest request, HttpResponse response,
-			boolean confidential, String address)
-	{
-		super(logger);
-		this.request = (Request) request;
-		this.requestHeadersAdded = false;
-		this.response = (Response) response;
-		setConfidential(confidential);
-		setServerAddress(address);
-	}
+  /**
+   * Constructor.
+   *
+   * @param logger The logger to use.
+   * @param request The AsyncWebRequest.
+   * @param response The AsyncWebResponse.
+   * @param confidential Indicates if the server is acting in HTTPS mode.
+   * @param address IP address of the server.
+   */
+  public AsyncWebServerCall(
+      Logger logger,
+      HttpRequest request,
+      HttpResponse response,
+      boolean confidential,
+      String address) {
+    super(logger);
+    this.request = (Request) request;
+    this.requestHeadersAdded = false;
+    this.response = (Response) response;
+    setConfidential(confidential);
+    setServerAddress(address);
+  }
 
-	@Override
-	public String getClientAddress()
-	{
-		return request.getRemoteAddress();
-	}
+  @Override
+  public String getClientAddress() {
+    return request.getRemoteAddress();
+  }
 
-	@Override
-	public String getRequestUri()
-	{
-		return request.getRequestURI();
-	}
+  @Override
+  public String getRequestUri() {
+    return request.getRequestURI();
+  }
 
-	@Override
-	public String getMethod()
-	{
-		return request.getMethod().getName();
-	}
+  @Override
+  public String getMethod() {
+    return request.getMethod().getName();
+  }
 
-	@Override
-	public ParameterList getRequestHeaders()
-	{
-		ParameterList result = super.getRequestHeaders();
+  @Override
+  public ParameterList getRequestHeaders() {
+    ParameterList result = super.getRequestHeaders();
 
-		if (!this.requestHeadersAdded)
-		{
-			HttpHeaders headers = request.getHeaders();
-			int headerCount = headers.getSize();
-			for (int i = 0; i < headerCount; i++)
-			{
-				result.add(headers.getHeaderName(i).getValue(), headers.getHeaderValue(i)
-						.getValue());
-			}
+    if (!this.requestHeadersAdded) {
+      HttpHeaders headers = request.getHeaders();
+      int headerCount = headers.getSize();
+      for (int i = 0; i < headerCount; i++) {
+        result.add(headers.getHeaderName(i).getValue(), headers.getHeaderValue(i).getValue());
+      }
 
-			this.requestHeadersAdded = true;
-		}
+      this.requestHeadersAdded = true;
+    }
 
-		return result;
-	}
+    return result;
+  }
 
-	/**
-	 * Sends the response back to the client. Commits the status, headers and optional entity and 
-	 * send them on the network. 
-	 * @param restletResponse The high-level response.
-	 */
-	public void sendResponse(org.restlet.data.Response restletResponse) throws IOException
-	{
-		response.setStatus(ResponseStatus.forId(getStatusCode()), getReasonPhrase());
+  /**
+   * Sends the response back to the client. Commits the status, headers and optional entity and send
+   * them on the network.
+   *
+   * @param restletResponse The high-level response.
+   */
+  public void sendResponse(org.restlet.data.Response restletResponse) throws IOException {
+    response.setStatus(ResponseStatus.forId(getStatusCode()), getReasonPhrase());
 
-		// Ensure that headers are empty
-		response.getHeaders().dispose();
-		for (Parameter header : super.getResponseHeaders())
-		{
-			response.addHeader(header.getName(), header.getValue());
-		}
+    // Ensure that headers are empty
+    response.getHeaders().dispose();
+    for (Parameter header : super.getResponseHeaders()) {
+      response.addHeader(header.getName(), header.getValue());
+    }
 
-		// Send the response entity
-		super.sendResponse(restletResponse);
-	}
+    // Send the response entity
+    super.sendResponse(restletResponse);
+  }
 
-	@Override
-	public ReadableByteChannel getRequestChannel()
-	{
-		// Unsupported.
-		return null;
-	}
+  @Override
+  public ReadableByteChannel getRequestChannel() {
+    // Unsupported.
+    return null;
+  }
 
-	@Override
-	public InputStream getRequestStream()
-	{
-		return request.getInputStream();
-	}
+  @Override
+  public InputStream getRequestStream() {
+    return request.getInputStream();
+  }
 
-	@Override
-	public WritableByteChannel getResponseChannel()
-	{
-		// Unsupported.
-		return null;
-	}
+  @Override
+  public WritableByteChannel getResponseChannel() {
+    // Unsupported.
+    return null;
+  }
 
-	@Override
-	public OutputStream getResponseStream()
-	{
-		return response.getOutputStream();
-	}
-
+  @Override
+  public OutputStream getResponseStream() {
+    return response.getOutputStream();
+  }
 }

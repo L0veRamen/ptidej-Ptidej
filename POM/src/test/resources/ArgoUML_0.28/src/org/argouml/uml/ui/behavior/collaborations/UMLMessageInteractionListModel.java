@@ -28,35 +28,31 @@ import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
 /**
- *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 25, 2003
  */
 public class UMLMessageInteractionListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLMessageInteractionListModel.
-     */
-    public UMLMessageInteractionListModel() {
-        super("interaction");
-    }
+  /** Constructor for UMLMessageInteractionListModel. */
+  public UMLMessageInteractionListModel() {
+    super("interaction");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (Model.getFacade().isAMessage(getTarget())) {
-            removeAllElements();
-            addElement(Model.getFacade().getInteraction(getTarget()));
-        }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (Model.getFacade().isAMessage(getTarget())) {
+      removeAllElements();
+      addElement(Model.getFacade().getInteraction(getTarget()));
     }
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().isAInteraction(element)
-            && Model.getFacade().getInteraction(getTarget()) == element;
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().isAInteraction(element)
+        && Model.getFacade().getInteraction(getTarget()) == element;
+  }
 }

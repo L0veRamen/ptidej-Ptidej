@@ -27,98 +27,92 @@ package org.argouml.application.api;
 import java.util.Vector;
 
 /**
- * Interface that defines the characteristics of an external
- *  module usable by Argo.
+ * Interface that defines the characteristics of an external module usable by Argo.
  *
- * @author  Will Howery
- * @author  Thierry Lach
+ * @author Will Howery
+ * @author Thierry Lach
  * @since 0.9.4
  */
 public interface ArgoModule {
-    /**
-     * External modules are supposed to be located at
-     * <code>MODULEFILENAME</code>.
-     */
-    String MODULEFILENAME = ".argo.modules";
+  /** External modules are supposed to be located at <code>MODULEFILENAME</code>. */
+  String MODULEFILENAME = ".argo.modules";
 
-    /**
-     * Or, alternatively, external modules may be located at
-     * <code>MODULEFILENAME_ALTERNATE</code>.
-     */
-    String MODULEFILENAME_ALTERNATE = "argo.modules";
+  /**
+   * Or, alternatively, external modules may be located at <code>MODULEFILENAME_ALTERNATE</code>.
+   */
+  String MODULEFILENAME_ALTERNATE = "argo.modules";
 
-    /**
-     * Method called when Argo is loading a module.
-     *
-     * @return true if the module initialized properly.
-     */
-    boolean initializeModule();
+  /**
+   * Method called when Argo is loading a module.
+   *
+   * @return true if the module initialized properly.
+   */
+  boolean initializeModule();
 
-    /**
-     * Method called when Argo is unloading a module.
-     *
-     * @return true if the module terminated properly.
-     */
-    boolean shutdownModule();
+  /**
+   * Method called when Argo is unloading a module.
+   *
+   * @return true if the module terminated properly.
+   */
+  boolean shutdownModule();
 
-    /**
-     * Called to enable or disable a module programmatically.
-     *
-     * @param tf true to enable module, false to disable
-     */
-    void setModuleEnabled(boolean tf);
+  /**
+   * Called to enable or disable a module programmatically.
+   *
+   * @param tf true to enable module, false to disable
+   */
+  void setModuleEnabled(boolean tf);
 
-    /**
-     * Allows determination if a module is enabled or disabled.
-     *
-     * @return true if the module is enabled, otherwise false
-     */
-    boolean isModuleEnabled(); // determines if enabled-disabled
+  /**
+   * Allows determination if a module is enabled or disabled.
+   *
+   * @return true if the module is enabled, otherwise false
+   */
+  boolean isModuleEnabled(); // determines if enabled-disabled
 
-    /**
-     * Display name of the module.
-     *
-     * @return the module name
-     */
-    String getModuleName();
+  /**
+   * Display name of the module.
+   *
+   * @return the module name
+   */
+  String getModuleName();
 
-    /**
-     * Textual description of the module.
-     *
-     * @return the module description
-     */
-    String getModuleDescription();
+  /**
+   * Textual description of the module.
+   *
+   * @return the module description
+   */
+  String getModuleDescription();
 
-    /**
-     * The module version.
-     *
-     * There is no specified format.
-     *
-     * @return a string containing the module version
-     */
-    String getModuleVersion();
+  /**
+   * The module version.
+   *
+   * <p>There is no specified format.
+   *
+   * @return a string containing the module version
+   */
+  String getModuleVersion();
 
-    /**
-     * The module author.
-     *
-     * @return a string containing the module author
-     */
-    String getModuleAuthor();
+  /**
+   * The module author.
+   *
+   * @return a string containing the module author
+   */
+  String getModuleAuthor();
 
-    /**
-     * Calls all modules to let them add to a popup menu.
-     *
-     * @param popUpActions Vector of actions
-     * @param context which the actions are valid for
-     *
-     * @return Vector containing pop-up actions
-     */
-    Vector getModulePopUpActions(Vector popUpActions, Object context);
+  /**
+   * Calls all modules to let them add to a popup menu.
+   *
+   * @param popUpActions Vector of actions
+   * @param context which the actions are valid for
+   * @return Vector containing pop-up actions
+   */
+  Vector getModulePopUpActions(Vector popUpActions, Object context);
 
-    /**
-     * The module identifying key.
-     *
-     * @return the string key the module uses to identify itself
-     */
-    String getModuleKey();
+  /**
+   * The module identifying key.
+   *
+   * @return the string key the module uses to identify itself
+   */
+  String getModuleKey();
 }

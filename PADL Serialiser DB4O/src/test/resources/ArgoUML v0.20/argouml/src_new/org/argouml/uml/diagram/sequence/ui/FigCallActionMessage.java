@@ -33,19 +33,17 @@ import org.tigris.gef.presentation.ArrowHeadTriangle;
  */
 public class FigCallActionMessage extends FigMessage {
 
-    /**
-     * @param owner the owner object
-     */
-    public FigCallActionMessage(Object owner) {
-        super(owner);
-        setDestArrowHead(new ArrowHeadTriangle());
-        setDashed(false);
-    }
+  /**
+   * @param owner the owner object
+   */
+  public FigCallActionMessage(Object owner) {
+    super(owner);
+    setDestArrowHead(new ArrowHeadTriangle());
+    setDashed(false);
+  }
 
-    /**
-     *
-     */
-    public FigCallActionMessage() {
-        this(null);
-    }
+  /** */
+  public FigCallActionMessage() {
+    this(null);
+  }
 }

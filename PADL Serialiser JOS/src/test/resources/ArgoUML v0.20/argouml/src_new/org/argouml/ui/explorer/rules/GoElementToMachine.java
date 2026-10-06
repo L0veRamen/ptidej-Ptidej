@@ -27,42 +27,38 @@ package org.argouml.ui.explorer.rules;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 
-/**
- * Rule for Class->State Machine.
- *
- */
+/** Rule for Class->State Machine. */
 public class GoElementToMachine extends AbstractPerspectiveRule {
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
-     */
-    public String getRuleName() {
-	return Translator.localize ("misc.class.state-machine");
-    }
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
+   */
+  public String getRuleName() {
+    return Translator.localize("misc.class.state-machine");
+  }
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
-     */
-    public Collection getChildren(Object parent) {
-	if (Model.getFacade().isAModelElement(parent)) {
-	    return Model.getFacade().getBehaviors(parent);
-	}
-	return null;
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
+   */
+  public Collection getChildren(Object parent) {
+    if (Model.getFacade().isAModelElement(parent)) {
+      return Model.getFacade().getBehaviors(parent);
     }
+    return null;
+  }
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
-     */
-    public Set getDependencies(Object parent) {
-        if (Model.getFacade().isAModelElement(parent)) {
-	    Set set = new HashSet();
-	    set.add(parent);
-	    return set;
-	}
-	return null;
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
+   */
+  public Set getDependencies(Object parent) {
+    if (Model.getFacade().isAModelElement(parent)) {
+      Set set = new HashSet();
+      set.add(parent);
+      return set;
     }
+    return null;
+  }
 }

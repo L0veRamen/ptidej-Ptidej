@@ -28,85 +28,77 @@ package org.argouml.uml.diagram.ui;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.beans.PropertyChangeEvent;
-
 import org.tigris.gef.base.PathConvPercent;
 import org.tigris.gef.presentation.ArrowHeadTriangle;
 import org.tigris.gef.presentation.Fig;
-import org.tigris.gef.presentation.FigText;
 
 /**
  * This class represents a Fig for a Realization.
- *
  *
  * @author agauthie
  */
 public class FigRealization extends FigEdgeModelElement {
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    private ArrowHeadTriangle endArrow;
+  private ArrowHeadTriangle endArrow;
 
-    /**
-     * The constructor.
-     *
-     */
-    public FigRealization() {
-        addPathItem(getStereotypeFig(), new PathConvPercent(this, 50, 10));
-        endArrow = new ArrowHeadTriangle();
-        endArrow.setFillColor(Color.white);
-        setDestArrowHead(endArrow);
-        setBetweenNearestPoints(true);
-        getFig().setDashed(true);
-    }
+  /** The constructor. */
+  public FigRealization() {
+    addPathItem(getStereotypeFig(), new PathConvPercent(this, 50, 10));
+    endArrow = new ArrowHeadTriangle();
+    endArrow.setFillColor(Color.white);
+    setDestArrowHead(endArrow);
+    setBetweenNearestPoints(true);
+    getFig().setDashed(true);
+  }
 
-    /**
-     * The constructor.
-     *
-     * @param edge the owning UML element
-     */
-    public FigRealization(Object edge) {
-        this();
-        setOwner(edge);
-    }
+  /**
+   * The constructor.
+   *
+   * @param edge the owning UML element
+   */
+  public FigRealization(Object edge) {
+    this();
+    setOwner(edge);
+  }
 
-    ////////////////////////////////////////////////////////////////
-    // accessors
+  ////////////////////////////////////////////////////////////////
+  // accessors
 
-    /**
-     * @see org.tigris.gef.presentation.FigEdge#setFig(org.tigris.gef.presentation.Fig)
-     */
-    public void setFig(Fig f) {
-        super.setFig(f);
-        getFig().setDashed(true);
-    }
+  /**
+   * @see org.tigris.gef.presentation.FigEdge#setFig(org.tigris.gef.presentation.Fig)
+   */
+  public void setFig(Fig f) {
+    super.setFig(f);
+    getFig().setDashed(true);
+  }
 
-    /**
-     * @see org.argouml.uml.diagram.ui.FigEdgeModelElement#canEdit(org.tigris.gef.presentation.Fig)
-     */
-    protected boolean canEdit(Fig f) {
-        return false;
-    }
+  /**
+   * @see org.argouml.uml.diagram.ui.FigEdgeModelElement#canEdit(org.tigris.gef.presentation.Fig)
+   */
+  protected boolean canEdit(Fig f) {
+    return false;
+  }
 
-    /**
-     * This is called after any part of the UML MModelElement has changed. This
-     * method automatically updates the name FigText. Subclasses should override
-     * and update other parts.
-     *
-     * @see org.argouml.uml.diagram.ui.FigEdgeModelElement#modelChanged(java.beans.PropertyChangeEvent)
-     */
-    protected void modelChanged(PropertyChangeEvent e) {
-        // do not set name
-        //updateStereotypeText();
-    }
+  /**
+   * This is called after any part of the UML MModelElement has changed. This method automatically
+   * updates the name FigText. Subclasses should override and update other parts.
+   *
+   * @see
+   *     org.argouml.uml.diagram.ui.FigEdgeModelElement#modelChanged(java.beans.PropertyChangeEvent)
+   */
+  protected void modelChanged(PropertyChangeEvent e) {
+    // do not set name
+    // updateStereotypeText();
+  }
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#paint(java.awt.Graphics)
-     */
-    public void paint(Graphics g) {
-        endArrow.setLineColor(getLineColor());
-        super.paint(g);
-    }
-
+  /**
+   * @see org.tigris.gef.presentation.Fig#paint(java.awt.Graphics)
+   */
+  public void paint(Graphics g) {
+    endArrow.setLineColor(getLineColor());
+    super.paint(g);
+  }
 } /* end class FigRealization */
-

@@ -5,16 +5,18 @@
 
 Provides the XMI import of UML models and access to the elements of the imported model.<p>
 
-<img src="../doc-files/modelDiag.gif"><p>
+    <img src="../doc-files/modelDiag.gif">
+<p>
 
-<a name="tutorial"></a>
-<b>Tutorial - how to parse an XMI file and access the model elements</b><p>
-The following code snippets take you through the steps to parse an XMI file,
-and write out all model elements extracted from the XMI file to the console.
+    <a name="tutorial"></a>
+    <b>Tutorial - how to parse an XMI file and access the model elements</b>
+<p>
+    The following code snippets take you through the steps to parse an XMI file,
+    and write out all model elements extracted from the XMI file to the console.
 
 <ol>
-<li>Required imports:
-<pre>
+    <li>Required imports:
+        <pre>
 import java.util.Collection;
 import java.util.List;
 
@@ -26,49 +28,49 @@ import sdmetrics.model.XMIReader;
 import sdmetrics.model.XMITransformations;
 import sdmetrics.util.XMLParser;
 </pre>
-<li>Have your metamodel, XMI transformation, and XMI input files ready:
-<pre>
+    <li>Have your metamodel, XMI transformation, and XMI input files ready:
+        <pre>
 String metaModelURL = ...;  // metamodel definition to use
 String xmiTransURL = ...;   // XMI tranformations to use
 String xmiFile = ...;       // XMI file with the UML model
 </pre>
 
-<li>Read the metamodel
+    <li>Read the metamodel
 
-<pre>
+        <pre>
 {@link com.sdmetrics.util.XMLParser} parser = new XMLParser();
 {@link com.sdmetrics.model.MetaModel} metaModel = new MetaModel();
 parser.parse(metaModelURL, metaModel.getSAXParserHandler());
 </pre>
-You do not have to use the SAX parser provided by class <code>XMLParser</code>,
-you may just as well use a <code>org.xml.sax.XMLReader</code> that you created yourself.<p> 
+        You do not have to use the SAX parser provided by class <code>XMLParser</code>,
+        you may just as well use a <code>org.xml.sax.XMLReader</code> that you created yourself.<p>
 
-<li> Read the XMI transformation file
-<pre>
+    <li> Read the XMI transformation file
+        <pre>
 {@link com.sdmetrics.model.XMITransformations} trans=new XMITransformations(metaModel);
 parser.parse(xmiTransURL, trans.getSAXParserHandler());
 </pre>
-<li> Read the XMI file with the UML model
-<pre>
+    <li> Read the XMI file with the UML model
+        <pre>
 {@link com.sdmetrics.model.Model} model = new Model(metaModel);
 {@link com.sdmetrics.model.XMIReader} xmiReader = new XMIReader(trans, model);
 parser.parse(xmiFile, xmiReader);
 </pre>
 
-<li>Optionally, specify element filters to get rid of standard libraries or 3rd party APIs
-<pre>
+    <li>Optionally, specify element filters to get rid of standard libraries or 3rd party APIs
+        <pre>
 String[] filters = { "#.java", "#.javax", "#.org.xml" };
 {@link com.sdmetrics.model.Model#setFilter model.setFilter}(filters, false, true);
 </pre>
-At this point, you can already start calculating metrics for the elements in the model.
-The tutorial for package {@link com.sdmetrics.metrics} describes how. 
-The remainder of this tutorial shows how to access the elements in the model.<p>
+        At this point, you can already start calculating metrics for the elements in the model.
+        The tutorial for package {@link com.sdmetrics.metrics} describes how.
+        The remainder of this tutorial shows how to access the elements in the model.<p>
 
-<li>Access the UML model<br>
-The following example writes all model elements accepted by the element filter to the console,
-along with the values of their attributes.
+    <li>Access the UML model<br>
+        The following example writes all model elements accepted by the element filter to the console,
+        along with the values of their attributes.
 
-<pre>
+        <pre>
 // iterate over all model element types in the metamodel
 for ({@link com.sdmetrics.model.MetaModelElement} type : metaModel) {
    System.out.println("Elements of type: " + type.getName());

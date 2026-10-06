@@ -27,63 +27,53 @@ package org.argouml.model.uml;
 import org.argouml.model.AbstractModelFactory;
 import org.argouml.model.Model;
 import org.argouml.model.UUIDManager;
-
 import ru.novosoft.uml.MBase;
 
 /**
- * Abstract Class that every model package factory should implement
- * to share the initialize() method.
+ * Abstract Class that every model package factory should implement to share the initialize()
+ * method.
  *
  * @since ARGO0.11.2
  * @author Thierry Lach
  */
 public abstract class AbstractUmlModelFactory implements AbstractModelFactory {
 
-    /**
-     * Default constructor.
-     */
-    protected AbstractUmlModelFactory() {
-    }
+  /** Default constructor. */
+  protected AbstractUmlModelFactory() {}
 
-    /**
-     * Initialized some new modelelement o.
-     *
-     * @param o The new modelelement
-     */
-    protected void initialize(Object o) {
-        if (o instanceof MBase) {
-            if (((MBase) o).getUUID() == null) {
-                ((MBase) o).setUUID(UUIDManager.getInstance().getNewUUID());
-            }
-            addListenersToModelElement(o);
-            UmlModelEventPump pump = UmlModelEventPump.getPump();
-            EventListenerList[] lists =
-                pump.getClassListenerMap().getListenerList(o.getClass());
-            for (int i = 0; i < lists.length; i++) {
-                Object[] listenerList = lists[i].getListenerList();
-                for (int j = 0; j < listenerList.length; j += 3) {
-                    pump.addModelEventListener(
-					       listenerList[j + 2],
-					       o,
-					       (String) listenerList[j + 1]);
-                }
-            }
+  /**
+   * Initialized some new modelelement o.
+   *
+   * @param o The new modelelement
+   */
+  protected void initialize(Object o) {
+    if (o instanceof MBase) {
+      if (((MBase) o).getUUID() == null) {
+        ((MBase) o).setUUID(UUIDManager.getInstance().getNewUUID());
+      }
+      addListenersToModelElement(o);
+      UmlModelEventPump pump = UmlModelEventPump.getPump();
+      EventListenerList[] lists = pump.getClassListenerMap().getListenerList(o.getClass());
+      for (int i = 0; i < lists.length; i++) {
+        Object[] listenerList = lists[i].getListenerList();
+        for (int j = 0; j < listenerList.length; j += 3) {
+          pump.addModelEventListener(listenerList[j + 2], o, (String) listenerList[j + 1]);
         }
+      }
     }
+  }
 
+  /**
+   * Adds all interested (and centralized) listeners to the given modelelement handle.
+   *
+   * @param handle the modelelement the listeners are interested in
+   */
+  public void addListenersToModelElement(Object handle) {
+    if (handle instanceof MBase) {
+      UmlModelEventPump pump = UmlModelEventPump.getPump();
 
-    /**
-     * Adds all interested (and centralized) listeners to the given
-     * modelelement handle.
-     *
-     * @param handle the modelelement the listeners are interested in
-     */
-    public void addListenersToModelElement(Object handle) {
-        if (handle instanceof MBase) {
-            UmlModelEventPump pump = UmlModelEventPump.getPump();
-
-            ((MBase) handle).addMElementListener(pump);
-            pump.addModelEventListener(Model.getEventAdapter(), handle);
-        }
+      ((MBase) handle).addMElementListener(pump);
+      pump.addModelEventListener(Model.getEventAdapter(), handle);
     }
+  }
 }

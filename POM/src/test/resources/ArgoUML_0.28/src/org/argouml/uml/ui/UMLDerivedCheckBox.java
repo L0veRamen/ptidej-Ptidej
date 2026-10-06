@@ -32,13 +32,10 @@ import org.argouml.model.Facade;
  * @author tfmorris
  */
 public class UMLDerivedCheckBox extends UMLTaggedValueCheckBox {
-    
-    /**
-     * The constructor.
-     *
-     */
-    public UMLDerivedCheckBox() {
-        // TODO: This is a tagged value name which will never trigger an event
-        super(Facade.DERIVED_TAG);
-    }
+
+  /** The constructor. */
+  public UMLDerivedCheckBox() {
+    // TODO: This is a tagged value name which will never trigger an event
+    super(Facade.DERIVED_TAG);
+  }
 }

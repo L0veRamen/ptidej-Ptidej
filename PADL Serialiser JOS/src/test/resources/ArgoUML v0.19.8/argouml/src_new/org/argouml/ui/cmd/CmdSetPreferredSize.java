@@ -28,14 +28,11 @@ import java.util.Vector;
 import org.argouml.i18n.Translator;
 import org.argouml.uml.diagram.state.ui.FigCompositeState;
 import org.argouml.uml.diagram.static_structure.ui.FigPackage;
-
-
 import org.tigris.gef.base.Cmd;
 import org.tigris.gef.base.Editor;
 import org.tigris.gef.base.Globals;
 import org.tigris.gef.base.SelectionManager;
 import org.tigris.gef.presentation.Fig;
-
 
 /**
  * A command to set selected figs to their preferred size or minimum size.
@@ -44,91 +41,89 @@ import org.tigris.gef.presentation.Fig;
  */
 public class CmdSetPreferredSize extends Cmd {
 
-    /** constant for PREFERRED_SIZE */
-    public static final int PREFERRED_SIZE = 0;
+  /** constant for PREFERRED_SIZE */
+  public static final int PREFERRED_SIZE = 0;
 
-    /** constant for MINIMUM_SIZE */
-    public static final int MINIMUM_SIZE = 1;
+  /** constant for MINIMUM_SIZE */
+  public static final int MINIMUM_SIZE = 1;
 
-    private int mode;
+  private int mode;
 
-    /**
-     * Constructor for the command.
-     *
-     * @param theMode one of the defined constants
-     */
-    public CmdSetPreferredSize(int theMode) {
-	super(Translator.localize("action.set-" + wordFor(theMode) + "-size"));
-        mode = theMode;
+  /**
+   * Constructor for the command.
+   *
+   * @param theMode one of the defined constants
+   */
+  public CmdSetPreferredSize(int theMode) {
+    super(Translator.localize("action.set-" + wordFor(theMode) + "-size"));
+    mode = theMode;
+  }
+
+  private static String wordFor(int r) {
+    switch (r) {
+      case PREFERRED_SIZE:
+        return "preferred";
+      case MINIMUM_SIZE:
+        return "minimum";
+    }
+    throw new IllegalArgumentException(
+        "CmdSetPreferredSize invoked with " + "incompatible mode: " + r);
+  }
+
+  /**
+   * Set the fig to be resized.
+   *
+   * @param f the fig to resize
+   */
+  public void setFigToResize(Fig f) {
+    Vector figs = new Vector(1);
+    figs.add(f);
+    setArg("figs", figs);
+  }
+
+  /**
+   * Set the figs to be resized.
+   *
+   * @param figs the list of figs to resize
+   */
+  public void setFigToResize(Vector figs) {
+    setArg("figs", figs);
+  }
+
+  /**
+   * Set all the figs in the selection or passed by param "figs" to the size according to the mode
+   * of the command.
+   */
+  public void doIt() {
+    Editor ce = Globals.curEditor();
+    Vector figs = (Vector) getArg("figs");
+    if (figs == null) {
+      SelectionManager sm = ce.getSelectionManager();
+      if (sm.getLocked()) {
+        Globals.showStatus("Cannot Modify Locked Objects");
+        return;
+      }
+      figs = sm.getFigs();
     }
 
-    private static String wordFor(int r) {
-        switch (r) {
-        case PREFERRED_SIZE: return "preferred";
-        case MINIMUM_SIZE: return "minimum";
-        }
-        throw new IllegalArgumentException("CmdSetPreferredSize invoked with "
-					   + "incompatible mode: " + r);
+    if (figs == null) return;
+    int size = figs.size();
+    if (size == 0) return;
+
+    for (int i = 0; i < size; i++) {
+      Fig fi = (Fig) figs.elementAt(i);
+      // only resize elements which the user would also be able
+      // to resize.
+      if (fi.isResizable()
+          && (!((fi instanceof FigPackage) || (fi instanceof FigCompositeState)))) {
+        if (mode == PREFERRED_SIZE) fi.setSize(fi.getPreferredSize());
+        else fi.setSize(fi.getMinimumSize());
+        Globals.showStatus("Setting size for " + fi);
+      }
+      fi.endTrans();
     }
+  }
 
-    /**
-     * Set the fig to be resized.
-     *
-     * @param f the fig to resize
-     */
-    public void setFigToResize(Fig f) {
-        Vector figs = new Vector(1);
-        figs.add(f);
-        setArg("figs", figs);
-    }
-
-    /**
-     * Set the figs to be resized.
-     *
-     * @param figs the list of figs to resize
-     */
-    public void setFigToResize(Vector figs) {
-        setArg("figs", figs);
-    }
-
-
-    /**
-     * Set all the figs in the selection or passed by param "figs" to the
-     * size according to the mode of the command.
-     */
-    public void doIt() {
-        Editor ce = Globals.curEditor();
-        Vector figs = (Vector) getArg("figs");
-        if (figs == null) {
-            SelectionManager sm = ce.getSelectionManager();
-            if (sm.getLocked()) {
-                Globals.showStatus("Cannot Modify Locked Objects");
-                return;
-            }
-            figs = sm.getFigs();
-        }
-
-        if (figs == null) return;
-        int size = figs.size();
-        if (size == 0) return;
-
-        for (int i = 0; i < size; i++) {
-            Fig fi = (Fig) figs.elementAt(i);
-            // only resize elements which the user would also be able
-            // to resize.
-            if (fi.isResizable() && (!((fi instanceof FigPackage)
-		                     || (fi instanceof FigCompositeState)))) {
-                if (mode == PREFERRED_SIZE)
-                    fi.setSize(fi.getPreferredSize());
-                else
-                    fi.setSize(fi.getMinimumSize());
-                Globals.showStatus("Setting size for " + fi);
-            }
-            fi.endTrans();
-        }
-    }
-
-    /** unsupported. */
-    public void undoIt() { }
-
+  /** unsupported. */
+  public void undoIt() {}
 }

@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc  and others, see in file; API and its implementation
  ******************************************************************************/
@@ -25,44 +25,41 @@ import ptidej.viewer.widget.ScrollPane;
 import util.io.ProxyConsole;
 
 public final class HelpWindow extends AbstractExternalWindow {
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	public HelpWindow() {
-		super("Help");
+  public HelpWindow() {
+    super("Help");
 
-		final StringBuffer buffer = new StringBuffer();
-		try {
-			final InputStream stream =
-				DesktopFrame.class.getClassLoader().getResourceAsStream(
-                        "texts/Help.txt");
-			final BufferedReader reader =
-				new BufferedReader(new InputStreamReader(stream));
-			String line;
-			while ((line = reader.readLine()) != null) {
-				buffer.append(line);
-				buffer.append('\n');
-			}
-			reader.close();
-		}
-		catch (final FileNotFoundException e) {
-			e.printStackTrace(ProxyConsole.getInstance().errorOutput());
-		}
-		catch (final IOException e) {
-			e.printStackTrace(ProxyConsole.getInstance().errorOutput());
-		}
-		final JTextPane textPane = new JTextPane();
-		textPane.setContentType("text/html");
-		textPane.setEditable(false);
-		textPane.setBackground(Color.WHITE);
-		textPane.setSelectionColor(super.getBackground());
-		textPane.setSelectedTextColor(textPane.getBackground().darker());
-		textPane.setText(buffer.toString());
+    final StringBuffer buffer = new StringBuffer();
+    try {
+      final InputStream stream =
+          DesktopFrame.class.getClassLoader().getResourceAsStream("texts/Help.txt");
+      final BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+      String line;
+      while ((line = reader.readLine()) != null) {
+        buffer.append(line);
+        buffer.append('\n');
+      }
+      reader.close();
+    } catch (final FileNotFoundException e) {
+      e.printStackTrace(ProxyConsole.getInstance().errorOutput());
+    } catch (final IOException e) {
+      e.printStackTrace(ProxyConsole.getInstance().errorOutput());
+    }
+    final JTextPane textPane = new JTextPane();
+    textPane.setContentType("text/html");
+    textPane.setEditable(false);
+    textPane.setBackground(Color.WHITE);
+    textPane.setSelectionColor(super.getBackground());
+    textPane.setSelectedTextColor(textPane.getBackground().darker());
+    textPane.setText(buffer.toString());
 
-		this.setSize(new Dimension(515, 500));
-		this.getContentPane().add(
-			new ScrollPane(
-				textPane,
-				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED));
-	}
+    this.setSize(new Dimension(515, 500));
+    this.getContentPane()
+        .add(
+            new ScrollPane(
+                textPane,
+                ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED));
+  }
 }

@@ -26,86 +26,82 @@ package org.argouml.uml.ui.foundation.core;
 
 import java.util.Collection;
 import java.util.List;
-
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementOrderedListModel2;
 
 /**
- * This is the model for the list of parameters for a classifier,
- * as e.g. present on the operation properties panel. <p>
+ * This is the model for the list of parameters for a classifier, as e.g. present on the operation
+ * properties panel.
  *
- * This is an ordered list, and hence it supports reordering functions.
+ * <p>This is an ordered list, and hence it supports reordering functions.
  *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 26, 2003
  */
-public class UMLClassifierParameterListModel
-    extends UMLModelElementOrderedListModel2 {
+public class UMLClassifierParameterListModel extends UMLModelElementOrderedListModel2 {
 
-    /**
-     * Constructor for UMLClassifierParameterListModel.
-     * This is an ordered list (2nd parameter = true).
-     */
-    public UMLClassifierParameterListModel() {
-        super("parameter");
+  /**
+   * Constructor for UMLClassifierParameterListModel. This is an ordered list (2nd parameter =
+   * true).
+   */
+  public UMLClassifierParameterListModel() {
+    super("parameter");
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (getTarget() != null) {
+      setAllElements(Model.getFacade().getParameters(getTarget()));
     }
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (getTarget() != null) {
-            setAllElements(Model.getFacade().getParameters(getTarget()));
-        }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().getParameters(getTarget()).contains(element);
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementOrderedListModel2#moveDown(int)
+   */
+  protected void moveDown(int index) {
+    Object clss = getTarget();
+    Collection c = Model.getFacade().getParameters(clss);
+    if (c instanceof List && index < c.size() - 1) {
+      Object mem = ((List) c).get(index);
+      Model.getCoreHelper().removeParameter(clss, mem);
+      Model.getCoreHelper().addParameter(clss, index + 1, mem);
     }
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().getParameters(getTarget()).contains(element);
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementOrderedListModel2#moveToBottom(int)
+   */
+  @Override
+  protected void moveToBottom(int index) {
+    Object clss = getTarget();
+    Collection c = Model.getFacade().getParameters(clss);
+    if (c instanceof List && index < c.size() - 1) {
+      Object mem = ((List) c).get(index);
+      Model.getCoreHelper().removeParameter(clss, mem);
+      Model.getCoreHelper().addParameter(clss, c.size() - 1, mem);
     }
+  }
 
-
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementOrderedListModel2#moveDown(int)
-     */
-    protected void moveDown(int index) {
-        Object clss = getTarget();
-        Collection c = Model.getFacade().getParameters(clss);
-        if (c instanceof List && index < c.size() - 1) {
-            Object mem = ((List) c).get(index);
-            Model.getCoreHelper().removeParameter(clss, mem);
-            Model.getCoreHelper().addParameter(clss, index + 1, mem);
-        }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementOrderedListModel2#moveToTop(int)
+   */
+  @Override
+  protected void moveToTop(int index) {
+    Object clss = getTarget();
+    Collection c = Model.getFacade().getParameters(clss);
+    if (c instanceof List && index > 0) {
+      Object mem = ((List) c).get(index);
+      Model.getCoreHelper().removeParameter(clss, mem);
+      Model.getCoreHelper().addParameter(clss, 0, mem);
     }
-
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementOrderedListModel2#moveToBottom(int)
-     */
-    @Override
-    protected void moveToBottom(int index) {
-        Object clss = getTarget();
-        Collection c = Model.getFacade().getParameters(clss);
-        if (c instanceof List && index < c.size() - 1) {
-            Object mem = ((List) c).get(index);
-            Model.getCoreHelper().removeParameter(clss, mem);
-            Model.getCoreHelper().addParameter(clss, c.size() - 1, mem);
-        }
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementOrderedListModel2#moveToTop(int)
-     */
-    @Override
-    protected void moveToTop(int index) {
-        Object clss = getTarget();
-        Collection c = Model.getFacade().getParameters(clss);
-        if (c instanceof List && index > 0) {
-            Object mem = ((List) c).get(index);
-            Model.getCoreHelper().removeParameter(clss, mem);
-            Model.getCoreHelper().addParameter(clss, 0, mem);
-        }
-    }
-
+  }
 }

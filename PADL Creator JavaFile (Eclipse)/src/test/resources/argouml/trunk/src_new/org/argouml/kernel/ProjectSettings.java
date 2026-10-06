@@ -25,7 +25,6 @@
 package org.argouml.kernel;
 
 import java.beans.PropertyChangeEvent;
-
 import org.argouml.application.api.Configuration;
 import org.argouml.application.api.ConfigurationKey;
 import org.argouml.application.events.ArgoEventPump;
@@ -35,437 +34,418 @@ import org.argouml.notation.Notation;
 import org.argouml.notation.NotationName;
 
 /**
- * A datastructure for settings for a Project. <p>
- * 
- * Most getters return a string, since they are used by "argo.tee".
- * This is also the reason all these attributes 
- * are not part of a Map or something.
+ * A datastructure for settings for a Project.
+ *
+ * <p>Most getters return a string, since they are used by "argo.tee". This is also the reason all
+ * these attributes are not part of a Map or something.
  *
  * @author michiel
  */
 public class ProjectSettings {
 
-    /* The notation settings with project scope: */
-    private String notationLanguage;
-    private boolean showBoldNames;
-    private boolean useGuillemots;
-    private boolean showVisibility;
-    private boolean showMultiplicity;
-    private boolean showInitialValue;
-    private boolean showProperties;
-    private boolean showTypes;
-    private boolean showStereotypes;
-    private int defaultShadowWidth;
+  /* The notation settings with project scope: */
+  private String notationLanguage;
+  private boolean showBoldNames;
+  private boolean useGuillemots;
+  private boolean showVisibility;
+  private boolean showMultiplicity;
+  private boolean showInitialValue;
+  private boolean showProperties;
+  private boolean showTypes;
+  private boolean showStereotypes;
+  private int defaultShadowWidth;
 
+  /**
+   * Create a new set of project settings, based on the application defaults.
+   *
+   * <p>The constructor is not public, since this class is only created from the Project..
+   */
+  ProjectSettings() {
+    super();
 
-    /**
-     * Create a new set of project settings, 
-     * based on the application defaults. <p>
-     * 
-     * The constructor is not public, since this 
-     * class is only created from the Project..
+    notationLanguage = Notation.getConfigueredNotation().getConfigurationValue();
+    showBoldNames = Configuration.getBoolean(Notation.KEY_SHOW_BOLD_NAMES);
+    useGuillemots = Configuration.getBoolean(Notation.KEY_USE_GUILLEMOTS, false);
+    showVisibility = Configuration.getBoolean(Notation.KEY_SHOW_VISIBILITY);
+    showMultiplicity = Configuration.getBoolean(Notation.KEY_SHOW_MULTIPLICITY);
+    showInitialValue = Configuration.getBoolean(Notation.KEY_SHOW_INITIAL_VALUE);
+    showProperties = Configuration.getBoolean(Notation.KEY_SHOW_PROPERTIES);
+    /*
+     * The next one defaults to TRUE, to stay compatible with older
+     * ArgoUML versions that did not have this setting:
      */
-    ProjectSettings() {
-        super();
-        
-        notationLanguage = 
-            Notation.getConfigueredNotation().getConfigurationValue();
-        showBoldNames = Configuration.getBoolean(
-                Notation.KEY_SHOW_BOLD_NAMES);
-        useGuillemots = Configuration.getBoolean(
-                Notation.KEY_USE_GUILLEMOTS, false);
-        showVisibility = Configuration.getBoolean(
-                Notation.KEY_SHOW_VISIBILITY);
-        showMultiplicity = Configuration.getBoolean(
-                Notation.KEY_SHOW_MULTIPLICITY);
-        showInitialValue = Configuration.getBoolean(
-                Notation.KEY_SHOW_INITIAL_VALUE);
-        showProperties = Configuration.getBoolean(
-                Notation.KEY_SHOW_PROPERTIES);
-        /*
-         * The next one defaults to TRUE, to stay compatible with older
-         * ArgoUML versions that did not have this setting:
-         */
-        showTypes = Configuration.getBoolean(Notation.KEY_SHOW_TYPES, true);
-        showStereotypes = Configuration.getBoolean(
-                Notation.KEY_SHOW_STEREOTYPES);
-        defaultShadowWidth = Configuration.getInteger(
-                Notation.KEY_DEFAULT_SHADOW_WIDTH, 1);
-    }
+    showTypes = Configuration.getBoolean(Notation.KEY_SHOW_TYPES, true);
+    showStereotypes = Configuration.getBoolean(Notation.KEY_SHOW_STEREOTYPES);
+    defaultShadowWidth = Configuration.getInteger(Notation.KEY_DEFAULT_SHADOW_WIDTH, 1);
+  }
 
+  /**
+   * Used by "argo.tee".
+   *
+   * @return Returns the notation language.
+   */
+  public String getNotationLanguage() {
+    return notationLanguage;
+  }
 
-    /**
-     * Used by "argo.tee".
-     * 
-     * @return Returns the notation language.
-     */
-    public String getNotationLanguage() {
-        return notationLanguage;
-    }
+  /**
+   * @return Returns the notation language.
+   */
+  public NotationName getNotationName() {
+    return Notation.findNotation(notationLanguage);
+  }
 
-    /**
-     * @return Returns the notation language.
-     */
-    public NotationName getNotationName() {
-        return Notation.findNotation(notationLanguage);
-    }
+  /**
+   * @param language the notation language.
+   */
+  public void setNotationLanguage(String language) {
+    String oldValue = notationLanguage;
+    notationLanguage = language;
+    fireEvent(Notation.KEY_DEFAULT_NOTATION, oldValue, notationLanguage);
+  }
 
-    /**
-     * @param language the notation language.
-     */
-    public void setNotationLanguage(String language) {
-        String oldValue = notationLanguage;
-        notationLanguage = language;
-        fireEvent(Notation.KEY_DEFAULT_NOTATION, oldValue, notationLanguage);
-    }
-    
-    /**
-     * @param nn the new notation language
-     */
-    public void setNotationLanguage(NotationName nn) {
-        setNotationLanguage(nn.getConfigurationValue());
-    }
+  /**
+   * @param nn the new notation language
+   */
+  public void setNotationLanguage(NotationName nn) {
+    setNotationLanguage(nn.getConfigurationValue());
+  }
 
-    /**
-     * Used by "argo.tee".
-     * 
-     * @return Returns "true" if we show bold names.
-     */
-    public String getShowBoldNames() {
-        return Boolean.toString(showBoldNames);
-    }
+  /**
+   * Used by "argo.tee".
+   *
+   * @return Returns "true" if we show bold names.
+   */
+  public String getShowBoldNames() {
+    return Boolean.toString(showBoldNames);
+  }
 
-    /**
-     * @return Returns <code>true</code> if we show bold names.
-     */
-    public boolean getShowBoldNamesValue() {
-        return showBoldNames;
-    }
+  /**
+   * @return Returns <code>true</code> if we show bold names.
+   */
+  public boolean getShowBoldNamesValue() {
+    return showBoldNames;
+  }
 
-    /**
-     * @param showbold <code>true</code> if names are to be shown in bold font.
-     */
-    public void setShowBoldNames(String showbold) {
-        setShowBoldNames(Boolean.valueOf(showbold).booleanValue());
-    }
+  /**
+   * @param showbold <code>true</code> if names are to be shown in bold font.
+   */
+  public void setShowBoldNames(String showbold) {
+    setShowBoldNames(Boolean.valueOf(showbold).booleanValue());
+  }
 
-    /**
-     * @param showbold <code>true</code> if names are to be shown in bold font.
-     */
-    public void setShowBoldNames(boolean showbold) {
-        boolean oldValue = showBoldNames;
-        showBoldNames = showbold;
-        fireEvent(Notation.KEY_SHOW_BOLD_NAMES, oldValue, showBoldNames);
-    }
+  /**
+   * @param showbold <code>true</code> if names are to be shown in bold font.
+   */
+  public void setShowBoldNames(boolean showbold) {
+    boolean oldValue = showBoldNames;
+    showBoldNames = showbold;
+    fireEvent(Notation.KEY_SHOW_BOLD_NAMES, oldValue, showBoldNames);
+  }
 
-    /**
-     * Used by "argo.tee".
-     * 
-     * @return Returns "true" if we show guillemots.
-     */
-    public String getUseGuillemots() {
-        return Boolean.toString(useGuillemots);
-    }
+  /**
+   * Used by "argo.tee".
+   *
+   * @return Returns "true" if we show guillemots.
+   */
+  public String getUseGuillemots() {
+    return Boolean.toString(useGuillemots);
+  }
 
-    /**
-     * @return Returns <code>true</code> if we show guillemots.
-     */
-    public boolean getUseGuillemotsValue() {
-        return useGuillemots;
-    }
+  /**
+   * @return Returns <code>true</code> if we show guillemots.
+   */
+  public boolean getUseGuillemotsValue() {
+    return useGuillemots;
+  }
 
-    /**
-     * @param showem <code>true</code> if guillemots are to be shown.
-     */
-    public void setUseGuillemots(String showem) {
-        setUseGuillemots(Boolean.valueOf(showem).booleanValue());
-    }
+  /**
+   * @param showem <code>true</code> if guillemots are to be shown.
+   */
+  public void setUseGuillemots(String showem) {
+    setUseGuillemots(Boolean.valueOf(showem).booleanValue());
+  }
 
-    /**
-     * @param showem <code>true</code> if guillemots are to be shown.
-     */
+  /**
+   * @param showem <code>true</code> if guillemots are to be shown.
+   */
+  public void setUseGuillemots(boolean showem) {
+    boolean oldValue = useGuillemots;
+    useGuillemots = showem;
+    fireEvent(Notation.KEY_USE_GUILLEMOTS, oldValue, useGuillemots);
+  }
 
-    public void setUseGuillemots(boolean showem) {
-        boolean oldValue = useGuillemots;
-        useGuillemots = showem;
-        fireEvent(Notation.KEY_USE_GUILLEMOTS, oldValue, useGuillemots);
-    }
+  /**
+   * @return the left pointing guillemot, i.e. << or the one-character symbol
+   */
+  public String getLeftGuillemot() {
+    return useGuillemots ? "\u00ab" : "<<";
+  }
 
-    /**
-     * @return the left pointing guillemot, i.e. << or the one-character symbol
-     */
-    public String getLeftGuillemot() {
-        return useGuillemots ? "\u00ab" : "<<";
-    }
+  /**
+   * @return the right pointing guillemot, i.e. >> or the one-character symbol
+   */
+  public String getRightGuillemot() {
+    return useGuillemots ? "\u00bb" : ">>";
+  }
 
-    /**
-     * @return the right pointing guillemot, i.e. >> or the one-character symbol
-     */
-    public String getRightGuillemot() {
-        return useGuillemots ? "\u00bb" : ">>";
-    }
+  /**
+   * Used by "argo.tee".
+   *
+   * @return Returns "true" if we show visibilities.
+   */
+  public String getShowVisibility() {
+    return Boolean.toString(showVisibility);
+  }
 
-    /**
-     * Used by "argo.tee".
-     * 
-     * @return Returns "true" if we show visibilities.
-     */
-    public String getShowVisibility() {
-        return Boolean.toString(showVisibility);
-    }
+  /**
+   * @return Returns <code>true</code> if we show visibilities.
+   */
+  public boolean getShowVisibilityValue() {
+    return showVisibility;
+  }
 
-    /**
-     * @return Returns <code>true</code> if we show visibilities.
-     */
-    public boolean getShowVisibilityValue() {
-        return showVisibility;
-    }
+  /**
+   * @param showem <code>true</code> if visibilities are to be shown.
+   */
+  public void setShowVisibility(String showem) {
+    setShowVisibility(Boolean.valueOf(showem).booleanValue());
+  }
 
-    /**
-     * @param showem <code>true</code> if visibilities are to be shown.
-     */
-    public void setShowVisibility(String showem) {
-        setShowVisibility(Boolean.valueOf(showem).booleanValue());
-    }
+  /**
+   * @param showem <code>true</code> if visibilities are to be shown.
+   */
+  public void setShowVisibility(boolean showem) {
+    boolean oldValue = showVisibility;
+    showVisibility = showem;
+    fireEvent(Notation.KEY_SHOW_VISIBILITY, oldValue, showVisibility);
+  }
 
-    /**
-     * @param showem <code>true</code> if visibilities are to be shown.
-     */
-    public void setShowVisibility(boolean showem) {
-        boolean oldValue = showVisibility;
-        showVisibility = showem;
-        fireEvent(Notation.KEY_SHOW_VISIBILITY, oldValue, showVisibility);
-    }
+  /**
+   * Used by "argo.tee".
+   *
+   * @return Returns "true" if we show multiplicities.
+   */
+  public String getShowMultiplicity() {
+    return Boolean.toString(showMultiplicity);
+  }
 
-    /**
-     * Used by "argo.tee".
-     * 
-     * @return Returns "true" if we show multiplicities.
-     */
-    public String getShowMultiplicity() {
-        return Boolean.toString(showMultiplicity);
-    }
+  /**
+   * @return Returns <code>true</code> if we show multiplicities.
+   */
+  public boolean getShowMultiplicityValue() {
+    return showMultiplicity;
+  }
 
-    /**
-     * @return Returns <code>true</code> if we show multiplicities.
-     */
-    public boolean getShowMultiplicityValue() {
-        return showMultiplicity;
-    }
+  /**
+   * @param showem <code>true</code> if multiplicity is to be shown.
+   */
+  public void setShowMultiplicity(String showem) {
+    setShowMultiplicity(Boolean.valueOf(showem).booleanValue());
+  }
 
-    /**
-     * @param showem <code>true</code> if multiplicity is to be shown.
-     */
-    public void setShowMultiplicity(String showem) {
-        setShowMultiplicity(Boolean.valueOf(showem).booleanValue());
-    }
+  /**
+   * @param showem <code>true</code> if the multiplicity is to be shown.
+   */
+  public void setShowMultiplicity(boolean showem) {
+    boolean oldValue = showMultiplicity;
+    showMultiplicity = showem;
+    fireEvent(Notation.KEY_SHOW_MULTIPLICITY, oldValue, showMultiplicity);
+  }
 
-    /**
-     * @param showem <code>true</code> if the multiplicity is to be shown.
-     */
-    public void setShowMultiplicity(boolean showem) {
-        boolean oldValue = showMultiplicity;
-        showMultiplicity = showem;
-        fireEvent(Notation.KEY_SHOW_MULTIPLICITY, oldValue, showMultiplicity);
-    }
+  /**
+   * Used by "argo.tee".
+   *
+   * @return Returns "true" if we show initial values.
+   */
+  public String getShowInitialValue() {
+    return Boolean.toString(showInitialValue);
+  }
 
-    /**
-     * Used by "argo.tee".
-     * 
-     * @return Returns "true" if we show initial values.
-     */
-    public String getShowInitialValue() {
-        return Boolean.toString(showInitialValue);
-    }
+  /**
+   * @return Returns <code>true</code> if we show initial values.
+   */
+  public boolean getShowInitialValueValue() {
+    return showInitialValue;
+  }
 
-    /**
-     * @return Returns <code>true</code> if we show initial values.
-     */
-    public boolean getShowInitialValueValue() {
-        return showInitialValue;
-    }
+  /**
+   * @param showem <code>true</code> if initial values are to be shown.
+   */
+  public void setShowInitialValue(String showem) {
+    setShowInitialValue(Boolean.valueOf(showem).booleanValue());
+  }
 
-    /**
-     * @param showem <code>true</code> if initial values are to be shown.
-     */
-    public void setShowInitialValue(String showem) {
-        setShowInitialValue(Boolean.valueOf(showem).booleanValue());
-    }
+  /**
+   * @param showem <code>true</code> if initial values are to be shown.
+   */
+  public void setShowInitialValue(boolean showem) {
+    boolean oldValue = showInitialValue;
+    showInitialValue = showem;
+    fireEvent(Notation.KEY_SHOW_INITIAL_VALUE, oldValue, showInitialValue);
+  }
 
-    /**
-     * @param showem <code>true</code> if initial values are to be shown.
-     */
-    public void setShowInitialValue(boolean showem) {
-        boolean oldValue = showInitialValue;
-        showInitialValue = showem;
-        fireEvent(Notation.KEY_SHOW_INITIAL_VALUE, oldValue, showInitialValue);
-    }
+  /**
+   * Used by "argo.tee".
+   *
+   * @return Returns "true" if we show properties.
+   */
+  public String getShowProperties() {
+    return Boolean.toString(showProperties);
+  }
 
-    /**
-     * Used by "argo.tee".
-     * 
-     * @return Returns "true" if we show properties.
-     */
-    public String getShowProperties() {
-        return Boolean.toString(showProperties);
-    }
+  /**
+   * @return Returns <code>true</code> if we show properties.
+   */
+  public boolean getShowPropertiesValue() {
+    return showProperties;
+  }
 
-    /**
-     * @return Returns <code>true</code> if we show properties.
-     */
-    public boolean getShowPropertiesValue() {
-        return showProperties;
-    }
+  /**
+   * @param showem <code>true</code> if properties are to be shown.
+   */
+  public void setShowProperties(String showem) {
+    setShowProperties(Boolean.valueOf(showem).booleanValue());
+  }
 
-    /**
-     * @param showem <code>true</code> if properties are to be shown.
-     */
-    public void setShowProperties(String showem) {
-        setShowProperties(Boolean.valueOf(showem).booleanValue());
-    }
+  /**
+   * @param showem <code>true</code> if properties are to be shown.
+   */
+  public void setShowProperties(boolean showem) {
+    boolean oldValue = showProperties;
+    showProperties = showem;
+    fireEvent(Notation.KEY_SHOW_PROPERTIES, oldValue, showProperties);
+  }
 
-    /**
-     * @param showem <code>true</code> if properties are to be shown.
-     */
-    public void setShowProperties(boolean showem) {
-        boolean oldValue = showProperties;
-        showProperties = showem;
-        fireEvent(Notation.KEY_SHOW_PROPERTIES, oldValue, showProperties);
-    }
+  /**
+   * Used by "argo.tee".
+   *
+   * @return Returns "true" if we show types.
+   */
+  public String getShowTypes() {
+    return Boolean.toString(showTypes);
+  }
 
-    /**
-     * Used by "argo.tee".
-     * 
-     * @return Returns "true" if we show types.
-     */
-    public String getShowTypes() {
-        return Boolean.toString(showTypes);
-    }
+  /**
+   * @return Returns <code>true</code> if we show types.
+   */
+  public boolean getShowTypesValue() {
+    return showTypes;
+  }
 
-    /**
-     * @return Returns <code>true</code> if we show types.
-     */
-    public boolean getShowTypesValue() {
-        return showTypes;
-    }
+  /**
+   * @param showem <code>true</code> if types are to be shown.
+   */
+  public void setShowTypes(String showem) {
+    setShowTypes(Boolean.valueOf(showem).booleanValue());
+  }
 
-    /**
-     * @param showem <code>true</code> if types are to be shown.
-     */
-    public void setShowTypes(String showem) {
-        setShowTypes(Boolean.valueOf(showem).booleanValue());
-    }
+  /**
+   * @param showem <code>true</code> if types are to be shown.
+   */
+  public void setShowTypes(boolean showem) {
+    boolean oldValue = showTypes;
+    showTypes = showem;
+    fireEvent(Notation.KEY_SHOW_TYPES, oldValue, showTypes);
+  }
 
-    /**
-     * @param showem <code>true</code> if types are to be shown.
-     */
-    public void setShowTypes(boolean showem) {
-        boolean oldValue = showTypes;
-        showTypes = showem;
-        fireEvent(Notation.KEY_SHOW_TYPES, oldValue, showTypes);
-    }
+  /**
+   * Used by "argo.tee".
+   *
+   * @return Returns "true" if we show stereotypes.
+   */
+  public String getShowStereotypes() {
+    return Boolean.toString(showStereotypes);
+  }
 
+  /**
+   * @return Returns <code>true</code> if we show stereotypes.
+   */
+  public boolean getShowStereotypesValue() {
+    return showStereotypes;
+  }
 
-    /**
-     * Used by "argo.tee".
-     * 
-     * @return Returns "true" if we show stereotypes.
-     */
-    public String getShowStereotypes() {
-        return Boolean.toString(showStereotypes);
-    }
+  /**
+   * @param showem <code>true</code> if stereotypes are to be shown.
+   */
+  public void setShowStereotypes(String showem) {
+    setShowStereotypes(Boolean.valueOf(showem).booleanValue());
+  }
 
-    /**
-     * @return Returns <code>true</code> if we show stereotypes.
-     */
-    public boolean getShowStereotypesValue() {
-        return showStereotypes;
-    }
+  /**
+   * @param showem <code>true</code> if stereotypes are to be shown.
+   */
+  public void setShowStereotypes(boolean showem) {
+    boolean oldValue = showStereotypes;
+    showStereotypes = showem;
+    fireEvent(Notation.KEY_SHOW_STEREOTYPES, oldValue, showStereotypes);
+  }
 
-    /**
-     * @param showem <code>true</code> if stereotypes are to be shown.
-     */
-    public void setShowStereotypes(String showem) {
-        setShowStereotypes(Boolean.valueOf(showem).booleanValue());
-    }
+  /**
+   * Used by "argo.tee".
+   *
+   * @return Returns the shadow width.
+   */
+  public String getDefaultShadowWidth() {
+    return Integer.valueOf(defaultShadowWidth).toString();
+  }
 
-    /**
-     * @param showem <code>true</code> if stereotypes are to be shown.
-     */
-    public void setShowStereotypes(boolean showem) {
-        boolean oldValue = showStereotypes;
-        showStereotypes = showem;
-        fireEvent(Notation.KEY_SHOW_STEREOTYPES, oldValue, showStereotypes);
-    }
+  /**
+   * @return Returns the shadow width.
+   */
+  public int getDefaultShadowWidthValue() {
+    return defaultShadowWidth;
+  }
 
-    /**
-     * Used by "argo.tee".
-     * 
-     * @return Returns the shadow width.
-     */
-    public String getDefaultShadowWidth() {
-        return Integer.valueOf(defaultShadowWidth).toString();
-    }
+  /**
+   * @param width The Shadow Width.
+   */
+  public void setDefaultShadowWidth(int width) {
+    int oldValue = defaultShadowWidth;
+    defaultShadowWidth = width;
+    fireEvent(Notation.KEY_DEFAULT_SHADOW_WIDTH, oldValue, defaultShadowWidth);
+  }
 
-    /**
-     * @return Returns the shadow width.
-     */
-    public int getDefaultShadowWidthValue() {
-        return defaultShadowWidth;
-    }
+  /**
+   * @param width The shadow width to set.
+   */
+  public void setDefaultShadowWidth(String width) {
+    setDefaultShadowWidth(Integer.parseInt(width));
+  }
 
-    /**
-     * @param width The Shadow Width.
-     */
-    public void setDefaultShadowWidth(int width) {
-        int oldValue = defaultShadowWidth;
-        defaultShadowWidth = width;
-        fireEvent(Notation.KEY_DEFAULT_SHADOW_WIDTH, oldValue,
-                defaultShadowWidth);
-    }
+  /**
+   * Convenience methods to fire notation configuration change events.
+   *
+   * @param key the ConfigurationKey that is related to the change
+   * @param oldValue the old value
+   * @param newValue the new value
+   */
+  private void fireEvent(ConfigurationKey key, int oldValue, int newValue) {
+    fireEvent(key, Integer.toString(oldValue), Integer.toString(newValue));
+  }
 
-    /**
-     * @param width The shadow width to set.
-     */
-    public void setDefaultShadowWidth(String width) {
-        setDefaultShadowWidth(Integer.parseInt(width));
-    }
-    
+  /**
+   * Convenience methods to fire notation configuration change events.
+   *
+   * @param key the ConfigurationKey that is related to the change
+   * @param oldValue the old value
+   * @param newValue the new value
+   */
+  private void fireEvent(ConfigurationKey key, boolean oldValue, boolean newValue) {
+    fireEvent(key, Boolean.toString(oldValue), Boolean.toString(newValue));
+  }
 
-    /**
-     * Convenience methods to fire notation configuration change events.
-     *
-     * @param key the ConfigurationKey that is related to the change
-     * @param oldValue the old value
-     * @param newValue the new value
-     */
-    private void fireEvent(ConfigurationKey key, int oldValue, int newValue) {
-        fireEvent(key, Integer.toString(oldValue), Integer.toString(newValue));
-    }
-
-    /**
-     * Convenience methods to fire notation configuration change events.
-     *
-     * @param key the ConfigurationKey that is related to the change
-     * @param oldValue the old value
-     * @param newValue the new value
-     */
-    private void fireEvent(ConfigurationKey key, boolean oldValue,
-            boolean newValue) {
-        fireEvent(key, Boolean.toString(oldValue), Boolean.toString(newValue));
-    }
-    
-    /**
-     * Convenience methods to fire notation configuration change events.
-     *
-     * @param key the ConfigurationKey that is related to the change
-     * @param oldValue the old value
-     * @param newValue the new value
-     */
-    private void fireEvent(ConfigurationKey key, String oldValue,
-            String newValue) {
-        ArgoEventPump.fireEvent(new ArgoNotationEvent(
-                ArgoEventTypes.NOTATION_CHANGED, new PropertyChangeEvent(this,
-                        key.getKey(), oldValue, newValue)));
-    }
+  /**
+   * Convenience methods to fire notation configuration change events.
+   *
+   * @param key the ConfigurationKey that is related to the change
+   * @param oldValue the old value
+   * @param newValue the new value
+   */
+  private void fireEvent(ConfigurationKey key, String oldValue, String newValue) {
+    ArgoEventPump.fireEvent(
+        new ArgoNotationEvent(
+            ArgoEventTypes.NOTATION_CHANGED,
+            new PropertyChangeEvent(this, key.getKey(), oldValue, newValue)));
+  }
 }

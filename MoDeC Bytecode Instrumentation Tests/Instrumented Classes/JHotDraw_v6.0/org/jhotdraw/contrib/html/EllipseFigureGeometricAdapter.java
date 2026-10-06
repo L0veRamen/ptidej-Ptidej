@@ -14,44 +14,40 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
-
 import org.jhotdraw.figures.EllipseFigure;
 
 /**
  * Geometric adapter for the EllipseFigure
  *
- * @author  Eduardo Francos - InContext
+ * @author Eduardo Francos - InContext
  * @created 1 mai 2002
  * @version <$CURRENT_VERSION$>
  */
-public class EllipseFigureGeometricAdapter extends EllipseFigure
-		 implements GeometricFigure {
+public class EllipseFigureGeometricAdapter extends EllipseFigure implements GeometricFigure {
 
-	/**
-	 * Constructor for the EllipseFigureExt object
-	 */
-	public EllipseFigureGeometricAdapter() {
-		super();
-	}
+  /** Constructor for the EllipseFigureExt object */
+  public EllipseFigureGeometricAdapter() {
+    super();
+  }
 
-	/**
-	 *Constructor for the EllipseFigureGeometricAdapter object
-	 *
-	 * @param origin  Description of the Parameter
-	 * @param corner  Description of the Parameter
-	 */
-	public EllipseFigureGeometricAdapter(Point origin, Point corner) {
-		super(origin, corner);
-	}
+  /**
+   * Constructor for the EllipseFigureGeometricAdapter object
+   *
+   * @param origin Description of the Parameter
+   * @param corner Description of the Parameter
+   */
+  public EllipseFigureGeometricAdapter(Point origin, Point corner) {
+    super(origin, corner);
+  }
 
-	/**
-	 * Gets the shape attribute of the EllipseFigure object
-	 *
-	 * @return   The shape value
-	 */
-	public Shape getShape() {
-		Rectangle rect = displayBox();
-		Ellipse2D.Float ellipse = new Ellipse2D.Float(rect.x, rect.y, rect.width, rect.height);
-		return ellipse;
-	}
+  /**
+   * Gets the shape attribute of the EllipseFigure object
+   *
+   * @return The shape value
+   */
+  public Shape getShape() {
+    Rectangle rect = displayBox();
+    Ellipse2D.Float ellipse = new Ellipse2D.Float(rect.x, rect.y, rect.width, rect.height);
+    return ellipse;
+  }
 }

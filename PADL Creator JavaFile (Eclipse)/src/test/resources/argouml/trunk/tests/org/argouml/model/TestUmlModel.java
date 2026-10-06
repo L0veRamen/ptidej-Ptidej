@@ -24,43 +24,38 @@
 
 package org.argouml.model;
 
-
-
 /**
  * @author Thierry Lach
  */
 public class TestUmlModel extends GenericUmlObjectTestFixture {
-    /**
-     * Constructor.
-     *
-     * @param arg0 test name
-     */
-    public TestUmlModel(String arg0) {
-	super(arg0, Model.getMetaTypes().getModel());
-	validateTestClassIsGeneric(this);
-    }
+  /**
+   * Constructor.
+   *
+   * @param arg0 test name
+   */
+  public TestUmlModel(String arg0) {
+    super(arg0, Model.getMetaTypes().getModel());
+    validateTestClassIsGeneric(this);
+  }
 
-    /**
-     * Test the creation of a namespace.
-     */
-    public void testNamespace() {
-	Object o =
-	    Model.getUmlFactory().buildNode(Model.getMetaTypes().getModel());
-	assertNotNull("Didn't create object", o);
-	assertTrue("Should be a base", Model.getFacade().isAModelElement(o));
-	assertTrue("Should be a model", Model.getFacade().isAModel(o));
-	runTruthTests(o);
-    }
+  /** Test the creation of a namespace. */
+  public void testNamespace() {
+    Object o = Model.getUmlFactory().buildNode(Model.getMetaTypes().getModel());
+    assertNotNull("Didn't create object", o);
+    assertTrue("Should be a base", Model.getFacade().isAModelElement(o));
+    assertTrue("Should be a model", Model.getFacade().isAModel(o));
+    runTruthTests(o);
+  }
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        setTruth(Model.getMetaTypes().getModelElement(), true);
-        setTruth(Model.getMetaTypes().getGeneralizableElement(), true);
-        setTruth(Model.getMetaTypes().getNamespace(), true);
-        setTruth(Model.getMetaTypes().getPackage(), true);
-        setTruth(Model.getMetaTypes().getModel(), true);
-    }
+  /**
+   * @see junit.framework.TestCase#setUp()
+   */
+  protected void setUp() throws Exception {
+    super.setUp();
+    setTruth(Model.getMetaTypes().getModelElement(), true);
+    setTruth(Model.getMetaTypes().getGeneralizableElement(), true);
+    setTruth(Model.getMetaTypes().getNamespace(), true);
+    setTruth(Model.getMetaTypes().getPackage(), true);
+    setTruth(Model.getMetaTypes().getModel(), true);
+  }
 }

@@ -32,30 +32,24 @@ import junit.framework.TestCase;
  */
 public class TestStateMachinesHelper extends TestCase {
 
-    /**
-     * Constructor for TestStateMachinesHelper.
-     *
-     * @param arg0 is the name of the test case.
-     */
-    public TestStateMachinesHelper(String arg0) {
-	super(arg0);
-    }
+  /**
+   * Constructor for TestStateMachinesHelper.
+   *
+   * @param arg0 is the name of the test case.
+   */
+  public TestStateMachinesHelper(String arg0) {
+    super(arg0);
+  }
 
-    /**
-     * Check if the metamodel name is correct.
-     */
-    public void testGetMetaModelName() {
-	CheckUMLModelHelper.metaModelNameCorrect(
-			 Model.getStateMachinesFactory(),
-			 TestStateMachinesFactory.getAllModelElements());
-    }
+  /** Check if the metamodel name is correct. */
+  public void testGetMetaModelName() {
+    CheckUMLModelHelper.metaModelNameCorrect(
+        Model.getStateMachinesFactory(), TestStateMachinesFactory.getAllModelElements());
+  }
 
-    /**
-     * Test creating a stereotype.
-     */
-    public void testIsValidStereoType() {
-	CheckUMLModelHelper.isValidStereoType(
-		      Model.getStateMachinesFactory(),
-		      TestStateMachinesFactory.getAllModelElements());
-    }
+  /** Test creating a stereotype. */
+  public void testIsValidStereoType() {
+    CheckUMLModelHelper.isValidStereoType(
+        Model.getStateMachinesFactory(), TestStateMachinesFactory.getAllModelElements());
+  }
 }

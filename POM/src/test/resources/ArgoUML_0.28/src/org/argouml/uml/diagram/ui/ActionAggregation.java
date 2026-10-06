@@ -28,9 +28,7 @@ import java.awt.event.ActionEvent;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-
 import javax.swing.Action;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.tigris.gef.base.Globals;
@@ -38,136 +36,120 @@ import org.tigris.gef.base.Selection;
 import org.tigris.gef.presentation.Fig;
 import org.tigris.gef.undo.UndoableAction;
 
-/**
- * Action to set the Aggregation kind.
- *
- */
+/** Action to set the Aggregation kind. */
 public class ActionAggregation extends UndoableAction {
-    private String str = "";
-    private Object agg = null;
+  private String str = "";
+  private Object agg = null;
 
+  ////////////////////////////////////////////////////////////////
+  // static variables
 
-    ////////////////////////////////////////////////////////////////
-    // static variables
+  // aggregation
+  private static UndoableAction srcAgg =
+      new ActionAggregation(Model.getAggregationKind().getAggregate(), "src");
 
-    // aggregation
-    private static UndoableAction srcAgg =
-	new ActionAggregation(
-	        Model.getAggregationKind().getAggregate(), "src");
-    private static UndoableAction destAgg =
-	new ActionAggregation(
-	        Model.getAggregationKind().getAggregate(), "dest");
+  private static UndoableAction destAgg =
+      new ActionAggregation(Model.getAggregationKind().getAggregate(), "dest");
 
-    private static UndoableAction srcAggComposite =
-	new ActionAggregation(
-	        Model.getAggregationKind().getComposite(), "src");
-    private static UndoableAction destAggComposite =
-	new ActionAggregation(
-	        Model.getAggregationKind().getComposite(), "dest");
+  private static UndoableAction srcAggComposite =
+      new ActionAggregation(Model.getAggregationKind().getComposite(), "src");
+  private static UndoableAction destAggComposite =
+      new ActionAggregation(Model.getAggregationKind().getComposite(), "dest");
 
-    private static UndoableAction srcAggNone =
-	new ActionAggregation(Model.getAggregationKind().getNone(), "src");
-    private static UndoableAction destAggNone =
-	new ActionAggregation(
-	        Model.getAggregationKind().getNone(), "dest");
+  private static UndoableAction srcAggNone =
+      new ActionAggregation(Model.getAggregationKind().getNone(), "src");
+  private static UndoableAction destAggNone =
+      new ActionAggregation(Model.getAggregationKind().getNone(), "dest");
 
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  /**
+   * The constructor.
+   *
+   * @param a the aggregation kind object
+   * @param s "src" or "dest". Anything else is interpreted as "dest".
+   */
+  protected ActionAggregation(Object a, String s) {
+    super(Translator.localize(Model.getFacade().getName(a)), null);
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize(Model.getFacade().getName(a)));
+    str = s;
+    agg = a;
+  }
 
-    /**
-     * The constructor.
-     * @param a the aggregation kind object
-     * @param s "src" or "dest". Anything else is interpreted as "dest".
-     */
-    protected ActionAggregation(Object a, String s) {
-        super(Translator.localize(Model.getFacade().getName(a)),
-                null);
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize(Model.getFacade().getName(a)));
-	str = s;
-	agg = a;
+  /*
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
+  public void actionPerformed(ActionEvent ae) {
+    super.actionPerformed(ae);
+    List sels = Globals.curEditor().getSelectionManager().selections();
+    if (sels.size() == 1) {
+      Selection sel = (Selection) sels.get(0);
+      Fig f = sel.getContent();
+      Object owner = ((FigEdgeModelElement) f).getOwner();
+      Collection ascEnds = Model.getFacade().getConnections(owner);
+      Iterator iter = ascEnds.iterator();
+      Object ascEnd = null;
+      if (str.equals("src")) {
+        ascEnd = iter.next();
+      } else {
+        while (iter.hasNext()) {
+          ascEnd = iter.next();
+        }
+      }
+      Model.getCoreHelper().setAggregation(ascEnd, agg);
     }
+  }
 
-    /*
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    @Override
-    public void actionPerformed(ActionEvent ae) {
-    	super.actionPerformed(ae);
-	List sels = Globals.curEditor().getSelectionManager().selections();
-	if (sels.size() == 1) {
-	    Selection sel = (Selection) sels.get(0);
-	    Fig f = sel.getContent();
-	    Object owner = ((FigEdgeModelElement) f).getOwner();
-	    Collection ascEnds = Model.getFacade().getConnections(owner);
-            Iterator iter = ascEnds.iterator();
-	    Object ascEnd = null;
-	    if (str.equals("src")) {
-		ascEnd = iter.next();
-            } else {
-                while (iter.hasNext()) {
-                    ascEnd = iter.next();
-                }
-            }
-	    Model.getCoreHelper().setAggregation(ascEnd, agg);
-	}
-    }
+  /*
+   * @see org.tigris.gef.undo.UndoableAction#isEnabled()
+   */
+  @Override
+  public boolean isEnabled() {
+    return true;
+  }
 
-    /*
-     * @see org.tigris.gef.undo.UndoableAction#isEnabled()
-     */
-    @Override
-    public boolean isEnabled() {
-	return true;
-    }
+  /**
+   * @return Returns the srcAgg.
+   */
+  public static UndoableAction getSrcAgg() {
+    return srcAgg;
+  }
 
+  /**
+   * @return Returns the destAgg.
+   */
+  public static UndoableAction getDestAgg() {
+    return destAgg;
+  }
 
-    /**
-     * @return Returns the srcAgg.
-     */
-    public static UndoableAction getSrcAgg() {
-        return srcAgg;
-    }
+  /**
+   * @return Returns the srcAggComposite.
+   */
+  public static UndoableAction getSrcAggComposite() {
+    return srcAggComposite;
+  }
 
+  /**
+   * @return Returns the destAggComposite.
+   */
+  public static UndoableAction getDestAggComposite() {
+    return destAggComposite;
+  }
 
-    /**
-     * @return Returns the destAgg.
-     */
-    public static UndoableAction getDestAgg() {
-        return destAgg;
-    }
+  /**
+   * @return Returns the srcAggNone.
+   */
+  public static UndoableAction getSrcAggNone() {
+    return srcAggNone;
+  }
 
-
-    /**
-     * @return Returns the srcAggComposite.
-     */
-    public static UndoableAction getSrcAggComposite() {
-        return srcAggComposite;
-    }
-
-
-    /**
-     * @return Returns the destAggComposite.
-     */
-    public static UndoableAction getDestAggComposite() {
-        return destAggComposite;
-    }
-
-
-    /**
-     * @return Returns the srcAggNone.
-     */
-    public static UndoableAction getSrcAggNone() {
-        return srcAggNone;
-    }
-
-
-    /**
-     * @return Returns the destAggNone.
-     */
-    public static UndoableAction getDestAggNone() {
-        return destAggNone;
-    }
+  /**
+   * @return Returns the destAggNone.
+   */
+  public static UndoableAction getDestAggNone() {
+    return destAggNone;
+  }
 } /* end class ActionSrcMultOneToMany */

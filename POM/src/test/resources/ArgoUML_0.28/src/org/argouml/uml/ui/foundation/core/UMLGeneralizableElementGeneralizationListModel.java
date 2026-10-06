@@ -28,37 +28,30 @@ import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
 /**
- *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 26, 2003
  */
-public class UMLGeneralizableElementGeneralizationListModel
-    extends UMLModelElementListModel2 {
+public class UMLGeneralizableElementGeneralizationListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLGeneralizableElementGeneralizationListModel.
-     */
-    public UMLGeneralizableElementGeneralizationListModel() {
-        super("generalization", Model.getMetaTypes().getGeneralization());
+  /** Constructor for UMLGeneralizableElementGeneralizationListModel. */
+  public UMLGeneralizableElementGeneralizationListModel() {
+    super("generalization", Model.getMetaTypes().getGeneralization());
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (getTarget() != null && Model.getFacade().isAGeneralizableElement(getTarget())) {
+      setAllElements(Model.getFacade().getGeneralizations(getTarget()));
     }
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (getTarget() != null
-                && Model.getFacade().isAGeneralizableElement(getTarget())) {
-            setAllElements(Model.getFacade().getGeneralizations(getTarget()));
-        }
-    }
-
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().isAGeneralization(element)
-            && Model.getFacade().getGeneralizations(getTarget())
-            	.contains(element);
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().isAGeneralization(element)
+        && Model.getFacade().getGeneralizations(getTarget()).contains(element);
+  }
 }

@@ -25,11 +25,8 @@
 package org.argouml.ui.targetmanager;
 
 import javax.swing.Action;
-
 import junit.framework.TestCase;
-
 import org.argouml.i18n.Translator;
-
 
 /**
  * Test the ActionAddAttribute.
@@ -38,28 +35,26 @@ import org.argouml.i18n.Translator;
  */
 public class TestActionAddAttribute extends TestCase {
 
-    /**
-     * The constructor.
-     *
-     * @param arg0 the test name
-     */
-    public TestActionAddAttribute(String arg0) {
-        super(arg0);
-    }
+  /**
+   * The constructor.
+   *
+   * @param arg0 the test name
+   */
+  public TestActionAddAttribute(String arg0) {
+    super(arg0);
+  }
 
-    /**
-     * @see TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        Translator.init();
-    }
+  /**
+   * @see TestCase#setUp()
+   */
+  protected void setUp() throws Exception {
+    super.setUp();
+    Translator.init();
+  }
 
-    /**
-     * Test if the action has an icon.
-     */
-    public void testHasIcon() {
-        ActionAddAttribute action = new ActionAddAttribute();
-        assertNotNull(action.getValue(Action.SMALL_ICON));
-    }
+  /** Test if the action has an icon. */
+  public void testHasIcon() {
+    ActionAddAttribute action = new ActionAddAttribute();
+    assertNotNull(action.getValue(Action.SMALL_ICON));
+  }
 }

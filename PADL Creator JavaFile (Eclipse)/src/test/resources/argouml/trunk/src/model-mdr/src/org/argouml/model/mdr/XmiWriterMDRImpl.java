@@ -30,9 +30,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-
 import javax.jmi.reflect.RefObject;
-
 import org.apache.log4j.Logger;
 import org.argouml.model.UmlException;
 import org.argouml.model.XmiExtensionWriter;
@@ -45,220 +43,210 @@ import org.omg.uml.modelmanagement.Model;
 
 /**
  * XmiWriter implementation for MDR.
- * 
- * This implementation is clumsy because the specified Writer interface wants
- * characters, while the XmiWriter wants an OutputStream dealing in bytes. We
- * could easily create a Writer from an OutputStream, but the reverse is not
- * true. 
- * 
- * TODO: Change interface to use OutputStream instead of Writer and change this
- * to match
- * 
+ *
+ * <p>This implementation is clumsy because the specified Writer interface wants characters, while
+ * the XmiWriter wants an OutputStream dealing in bytes. We could easily create a Writer from an
+ * OutputStream, but the reverse is not true.
+ *
+ * <p>TODO: Change interface to use OutputStream instead of Writer and change this to match
+ *
  * @author lmaitre
- * 
  */
 public class XmiWriterMDRImpl implements XmiWriter {
 
-    private Logger LOG = Logger.getLogger(XmiWriterMDRImpl.class);
+  private Logger LOG = Logger.getLogger(XmiWriterMDRImpl.class);
 
-    private MDRModelImplementation parent;
+  private MDRModelImplementation parent;
 
-    private Object model;
-    
-    private OutputConfig config;
+  private Object model;
 
-    private Writer writer;
-    
-    private static final String ENCODING = "UTF-8";
-    
-    private static final String XMI_VERSION = "1.2";
-    
-    private XmiExtensionWriter xmiExtensionWriter;
+  private OutputConfig config;
 
-    private static final char[] TARGET = "/XMI.content".toCharArray();
-    
-    /*
-     * If true, change write semantics to write all top level model elements
-     * except for the profile model(s), ignoring the model specified by the 
-     * caller.
-     */
-    private static final boolean WRITE_ALL = false;
+  private Writer writer;
+
+  private static final String ENCODING = "UTF-8";
+
+  private static final String XMI_VERSION = "1.2";
+
+  private XmiExtensionWriter xmiExtensionWriter;
+
+  private static final char[] TARGET = "/XMI.content".toCharArray();
+
+  /*
+   * If true, change write semantics to write all top level model elements
+   * except for the profile model(s), ignoring the model specified by the
+   * caller.
+   */
+  private static final boolean WRITE_ALL = false;
+
+  /**
+   * Create an XMI writer for the given model or extent.
+   *
+   * @param theParent The ModelImplementation
+   * @param theModel The Model to write. If null, write all top-level model elements.
+   * @param theWriter The writer to write to
+   * @param version the ArgoUML version
+   * @throws IllegalArgumentException if no writer provided
+   */
+  public XmiWriterMDRImpl(
+      MDRModelImplementation theParent, Object theModel, Writer theWriter, String version) {
+    if (theWriter == null) {
+      throw new IllegalArgumentException("A writer must be provided");
+    }
+    if (theModel == null) {
+      throw new IllegalArgumentException("A model must be provided");
+    }
+    if (theParent == null) {
+      throw new IllegalArgumentException("A parent must be provided");
+    }
+    this.parent = theParent;
+    this.model = theModel;
+    this.writer = theWriter;
+    config = new OutputConfig();
+    config.setEncoding(ENCODING);
+    config.setReferenceProvider(new XmiReferenceProviderImpl(parent.getObjectToId()));
+    config.setHeaderProvider(new XmiHeaderProviderImpl(version));
+  }
+
+  /*
+   * @see org.argouml.model.XmiWriter#write()
+   */
+  public void write() throws UmlException {
+    XMIWriter xmiWriter = XMIWriterFactory.getDefault().createXMIWriter(config);
+    try {
+      ArrayList elements = new ArrayList();
+      if (model != null && !WRITE_ALL) {
+        elements.add(model);
+        LOG.info("Saving model '" + ((Model) model).getName() + "'");
+      } else {
+        RefObject profile = parent.getProfileModel();
+        UmlPackage pkg = parent.getUmlPackage();
+        for (Iterator it = pkg.getCore().getElement().refAllOfType().iterator(); it.hasNext(); ) {
+          RefObject obj = (RefObject) it.next();
+          // Find top level objects which aren't part of profile
+          if (obj.refImmediateComposite() == null) {
+            if (!obj.equals(profile)) {
+              elements.add(obj);
+            }
+          }
+        }
+        LOG.info("Saving " + elements.size() + " top level model elements");
+      }
+
+      WriterOuputStream wos = new WriterOuputStream(writer);
+      xmiWriter.write(wos, elements, XMI_VERSION);
+    } catch (IOException e) {
+      throw new UmlException(e);
+    }
+  }
+
+  /**
+   * Class which wraps a Writer into an OutputStream.
+   *
+   * <p>(this can go away when/if org.argouml.model.XmiWriter interface changes - see ToDo in
+   * header)
+   *
+   * @author lmaitre
+   */
+  public class WriterOuputStream extends OutputStream {
+
+    private Writer myWriter;
+    private boolean inTag = false;
+    private char tagName[] = new char[12];
+    private int tagLength = 0;
 
     /**
-     * Create an XMI writer for the given model or extent.
-     * 
-     * @param theParent
-     *            The ModelImplementation
-     * @param theModel
-     *            The Model to write. If null, write all top-level model
-     *            elements.
-     * @param theWriter
-     *            The writer to write to
-     * @param version the ArgoUML version
-     * @throws IllegalArgumentException if no writer provided
+     * Constructor.
+     *
+     * @param wrappedWriter The myWriter which will be wrapped
      */
-    public XmiWriterMDRImpl(MDRModelImplementation theParent, Object theModel,
-            Writer theWriter, String version) {
-        if (theWriter == null) {
-            throw new IllegalArgumentException("A writer must be provided");
-        }
-        if (theModel == null) {
-            throw new IllegalArgumentException("A model must be provided");
-        }
-        if (theParent == null) {
-            throw new IllegalArgumentException("A parent must be provided");
-        }
-        this.parent = theParent;
-        this.model = theModel;
-        this.writer = theWriter;
-        config = new OutputConfig();
-        config.setEncoding(ENCODING);
-        config.setReferenceProvider(new XmiReferenceProviderImpl(parent
-                .getObjectToId()));
-        config.setHeaderProvider(new XmiHeaderProviderImpl(version));
+    public WriterOuputStream(Writer wrappedWriter) {
+      if (wrappedWriter == null) {
+        throw new IllegalArgumentException("No writer provided");
+      }
+      this.myWriter = wrappedWriter;
     }
 
     /*
-     * @see org.argouml.model.XmiWriter#write()
+     * @see java.io.OutputStream#close()
      */
-    public void write() throws UmlException {
-        XMIWriter xmiWriter = XMIWriterFactory.getDefault().createXMIWriter(
-                config);
-        try {
-            ArrayList elements = new ArrayList();
-            if (model != null && !WRITE_ALL) {
-                elements.add(model);
-                LOG.info("Saving model '" + ((Model) model).getName() + "'");
-            } else {
-                RefObject profile = parent.getProfileModel();
-                UmlPackage pkg = parent.getUmlPackage();
-                for (Iterator it = pkg.getCore().getElement().refAllOfType()
-                        .iterator(); it.hasNext();) {
-                    RefObject obj = (RefObject) it.next();
-                    // Find top level objects which aren't part of profile
-                    if (obj.refImmediateComposite() == null ) {
-                        if (!obj.equals(profile)) {
-                            elements.add(obj);
-                        }
-                    }
-                }
-                LOG.info("Saving " + elements.size() 
-                        + " top level model elements");
-            }
-     
-            WriterOuputStream wos = new WriterOuputStream(writer);
-            xmiWriter.write(wos, elements, XMI_VERSION);
-        } catch (IOException e) {
-            throw new UmlException(e);
-        }
+    public void close() throws IOException {
+      myWriter.close();
     }
 
-    /**
-     * Class which wraps a Writer into an OutputStream.
-     * 
-     * (this can go away when/if org.argouml.model.XmiWriter
-     * interface changes - see ToDo in header)
-     * 
-     * @author lmaitre
+    /*
+     * @see java.io.OutputStream#flush()
      */
-    public class WriterOuputStream extends OutputStream {
-
-        private Writer myWriter;
-        private boolean inTag = false;
-        private char tagName[] = new char[12];
-        private int tagLength = 0;
-
-        /**
-         * Constructor.
-         * @param wrappedWriter The myWriter which will be wrapped
-         */
-        public WriterOuputStream(Writer wrappedWriter) {
-            if (wrappedWriter == null) {
-                throw new IllegalArgumentException("No writer provided");
-            }
-            this.myWriter = wrappedWriter;
-        }
-
-        /*
-         * @see java.io.OutputStream#close()
-         */
-        public void close() throws IOException {
-            myWriter.close();
-        }
-
-        /*
-         * @see java.io.OutputStream#flush()
-         */
-        public void flush() throws IOException {
-            myWriter.flush();
-        }
-
-        /*
-         * @see java.io.OutputStream#write(byte[], int, int)
-         */
-        public void write(byte[] b, int off, int len) throws IOException {
-            char[] c = new String(b, off, len, ENCODING).toCharArray();
-            if (xmiExtensionWriter != null) {
-                write(c);
-            } else {
-                myWriter.write(c, 0, c.length);
-            }
-        }
-
-        /*
-         * @see java.io.OutputStream#write(byte[])
-         */
-        public void write(byte[] b) throws IOException {
-            write(b, 0, b.length);
-        }
-
-        /*
-         * @see java.io.OutputStream#write(int)
-         */
-        public void write(int b) throws IOException {
-            write(new byte[] {(byte) (b & 255)}, 0, 1);
-        }
-        
-        /*
-         * @see java.io.OutputStream#write(int)
-         */
-        private void write(char[] ca) throws IOException {
-            
-            int len = ca.length;
-            for (int i = 0; i < len; ++i) {
-                char ch = ca[i];
-                if (inTag) {
-                    if (ch == '>') {
-                        inTag = false;
-                        if (Arrays.equals(tagName, TARGET)) {
-                            if (i > 0) {
-                                myWriter.write(ca, 0, i + 1);
-                            }
-                            xmiExtensionWriter.write(myWriter);
-                            xmiExtensionWriter = null;
-                            if (i + 1 != len - 1) {
-                                myWriter.write(ca, i + 1, (len - i) - 1);
-                            }
-                            return;
-                        }
-                    } else if (tagLength == 12) {
-                        inTag = false;
-                    } else {
-                        tagName[tagLength++] = ch;
-                    }
-                }
-                
-                if (ch == '<') {
-                    inTag = true;
-                    Arrays.fill(tagName, ' ');
-                    tagLength = 0;
-                }
-            }
-            myWriter.write(ca, 0, ca.length);
-        }
+    public void flush() throws IOException {
+      myWriter.flush();
     }
 
-    public void setXmiExtensionWriter(XmiExtensionWriter theWriter) {
-        xmiExtensionWriter = theWriter;
+    /*
+     * @see java.io.OutputStream#write(byte[], int, int)
+     */
+    public void write(byte[] b, int off, int len) throws IOException {
+      char[] c = new String(b, off, len, ENCODING).toCharArray();
+      if (xmiExtensionWriter != null) {
+        write(c);
+      } else {
+        myWriter.write(c, 0, c.length);
+      }
     }
+
+    /*
+     * @see java.io.OutputStream#write(byte[])
+     */
+    public void write(byte[] b) throws IOException {
+      write(b, 0, b.length);
+    }
+
+    /*
+     * @see java.io.OutputStream#write(int)
+     */
+    public void write(int b) throws IOException {
+      write(new byte[] {(byte) (b & 255)}, 0, 1);
+    }
+
+    /*
+     * @see java.io.OutputStream#write(int)
+     */
+    private void write(char[] ca) throws IOException {
+
+      int len = ca.length;
+      for (int i = 0; i < len; ++i) {
+        char ch = ca[i];
+        if (inTag) {
+          if (ch == '>') {
+            inTag = false;
+            if (Arrays.equals(tagName, TARGET)) {
+              if (i > 0) {
+                myWriter.write(ca, 0, i + 1);
+              }
+              xmiExtensionWriter.write(myWriter);
+              xmiExtensionWriter = null;
+              if (i + 1 != len - 1) {
+                myWriter.write(ca, i + 1, (len - i) - 1);
+              }
+              return;
+            }
+          } else if (tagLength == 12) {
+            inTag = false;
+          } else {
+            tagName[tagLength++] = ch;
+          }
+        }
+
+        if (ch == '<') {
+          inTag = true;
+          Arrays.fill(tagName, ' ');
+          tagLength = 0;
+        }
+      }
+      myWriter.write(ca, 0, ca.length);
+    }
+  }
+
+  public void setXmiExtensionWriter(XmiExtensionWriter theWriter) {
+    xmiExtensionWriter = theWriter;
+  }
 }

@@ -25,9 +25,7 @@
 package org.argouml.uml.ui.foundation.core;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.JRadioButton;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLAction;
@@ -37,64 +35,54 @@ import org.argouml.uml.ui.UMLRadioButtonPanel;
  * An action to set the concurrency of an operation.
  *
  * @author mkl
- *
  */
 public class ActionSetOperationConcurrencyKind extends UMLAction {
 
-    private static final ActionSetOperationConcurrencyKind SINGLETON =
-        new ActionSetOperationConcurrencyKind();
+  private static final ActionSetOperationConcurrencyKind SINGLETON =
+      new ActionSetOperationConcurrencyKind();
 
-    /**
-     * SEQUENTIAL_COMMAND determines the kind of concurrency.
-     */
-    public static final String SEQUENTIAL_COMMAND = "sequential";
+  /** SEQUENTIAL_COMMAND determines the kind of concurrency. */
+  public static final String SEQUENTIAL_COMMAND = "sequential";
 
-    /**
-     * GUARDED_COMMAND determines the kind of concurrency.
-     */
-    public static final String GUARDED_COMMAND = "guarded";
+  /** GUARDED_COMMAND determines the kind of concurrency. */
+  public static final String GUARDED_COMMAND = "guarded";
 
-    /**
-     * CONCURRENT_COMMAND determines the kind of concurrency.
-     */
-    public static final String CONCURRENT_COMMAND = "concurrent";
+  /** CONCURRENT_COMMAND determines the kind of concurrency. */
+  public static final String CONCURRENT_COMMAND = "concurrent";
 
-    /**
-     * Constructor for ActionSetElementOwnershipSpecification.
-     */
-    protected ActionSetOperationConcurrencyKind() {
-        super(Translator.localize("Set"), true, NO_ICON);
-    }
+  /** Constructor for ActionSetElementOwnershipSpecification. */
+  protected ActionSetOperationConcurrencyKind() {
+    super(Translator.localize("Set"), true, NO_ICON);
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        if (e.getSource() instanceof JRadioButton) {
-            JRadioButton source = (JRadioButton) e.getSource();
-            String actionCommand = source.getActionCommand();
-            Object target = ((UMLRadioButtonPanel) source.getParent())
-                    .getTarget();
-            if (Model.getFacade().isAOperation(target)) {
-                Object m = /* (MModelElement) */target;
-                Object kind = null;
-                if (actionCommand.equals(SEQUENTIAL_COMMAND)) {
-                    kind = Model.getConcurrencyKind().getSequential();
-                } else if (actionCommand.equals(GUARDED_COMMAND)) {
-                    kind = Model.getConcurrencyKind().getGuarded();
-                } else {
-                    kind = Model.getConcurrencyKind().getConcurrent();
-                }
-                Model.getCoreHelper().setConcurrency(m, kind);
-            }
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    if (e.getSource() instanceof JRadioButton) {
+      JRadioButton source = (JRadioButton) e.getSource();
+      String actionCommand = source.getActionCommand();
+      Object target = ((UMLRadioButtonPanel) source.getParent()).getTarget();
+      if (Model.getFacade().isAOperation(target)) {
+        Object m = /* (MModelElement) */ target;
+        Object kind = null;
+        if (actionCommand.equals(SEQUENTIAL_COMMAND)) {
+          kind = Model.getConcurrencyKind().getSequential();
+        } else if (actionCommand.equals(GUARDED_COMMAND)) {
+          kind = Model.getConcurrencyKind().getGuarded();
+        } else {
+          kind = Model.getConcurrencyKind().getConcurrent();
         }
+        Model.getCoreHelper().setConcurrency(m, kind);
+      }
     }
+  }
 
-    /**
-     * @return Returns the sINGLETON.
-     */
-    public static ActionSetOperationConcurrencyKind getInstance() {
-        return SINGLETON;
-    }
+  /**
+   * @return Returns the sINGLETON.
+   */
+  public static ActionSetOperationConcurrencyKind getInstance() {
+    return SINGLETON;
+  }
 }

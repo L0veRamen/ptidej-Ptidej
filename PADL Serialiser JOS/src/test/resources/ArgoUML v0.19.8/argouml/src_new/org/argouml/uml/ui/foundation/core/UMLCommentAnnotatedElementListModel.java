@@ -27,38 +27,32 @@ package org.argouml.uml.ui.foundation.core;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
-
 /**
  * The list model for the annotated modelelements of a comment.
  *
  * @author mvw@tigris.org
  */
-public class UMLCommentAnnotatedElementListModel
-    extends UMLModelElementListModel2 {
+public class UMLCommentAnnotatedElementListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLCommentAnnotatedElementListModel.
-     */
-    public UMLCommentAnnotatedElementListModel() {
-        super("annotatedElement");
+  /** Constructor for UMLCommentAnnotatedElementListModel. */
+  public UMLCommentAnnotatedElementListModel() {
+    super("annotatedElement");
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (getTarget() != null) {
+      setAllElements(Model.getFacade().getAnnotatedElements(getTarget()));
     }
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (getTarget() != null) {
-            setAllElements(Model.getFacade().getAnnotatedElements(getTarget()));
-        }
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ element) {
-        return Model.getFacade().isAModelElement(element)
-        	&& Model.getFacade().getAnnotatedElements(getTarget())
-        		.contains(element);
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ element) {
+    return Model.getFacade().isAModelElement(element)
+        && Model.getFacade().getAnnotatedElements(getTarget()).contains(element);
+  }
 }

@@ -25,7 +25,6 @@
 package org.argouml.notation.providers.uml;
 
 import java.util.Map;
-
 import org.argouml.notation.NotationProvider;
 import org.argouml.notation.NotationSettings;
 import org.argouml.notation.SDNotationSettings;
@@ -37,40 +36,36 @@ import org.argouml.notation.SDNotationSettings;
  */
 public class SDMessageNotationUml extends AbstractMessageNotationUml {
 
-    /**
-     * The constructor.
-     *
-     * @param message the UML object
-     */
-    public SDMessageNotationUml(Object message) {
-        super(message);        
-    }
+  /**
+   * The constructor.
+   *
+   * @param message the UML object
+   */
+  public SDMessageNotationUml(Object message) {
+    super(message);
+  }
 
-    /**
-     * Generate a textual description for a Message m.
-     * {@inheritDoc}
-     * @see org.argouml.notation.NotationProvider#toString(Object, NotationSettings)
-     */
-    public String toString(final Object modelElement, 
-            NotationSettings settings) {
-        if (settings instanceof SDNotationSettings) {
-            return toString(modelElement, 
-                    ((SDNotationSettings) settings).isShowSequenceNumbers());
-        } else {
-            return toString(modelElement, true);
-        }
+  /**
+   * Generate a textual description for a Message m. {@inheritDoc}
+   *
+   * @see org.argouml.notation.NotationProvider#toString(Object, NotationSettings)
+   */
+  public String toString(final Object modelElement, NotationSettings settings) {
+    if (settings instanceof SDNotationSettings) {
+      return toString(modelElement, ((SDNotationSettings) settings).isShowSequenceNumbers());
+    } else {
+      return toString(modelElement, true);
     }
-    
-    /*
-     * Generates a textual description for a Message m.
-     *
-     * @see org.argouml.notation.providers.NotationProvider#toString(java.lang.Object, 
-     * java.util.Map)
-     */
-    @SuppressWarnings("deprecation")
-    public String toString(final Object modelElement, final Map args) {
-        return toString(modelElement, 
-                !NotationProvider.isValue("hideSequenceNrs", args));
-    }
+  }
 
+  /*
+   * Generates a textual description for a Message m.
+   *
+   * @see org.argouml.notation.providers.NotationProvider#toString(java.lang.Object,
+   * java.util.Map)
+   */
+  @SuppressWarnings("deprecation")
+  public String toString(final Object modelElement, final Map args) {
+    return toString(modelElement, !NotationProvider.isValue("hideSequenceNrs", args));
+  }
 }

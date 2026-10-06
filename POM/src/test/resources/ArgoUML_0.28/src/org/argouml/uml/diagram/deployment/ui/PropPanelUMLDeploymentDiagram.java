@@ -35,12 +35,8 @@ import org.argouml.uml.diagram.ui.PropPanelDiagram;
  */
 class PropPanelUMLDeploymentDiagram extends PropPanelDiagram {
 
-    /**
-     * Constructor for PropPanelUMLDeploymentDiagram.
-     */
-    public PropPanelUMLDeploymentDiagram() {
-        super(Translator.localize("label.deployment-diagram"),
-                lookupIcon("DeploymentDiagram"));
-    }
-
+  /** Constructor for PropPanelUMLDeploymentDiagram. */
+  public PropPanelUMLDeploymentDiagram() {
+    super(Translator.localize("label.deployment-diagram"), lookupIcon("DeploymentDiagram"));
+  }
 }

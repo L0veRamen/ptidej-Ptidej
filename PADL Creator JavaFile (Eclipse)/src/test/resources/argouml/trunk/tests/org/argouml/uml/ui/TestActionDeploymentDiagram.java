@@ -26,45 +26,41 @@ package org.argouml.uml.ui;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.argouml.kernel.ProjectManager;
 
 /**
- *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 9, 2003
  */
-public class TestActionDeploymentDiagram
-    extends AbstractTestActionAddDiagram {
+public class TestActionDeploymentDiagram extends AbstractTestActionAddDiagram {
 
-    /**
-     * Constructor.
-     * @param arg0 test case name.
-     */
-    public TestActionDeploymentDiagram(String arg0) {
-        super(arg0);
-    }
+  /**
+   * Constructor.
+   *
+   * @param arg0 test case name.
+   */
+  public TestActionDeploymentDiagram(String arg0) {
+    super(arg0);
+  }
 
-    /**
-     * @see org.argouml.uml.ui.AbstractTestActionAddDiagram#getAction()
-     */
-    protected ActionAddDiagram getAction() {
-        return new ActionDeploymentDiagram();
-    }
+  /**
+   * @see org.argouml.uml.ui.AbstractTestActionAddDiagram#getAction()
+   */
+  protected ActionAddDiagram getAction() {
+    return new ActionDeploymentDiagram();
+  }
 
-    /**
-     * @see org.argouml.uml.ui.AbstractTestActionAddDiagram#getNamespace()
-     */
-    protected Object getNamespace() {
-        return ProjectManager.getManager().getCurrentProject()
-                .getModel();
-    }
+  /**
+   * @see org.argouml.uml.ui.AbstractTestActionAddDiagram#getNamespace()
+   */
+  protected Object getNamespace() {
+    return ProjectManager.getManager().getCurrentProject().getModel();
+  }
 
-    /**
-     * @see AbstractTestActionAddDiagram#getValidNamespaceClasses()
-     */
-    protected List getValidNamespaceClasses() {
-        return new ArrayList();
-    }
-
+  /**
+   * @see AbstractTestActionAddDiagram#getValidNamespaceClasses()
+   */
+  protected List getValidNamespaceClasses() {
+    return new ArrayList();
+  }
 }

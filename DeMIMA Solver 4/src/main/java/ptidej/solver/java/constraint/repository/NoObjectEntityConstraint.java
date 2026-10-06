@@ -17,23 +17,22 @@ import ptidej.solver.java.domain.Entity;
 
 /**
  * @author Yann-Gaël Guéhéneuc
- * @since  2007/02/26
+ * @since 2007/02/26
  */
 public class NoObjectEntityConstraint extends UnaryConstraint {
 
-	public NoObjectEntityConstraint(
-			final String name,
-			final String command,
-			final Variable v0,
-			final int weight,
-			final IApproximations approximations) {
+  public NoObjectEntityConstraint(
+      final String name,
+      final String command,
+      final Variable v0,
+      final int weight,
+      final IApproximations approximations) {
 
-		super(name, command, v0, weight, approximations);
-	}
+    super(name, command, v0, weight, approximations);
+  }
 
-	@Override
-	protected boolean getPropagateCondition(Entity entity) {
-		return entity.getName().equals("java.lang.Object");
-	}
-
+  @Override
+  protected boolean getPropagateCondition(Entity entity) {
+    return entity.getName().equals("java.lang.Object");
+  }
 }

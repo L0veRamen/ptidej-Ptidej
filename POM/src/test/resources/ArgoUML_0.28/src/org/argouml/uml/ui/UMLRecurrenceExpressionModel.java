@@ -29,53 +29,46 @@ import org.argouml.model.Model;
 import org.argouml.ui.targetmanager.TargetManager;
 
 /**
- *
  * @author mkl
- *
  */
 public class UMLRecurrenceExpressionModel extends UMLExpressionModel2 {
 
-    private static final Logger LOG =
-        Logger.getLogger(UMLRecurrenceExpressionModel.class);
+  private static final Logger LOG = Logger.getLogger(UMLRecurrenceExpressionModel.class);
 
-    /**
-     * The constructor.
-     *
-     * @param container the container of UML user interface components
-     * @param propertyName the name of the property
-     */
-    public UMLRecurrenceExpressionModel(UMLUserInterfaceContainer container,
-            String propertyName) {
-        super(container, propertyName);
+  /**
+   * The constructor.
+   *
+   * @param container the container of UML user interface components
+   * @param propertyName the name of the property
+   */
+  public UMLRecurrenceExpressionModel(UMLUserInterfaceContainer container, String propertyName) {
+    super(container, propertyName);
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLExpressionModel2#getExpression()
+   */
+  public Object getExpression() {
+    return Model.getFacade().getRecurrence(TargetManager.getInstance().getTarget());
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLExpressionModel2#setExpression(java.lang.Object)
+   */
+  public void setExpression(Object expression) {
+    Object target = TargetManager.getInstance().getTarget();
+
+    if (target == null) {
+      throw new IllegalStateException("There is no target for " + getContainer());
     }
+    Model.getCommonBehaviorHelper().setRecurrence(target, expression);
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLExpressionModel2#getExpression()
-     */
-    public Object getExpression() {
-        return Model.getFacade().getRecurrence(
-                TargetManager.getInstance().getTarget());
-    }
-
-    /*
-     * @see org.argouml.uml.ui.UMLExpressionModel2#setExpression(java.lang.Object)
-     */
-    public void setExpression(Object expression) {
-        Object target = TargetManager.getInstance().getTarget();
-
-        if (target == null) {
-            throw new IllegalStateException("There is no target for "
-                    + getContainer());
-        }
-        Model.getCommonBehaviorHelper().setRecurrence(target, expression);
-    }
-
-    /*
-     * @see org.argouml.uml.ui.UMLExpressionModel2#newExpression()
-     */
-    public Object newExpression() {
-        LOG.debug("new boolean expression");
-        return Model.getDataTypesFactory().createIterationExpression("", "");
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLExpressionModel2#newExpression()
+   */
+  public Object newExpression() {
+    LOG.debug("new boolean expression");
+    return Model.getDataTypesFactory().createIterationExpression("", "");
+  }
 }

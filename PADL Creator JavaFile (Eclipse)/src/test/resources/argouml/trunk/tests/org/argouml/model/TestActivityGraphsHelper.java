@@ -32,30 +32,24 @@ import junit.framework.TestCase;
  */
 public class TestActivityGraphsHelper extends TestCase {
 
-    /**
-     * Constructor for TestActivityGraphsHelper.
-     *
-     * @param arg0 is the test case name.
-     */
-    public TestActivityGraphsHelper(String arg0) {
-	super(arg0);
-    }
+  /**
+   * Constructor for TestActivityGraphsHelper.
+   *
+   * @param arg0 is the test case name.
+   */
+  public TestActivityGraphsHelper(String arg0) {
+    super(arg0);
+  }
 
-    /**
-     * Test if the metamodel name is correct.
-     */
-    public void testGetMetaModelName() {
-	CheckUMLModelHelper.metaModelNameCorrect(
-			 Model.getActivityGraphsFactory(),
-			 TestActivityGraphsFactory.getAllModelElements());
-    }
+  /** Test if the metamodel name is correct. */
+  public void testGetMetaModelName() {
+    CheckUMLModelHelper.metaModelNameCorrect(
+        Model.getActivityGraphsFactory(), TestActivityGraphsFactory.getAllModelElements());
+  }
 
-    /**
-     * Test if the stereotype is valid.
-     */
-    public void testIsValidStereoType() {
-	CheckUMLModelHelper.isValidStereoType(
-		      Model.getActivityGraphsFactory(),
-		      TestActivityGraphsFactory.getAllModelElements());
-    }
+  /** Test if the stereotype is valid. */
+  public void testIsValidStereoType() {
+    CheckUMLModelHelper.isValidStereoType(
+        Model.getActivityGraphsFactory(), TestActivityGraphsFactory.getAllModelElements());
+  }
 }

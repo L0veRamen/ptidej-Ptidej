@@ -27,32 +27,25 @@ package org.argouml.uml.ui.foundation.core;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
 /**
- *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 26, 2003
  */
-public class UMLClassifierParticipantListModel
-    extends UMLModelElementListModel2 {
+public class UMLClassifierParticipantListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLClassifierParticipantListModel.
-     */
-    public UMLClassifierParticipantListModel() {
-        super("participant");
-    }
+  /** Constructor for UMLClassifierParticipantListModel. */
+  public UMLClassifierParticipantListModel() {
+    super("participant");
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {}
 
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ element) {
-        return false;
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ element) {
+    return false;
+  }
 }

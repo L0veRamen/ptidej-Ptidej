@@ -32,30 +32,24 @@ import junit.framework.TestCase;
  */
 public class TestUseCasesHelper extends TestCase {
 
-    /**
-     * Constructor for TestUseCasesHelper.
-     *
-     * @param arg0 is the name of the test case.
-     */
-    public TestUseCasesHelper(String arg0) {
-	super(arg0);
-    }
+  /**
+   * Constructor for TestUseCasesHelper.
+   *
+   * @param arg0 is the name of the test case.
+   */
+  public TestUseCasesHelper(String arg0) {
+    super(arg0);
+  }
 
-    /**
-     * Test getting the meta model name.
-     */
-    public void testGetMetaModelName() {
-	CheckUMLModelHelper.metaModelNameCorrect(
-			 Model.getUseCasesFactory(),
-			 TestUseCasesFactory.getAllModelElements());
-    }
+  /** Test getting the meta model name. */
+  public void testGetMetaModelName() {
+    CheckUMLModelHelper.metaModelNameCorrect(
+        Model.getUseCasesFactory(), TestUseCasesFactory.getAllModelElements());
+  }
 
-    /**
-     * Test stereotypes.
-     */
-    public void testIsValidStereoType() {
-        CheckUMLModelHelper.isValidStereoType(
-		      Model.getUseCasesFactory(),
-		      TestUseCasesFactory.getAllModelElements());
-    }
+  /** Test stereotypes. */
+  public void testIsValidStereoType() {
+    CheckUMLModelHelper.isValidStereoType(
+        Model.getUseCasesFactory(), TestUseCasesFactory.getAllModelElements());
+  }
 }

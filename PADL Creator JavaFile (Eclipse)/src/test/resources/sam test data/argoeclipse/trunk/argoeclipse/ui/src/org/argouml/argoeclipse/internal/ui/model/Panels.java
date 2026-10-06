@@ -25,68 +25,66 @@
 package org.argouml.argoeclipse.internal.ui.model;
 
 import javax.swing.JPanel;
-
 import org.argouml.ui.ProjectBrowser;
 
 /**
  * Brings JPanels from ArgoUML.
- * 
+ *
  * @author Bogdan Pistol
  */
 public class Panels {
 
-    // any panel asked should first initialize, so this doesn't matter if it's
-    // static and loaded when we first access the class (vs lazy init)
-    static {
-        InitUI.initialize();
-    }
-    
-    /**
-     * Getter for the diagram editor.
-     * 
-     * @return the editor panel
-     */
-    public static JPanel getEditorPanel() {
-        if (!InitUI.isInitialized()) {
-            return null;
-        }
-        return ProjectBrowser.getInstance().getEditorPane();
-    }
+  // any panel asked should first initialize, so this doesn't matter if it's
+  // static and loaded when we first access the class (vs lazy init)
+  static {
+    InitUI.initialize();
+  }
 
-    /**
-     * Getter for the todo view.
-     * 
-     * @return the todo panel
-     */
-    public static JPanel getToDoPanel() {
-        if (!InitUI.isInitialized()) {
-            return null;
-        }
-        return ProjectBrowser.getInstance().getTodoPane();
+  /**
+   * Getter for the diagram editor.
+   *
+   * @return the editor panel
+   */
+  public static JPanel getEditorPanel() {
+    if (!InitUI.isInitialized()) {
+      return null;
     }
+    return ProjectBrowser.getInstance().getEditorPane();
+  }
 
-    /**
-     * Getter for the details pane.
-     * 
-     * @return the details panel
-     */
-    public static JPanel getDetailsPanel0() {
-        if (!InitUI.isInitialized()) {
-            return null;
-        }
-        return (JPanel) ProjectBrowser.getInstance().getDetailsPane();
+  /**
+   * Getter for the todo view.
+   *
+   * @return the todo panel
+   */
+  public static JPanel getToDoPanel() {
+    if (!InitUI.isInitialized()) {
+      return null;
     }
+    return ProjectBrowser.getInstance().getTodoPane();
+  }
 
-    /**
-     * Getter for the project browser panel.
-     * 
-     * @return the browser panel
-     */
-    public static JPanel getExplorerPanel() {
-        if (!InitUI.isInitialized()) {
-            return null;
-        }
-        return ProjectBrowser.getInstance().getExplorerPane();
+  /**
+   * Getter for the details pane.
+   *
+   * @return the details panel
+   */
+  public static JPanel getDetailsPanel0() {
+    if (!InitUI.isInitialized()) {
+      return null;
     }
+    return (JPanel) ProjectBrowser.getInstance().getDetailsPane();
+  }
 
+  /**
+   * Getter for the project browser panel.
+   *
+   * @return the browser panel
+   */
+  public static JPanel getExplorerPanel() {
+    if (!InitUI.isInitialized()) {
+      return null;
+    }
+    return ProjectBrowser.getInstance().getExplorerPane();
+  }
 }

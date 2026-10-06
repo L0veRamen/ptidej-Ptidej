@@ -31,30 +31,26 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  * @since Oct 3, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class UMLInteractionContextListModel
-    extends UMLModelElementListModel2 {
+public class UMLInteractionContextListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLInteractionContextListModel.
-     */
-    public UMLInteractionContextListModel() {
-        super("context");
-    }
+  /** Constructor for UMLInteractionContextListModel. */
+  public UMLInteractionContextListModel() {
+    super("context");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        removeAllElements();
-        addElement(Model.getFacade().getContext(getTarget()));
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    removeAllElements();
+    addElement(Model.getFacade().getContext(getTarget()));
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object elem) {
-        return Model.getFacade().isACollaboration(elem)
-            && Model.getFacade().getInteractions(elem).contains(getTarget());
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object elem) {
+    return Model.getFacade().isACollaboration(elem)
+        && Model.getFacade().getInteractions(elem).contains(getTarget());
+  }
 }

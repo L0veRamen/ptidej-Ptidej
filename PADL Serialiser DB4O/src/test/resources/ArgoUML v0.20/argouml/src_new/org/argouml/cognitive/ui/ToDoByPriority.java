@@ -26,137 +26,128 @@ package org.argouml.cognitive.ui;
 
 import java.util.Enumeration;
 import java.util.Vector;
-
 import org.apache.log4j.Logger;
 import org.argouml.cognitive.Designer;
 import org.argouml.cognitive.ToDoItem;
 import org.argouml.cognitive.ToDoListEvent;
 import org.argouml.cognitive.ToDoListListener;
 
-/**
- * Represents a perspective for ToDo items: grouping by priority.
- *
- */
-public class ToDoByPriority extends ToDoPerspective
-    implements ToDoListListener {
-    private static final Logger LOG =
-        Logger.getLogger(ToDoByPriority.class);
+/** Represents a perspective for ToDo items: grouping by priority. */
+public class ToDoByPriority extends ToDoPerspective implements ToDoListListener {
+  private static final Logger LOG = Logger.getLogger(ToDoByPriority.class);
 
-    /**
-     * The constructor.
-     *
-     */
-    public ToDoByPriority() {
-	super("combobox.todo-perspective-priority");
-	addSubTreeModel(new GoListToPriorityToItem());
+  /** The constructor. */
+  public ToDoByPriority() {
+    super("combobox.todo-perspective-priority");
+    addSubTreeModel(new GoListToPriorityToItem());
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // ToDoListListener implementation
+
+  /**
+   * @see
+   *     org.argouml.cognitive.ToDoListListener#toDoItemsChanged(org.argouml.cognitive.ToDoListEvent)
+   */
+  public void toDoItemsChanged(ToDoListEvent tde) {
+    LOG.debug("toDoItemChanged");
+    Vector items = tde.getToDoItems();
+    int nItems = items.size();
+    Object[] path = new Object[2];
+    path[0] = Designer.theDesigner().getToDoList();
+
+    Enumeration elems = PriorityNode.getPriorities().elements();
+    while (elems.hasMoreElements()) {
+      PriorityNode pn = (PriorityNode) elems.nextElement();
+      path[1] = pn;
+      int nMatchingItems = 0;
+      for (int i = 0; i < nItems; i++) {
+        ToDoItem item = (ToDoItem) items.elementAt(i);
+        if (item.getPriority() != pn.getPriority()) continue;
+        nMatchingItems++;
+      }
+      if (nMatchingItems == 0) continue;
+      int[] childIndices = new int[nMatchingItems];
+      Object[] children = new Object[nMatchingItems];
+      nMatchingItems = 0;
+      for (int i = 0; i < nItems; i++) {
+        ToDoItem item = (ToDoItem) items.elementAt(i);
+        if (item.getPriority() != pn.getPriority()) continue;
+        childIndices[nMatchingItems] = getIndexOfChild(pn, item);
+        children[nMatchingItems] = item;
+        nMatchingItems++;
+      }
+      fireTreeNodesChanged(this, path, childIndices, children);
     }
+  }
 
-    ////////////////////////////////////////////////////////////////
-    // ToDoListListener implementation
+  /**
+   * @see org.argouml.cognitive.ToDoListListener#toDoItemsAdded(org.argouml.cognitive.ToDoListEvent)
+   */
+  public void toDoItemsAdded(ToDoListEvent tde) {
+    LOG.debug("toDoItemAdded");
+    Vector items = tde.getToDoItems();
+    int nItems = items.size();
+    Object[] path = new Object[2];
+    path[0] = Designer.theDesigner().getToDoList();
 
-    /**
-     * @see org.argouml.cognitive.ToDoListListener#toDoItemsChanged(org.argouml.cognitive.ToDoListEvent)
-     */
-    public void toDoItemsChanged(ToDoListEvent tde) {
-	LOG.debug("toDoItemChanged");
-	Vector items = tde.getToDoItems();
-	int nItems = items.size();
-	Object[] path = new Object[2];
-	path[0] = Designer.theDesigner().getToDoList();
-
-	Enumeration elems = PriorityNode.getPriorities().elements();
-	while (elems.hasMoreElements()) {
-	    PriorityNode pn = (PriorityNode) elems.nextElement();
-	    path[1] = pn;
-	    int nMatchingItems = 0;
-	    for (int i = 0; i < nItems; i++) {
-		ToDoItem item = (ToDoItem) items.elementAt(i);
-		if (item.getPriority() != pn.getPriority()) continue;
-		nMatchingItems++;
-	    }
-	    if (nMatchingItems == 0) continue;
-	    int[] childIndices = new int[nMatchingItems];
-	    Object[] children = new Object[nMatchingItems];
-	    nMatchingItems = 0;
-	    for (int i = 0; i < nItems; i++) {
-		ToDoItem item = (ToDoItem) items.elementAt(i);
-		if (item.getPriority() != pn.getPriority()) continue;
-		childIndices[nMatchingItems] = getIndexOfChild(pn, item);
-		children[nMatchingItems] = item;
-		nMatchingItems++;
-	    }
-	    fireTreeNodesChanged(this, path, childIndices, children);
-	}
+    Enumeration elems = PriorityNode.getPriorities().elements();
+    while (elems.hasMoreElements()) {
+      PriorityNode pn = (PriorityNode) elems.nextElement();
+      path[1] = pn;
+      int nMatchingItems = 0;
+      for (int i = 0; i < nItems; i++) {
+        ToDoItem item = (ToDoItem) items.elementAt(i);
+        if (item.getPriority() != pn.getPriority()) continue;
+        nMatchingItems++;
+      }
+      if (nMatchingItems == 0) continue;
+      int[] childIndices = new int[nMatchingItems];
+      Object[] children = new Object[nMatchingItems];
+      nMatchingItems = 0;
+      for (int i = 0; i < nItems; i++) {
+        ToDoItem item = (ToDoItem) items.elementAt(i);
+        if (item.getPriority() != pn.getPriority()) continue;
+        childIndices[nMatchingItems] = getIndexOfChild(pn, item);
+        children[nMatchingItems] = item;
+        nMatchingItems++;
+      }
+      fireTreeNodesInserted(this, path, childIndices, children);
     }
+  }
 
-    /**
-     * @see org.argouml.cognitive.ToDoListListener#toDoItemsAdded(org.argouml.cognitive.ToDoListEvent)
-     */
-    public void toDoItemsAdded(ToDoListEvent tde) {
-	LOG.debug("toDoItemAdded");
-	Vector items = tde.getToDoItems();
-	int nItems = items.size();
-	Object[] path = new Object[2];
-	path[0] = Designer.theDesigner().getToDoList();
+  /**
+   * @see
+   *     org.argouml.cognitive.ToDoListListener#toDoItemsRemoved(org.argouml.cognitive.ToDoListEvent)
+   */
+  public void toDoItemsRemoved(ToDoListEvent tde) {
+    LOG.debug("toDoItemRemoved");
+    Vector items = tde.getToDoItems();
+    int nItems = items.size();
+    Object[] path = new Object[2];
+    path[0] = Designer.theDesigner().getToDoList();
 
-	Enumeration elems = PriorityNode.getPriorities().elements();
-	while (elems.hasMoreElements()) {
-	    PriorityNode pn = (PriorityNode) elems.nextElement();
-	    path[1] = pn;
-	    int nMatchingItems = 0;
-	    for (int i = 0; i < nItems; i++) {
-		ToDoItem item = (ToDoItem) items.elementAt(i);
-		if (item.getPriority() != pn.getPriority()) continue;
-		nMatchingItems++;
-	    }
-	    if (nMatchingItems == 0) continue;
-	    int[] childIndices = new int[nMatchingItems];
-	    Object[] children = new Object[nMatchingItems];
-	    nMatchingItems = 0;
-	    for (int i = 0; i < nItems; i++) {
-		ToDoItem item = (ToDoItem) items.elementAt(i);
-		if (item.getPriority() != pn.getPriority()) continue;
-		childIndices[nMatchingItems] = getIndexOfChild(pn, item);
-		children[nMatchingItems] = item;
-		nMatchingItems++;
-	    }
-	    fireTreeNodesInserted(this, path, childIndices, children);
-	}
+    Enumeration elems = PriorityNode.getPriorities().elements();
+    while (elems.hasMoreElements()) {
+      PriorityNode pn = (PriorityNode) elems.nextElement();
+      int nodePriority = pn.getPriority();
+      boolean anyInPri = false;
+      for (int i = 0; i < nItems; i++) {
+        ToDoItem item = (ToDoItem) items.elementAt(i);
+        int pri = item.getPriority();
+        if (pri == nodePriority) anyInPri = true;
+      }
+      if (!anyInPri) continue;
+      LOG.debug("toDoItemRemoved updating PriorityNode");
+      path[1] = pn;
+      // fireTreeNodesChanged(this, path, childIndices, children);
+      fireTreeStructureChanged(path);
     }
+  }
 
-    /**
-     * @see org.argouml.cognitive.ToDoListListener#toDoItemsRemoved(org.argouml.cognitive.ToDoListEvent)
-     */
-    public void toDoItemsRemoved(ToDoListEvent tde) {
-	LOG.debug("toDoItemRemoved");
-	Vector items = tde.getToDoItems();
-	int nItems = items.size();
-	Object[] path = new Object[2];
-	path[0] = Designer.theDesigner().getToDoList();
-
-	Enumeration elems = PriorityNode.getPriorities().elements();
-	while (elems.hasMoreElements()) {
-	    PriorityNode pn = (PriorityNode) elems.nextElement();
-	    int nodePriority = pn.getPriority();
-	    boolean anyInPri = false;
-	    for (int i = 0; i < nItems; i++) {
-		ToDoItem item = (ToDoItem) items.elementAt(i);
-		int pri = item.getPriority();
-		if (pri == nodePriority) anyInPri = true;
-	    }
-	    if (!anyInPri) continue;
-	    LOG.debug("toDoItemRemoved updating PriorityNode");
-	    path[1] = pn;
-	    //fireTreeNodesChanged(this, path, childIndices, children);
-	    fireTreeStructureChanged(path);
-	}
-    }
-
-    /**
-     * @see org.argouml.cognitive.ToDoListListener#toDoListChanged(org.argouml.cognitive.ToDoListEvent)
-     */
-    public void toDoListChanged(ToDoListEvent tde) { }
-
+  /**
+   * @see
+   *     org.argouml.cognitive.ToDoListListener#toDoListChanged(org.argouml.cognitive.ToDoListEvent)
+   */
+  public void toDoListChanged(ToDoListEvent tde) {}
 } /* end class ToDoByPriority */
-
-

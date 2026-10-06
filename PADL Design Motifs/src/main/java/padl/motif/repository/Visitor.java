@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -13,7 +13,6 @@ package padl.motif.repository;
 import org.apache.commons.lang3.ArrayUtils;
 import padl.event.IModelListener;
 import padl.kernel.Cardinality;
-import padl.kernel.Constants;
 import padl.kernel.IAssociation;
 import padl.kernel.IClass;
 import padl.kernel.IFirstClassEntity;
@@ -26,169 +25,148 @@ import util.multilingual.MultilingualManager;
 /**
  * @author Yann-Gaël Guéhéneuc
  */
-public class Visitor extends StructuralMotifModel implements Cloneable,
-		IDesignMotifModel {
-	private static final char[] ACCEPT = "accept".toCharArray();
-	private static final char[] ACCEPT_VISITOR = "acceptVisitor".toCharArray();
-	private static final char[] ENTITY = "entity".toCharArray();
-	private static final char[] NODE = "Node".toCharArray();
-	private static final char[] NODE_HIERARCHY_ROOT = "NodeHierarchyRoot"
-		.toCharArray();
-	private static final long serialVersionUID = 5399517484944809460L;
-	private static final char[] STRING = "visitor".toCharArray();
-	private static final char[] VISIT = "visit".toCharArray();
-	private static final char[] VISIT_ENTITY = "visitEntity".toCharArray();
-	private static final char[] VISITOR = "Visitor".toCharArray();
-	private static final char[] VISITOR_HIERARCHY_ROOT = "VisitorHierarchyRoot"
-		.toCharArray();
+public class Visitor extends StructuralMotifModel implements Cloneable, IDesignMotifModel {
+  private static final char[] ACCEPT = "accept".toCharArray();
+  private static final char[] ACCEPT_VISITOR = "acceptVisitor".toCharArray();
+  private static final char[] ENTITY = "entity".toCharArray();
+  private static final char[] NODE = "Node".toCharArray();
+  private static final char[] NODE_HIERARCHY_ROOT = "NodeHierarchyRoot".toCharArray();
+  private static final long serialVersionUID = 5399517484944809460L;
+  private static final char[] STRING = "visitor".toCharArray();
+  private static final char[] VISIT = "visit".toCharArray();
+  private static final char[] VISIT_ENTITY = "visitEntity".toCharArray();
+  private static final char[] VISITOR = "Visitor".toCharArray();
+  private static final char[] VISITOR_HIERARCHY_ROOT = "VisitorHierarchyRoot".toCharArray();
 
-	//	public static void main(final String[] args)
-	//			throws CloneNotSupportedException, ModelDeclarationException {
-	//
-	//		final IModelListener patternListener = new ModelStatistics();
-	//		final Visitor visitor = new Visitor(patternListener);
-	//
-	//		// I generate the Java source code associated with this pattern.
-	//		final JavaGenerator javaGenerator = new JavaGenerator();
-	//		// I generate the constraints associated with this pattern.
-	//		final PtidejSolverAC4ConstraintGenerator ac4ConstraintGenerator =
-	//			new PtidejSolverAC4ConstraintGenerator();
-	//		// I generate the constraints associated with this pattern.
-	//		final PtidejSolverCustomConstraintGenerator constraintGenerator =
-	//			new PtidejSolverCustomConstraintGenerator();
-	//		// I generate this pattern as a domain for the constraints.
-	//		final PtidejSolver2AC4DomainGenerator domainGenerator =
-	//			new PtidejSolver2AC4DomainGenerator();
-	//
-	//		ProxyConsole.getInstance().normalOutput().println(visitor);
-	//		ProxyConsole.getInstance().normalOutput().println("----");
-	//		visitor.generate(javaGenerator);
-	//		ProxyConsole.getInstance().normalOutput().println(javaGenerator.getCode());
-	//		ProxyConsole.getInstance().normalOutput().println("----");
-	//		visitor.generate(ac4ConstraintGenerator);
-	//		ProxyConsole
-	//			.getInstance()
-	//			.normalOutput()
-	//			.println(ac4ConstraintGenerator.getCode());
-	//		ProxyConsole.getInstance().normalOutput().println("----");
-	//		visitor.generate(constraintGenerator);
-	//		ProxyConsole
-	//			.getInstance()
-	//			.normalOutput()
-	//			.println(constraintGenerator.getCode());
-	//		ProxyConsole.getInstance().normalOutput().println("----");
-	//		visitor.walk(domainGenerator);
-	//		ProxyConsole
-	//			.getInstance()
-	//			.normalOutput()
-	//			.println(domainGenerator.getResult());
-	//		ProxyConsole.getInstance().normalOutput().println("----");
-	//	}
+  //	public static void main(final String[] args)
+  //			throws CloneNotSupportedException, ModelDeclarationException {
+  //
+  //		final IModelListener patternListener = new ModelStatistics();
+  //		final Visitor visitor = new Visitor(patternListener);
+  //
+  //		// I generate the Java source code associated with this pattern.
+  //		final JavaGenerator javaGenerator = new JavaGenerator();
+  //		// I generate the constraints associated with this pattern.
+  //		final PtidejSolverAC4ConstraintGenerator ac4ConstraintGenerator =
+  //			new PtidejSolverAC4ConstraintGenerator();
+  //		// I generate the constraints associated with this pattern.
+  //		final PtidejSolverCustomConstraintGenerator constraintGenerator =
+  //			new PtidejSolverCustomConstraintGenerator();
+  //		// I generate this pattern as a domain for the constraints.
+  //		final PtidejSolver2AC4DomainGenerator domainGenerator =
+  //			new PtidejSolver2AC4DomainGenerator();
+  //
+  //		ProxyConsole.getInstance().normalOutput().println(visitor);
+  //		ProxyConsole.getInstance().normalOutput().println("----");
+  //		visitor.generate(javaGenerator);
+  //		ProxyConsole.getInstance().normalOutput().println(javaGenerator.getCode());
+  //		ProxyConsole.getInstance().normalOutput().println("----");
+  //		visitor.generate(ac4ConstraintGenerator);
+  //		ProxyConsole
+  //			.getInstance()
+  //			.normalOutput()
+  //			.println(ac4ConstraintGenerator.getCode());
+  //		ProxyConsole.getInstance().normalOutput().println("----");
+  //		visitor.generate(constraintGenerator);
+  //		ProxyConsole
+  //			.getInstance()
+  //			.normalOutput()
+  //			.println(constraintGenerator.getCode());
+  //		ProxyConsole.getInstance().normalOutput().println("----");
+  //		visitor.walk(domainGenerator);
+  //		ProxyConsole
+  //			.getInstance()
+  //			.normalOutput()
+  //			.println(domainGenerator.getResult());
+  //		ProxyConsole.getInstance().normalOutput().println("----");
+  //	}
 
-	public Visitor() {
-		this(null);
-	}
-	public Visitor(final IModelListener patternListener) {
-		super(Visitor.VISITOR);
+  public Visitor() {
+    this(null);
+  }
 
-		this.addModelListener(patternListener);
+  public Visitor(final IModelListener patternListener) {
+    super(Visitor.VISITOR);
 
-		final IInterface nodeHierarchyRootInterface =
-			this.getFactory().createInterface(
-				Visitor.NODE_HIERARCHY_ROOT,
-				Visitor.NODE_HIERARCHY_ROOT);
-		this.addConstituent(nodeHierarchyRootInterface);
+    this.addModelListener(patternListener);
 
-		final IInterface visitorRootInterface =
-			this.getFactory().createInterface(
-				Visitor.VISITOR_HIERARCHY_ROOT,
-				Visitor.VISITOR_HIERARCHY_ROOT);
-		this.addConstituent(visitorRootInterface);
+    final IInterface nodeHierarchyRootInterface =
+        this.getFactory().createInterface(Visitor.NODE_HIERARCHY_ROOT, Visitor.NODE_HIERARCHY_ROOT);
+    this.addConstituent(nodeHierarchyRootInterface);
 
-		final IMethod acceptMethod =
-			this.getFactory().createMethod(Visitor.ACCEPT, Visitor.ACCEPT);
-		acceptMethod.addConstituent(this.getFactory().createParameter(
-			visitorRootInterface,
-			Visitor.STRING,
-			1));
-		nodeHierarchyRootInterface.addConstituent(acceptMethod);
+    final IInterface visitorRootInterface =
+        this.getFactory()
+            .createInterface(Visitor.VISITOR_HIERARCHY_ROOT, Visitor.VISITOR_HIERARCHY_ROOT);
+    this.addConstituent(visitorRootInterface);
 
-		final IMethod visitMethod =
-			this.getFactory().createMethod(Visitor.VISIT, Visitor.VISIT);
-		visitMethod.addConstituent(this.getFactory().createParameter(
-			nodeHierarchyRootInterface,
-			Visitor.ENTITY,
-			1));
-		visitorRootInterface.addConstituent(visitMethod);
+    final IMethod acceptMethod = this.getFactory().createMethod(Visitor.ACCEPT, Visitor.ACCEPT);
+    acceptMethod.addConstituent(
+        this.getFactory().createParameter(visitorRootInterface, Visitor.STRING, 1));
+    nodeHierarchyRootInterface.addConstituent(acceptMethod);
 
-		final IAssociation acceptVisitorAssociation =
-			this.getFactory().createAssociationRelationship(
-				Visitor.ACCEPT_VISITOR,
-				visitorRootInterface,
-				Cardinality.One);
-		// acceptVisitorAssociation.attachTo(acceptMethod);
-		nodeHierarchyRootInterface.addConstituent(acceptVisitorAssociation);
+    final IMethod visitMethod = this.getFactory().createMethod(Visitor.VISIT, Visitor.VISIT);
+    visitMethod.addConstituent(
+        this.getFactory().createParameter(nodeHierarchyRootInterface, Visitor.ENTITY, 1));
+    visitorRootInterface.addConstituent(visitMethod);
 
-		final IAssociation visitEntityAssociation =
-			this.getFactory().createAssociationRelationship(
-				Visitor.VISIT_ENTITY,
-				nodeHierarchyRootInterface,
-				Cardinality.One);
-		// visitEntityAssociation.attachTo(visitMethod);
-		visitorRootInterface.addConstituent(visitEntityAssociation);
+    final IAssociation acceptVisitorAssociation =
+        this.getFactory()
+            .createAssociationRelationship(
+                Visitor.ACCEPT_VISITOR, visitorRootInterface, Cardinality.One);
+    // acceptVisitorAssociation.attachTo(acceptMethod);
+    nodeHierarchyRootInterface.addConstituent(acceptVisitorAssociation);
 
-		this.addNode(Visitor.NODE);
-	}
-	public void addNode(final char[] nodeName) {
-		final IClass node = this.getFactory().createClass(nodeName, nodeName);
-		node.addInheritedEntity((IFirstClassEntity) this
-			.getConstituentFromName(Visitor.NODE_HIERARCHY_ROOT));
-		this.addConstituent(node);
+    final IAssociation visitEntityAssociation =
+        this.getFactory()
+            .createAssociationRelationship(
+                Visitor.VISIT_ENTITY, nodeHierarchyRootInterface, Cardinality.One);
+    // visitEntityAssociation.attachTo(visitMethod);
+    visitorRootInterface.addConstituent(visitEntityAssociation);
 
-		final IClass visitor =
-			this.getFactory().createClass(
-				ArrayUtils.addAll(nodeName, Visitor.VISITOR),
-				ArrayUtils.addAll(nodeName, Visitor.VISITOR));
-		visitor.addInheritedEntity((IFirstClassEntity) this
-			.getConstituentFromName(Visitor.VISITOR_HIERARCHY_ROOT));
-		this.addConstituent(visitor);
+    this.addNode(Visitor.NODE);
+  }
 
-		final IMethod acceptMethod =
-			this.getFactory().createMethod(Visitor.ACCEPT, Visitor.ACCEPT);
-		acceptMethod.addConstituent(this.getFactory().createParameter(
-			visitor,
-			Visitor.STRING,
-			1));
-		node.addConstituent(acceptMethod);
+  public void addNode(final char[] nodeName) {
+    final IClass node = this.getFactory().createClass(nodeName, nodeName);
+    node.addInheritedEntity(
+        (IFirstClassEntity) this.getConstituentFromName(Visitor.NODE_HIERARCHY_ROOT));
+    this.addConstituent(node);
 
-		final IMethod visitMethod =
-			this.getFactory().createMethod(Visitor.VISIT, Visitor.VISIT);
-		visitMethod.addConstituent(this.getFactory().createParameter(
-			node,
-			Visitor.ENTITY,
-			1));
-		visitor.addConstituent(visitMethod);
+    final IClass visitor =
+        this.getFactory()
+            .createClass(
+                ArrayUtils.addAll(nodeName, Visitor.VISITOR),
+                ArrayUtils.addAll(nodeName, Visitor.VISITOR));
+    visitor.addInheritedEntity(
+        (IFirstClassEntity) this.getConstituentFromName(Visitor.VISITOR_HIERARCHY_ROOT));
+    this.addConstituent(visitor);
 
-		final IAssociation acceptVisitorAssociation =
-			this.getFactory().createAssociationRelationship(
-				Visitor.ACCEPT_VISITOR,
-				visitor,
-				Cardinality.One);
-		// acceptVisitorAssociation.attachTo(acceptMethod);
-		node.addConstituent(acceptVisitorAssociation);
+    final IMethod acceptMethod = this.getFactory().createMethod(Visitor.ACCEPT, Visitor.ACCEPT);
+    acceptMethod.addConstituent(this.getFactory().createParameter(visitor, Visitor.STRING, 1));
+    node.addConstituent(acceptMethod);
 
-		final IAssociation visitEntityAssociation =
-			this.getFactory().createAssociationRelationship(
-				Visitor.VISIT_ENTITY,
-				node,
-				Cardinality.One);
-		// visitEntityAssociation.attachTo(visitMethod);
-		visitor.addConstituent(visitEntityAssociation);
-	}
-	public String getIntent() {
-		return MultilingualManager.getString("INTENT", Visitor.class);
-	}
-	public char[] getName() {
-		return Visitor.VISITOR;
-	}
+    final IMethod visitMethod = this.getFactory().createMethod(Visitor.VISIT, Visitor.VISIT);
+    visitMethod.addConstituent(this.getFactory().createParameter(node, Visitor.ENTITY, 1));
+    visitor.addConstituent(visitMethod);
+
+    final IAssociation acceptVisitorAssociation =
+        this.getFactory()
+            .createAssociationRelationship(Visitor.ACCEPT_VISITOR, visitor, Cardinality.One);
+    // acceptVisitorAssociation.attachTo(acceptMethod);
+    node.addConstituent(acceptVisitorAssociation);
+
+    final IAssociation visitEntityAssociation =
+        this.getFactory()
+            .createAssociationRelationship(Visitor.VISIT_ENTITY, node, Cardinality.One);
+    // visitEntityAssociation.attachTo(visitMethod);
+    visitor.addConstituent(visitEntityAssociation);
+  }
+
+  public String getIntent() {
+    return MultilingualManager.getString("INTENT", Visitor.class);
+  }
+
+  public char[] getName() {
+    return Visitor.VISITOR;
+  }
 }

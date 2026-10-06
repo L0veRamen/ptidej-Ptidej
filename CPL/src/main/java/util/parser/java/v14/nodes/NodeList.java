@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -16,38 +16,43 @@ package util.parser.java.v14.nodes;
 
 import java.util.*;
 
-/**
- * Represents a grammar list, e.g. ( A )+
- */
+/** Represents a grammar list, e.g. ( A )+ */
 public class NodeList implements NodeListInterface {
-   /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+  /** */
+  private static final long serialVersionUID = 1L;
 
-public NodeList() {
-      this.nodes = new Vector<Node>();
-   }
+  public NodeList() {
+    this.nodes = new Vector<Node>();
+  }
 
-   public NodeList(Node firstNode) {
-      this.nodes = new Vector<Node>();
-      addNode(firstNode);
-   }
+  public NodeList(Node firstNode) {
+    this.nodes = new Vector<Node>();
+    addNode(firstNode);
+  }
 
-   public void addNode(Node n) {
-      this.nodes.addElement(n);
-   }
+  public void addNode(Node n) {
+    this.nodes.addElement(n);
+  }
 
-   public Enumeration<Node> elements() { return this.nodes.elements(); }
-   public Node elementAt(int i)  { return (Node)this.nodes.elementAt(i); }
-   public int size()             { return this.nodes.size(); }
-   public void accept(util.parser.java.v14.visitors.Visitor v) {
-      v.visit(this);
-   }
-   public Object accept(util.parser.java.v14.visitors.ObjectVisitor v, Object argu) {
-      return v.visit(this,argu);
-   }
+  public Enumeration<Node> elements() {
+    return this.nodes.elements();
+  }
 
-   public Vector<Node> nodes;
+  public Node elementAt(int i) {
+    return (Node) this.nodes.elementAt(i);
+  }
+
+  public int size() {
+    return this.nodes.size();
+  }
+
+  public void accept(util.parser.java.v14.visitors.Visitor v) {
+    v.visit(this);
+  }
+
+  public Object accept(util.parser.java.v14.visitors.ObjectVisitor v, Object argu) {
+    return v.visit(this, argu);
+  }
+
+  public Vector<Node> nodes;
 }
-

@@ -28,12 +28,10 @@ import java.awt.Rectangle;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.argouml.cognitive.Critic;
 import org.argouml.cognitive.Designer;
 import org.argouml.cognitive.ListSet;
 import org.argouml.cognitive.ToDoItem;
-import org.argouml.model.Model;
 import org.argouml.uml.cognitive.UMLDecision;
 import org.argouml.uml.diagram.deployment.ui.FigObject;
 import org.argouml.uml.diagram.deployment.ui.UMLDeploymentDiagram;
@@ -51,143 +49,131 @@ import org.tigris.gef.presentation.FigNode;
  */
 public class CrNodesOverlap extends CrUML {
 
-    /**
-     * The constructor.
-     */
-    public CrNodesOverlap() {
-	// TODO: {name} is not expanded for diagram objects
-        setupHeadAndDesc();
-	addSupportedDecision(UMLDecision.CLASS_SELECTION);
-	addSupportedDecision(UMLDecision.EXPECTED_USAGE);
-	addSupportedDecision(UMLDecision.STATE_MACHINES);
-	setKnowledgeTypes(Critic.KT_PRESENTATION);
+  /** The constructor. */
+  public CrNodesOverlap() {
+    // TODO: {name} is not expanded for diagram objects
+    setupHeadAndDesc();
+    addSupportedDecision(UMLDecision.CLASS_SELECTION);
+    addSupportedDecision(UMLDecision.EXPECTED_USAGE);
+    addSupportedDecision(UMLDecision.STATE_MACHINES);
+    setKnowledgeTypes(Critic.KT_PRESENTATION);
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // critiquing API
+
+  /*
+   * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
+   *      java.lang.Object, org.argouml.cognitive.Designer)
+   */
+  @Override
+  public boolean predicate2(Object dm, Designer dsgr) {
+    if (!(dm instanceof Diagram)) {
+      return NO_PROBLEM;
+    }
+    Diagram d = (Diagram) dm;
+
+    // fixes bug #669. Sequencediagrams always overlap, so they shall
+    // never report a problem
+    if (dm instanceof UMLSequenceDiagram) {
+      return NO_PROBLEM;
     }
 
-    ////////////////////////////////////////////////////////////////
-    // critiquing API
+    ListSet offs = computeOffenders(d);
+    if (offs == null) return NO_PROBLEM;
+    return PROBLEM_FOUND;
+  }
 
-    /*
-     * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
-     *      java.lang.Object, org.argouml.cognitive.Designer)
-     */
-    @Override
-    public boolean predicate2(Object dm, Designer dsgr) {
-	if (!(dm instanceof Diagram)) {
-            return NO_PROBLEM;
+  /*
+   * @see org.argouml.cognitive.critics.Critic#toDoItem(java.lang.Object,
+   *      org.argouml.cognitive.Designer)
+   */
+  @Override
+  public ToDoItem toDoItem(Object dm, Designer dsgr) {
+    Diagram d = (Diagram) dm;
+    ListSet offs = computeOffenders(d);
+    return new ToDoItem(this, offs, dsgr);
+  }
+
+  /*
+   * @see org.argouml.cognitive.Poster#stillValid(
+   *      org.argouml.cognitive.ToDoItem, org.argouml.cognitive.Designer)
+   */
+  @Override
+  public boolean stillValid(ToDoItem i, Designer dsgr) {
+    if (!isActive()) {
+      return false;
+    }
+    ListSet offs = i.getOffenders();
+    Diagram d = (Diagram) offs.get(0);
+    // if (!predicate(dm, dsgr)) return false;
+    ListSet newOffs = computeOffenders(d);
+    boolean res = offs.equals(newOffs);
+    return res;
+  }
+
+  /**
+   * @param d the diagram
+   * @return the set of offenders
+   */
+  public ListSet computeOffenders(Diagram d) {
+    // TODO: algorithm is n^2 in number of nodes
+    List figs = d.getLayer().getContents();
+    int numFigs = figs.size();
+    ListSet offs = null;
+    for (int i = 0; i < numFigs - 1; i++) {
+      Object oi = figs.get(i);
+      if (!(oi instanceof FigNode)) {
+        continue;
+      }
+      FigNode fni = (FigNode) oi;
+      Rectangle boundsi = fni.getBounds();
+      for (int j = i + 1; j < numFigs; j++) {
+        Object oj = figs.get(j);
+        if (!(oj instanceof FigNode)) {
+          continue;
         }
-	Diagram d = (Diagram) dm;
-
-	// fixes bug #669. Sequencediagrams always overlap, so they shall
-	// never report a problem
-	if (dm instanceof UMLSequenceDiagram) {
-            return NO_PROBLEM;
-        }
-
-	ListSet offs = computeOffenders(d);
-	if (offs == null) return NO_PROBLEM;
-	return PROBLEM_FOUND;
-    }
-
-
-    /*
-     * @see org.argouml.cognitive.critics.Critic#toDoItem(java.lang.Object,
-     *      org.argouml.cognitive.Designer)
-     */
-    @Override
-    public ToDoItem toDoItem(Object dm, Designer dsgr) {
-	Diagram d = (Diagram) dm;
-	ListSet offs = computeOffenders(d);
-	return new ToDoItem(this, offs, dsgr);
-    }
-
-    /*
-     * @see org.argouml.cognitive.Poster#stillValid(
-     *      org.argouml.cognitive.ToDoItem, org.argouml.cognitive.Designer)
-     */
-    @Override
-    public boolean stillValid(ToDoItem i, Designer dsgr) {
-	if (!isActive()) {
-            return false;
-        }
-	ListSet offs = i.getOffenders();
-	Diagram d = (Diagram) offs.get(0);
-	//if (!predicate(dm, dsgr)) return false;
-	ListSet newOffs = computeOffenders(d);
-	boolean res = offs.equals(newOffs);
-	return res;
-    }
-
-    /**
-     * @param d the diagram
-     * @return the set of offenders
-     */
-    public ListSet computeOffenders(Diagram d) {
-	//TODO: algorithm is n^2 in number of nodes
-	List figs = d.getLayer().getContents();
-	int numFigs = figs.size();
-	ListSet offs = null;
-	for (int i = 0; i < numFigs - 1; i++) {
-	    Object oi = figs.get(i);
-	    if (!(oi instanceof FigNode)) {
-                continue;
+        FigNode fnj = (FigNode) oj;
+        if (fnj.intersects(boundsi)) {
+          if (!(d instanceof UMLDeploymentDiagram)) {
+            if (fni instanceof FigNodeModelElement) {
+              if (((FigNodeModelElement) fni).getEnclosingFig() == fnj) continue;
             }
-	    FigNode fni = (FigNode) oi;
-	    Rectangle boundsi = fni.getBounds();
-	    for (int j = i + 1; j < numFigs; j++) {
-		Object oj = figs.get(j);
-		if (!(oj instanceof FigNode)) {
-                    continue;
-                }
-		FigNode fnj = (FigNode) oj;
-		if (fnj.intersects(boundsi)) {
-		    if (!(d instanceof UMLDeploymentDiagram)) {
-			if (fni instanceof FigNodeModelElement) {
-			    if (((FigNodeModelElement) fni).getEnclosingFig()
-				== fnj)
-				continue;
-			}
-			if (fnj instanceof FigNodeModelElement) {
-			    if (((FigNodeModelElement) fnj).getEnclosingFig()
-				== fni)
-				continue;
-			}
-		    }
-		    // In DeploymentDiagrams the situation is not the
-		    // same as in other diagrams only classes,
-		    // interfaces and objects can intersect each other
-		    // while they are not the EnclosingFig, so you
-		    // have to prouve only these elements.
-		    else {
-			if ((!((fni instanceof  FigClass)
-			       || (fni instanceof FigInterface)
-			       || (fni instanceof FigObject)))
-			    || (!((fnj instanceof  FigClass)
-				  || (fnj instanceof FigInterface)
-				  || (fnj instanceof FigObject))))
-			    continue;
-		    }
-		    if (offs == null) {
-			offs = new ListSet();
-			offs.add(d);
-		    }
-		    offs.add(fni);
-		    offs.add(fnj);
-		    break;
-		}
-	    }
-	}
-	return offs;
+            if (fnj instanceof FigNodeModelElement) {
+              if (((FigNodeModelElement) fnj).getEnclosingFig() == fni) continue;
+            }
+          }
+          // In DeploymentDiagrams the situation is not the
+          // same as in other diagrams only classes,
+          // interfaces and objects can intersect each other
+          // while they are not the EnclosingFig, so you
+          // have to prouve only these elements.
+          else {
+            if ((!((fni instanceof FigClass)
+                    || (fni instanceof FigInterface)
+                    || (fni instanceof FigObject)))
+                || (!((fnj instanceof FigClass)
+                    || (fnj instanceof FigInterface)
+                    || (fnj instanceof FigObject)))) continue;
+          }
+          if (offs == null) {
+            offs = new ListSet();
+            offs.add(d);
+          }
+          offs.add(fni);
+          offs.add(fnj);
+          break;
+        }
+      }
     }
+    return offs;
+  }
 
-    /*
-     * @see org.argouml.uml.cognitive.critics.CrUML#getCriticizedDesignMaterials()
-     */
-    public Set<Object> getCriticizedDesignMaterials() {
-        Set<Object> ret = new HashSet<Object>();
-        return ret;
-    }
-    
-} 
-
-
-
+  /*
+   * @see org.argouml.uml.cognitive.critics.CrUML#getCriticizedDesignMaterials()
+   */
+  public Set<Object> getCriticizedDesignMaterials() {
+    Set<Object> ret = new HashSet<Object>();
+    return ret;
+  }
+}

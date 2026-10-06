@@ -34,74 +34,63 @@ package org.argouml.uml.reveng.java;
 import org.argouml.model.Model;
 
 /**
-   The context is the current available namespaces via import in the
-   class that is currently parsed. It is non mutable and a new
-   context can be based on the current context with an
-   additional namespace.
-*/
-abstract class Context
-{
-    /** The succeding context. May be null. */
-    private Context context;
+ * The context is the current available namespaces via import in the class that is currently parsed.
+ * It is non mutable and a new context can be based on the current context with an additional
+ * namespace.
+ */
+abstract class Context {
+  /** The succeding context. May be null. */
+  private Context context;
 
-    /**
-       Create a new context.
+  /**
+   * Create a new context.
+   *
+   * @param base Based on this context, may be null.
+   */
+  public Context(Context base) {
+    context = base;
+  }
 
-       @param base Based on this context, may be null.
-    */
-    public Context(Context base)
-    {
-	context = base;
+  /**
+   * Get a classifier from the model. If it is not in the model, try to find it with the CLASSPATH.
+   * If found, in the classpath, the classifier is created and added to the model. If not found at
+   * all, a datatype is created and added to the model.
+   *
+   * @param name The name of the classifier to find.
+   * @return Found classifier.
+   */
+  public abstract Object get(String name) throws ClassifierNotFoundException;
+
+  public abstract Object getInterface(String name) throws ClassifierNotFoundException;
+
+  /**
+   * Get the complete java name for a package.
+   *
+   * @param mPackage The package.
+   * @return Package name in java format
+   */
+  protected String getJavaName(Object mPackage) {
+    Object parent = Model.getFacade().getNamespace(mPackage);
+    if (Model.getFacade().isAModel(parent)) {
+      return Model.getFacade().getName(mPackage);
+    } else if (parent != null) {
+      return getJavaName(parent) + "." + Model.getFacade().getName(mPackage);
+    } else {
+      return "";
     }
+  }
 
-    /**
-     * Get a classifier from the model. If it is not in the model, try
-     * to find it with the CLASSPATH. If found, in the classpath, the
-     * classifier is created and added to the model. If not found at
-     * all, a datatype is created and added to the model.
-     *
-     * @param name The name of the classifier to find.
-     * @return Found classifier.
-     */
-    public abstract Object get(String name)
-	throws ClassifierNotFoundException;
+  /**
+   * @param c The context to set.
+   */
+  protected void setContext(Context c) {
+    this.context = c;
+  }
 
-    public abstract Object getInterface(String name)
-	throws ClassifierNotFoundException;
-
-    /**
-       Get the complete java name for a package.
-
-       @param mPackage The package.
-       @return Package name in java format
-    */
-    protected String getJavaName(Object mPackage)
-    {
-	Object parent = Model.getFacade().getNamespace(mPackage);
-	if (Model.getFacade().isAModel(parent)) {
-	    return Model.getFacade().getName(mPackage);
-	}
-	else if (parent != null) {
-	    return getJavaName(parent) + "."
-	            + Model.getFacade().getName(mPackage);
-	}
-	else {
-	    return "";
-	}
-    }
-
-    /**
-     * @param c The context to set.
-     */
-    protected void setContext(Context c) {
-        this.context = c;
-    }
-
-    /**
-     * @return Returns the context.
-     */
-    protected Context getContext() {
-        return context;
-    }
+  /**
+   * @return Returns the context.
+   */
+  protected Context getContext() {
+    return context;
+  }
 }
-

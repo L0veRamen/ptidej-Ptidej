@@ -25,7 +25,6 @@
 package org.argouml.uml.ui.behavior.collaborations;
 
 import junit.framework.TestCase;
-
 import org.argouml.model.Model;
 import org.argouml.uml.ui.MockUMLUserInterfaceContainer;
 
@@ -35,63 +34,56 @@ import org.argouml.uml.ui.MockUMLUserInterfaceContainer;
  */
 public class TestUMLMessageSenderListModel extends TestCase {
 
-    private UMLMessageSenderListModel model;
-    private Object elem;
+  private UMLMessageSenderListModel model;
+  private Object elem;
 
-    /**
-     * Constructor for TestUMLMessageSenderListModel.
-     * @param arg0 is the name of the test case.
-     */
-    public TestUMLMessageSenderListModel(String arg0) {
-        super(arg0);
-    }
+  /**
+   * Constructor for TestUMLMessageSenderListModel.
+   *
+   * @param arg0 is the name of the test case.
+   */
+  public TestUMLMessageSenderListModel(String arg0) {
+    super(arg0);
+  }
 
+  /**
+   * @see junit.framework.TestCase#setUp()
+   */
+  protected void setUp() throws Exception {
+    super.setUp();
+    elem = Model.getCollaborationsFactory().createMessage();
+    MockUMLUserInterfaceContainer cont = new MockUMLUserInterfaceContainer();
+    cont.setTarget(elem);
+    model = new UMLMessageSenderListModel();
+    model.setTarget(elem);
+    Model.getPump().flushModelEvents();
+  }
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        elem = Model.getCollaborationsFactory().createMessage();
-        MockUMLUserInterfaceContainer cont =
-            new MockUMLUserInterfaceContainer();
-        cont.setTarget(elem);
-        model = new UMLMessageSenderListModel();
-        model.setTarget(elem);
-        Model.getPump().flushModelEvents();
-    }
+  /**
+   * @see junit.framework.TestCase#tearDown()
+   */
+  protected void tearDown() throws Exception {
+    super.tearDown();
+    Model.getUmlFactory().delete(elem);
+    model = null;
+  }
 
-    /**
-     * @see junit.framework.TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        Model.getUmlFactory().delete(elem);
-        model = null;
-    }
+  /** Test setSender(). */
+  public void testSetSender() {
+    Object role = Model.getCollaborationsFactory().createClassifierRole();
+    Model.getCollaborationsHelper().setSender(elem, role);
+    Model.getPump().flushModelEvents();
+    assertEquals(1, model.getSize());
+    assertEquals(role, model.getElementAt(0));
+  }
 
-    /**
-     * Test setSender().
-     */
-    public void testSetSender() {
-        Object role =
-            Model.getCollaborationsFactory().createClassifierRole();
-        Model.getCollaborationsHelper().setSender(elem, role);
-        Model.getPump().flushModelEvents();
-        assertEquals(1, model.getSize());
-        assertEquals(role, model.getElementAt(0));
-    }
-
-    /**
-     * Test setSender() with null argument.
-     */
-    public void testRemoveReceiver() {
-        Object role =
-            Model.getCollaborationsFactory().createClassifierRole();
-        Model.getCollaborationsHelper().setSender(elem, role);
-        Model.getCollaborationsHelper().setSender(elem, null);
-        Model.getPump().flushModelEvents();
-        assertEquals(0, model.getSize());
-        assertTrue(model.isEmpty());
-    }
+  /** Test setSender() with null argument. */
+  public void testRemoveReceiver() {
+    Object role = Model.getCollaborationsFactory().createClassifierRole();
+    Model.getCollaborationsHelper().setSender(elem, role);
+    Model.getCollaborationsHelper().setSender(elem, null);
+    Model.getPump().flushModelEvents();
+    assertEquals(0, model.getSize());
+    assertTrue(model.isEmpty());
+  }
 }

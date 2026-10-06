@@ -27,7 +27,6 @@ package org.argouml.uml.diagram.ui;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-
 import org.argouml.model.Model;
 import org.argouml.notation.Notation;
 import org.argouml.notation.NotationContext;
@@ -38,80 +37,77 @@ import org.tigris.gef.presentation.Fig;
  * @author Bob Tarling
  */
 public class FigAttributesCompartment extends FigFeaturesCompartment {
-    /**
-     * The constructor.
-     *
-     * @param x x
-     * @param y y
-     * @param w width
-     * @param h height
-     */
-    public FigAttributesCompartment(int x, int y, int w, int h) {
-        super(x, y, w, h);
-    }
+  /**
+   * The constructor.
+   *
+   * @param x x
+   * @param y y
+   * @param w width
+   * @param h height
+   */
+  public FigAttributesCompartment(int x, int y, int w, int h) {
+    super(x, y, w, h);
+  }
 
-    /**
-     * @see org.argouml.uml.diagram.ui.FigFeaturesCompartment#populate()
-     */
-    public void populate() {
-        if (!isVisible()) {
-            return;
+  /**
+   * @see org.argouml.uml.diagram.ui.FigFeaturesCompartment#populate()
+   */
+  public void populate() {
+    if (!isVisible()) {
+      return;
+    }
+    Object cls = /*(MClassifier)*/ getGroup().getOwner();
+    Fig attrPort = this.getBigPort();
+    int xpos = attrPort.getX();
+    int ypos = attrPort.getY();
+    int acounter = 2; // Skip background port and seperator
+
+    Collection strs = Model.getFacade().getStructuralFeatures(cls);
+    if (strs != null) {
+      Iterator iter = strs.iterator();
+      List figs = getFigs();
+      CompartmentFigText attr;
+      while (iter.hasNext()) {
+        Object structuralFeature = iter.next();
+        if (figs.size() <= acounter) {
+          attr =
+              new FigFeature(
+                  xpos + 1,
+                  ypos + 1 + (acounter - 1) * FigNodeModelElement.ROWHEIGHT,
+                  0,
+                  FigNodeModelElement.ROWHEIGHT - 2,
+                  attrPort);
+          // bounds not relevant here
+          addFig(attr);
+        } else {
+          attr = (CompartmentFigText) figs.get(acounter);
         }
-        Object cls = /*(MClassifier)*/ getGroup().getOwner();
-        Fig attrPort = this.getBigPort();
-        int xpos = attrPort.getX();
-        int ypos = attrPort.getY();
-        int acounter = 2; // Skip background port and seperator
-        
-        Collection strs = Model.getFacade().getStructuralFeatures(cls);
-        if (strs != null) {
-            Iterator iter = strs.iterator();
-            List figs = getFigs();
-            CompartmentFigText attr;
-            while (iter.hasNext()) {
-                Object structuralFeature = iter.next();
-                if (figs.size() <= acounter) {
-                    attr =
-                        new FigFeature(
-                                xpos + 1,
-                                ypos + 1
-                                + (acounter - 1)
-                                	* FigNodeModelElement.ROWHEIGHT,
-                                0,
-                                FigNodeModelElement.ROWHEIGHT - 2,
-                                attrPort);
-                    // bounds not relevant here
-                    addFig(attr);
-                } else {
-                    attr = (CompartmentFigText) figs.get(acounter);
-                }
-                attr.setText(Notation.generate((NotationContext) getGroup(),
-                        structuralFeature));
-                attr.setOwner(structuralFeature); //TODO: update the model again here?
-                /* This causes another event, and modelChanged() called,
-                 * and updateAttributes() called again...
-                 */
+        attr.setText(Notation.generate((NotationContext) getGroup(), structuralFeature));
+        attr.setOwner(structuralFeature); // TODO: update the model again here?
+        /* This causes another event, and modelChanged() called,
+         * and updateAttributes() called again...
+         */
 
-                // underline, if static
-                attr.setUnderline(
-                        Model.getScopeKind().
-                        getClassifier().equals(Model.getFacade().
-                                getOwnerScope(structuralFeature)));
-                acounter++;
-            }
-            if (figs.size() > acounter) {
-                //cleanup of unused attribute FigText's
-                for (int i = figs.size() - 1; i >= acounter; i--) {
-                    removeFig((Fig) figs.get(i));
-                }
-            }
+        // underline, if static
+        attr.setUnderline(
+            Model.getScopeKind()
+                .getClassifier()
+                .equals(Model.getFacade().getOwnerScope(structuralFeature)));
+        acounter++;
+      }
+      if (figs.size() > acounter) {
+        // cleanup of unused attribute FigText's
+        for (int i = figs.size() - 1; i >= acounter; i--) {
+          removeFig((Fig) figs.get(i));
         }
+      }
     }
+  }
 
-    /**
-     * @see org.argouml.uml.diagram.ui.FigFeaturesCompartment#createFeature()
-     */
-    public void createFeature() {
-        (new ActionAddAttribute()).actionPerformed(null);
-    }
+  /**
+   * @see org.argouml.uml.diagram.ui.FigFeaturesCompartment#createFeature()
+   */
+  public void createFeature() {
+    (new ActionAddAttribute()).actionPerformed(null);
+  }
 }

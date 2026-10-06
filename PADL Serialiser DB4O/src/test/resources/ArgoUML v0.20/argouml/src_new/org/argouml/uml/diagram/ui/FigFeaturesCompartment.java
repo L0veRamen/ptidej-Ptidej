@@ -26,184 +26,172 @@ package org.argouml.uml.diagram.ui;
 
 import java.awt.Dimension;
 import java.util.Iterator;
-
 import org.apache.log4j.Logger;
 import org.argouml.uml.diagram.static_structure.ui.FigFeature;
 import org.tigris.gef.presentation.Fig;
 import org.tigris.gef.presentation.FigLine;
 
 /**
- * Presentation logic which is common to both an operations
- * compartment and an attributes compartment.<p>
+ * Presentation logic which is common to both an operations compartment and an attributes
+ * compartment.
  *
- * TODO: Investicate if this could be renamed to AbstractFigFeaturesCompartment?
+ * <p>TODO: Investicate if this could be renamed to AbstractFigFeaturesCompartment?
+ *
  * @author Bob Tarling
  */
 public abstract class FigFeaturesCompartment extends FigCompartment {
 
-    /**
-     * Logger.
-     */
-    private static final Logger LOG = Logger.getLogger(FigCompartment.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(FigCompartment.class);
 
-    private FigSeperator compartmentSeperator;
+  private FigSeperator compartmentSeperator;
 
-    /**
-     * The constructor.
-     *
-     * @param x x
-     * @param y y
-     * @param w width
-     * @param h height
-     */
-    public FigFeaturesCompartment(int x, int y, int w, int h) {
-        super(x, y, w, h);
-        compartmentSeperator = new FigSeperator(10, 10, 11);
-        addFig(compartmentSeperator);
+  /**
+   * The constructor.
+   *
+   * @param x x
+   * @param y y
+   * @param w width
+   * @param h height
+   */
+  public FigFeaturesCompartment(int x, int y, int w, int h) {
+    super(x, y, w, h);
+    compartmentSeperator = new FigSeperator(10, 10, 11);
+    addFig(compartmentSeperator);
+  }
+
+  protected FigSeperator getSeperatorFig() {
+    return compartmentSeperator;
+  }
+
+  /**
+   * If a features compartment is set to invisible then remove all its children. This is to save on
+   * resources and increase efficiency as multiple figs need not exist and be resized, moved etc if
+   * they are not visible. If a compartment is later made visible the its child figs are rebuilt
+   * from the model.
+   *
+   * @see org.tigris.gef.presentation.Fig#setVisible(boolean)
+   */
+  public void setVisible(boolean visible) {
+    if (isVisible() == visible) {
+      return;
     }
-
-    protected FigSeperator getSeperatorFig() {
-        return compartmentSeperator;
-    }
-
-    /**
-     * If a features compartment is set to invisible then remove all its
-     * children.
-     * This is to save on resources and increase efficiency as multiple
-     * figs need not exist and be resized, moved etc if they are not visible.
-     * If a compartment is later made visible the its child figs are rebuilt
-     * from the model.
-     * @see org.tigris.gef.presentation.Fig#setVisible(boolean)
-     */
-    public void setVisible(boolean visible) {
-        if (isVisible() == visible) {
-            return;
+    super.setVisible(visible);
+    if (visible) {
+      populate();
+    } else {
+      for (int i = getFigs().size() - 1; i >= 0; --i) {
+        Fig f = getFigAt(i);
+        if (f instanceof FigFeature) {
+          removeFig(f);
         }
-        super.setVisible(visible);
-        if (visible) {
-            populate();
+      }
+    }
+  }
+
+  /**
+   * @see org.tigris.gef.presentation.FigGroup#addFig(org.tigris.gef.presentation.Fig)
+   */
+  public void addFig(Fig fig) {
+    if (fig != getBigPort() && !(fig instanceof FigFeature) && !(fig instanceof FigSeperator)) {
+      LOG.error("Illegal Fig added to a FigFeature");
+      throw new IllegalArgumentException(
+          "A FigFeaturesCompartment can only contain FigFeatures, "
+              + "received a "
+              + fig.getClass().getName());
+    }
+    super.addFig(fig);
+  }
+
+  /**
+   * Fills the Fig by adding all figs within.
+   *
+   * <p>TODO: Check that this is correct?
+   */
+  public abstract void populate();
+
+  /**
+   * Returns the new size of the FigGroup (either attributes or operations) after calculation new
+   * bounds for all sub-figs, considering their minimal sizes; FigGroup need not be displayed; no
+   * update event is fired.
+   *
+   * <p>This method has side effects that are sometimes used.
+   *
+   * @param fg the FigGroup to be updated
+   * @param x x
+   * @param y y
+   * @param w w
+   * @param h h
+   * @return the new dimension
+   */
+  public Dimension updateFigGroupSize(
+      int x, int y, int w, int h, boolean checkSize, int rowHeight) {
+    return getMinimumSize();
+  }
+
+  /**
+   * The minimum width is the minimum width of the widest child feature. The minium height is the
+   * total minimum height of all child figs but no less than 21 pixels.
+   *
+   * @return the minimum width
+   */
+  public Dimension getMinimumSize() {
+    Dimension d = super.getMinimumSize();
+    if (d.height < 21) {
+      d.height = 21;
+    }
+    return d;
+  }
+
+  protected void setBoundsImpl(int x, int y, int w, int h) {
+    int newW = w;
+    int n = getFigs().size() - 1;
+    int newH = h;
+
+    Iterator figs = iterator();
+    Fig fig;
+    int fw;
+    int yy = y;
+    while (figs.hasNext()) {
+      fig = (Fig) figs.next();
+      if (fig.isVisible() && fig != getBigPort()) {
+        if (fig instanceof FigSeperator) {
+          fw = w;
         } else {
-            for (int i = getFigs().size() - 1; i >= 0; --i) {
-                Fig f = getFigAt(i);
-                if (f instanceof FigFeature) {
-                    removeFig(f);
-                }
-            }
+          fw = fig.getMinimumSize().width;
         }
-    }
-
-    /**
-     * @see org.tigris.gef.presentation.FigGroup#addFig(org.tigris.gef.presentation.Fig)
-     */
-    public void addFig(Fig fig) {
-        if (fig != getBigPort() &&
-                !(fig instanceof FigFeature) &&
-                !(fig instanceof FigSeperator)) {
-            LOG.error("Illegal Fig added to a FigFeature");
-            throw new IllegalArgumentException(
-                    "A FigFeaturesCompartment can only contain FigFeatures, "
-                    + "received a " + fig.getClass().getName());
+        fig.setBounds(x + 1, yy + 1, fw, fig.getMinimumSize().height);
+        if (newW < fw + 2) {
+          newW = fw + 2;
         }
-        super.addFig(fig);
+        yy += fig.getMinimumSize().height;
+      }
+    }
+    getBigPort().setBounds(x + 1, y + 1, newW - 3, newH - 1);
+    calcBounds();
+  }
+
+  /** Create a new feature */
+  public abstract void createFeature();
+
+  protected class FigSeperator extends FigLine {
+    FigSeperator(int x, int y, int len) {
+      super(x, y, (x + len) - 1, y);
     }
 
-    /**
-     * Fills the Fig by adding all figs within.<p>
-     *
-     * TODO: Check that this is correct?
-     */
-    public abstract void populate();
-
-    /**
-     * Returns the new size of the FigGroup (either attributes or
-     * operations) after calculation new bounds for all sub-figs,
-     * considering their minimal sizes; FigGroup need not be
-     * displayed; no update event is fired.<p>
-     *
-     * This method has side effects that are sometimes used.
-     *
-     * @param fg the FigGroup to be updated
-     * @param x x
-     * @param y y
-     * @param w w
-     * @param h h
-     * @return the new dimension
-     */
-    public Dimension updateFigGroupSize(
-                       int x,
-                       int y,
-                       int w,
-                       int h,
-                       boolean checkSize,
-                       int rowHeight) {
-        return getMinimumSize();
+    public Dimension getSize() {
+      return new Dimension((_x2 - _x1) + 1, getLineWidth());
     }
 
-    /**
-     * The minimum width is the minimum width of the widest child feature.
-     * The minium height is the total minimum height of all child figs but no
-     * less than 21 pixels.
-     * @return the minimum width
-     */
     public Dimension getMinimumSize() {
-        Dimension d = super.getMinimumSize();
-        if (d.height < 21) {
-            d.height = 21;
-        }
-        return d;
+      return new Dimension(0, getLineWidth());
     }
 
-    protected void setBoundsImpl(int x, int y, int w, int h) {
-        int newW = w;
-        int n = getFigs().size() - 1;
-        int newH = h;
-
-        Iterator figs = iterator();
-        Fig fig;
-        int fw;
-        int yy = y;
-        while (figs.hasNext()) {
-            fig = (Fig) figs.next();
-            if (fig.isVisible() && fig != getBigPort()) {
-                if (fig instanceof FigSeperator) {
-                    fw = w;
-                } else {
-                    fw = fig.getMinimumSize().width;
-                }
-                fig.setBounds(x + 1, yy + 1, fw, fig.getMinimumSize().height);
-                if (newW < fw + 2) {
-                    newW = fw + 2;
-                }
-                yy += fig.getMinimumSize().height;
-            }
-        }
-        getBigPort().setBounds(x + 1, y + 1, newW - 3, newH - 1);
-        calcBounds();
+    public void setBoundsImpl(int x, int y, int w, int h) {
+      setX1(x);
+      setY1(y);
+      setX2((x + w) - 1);
+      setY2((y + h) - 1);
     }
-
-    /**
-     * Create a new feature
-     */
-    abstract public void createFeature();
-
-    protected class FigSeperator extends FigLine {
-        FigSeperator(int x, int y, int len) {
-            super(x, y, (x + len) - 1, y);
-        }
-
-        public Dimension getSize() {
-            return new Dimension((_x2 - _x1) +1, getLineWidth());
-        }
-
-        public Dimension getMinimumSize() {
-            return new Dimension(0, getLineWidth());
-        }
-
-        public void setBoundsImpl(int x, int y, int w, int h) {
-            setX1(x);
-            setY1(y);
-            setX2((x + w) - 1);
-            setY2((y + h) - 1);
-        }
-    }
+  }
 }

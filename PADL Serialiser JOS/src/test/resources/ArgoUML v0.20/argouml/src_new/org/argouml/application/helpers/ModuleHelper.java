@@ -23,49 +23,39 @@
 // UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 package org.argouml.application.helpers;
-import java.util.Vector;
 
+import java.util.Vector;
 import org.argouml.application.api.ArgoModule;
 
+/** This class serves as a template of modules external to ArgoUML. */
+public abstract class ModuleHelper implements ArgoModule {
 
-/**
- * This class serves as a template of modules external to ArgoUML.
- *
- */
-public abstract class ModuleHelper
-    implements ArgoModule {
+  private boolean enabled = false;
 
-    private boolean enabled = false;
+  /** The constructor. */
+  public ModuleHelper() {
+    enabled = false;
+  }
 
-    /**
-     * The constructor.
-     *
-     */
-    public ModuleHelper() {
-        enabled = false;
-    }
+  /**
+   * @see org.argouml.application.api.ArgoModule#isModuleEnabled()
+   */
+  public boolean isModuleEnabled() {
+    return enabled;
+  }
 
-    /**
-     * @see org.argouml.application.api.ArgoModule#isModuleEnabled()
-     */
-    public boolean isModuleEnabled() {
-        return enabled;
-    }
+  /**
+   * @see org.argouml.application.api.ArgoModule#setModuleEnabled(boolean)
+   */
+  public void setModuleEnabled(boolean e) {
+    enabled = e;
+  }
 
-    /**
-     * @see org.argouml.application.api.ArgoModule#setModuleEnabled(boolean)
-     */
-    public void setModuleEnabled(boolean e) {
-        enabled = e;
-    }
-
-    /**
-     * @see org.argouml.application.api.ArgoModule#getModulePopUpActions(
-     * java.util.Vector, java.lang.Object)
-     */
-    public Vector getModulePopUpActions(Vector v, Object o) {
-        return null;
-    }
-
+  /**
+   * @see org.argouml.application.api.ArgoModule#getModulePopUpActions( java.util.Vector,
+   *     java.lang.Object)
+   */
+  public Vector getModulePopUpActions(Vector v, Object o) {
+    return null;
+  }
 }
-

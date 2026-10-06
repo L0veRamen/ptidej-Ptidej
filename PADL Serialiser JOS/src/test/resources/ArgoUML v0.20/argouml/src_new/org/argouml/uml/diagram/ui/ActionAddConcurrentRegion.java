@@ -22,14 +22,12 @@
 // CALIFORNIA HAS NO OBLIGATIONS TO PROVIDE MAINTENANCE, SUPPORT,
 // UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
-
 package org.argouml.uml.diagram.ui;
 
 import java.awt.Color;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.util.Vector;
-
 import org.apache.log4j.Logger;
 import org.argouml.model.Model;
 import org.argouml.ui.targetmanager.TargetManager;
@@ -52,131 +50,118 @@ import org.tigris.gef.presentation.Fig;
  */
 public class ActionAddConcurrentRegion extends UMLAction {
 
-    ////////////////////////////////////////////////////////////////
-    // static variables
+  ////////////////////////////////////////////////////////////////
+  // static variables
 
-	/** logger */
-    private static final Logger LOG =
-        Logger.getLogger(ActionAddConcurrentRegion.class);
+  /** logger */
+  private static final Logger LOG = Logger.getLogger(ActionAddConcurrentRegion.class);
 
-    private static ActionAddConcurrentRegion singleton =
-        new ActionAddConcurrentRegion();
+  private static ActionAddConcurrentRegion singleton = new ActionAddConcurrentRegion();
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    private ActionAddConcurrentRegion() {
-        super("action.add-concurrent-region", true, true);
+  private ActionAddConcurrentRegion() {
+    super("action.add-concurrent-region", true, true);
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // main methods
+
+  /**
+   * @see org.argouml.uml.ui.UMLAction#shouldBeEnabled()
+   */
+  public boolean shouldBeEnabled() {
+    int size = 0;
+    try {
+      Editor ce = Globals.curEditor();
+      Vector figs = ce.getSelectionManager().getFigs();
+      size = figs.size();
+    } catch (Exception e) {
     }
+    return super.shouldBeEnabled()
+        && (size > 0)
+        && (TargetManager.getInstance().getModelTargets().size() < 2);
+  }
 
-    ////////////////////////////////////////////////////////////////
-    // main methods
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    try {
+      /*Here the actions to divide a region*/
+      Fig f = (Fig) TargetManager.getInstance().getFigTarget();
 
-    /**
-     * @see org.argouml.uml.ui.UMLAction#shouldBeEnabled()
-     */
-    public boolean shouldBeEnabled() {
-        int size = 0;
-        try {
-            Editor ce = Globals.curEditor();
-            Vector figs = ce.getSelectionManager().getFigs();
-            size = figs.size();
-        } catch (Exception e) {
+      if (Model.getFacade().isAConcurrentRegion(f.getOwner())) f = f.getEnclosingFig();
+
+      Vector nodesInside;
+      nodesInside = ((Vector) f.getEnclosedFigs().clone());
+      Object st = f.getOwner();
+      Editor editor = Globals.curEditor();
+      GraphModel gm = editor.getGraphModel();
+      LayerDiagram lay = ((LayerDiagram) editor.getLayerManager().getActiveLayer());
+
+      Rectangle rName = ((FigNodeModelElement) f).getNameFig().getBounds();
+      Rectangle rFig = f.getBounds();
+      Fig encloser = null;
+      encloser = f;
+      if (!(gm instanceof MutableGraphModel)) return;
+
+      StateDiagramGraphModel mgm = (StateDiagramGraphModel) gm;
+
+      if (!Model.getFacade().isConcurrent(st)) {
+
+        Object region1 = Model.getStateMachinesFactory().buildCompositeState(st);
+        FigConcurrentRegion region =
+            new FigConcurrentRegion(
+                gm, region1, Color.white, rFig.width - 6, rFig.height - rName.height - 10);
+
+        region.setLocation(f.getX() + 3, f.getY() + rName.height + 5);
+        region.setEnclosingFig(encloser);
+        region.setLayer(lay);
+        lay.add(region);
+
+        if (mgm.canAddNode(region1)) {
+          mgm.getNodes().add(region1);
+          mgm.fireNodeAdded(region1);
         }
-        return super.shouldBeEnabled() && (size > 0)
-            && (TargetManager.getInstance().getModelTargets().size() < 2);
-    }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-        try {
-            /*Here the actions to divide a region*/
-            Fig f = (Fig) TargetManager.getInstance().getFigTarget();
-
-            if (Model.getFacade().isAConcurrentRegion(f.getOwner()))
-                f = f.getEnclosingFig();
-
-            Vector nodesInside;
-            nodesInside = ((Vector) f.getEnclosedFigs().clone());
-            Object st = f.getOwner();
-            Editor editor = Globals.curEditor();
-            GraphModel gm = editor.getGraphModel();
-            LayerDiagram lay =
-                ((LayerDiagram) editor.getLayerManager().getActiveLayer());
-
-            Rectangle rName =
-                ((FigNodeModelElement) f).getNameFig().getBounds();
-            Rectangle rFig = f.getBounds();
-            Fig encloser = null;
-            encloser = f;
-            if (!(gm instanceof MutableGraphModel))
-                  return;
-
-            StateDiagramGraphModel mgm = (StateDiagramGraphModel) gm;
-
-            if (!Model.getFacade().isConcurrent(st)) {
-
-                Object region1 =
-                    Model.getStateMachinesFactory().buildCompositeState(st);
-                FigConcurrentRegion region =
-                    new FigConcurrentRegion(gm, region1,
-                                            Color.white,
-                                            rFig.width - 6,
-                                            rFig.height - rName.height - 10);
-
-                region.setLocation(f.getX() + 3, f.getY() + rName.height + 5);
-                region.setEnclosingFig(encloser);
-                region.setLayer(lay);
-                lay.add(region);
-
-                if (mgm.canAddNode(region1)) {
-                    mgm.getNodes().add(region1);
-                    mgm.fireNodeAdded(region1);
-
-                }
-
-                if (!nodesInside.isEmpty()) {
-                    for (int i = 0; i < nodesInside.size(); i++) {
-                        FigStateVertex curFig =
-                            (FigStateVertex) nodesInside.elementAt(i);
-                        curFig.setEnclosingFig(region);
-                        curFig.redrawEnclosedFigs();
-                    }
-                }
-            }
-
-            Object region2 =
-                Model.getStateMachinesFactory().buildCompositeState(st);
-            FigConcurrentRegion regionNew =
-                new FigConcurrentRegion(gm, region2, Color.black,
-                        rFig.width - 6, 126);
-
-            regionNew.setLocation(f.getX() + 3, f.getY() + rFig.height - 1);
-
-            ((FigCompositeState) f).setBounds(rFig.height + 130);
-            regionNew.setEnclosingFig(encloser);
-            regionNew.setLayer(lay);
-            lay.add(regionNew);
-            editor.getSelectionManager().select(f);
-            if (mgm.canAddNode(region2)) {
-                mgm.getNodes().add(region2);
-                mgm.fireNodeAdded(region2);
-            }
-
-            Model.getStateMachinesHelper().setConcurrent(st, true);
-
-        } catch (Exception ex) {
-            LOG.error(ex);
+        if (!nodesInside.isEmpty()) {
+          for (int i = 0; i < nodesInside.size(); i++) {
+            FigStateVertex curFig = (FigStateVertex) nodesInside.elementAt(i);
+            curFig.setEnclosingFig(region);
+            curFig.redrawEnclosedFigs();
+          }
         }
-    }
+      }
 
-    /**
-     * @return Returns the singleton.
-     */
-    public static ActionAddConcurrentRegion getSingleton() {
-        return singleton;
-    }
+      Object region2 = Model.getStateMachinesFactory().buildCompositeState(st);
+      FigConcurrentRegion regionNew =
+          new FigConcurrentRegion(gm, region2, Color.black, rFig.width - 6, 126);
 
+      regionNew.setLocation(f.getX() + 3, f.getY() + rFig.height - 1);
+
+      ((FigCompositeState) f).setBounds(rFig.height + 130);
+      regionNew.setEnclosingFig(encloser);
+      regionNew.setLayer(lay);
+      lay.add(regionNew);
+      editor.getSelectionManager().select(f);
+      if (mgm.canAddNode(region2)) {
+        mgm.getNodes().add(region2);
+        mgm.fireNodeAdded(region2);
+      }
+
+      Model.getStateMachinesHelper().setConcurrent(st, true);
+
+    } catch (Exception ex) {
+      LOG.error(ex);
+    }
+  }
+
+  /**
+   * @return Returns the singleton.
+   */
+  public static ActionAddConcurrentRegion getSingleton() {
+    return singleton;
+  }
 }

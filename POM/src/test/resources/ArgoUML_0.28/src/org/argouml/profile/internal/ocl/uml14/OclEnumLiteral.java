@@ -28,41 +28,41 @@ import org.argouml.model.Model;
 
 /**
  * Represents an OCL enumeration literal
- * 
+ *
  * @author maurelio1234
  */
 public class OclEnumLiteral {
 
-    private String name;
-    
-    /**
-     * Default Constructor
-     * 
-     * @param literalName name of the literal
-     */
-    public OclEnumLiteral(String literalName) {
-        this.name = literalName;
+  private String name;
+
+  /**
+   * Default Constructor
+   *
+   * @param literalName name of the literal
+   */
+  public OclEnumLiteral(String literalName) {
+    this.name = literalName;
+  }
+
+  /*
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  public boolean equals(Object obj) {
+    if (obj instanceof OclEnumLiteral) {
+      return name.equals(((OclEnumLiteral) obj).name);
+    } else if (Model.getFacade().isAEnumerationLiteral(obj)) {
+      return name.equals(Model.getFacade().getName(obj));
+    } else {
+      return false;
     }
-   
-    /*
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    public boolean equals(Object obj) {
-        if (obj instanceof OclEnumLiteral) {
-            return name.equals(((OclEnumLiteral) obj).name);
-        } else if (Model.getFacade().isAEnumerationLiteral(obj)) {
-            return name.equals(Model.getFacade().getName(obj));
-        } else {
-            return false;
-        }
-    }
-    
-    /*
-     * @see java.lang.Object#hashCode()
-     */
-    public int hashCode() {
-        // TODO how to implement this method properly?
-        
-        return name.hashCode();
-    }
+  }
+
+  /*
+   * @see java.lang.Object#hashCode()
+   */
+  public int hashCode() {
+    // TODO how to implement this method properly?
+
+    return name.hashCode();
+  }
 }

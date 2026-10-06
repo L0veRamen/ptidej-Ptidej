@@ -28,12 +28,10 @@ import java.awt.Component;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.text.MessageFormat;
-
 import javax.swing.Action;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
-
 import org.apache.log4j.Logger;
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.i18n.Translator;
@@ -51,185 +49,171 @@ import org.tigris.gef.presentation.FigTextEditor;
 import org.tigris.gef.undo.UndoableAction;
 
 /**
- * Action for removing objects from the model. 
- * Objects can be Modelelements, Diagrams (argodiagram and it's children),
- * Figs without owner,... <p>
+ * Action for removing objects from the model. Objects can be Modelelements, Diagrams (argodiagram
+ * and it's children), Figs without owner,...
+ *
+ * <p>
  */
 public class ActionDeleteModelElements extends UndoableAction {
 
-    /**
-     * Generated serial version for rev 1.4
-     */
-    private static final long serialVersionUID = -5728400220151823726L;
-    
-    private static final Logger LOG =
-        Logger.getLogger(ActionDeleteModelElements.class);
+  /** Generated serial version for rev 1.4 */
+  private static final long serialVersionUID = -5728400220151823726L;
 
-    /**
-     * Constructor.
-     */
-    public ActionDeleteModelElements() {
-        super(Translator.localize("action.delete-from-model"),
-                ResourceLoaderWrapper.lookupIcon("action.delete-from-model"));
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize("action.delete-from-model"));
-        putValue(Action.SMALL_ICON,
-                ResourceLoaderWrapper.lookupIcon("Delete"));
+  private static final Logger LOG = Logger.getLogger(ActionDeleteModelElements.class);
+
+  /** Constructor. */
+  public ActionDeleteModelElements() {
+    super(
+        Translator.localize("action.delete-from-model"),
+        ResourceLoaderWrapper.lookupIcon("action.delete-from-model"));
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize("action.delete-from-model"));
+    putValue(Action.SMALL_ICON, ResourceLoaderWrapper.lookupIcon("Delete"));
+  }
+
+  /**
+   * Deletes the selected target.
+   *
+   * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    super.actionPerformed(ae);
+    KeyboardFocusManager focusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+    Component focusOwner = focusManager.getFocusOwner();
+    if (focusOwner instanceof FigTextEditor) {
+      // TODO: Probably really want to cancel editing
+      // ((FigTextEditor) focusOwner).cancelEditing();
+      ((FigTextEditor) focusOwner).endEditing();
+    } else if (focusOwner instanceof JTable) {
+      JTable table = (JTable) focusOwner;
+      if (table.isEditing()) {
+        TableCellEditor ce = table.getCellEditor();
+        if (ce != null) {
+          ce.cancelCellEditing();
+        }
+      }
     }
 
-    /**
-     * Deletes the selected target.
-     * 
-     * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-        super.actionPerformed(ae);
-        KeyboardFocusManager focusManager =
-            KeyboardFocusManager.getCurrentKeyboardFocusManager();
-        Component focusOwner = focusManager.getFocusOwner();
-        if (focusOwner instanceof FigTextEditor) {
-            // TODO: Probably really want to cancel editing
-            //((FigTextEditor) focusOwner).cancelEditing();
-            ((FigTextEditor) focusOwner).endEditing();
-        } else if (focusOwner instanceof JTable) {
-            JTable table = (JTable) focusOwner;
-            if (table.isEditing()) {
-                TableCellEditor ce = table.getCellEditor();
-                if (ce != null) {
-                    ce.cancelCellEditing();
-                }
-            }
+    Project p = ProjectManager.getManager().getCurrentProject();
+    Object[] targets = TargetManager.getInstance().getTargets().toArray();
+    /* This next line fixes issue 4276: */
+    TargetManager.getInstance().setTarget(null);
+    Object target = null;
+    for (int i = targets.length - 1; i >= 0; i--) {
+      target = targets[i];
+      try {
+        if (sureRemove(target)) {
+          // remove from the model
+          if (target instanceof Fig) {
+            target = ((Fig) target).getOwner();
+          }
+          if (Model.getFacade().isAConcurrentRegion(target)) {
+            new ActionDeleteConcurrentRegion().actionPerformed(ae);
+          } else {
+            p.moveToTrash(target);
+          }
         }
-
-        Project p = ProjectManager.getManager().getCurrentProject();
-        Object[] targets = TargetManager.getInstance().getTargets().toArray();
-        /* This next line fixes issue 4276: */
-        TargetManager.getInstance().setTarget(null);
-        Object target = null;
-        for (int i = targets.length - 1; i >= 0; i--) {
-            target = targets[i];
-            try {
-                if (sureRemove(target)) {
-                    // remove from the model
-                    if (target instanceof Fig) {
-                        target = ((Fig) target).getOwner();
-                    }
-                    if (Model.getFacade().isAConcurrentRegion(target)) {
-                        new ActionDeleteConcurrentRegion()
-                            .actionPerformed(ae);
-                    } else {
-                        p.moveToTrash(target);
-                    }
-                }
-            } catch (InvalidElementException e) {
-                LOG.debug("Model element deleted twice - ignoring 2nd delete");
-            }
-        }
+      } catch (InvalidElementException e) {
+        LOG.debug("Model element deleted twice - ignoring 2nd delete");
+      }
     }
+  }
 
-    /**
-     * A utility method that asks the user if he is sure to remove the selected
-     * target.<p>
-     *
-     * @param target the object that will be removed
-     * @return boolean
-     */
-    public static boolean sureRemove(Object target) {
-        // usage of other sureRemove method is legacy. They should be
-        // integrated.
-        boolean sure = false;
-        if (Model.getFacade().isAModelElement(target)) {
-            sure = sureRemoveModelElement(target);
-        } else if (target instanceof UMLDiagram) {
-            // lets see if this diagram has some figs on it
-            UMLDiagram diagram = (UMLDiagram) target;
-            if (diagram.getNodes().size() + diagram.getEdges().size() != 0) {
-                // the diagram contains figs so lets ask the user if
-                // he/she is sure
-                String confirmStr =
-                    MessageFormat.format(Translator.localize(
-                        "optionpane.remove-from-model-confirm-delete"),
-                        new Object[] {
-                            diagram.getName(), "",
-                        });
-                String text =
-                    Translator.localize(
-                        "optionpane.remove-from-model-confirm-delete-title");
-                int response =
-                    JOptionPane.showConfirmDialog(ArgoFrame.getInstance(),
-                          confirmStr,
-                          text,
-                          JOptionPane.YES_NO_OPTION);
-                sure = (response == JOptionPane.YES_OPTION);
-            } else { // no content of diagram
-                sure = true;
-            }
-        } else if (target instanceof Fig) {
-            // we can delete figs like figrects now too
-            if (Model.getFacade().isAModelElement(((Fig) target).getOwner())) {
-                sure = sureRemoveModelElement(((Fig) target).getOwner());
-            } else {
-                sure = true;
-            }
-        } else if (target instanceof CommentEdge) {
-            // we can delete CommentEdge now too thanks to issue 3643.
-            sure = true;
-        }
-        return sure;
-    }
-
-    /**
-     * An utility method that asks the user if he is sure to remove a selected
-     * model element.
-     *
-     * @param me the modelelement that may be removed
-     * @return boolean
-     */
-    protected static boolean sureRemoveModelElement(Object me) {
-        Project p = ProjectManager.getManager().getCurrentProject();
-
-        int count = p.getPresentationCountFor(me);
-
-        boolean doAsk = false;
-        String confirmStr = "";
-        if (count > 1) {
-            confirmStr += Translator.localize(
-                "optionpane.remove-from-model-will-remove-from-diagrams");
-            doAsk = true;
-        }
-
-        /* TODO: If a namespace with sub-classdiagrams is deleted, then { 
-            confirmStr +=
-                Translator.localize(
-                    "optionpane.remove-from-model-will-remove-subdiagram");
-            doAsk = true;
-        }*/
-
-        if (!doAsk) {
-            return true;
-        }
-
-        String name = Model.getFacade().getName(me);
-        if (name == null || name.equals("")) {
-            name = Translator.localize(
-                "optionpane.remove-from-model-anon-element-name");
-        }
-
-        confirmStr =
-            MessageFormat.format(Translator.localize(
-                "optionpane.remove-from-model-confirm-delete"),
+  /**
+   * A utility method that asks the user if he is sure to remove the selected target.
+   *
+   * <p>
+   *
+   * @param target the object that will be removed
+   * @return boolean
+   */
+  public static boolean sureRemove(Object target) {
+    // usage of other sureRemove method is legacy. They should be
+    // integrated.
+    boolean sure = false;
+    if (Model.getFacade().isAModelElement(target)) {
+      sure = sureRemoveModelElement(target);
+    } else if (target instanceof UMLDiagram) {
+      // lets see if this diagram has some figs on it
+      UMLDiagram diagram = (UMLDiagram) target;
+      if (diagram.getNodes().size() + diagram.getEdges().size() != 0) {
+        // the diagram contains figs so lets ask the user if
+        // he/she is sure
+        String confirmStr =
+            MessageFormat.format(
+                Translator.localize("optionpane.remove-from-model-confirm-delete"),
                 new Object[] {
-                    name, confirmStr,
+                  diagram.getName(), "",
                 });
+        String text = Translator.localize("optionpane.remove-from-model-confirm-delete-title");
         int response =
             JOptionPane.showConfirmDialog(
-                    ArgoFrame.getInstance(),
-                    confirmStr,
-                    Translator.localize(
-                    "optionpane.remove-from-model-confirm-delete-title"),
-                    JOptionPane.YES_NO_OPTION);
-
-        return (response == JOptionPane.YES_OPTION);
+                ArgoFrame.getInstance(), confirmStr, text, JOptionPane.YES_NO_OPTION);
+        sure = (response == JOptionPane.YES_OPTION);
+      } else { // no content of diagram
+        sure = true;
+      }
+    } else if (target instanceof Fig) {
+      // we can delete figs like figrects now too
+      if (Model.getFacade().isAModelElement(((Fig) target).getOwner())) {
+        sure = sureRemoveModelElement(((Fig) target).getOwner());
+      } else {
+        sure = true;
+      }
+    } else if (target instanceof CommentEdge) {
+      // we can delete CommentEdge now too thanks to issue 3643.
+      sure = true;
     }
+    return sure;
+  }
+
+  /**
+   * An utility method that asks the user if he is sure to remove a selected model element.
+   *
+   * @param me the modelelement that may be removed
+   * @return boolean
+   */
+  protected static boolean sureRemoveModelElement(Object me) {
+    Project p = ProjectManager.getManager().getCurrentProject();
+
+    int count = p.getPresentationCountFor(me);
+
+    boolean doAsk = false;
+    String confirmStr = "";
+    if (count > 1) {
+      confirmStr += Translator.localize("optionpane.remove-from-model-will-remove-from-diagrams");
+      doAsk = true;
+    }
+
+    /* TODO: If a namespace with sub-classdiagrams is deleted, then {
+        confirmStr +=
+            Translator.localize(
+                "optionpane.remove-from-model-will-remove-subdiagram");
+        doAsk = true;
+    }*/
+
+    if (!doAsk) {
+      return true;
+    }
+
+    String name = Model.getFacade().getName(me);
+    if (name == null || name.equals("")) {
+      name = Translator.localize("optionpane.remove-from-model-anon-element-name");
+    }
+
+    confirmStr =
+        MessageFormat.format(
+            Translator.localize("optionpane.remove-from-model-confirm-delete"),
+            new Object[] {
+              name, confirmStr,
+            });
+    int response =
+        JOptionPane.showConfirmDialog(
+            ArgoFrame.getInstance(),
+            confirmStr,
+            Translator.localize("optionpane.remove-from-model-confirm-delete-title"),
+            JOptionPane.YES_NO_OPTION);
+
+    return (response == JOptionPane.YES_OPTION);
+  }
 } /* end class ActionRemoveFromModel */

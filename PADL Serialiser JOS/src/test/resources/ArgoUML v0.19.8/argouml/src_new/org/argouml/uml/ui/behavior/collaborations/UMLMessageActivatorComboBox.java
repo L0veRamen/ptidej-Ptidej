@@ -25,43 +25,40 @@
 package org.argouml.uml.ui.behavior.collaborations;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLComboBox2;
 import org.argouml.uml.ui.UMLComboBoxModel2;
 import org.argouml.uml.ui.UMLListCellRenderer2;
 import org.argouml.uml.ui.UMLUserInterfaceContainer;
+
 /**
- * The combobox for activators on the message proppanel. The only reason this
- * combobox implements melementlistener is to conform to UMLChangeDispatch. The
- * combobox serves as a proxy for the
- * model (UMLMessageActivatorComboBoxModel). Kind of strange...
+ * The combobox for activators on the message proppanel. The only reason this combobox implements
+ * melementlistener is to conform to UMLChangeDispatch. The combobox serves as a proxy for the model
+ * (UMLMessageActivatorComboBoxModel). Kind of strange...
  */
 public class UMLMessageActivatorComboBox extends UMLComboBox2 {
 
-    /**
-     * Constructor for UMLMessageActivatorComboBox.
-     * @param container the UI container
-     * @param arg0 the model
-     */
-    public UMLMessageActivatorComboBox(
-        UMLUserInterfaceContainer container,
-        UMLComboBoxModel2 arg0) {
-        // TODO: This super constructor has been deprecated
-        super(arg0);
-        setRenderer(new UMLListCellRenderer2(true));
-    }
+  /**
+   * Constructor for UMLMessageActivatorComboBox.
+   *
+   * @param container the UI container
+   * @param arg0 the model
+   */
+  public UMLMessageActivatorComboBox(UMLUserInterfaceContainer container, UMLComboBoxModel2 arg0) {
+    // TODO: This super constructor has been deprecated
+    super(arg0);
+    setRenderer(new UMLListCellRenderer2(true));
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLComboBox2#doIt(ActionEvent)
-     */
-    protected void doIt(ActionEvent event) {
-        Object o = getModel().getElementAt(getSelectedIndex());
-        Object activator = /*(MMessage)*/ o;
-        Object mes = /*(MMessage)*/ getTarget();
-        if (activator != Model.getFacade().getActivator(mes)) {
-            Model.getCollaborationsHelper().setActivator(mes, activator);
-        }
+  /**
+   * @see org.argouml.uml.ui.UMLComboBox2#doIt(ActionEvent)
+   */
+  protected void doIt(ActionEvent event) {
+    Object o = getModel().getElementAt(getSelectedIndex());
+    Object activator = /*(MMessage)*/ o;
+    Object mes = /*(MMessage)*/ getTarget();
+    if (activator != Model.getFacade().getActivator(mes)) {
+      Model.getCollaborationsHelper().setActivator(mes, activator);
     }
-
+  }
 }

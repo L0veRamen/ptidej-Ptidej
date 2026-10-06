@@ -24,43 +24,33 @@
 
 package org.argouml.cognitive.checklist;
 
-
 /**
- * A list of CheckItems that the designer has marked off as already
- * considered.  In the ArgoUML system, this determines which items
- * in the TabChecklist have checkmarks.
- * <p>
- * The only difference between this class and its superclass is that
- * adds are counted (but there is no access to the counter, so it apparently
- * is only for debugging purposes).
+ * A list of CheckItems that the designer has marked off as already considered. In the ArgoUML
+ * system, this determines which items in the TabChecklist have checkmarks.
+ *
+ * <p>The only difference between this class and its superclass is that adds are counted (but there
+ * is no access to the counter, so it apparently is only for debugging purposes).
  *
  * @see org.argouml.cognitive.checklist.ui.TabChecklist
  * @author Jason Robbins
  */
 public class ChecklistStatus extends Checklist {
 
-    private static int numChecks = 0;
+  private static int numChecks = 0;
 
-    /**
-     * The constructor.
-     *
-     */
-    public ChecklistStatus() { 
-        super();
-    }
+  /** The constructor. */
+  public ChecklistStatus() {
+    super();
+  }
 
-
-    /**
-     * @param item the item to be checkmarked
-     * @return true
-     */
-    @Override
-    public boolean add(CheckItem item) {
-        super.add(item);
-        numChecks++;
-        return true;
-    }
-    
-
-} 
-
+  /**
+   * @param item the item to be checkmarked
+   * @return true
+   */
+  @Override
+  public boolean add(CheckItem item) {
+    super.add(item);
+    numChecks++;
+    return true;
+  }
+}

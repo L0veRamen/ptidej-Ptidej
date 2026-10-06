@@ -11,45 +11,42 @@
 
 package org.jhotdraw.contrib;
 
-import org.jhotdraw.framework.DrawingView;
 import java.util.EventObject;
+import org.jhotdraw.framework.DrawingView;
 
 /**
- * @author  C.L.Gilbert <dnoyeb@users.sourceforge.net>
+ * @author C.L.Gilbert <dnoyeb@users.sourceforge.net>
  * @version <$CURRENT_VERSION$>
  */
 public class DesktopEvent extends EventObject {
-	private DrawingView myDrawingView;
+  private DrawingView myDrawingView;
 
-	/**
-	 * Some events require the previous DrawingView (e.g. when a new DrawingView
-	 * is selected).
-	 */	
-	private DrawingView myPreviousDrawingView;
+  /** Some events require the previous DrawingView (e.g. when a new DrawingView is selected). */
+  private DrawingView myPreviousDrawingView;
 
-	public DesktopEvent(Desktop newSource, DrawingView newDrawingView) {
-		this(newSource, newDrawingView, null);
-	}
+  public DesktopEvent(Desktop newSource, DrawingView newDrawingView) {
+    this(newSource, newDrawingView, null);
+  }
 
-	public DesktopEvent(Desktop newSource, DrawingView newDrawingView, DrawingView newPreviousDV) {
-		super(newSource);
-		setDrawingView(newDrawingView);
-		setPreviousDrawingView(newPreviousDV);
-	}
+  public DesktopEvent(Desktop newSource, DrawingView newDrawingView, DrawingView newPreviousDV) {
+    super(newSource);
+    setDrawingView(newDrawingView);
+    setPreviousDrawingView(newPreviousDV);
+  }
 
-	private void setDrawingView(DrawingView newDrawingView) {
-		myDrawingView = newDrawingView;
-	}
-	
-	public DrawingView getDrawingView() {
-	    return myDrawingView;
-	}
+  private void setDrawingView(DrawingView newDrawingView) {
+    myDrawingView = newDrawingView;
+  }
 
-	private void setPreviousDrawingView(DrawingView newPreviousDrawingView) {
-		myPreviousDrawingView = newPreviousDrawingView;
-	}
-	
-	public DrawingView getPreviousDrawingView() {
-		return myPreviousDrawingView;
-	}
+  public DrawingView getDrawingView() {
+    return myDrawingView;
+  }
+
+  private void setPreviousDrawingView(DrawingView newPreviousDrawingView) {
+    myPreviousDrawingView = newPreviousDrawingView;
+  }
+
+  public DrawingView getPreviousDrawingView() {
+    return myPreviousDrawingView;
+  }
 }

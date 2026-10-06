@@ -25,76 +25,63 @@
 package org.argouml.uml.ui.foundation.core;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.JRadioButton;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLAction;
 import org.argouml.uml.ui.UMLRadioButtonPanel;
 
 /**
- *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 4, 2003
  */
 public class ActionSetAssociationEndAggregation extends UMLAction {
 
-    private static final ActionSetAssociationEndAggregation SINGLETON =
-	new ActionSetAssociationEndAggregation();
+  private static final ActionSetAssociationEndAggregation SINGLETON =
+      new ActionSetAssociationEndAggregation();
 
-    /**
-     * AGGREGATE_COMMAND defines an aggregation kind.
-     */
-    public static final String AGGREGATE_COMMAND = "aggregate";
+  /** AGGREGATE_COMMAND defines an aggregation kind. */
+  public static final String AGGREGATE_COMMAND = "aggregate";
 
-    /**
-     * COMPOSITE_COMMAND defines an aggregation kind.
-     */
-    public static final String COMPOSITE_COMMAND = "composite";
+  /** COMPOSITE_COMMAND defines an aggregation kind. */
+  public static final String COMPOSITE_COMMAND = "composite";
 
-    /**
-     * NONE_COMMAND defines an aggregation kind.
-     */
-    public static final String NONE_COMMAND = "none";
+  /** NONE_COMMAND defines an aggregation kind. */
+  public static final String NONE_COMMAND = "none";
 
-    /**
-     * Constructor for ActionSetElementOwnershipSpecification.
-     */
-    protected ActionSetAssociationEndAggregation() {
-        super(Translator.localize("action.set"), true, NO_ICON);
-    }
+  /** Constructor for ActionSetElementOwnershipSpecification. */
+  protected ActionSetAssociationEndAggregation() {
+    super(Translator.localize("action.set"), true, NO_ICON);
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        if (e.getSource() instanceof JRadioButton) {
-            JRadioButton source = (JRadioButton) e.getSource();
-            String actionCommand = source.getActionCommand();
-            Object target = ((UMLRadioButtonPanel) source.getParent())
-                .getTarget();
-            if (Model.getFacade().isAAssociationEnd(target)) {
-                Object m = /*(MAssociationEnd)*/ target;
-                Object/*MAggregationKind*/ kind = null;
-                if (actionCommand.equals(AGGREGATE_COMMAND)) {
-                    kind = Model.getAggregationKind().getAggregate();
-                } else if (actionCommand.equals(COMPOSITE_COMMAND)) {
-                    kind = Model.getAggregationKind().getComposite();
-                } else {
-                    kind = Model.getAggregationKind().getNone();
-                }
-                Model.getCoreHelper().setAggregation(m, kind);
-            }
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    if (e.getSource() instanceof JRadioButton) {
+      JRadioButton source = (JRadioButton) e.getSource();
+      String actionCommand = source.getActionCommand();
+      Object target = ((UMLRadioButtonPanel) source.getParent()).getTarget();
+      if (Model.getFacade().isAAssociationEnd(target)) {
+        Object m = /*(MAssociationEnd)*/ target;
+        Object /*MAggregationKind*/ kind = null;
+        if (actionCommand.equals(AGGREGATE_COMMAND)) {
+          kind = Model.getAggregationKind().getAggregate();
+        } else if (actionCommand.equals(COMPOSITE_COMMAND)) {
+          kind = Model.getAggregationKind().getComposite();
+        } else {
+          kind = Model.getAggregationKind().getNone();
         }
+        Model.getCoreHelper().setAggregation(m, kind);
+      }
     }
+  }
 
-    /**
-     * @return Returns the SINGLETON.
-     */
-    public static ActionSetAssociationEndAggregation getInstance() {
-        return SINGLETON;
-    }
-
+  /**
+   * @return Returns the SINGLETON.
+   */
+  public static ActionSetAssociationEndAggregation getInstance() {
+    return SINGLETON;
+  }
 }

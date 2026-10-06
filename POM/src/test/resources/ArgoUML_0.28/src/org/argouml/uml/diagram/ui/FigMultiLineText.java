@@ -25,59 +25,57 @@
 package org.argouml.uml.diagram.ui;
 
 import java.awt.Rectangle;
-
 import org.argouml.uml.diagram.DiagramSettings;
 import org.tigris.gef.presentation.FigText;
 
 /**
- * A MultiLine FigText to provide consistency across Figs displaying multiple
- * lines of text.
- * By default -
+ * A MultiLine FigText to provide consistency across Figs displaying multiple lines of text. By
+ * default -
+ *
  * <ul>
- * <li>Text is black
- * <li>The display area is transparent
- * <li>Text is left justified
- * <li>There is no line border
+ *   <li>Text is black
+ *   <li>The display area is transparent
+ *   <li>Text is left justified
+ *   <li>There is no line border
  * </ul>
  *
  * @author Bob Tarling
  */
 public class FigMultiLineText extends ArgoFigText {
 
-    /**
-     * @see org.tigris.gef.presentation.FigText#FigText(
-     *         int, int, int, int, boolean)
-     * @deprecated for 0.27.3 by tfmorris. Use
-     *  {@link #FigMultiLineText(Object, Rectangle, DiagramSettings, boolean)}.
-     */
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    public FigMultiLineText(int x, int y, int w, int h, boolean expandOnly) {
-        super(x, y, w, h, expandOnly);
-        initFigs();
-    }
+  /**
+   * @see org.tigris.gef.presentation.FigText#FigText( int, int, int, int, boolean)
+   * @deprecated for 0.27.3 by tfmorris. Use {@link #FigMultiLineText(Object, Rectangle,
+   *     DiagramSettings, boolean)}.
+   */
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  public FigMultiLineText(int x, int y, int w, int h, boolean expandOnly) {
+    super(x, y, w, h, expandOnly);
+    initFigs();
+  }
 
-    private void initFigs() {
-        setTextColor(TEXT_COLOR);
-        setReturnAction(FigText.INSERT);
-        setLineSeparator("\n");
-        setTabAction(FigText.END_EDITING);
-        setJustification(FigText.JUSTIFY_LEFT);
-        setFilled(false);
-        setLineWidth(0);
-    }
-    
-    /**
-     * Create a multi line text Fig
-     * 
-     * @param owner owning UML element
-     * @param bounds position and size
-     * @param settings render settings
-     * @param expandOnly true if fig should expand, but never contract
-     */
-    public FigMultiLineText(Object owner, Rectangle bounds,
-            DiagramSettings settings, boolean expandOnly) {
-        super(owner, bounds, settings, expandOnly);
-        initFigs();
-    }
+  private void initFigs() {
+    setTextColor(TEXT_COLOR);
+    setReturnAction(FigText.INSERT);
+    setLineSeparator("\n");
+    setTabAction(FigText.END_EDITING);
+    setJustification(FigText.JUSTIFY_LEFT);
+    setFilled(false);
+    setLineWidth(0);
+  }
+
+  /**
+   * Create a multi line text Fig
+   *
+   * @param owner owning UML element
+   * @param bounds position and size
+   * @param settings render settings
+   * @param expandOnly true if fig should expand, but never contract
+   */
+  public FigMultiLineText(
+      Object owner, Rectangle bounds, DiagramSettings settings, boolean expandOnly) {
+    super(owner, bounds, settings, expandOnly);
+    initFigs();
+  }
 }

@@ -26,65 +26,66 @@ package org.argouml.profile.internal.ocl;
 
 import org.apache.log4j.Logger;
 import org.argouml.model.Model;
-
 import tudresden.ocl.parser.analysis.DepthFirstAdapter;
 import tudresden.ocl.parser.node.AClassifierContext;
 import tudresden.ocl.parser.node.APostStereotype;
 import tudresden.ocl.parser.node.APreStereotype;
 
 /**
- * Checks the context clause of the OCL expression to verify if it is applicable
- * to the given model element.
- * 
+ * Checks the context clause of the OCL expression to verify if it is applicable to the given model
+ * element.
+ *
  * @author maurelio1234
  */
 public class ContextApplicable extends DepthFirstAdapter {
 
-    private static final Logger LOG = Logger.getLogger(ContextApplicable.class);
+  private static final Logger LOG = Logger.getLogger(ContextApplicable.class);
 
-    private boolean applicable = true;
+  private boolean applicable = true;
 
-    private Object modelElement;
+  private Object modelElement;
 
-    /**
-     * Constructors
-     * 
-     * @param element the model element
-     */
-    public ContextApplicable(Object element) {
-        this.modelElement = element;
-    }
+  /**
+   * Constructors
+   *
+   * @param element the model element
+   */
+  public ContextApplicable(Object element) {
+    this.modelElement = element;
+  }
 
-    /**
-     * @return Returns the applicable.
-     */
-    public boolean isApplicable() {
-        return applicable;
-    }
+  /**
+   * @return Returns the applicable.
+   */
+  public boolean isApplicable() {
+    return applicable;
+  }
 
-    /**
-     * @param node
-     * @see tudresden.ocl.parser.analysis.DepthFirstAdapter#caseAClassifierContext(tudresden.ocl.parser.node.AClassifierContext)
-     */
-    public void caseAClassifierContext(AClassifierContext node) {
-        String metaclass = ("" + node.getPathTypeName()).trim();
-        applicable &= Model.getFacade().isA(metaclass, modelElement);
-    }
+  /**
+   * @param node
+   * @see
+   *     tudresden.ocl.parser.analysis.DepthFirstAdapter#caseAClassifierContext(tudresden.ocl.parser.node.AClassifierContext)
+   */
+  public void caseAClassifierContext(AClassifierContext node) {
+    String metaclass = ("" + node.getPathTypeName()).trim();
+    applicable &= Model.getFacade().isA(metaclass, modelElement);
+  }
 
-    /**
-     * @param node
-     * @see tudresden.ocl.parser.analysis.DepthFirstAdapter#inAPreStereotype(tudresden.ocl.parser.node.APreStereotype)
-     */
-    public void inAPreStereotype(APreStereotype node) {
-        applicable = false;
-    }
+  /**
+   * @param node
+   * @see
+   *     tudresden.ocl.parser.analysis.DepthFirstAdapter#inAPreStereotype(tudresden.ocl.parser.node.APreStereotype)
+   */
+  public void inAPreStereotype(APreStereotype node) {
+    applicable = false;
+  }
 
-    /**
-     * @param node
-     * @see tudresden.ocl.parser.analysis.DepthFirstAdapter#inAPostStereotype(tudresden.ocl.parser.node.APostStereotype)
-     */
-    public void inAPostStereotype(APostStereotype node) {
-        applicable = false;
-    }
-
+  /**
+   * @param node
+   * @see
+   *     tudresden.ocl.parser.analysis.DepthFirstAdapter#inAPostStereotype(tudresden.ocl.parser.node.APostStereotype)
+   */
+  public void inAPostStereotype(APostStereotype node) {
+    applicable = false;
+  }
 }

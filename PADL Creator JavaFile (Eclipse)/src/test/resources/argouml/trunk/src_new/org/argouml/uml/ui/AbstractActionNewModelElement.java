@@ -26,7 +26,6 @@
 package org.argouml.uml.ui;
 
 import javax.swing.Action;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.i18n.Translator;
 import org.tigris.gef.undo.UndoableAction;
@@ -37,46 +36,41 @@ import org.tigris.gef.undo.UndoableAction;
  */
 public abstract class AbstractActionNewModelElement extends UndoableAction {
 
-    private Object/*MModelElement*/ target;
+  private Object /*MModelElement*/ target;
 
-    /**
-     * The constructor.
-     * Defaults to name "action.new", global and NO_ICON
-     */
-    protected AbstractActionNewModelElement() {
-        super(Translator.localize("action.new"), null);
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize("action.new"));
-    }
+  /** The constructor. Defaults to name "action.new", global and NO_ICON */
+  protected AbstractActionNewModelElement() {
+    super(Translator.localize("action.new"), null);
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize("action.new"));
+  }
 
-    /**
-     * The constructor.
-     *
-     * @param name the to be localized name of the action
-     */
-    protected AbstractActionNewModelElement(String name) {
-        super(Translator.localize(name), 
-                ResourceLoaderWrapper.lookupIcon(name));
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize(name));
-    }
+  /**
+   * The constructor.
+   *
+   * @param name the to be localized name of the action
+   */
+  protected AbstractActionNewModelElement(String name) {
+    super(Translator.localize(name), ResourceLoaderWrapper.lookupIcon(name));
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize(name));
+  }
 
-     /**
-     * Returns the target.
-     * @return MModelElement
-     */
-    public Object/*MModelElement*/ getTarget() {
-        return target;
-    }
+  /**
+   * Returns the target.
+   *
+   * @return MModelElement
+   */
+  public Object /*MModelElement*/ getTarget() {
+    return target;
+  }
 
-    /**
-     * Sets the target.
-     * @param theTarget The target to set
-     */
-    public void setTarget(Object theTarget) {
-        target = theTarget;
-    }
-
+  /**
+   * Sets the target.
+   *
+   * @param theTarget The target to set
+   */
+  public void setTarget(Object theTarget) {
+    target = theTarget;
+  }
 }

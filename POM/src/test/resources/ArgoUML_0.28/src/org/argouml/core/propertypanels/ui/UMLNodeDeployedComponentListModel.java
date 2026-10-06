@@ -28,32 +28,28 @@ import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
 /**
-* @author 5eichler
-*/
+ * @author 5eichler
+ */
 class UMLNodeDeployedComponentListModel extends UMLModelElementListModel2 {
-    
-    /**
-     * Construct a list model for the deployed components of a Node.
-     */
-    public UMLNodeDeployedComponentListModel() {
-        super("deployedComponent");
+
+  /** Construct a list model for the deployed components of a Node. */
+  public UMLNodeDeployedComponentListModel() {
+    super("deployedComponent");
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (Model.getFacade().isANode(getTarget())) {
+      setAllElements(Model.getFacade().getDeployedComponents(getTarget()));
     }
-    
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (Model.getFacade().isANode(getTarget())) {
-            setAllElements(
-                    Model.getFacade().getDeployedComponents(getTarget()));
-        }
-    }
-    
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object o) {
-        return (Model.getFacade().isAComponent(o));
-    }
-    
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object o) {
+    return (Model.getFacade().isAComponent(o));
+  }
 }

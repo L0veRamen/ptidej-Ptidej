@@ -26,155 +26,145 @@ package org.argouml.model;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-/**
- * Test that the Model class returns only
- * model implementation independent interfaces.
- */
+/** Test that the Model class returns only model implementation independent interfaces. */
 public class TestModel extends TestCase {
-    /**
-     * The method to test.
-     */
-    private Method savedMethod;
+  /** The method to test. */
+  private Method savedMethod;
 
-    /**
-     * @param arg0 The name of the test case.
-     */
-    public TestModel(String arg0) {
-        super(arg0);
+  /**
+   * @param arg0 The name of the test case.
+   */
+  public TestModel(String arg0) {
+    super(arg0);
+  }
+
+  /**
+   * Create a test for one of the methods in Model.
+   *
+   * @param modelMethod The method to test.
+   */
+  public TestModel(Method modelMethod) {
+    this(modelMethod.getName());
+    savedMethod = modelMethod;
+  }
+
+  /**
+   * @return the test suite
+   */
+  public static Test suite() {
+    TestSuite suite = new TestSuite("Tests for " + TestModel.class.getPackage().getName());
+
+    Method[] modelMethods = Model.class.getDeclaredMethods();
+
+    for (int i = 0; i < modelMethods.length; i++) {
+      Method modelMethod = modelMethods[i];
+
+      if (!Modifier.isPublic(modelMethod.getModifiers())) {
+        // This is a private method in Model.
+        continue;
+      }
+
+      suite.addTest(new TestModel(modelMethod));
     }
 
-    /**
-     * Create a test for one of the methods in Model.
-     *
-     * @param modelMethod The method to test.
-     */
-    public TestModel(Method modelMethod) {
-        this(modelMethod.getName());
-        savedMethod = modelMethod;
+    return suite;
+  }
+
+  /**
+   * Test each of the interfaces returned so that they don't contain any model implementation
+   * artifacts in any of their signatures.
+   */
+  public void testInterfaces() {}
+
+  /**
+   * Run the test for one method.
+   *
+   * @see junit.framework.TestCase#runTest()
+   */
+  public void runTest() {
+    assertTrue(
+        "The method " + savedMethod + "is not static",
+        Modifier.isStatic(savedMethod.getModifiers()));
+
+    Class factoryIF = savedMethod.getReturnType();
+
+    // Handling methods that doesn't return
+    if (factoryIF.isPrimitive() && factoryIF.getName().equals("void")) {
+      return;
     }
 
-    /**
-     * @return the test suite
-     */
-    public static Test suite() {
-	TestSuite suite =
-	    new TestSuite("Tests for "
-			  + TestModel.class.getPackage().getName());
-
-        Method[] modelMethods = Model.class.getDeclaredMethods();
-
-        for (int i = 0; i < modelMethods.length; i++) {
-            Method modelMethod = modelMethods[i];
-
-            if (!Modifier.isPublic(modelMethod.getModifiers())) {
-                // This is a private method in Model.
-                continue;
-            }
-
-	    suite.addTest(new TestModel(modelMethod));
-        }
-
-	return suite;
+    // Handling the isInitiated method
+    if (factoryIF.isPrimitive() && factoryIF.getName().equals("boolean")) {
+      return;
     }
 
-    /**
-     * Test each of the interfaces returned so that they don't contain any
-     * model implementation artifacts in any of their signatures.
-     */
-    public void testInterfaces() {
+    assertTrue(
+        "The return type from " + savedMethod + " must be an interface.", factoryIF.isInterface());
+
+    checkInterface(factoryIF);
+  }
+
+  /**
+   * Check that an interface obeys the rules.
+   *
+   * <p>This checks all extended interfaces recursively.
+   *
+   * <p>
+   *
+   * @param theInterface The interface to check.
+   */
+  private void checkInterface(Class theInterface) {
+    Method[] methods = theInterface.getDeclaredMethods();
+
+    for (int i = 0; i < methods.length; i++) {
+      Method method = methods[i];
+
+      assertTrue(
+          "The method " + method + " has invalid return type " + method.getReturnType(),
+          isValid(method.getReturnType()));
+
+      Class[] parameters = method.getParameterTypes();
+
+      for (int k = 0; k < parameters.length; k++) {
+        assertTrue(
+            "The method " + method + " has invalid parameter type " + parameters[k],
+            isValid(parameters[k]));
+      }
     }
 
+    Class[] inherited = theInterface.getInterfaces();
+    for (int i = 0; i < inherited.length; i++) {
+      checkInterface(inherited[i]);
+    }
+  }
 
-    /**
-     * Run the test for one method.
-     *
-     * @see junit.framework.TestCase#runTest()
-     */
-    public void runTest() {
-        assertTrue("The method " + savedMethod + "is not static",
-                Modifier.isStatic(savedMethod.getModifiers()));
+  /**
+   * Prefix identified as an implementation specific class. TODO: This should be generalized so it
+   * doesn't have to be changed each time a new implementation is created - tfm 20051109
+   */
+  private static final String UML_PATH_PREFIX;
 
-        Class factoryIF = savedMethod.getReturnType();
+  static {
+    UML_PATH_PREFIX = "org.omg.uml.";
+  }
 
-        // Handling methods that doesn't return
-        if (factoryIF.isPrimitive() && factoryIF.getName().equals("void")) {
-            return;
-        }
-
-        // Handling the isInitiated method
-        if (factoryIF.isPrimitive() && factoryIF.getName().equals("boolean")) {
-            return;
-        }
-
-        assertTrue("The return type from " + savedMethod
-                + " must be an interface.",
-                factoryIF.isInterface());
-
-        checkInterface(factoryIF);
+  /**
+   * Tells if a type is valid or not.
+   *
+   * @param cls The class to test.
+   * @return <code>true</code> if it is.
+   */
+  private boolean isValid(Class cls) {
+    int length = UML_PATH_PREFIX.length();
+    if (cls.getName().length() > length
+        && cls.getName().substring(0, length).equals(UML_PATH_PREFIX)) {
+      return false;
     }
 
-    /**
-     * Check that an interface obeys the rules.<p>
-     *
-     * This checks all extended interfaces recursively.<p>
-     *
-     * @param theInterface The interface to check.
-     */
-    private void checkInterface(Class theInterface) {
-        Method[] methods = theInterface.getDeclaredMethods();
-
-        for (int i = 0; i < methods.length; i++) {
-            Method method = methods[i];
-
-            assertTrue("The method " + method + " has invalid return type "
-                       + method.getReturnType(),
-                       isValid(method.getReturnType()));
-
-            Class[] parameters = method.getParameterTypes();
-
-            for (int k = 0; k < parameters.length; k++) {
-                assertTrue("The method " + method
-                           + " has invalid parameter type "
-                           + parameters[k],
-                           isValid(parameters[k]));
-            }
-        }
-
-        Class[] inherited = theInterface.getInterfaces();
-        for (int i = 0; i < inherited.length; i++) {
-            checkInterface(inherited[i]);
-        }
-    }
-
-    /**
-     * Prefix identified as an implementation specific class.
-     * TODO: This should be generalized so it doesn't have to be changed
-     * each time a new implementation is created - tfm 20051109
-     */
-    private static final String UML_PATH_PREFIX;
-
-    static {
-        UML_PATH_PREFIX = "org.omg.uml.";
-    }
-
-    /**
-     * Tells if a type is valid or not.
-     *
-     * @param cls The class to test.
-     * @return <code>true</code> if it is.
-     */
-    private boolean isValid(Class cls) {
-        int length = UML_PATH_PREFIX.length();
-        if (cls.getName().length() > length
-                && cls.getName().substring(0, length).equals(UML_PATH_PREFIX)) {
-            return false;
-        }
-
-        return true;
-    }
+    return true;
+  }
 }

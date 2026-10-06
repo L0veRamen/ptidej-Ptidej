@@ -28,30 +28,23 @@ import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLMultiplicityComboBoxModel;
 
 /**
- *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 6, 2003
  */
-public class UMLStructuralFeatureMultiplicityComboBoxModel
-    extends UMLMultiplicityComboBoxModel {
+public class UMLStructuralFeatureMultiplicityComboBoxModel extends UMLMultiplicityComboBoxModel {
 
-    /**
-     * Constructor for UMLStructuralFeatureMultiplicityComboBoxModel.
-     */
-    public UMLStructuralFeatureMultiplicityComboBoxModel() {
-        super("multiplicity");
+  /** Constructor for UMLStructuralFeatureMultiplicityComboBoxModel. */
+  public UMLStructuralFeatureMultiplicityComboBoxModel() {
+    super("multiplicity");
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
+   */
+  protected Object getSelectedModelElement() {
+    if (getTarget() != null && (Model.getFacade().isAStructuralFeature(getTarget()))) {
+      return Model.getFacade().toString(Model.getFacade().getMultiplicity(getTarget()));
     }
-
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
-     */
-    protected Object getSelectedModelElement() {
-        if (getTarget() != null
-                && (Model.getFacade().isAStructuralFeature(getTarget()))) {
-            return Model.getFacade().toString(
-                    Model.getFacade().getMultiplicity(getTarget()));
-        }
-        return null;
-    }
-
+    return null;
+  }
 }

@@ -25,15 +25,15 @@
 package org.argouml.model;
 
 /**
- * An interface to be implemented by the class responsible for managing
- * or delegating mementos.
+ * An interface to be implemented by the class responsible for managing or delegating mementos.
  *
  * @author Bob Tarling
  */
 public interface MementoCreationObserver {
-    /**
-     * Called whenever a memento is created by the model subsystem.
-     * @param memento the memento.
-     */
-    void mementoCreated(ModelMemento memento);
+  /**
+   * Called whenever a memento is created by the model subsystem.
+   *
+   * @param memento the memento.
+   */
+  void mementoCreated(ModelMemento memento);
 }

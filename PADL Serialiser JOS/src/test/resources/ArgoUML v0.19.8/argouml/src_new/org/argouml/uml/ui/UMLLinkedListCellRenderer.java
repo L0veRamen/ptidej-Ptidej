@@ -24,49 +24,48 @@
 
 // $Id: UMLLinkedListCellRenderer.java,v 1.2 2006/03/02 05:07:10 vauchers Exp $
 package org.argouml.uml.ui;
-import java.awt.Component;
 
+import java.awt.Component;
 import javax.swing.JLabel;
 import javax.swing.JList;
 
-
 /**
- * Renderer for linked lists. Should underline the cell but this does not work
- * yet.
+ * Renderer for linked lists. Should underline the cell but this does not work yet.
+ *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 2, 2003
  */
 public class UMLLinkedListCellRenderer extends UMLListCellRenderer2 {
 
-    /**
-     * Constructor for UMLLinkedListCellRenderer.
-     * @param showIcon true if the icon should be shown
-     */
-    public UMLLinkedListCellRenderer(boolean showIcon) {
-        super(showIcon);
-    }
+  /**
+   * Constructor for UMLLinkedListCellRenderer.
+   *
+   * @param showIcon true if the icon should be shown
+   */
+  public UMLLinkedListCellRenderer(boolean showIcon) {
+    super(showIcon);
+  }
 
-    /**
-     * @see javax.swing.ListCellRenderer#getListCellRendererComponent(
-     * javax.swing.JList, java.lang.Object, int, boolean, boolean)
-     */
-    public Component getListCellRendererComponent(JList list, Object value,
-            int index, boolean isSelected, boolean cellHasFocus) {
-        JLabel label = (JLabel) super.getListCellRendererComponent(
-                list, value, index, isSelected, cellHasFocus);
-        /*
-        label.setBackground(list.getBackground());
-        label.setForeground(list.getForeground());
-        label.setBorder(BorderFactory.createEmptyBorder());
-        if (isSelected) {
-            Font font = label.getFont();
-            Map textattributes = font.getAttributes();
-            textattributes.put(TextAttribute.WEIGHT,
-                TextAttribute.WEIGHT_EXTRABOLD);
-            label.setFont(font.deriveFont(textattributes));
-        }
-        */
-        return label;
+  /**
+   * @see javax.swing.ListCellRenderer#getListCellRendererComponent( javax.swing.JList,
+   *     java.lang.Object, int, boolean, boolean)
+   */
+  public Component getListCellRendererComponent(
+      JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+    JLabel label =
+        (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+    /*
+    label.setBackground(list.getBackground());
+    label.setForeground(list.getForeground());
+    label.setBorder(BorderFactory.createEmptyBorder());
+    if (isSelected) {
+        Font font = label.getFont();
+        Map textattributes = font.getAttributes();
+        textattributes.put(TextAttribute.WEIGHT,
+            TextAttribute.WEIGHT_EXTRABOLD);
+        label.setFont(font.deriveFont(textattributes));
     }
-
+    */
+    return label;
+  }
 }

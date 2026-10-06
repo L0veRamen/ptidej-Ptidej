@@ -14,65 +14,65 @@ package org.jhotdraw.util.collections.jdk11;
 import java.util.*;
 
 /**
- * @author  Wolfram Kaiser <mrfloppy@users.sourceforge.net>
+ * @author Wolfram Kaiser <mrfloppy@users.sourceforge.net>
  * @version <$CURRENT_VERSION$>
  */
 public class MapWrapper implements Map {
-	private Map myDelegee;
+  private Map myDelegee;
 
-	public MapWrapper() {
-		myDelegee = new Hashtable();
-	}
+  public MapWrapper() {
+    myDelegee = new Hashtable();
+  }
 
-	public MapWrapper(Map copyMap) {
-		myDelegee = new Hashtable(copyMap);
-	}
+  public MapWrapper(Map copyMap) {
+    myDelegee = new Hashtable(copyMap);
+  }
 
-	public int size() {
-		return myDelegee.size();
-	}
+  public int size() {
+    return myDelegee.size();
+  }
 
-	public boolean isEmpty() {
-		return myDelegee.isEmpty();
-	}
+  public boolean isEmpty() {
+    return myDelegee.isEmpty();
+  }
 
-	public boolean containsKey(Object key) {
-		return myDelegee.containsKey(key);
-	}
+  public boolean containsKey(Object key) {
+    return myDelegee.containsKey(key);
+  }
 
-	public boolean containsValue(Object value) {
-		return myDelegee.containsKey(value);
-	}
+  public boolean containsValue(Object value) {
+    return myDelegee.containsKey(value);
+  }
 
-	public Object get(Object key) {
-		return myDelegee.get(key);
-	}
+  public Object get(Object key) {
+    return myDelegee.get(key);
+  }
 
-	public Object put(Object key, Object value) {
-		return myDelegee.put(key, value);
-	}
+  public Object put(Object key, Object value) {
+    return myDelegee.put(key, value);
+  }
 
-	public Object remove(Object key) {
-		return myDelegee.remove(key);
-	}
+  public Object remove(Object key) {
+    return myDelegee.remove(key);
+  }
 
-	public void putAll(Map t) {
-		myDelegee.putAll(t);
-	}
+  public void putAll(Map t) {
+    myDelegee.putAll(t);
+  }
 
-	public void clear() {
-		myDelegee.clear();
-	}
+  public void clear() {
+    myDelegee.clear();
+  }
 
-	public Set keySet() {
-		return myDelegee.keySet();
-	}
+  public Set keySet() {
+    return myDelegee.keySet();
+  }
 
-	public Collection values() {
-		return myDelegee.values();
-	}
+  public Collection values() {
+    return myDelegee.values();
+  }
 
-	public Set entrySet() {
-		return myDelegee.entrySet();
-	}
+  public Set entrySet() {
+    return myDelegee.entrySet();
+  }
 }

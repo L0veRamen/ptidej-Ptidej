@@ -24,36 +24,31 @@
 
 package org.argouml.model;
 
-
-
 /**
  * @author Thierry Lach
  */
 public class TestUmlModelElement extends GenericUmlObjectTestFixture {
-    /**
-     * Constructor.
-     *
-     * @param arg0 test name
-     */
-    public TestUmlModelElement(String arg0) {
-	super(arg0, Model.getMetaTypes().getModelElement());
-	validateTestClassIsGeneric(this);
-    }
+  /**
+   * Constructor.
+   *
+   * @param arg0 test name
+   */
+  public TestUmlModelElement(String arg0) {
+    super(arg0, Model.getMetaTypes().getModelElement());
+    validateTestClassIsGeneric(this);
+  }
 
-    /**
-     * Test Model Element
-     */
-    public void testModelElement() {
-        // ModelElement is abstract, so no create tests
-        // TODO: Add any other relevant tests        
-    }
-    
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        setTruth(Model.getMetaTypes().getModelElement(), true);
-    }
+  /** Test Model Element */
+  public void testModelElement() {
+    // ModelElement is abstract, so no create tests
+    // TODO: Add any other relevant tests
+  }
 
+  /**
+   * @see junit.framework.TestCase#setUp()
+   */
+  protected void setUp() throws Exception {
+    super.setUp();
+    setTruth(Model.getMetaTypes().getModelElement(), true);
+  }
 }

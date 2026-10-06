@@ -14,13 +14,13 @@ import java.util.HashMap;
 import mendel.IRepository;
 
 public class MendelRepositories {
-	private static HashMap repositories = new HashMap();
-	public static IRepository getProjectRepository(String projectName) {
-		return (IRepository) repositories.get(projectName);
-	}
-	public static void setProjectRepository(
-		String projectName,
-		IRepository repository) {
-		repositories.put(projectName, repository);
-	}
+  private static HashMap repositories = new HashMap();
+
+  public static IRepository getProjectRepository(String projectName) {
+    return (IRepository) repositories.get(projectName);
+  }
+
+  public static void setProjectRepository(String projectName, IRepository repository) {
+    repositories.put(projectName, repository);
+  }
 }

@@ -30,25 +30,25 @@ import org.tigris.gef.base.ModeFactory;
 
 /**
  * Factory to create a ModeLabelDrag instance.
+ *
  * @author Dave Thompson
  */
 public class ModeLabelDragFactory implements ModeFactory {
 
-    /**
-     * @return The created ModeLabelDrag instance.
-     * @see org.tigris.gef.base.ModeFactory#createMode()
-     */
-    public FigModifyingMode createMode() {
-        return new ModeLabelDrag();
-    }
+  /**
+   * @return The created ModeLabelDrag instance.
+   * @see org.tigris.gef.base.ModeFactory#createMode()
+   */
+  public FigModifyingMode createMode() {
+    return new ModeLabelDrag();
+  }
 
-    /**
-     * @param The editor to create the mode in.
-     * @return The created ModeLabelDrag instance.
-     * @see org.tigris.gef.base.ModeFactory#createMode(org.tigris.gef.base.Editor)
-     */
-    public FigModifyingMode createMode(Editor editor) {
-        return new ModeLabelDrag(editor);
-    }
-
+  /**
+   * @param The editor to create the mode in.
+   * @return The created ModeLabelDrag instance.
+   * @see org.tigris.gef.base.ModeFactory#createMode(org.tigris.gef.base.Editor)
+   */
+  public FigModifyingMode createMode(Editor editor) {
+    return new ModeLabelDrag(editor);
+  }
 }

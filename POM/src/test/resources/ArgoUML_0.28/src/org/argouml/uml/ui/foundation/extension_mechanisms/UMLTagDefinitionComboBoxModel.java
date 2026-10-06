@@ -30,7 +30,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-
 import org.apache.log4j.Logger;
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
@@ -41,155 +40,146 @@ import org.argouml.uml.util.PathComparator;
 
 /**
  * A model for tagdefinitions.
+ *
  * @author lmaitre
  * @since October 27, 2005
  */
-public class UMLTagDefinitionComboBoxModel  extends UMLComboBoxModel2 {
-    
-    private static final Logger LOG = 
-        Logger.getLogger(UMLTagDefinitionComboBoxModel.class);
+public class UMLTagDefinitionComboBoxModel extends UMLComboBoxModel2 {
 
-    /**
-     * Constructor for UMLTagDefinitionComboBoxModel.
-     */
-    public UMLTagDefinitionComboBoxModel() {
-        // stereotypes applied to the target mostly control which TDs
-        // (but see below for other listeners too)
-        super("stereotype", false);
+  private static final Logger LOG = Logger.getLogger(UMLTagDefinitionComboBoxModel.class);
+
+  /** Constructor for UMLTagDefinitionComboBoxModel. */
+  public UMLTagDefinitionComboBoxModel() {
+    // stereotypes applied to the target mostly control which TDs
+    // (but see below for other listeners too)
+    super("stereotype", false);
+  }
+
+  @Override
+  protected void addOtherModelEventListeners(Object target) {
+    // Ask to be notified of any changes to TagDefinitions so that we
+    // can track new ones, name changes, etc
+    Model.getPump()
+        .addClassModelEventListener(this, Model.getMetaTypes().getTagDefinition(), (String[]) null);
+  }
+
+  @Override
+  protected void removeOtherModelEventListeners(Object target) {
+    Model.getPump()
+        .addClassModelEventListener(this, Model.getMetaTypes().getTagDefinition(), (String[]) null);
+  }
+
+  @Override
+  public void modelChanged(UmlChangeEvent evt) {
+    // because we're listening for stereotypes being added and removed
+    // but we're really interested in their owned tag definitions,
+    // the default implementation won't work for us
+
+    if (Model.getFacade().isATagDefinition(evt.getSource())) {
+      LOG.debug("Got TagDefinition event " + evt.toString());
+      // Just mark for rebuild next time since we use lazy loading
+      setModelInvalid();
+    } else if ("stereotype".equals(evt.getPropertyName())) {
+      LOG.debug("Got stereotype event " + evt.toString());
+      // A stereotype got applied or removed
+      // Just mark for rebuild next time since we use lazy loading
+      setModelInvalid();
+    } else {
+      LOG.debug("Got other event " + evt.toString());
     }
+  }
 
-    @Override
-    protected void addOtherModelEventListeners(Object target) {
-        // Ask to be notified of any changes to TagDefinitions so that we
-        // can track new ones, name changes, etc
-        Model.getPump().addClassModelEventListener(this, 
-                Model.getMetaTypes().getTagDefinition(), (String[]) null);
-    }    
+  @Override
+  public boolean isLazy() {
+    return true;
+  }
 
-    @Override
-    protected void removeOtherModelEventListeners(Object target) {
-        Model.getPump().addClassModelEventListener(this, 
-                Model.getMetaTypes().getTagDefinition(), (String[]) null);
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    Object owner = Model.getFacade().getOwner(element);
+    return (Model.getFacade().isATagDefinition(element)
+        && (owner == null || Model.getFacade().getStereotypes(getTarget()).contains(owner)));
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#setSelectedItem(java.lang.Object)
+   */
+  @Override
+  public void setSelectedItem(Object o) {
+    setFireListEvents(false);
+    super.setSelectedItem(o);
+    setFireListEvents(true);
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    removeAllElements();
+    Object target = getTarget();
+    addAll(getApplicableTagDefinitions(target));
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
+   */
+  protected Object getSelectedModelElement() {
+    return getSelectedItem();
+  }
+
+  private Collection getApplicableTagDefinitions(Object element) {
+    Set<List<String>> paths = new HashSet<List<String>>();
+    Set<Object> availableTagDefs = new TreeSet<Object>(new PathComparator());
+    Collection stereotypes = Model.getFacade().getStereotypes(element);
+    Project project = ProjectManager.getManager().getCurrentProject();
+    for (Object model : project.getModels()) {
+      // TODO: Won't our use of PathComparator take care of uniqueness?
+      addAllUniqueModelElementsFrom(
+          availableTagDefs,
+          paths,
+          Model.getModelManagementHelper()
+              .getAllModelElementsOfKind(model, Model.getMetaTypes().getTagDefinition()));
     }
+    // TODO: Won't our use of PathComparator take care of uniqueness?
+    addAllUniqueModelElementsFrom(
+        availableTagDefs,
+        paths,
+        project.getProfileConfiguration().findByMetaType(Model.getMetaTypes().getTagDefinition()));
 
-    @Override
-    public void modelChanged(UmlChangeEvent evt) {
-        // because we're listening for stereotypes being added and removed
-        // but we're really interested in their owned tag definitions,
-        // the default implementation won't work for us
-        
-        if (Model.getFacade().isATagDefinition(evt.getSource())) {
-            LOG.debug("Got TagDefinition event " + evt.toString());
-            // Just mark for rebuild next time since we use lazy loading
-            setModelInvalid();
-        } else if ("stereotype".equals(evt.getPropertyName())) {
-            LOG.debug("Got stereotype event " + evt.toString());
-            // A stereotype got applied or removed
-            // Just mark for rebuild next time since we use lazy loading
-            setModelInvalid();
-        } else {
-            LOG.debug("Got other event " + evt.toString());
-        }    
+    List notValids = new ArrayList();
+    for (Object tagDef : availableTagDefs) {
+      Object owner = Model.getFacade().getOwner(tagDef);
+      if (owner != null && !stereotypes.contains(owner)) {
+        notValids.add(tagDef);
+      }
     }
+    int size = availableTagDefs.size();
+    availableTagDefs.removeAll(notValids);
+    int delta = size - availableTagDefs.size();
+    return availableTagDefs;
+  }
 
+  /**
+   * Helper method for buildModelList.
+   *
+   * <p>Adds those elements from source that do not have the same path as any path in paths to
+   * elements, and its path to paths. Thus elements will never contain two objects with the same
+   * path, unless they are added by other means.
+   */
+  private static void addAllUniqueModelElementsFrom(
+      Set elements, Set<List<String>> paths, Collection sources) {
 
-    @Override
-    public boolean isLazy() {
-        return true;
+    for (Object source : sources) {
+      List<String> path = Model.getModelManagementHelper().getPathList(source);
+      if (!paths.contains(path)) {
+        paths.add(path);
+        elements.add(source);
+      }
     }
+  }
 
-
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        Object owner = Model.getFacade().getOwner(element);
-        return (Model.getFacade().isATagDefinition(element)
-                && (owner == null || Model
-                .getFacade().getStereotypes(getTarget()).contains(owner)));
-    }
-
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#setSelectedItem(java.lang.Object)
-     */
-    @Override
-    public void setSelectedItem(Object o) {
-        setFireListEvents(false);
-        super.setSelectedItem(o);
-        setFireListEvents(true);
-    }
-
-
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        removeAllElements();
-        Object target = getTarget();
-        addAll(getApplicableTagDefinitions(target));
-    }
-
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
-     */
-    protected Object getSelectedModelElement() {
-        return getSelectedItem();
-    }
-
-    private Collection getApplicableTagDefinitions(Object element) {
-        Set<List<String>> paths = new HashSet<List<String>>();
-        Set<Object> availableTagDefs = 
-            new TreeSet<Object>(new PathComparator());
-        Collection stereotypes = Model.getFacade().getStereotypes(element);
-        Project project = ProjectManager.getManager().getCurrentProject();
-        for (Object model : project.getModels()) {
-            // TODO: Won't our use of PathComparator take care of uniqueness?
-            addAllUniqueModelElementsFrom(availableTagDefs, paths,
-                    Model.getModelManagementHelper().getAllModelElementsOfKind(
-                            model,
-                            Model.getMetaTypes().getTagDefinition()));
-        }
-        // TODO: Won't our use of PathComparator take care of uniqueness?
-        addAllUniqueModelElementsFrom(availableTagDefs, paths, project
-                .getProfileConfiguration().findByMetaType(
-                        Model.getMetaTypes().getTagDefinition()));
-                        
-        List notValids = new ArrayList();
-        for (Object tagDef : availableTagDefs) {
-            Object owner = Model.getFacade().getOwner(tagDef);
-            if (owner != null && !stereotypes.contains(owner)) {
-                notValids.add(tagDef);
-            }
-        }
-        int size = availableTagDefs.size();
-        availableTagDefs.removeAll(notValids);
-        int delta = size - availableTagDefs.size();
-        return availableTagDefs;
-    }
-
-    /**
-     * Helper method for buildModelList.<p>
-     *
-     * Adds those elements from source that do not have the same path as any
-     * path in paths to elements, and its path to paths. Thus elements will
-     * never contain two objects with the same path, unless they are added by
-     * other means.
-     */
-    private static void addAllUniqueModelElementsFrom(Set elements,
-            Set<List<String>> paths, Collection sources) {
-        
-        for (Object source : sources) {
-            List<String> path = Model.getModelManagementHelper().getPathList(
-                    source);
-            if (!paths.contains(path)) {
-                paths.add(path);
-                elements.add(source);
-            }
-        }
-    }
-
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -4194727034416788372L;
+  /** The UID. */
+  private static final long serialVersionUID = -4194727034416788372L;
 }

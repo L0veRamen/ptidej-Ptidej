@@ -27,46 +27,45 @@ package org.argouml.ui.explorer.rules;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 
 /**
- * Go rule to navigate from a classifier to the behavioral
- * features owned by that classifier.  <p>
- * Classifier->BehavioralFeature
+ * Go rule to navigate from a classifier to the behavioral features owned by that classifier.
+ *
+ * <p>Classifier->BehavioralFeature
  *
  * @since Jul 13, 2004
  * @author jaap.branderhorst@xs4all.nl
  */
 public class GoClassifierToBehavioralFeature extends AbstractPerspectiveRule {
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
-     */
-    public String getRuleName() {
-	return Translator.localize ("misc.classifier.behavioralfeature");
-    }
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
+   */
+  public String getRuleName() {
+    return Translator.localize("misc.classifier.behavioralfeature");
+  }
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
-     */
-    public Collection getChildren(Object parent) {
-	if (Model.getFacade().isAClassifier(parent)) {
-	    return Model.getCoreHelper().getBehavioralFeatures(parent);
-	}
-	return null;
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
+   */
+  public Collection getChildren(Object parent) {
+    if (Model.getFacade().isAClassifier(parent)) {
+      return Model.getCoreHelper().getBehavioralFeatures(parent);
     }
+    return null;
+  }
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
-     */
-    public Set getDependencies(Object parent) {
-        if (Model.getFacade().isAClassifier(parent)) {
-	    Set set = new HashSet();
-	    set.add(parent);
-	    return set;
-	}
-	return null;
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
+   */
+  public Set getDependencies(Object parent) {
+    if (Model.getFacade().isAClassifier(parent)) {
+      Set set = new HashSet();
+      set.add(parent);
+      return set;
     }
+    return null;
+  }
 }

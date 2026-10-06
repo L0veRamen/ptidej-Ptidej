@@ -25,19 +25,17 @@ package com.noelios.restlet.ext.simple;
 import java.io.File;
 import java.io.FileInputStream;
 import java.security.KeyStore;
-
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
-
 import org.restlet.Server;
 import org.restlet.data.Protocol;
-
 import simple.http.BufferedPipelineFactory;
 import simple.http.PipelineHandlerFactory;
 import simple.http.connect.ConnectionFactory;
 
 /**
  * Simple HTTP server connector. Here is the list of additional parameters that are supported:
+ *
  * <table>
  * 	<tr>
  * 		<th>Parameter name</th>
@@ -82,101 +80,99 @@ import simple.http.connect.ConnectionFactory;
  * 		<td>SSL protocol.</td>
  * 	</tr>
  * </table>
+ *
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://semagia.com/">Semagia</a>
- * @author Jerome Louvel (contact@noelios.com) <a href="http://www.noelios.com">Noelios Consulting</a>
+ * @author Jerome Louvel (contact@noelios.com) <a href="http://www.noelios.com">Noelios
+ *     Consulting</a>
  */
-public class HttpsServerHelper extends SimpleServerHelper
-{
-	/**
-	 * Constructor.
-	 * @param server The server to help.
-	 */
-	public HttpsServerHelper(Server server)
-	{
-		super(server);
-		getSupportedProtocols().add(Protocol.HTTPS);
-	}
+public class HttpsServerHelper extends SimpleServerHelper {
+  /**
+   * Constructor.
+   *
+   * @param server The server to help.
+   */
+  public HttpsServerHelper(Server server) {
+    super(server);
+    getSupportedProtocols().add(Protocol.HTTPS);
+  }
 
-	/** Starts the Restlet. */
-	public void start() throws Exception
-	{
-		// Initialize the SSL context
-		KeyStore keyStore = KeyStore.getInstance(getKeystoreType());
-		FileInputStream fis = new FileInputStream(getKeystorePath());
-		keyStore.load(fis, getKeystorePassword().toCharArray());
-		KeyManagerFactory keyManagerFactory = KeyManagerFactory
-				.getInstance(getCertAlgorithm());
-		keyManagerFactory.init(keyStore, getKeyPassword().toCharArray());
-		SSLContext sslContext = SSLContext.getInstance(getSslProtocol());
-		sslContext.init(keyManagerFactory.getKeyManagers(), null, null);
-		setSocket(sslContext.getServerSocketFactory().createServerSocket(
-				getServer().getPort()));
-		getSocket().setSoTimeout(60000);
-		fis.close();
+  /** Starts the Restlet. */
+  public void start() throws Exception {
+    // Initialize the SSL context
+    KeyStore keyStore = KeyStore.getInstance(getKeystoreType());
+    FileInputStream fis = new FileInputStream(getKeystorePath());
+    keyStore.load(fis, getKeystorePassword().toCharArray());
+    KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(getCertAlgorithm());
+    keyManagerFactory.init(keyStore, getKeyPassword().toCharArray());
+    SSLContext sslContext = SSLContext.getInstance(getSslProtocol());
+    sslContext.init(keyManagerFactory.getKeyManagers(), null, null);
+    setSocket(sslContext.getServerSocketFactory().createServerSocket(getServer().getPort()));
+    getSocket().setSoTimeout(60000);
+    fis.close();
 
-		// Complete initialization
-		setConfidential(true);
-		setHandler(PipelineHandlerFactory.getInstance(new SimpleProtocolHandler(this),
-				getDefaultThreads(), getMaxWaitTimeMs()));
-		setConnection(ConnectionFactory.getConnection(getHandler(),
-				new BufferedPipelineFactory()));
-		getConnection().connect(getSocket());
-		super.start();
-	}
+    // Complete initialization
+    setConfidential(true);
+    setHandler(
+        PipelineHandlerFactory.getInstance(
+            new SimpleProtocolHandler(this), getDefaultThreads(), getMaxWaitTimeMs()));
+    setConnection(ConnectionFactory.getConnection(getHandler(), new BufferedPipelineFactory()));
+    getConnection().connect(getSocket());
+    super.start();
+  }
 
-	/**
-	 * Returns the SSL keystore path.
-	 * @return The SSL keystore path.
-	 */
-	public String getKeystorePath()
-	{
-		return getParameters().getFirstValue("keystorePath",
-				System.getProperty("user.home") + File.separator + ".keystore");
-	}
+  /**
+   * Returns the SSL keystore path.
+   *
+   * @return The SSL keystore path.
+   */
+  public String getKeystorePath() {
+    return getParameters()
+        .getFirstValue(
+            "keystorePath", System.getProperty("user.home") + File.separator + ".keystore");
+  }
 
-	/**
-	 * Returns the SSL keystore password.
-	 * @return The SSL keystore password.
-	 */
-	public String getKeystorePassword()
-	{
-		return getParameters().getFirstValue("keystorePassword", "");
-	}
+  /**
+   * Returns the SSL keystore password.
+   *
+   * @return The SSL keystore password.
+   */
+  public String getKeystorePassword() {
+    return getParameters().getFirstValue("keystorePassword", "");
+  }
 
-	/**
-	 * Returns the SSL keystore type.
-	 * @return The SSL keystore type.
-	 */
-	public String getKeystoreType()
-	{
-		return getParameters().getFirstValue("keystoreType", "JKS");
-	}
+  /**
+   * Returns the SSL keystore type.
+   *
+   * @return The SSL keystore type.
+   */
+  public String getKeystoreType() {
+    return getParameters().getFirstValue("keystoreType", "JKS");
+  }
 
-	/**
-	 * Returns the SSL key password.
-	 * @return The SSL key password.
-	 */
-	public String getKeyPassword()
-	{
-		return getParameters().getFirstValue("keyPassword", "");
-	}
+  /**
+   * Returns the SSL key password.
+   *
+   * @return The SSL key password.
+   */
+  public String getKeyPassword() {
+    return getParameters().getFirstValue("keyPassword", "");
+  }
 
-	/**
-	 * Returns the SSL certificate algorithm.
-	 * @return The SSL certificate algorithm.
-	 */
-	public String getCertAlgorithm()
-	{
-		return getParameters().getFirstValue("certAlgorithm", "SunX509");
-	}
+  /**
+   * Returns the SSL certificate algorithm.
+   *
+   * @return The SSL certificate algorithm.
+   */
+  public String getCertAlgorithm() {
+    return getParameters().getFirstValue("certAlgorithm", "SunX509");
+  }
 
-	/**
-	 * Returns the SSL keystore type.
-	 * @return The SSL keystore type.
-	 */
-	public String getSslProtocol()
-	{
-		return getParameters().getFirstValue("sslProtocol", "TLS");
-	}
-
+  /**
+   * Returns the SSL keystore type.
+   *
+   * @return The SSL keystore type.
+   */
+  public String getSslProtocol() {
+    return getParameters().getFirstValue("sslProtocol", "TLS");
+  }
 }

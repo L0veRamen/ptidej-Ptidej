@@ -39,164 +39,147 @@ import org.argouml.uml.cognitive.UMLToDoItem;
 import org.tigris.gef.ocl.ExpansionException;
 
 /**
- * "Abstract" Critic subclass that captures commonalities among all
- * critics in the UML domain.  This class also defines and registers
- * the categories of design decisions that the critics can
- * address. IT also deals with particular UMLToDoItems.
+ * "Abstract" Critic subclass that captures commonalities among all critics in the UML domain. This
+ * class also defines and registers the categories of design decisions that the critics can address.
+ * IT also deals with particular UMLToDoItems.
  *
  * @see org.argouml.cognitive.Designer
  * @see org.argouml.cognitive.DecisionModel
- *
  * @author jrobbins
  */
 public class CrUML extends Critic {
-    /**
-     * Logger.
-     */
-    private static final Logger LOG = Logger.getLogger(CrUML.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(CrUML.class);
 
-    /**
-     * The constructor for this class.
-     */
-    public CrUML() {
+  /** The constructor for this class. */
+  public CrUML() {}
+
+  /**
+   * Set the resources for this critic based on the class name.
+   *
+   * @param key is the class name.
+   */
+  public void setResource(String key) {
+    // String head = Translator.localize("Cognitive", key + "_head");
+    String head = Translator.localize("critics." + key + "-head");
+    super.setHeadline(head);
+    // String desc = Translator.localize("Cognitive", key + "_desc");
+    String desc = Translator.localize("critics." + key + "-desc");
+    super.setDescription(desc);
+  }
+
+  /**
+   * @see org.argouml.cognitive.critics.Critic#setHeadline(java.lang.String)
+   *     <p>Set up the locale specific text for the critic headline (the one liner that appears in
+   *     the to-do pane) and the critic description (the detailed explanation that appears in the
+   *     to-do tab of the details pane).
+   *     <p>MVW: Maybe we can make it part of the constructor CrUML()?
+   */
+  public final void setHeadline(String s) {
+    setupHeadAndDesc();
+  }
+
+  /**
+   * Set up the locale specific text for the critic headline (the one liner that appears in the
+   * to-do pane) and the critic description (the detailed explanation that appears in the to-do tab
+   * of the details pane).
+   */
+  public final void setupHeadAndDesc() {
+    String className = getClass().getName();
+    setResource(className.substring(className.lastIndexOf('.') + 1));
+  }
+
+  /**
+   * @see org.argouml.cognitive.critics.Critic#predicate( java.lang.Object,
+   *     org.argouml.cognitive.Designer)
+   */
+  public boolean predicate(Object dm, Designer dsgr) {
+    Project p = ProjectManager.getManager().getCurrentProject();
+    if (p.isInTrash(dm)
+        || (Model.getFacade().isAModelElement(dm) && Model.getUmlFactory().isRemoved(dm))) {
+      return NO_PROBLEM;
+    } else {
+      return predicate2(dm, dsgr);
+    }
+  }
+
+  /**
+   * This is the decision routine for the critic.
+   *
+   * @param dm is the UML entity that is being checked.
+   * @param dsgr is for future development and can be ignored.
+   * @return boolean problem found
+   */
+  public boolean predicate2(Object dm, Designer dsgr) {
+    return super.predicate(dm, dsgr);
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // display related methods
+  private static final String OCL_START = "<ocl>";
+
+  private static final String OCL_END = "</ocl>";
+
+  /**
+   * Expand text with ocl brackets in it. No recursive expansion.
+   *
+   * @return the expanded text
+   * @param res is the text to expand.
+   * @param offs is the elements to replace
+   */
+  public String expand(String res, ListSet offs) {
+
+    if (offs.size() == 0) {
+      return res;
     }
 
-    /**
-     * Set the resources for this critic based on the class name.
-     *
-     * @param key is the class name.
-     */
-    public void setResource(String key) {
-        // String head = Translator.localize("Cognitive", key + "_head");
-        String head = Translator.localize("critics." + key + "-head");
-        super.setHeadline(head);
-        // String desc = Translator.localize("Cognitive", key + "_desc");
-        String desc = Translator.localize("critics." + key + "-desc");
-        super.setDescription(desc);
+    Object off1 = offs.firstElement();
+
+    StringBuffer beginning = new StringBuffer("");
+    int matchPos = res.indexOf(OCL_START);
+
+    // replace all occurances of OFFENDER with the name of the
+    // first offender
+    while (matchPos != -1) {
+      int endExpr = res.indexOf(OCL_END, matchPos + 1);
+      // check if there is no OCL_END; if so, the critic expression
+      // is not correct and can not be expanded
+      if (endExpr == -1) {
+        break;
+      }
+      if (matchPos > 0) {
+        beginning.append(res.substring(0, matchPos));
+      }
+      String expr = res.substring(matchPos + OCL_START.length(), endExpr);
+      String evalStr = null;
+      try {
+        evalStr = CriticOclEvaluator.getInstance().evalToString(off1, expr);
+      } catch (ExpansionException e) {
+        // Really ought to have a CriticException to throw here.
+        LOG.error("Failed to evaluate critic expression", e);
+      }
+      if (expr.endsWith("") && evalStr.equals("")) {
+        evalStr = "(anon)";
+      }
+      beginning.append(evalStr);
+      res = res.substring(endExpr + OCL_END.length());
+      matchPos = res.indexOf(OCL_START);
     }
-
-    /**
-     * @see org.argouml.cognitive.critics.Critic#setHeadline(java.lang.String)
-     *
-     * Set up the locale specific text for the critic headline
-     * (the one liner that appears in the to-do pane)
-     * and the critic description (the detailed explanation that
-     * appears in the to-do tab of the details pane).
-     *
-     * MVW: Maybe we can make it part of the constructor CrUML()?
-     */
-    public final void setHeadline(String s) {
-        setupHeadAndDesc();
+    if (beginning.length() == 0) {
+      // This is just to avoid creation of a new
+      return res; // string when not needed.
+    } else {
+      return beginning.append(res).toString();
     }
+  }
 
-    /**
-     * Set up the locale specific text for the critic headline
-     * (the one liner that appears in the to-do pane)
-     * and the critic description (the detailed explanation that
-     * appears in the to-do tab of the details pane).
-     */
-    public final void setupHeadAndDesc() {
-        String className = getClass().getName();
-        setResource(className.substring(className.lastIndexOf('.') + 1));
-    }
+  /**
+   * @see org.argouml.cognitive.critics.Critic#toDoItem(Object, Designer)
+   */
+  public ToDoItem toDoItem(Object dm, Designer dsgr) {
+    return new UMLToDoItem(this, dm, dsgr);
+  }
 
-
-    /**
-     * @see org.argouml.cognitive.critics.Critic#predicate(
-     * java.lang.Object, org.argouml.cognitive.Designer)
-     */
-    public boolean predicate(Object dm, Designer dsgr) {
-	Project p = ProjectManager.getManager().getCurrentProject();
-        if (p.isInTrash(dm)
-                || (Model.getFacade().isAModelElement(dm)
-                && Model.getUmlFactory().isRemoved(dm))) {
-            return NO_PROBLEM;
-        } else {
-            return predicate2(dm, dsgr);
-        }
-    }
-
-    /**
-     * This is the decision routine for the critic.
-     *
-     * @param dm is the UML entity that is being checked.
-     * @param dsgr is for future development and can be ignored.
-     *
-     * @return boolean problem found
-     */
-    public boolean predicate2(Object dm, Designer dsgr) {
-	return super.predicate(dm, dsgr);
-    }
-
-    ////////////////////////////////////////////////////////////////
-    // display related methods
-    private static final String OCL_START = "<ocl>";
-    private static final String OCL_END = "</ocl>";
-
-    /**
-     * Expand text with ocl brackets in it.
-     * No recursive expansion.
-     *
-     * @return the expanded text
-     * @param res is the text to expand.
-     * @param offs is the elements to replace
-     */
-    public String expand(String res, ListSet offs) {
-
-        if (offs.size() == 0) {
-	    return res;
-	}
-
-        Object off1 = offs.firstElement();
-
-        StringBuffer beginning = new StringBuffer("");
-        int matchPos = res.indexOf(OCL_START);
-
-        // replace all occurances of OFFENDER with the name of the
-        // first offender
-        while (matchPos != -1) {
-            int endExpr = res.indexOf(OCL_END, matchPos + 1);
-            // check if there is no OCL_END; if so, the critic expression
-            // is not correct and can not be expanded
-            if (endExpr == -1) {
-                break;
-            }
-            if (matchPos > 0) {
-                beginning.append(res.substring(0, matchPos));
-            }
-            String expr = res.substring(matchPos + OCL_START.length(), endExpr);
-            String evalStr = null;
-            try {
-                evalStr =
-		    CriticOclEvaluator.getInstance().evalToString(off1, expr);
-            } catch (ExpansionException e) {
-                // Really ought to have a CriticException to throw here.
-                LOG.error("Failed to evaluate critic expression", e);
-            }
-            if (expr.endsWith("") && evalStr.equals("")) {
-                evalStr = "(anon)";
-            }
-            beginning.append(evalStr);
-            res = res.substring(endExpr + OCL_END.length());
-            matchPos = res.indexOf(OCL_START);
-        }
-        if (beginning.length() == 0) {
-            // This is just to avoid creation of a new
-            return res;		// string when not needed.
-        } else {
-            return beginning.append(res).toString();
-        }
-    }
-
-    /**
-     * @see org.argouml.cognitive.critics.Critic#toDoItem(Object, Designer)
-     */
-    public ToDoItem toDoItem(Object dm, Designer dsgr) {
-	return new UMLToDoItem(this, dm, dsgr);
-    }
-
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = 1785043010468681602L;
+  /** The UID. */
+  private static final long serialVersionUID = 1785043010468681602L;
 } /* end class CrUML */

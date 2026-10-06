@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -14,31 +14,28 @@
 
 package util.parser.java.v15.nodes;
 
-/**
- * Represents a grammar choice, e.g. ( A | B )
- */
+/** Represents a grammar choice, e.g. ( A | B ) */
 public class NodeChoice implements Node {
-   /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-public NodeChoice(Node node) {
-      this(node, -1);
-   }
+  /** */
+  private static final long serialVersionUID = 1L;
 
-   public NodeChoice(Node node, int whichChoice) {
-      this.choice = node;
-      this.which = whichChoice;
-   }
+  public NodeChoice(Node node) {
+    this(node, -1);
+  }
 
-   public void accept(util.parser.java.v15.visitors.Visitor v) {
-      this.choice.accept(v);
-   }
-   public Object accept(util.parser.java.v15.visitors.ObjectVisitor v, Object argu) {
-      return this.choice.accept(v,argu);
-   }
+  public NodeChoice(Node node, int whichChoice) {
+    this.choice = node;
+    this.which = whichChoice;
+  }
 
-   public Node choice;
-   public int which;
+  public void accept(util.parser.java.v15.visitors.Visitor v) {
+    this.choice.accept(v);
+  }
+
+  public Object accept(util.parser.java.v15.visitors.ObjectVisitor v, Object argu) {
+    return this.choice.accept(v, argu);
+  }
+
+  public Node choice;
+  public int which;
 }
-

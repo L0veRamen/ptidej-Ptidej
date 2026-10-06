@@ -26,56 +26,51 @@ package org.argouml.core.propertypanels.ui;
 
 import org.apache.log4j.Logger;
 import org.argouml.model.Model;
-import org.argouml.ui.targetmanager.TargetEvent;
 import org.argouml.ui.targetmanager.TargetManager;
-import org.argouml.uml.ui.UMLExpressionModel2;
-import org.argouml.uml.ui.UMLUserInterfaceContainer;
 
 /**
  * The model for the boolean expression of a ChangeEvent.
- * 
+ *
  * @author michiel, penyaskito
  */
 class UMLChangeExpressionModel extends UMLExpressionModel {
 
-    private static final Logger LOG =
-        Logger.getLogger(UMLChangeExpressionModel.class);
+  private static final Logger LOG = Logger.getLogger(UMLChangeExpressionModel.class);
 
-    /**
-     * The constructor.
-     *
-     * @param container the container of UML user interface components
-     * @param propertyName the name of the property
-     */
-    public UMLChangeExpressionModel(Object target) {
-        super(target, "changeExpression");
+  /**
+   * The constructor.
+   *
+   * @param container the container of UML user interface components
+   * @param propertyName the name of the property
+   */
+  public UMLChangeExpressionModel(Object target) {
+    super(target, "changeExpression");
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLExpressionModel2#getExpression()
+   */
+  public Object getExpression() {
+    return Model.getFacade().getChangeExpression(TargetManager.getInstance().getTarget());
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLExpressionModel2#setExpression(java.lang.Object)
+   */
+  public void setExpression(Object expression) {
+    Object target = TargetManager.getInstance().getTarget();
+
+    if (target == null) {
+      throw new IllegalStateException("There is no target");
     }
+    Model.getStateMachinesHelper().setChangeExpression(target, expression);
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLExpressionModel2#getExpression()
-     */
-    public Object getExpression() {
-        return Model.getFacade().getChangeExpression(
-                TargetManager.getInstance().getTarget());
-    }
-
-    /*
-     * @see org.argouml.uml.ui.UMLExpressionModel2#setExpression(java.lang.Object)
-     */
-    public void setExpression(Object expression) {
-        Object target = TargetManager.getInstance().getTarget();
-
-        if (target == null) {
-            throw new IllegalStateException("There is no target");
-        }
-        Model.getStateMachinesHelper().setChangeExpression(target, expression);
-    }
-
-    /*
-     * @see org.argouml.uml.ui.UMLExpressionModel2#newExpression()
-     */
-    public Object newExpression() {
-        LOG.debug("new boolean expression");
-        return Model.getDataTypesFactory().createBooleanExpression("", "");
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLExpressionModel2#newExpression()
+   */
+  public Object newExpression() {
+    LOG.debug("new boolean expression");
+    return Model.getDataTypesFactory().createBooleanExpression("", "");
+  }
 }

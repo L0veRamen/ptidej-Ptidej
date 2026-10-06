@@ -26,47 +26,41 @@ package org.argouml.uml.cognitive.critics;
 
 import java.util.Collection;
 import java.util.Iterator;
-
 import org.argouml.cognitive.Designer;
 import org.argouml.model.Model;
 import org.argouml.uml.cognitive.UMLDecision;
 
-/** 
- * A critic to detect when a classifier has to many operations). <p>
- * 
- * TODO: exclude getter and setter operations from count
+/**
+ * A critic to detect when a classifier has to many operations).
+ *
+ * <p>TODO: exclude getter and setter operations from count
  */
 public class CrTooManyOper extends AbstractCrTooMany {
 
-    /**
-     * The constructor.
-     *
-     */
-    public CrTooManyOper() {
-        setupHeadAndDesc();
-	addSupportedDecision(UMLDecision.METHODS);
-	setThreshold(20);
-	addTrigger("behavioralFeature");
-    }
+  /** The constructor. */
+  public CrTooManyOper() {
+    setupHeadAndDesc();
+    addSupportedDecision(UMLDecision.METHODS);
+    setThreshold(20);
+    addTrigger("behavioralFeature");
+  }
 
-    /**
-     * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
-     * java.lang.Object, org.argouml.cognitive.Designer)
-     */
-    public boolean predicate2(Object dm, Designer dsgr) {
-	if (!(Model.getFacade().isAClassifier(dm))) return NO_PROBLEM;
-	Object cls = /*(MClassifier)*/ dm;
-	// TODO: consider inherited attributes?
-	int threshold = getThreshold();
-	Collection str = Model.getFacade().getFeatures(cls);
-	if (str == null) return NO_PROBLEM;
-	int n = 0;
-	for (Iterator iter = str.iterator(); iter.hasNext();) {
-	    if (Model.getFacade().isABehavioralFeature(iter.next()))
-		n++;
-	}
-	if (n <= threshold) return NO_PROBLEM;
-	return PROBLEM_FOUND;
+  /**
+   * @see org.argouml.uml.cognitive.critics.CrUML#predicate2( java.lang.Object,
+   *     org.argouml.cognitive.Designer)
+   */
+  public boolean predicate2(Object dm, Designer dsgr) {
+    if (!(Model.getFacade().isAClassifier(dm))) return NO_PROBLEM;
+    Object cls = /*(MClassifier)*/ dm;
+    // TODO: consider inherited attributes?
+    int threshold = getThreshold();
+    Collection str = Model.getFacade().getFeatures(cls);
+    if (str == null) return NO_PROBLEM;
+    int n = 0;
+    for (Iterator iter = str.iterator(); iter.hasNext(); ) {
+      if (Model.getFacade().isABehavioralFeature(iter.next())) n++;
     }
-
+    if (n <= threshold) return NO_PROBLEM;
+    return PROBLEM_FOUND;
+  }
 } /* end class CrTooManyOper */

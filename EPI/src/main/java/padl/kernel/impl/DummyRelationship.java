@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -21,45 +21,55 @@ import util.io.ProxyConsole;
 
 /**
  * @author Yann-Gaël Guéhéneuc
- * @since  2005/04/08
+ * @since 2005/04/08
  */
 public class DummyRelationship extends Constituent implements IRelationship {
-	private static final long serialVersionUID = 8246146842271467729L;
-	private static char[] DEFAULT_ID = "dm".toCharArray();
-	private static int UniqueID = 0;
+  private static final long serialVersionUID = 8246146842271467729L;
+  private static char[] DEFAULT_ID = "dm".toCharArray();
+  private static int UniqueID = 0;
 
-	private final IFirstClassEntity targetEntity;
+  private final IFirstClassEntity targetEntity;
 
-	public DummyRelationship(final IFirstClassEntity aTargetEntity) {
-		super(ArrayUtils.addAll(
-			DummyRelationship.DEFAULT_ID,
-			Integer.toString(DummyRelationship.UniqueID++).toCharArray()));
-		this.targetEntity = aTargetEntity;
-	}
-	public void attachTo(final IElement anElement) {
-	}
-	public void detach() {
-	}
-	public void fireModelChange(final String anEventType, final IEvent anEvent) {
-	}
-	public IElement getAttachedElement() {
-		return null;
-	}
-	public Cardinality getCardinality() {
-		return Cardinality.One;
-	}
-	public void setCardinality(Cardinality cardinality) {
-		ProxyConsole.getInstance().warningOutput().print("Trying to set the cardinality of a " + this.getClass().getSimpleName() + " which should have no effect.");
-	}
-	protected char getPathSymbol() {
-		return IConstants.ELEMENT_SYMBOL;
-	}
-	public IFirstClassEntity getTargetEntity() {
-		return this.targetEntity;
-	}
-	public void setTargetEntity(final IFirstClassEntity anEntity) {
-	}
-	public void setCardinality(final int aCardinality) {
-	}
+  public DummyRelationship(final IFirstClassEntity aTargetEntity) {
+    super(
+        ArrayUtils.addAll(
+            DummyRelationship.DEFAULT_ID,
+            Integer.toString(DummyRelationship.UniqueID++).toCharArray()));
+    this.targetEntity = aTargetEntity;
+  }
 
+  public void attachTo(final IElement anElement) {}
+
+  public void detach() {}
+
+  public void fireModelChange(final String anEventType, final IEvent anEvent) {}
+
+  public IElement getAttachedElement() {
+    return null;
+  }
+
+  public Cardinality getCardinality() {
+    return Cardinality.One;
+  }
+
+  public void setCardinality(Cardinality cardinality) {
+    ProxyConsole.getInstance()
+        .warningOutput()
+        .print(
+            "Trying to set the cardinality of a "
+                + this.getClass().getSimpleName()
+                + " which should have no effect.");
+  }
+
+  protected char getPathSymbol() {
+    return IConstants.ELEMENT_SYMBOL;
+  }
+
+  public IFirstClassEntity getTargetEntity() {
+    return this.targetEntity;
+  }
+
+  public void setTargetEntity(final IFirstClassEntity anEntity) {}
+
+  public void setCardinality(final int aCardinality) {}
 }

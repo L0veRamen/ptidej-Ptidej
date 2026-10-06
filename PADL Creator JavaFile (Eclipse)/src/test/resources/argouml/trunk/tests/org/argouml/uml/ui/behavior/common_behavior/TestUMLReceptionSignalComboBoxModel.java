@@ -25,7 +25,6 @@
 package org.argouml.uml.ui.behavior.common_behavior;
 
 import junit.framework.TestCase;
-
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.Model;
@@ -37,104 +36,89 @@ import org.argouml.ui.targetmanager.TargetEvent;
  */
 public class TestUMLReceptionSignalComboBoxModel extends TestCase {
 
-    /**
-     * The number of elements used in the tests.
-     */
-    private static final int NO_OF_ELEMENTS = 10;
+  /** The number of elements used in the tests. */
+  private static final int NO_OF_ELEMENTS = 10;
 
-    /**
-     * The elements that we use for the test.
-     */
-    private Object[] signals;
+  /** The elements that we use for the test. */
+  private Object[] signals;
 
-    /**
-     * The tested model.
-     */
-    private UMLReceptionSignalComboBoxModel model;
+  /** The tested model. */
+  private UMLReceptionSignalComboBoxModel model;
 
-    /**
-     * The element.
-     */
-    private Object elem;
+  /** The element. */
+  private Object elem;
 
-    /**
-     * Constructor for TestUMLReceptionSignalComboBoxModel.
-     *
-     * @param arg0
-     *            is the name of the test case.
-     */
-    public TestUMLReceptionSignalComboBoxModel(String arg0) {
-        super(arg0);
+  /**
+   * Constructor for TestUMLReceptionSignalComboBoxModel.
+   *
+   * @param arg0 is the name of the test case.
+   */
+  public TestUMLReceptionSignalComboBoxModel(String arg0) {
+    super(arg0);
+  }
+
+  /**
+   * @see junit.framework.TestCase#setUp()
+   */
+  protected void setUp() throws Exception {
+    super.setUp();
+    Project p = ProjectManager.getManager().getCurrentProject();
+    elem = Model.getCommonBehaviorFactory().createReception();
+    signals = new Object[NO_OF_ELEMENTS];
+    Object m = Model.getModelManagementFactory().createModel();
+    p.setRoot(m);
+    Model.getCoreHelper().setNamespace(elem, m);
+    for (int i = 0; i < NO_OF_ELEMENTS; i++) {
+      signals[i] = Model.getCommonBehaviorFactory().createSignal();
+      Model.getCoreHelper().addOwnedElement(m, signals[i]);
     }
+    model = new UMLReceptionSignalComboBoxModel();
+    model.targetSet(new TargetEvent(this, "set", new Object[0], new Object[] {elem}));
+    Model.getPump().flushModelEvents();
+  }
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        Project p = ProjectManager.getManager().getCurrentProject();
-        elem = Model.getCommonBehaviorFactory().createReception();
-        signals = new Object[NO_OF_ELEMENTS];
-        Object m = Model.getModelManagementFactory().createModel();
-        p.setRoot(m);
-        Model.getCoreHelper().setNamespace(elem, m);
-        for (int i = 0; i < NO_OF_ELEMENTS; i++) {
-            signals[i] = Model.getCommonBehaviorFactory().createSignal();
-            Model.getCoreHelper().addOwnedElement(m, signals[i]);
-        }
-        model = new UMLReceptionSignalComboBoxModel();
-        model.targetSet(new TargetEvent(this, "set", new Object[0],
-                new Object[] {elem}));
-        Model.getPump().flushModelEvents();
+  /**
+   * @see junit.framework.TestCase#tearDown()
+   */
+  protected void tearDown() throws Exception {
+    super.tearDown();
+    Model.getUmlFactory().delete(elem);
+    for (int i = 0; i < NO_OF_ELEMENTS; i++) {
+      Model.getUmlFactory().delete(signals[i]);
     }
+    model = null;
+  }
 
-    /**
-     * @see junit.framework.TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        Model.getUmlFactory().delete(elem);
-        for (int i = 0; i < NO_OF_ELEMENTS; i++) {
-            Model.getUmlFactory().delete(signals[i]);
-        }
-        model = null;
-    }
+  /** Set up the test. */
+  public void testSetUp() {
+    assertEquals(NO_OF_ELEMENTS, model.getSize());
+    assertTrue(model.contains(signals[NO_OF_ELEMENTS / 2]));
+    assertTrue(model.contains(signals[0]));
+    assertTrue(model.contains(signals[NO_OF_ELEMENTS - 1]));
+  }
 
-    /**
-     * Set up the test.
-     */
-    public void testSetUp() {
-        assertEquals(NO_OF_ELEMENTS, model.getSize());
-        assertTrue(model.contains(signals[NO_OF_ELEMENTS / 2]));
-        assertTrue(model.contains(signals[0]));
-        assertTrue(model.contains(signals[NO_OF_ELEMENTS - 1]));
-    }
+  /** Test setSignal(). */
+  public void testSetSignal() {
+    Model.getCommonBehaviorHelper().setSignal(elem, signals[0]);
+    Model.getPump().flushModelEvents();
+    // One can only do this by changing target,
+    // so let's simulate that:
+    model.targetSet(
+        new TargetEvent(
+            this,
+            TargetEvent.TARGET_SET,
+            new Object[0],
+            new Object[] {
+              elem,
+            }));
+    assertTrue(model.getSelectedItem() == signals[0]);
+  }
 
-    /**
-     * Test setSignal().
-     */
-    public void testSetSignal() {
-        Model.getCommonBehaviorHelper().setSignal(elem, signals[0]);
-        Model.getPump().flushModelEvents();
-        // One can only do this by changing target,
-        // so let's simulate that:
-        model.targetSet(new TargetEvent(this,
-                TargetEvent.TARGET_SET,
-                new Object[0],
-                new Object[] {
-                    elem,
-                }));
-        assertTrue(model.getSelectedItem() == signals[0]);
-    }
-
-    /**
-     * Test removing signals.
-     */
-    public void testRemoveSignal() {
-        Model.getUmlFactory().delete(signals[NO_OF_ELEMENTS - 1]);
-        Model.getPump().flushModelEvents();
-        assertEquals(NO_OF_ELEMENTS - 1, model.getSize());
-        assertTrue(!model.contains(signals[NO_OF_ELEMENTS - 1]));
-    }
-
+  /** Test removing signals. */
+  public void testRemoveSignal() {
+    Model.getUmlFactory().delete(signals[NO_OF_ELEMENTS - 1]);
+    Model.getPump().flushModelEvents();
+    assertEquals(NO_OF_ELEMENTS - 1, model.getSize());
+    assertTrue(!model.contains(signals[NO_OF_ELEMENTS - 1]));
+  }
 }

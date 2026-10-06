@@ -25,13 +25,11 @@ package org.argouml.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
-
 import junit.framework.TestCase;
 
 /**
- * TODO: This is currently just a mechanical merge of the tests in
- * from the generic Model test and the NSUML tests.  They need to be
- * reviewed & merged.
+ * TODO: This is currently just a mechanical merge of the tests in from the generic Model test and
+ * the NSUML tests. They need to be reviewed & merged.
  *
  * @author euluis
  * @since 0.19.2
@@ -39,130 +37,113 @@ import junit.framework.TestCase;
  */
 public class TestExtensionMechanismsHelper extends TestCase {
 
-    private Object model;
+  private Object model;
 
-    private Object pack;
+  private Object pack;
 
-    private Object theClass;
+  private Object theClass;
 
-    private Object theStereotype;
+  private Object theStereotype;
 
-    private Collection models;
+  private Collection models;
 
-    /**
-     * The constructor.
-     *
-     * @param n the name
-     */
-    public TestExtensionMechanismsHelper(String n) {
-        super(n);
-    }
+  /**
+   * The constructor.
+   *
+   * @param n the name
+   */
+  public TestExtensionMechanismsHelper(String n) {
+    super(n);
+  }
 
-    /*
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        model = Model.getModelManagementFactory().createModel();
-        pack =
-            Model.getModelManagementFactory().buildPackage("pack",
-                UUIDManager.getInstance().getNewUUID());
-        Model.getCoreHelper().setNamespace(pack, model);
+  /*
+   * @see junit.framework.TestCase#setUp()
+   */
+  protected void setUp() throws Exception {
+    super.setUp();
+    model = Model.getModelManagementFactory().createModel();
+    pack =
+        Model.getModelManagementFactory()
+            .buildPackage("pack", UUIDManager.getInstance().getNewUUID());
+    Model.getCoreHelper().setNamespace(pack, model);
 
-        theClass = Model.getCoreFactory().buildClass("TheClass", pack);
-        theStereotype =
-            Model.getExtensionMechanismsFactory().buildStereotype(
-                theClass, "containedStereotype", pack);
-        models = new ArrayList();
-        models.add(model);
-    }
+    theClass = Model.getCoreFactory().buildClass("TheClass", pack);
+    theStereotype =
+        Model.getExtensionMechanismsFactory()
+            .buildStereotype(theClass, "containedStereotype", pack);
+    models = new ArrayList();
+    models.add(model);
+  }
 
-    /**
-     * This method tests the working of getAllPossibleStereotypes when the
-     * stereotype is contained within the same package as the model element.
-     */
-    public void
-    testGetAllPossibleStereotypesStereotypeAndMEContainedInSubPackage() {
-        Collection stereotypes =
-            Model.getExtensionMechanismsHelper()
-                .getAllPossibleStereotypes(models, theClass);
-        assertTrue("The \"" + theStereotype
-                + "\" isn't returned, but is possible.", stereotypes
-                .contains(theStereotype));
-    }
+  /**
+   * This method tests the working of getAllPossibleStereotypes when the stereotype is contained
+   * within the same package as the model element.
+   */
+  public void testGetAllPossibleStereotypesStereotypeAndMEContainedInSubPackage() {
+    Collection stereotypes =
+        Model.getExtensionMechanismsHelper().getAllPossibleStereotypes(models, theClass);
+    assertTrue(
+        "The \"" + theStereotype + "\" isn't returned, but is possible.",
+        stereotypes.contains(theStereotype));
+  }
 
-    /**
-     * Test that a stereotype contained in a containing package of the package
-     * where the model element is, is applicable to the model element.
-     */
-    public void testGetAllPossibleStereotypesStereotypeInContainingPackage() {
-        Object subpack =
-            Model.getModelManagementFactory().buildPackage(
-                "subpack", UUIDManager.getInstance().getNewUUID());
-        Model.getCoreHelper().setNamespace(subpack, pack);
-        theClass =
-            Model.getCoreFactory().buildClass("TheClassInSubpack", subpack);
-        Collection stereotypes =
-            Model.getExtensionMechanismsHelper()
-                .getAllPossibleStereotypes(models, theClass);
-        assertTrue("The \"" + theStereotype
-                + "\" isn't returned, but is possible.", stereotypes
-                .contains(theStereotype));
-    }
+  /**
+   * Test that a stereotype contained in a containing package of the package where the model element
+   * is, is applicable to the model element.
+   */
+  public void testGetAllPossibleStereotypesStereotypeInContainingPackage() {
+    Object subpack =
+        Model.getModelManagementFactory()
+            .buildPackage("subpack", UUIDManager.getInstance().getNewUUID());
+    Model.getCoreHelper().setNamespace(subpack, pack);
+    theClass = Model.getCoreFactory().buildClass("TheClassInSubpack", subpack);
+    Collection stereotypes =
+        Model.getExtensionMechanismsHelper().getAllPossibleStereotypes(models, theClass);
+    assertTrue(
+        "The \"" + theStereotype + "\" isn't returned, but is possible.",
+        stereotypes.contains(theStereotype));
+  }
 
+  /** Test if we can create modelelements with the names given. */
+  public void testGetMetaModelName() {
+    CheckUMLModelHelper.metaModelNameCorrect(
+        Model.getExtensionMechanismsFactory(),
+        TestExtensionMechanismsFactory.getAllModelElements());
+  }
 
-    /**
-     * Test if we can create modelelements with the names given.
-     */
-    public void testGetMetaModelName() {
-        CheckUMLModelHelper.metaModelNameCorrect(
-                Model.getExtensionMechanismsFactory(),
-                TestExtensionMechanismsFactory.getAllModelElements());
-    }
+  /** Test if we can create a valid stereotype for all the modelelements. */
+  public void testIsValidStereoType() {
+    CheckUMLModelHelper.isValidStereoType(
+        Model.getExtensionMechanismsFactory(),
+        TestExtensionMechanismsFactory.getAllModelElements());
+  }
 
-    /**
-     * Test if we can create a valid stereotype for all the modelelements.
-     */
-    public void testIsValidStereoType() {
-        CheckUMLModelHelper.isValidStereoType(
-                Model.getExtensionMechanismsFactory(),
-                TestExtensionMechanismsFactory.getAllModelElements());
-    }
-
-    /**
-     * Test multiple base class support.
-     */
-    public void testMultipleBaseClasses() {
-        String classType = Model.getMetaTypes().getName(theClass);
-        Collection baseClasses = 
-            Model.getFacade().getBaseClasses(theStereotype);
-        assertNotNull("There are no base classes", baseClasses);
-        assertEquals("Wrong number of base classes", 1, baseClasses.size());
-        assertEquals("Base class doesn't match type of model element",
-                classType,
-                baseClasses.iterator().next());
-        Model.getExtensionMechanismsHelper().removeBaseClass(theStereotype,
-                theClass);
-        assertEquals("Wrong number of base classes",
-                0,
-                Model.getFacade().getBaseClasses(theStereotype).size());
-        // Test both forms of addBaseClass
-        Model.getExtensionMechanismsHelper().addBaseClass(theStereotype,
-                theClass);
-        Model.getExtensionMechanismsHelper().addBaseClass(theStereotype,
-                "myOtherClass");
-        assertEquals("Wrong number of base classes",
-                2,
-                Model.getFacade().getBaseClasses(theStereotype).size());
-        assertTrue("Base class not found", Model.getFacade().getBaseClasses(
-                theStereotype).contains(classType));
-        assertTrue("Base class not found", Model.getFacade().getBaseClasses(
-                theStereotype).contains("myOtherClass"));
-        // Test remaining form of removeBaseClass
-        Model.getExtensionMechanismsHelper().removeBaseClass(theStereotype,
-                Model.getMetaTypes().getName(theClass));
-        assertEquals("Wrong number of base classes",
-                1,
-                Model.getFacade().getBaseClasses(theStereotype).size());
-    }
+  /** Test multiple base class support. */
+  public void testMultipleBaseClasses() {
+    String classType = Model.getMetaTypes().getName(theClass);
+    Collection baseClasses = Model.getFacade().getBaseClasses(theStereotype);
+    assertNotNull("There are no base classes", baseClasses);
+    assertEquals("Wrong number of base classes", 1, baseClasses.size());
+    assertEquals(
+        "Base class doesn't match type of model element", classType, baseClasses.iterator().next());
+    Model.getExtensionMechanismsHelper().removeBaseClass(theStereotype, theClass);
+    assertEquals(
+        "Wrong number of base classes", 0, Model.getFacade().getBaseClasses(theStereotype).size());
+    // Test both forms of addBaseClass
+    Model.getExtensionMechanismsHelper().addBaseClass(theStereotype, theClass);
+    Model.getExtensionMechanismsHelper().addBaseClass(theStereotype, "myOtherClass");
+    assertEquals(
+        "Wrong number of base classes", 2, Model.getFacade().getBaseClasses(theStereotype).size());
+    assertTrue(
+        "Base class not found",
+        Model.getFacade().getBaseClasses(theStereotype).contains(classType));
+    assertTrue(
+        "Base class not found",
+        Model.getFacade().getBaseClasses(theStereotype).contains("myOtherClass"));
+    // Test remaining form of removeBaseClass
+    Model.getExtensionMechanismsHelper()
+        .removeBaseClass(theStereotype, Model.getMetaTypes().getName(theClass));
+    assertEquals(
+        "Wrong number of base classes", 1, Model.getFacade().getBaseClasses(theStereotype).size());
+  }
 }

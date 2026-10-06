@@ -25,7 +25,6 @@
 package org.argouml.uml.diagram.ui;
 
 import junit.framework.TestCase;
-
 import org.argouml.uml.diagram.static_structure.ui.UMLClassDiagram;
 
 /**
@@ -34,60 +33,56 @@ import org.argouml.uml.diagram.static_structure.ui.UMLClassDiagram;
  */
 public class TestActionAddAllClassesFromModel extends TestCase {
 
-    private ActionAddAllClassesFromModel action;
-    private UMLClassDiagram diagram;
+  private ActionAddAllClassesFromModel action;
+  private UMLClassDiagram diagram;
 
-    /**
-     * Constructor for TestActionAddAllClassesFromModel.
-     * @param arg0 test case name
-     */
-    public TestActionAddAllClassesFromModel(String arg0) {
-        super(arg0);
-    }
+  /**
+   * Constructor for TestActionAddAllClassesFromModel.
+   *
+   * @param arg0 test case name
+   */
+  public TestActionAddAllClassesFromModel(String arg0) {
+    super(arg0);
+  }
 
-    /**
-     * @throws Exception if something goes wrong.
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        diagram = new UMLClassDiagram();
-	action = new ActionAddAllClassesFromModel("Add all classes from model",
-						  diagram);
-    }
+  /**
+   * @throws Exception if something goes wrong.
+   */
+  protected void setUp() throws Exception {
+    super.setUp();
+    diagram = new UMLClassDiagram();
+    action = new ActionAddAllClassesFromModel("Add all classes from model", diagram);
+  }
 
-    /**
-     * @author Timothy M. Lebo
-     * @since November 3, 2003
-     */
-    public void testConstruction() {
-	new ActionAddAllClassesFromModel("Add all classes from model",
-					 diagram);
-    }
+  /**
+   * @author Timothy M. Lebo
+   * @since November 3, 2003
+   */
+  public void testConstruction() {
+    new ActionAddAllClassesFromModel("Add all classes from model", diagram);
+  }
 
-    /**
-     * Makes sure the option is enabled.
-     *
-     * ActionAddAllClassesFromModel expects to receive a
-     * UMLClassDiagram in its constructor. If the Class of the class
-     * diagrams in argoUML changes, this needs to change also.
-     *
-     * @author Timothy M. Lebo
-     * @since November 3, 2003
-     */
-    public void testShouldBeEnabled() {
-	assertTrue(action.isEnabled());
-    }
+  /**
+   * Makes sure the option is enabled.
+   *
+   * <p>ActionAddAllClassesFromModel expects to receive a UMLClassDiagram in its constructor. If the
+   * Class of the class diagrams in argoUML changes, this needs to change also.
+   *
+   * @author Timothy M. Lebo
+   * @since November 3, 2003
+   */
+  public void testShouldBeEnabled() {
+    assertTrue(action.isEnabled());
+  }
 
-    /**
-     * Makes sure the option is not enabled if its diagram isn't
-     * UMLClassDiagram.
-     *
-     * @author Timothy M. Lebo
-     * @since November 3, 2003
-     */
-    public void testShouldNotBeEnabled() {
-	action = new ActionAddAllClassesFromModel("Add all classes from model",
-						   new Object());
-	assertEquals(action.isEnabled(), false);
-    }
+  /**
+   * Makes sure the option is not enabled if its diagram isn't UMLClassDiagram.
+   *
+   * @author Timothy M. Lebo
+   * @since November 3, 2003
+   */
+  public void testShouldNotBeEnabled() {
+    action = new ActionAddAllClassesFromModel("Add all classes from model", new Object());
+    assertEquals(action.isEnabled(), false);
+  }
 }

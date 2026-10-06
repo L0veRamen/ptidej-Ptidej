@@ -29,7 +29,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
 import org.argouml.i18n.Translator;
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
@@ -39,59 +38,57 @@ import org.argouml.uml.diagram.state.ui.UMLStateDiagram;
 import org.argouml.uml.diagram.ui.UMLDiagram;
 
 /**
- * A go rule to navigate from a statemachine or activitygraph
- * to the statediagram or activitydiagram that's showing it.
+ * A go rule to navigate from a statemachine or activitygraph to the statediagram or activitydiagram
+ * that's showing it.
  *
  * @since Jul 12, 2004
  * @author jaap.branderhorst@xs4all.nl
  */
 public class GoStatemachineToDiagram extends AbstractPerspectiveRule {
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
-     */
-    public Collection getChildren(Object parent) {
-        if (Model.getFacade().isAStateMachine(parent)) {
-            List returnList = new ArrayList();
-            Project proj = ProjectManager.getManager().getCurrentProject();
-            Iterator it = proj.getDiagrams().iterator();
-            while (it.hasNext()) {
-                UMLDiagram diagram = (UMLDiagram) it.next();
-                if (diagram instanceof UMLActivityDiagram) {
-                    UMLActivityDiagram activityDiagram =
-                        (UMLActivityDiagram) diagram;
-                    Object activityGraph = activityDiagram.getStateMachine();
-                    if (activityGraph == parent) {
-                        returnList.add(activityDiagram);
-                        continue;
-                    }
-                }
-                if (diagram instanceof UMLStateDiagram) {
-                    UMLStateDiagram stateDiagram = (UMLStateDiagram) diagram;
-                    Object stateMachine = stateDiagram.getStateMachine();
-                    if (stateMachine == parent) {
-                        returnList.add(stateDiagram);
-                        continue;
-                    }
-                }
-            }
-            return returnList;
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
+   */
+  public Collection getChildren(Object parent) {
+    if (Model.getFacade().isAStateMachine(parent)) {
+      List returnList = new ArrayList();
+      Project proj = ProjectManager.getManager().getCurrentProject();
+      Iterator it = proj.getDiagrams().iterator();
+      while (it.hasNext()) {
+        UMLDiagram diagram = (UMLDiagram) it.next();
+        if (diagram instanceof UMLActivityDiagram) {
+          UMLActivityDiagram activityDiagram = (UMLActivityDiagram) diagram;
+          Object activityGraph = activityDiagram.getStateMachine();
+          if (activityGraph == parent) {
+            returnList.add(activityDiagram);
+            continue;
+          }
         }
-        return null;
+        if (diagram instanceof UMLStateDiagram) {
+          UMLStateDiagram stateDiagram = (UMLStateDiagram) diagram;
+          Object stateMachine = stateDiagram.getStateMachine();
+          if (stateMachine == parent) {
+            returnList.add(stateDiagram);
+            continue;
+          }
+        }
+      }
+      return returnList;
     }
+    return null;
+  }
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
-     */
-    public String getRuleName() {
-        return Translator.localize ("misc.state-machine.diagram");
-    }
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
+   */
+  public String getRuleName() {
+    return Translator.localize("misc.state-machine.diagram");
+  }
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
-     */
-    public Set getDependencies(Object parent) {
-        return null;
-    }
-
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
+   */
+  public Set getDependencies(Object parent) {
+    return null;
+  }
 }

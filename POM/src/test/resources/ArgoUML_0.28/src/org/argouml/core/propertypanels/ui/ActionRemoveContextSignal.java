@@ -25,42 +25,37 @@
 package org.argouml.core.propertypanels.ui;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.AbstractActionRemoveElement;
 
 /**
  * This Action removes a Context from a Signal.
- * 
+ *
  * @author Michiel
  */
 class ActionRemoveContextSignal extends AbstractActionRemoveElement {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = -3345844954130000669L;
+  /** The serial version. */
+  private static final long serialVersionUID = -3345844954130000669L;
 
-    /**
-     * Construct an Action which removes a Context from a Signal.
-     */
-    public ActionRemoveContextSignal() {
-        super(Translator.localize("menu.popup.remove"));
-    }
+  /** Construct an Action which removes a Context from a Signal. */
+  public ActionRemoveContextSignal() {
+    super(Translator.localize("menu.popup.remove"));
+  }
 
-    /*
-     * @see org.tigris.gef.undo.UndoableAction#actionPerformed(java.awt.event.ActionEvent)
-     */
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        Object context = getObjectToRemove(); 
-        if (context != null) {
-            Object signal = getTarget();
-            if (Model.getFacade().isASignal(signal)) {
-                Model.getCommonBehaviorHelper().removeContext(signal, context);
-            }
-        }
+  /*
+   * @see org.tigris.gef.undo.UndoableAction#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    Object context = getObjectToRemove();
+    if (context != null) {
+      Object signal = getTarget();
+      if (Model.getFacade().isASignal(signal)) {
+        Model.getCommonBehaviorHelper().removeContext(signal, context);
+      }
     }
+  }
 }

@@ -1,80 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>net.ptidej</groupId>
-		<artifactId>all-ptidej</artifactId>
-		<version>1.0.0</version>
-	</parent>
+    <parent>
+        <groupId>net.ptidej</groupId>
+        <artifactId>all-ptidej</artifactId>
+        <version>1.0.0</version>
+    </parent>
 
-	<groupId>net.ptidej.padl</groupId>
-	<artifactId>padl-jni</artifactId>
-	<name>PADL JNI</name>
+    <groupId>net.ptidej.padl</groupId>
+    <artifactId>padl-jni</artifactId>
+    <name>PADL JNI</name>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<!-- Must export/open some hidden packages -->
-					<argLine>
-						--add-opens java.base/java.net=ALL-UNNAMED
-						--add-opens java.base/java.util=ALL-UNNAMED
-						--enable-native-access=ALL-UNNAMED
-					</argLine>
-					<excludes>
-						<!-- Excluded on purpose -->
-						<exclude>**/*Test.java</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-			<!-- Must generate the test-jar for dependent tests -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <!-- Must export/open some hidden packages -->
+                    <argLine>
+                        --add-opens java.base/java.net=ALL-UNNAMED
+                        --add-opens java.base/java.util=ALL-UNNAMED
+                        --enable-native-access=ALL-UNNAMED
+                    </argLine>
+                    <excludes>
+                        <!-- Excluded on purpose -->
+                        <exclude>**/*Test.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <!-- Must generate the test-jar for dependent tests -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
-	<dependencies>
-		<!-- Main dependencies -->
-		<dependency>
-			<groupId>net.ptidej.cpl</groupId>
-			<artifactId>cpl-core</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+    <dependencies>
+        <!-- Main dependencies -->
+        <dependency>
+            <groupId>net.ptidej.cpl</groupId>
+            <artifactId>cpl-core</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
-		<dependency>
-			<groupId>net.ptidej.padl</groupId>
-			<artifactId>padl-core</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+        <dependency>
+            <groupId>net.ptidej.padl</groupId>
+            <artifactId>padl-core</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
-		<dependency>
-			<groupId>net.ptidej.padl</groupId>
-			<artifactId>padl-creator-javafile-eclipse</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+        <dependency>
+            <groupId>net.ptidej.padl</groupId>
+            <artifactId>padl-creator-javafile-eclipse</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
-		<dependency>
-			<groupId>net.ptidej.padl</groupId>
-			<artifactId>padl-creator-cpp-eclipse</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+        <dependency>
+            <groupId>net.ptidej.padl</groupId>
+            <artifactId>padl-creator-cpp-eclipse</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
-		<!-- Test dependencies -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>

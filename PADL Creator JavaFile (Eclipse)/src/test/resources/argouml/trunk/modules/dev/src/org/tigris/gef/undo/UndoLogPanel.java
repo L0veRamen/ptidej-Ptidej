@@ -26,55 +26,48 @@ package org.tigris.gef.undo;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
-
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 public final class UndoLogPanel extends JScrollPane {
 
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -3483889053389473380L;
+  /** The UID. */
+  private static final long serialVersionUID = -3483889053389473380L;
 
-    private JPanel list;
+  private JPanel list;
 
-    /**
-     * The instance.
-     */
-    private static final UndoLogPanel INSTANCE = new UndoLogPanel();
+  /** The instance. */
+  private static final UndoLogPanel INSTANCE = new UndoLogPanel();
 
-    /**
-     * @return The instance.
-     */
-    public static UndoLogPanel getInstance() {
-        return INSTANCE;
+  /**
+   * @return The instance.
+   */
+  public static UndoLogPanel getInstance() {
+    return INSTANCE;
+  }
+
+  /** Constructor. */
+  private UndoLogPanel() {
+    list = new JPanel(new GridLayout(0, 1));
+    JPanel listContainer = new JPanel(new BorderLayout());
+    listContainer.add(BorderLayout.NORTH, list);
+    this.setViewportView(listContainer);
+  }
+
+  void addMemento(Memento memento) {
+    list.add(new JLabel(memento.toString()));
+    doLayout();
+    validate();
+    if (getVerticalScrollBar() != null) {
+      int maxScroll = getVerticalScrollBar().getMaximum();
+      getVerticalScrollBar().setValue(maxScroll + 1);
     }
+  }
 
-    /**
-     * Constructor.
-     */
-    private UndoLogPanel() {
-        list = new JPanel(new GridLayout(0, 1));
-        JPanel listContainer = new JPanel(new BorderLayout());
-        listContainer.add(BorderLayout.NORTH, list);
-        this.setViewportView(listContainer);
-    }
-
-    void addMemento(Memento memento) {
-        list.add(new JLabel(memento.toString()));
-        doLayout();
-        validate();
-        if (getVerticalScrollBar() != null) {
-            int maxScroll = getVerticalScrollBar().getMaximum();
-            getVerticalScrollBar().setValue(maxScroll + 1);
-        }
-    }
-
-    void removeMemento(Memento memento) {
-        list.remove(list.getComponentCount() - 1);
-        doLayout();
-        validate();
-    }
+  void removeMemento(Memento memento) {
+    list.remove(list.getComponentCount() - 1);
+    doLayout();
+    validate();
+  }
 }

@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -14,38 +14,32 @@
 
 package util.parser.java.v14.nodes;
 
-/**
- * Grammar production:
- * f0 -> <IDENTIFIER>
- * f1 -> ":"
- * f2 -> Statement()
- */
+/** Grammar production: f0 -> <IDENTIFIER> f1 -> ":" f2 -> Statement() */
 public class LabeledStatement implements Node {
-   /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-public NodeToken f0;
-   public NodeToken f1;
-   public Statement f2;
+  /** */
+  private static final long serialVersionUID = 1L;
 
-   public LabeledStatement(NodeToken n0, NodeToken n1, Statement n2) {
-      this.f0 = n0;
-      this.f1 = n1;
-      this.f2 = n2;
-   }
+  public NodeToken f0;
+  public NodeToken f1;
+  public Statement f2;
 
-   public LabeledStatement(NodeToken n0, Statement n1) {
-      this.f0 = n0;
-      this.f1 = new NodeToken(":");
-      this.f2 = n1;
-   }
+  public LabeledStatement(NodeToken n0, NodeToken n1, Statement n2) {
+    this.f0 = n0;
+    this.f1 = n1;
+    this.f2 = n2;
+  }
 
-   public void accept(util.parser.java.v14.visitors.Visitor v) {
-      v.visit(this);
-   }
-   public Object accept(util.parser.java.v14.visitors.ObjectVisitor v, Object argu) {
-      return v.visit(this,argu);
-   }
+  public LabeledStatement(NodeToken n0, Statement n1) {
+    this.f0 = n0;
+    this.f1 = new NodeToken(":");
+    this.f2 = n1;
+  }
+
+  public void accept(util.parser.java.v14.visitors.Visitor v) {
+    v.visit(this);
+  }
+
+  public Object accept(util.parser.java.v14.visitors.ObjectVisitor v, Object argu) {
+    return v.visit(this, argu);
+  }
 }
-

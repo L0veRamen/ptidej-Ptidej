@@ -25,39 +25,35 @@
 package org.argouml.gefext;
 
 import java.awt.event.MouseEvent;
-
 import org.argouml.i18n.Translator;
 import org.tigris.gef.base.ModeCreateFigPoly;
 import org.tigris.gef.presentation.Fig;
 import org.tigris.gef.presentation.FigPoly;
 
 /**
- * A Mode to interprete user input while creating a FigPoly. All of
- * the actual event handling is inherited from ModeCreate. This class
- * just implements the differences needed for ArgoUML.
+ * A Mode to interprete user input while creating a FigPoly. All of the actual event handling is
+ * inherited from ModeCreate. This class just implements the differences needed for ArgoUML.
  *
  * @author Michiel
  */
 public class ArgoModeCreateFigPoly extends ModeCreateFigPoly {
 
-    public String instructions() {
-        return Translator.localize("statusmsg.help.create.poly");
-    }
+  public String instructions() {
+    return Translator.localize("statusmsg.help.create.poly");
+  }
 
-    /*
-     * @see org.tigris.gef.base.ModeCreateFigPoly#createNewItem(java.awt.event.MouseEvent, int, int)
-     */
-    @Override
-    public Fig createNewItem(MouseEvent me, int snapX, int snapY) {
-        FigPoly p = new ArgoFigPoly(snapX, snapY);
-        p.addPoint(snapX, snapY); // add the first point twice
-        _lastX = snapX;
-        _lastY = snapY;
-        _startX = snapX;
-        _startY = snapY;
-        _npoints = 2;
-        return p;
-    }
-    
-    
+  /*
+   * @see org.tigris.gef.base.ModeCreateFigPoly#createNewItem(java.awt.event.MouseEvent, int, int)
+   */
+  @Override
+  public Fig createNewItem(MouseEvent me, int snapX, int snapY) {
+    FigPoly p = new ArgoFigPoly(snapX, snapY);
+    p.addPoint(snapX, snapY); // add the first point twice
+    _lastX = snapX;
+    _lastY = snapY;
+    _startX = snapX;
+    _startY = snapY;
+    _npoints = 2;
+    return p;
+  }
 }

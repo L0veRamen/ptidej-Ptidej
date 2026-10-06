@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -23,42 +23,38 @@ import padl.util.Util;
 
 /**
  * @author Yann-Gaël Guéhéneuc
- * @since  2005/08/14
+ * @since 2005/08/14
  */
 public class MemberInterfacesTest extends ClassFilePrimitive {
-	private static IFirstClassEntity[] FirstClassEntities = null;
+  private static IFirstClassEntity[] FirstClassEntities = null;
 
-	public MemberInterfacesTest(final String aName) {
-		super(aName);
-	}
-	protected void setUp() throws CreationException,
-			UnsupportedSourceModelException {
+  public MemberInterfacesTest(final String aName) {
+    super(aName);
+  }
 
-		if (MemberInterfacesTest.FirstClassEntities == null) {
-			final ICodeLevelModel codeLevelModel =
-				ClassFilePrimitive.getFactory().createCodeLevelModel(
-					"ptidej.example.innerclasses");
-			codeLevelModel
-				.create(new CompleteClassFileCreator(
-					new String[] {
-							"../PADL Creator ClassFile/target/test-classes/padl/example/innerclasses/IA.class",
-							"../PADL Creator ClassFile/target/test-classes/padl/example/innerclasses/IA$IAMember.class",
-							"../PADL Creator ClassFile/target/test-classes/padl/example/innerclasses/B.class",
-							"../PADL Creator ClassFile/target/test-classes/padl/example/innerclasses/B$BMember.class",
-							"../PADL Creator ClassFile/target/test-classes/padl/example/innerclasses/C.class" }));
+  protected void setUp() throws CreationException, UnsupportedSourceModelException {
 
-			final IIdiomLevelModel idiomLevelModel =
-				(IIdiomLevelModel) new AACRelationshipsAnalysis()
-					.invoke(codeLevelModel);
+    if (MemberInterfacesTest.FirstClassEntities == null) {
+      final ICodeLevelModel codeLevelModel =
+          ClassFilePrimitive.getFactory().createCodeLevelModel("ptidej.example.innerclasses");
+      codeLevelModel.create(
+          new CompleteClassFileCreator(
+              new String[] {
+                "../PADL Creator ClassFile/target/test-classes/padl/example/innerclasses/IA.class",
+                "../PADL Creator ClassFile/target/test-classes/padl/example/innerclasses/IA$IAMember.class",
+                "../PADL Creator ClassFile/target/test-classes/padl/example/innerclasses/B.class",
+                "../PADL Creator ClassFile/target/test-classes/padl/example/innerclasses/B$BMember.class",
+                "../PADL Creator ClassFile/target/test-classes/padl/example/innerclasses/C.class"
+              }));
 
-			MemberInterfacesTest.FirstClassEntities =
-				Util.getArrayOfTopLevelEntities(idiomLevelModel);
-		}
-	}
-	public void testClasses() {
-		Assert.assertEquals(
-			"Number of entities",
-			7,
-			MemberInterfacesTest.FirstClassEntities.length);
-	}
+      final IIdiomLevelModel idiomLevelModel =
+          (IIdiomLevelModel) new AACRelationshipsAnalysis().invoke(codeLevelModel);
+
+      MemberInterfacesTest.FirstClassEntities = Util.getArrayOfTopLevelEntities(idiomLevelModel);
+    }
+  }
+
+  public void testClasses() {
+    Assert.assertEquals("Number of entities", 7, MemberInterfacesTest.FirstClassEntities.length);
+  }
 }

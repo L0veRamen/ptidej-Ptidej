@@ -25,44 +25,42 @@ package org.argouml.model.mdr;
 
 import java.io.IOException;
 import java.io.InputStream;
-
 import org.netbeans.lib.jmi.xmi.XMIHeaderConsumer;
 
 /**
- * This class is unused.  If it's ever reintroduced to determine
- * between UML 1.3 (not just Novosoft files) and UML 1.4 files
- * it needs to be changed to not be Novosoft specific (and not
- * scan the entire file)
+ * This class is unused. If it's ever reintroduced to determine between UML 1.3 (not just Novosoft
+ * files) and UML 1.4 files it needs to be changed to not be Novosoft specific (and not scan the
+ * entire file)
  */
 public class XmiHeaderConsumerImpl implements XMIHeaderConsumer {
-    
-    private boolean novosoft = false;
-    
-    public XmiHeaderConsumerImpl() {
-        super();
-    }
 
-    public void consumeHeader(InputStream in) {
-        StringBuffer sb = new StringBuffer();
-        try {
-            // TODO: I hope that this is not this which prevent the
-            // repositioning of the stream. Haven't tried to reposition
-            // without following lines commented - ludo
-            byte[] buf = new byte[512];
+  private boolean novosoft = false;
 
-            while (in.read(buf) > 0) {
-                sb.append(new String(buf));
-            }
-            //TODO: Improve the test if needed
-            if (sb.indexOf("Novosoft") > -1) {
-                novosoft = true;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+  public XmiHeaderConsumerImpl() {
+    super();
+  }
 
-    public boolean isNovosoft() {
-        return novosoft;
+  public void consumeHeader(InputStream in) {
+    StringBuffer sb = new StringBuffer();
+    try {
+      // TODO: I hope that this is not this which prevent the
+      // repositioning of the stream. Haven't tried to reposition
+      // without following lines commented - ludo
+      byte[] buf = new byte[512];
+
+      while (in.read(buf) > 0) {
+        sb.append(new String(buf));
+      }
+      // TODO: Improve the test if needed
+      if (sb.indexOf("Novosoft") > -1) {
+        novosoft = true;
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
     }
+  }
+
+  public boolean isNovosoft() {
+    return novosoft;
+  }
 }

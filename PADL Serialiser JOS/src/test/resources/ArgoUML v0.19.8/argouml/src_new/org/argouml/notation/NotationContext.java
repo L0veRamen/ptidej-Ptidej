@@ -25,23 +25,23 @@
 package org.argouml.notation;
 
 /**
- * Any class which can request notation must implement this interface
- * so that the proper notation generator or parser will be used.
+ * Any class which can request notation must implement this interface so that the proper notation
+ * generator or parser will be used.
  *
  * @author Thierry Lach
  * @since 0.9.4
  */
 public interface NotationContext {
-    /**
-     * The context must return a NotationName indicating the notation
-     * (and version if applicable) that it is using.
-     *
-     * @return null if the context does not wish to name a specific notation
-     */
-    NotationName getContextNotation();
-    
-    /**
-     * @param nn the new notationName
-     */
-    void setContextNotation(NotationName nn);
+  /**
+   * The context must return a NotationName indicating the notation (and version if applicable) that
+   * it is using.
+   *
+   * @return null if the context does not wish to name a specific notation
+   */
+  NotationName getContextNotation();
+
+  /**
+   * @param nn the new notationName
+   */
+  void setContextNotation(NotationName nn);
 }

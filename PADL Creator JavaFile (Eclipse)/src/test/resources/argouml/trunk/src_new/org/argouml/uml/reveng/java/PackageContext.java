@@ -25,7 +25,6 @@
 package org.argouml.uml.reveng.java;
 
 import java.net.MalformedURLException;
-
 import org.apache.log4j.Logger;
 import org.argouml.model.Facade;
 import org.argouml.model.Model;
@@ -37,207 +36,164 @@ import org.argouml.uml.reveng.ImportClassLoader;
  * @author Marcus Andersson
  */
 class PackageContext extends Context {
-    
-    private static final Logger LOG = Logger.getLogger(PackageContext.class);
-    
-    /** The package this context represents. */
-    private Object mPackage;
 
-    /** The java style name of the package. */
-    private String javaName;
+  private static final Logger LOG = Logger.getLogger(PackageContext.class);
 
-    /**
-       Create a new context from a package.
+  /** The package this context represents. */
+  private Object mPackage;
 
-       @param base Based on this context.
-       @param thePackage Represents this package.
-    */
-    public PackageContext(Context base, Object thePackage) {
-	super(base);
-	this.mPackage = thePackage;
-	javaName = getJavaName(thePackage);
-    }
+  /** The java style name of the package. */
+  private String javaName;
 
-    public Object getInterface(String name)
-	throws ClassifierNotFoundException {
-        // Search in model
-        Object mInterface = Model.getFacade().lookupIn(mPackage, name);
+  /**
+   * Create a new context from a package.
+   *
+   * @param base Based on this context.
+   * @param thePackage Represents this package.
+   */
+  public PackageContext(Context base, Object thePackage) {
+    super(base);
+    this.mPackage = thePackage;
+    javaName = getJavaName(thePackage);
+  }
 
-        if (mInterface == null) {
-	    Class classifier;
+  public Object getInterface(String name) throws ClassifierNotFoundException {
+    // Search in model
+    Object mInterface = Model.getFacade().lookupIn(mPackage, name);
 
-	    // Try to find it via the classpath
-	    try {
+    if (mInterface == null) {
+      Class classifier;
 
-		// Special case for model
-		if (Model.getFacade().isAModel(mPackage)) {
-		    classifier = Class.forName(name);
-		}
-		else {
-                    String clazzName = javaName + "." + name;
-		    classifier =
-			Class.forName(clazzName);
-		}
-		if (classifier.isInterface()) {
-		    mInterface =
-			Model.getCoreFactory()
-			    .buildInterface(name, mPackage);
-		    Model.getCoreHelper().setTaggedValue(mInterface,
-					       Facade.GENERATED_TAG,
-					       "yes");
-		}
-	    }
-	    catch (ClassNotFoundException e) {
-		// We didn't find any interface
-                // try USER classpath
-                try {
-                    // Special case for model
-                    if (Model.getFacade().isAModel(mPackage)) {
-                        classifier =
-			    ImportClassLoader.getInstance().loadClass(name);
-                    }
-                    else {
-                        String clazzName = javaName + "." + name;
-                        classifier =
-			    ImportClassLoader.getInstance()
-			        .loadClass(clazzName);
-                    }
-		    if (classifier.isInterface()) {
-			mInterface =
-			    Model.getCoreFactory()
-			        .buildInterface(name, mPackage);
-			Model.getCoreHelper().setTaggedValue(mInterface,
-						   Facade.GENERATED_TAG,
-						   "yes");
-		    }
-                } catch (MalformedURLException e1) {
-                    LOG.warn("Classpath configuration error ", e1);
-                } catch (ClassNotFoundException e1) {
-                    // Ignore - we'll deal with this later by checking to see
-                    // if we found anything.
-                }
-	    }
-	}
-	if (mInterface == null && getContext() != null) {
-	    // Continue the search through the rest of the model
-	    mInterface = getContext().getInterface(name);
+      // Try to find it via the classpath
+      try {
+
+        // Special case for model
+        if (Model.getFacade().isAModel(mPackage)) {
+          classifier = Class.forName(name);
+        } else {
+          String clazzName = javaName + "." + name;
+          classifier = Class.forName(clazzName);
         }
-	if (mInterface == null) {
-	    throw new ClassifierNotFoundException(name);
-	}
-
-        return mInterface;
+        if (classifier.isInterface()) {
+          mInterface = Model.getCoreFactory().buildInterface(name, mPackage);
+          Model.getCoreHelper().setTaggedValue(mInterface, Facade.GENERATED_TAG, "yes");
+        }
+      } catch (ClassNotFoundException e) {
+        // We didn't find any interface
+        // try USER classpath
+        try {
+          // Special case for model
+          if (Model.getFacade().isAModel(mPackage)) {
+            classifier = ImportClassLoader.getInstance().loadClass(name);
+          } else {
+            String clazzName = javaName + "." + name;
+            classifier = ImportClassLoader.getInstance().loadClass(clazzName);
+          }
+          if (classifier.isInterface()) {
+            mInterface = Model.getCoreFactory().buildInterface(name, mPackage);
+            Model.getCoreHelper().setTaggedValue(mInterface, Facade.GENERATED_TAG, "yes");
+          }
+        } catch (MalformedURLException e1) {
+          LOG.warn("Classpath configuration error ", e1);
+        } catch (ClassNotFoundException e1) {
+          // Ignore - we'll deal with this later by checking to see
+          // if we found anything.
+        }
+      }
+    }
+    if (mInterface == null && getContext() != null) {
+      // Continue the search through the rest of the model
+      mInterface = getContext().getInterface(name);
+    }
+    if (mInterface == null) {
+      throw new ClassifierNotFoundException(name);
     }
 
-    /**
-     * Get a classifier from the model. If it is not in the model, try
-     * to find it with the CLASSPATH. If found, in the classpath, the
-     * classifier is created and added to the model. If not found at
-     * all, a datatype is created and added to the model.
-     *
-     * @param name The name of the classifier to find.
-     * @return Found classifier.
-     * @throws ClassifierNotFoundException if classifier couldn't be located
-     */
-    public Object get(String name)
-	throws ClassifierNotFoundException {
-	// Search in model
-	Object mClassifier = Model.getFacade().lookupIn(mPackage, name);
+    return mInterface;
+  }
 
-	if (mClassifier == null) {
-	    Class classifier;
-	    // Try to find it via the classpath
-	    try {
+  /**
+   * Get a classifier from the model. If it is not in the model, try to find it with the CLASSPATH.
+   * If found, in the classpath, the classifier is created and added to the model. If not found at
+   * all, a datatype is created and added to the model.
+   *
+   * @param name The name of the classifier to find.
+   * @return Found classifier.
+   * @throws ClassifierNotFoundException if classifier couldn't be located
+   */
+  public Object get(String name) throws ClassifierNotFoundException {
+    // Search in model
+    Object mClassifier = Model.getFacade().lookupIn(mPackage, name);
 
-		// Special case for model
-		if (Model.getFacade().isAModel(mPackage)) {
-		    classifier = Class.forName(name);
-		}
-		else {
-                    String clazzName = javaName + "." + name;
-		    classifier =
-			Class.forName(clazzName);
-		}
-		if (classifier.isInterface()) {
-		    mClassifier =
-			Model.getCoreFactory()
-			    .buildInterface(name, mPackage);
-		}
-		else {
-		    mClassifier =
-			Model.getCoreFactory()
-			    .buildClass(name, mPackage);
-		}
-		Model.getCoreHelper().setTaggedValue(mClassifier,
-					   Facade.GENERATED_TAG,
-					   "yes");
-	    }
-	    catch (ClassNotFoundException e) {
-		// No class or interface found
-                // try USER classpath
+    if (mClassifier == null) {
+      Class classifier;
+      // Try to find it via the classpath
+      try {
 
-                try {
-                    // Special case for model
-                    if (Model.getFacade().isAModel(mPackage)) {
-                        classifier =
-			    ImportClassLoader.getInstance().loadClass(name);
-                    }
-                    else {
-                        String clazzName = javaName + "." + name;
-                        classifier =
-			    ImportClassLoader.getInstance()
-			        .loadClass(clazzName);
-                    }
-		    if (classifier.isInterface()) {
-			mClassifier =
-			    Model.getCoreFactory()
-			        .buildInterface(name, mPackage);
-		    } else {
-			mClassifier =
-			    Model.getCoreFactory()
-			        .buildClass(name, mPackage);
-		    }
-		    Model.getCoreHelper().setTaggedValue(mClassifier,
-					       Facade.GENERATED_TAG,
-					       "yes");
-                }
-                catch (ClassNotFoundException e1) {
-                    // Ignore - we'll deal with this later by checking to see
-                    // if we found anything.
-                } catch (MalformedURLException e1) {
-                    LOG.warn("Classpath configuration error", e1);
-                }
-            }
-	}
-	if (mClassifier == null) {
-	    // Continue the search through the rest of the model
-	    if (getContext() != null) {
-		mClassifier = getContext().get(name);
-	    }
-	    else {
-		// Check for java data types
-		if (name.equals("int")
-		    || name.equals("long")
-		    || name.equals("short")
-		    || name.equals("byte")
-		    || name.equals("char")
-		    || name.equals("float")
-		    || name.equals("double")
-		    || name.equals("boolean")
-		    || name.equals("void")
-		    // How do I represent arrays in UML?
-		    || name.indexOf("[]") != -1) {
-		    mClassifier =
-			Model.getCoreFactory()
-			    .buildDataType(name, mPackage);
-		}
-	    }
-	}
-	if (mClassifier == null) {
-	    throw new ClassifierNotFoundException(name);
-	}
+        // Special case for model
+        if (Model.getFacade().isAModel(mPackage)) {
+          classifier = Class.forName(name);
+        } else {
+          String clazzName = javaName + "." + name;
+          classifier = Class.forName(clazzName);
+        }
+        if (classifier.isInterface()) {
+          mClassifier = Model.getCoreFactory().buildInterface(name, mPackage);
+        } else {
+          mClassifier = Model.getCoreFactory().buildClass(name, mPackage);
+        }
+        Model.getCoreHelper().setTaggedValue(mClassifier, Facade.GENERATED_TAG, "yes");
+      } catch (ClassNotFoundException e) {
+        // No class or interface found
+        // try USER classpath
 
-	return mClassifier;
+        try {
+          // Special case for model
+          if (Model.getFacade().isAModel(mPackage)) {
+            classifier = ImportClassLoader.getInstance().loadClass(name);
+          } else {
+            String clazzName = javaName + "." + name;
+            classifier = ImportClassLoader.getInstance().loadClass(clazzName);
+          }
+          if (classifier.isInterface()) {
+            mClassifier = Model.getCoreFactory().buildInterface(name, mPackage);
+          } else {
+            mClassifier = Model.getCoreFactory().buildClass(name, mPackage);
+          }
+          Model.getCoreHelper().setTaggedValue(mClassifier, Facade.GENERATED_TAG, "yes");
+        } catch (ClassNotFoundException e1) {
+          // Ignore - we'll deal with this later by checking to see
+          // if we found anything.
+        } catch (MalformedURLException e1) {
+          LOG.warn("Classpath configuration error", e1);
+        }
+      }
     }
+    if (mClassifier == null) {
+      // Continue the search through the rest of the model
+      if (getContext() != null) {
+        mClassifier = getContext().get(name);
+      } else {
+        // Check for java data types
+        if (name.equals("int")
+            || name.equals("long")
+            || name.equals("short")
+            || name.equals("byte")
+            || name.equals("char")
+            || name.equals("float")
+            || name.equals("double")
+            || name.equals("boolean")
+            || name.equals("void")
+            // How do I represent arrays in UML?
+            || name.indexOf("[]") != -1) {
+          mClassifier = Model.getCoreFactory().buildDataType(name, mPackage);
+        }
+      }
+    }
+    if (mClassifier == null) {
+      throw new ClassifierNotFoundException(name);
+    }
+
+    return mClassifier;
+  }
 }
-

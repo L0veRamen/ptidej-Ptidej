@@ -30,138 +30,114 @@ import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.util.Arrays;
-
 import org.argouml.model.AttributeChangeEvent;
 import org.argouml.model.Model;
 import org.tigris.gef.presentation.FigText;
 
 /**
- * A SingleLine FigText to provide consistency across Figs displaying single
- * lines of text.<ul>
- * <li>The display area is transparent
- * <li>Text is center justified
- * <li>There is no line border
- * <li>There is space below the line for a "Clarifier",
- * i.e. a red squiggly line.
+ * A SingleLine FigText to provide consistency across Figs displaying single lines of text.
+ *
+ * <ul>
+ *   <li>The display area is transparent
+ *   <li>Text is center justified
+ *   <li>There is no line border
+ *   <li>There is space below the line for a "Clarifier", i.e. a red squiggly line.
  * </ul>
  *
  * @author Bob Tarling
  */
 public class FigSingleLineText extends FigText {
 
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -5611216741181499679L;
+  /** The UID. */
+  private static final long serialVersionUID = -5611216741181499679L;
 
-    /**
-     * The properties of 'owner' that this is interested in
-     */
-    private String[] properties;
+  /** The properties of 'owner' that this is interested in */
+  private String[] properties;
 
-    /**
-     * @see org.tigris.gef.presentation.FigText#FigText(
-     *         int, int, int, int, boolean)
-     */
-    public FigSingleLineText(int x, int y, int w, int h, boolean expandOnly) {
-        super(x, y, w, h, expandOnly);
+  /**
+   * @see org.tigris.gef.presentation.FigText#FigText( int, int, int, int, boolean)
+   */
+  public FigSingleLineText(int x, int y, int w, int h, boolean expandOnly) {
+    super(x, y, w, h, expandOnly);
 
-        setFont(FigNodeModelElement.getLabelFont());
-        setTextColor(Color.black);
-        setFilled(false);
-        setTabAction(FigText.END_EDITING);
-        setReturnAction(FigText.END_EDITING);
-        setLineWidth(0);
+    setFont(FigNodeModelElement.getLabelFont());
+    setTextColor(Color.black);
+    setFilled(false);
+    setTabAction(FigText.END_EDITING);
+    setReturnAction(FigText.END_EDITING);
+    setLineWidth(0);
+  }
+
+  /**
+   * @see org.tigris.gef.presentation.FigText#FigText( int, int, int, int, boolean)
+   */
+  public FigSingleLineText(int x, int y, int w, int h, boolean expandOnly, String property) {
+    this(x, y, w, h, expandOnly, new String[] {property});
+  }
+
+  /**
+   * @see org.tigris.gef.presentation.FigText#FigText( int, int, int, int, boolean)
+   */
+  public FigSingleLineText(int x, int y, int w, int h, boolean expandOnly, String[] allProperties) {
+    this(x, y, w, h, expandOnly);
+    this.properties = allProperties;
+  }
+
+  public Dimension getMinimumSize() {
+    Dimension d = new Dimension();
+
+    Font font = getFont();
+
+    if (font == null) {
+      return d;
     }
-
-    /**
-     * @see org.tigris.gef.presentation.FigText#FigText(
-     *         int, int, int, int, boolean)
-     */
-    public FigSingleLineText(int x, int y, int w, int h, boolean expandOnly, 
-            String property) {
-        this(x, y, w, h, expandOnly, new String[] {property});
+    int maxW = getFontMetrics().stringWidth(getText());
+    int maxH = 0;
+    // int maxDescent = _fm.getMaxDescent();
+    if (getFontMetrics() == null) {
+      maxH = font.getSize();
+    } else {
+      maxH = getFontMetrics().getHeight();
     }
+    int overallH = (maxH + getTopMargin() + getBotMargin());
+    int overallW = maxW + getLeftMargin() + getRightMargin();
+    d.width = overallW;
+    d.height = overallH;
+    return d;
+  }
 
-    /**
-     * @see org.tigris.gef.presentation.FigText#FigText(
-     *         int, int, int, int, boolean)
-     */
-    public FigSingleLineText(int x, int y, int w, int h, boolean expandOnly, 
-            String[] allProperties) {
-        this(x, y, w, h, expandOnly);
-        this.properties = allProperties;
+  protected boolean isStartEditingKey(KeyEvent ke) {
+    if ((ke.getModifiers() & (KeyEvent.META_MASK | KeyEvent.ALT_MASK)) == 0) {
+      return super.isStartEditingKey(ke);
+    } else {
+      return false;
     }
+  }
 
-
-
-    public Dimension getMinimumSize() {
-        Dimension d = new Dimension();
-
-        Font font = getFont();
-
-        if (font == null) {
-            return d;
-        }
-        int maxW = getFontMetrics().stringWidth(getText());
-        int maxH = 0;
-        //int maxDescent = _fm.getMaxDescent();
-        if (getFontMetrics() == null) {
-            maxH = font.getSize();
-        } else {
-            maxH = getFontMetrics().getHeight();
-        }
-        int overallH = (maxH + getTopMargin() + getBotMargin());
-        int overallW = maxW + getLeftMargin() + getRightMargin();
-        d.width = overallW;
-        d.height = overallH;
-        return d;
+  public void setOwner(Object owner) {
+    super.setOwner(owner);
+    if (owner != null && properties != null) {
+      Model.getPump().addModelEventListener(this, owner, properties);
+      setText();
     }
+  }
 
-    protected boolean isStartEditingKey(KeyEvent ke) {
-        if ((ke.getModifiers()
-	     & (KeyEvent.META_MASK | KeyEvent.ALT_MASK)) == 0) {
-            return super.isStartEditingKey(ke);
-        } else {
-            return false;
-        }
+  public void removeFromDiagram() {
+    if (getOwner() != null && properties != null) {
+      Model.getPump().removeModelEventListener(this, getOwner(), properties);
     }
-    
-    public void setOwner(Object owner) {
-        super.setOwner(owner);
-        if (owner != null && properties != null) {
-            Model.getPump().addModelEventListener(
-                    this, 
-                    owner, 
-                    properties);
-            setText();
-        }
-    }
-    
-    public void removeFromDiagram() {
-        if (getOwner() != null && properties != null) {
-            Model.getPump().removeModelEventListener(
-                    this, 
-                    getOwner(), 
-                    properties);
-        }
-    }
-    
-    public void propertyChange(PropertyChangeEvent pce) {
-        if (getOwner() != null
-                && properties != null
-                && pce instanceof AttributeChangeEvent) {
-            assert Arrays.asList(properties).contains(pce.getPropertyName());
-            setText();
-        }
-    }
+  }
 
-    /**
-     * This function without parameter shall
-     * determine the text of the Fig taking values from the owner,
-     * and then call {@link #setText(String)}.
-     * TO be implemented as required by sub classes.
-     */
-    protected void setText() {
+  public void propertyChange(PropertyChangeEvent pce) {
+    if (getOwner() != null && properties != null && pce instanceof AttributeChangeEvent) {
+      assert Arrays.asList(properties).contains(pce.getPropertyName());
+      setText();
     }
+  }
+
+  /**
+   * This function without parameter shall determine the text of the Fig taking values from the
+   * owner, and then call {@link #setText(String)}. TO be implemented as required by sub classes.
+   */
+  protected void setText() {}
 }

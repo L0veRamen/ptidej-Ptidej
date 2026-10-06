@@ -27,125 +27,110 @@ import java.util.TreeMap;
 
 /**
  * Simple model based on a map.
+ *
  * @author Jerome Louvel (contact@noelios.com)
  */
-public class MapModel extends TreeMap<String, Object> implements Model
-{
-	private static final long serialVersionUID = 4508869056441847319L;
+public class MapModel extends TreeMap<String, Object> implements Model {
+  private static final long serialVersionUID = 4508869056441847319L;
 
-	/**
-	 * Indicates if the map shouldn't be modified.
-	 */
-	private boolean readOnly;
+  /** Indicates if the map shouldn't be modified. */
+  private boolean readOnly;
 
-	/**
-	 * Constructor.
-	 */
-	public MapModel()
-	{
-		this.readOnly = false;
-	}
+  /** Constructor. */
+  public MapModel() {
+    this.readOnly = false;
+  }
 
-	/**
-	 * Constructor.
-	 * @param readOnly True if the wrapped map shouldn't be modified.
-	 */
-	public MapModel(boolean readOnly)
-	{
-		this.readOnly = readOnly;
-	}
+  /**
+   * Constructor.
+   *
+   * @param readOnly True if the wrapped map shouldn't be modified.
+   */
+  public MapModel(boolean readOnly) {
+    this.readOnly = readOnly;
+  }
 
-	/**
-	 * Constructor.
-	 * @param map The map to wrap.
-	 * @param readOnly True if the wrapped map shouldn't be modified.
-	 */
-	public MapModel(Map<String, Object> map, boolean readOnly)
-	{
-		super(map);
-		this.readOnly = readOnly;
-	}
+  /**
+   * Constructor.
+   *
+   * @param map The map to wrap.
+   * @param readOnly True if the wrapped map shouldn't be modified.
+   */
+  public MapModel(Map<String, Object> map, boolean readOnly) {
+    super(map);
+    this.readOnly = readOnly;
+  }
 
-	/**
-	 * Removes all the model values.
-	 * @throws UnsupportedOperationException if the map is read-only.
-	 */
-	public void clear()
-	{
-		if (isReadOnly())
-		{
-			throw new UnsupportedOperationException();
-		}
-		else
-		{
-			super.clear();
-		}
-	}
+  /**
+   * Removes all the model values.
+   *
+   * @throws UnsupportedOperationException if the map is read-only.
+   */
+  public void clear() {
+    if (isReadOnly()) {
+      throw new UnsupportedOperationException();
+    } else {
+      super.clear();
+    }
+  }
 
-	/**
-	 * Indicates if the model contains a value for a given key.
-	 * @param key The key to look-up.
-	 * @return True if the model contains a value for the given key.
-	 */
-	public boolean containsKey(String key)
-	{
-		return super.containsKey(key);
-	}
+  /**
+   * Indicates if the model contains a value for a given key.
+   *
+   * @param key The key to look-up.
+   * @return True if the model contains a value for the given key.
+   */
+  public boolean containsKey(String key) {
+    return super.containsKey(key);
+  }
 
-	/**
-	 * Returns the model value for a given key.
-	 * @param key The key to look-up.
-	 * @return The model value for the given key.
-	 */
-	public Object get(String key)
-	{
-		return super.get(key);
-	}
+  /**
+   * Returns the model value for a given key.
+   *
+   * @param key The key to look-up.
+   * @return The model value for the given key.
+   */
+  public Object get(String key) {
+    return super.get(key);
+  }
 
-	/**
-	 * Indicates if this model cannot be modified.
-	 * @return True if this model cannot be modified.
-	 */
-	public boolean isReadOnly()
-	{
-		return this.readOnly;
-	}
+  /**
+   * Indicates if this model cannot be modified.
+   *
+   * @return True if this model cannot be modified.
+   */
+  public boolean isReadOnly() {
+    return this.readOnly;
+  }
 
-	/**
-	 * Puts the model value for a given name.
-	 * @param key The key to look-up.
-	 * @param value The value to put.
-	 * @return The old value or null.
-	 * @throws UnsupportedOperationException if the map is read-only.
-	 */
-	public Object put(String key, Object value)
-	{
-		if (isReadOnly())
-		{
-			throw new UnsupportedOperationException();
-		}
-		else
-		{
-			return super.put(key, value);
-		}
-	}
+  /**
+   * Puts the model value for a given name.
+   *
+   * @param key The key to look-up.
+   * @param value The value to put.
+   * @return The old value or null.
+   * @throws UnsupportedOperationException if the map is read-only.
+   */
+  public Object put(String key, Object value) {
+    if (isReadOnly()) {
+      throw new UnsupportedOperationException();
+    } else {
+      return super.put(key, value);
+    }
+  }
 
-	/**
-	 * Removes a model value for a given key.
-	 * @param key The key to look-up.
-	 * @return The old value removed.
-	 * @throws UnsupportedOperationException if the map is read-only.
-	 */
-	public Object remove(String key)
-	{
-		if (isReadOnly())
-		{
-			throw new UnsupportedOperationException();
-		}
-		else
-		{
-			return super.remove(key);
-		}
-	}
-
+  /**
+   * Removes a model value for a given key.
+   *
+   * @param key The key to look-up.
+   * @return The old value removed.
+   * @throws UnsupportedOperationException if the map is read-only.
+   */
+  public Object remove(String key) {
+    if (isReadOnly()) {
+      throw new UnsupportedOperationException();
+    } else {
+      return super.remove(key);
+    }
+  }
 }

@@ -25,7 +25,6 @@
 package org.argouml.uml.ui.foundation.core;
 
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.ActionDeleteSingleModelElement;
@@ -37,65 +36,59 @@ import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
 import org.argouml.util.ConfigLoader;
 
 /**
- * Proppanel for Constraints . <p>
-
+ * Proppanel for Constraints .
+ *
+ * <p>
  */
 public class PropPanelConstraint extends PropPanelModelElement {
 
-    /**
-     * Constructor for PropPanelConstraint.
-     */
-    public PropPanelConstraint() {
-        super("Constraint", ConfigLoader.getTabPropsOrientation());
+  /** Constructor for PropPanelConstraint. */
+  public PropPanelConstraint() {
+    super("Constraint", ConfigLoader.getTabPropsOrientation());
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
+    addField(Translator.localize("label.name"), getNameTextField());
 
-//        addField(Translator.localize("label.language"), Model.getFacade()
-//                .getLanguage(Model.getFacade().getBody(getTarget())));
+    //        addField(Translator.localize("label.language"), Model.getFacade()
+    //                .getLanguage(Model.getFacade().getBody(getTarget())));
 
-        addField(Translator.localize("label.constrained-elements"),
-            new JScrollPane(new UMLLinkedList(
-                    new UMLConstraintConstrainedElementListModel())));
+    addField(
+        Translator.localize("label.constrained-elements"),
+        new JScrollPane(new UMLLinkedList(new UMLConstraintConstrainedElementListModel())));
 
-        addSeperator();
+    addSeperator();
 
-        UMLTextArea2 text = new UMLTextArea2(new UMLConstraintBodyDocument());
-        text.setEditable(false);
-        text.setLineWrap(false);
-        text.setRows(5);
-        JScrollPane pane = new JScrollPane(text);
-        addField(Translator.localize("label.constraint.body"), pane);
+    UMLTextArea2 text = new UMLTextArea2(new UMLConstraintBodyDocument());
+    text.setEditable(false);
+    text.setLineWrap(false);
+    text.setRows(5);
+    JScrollPane pane = new JScrollPane(text);
+    addField(Translator.localize("label.constraint.body"), pane);
 
-        addAction(new ActionNavigateContainerElement());
-        addAction(new ActionNewStereotype());
-        addAction(new ActionDeleteSingleModelElement());
-    }
+    addAction(new ActionNavigateContainerElement());
+    addAction(new ActionNewStereotype());
+    addAction(new ActionDeleteSingleModelElement());
+  }
 }
 
 // TODO: replace this with TabConstraint code...
 class UMLConstraintBodyDocument extends UMLPlainTextDocument {
-    
-    /**
-     * Constructor for UMLModelElementNameDocument.
-     */
-    public UMLConstraintBodyDocument() {
-        super("body"); 
-    }
-    
-    /**
-     * @see org.argouml.uml.ui.UMLPlainTextDocument#setProperty(java.lang.String)
-     */
-    protected void setProperty(String text) {
-        //Model.getCoreHelper().setBody(getTarget(), text);
-    }
-    
-    /**
-     * @see org.argouml.uml.ui.UMLPlainTextDocument#getProperty()
-     */
-    protected String getProperty() {
-        return (String) Model.getFacade().getBody(
-                Model.getFacade().getBody(getTarget()));
-    }
-    
+
+  /** Constructor for UMLModelElementNameDocument. */
+  public UMLConstraintBodyDocument() {
+    super("body");
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLPlainTextDocument#setProperty(java.lang.String)
+   */
+  protected void setProperty(String text) {
+    // Model.getCoreHelper().setBody(getTarget(), text);
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLPlainTextDocument#getProperty()
+   */
+  protected String getProperty() {
+    return (String) Model.getFacade().getBody(Model.getFacade().getBody(getTarget()));
+  }
 }

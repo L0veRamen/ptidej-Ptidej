@@ -26,7 +26,6 @@ package org.argouml.uml.ui.behavior.common_behavior;
 
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.AbstractActionAddModelElement;
@@ -41,50 +40,38 @@ import org.argouml.util.ConfigLoader;
 /**
  * The properties panel of a NodeInstance.
  *
- * TODO: this property panel needs refactoring to remove dependency on old gui
- * components.
+ * <p>TODO: this property panel needs refactoring to remove dependency on old gui components.
  */
 public class PropPanelNodeInstance extends PropPanelInstance {
 
-    /**
-     * Constructor.
-     */
-    public PropPanelNodeInstance() {
-        super("Node Instance", lookupIcon("NodeInstance"),
-                ConfigLoader.getTabPropsOrientation());
+  /** Constructor. */
+  public PropPanelNodeInstance() {
+    super("Node Instance", lookupIcon("NodeInstance"), ConfigLoader.getTabPropsOrientation());
 
-        addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.name"), getNameTextField());
 
-        addField(Translator.localize("label.stereotype"),
-                getStereotypeSelector());
-        addField(Translator.localize("label.namespace"),
-                getNamespaceSelector());
+    addField(Translator.localize("label.stereotype"), getStereotypeSelector());
+    addField(Translator.localize("label.namespace"), getNamespaceSelector());
 
-        addSeperator();
+    addSeperator();
 
-        addField(Translator.localize("label.stimili-sent"),
-                getStimuliSenderScroll());
+    addField(Translator.localize("label.stimili-sent"), getStimuliSenderScroll());
 
-        addField(Translator.localize("label.stimili-received"),
-                getStimuliReceiverScroll());
+    addField(Translator.localize("label.stimili-received"), getStimuliReceiverScroll());
 
-        JList resList = new UMLLinkedList(new UMLContainerResidentListModel());
-        addField(Translator.localize("label.residents"),
-                new JScrollPane(resList));
+    JList resList = new UMLLinkedList(new UMLContainerResidentListModel());
+    addField(Translator.localize("label.residents"), new JScrollPane(resList));
 
-        addSeperator();
-        AbstractActionAddModelElement a =
-            new ActionAddInstanceClassifier(Model.getMetaTypes().getNode());
-        JScrollPane classifierScroll =
-                new JScrollPane(new UMLMutableLinkedList(
-	                new UMLInstanceClassifierListModel(),
-	            a, null, null, true));
-	addField(Translator.localize("label.classifiers"),
-                    classifierScroll);
+    addSeperator();
+    AbstractActionAddModelElement a =
+        new ActionAddInstanceClassifier(Model.getMetaTypes().getNode());
+    JScrollPane classifierScroll =
+        new JScrollPane(
+            new UMLMutableLinkedList(new UMLInstanceClassifierListModel(), a, null, null, true));
+    addField(Translator.localize("label.classifiers"), classifierScroll);
 
-
-        addAction(new ActionNavigateContainerElement());
-        addAction(new ActionNewStereotype());
-        addAction(new ActionDeleteSingleModelElement());
-    }
+    addAction(new ActionNavigateContainerElement());
+    addAction(new ActionNewStereotype());
+    addAction(new ActionDeleteSingleModelElement());
+  }
 }

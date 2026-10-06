@@ -27,7 +27,6 @@ package org.argouml.core.propertypanels.ui;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.AbstractActionRemoveElement;
@@ -37,33 +36,28 @@ import org.argouml.uml.ui.AbstractActionRemoveElement;
  */
 public class ActionRemoveOFSState extends AbstractActionRemoveElement {
 
-    /**
-     * Constructor.
-     */
-    public ActionRemoveOFSState() {
-        super(Translator.localize("menu.popup.remove"));
-    }
+  /** Constructor. */
+  public ActionRemoveOFSState() {
+    super(Translator.localize("menu.popup.remove"));
+  }
 
-    /*
-     * @see org.tigris.gef.undo.UndoableAction#actionPerformed(java.awt.event.ActionEvent)
-     */
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        Object state = getObjectToRemove();
-        if (state != null) {
-            Object t = getTarget();
-            if (Model.getFacade().isAObjectFlowState(t)) {
-                Object type = Model.getFacade().getType(t);
-                if (Model.getFacade().isAClassifierInState(type)) {
-                    Collection states =
-                        new ArrayList(
-                            Model.getFacade().getInStates(type));
-                    states.remove(state);
-                    Model.getActivityGraphsHelper()
-                            .setInStates(type, states);
-                }
-            }
+  /*
+   * @see org.tigris.gef.undo.UndoableAction#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    Object state = getObjectToRemove();
+    if (state != null) {
+      Object t = getTarget();
+      if (Model.getFacade().isAObjectFlowState(t)) {
+        Object type = Model.getFacade().getType(t);
+        if (Model.getFacade().isAClassifierInState(type)) {
+          Collection states = new ArrayList(Model.getFacade().getInStates(type));
+          states.remove(state);
+          Model.getActivityGraphsHelper().setInStates(type, states);
         }
+      }
     }
+  }
 }

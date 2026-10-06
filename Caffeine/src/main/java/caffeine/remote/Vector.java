@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -14,46 +14,50 @@ import java.util.List;
 import java.util.RandomAccess;
 
 /**
- * @version 	0.2
- * @author		Yann-Gaël Guéhéneuc
+ * @version 0.2
+ * @author Yann-Gaël Guéhéneuc
  */
-public final class Vector extends java.util.Vector implements List,
-		RandomAccess, Cloneable, java.io.Serializable {
+public final class Vector extends java.util.Vector<Object>
+    implements List<Object>, RandomAccess, Cloneable, java.io.Serializable {
 
-	private static final long serialVersionUID = 2432101711764574488L;
+  private static final long serialVersionUID = 2432101711764574488L;
 
-	public static synchronized java.util.Vector newInstance() {
-		return Vector.newInstance(10);
-	}
-	public static synchronized java.util.Vector newInstance(
-		final int initialCapacity) {
+  public static synchronized java.util.Vector newInstance() {
+    return Vector.newInstance(10);
+  }
 
-		return Vector.newInstance(initialCapacity, 0);
-	}
-	public static synchronized java.util.Vector newInstance(
-		final int initialCapacity,
-		final int capacityIncrement) {
+  public static synchronized java.util.Vector newInstance(final int initialCapacity) {
 
-		return new Vector(initialCapacity, capacityIncrement);
-	}
+    return Vector.newInstance(initialCapacity, 0);
+  }
 
-	private Vector(final int initialCapacity, final int capacityIncrement) {
-		super(initialCapacity, capacityIncrement);
-	}
+  public static synchronized java.util.Vector newInstance(
+      final int initialCapacity, final int capacityIncrement) {
 
-	public void add(final int index, final Object element) {
-		super.add(index, element);
-	}
-	public synchronized boolean add(final Object o) {
-		return super.add(o);
-	}
-	//	public synchronized boolean addAll(Collection c) {
-	//		return super.addAll(c);
-	//	}
-	//	public synchronized boolean addAll(int index, Collection c) {
-	//		return super.addAll(index, c);
-	//	}
-	public synchronized void addElement(final Object obj) {
-		super.addElement(obj);
-	}
+    return new Vector(initialCapacity, capacityIncrement);
+  }
+
+  private Vector(final int initialCapacity, final int capacityIncrement) {
+    super(initialCapacity, capacityIncrement);
+  }
+
+  @Override
+  public void add(final int index, final Object element) {
+    super.add(index, element);
+  }
+
+  @Override
+  public synchronized boolean add(final Object o) {
+    return super.add(o);
+  }
+
+  //	public synchronized boolean addAll(Collection c) {
+  //		return super.addAll(c);
+  //	}
+  //	public synchronized boolean addAll(int index, Collection c) {
+  //		return super.addAll(index, c);
+  //	}
+  public synchronized void addElement(final Object obj) {
+    super.addElement(obj);
+  }
 }

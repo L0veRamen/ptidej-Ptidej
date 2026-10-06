@@ -27,7 +27,6 @@ package org.argouml.ui.explorer.rules;
 import java.util.Collection;
 import java.util.Set;
 import java.util.Vector;
-
 import org.argouml.i18n.Translator;
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
@@ -35,57 +34,51 @@ import org.argouml.model.Model;
 import org.argouml.uml.diagram.collaboration.ui.UMLCollaborationDiagram;
 import org.argouml.uml.diagram.sequence.ui.UMLSequenceDiagram;
 
-/**
- * Rule for Collaboration->Diagram.
- *
- */
+/** Rule for Collaboration->Diagram. */
 public class GoCollaborationToDiagram extends AbstractPerspectiveRule {
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
-     */
-    public String getRuleName() {
-        return Translator.localize ("misc.collaboration.diagram");
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
+   */
+  public String getRuleName() {
+    return Translator.localize("misc.collaboration.diagram");
+  }
+
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
+   */
+  public Collection getChildren(Object parent) {
+    if (!Model.getFacade().isACollaboration(parent)) return null;
+
+    Project p = ProjectManager.getManager().getCurrentProject();
+    if (p == null) return null;
+
+    Vector res = new Vector();
+    Vector diagrams = p.getDiagrams();
+    if (diagrams == null) return null;
+    java.util.Enumeration elems = diagrams.elements();
+    while (elems.hasMoreElements()) {
+      Object d = elems.nextElement();
+      if (d instanceof UMLCollaborationDiagram
+          && ((UMLCollaborationDiagram) d).getNamespace() == parent) {
+        res.addElement(d);
+      }
+      /* Also show unattached sequence diagrams: */
+      if ((d instanceof UMLSequenceDiagram)
+          && (Model.getFacade().getRepresentedClassifier(parent) == null)
+          && (Model.getFacade().getRepresentedOperation(parent) == null)
+          && (parent == ((UMLSequenceDiagram) d).getNamespace())) {
+        res.addElement(d);
+      }
     }
+    return res;
+  }
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
-     */
-    public Collection getChildren(Object parent) {
-        if (!Model.getFacade().isACollaboration(parent))
-            return null;
-
-        Project p = ProjectManager.getManager().getCurrentProject();
-        if (p == null)
-            return null;
-
-        Vector res = new Vector();
-        Vector diagrams = p.getDiagrams();
-        if (diagrams == null)
-            return null;
-        java.util.Enumeration elems = diagrams.elements();
-        while (elems.hasMoreElements()) {
-            Object d = elems.nextElement();
-            if (d instanceof UMLCollaborationDiagram
-                && ((UMLCollaborationDiagram) d).getNamespace() == parent) {
-                res.addElement(d);
-            }
-            /* Also show unattached sequence diagrams: */
-            if ((d instanceof UMLSequenceDiagram)
-                && (Model.getFacade().getRepresentedClassifier(parent) == null)
-                &&  (Model.getFacade().getRepresentedOperation(parent) == null)
-                && (parent == ((UMLSequenceDiagram) d).getNamespace())) {
-                res.addElement(d);
-            }
-        }
-        return res;
-    }
-
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
-     */
-    public Set getDependencies(Object parent) {
-        // TODO: What?
-	return null;
-    }
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
+   */
+  public Set getDependencies(Object parent) {
+    // TODO: What?
+    return null;
+  }
 }

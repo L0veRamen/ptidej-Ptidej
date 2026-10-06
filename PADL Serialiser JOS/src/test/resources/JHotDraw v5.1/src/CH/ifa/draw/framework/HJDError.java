@@ -10,13 +10,10 @@ package CH.ifa.draw.framework;
  *
  */
 
-/**
- * A HJD Error.
- *
- */
+/** A HJD Error. */
 public class HJDError extends Error {
 
-	public HJDError(String msg) {
-	    super(msg);
-	}
+  public HJDError(String msg) {
+    super(msg);
+  }
 }

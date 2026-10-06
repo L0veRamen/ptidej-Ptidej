@@ -32,31 +32,23 @@ import org.argouml.util.ConfigLoader;
 /**
  * A basic property panel for link ends.
  *
- * TODO: uses the associationEnd icon
+ * <p>TODO: uses the associationEnd icon
  *
  * @author mkl
- *
  */
 public class PropPanelLinkEnd extends PropPanelModelElement {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = 666929091194719951L;
+  /** The serial version. */
+  private static final long serialVersionUID = 666929091194719951L;
 
-    /**
-     * Contruct a property panel for a Link End.
-     */
-    public PropPanelLinkEnd() {
-        super("Link End", lookupIcon("AssociationEnd"),
-                ConfigLoader.getTabPropsOrientation());
-        addField(Translator.localize("label.name"),
-                getNameTextField());
+  /** Contruct a property panel for a Link End. */
+  public PropPanelLinkEnd() {
+    super("Link End", lookupIcon("AssociationEnd"), ConfigLoader.getTabPropsOrientation());
+    addField(Translator.localize("label.name"), getNameTextField());
 
-        addSeparator();
+    addSeparator();
 
-        addAction(new ActionNavigateContainerElement());
-        addAction(getDeleteAction());
-    }
-
+    addAction(new ActionNavigateContainerElement());
+    addAction(getDeleteAction());
+  }
 } /* end class PropPanelLinkEnd */

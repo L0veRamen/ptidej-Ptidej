@@ -25,7 +25,6 @@
 package org.argouml.uml.notation;
 
 import java.util.HashMap;
-
 import junit.framework.TestCase;
 
 /**
@@ -33,57 +32,46 @@ import junit.framework.TestCase;
  */
 public class TestNotationProvider extends TestCase {
 
+  /**
+   * Test the existence of the toString(Object modelElement, HashMap args) method. TODO: Need to
+   * find a more usefull test.
+   */
+  public void testToString() {
+    NotationProvider np = new NPImpl();
+    HashMap args = new HashMap();
+    args.put("b", "c");
+    assertTrue("Test toString()", "a1".equals(np.toString("a", args)));
+    args.put("d", "e");
+    assertTrue("Test toString()", "f2".equals(np.toString("f", args)));
+  }
+
+  /** Test the isValue utility function. */
+  public void testIsValue() {
+    HashMap args = new HashMap();
+    args.put("not a boolean", "c");
+    args.put("true", Boolean.TRUE);
+    args.put("false", Boolean.FALSE);
+    args.put("null", null);
+    assertTrue("Not a boolean", !NotationProvider.isValue("not a boolean", args));
+    assertTrue("Finding true", NotationProvider.isValue("true", args));
+    assertTrue("Finding false", !NotationProvider.isValue("false", args));
+    assertTrue("Finding null", !NotationProvider.isValue("null", args));
+    assertTrue("Not encountered", !NotationProvider.isValue("xyz", args));
+  }
+
+  private class NPImpl extends NotationProvider {
+
     /**
-     * Test the existence of the 
-     * toString(Object modelElement, HashMap args) method.
-     * TODO: Need to find a more usefull test.
+     * @see org.argouml.uml.notation.NotationProvider#getParsingHelp()
      */
-    public void testToString() {
-        NotationProvider np = new NPImpl();
-        HashMap args = new HashMap();
-        args.put("b", "c");
-        assertTrue("Test toString()", "a1".equals(np.toString("a", args)));
-        args.put("d", "e");
-        assertTrue("Test toString()", "f2".equals(np.toString("f", args)));
-    }
-    
-    /**
-     * Test the isValue utility function.
-     */
-    public void testIsValue() {
-        HashMap args = new HashMap();
-        args.put("not a boolean", "c");
-        args.put("true", Boolean.TRUE);
-        args.put("false", Boolean.FALSE);
-        args.put("null", null);
-        assertTrue("Not a boolean", 
-                !NotationProvider.isValue("not a boolean", args));
-        assertTrue("Finding true", 
-                NotationProvider.isValue("true", args));
-        assertTrue("Finding false", 
-                !NotationProvider.isValue("false", args));
-        assertTrue("Finding null", 
-                !NotationProvider.isValue("null", args));
-        assertTrue("Not encountered", 
-                !NotationProvider.isValue("xyz", args));
+    public String getParsingHelp() {
+      return null;
     }
 
-    private class NPImpl extends NotationProvider {
-
-        /**
-         * @see org.argouml.uml.notation.NotationProvider#getParsingHelp()
-         */
-        public String getParsingHelp() {
-            return null;
-        }
-
-        public String toString(Object modelElement, HashMap args) {
-            return modelElement.toString() + args.size();
-        }
-
-        public void parse(Object modelElement, String text) {
-
-        }
-        
+    public String toString(Object modelElement, HashMap args) {
+      return modelElement.toString() + args.size();
     }
+
+    public void parse(Object modelElement, String text) {}
+  }
 }

@@ -4,36 +4,38 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
 package padl.creator.classfile.util;
 
-import padl.kernel.Cardinality;
-import padl.kernel.Constants;
-import util.io.ProxyConsole;
-
 import com.ibm.toad.cfparse.utils.Access;
+import padl.kernel.Cardinality;
+import util.io.ProxyConsole;
 
 /**
  * @author Yann-Gaël Guéhéneuc
- * @since  2004/08/01
+ * @since 2004/08/01
  */
 public final class CadinalityOneAccessorsData implements AccessorsData {
-	public Cardinality getCardinality() {
-		return Cardinality.One;
-	}
-	public boolean matches(
-		final char[] targetName,
-		final ExtendedFieldInfo fieldInfo) {
+  public Cardinality getCardinality() {
+    return Cardinality.One;
+  }
 
-		return (
-			Access.isPrivate(fieldInfo.getVisibility())
-				|| Access.isProtected(fieldInfo.getVisibility()))
-			&& fieldInfo.getType().equals(targetName);
-	}
-	public void setCardinality(Cardinality cardinality) {
-		ProxyConsole.getInstance().warningOutput().print("Trying to set the cardinality of a " + this.getClass().getSimpleName() + " which should have no effect.");
-	}
+  public boolean matches(final char[] targetName, final ExtendedFieldInfo fieldInfo) {
+
+    return (Access.isPrivate(fieldInfo.getVisibility())
+            || Access.isProtected(fieldInfo.getVisibility()))
+        && fieldInfo.getType().equals(targetName);
+  }
+
+  public void setCardinality(Cardinality cardinality) {
+    ProxyConsole.getInstance()
+        .warningOutput()
+        .print(
+            "Trying to set the cardinality of a "
+                + this.getClass().getSimpleName()
+                + " which should have no effect.");
+  }
 }

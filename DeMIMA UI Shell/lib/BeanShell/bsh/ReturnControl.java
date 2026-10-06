@@ -7,7 +7,7 @@
  *                                                                           *
  *  The contents of this file are subject to the Sun Public License Version  *
  *  1.0 (the "License"); you may not use this file except in compliance with *
- *  the License. A copy of the License is available at http://www.sun.com    * 
+ *  the License. A copy of the License is available at http://www.sun.com    *
  *                                                                           *
  *  The Original Code is BeanShell. The Initial Developer of the Original    *
  *  Code is Pat Niemeyer. Portions created by Pat Niemeyer are Copyright     *
@@ -31,22 +31,19 @@
  *                                                                           *
  *****************************************************************************/
 
-
 package bsh;
 
-/**
-	Represents a Return, Break, or Continue statement
-*/
+/** Represents a Return, Break, or Continue statement */
 class ReturnControl implements ParserConstants {
-	public int kind;
-	public Object value;
-	/** The node where we returned... for printing error messages correctly */
-	public SimpleNode returnPoint;
+  public int kind;
+  public Object value;
 
-	public ReturnControl( int kind, Object value, SimpleNode returnPoint ) {
-		this.kind = kind;
-		this.value = value;
-		this.returnPoint = returnPoint;
-	}
+  /** The node where we returned... for printing error messages correctly */
+  public SimpleNode returnPoint;
+
+  public ReturnControl(int kind, Object value, SimpleNode returnPoint) {
+    this.kind = kind;
+    this.value = value;
+    this.returnPoint = returnPoint;
+  }
 }
-

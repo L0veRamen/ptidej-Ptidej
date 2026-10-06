@@ -1,39 +1,31 @@
 /**
  * @author Mathieu Lemoine
  * @created 2009-01-08 (木)
- *
- * Licensed under 3-clause BSD License:
- * Copyright © 2009, Mathieu Lemoine
- * All rights reserved.
- * 
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *  * Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- *  * Neither the name of Mathieu Lemoine nor the
- *    names of contributors may be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- * 
- * THIS SOFTWARE IS PROVIDED BY Mathieu Lemoine ''AS IS'' AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL Mathieu Lemoine BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *     <p>Licensed under 3-clause BSD License: Copyright © 2009, Mathieu Lemoine All rights
+ *     reserved.
+ *     <p>Redistribution and use in source and binary forms, with or without modification, are
+ *     permitted provided that the following conditions are met: * Redistributions of source code
+ *     must retain the above copyright notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright notice, this list of
+ *     conditions and the following disclaimer in the documentation and/or other materials provided
+ *     with the distribution. * Neither the name of Mathieu Lemoine nor the names of contributors
+ *     may be used to endorse or promote products derived from this software without specific prior
+ *     written permission.
+ *     <p>THIS SOFTWARE IS PROVIDED BY Mathieu Lemoine ''AS IS'' AND ANY EXPRESS OR IMPLIED
+ *     WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ *     FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Mathieu Lemoine BE LIABLE
+ *     FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *     (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ *     DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ *     WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+ *     ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package jct.kernel.impl;
 
 import java.io.IOException;
 import java.io.Writer;
 import jct.kernel.IJCTBooleanLiteral;
+import jct.kernel.IJCTElement;
 import jct.kernel.IJCTRootNode;
 import jct.kernel.IJCTType;
 import jct.kernel.IJCTVisitor;
@@ -42,62 +34,52 @@ import jct.kernel.JCTPrimitiveTypes;
 
 /**
  * This class represents a boolean literal
- * 
- * Default implementation for {@link jct.kernel.IJCTBooleanLiteral}
+ *
+ * <p>Default implementation for {@link jct.kernel.IJCTBooleanLiteral}
  *
  * @author Mathieu Lemoine
  */
-class JCTBooleanLiteral extends JCTSourceCodePart implements IJCTBooleanLiteral {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 2514195463018737221L;
-	/**
-	 * value of this boolean literal
-	 */
-	private boolean value;
+class JCTBooleanLiteral extends JCTSourceCodePart<IJCTElement> implements IJCTBooleanLiteral {
+  /** */
+  private static final long serialVersionUID = 2514195463018737221L;
 
-	JCTBooleanLiteral(final IJCTRootNode aRootNode, final boolean value) {
-		super(aRootNode);
-		this.value = value;
-	}
+  /** value of this boolean literal */
+  private boolean value;
 
-	public Writer getSourceCode(final Writer aWriter) throws IOException {
-		return aWriter.append(String.valueOf(this.value));
-	}
+  JCTBooleanLiteral(final IJCTRootNode aRootNode, final boolean value) {
+    super(aRootNode);
+    this.value = value;
+  }
 
-	public IJCTType getTypeResult() {
-		return this.getRootNode().getType(JCTPrimitiveTypes.BOOLEAN);
-	}
+  public Writer getSourceCode(final Writer aWriter) throws IOException {
+    return aWriter.append(String.valueOf(this.value));
+  }
 
-	/**
-	 * Modifies the value of this boolean literal
-	 *
-	 * @param value the new value
-	 */
-	public void setValue(final boolean value) {
-		this.value = value;
-	}
+  public IJCTType getTypeResult() {
+    return this.getRootNode().getType(JCTPrimitiveTypes.BOOLEAN);
+  }
 
-	/**
-	 * Returns the value of this boolean literal
-	 */
-	public boolean getValue() {
-		return this.value;
-	}
+  /**
+   * Modifies the value of this boolean literal
+   *
+   * @param value the new value
+   */
+  public void setValue(final boolean value) {
+    this.value = value;
+  }
 
-	/**
-	 * Returns the kind of this constituent (JCTKind.BOOLEAN_LITERAL)
-	 */
-	public JCTKind getKind() {
-		return JCTKind.BOOLEAN_LITERAL;
-	}
+  /** Returns the value of this boolean literal */
+  public boolean getValue() {
+    return this.value;
+  }
 
-	/**
-	 * Calls the appropriate visit* method on the visitor
-	 */
-	public <R, P> R accept(final IJCTVisitor<R, P> visitor, final P aP) {
-		return visitor.visitBooleanLiteral(this, aP);
-	}
+  /** Returns the kind of this constituent (JCTKind.BOOLEAN_LITERAL) */
+  public JCTKind getKind() {
+    return JCTKind.BOOLEAN_LITERAL;
+  }
 
+  /** Calls the appropriate visit* method on the visitor */
+  public <R, P> R accept(final IJCTVisitor<R, P> visitor, final P aP) {
+    return visitor.visitBooleanLiteral(this, aP);
+  }
 }

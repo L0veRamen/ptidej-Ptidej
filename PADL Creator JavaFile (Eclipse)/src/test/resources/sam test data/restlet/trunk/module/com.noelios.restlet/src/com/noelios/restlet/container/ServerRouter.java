@@ -32,61 +32,57 @@ import org.restlet.data.Response;
 import org.restlet.data.Status;
 
 /**
- * Router that collects calls from all server connectors and dispatches them to the appropriate
- * host routers for dispatching to the user applications.
+ * Router that collects calls from all server connectors and dispatches them to the appropriate host
+ * routers for dispatching to the user applications.
+ *
  * @author Jerome Louvel (contact@noelios.com)
  */
-public class ServerRouter extends Router
-{
-	/** The parent container. */
-	private Container container;
+public class ServerRouter extends Router {
+  /** The parent container. */
+  private Container container;
 
-	/**
-	 * Constructor.
-	 * @param container The parent container.
-	 */
-	public ServerRouter(Container container)
-	{
-		super(container.getContext());
-		this.container = container;
-	}
+  /**
+   * Constructor.
+   *
+   * @param container The parent container.
+   */
+  public ServerRouter(Container container) {
+    super(container.getContext());
+    this.container = container;
+  }
 
-	/** Starts the Restlet. */
-	public void start() throws Exception
-	{
-		// Attach all virtual hosts
-		for (VirtualHost host : getContainer().getHosts())
-		{
-			getScorers().add(new HostScorer(this, host));
-		}
+  /** Starts the Restlet. */
+  public void start() throws Exception {
+    // Attach all virtual hosts
+    for (VirtualHost host : getContainer().getHosts()) {
+      getScorers().add(new HostScorer(this, host));
+    }
 
-		// Also attach the local host if it exists
-		if (getContainer().getDefaultHost() != null)
-		{
-			getScorers().add(new HostScorer(this, getContainer().getDefaultHost()));
-		}
+    // Also attach the local host if it exists
+    if (getContainer().getDefaultHost() != null) {
+      getScorers().add(new HostScorer(this, getContainer().getDefaultHost()));
+    }
 
-		// If no host matches, display and error page with a precise message
-		Restlet noHostMatched = new Restlet(getContainer().getContext())
-		{
-			public void handle(Request request, Response response)
-			{
-				response.setStatus(Status.CLIENT_ERROR_NOT_FOUND,
-						"No virtual host could handle the request");
-			}
-		};
-		setDefaultScorer(new Scorer(this, noHostMatched));
+    // If no host matches, display and error page with a precise message
+    Restlet noHostMatched =
+        new Restlet(getContainer().getContext()) {
+          public void handle(Request request, Response response) {
+            response.setStatus(
+                Status.CLIENT_ERROR_NOT_FOUND, "No virtual host could handle the request");
+          }
+        };
+    setDefaultScorer(new Scorer(this, noHostMatched));
 
-		// Start the router
-		super.start();
-	}
+    // Start the router
+    super.start();
+  }
 
-	/**
-	 * Returns the parent container.
-	 * @return The parent container.
-	 */
-	private Container getContainer()
-	{
-		return container;
-	}
+  /**
+   * Returns the parent container.
+   *
+   * @return The parent container.
+   */
+  private Container getContainer() {
+    return container;
+  }
 }

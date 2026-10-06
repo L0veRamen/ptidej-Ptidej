@@ -4,13 +4,12 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
 package ptidej.solver.java.branching;
 
-import util.io.ProxyConsole;
 import choco.ContradictionException;
 import choco.integer.IntVar;
 import choco.integer.var.IntDomain;
@@ -20,61 +19,54 @@ import choco.util.IntIterator;
 import ptidej.solver.java.Branching;
 import ptidej.solver.java.Problem;
 import ptidej.solver.java.Variable;
+import util.io.ProxyConsole;
 
 /**
  * Writen in CLAIRE by
- * @author Yann-Gaël Guéhéneuc
- * Translated and adapted from CLAIRE version to JAVA by
+ *
+ * @author Yann-Gaël Guéhéneuc Translated and adapted from CLAIRE version to JAVA by
  * @author Iyadh Sidhom
  * @author Salim Bensemmane
  * @author Fayeal Skhiri
  */
 public class AutomaticBranching extends Branching {
-	public Object selectBranchingObject() {
-		final Problem pb = (Problem) this.extender.getManager().getProblem();
-		this.setSolutionNumber(this.getSolutionNumber() + 1);
-		this.printOutSolution(
-			pb,
-			this.getMessage(),
-			this.getSolutionNumber(),
-			this.getWeight(),
-			this.getXCommand());
-		final Explanation expl = pb.makeExplanation();
+  public Object selectBranchingObject() {
+    final Problem pb = (Problem) this.extender.getManager().getProblem();
+    this.setSolutionNumber(this.getSolutionNumber() + 1);
+    this.printOutSolution(
+        pb, this.getMessage(), this.getSolutionNumber(), this.getWeight(), this.getXCommand());
+    final Explanation expl = pb.makeExplanation();
 
-		// Yann 2007/03/30: Variables...
-		// I make sure there is at least one variable.
-		// In case the user is trying to call the solver
-		// on an empty problem.
-		if (pb.getVars().length > 0) {
-			final IntVar last = pb.getIntVar(pb.getVars().length - 1);
+    // Yann 2007/03/30: Variables...
+    // I make sure there is at least one variable.
+    // In case the user is trying to call the solver
+    // on an empty problem.
+    if (pb.getVars().length > 0) {
+      final IntVar last = pb.getIntVar(pb.getVars().length - 1);
 
-			for (int i = 0; i < pb.getVars().length; i++) {
-				((Variable) pb.getIntVar(i)).self_explain(
-					PalmIntDomain.DOM,
-					expl);
-			}
+      for (int i = 0; i < pb.getVars().length; i++) {
+        ((Variable) pb.getIntVar(i)).self_explain(PalmIntDomain.DOM, expl);
+      }
 
-			final IntDomain domain = last.getDomain();
-			if (domain.getSize() != 0) {
-				final IntIterator iterator = domain.getIterator();
-				while (iterator.hasNext()) {
-					final int value = iterator.next();
-					pb.post(pb.neq(last, value), expl);
-				}
-			}
-			else {
-				pb.post(pb.neq(last, last.getValue()), expl);
-			}
-		}
+      final IntDomain domain = last.getDomain();
+      if (domain.getSize() != 0) {
+        final IntIterator iterator = domain.getIterator();
+        while (iterator.hasNext()) {
+          final int value = iterator.next();
+          pb.post(pb.neq(last, value), expl);
+        }
+      } else {
+        pb.post(pb.neq(last, last.getValue()), expl);
+      }
+    }
 
-		try {
-			pb.propagate();
-		}
-		catch (final ContradictionException e) {
-			e.printStackTrace(ProxyConsole.getInstance().errorOutput());
-		}
+    try {
+      pb.propagate();
+    } catch (final ContradictionException e) {
+      e.printStackTrace(ProxyConsole.getInstance().errorOutput());
+    }
 
-		// TODO: What is this return for?
-		return this.getNextBranching();
-	}
+    // TODO: What is this return for?
+    return this.getNextBranching();
+  }
 }

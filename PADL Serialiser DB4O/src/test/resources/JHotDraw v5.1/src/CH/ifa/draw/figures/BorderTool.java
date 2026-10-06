@@ -14,16 +14,14 @@ import CH.ifa.draw.standard.ActionTool;
  *
  * @see BorderDecorator
  */
-public  class BorderTool extends ActionTool {
+public class BorderTool extends ActionTool {
 
-	public BorderTool(DrawingView view) {
-		super(view);
-	}
+  public BorderTool(DrawingView view) {
+    super(view);
+  }
 
-	/**
-	* Decorates the clicked figure with a border.
-	*/
-	public void action(Figure figure) {
-		drawing().replace(figure, new BorderDecorator(figure));
-	}
+  /** Decorates the clicked figure with a border. */
+  public void action(Figure figure) {
+    drawing().replace(figure, new BorderDecorator(figure));
+  }
 }

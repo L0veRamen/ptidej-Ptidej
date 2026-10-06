@@ -25,7 +25,6 @@
 package org.argouml.ui;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.application.api.Configuration;
 import org.argouml.uml.ui.UMLAction;
 
@@ -36,26 +35,21 @@ import org.argouml.uml.ui.UMLAction;
  * @since 0.9.4
  */
 public class ActionSaveConfiguration extends UMLAction {
-    /**
-     * Constructor.
-     */
-    public ActionSaveConfiguration() {
-        super("action.save-configuration", NO_ICON);
-    }
+  /** Constructor. */
+  public ActionSaveConfiguration() {
+    super("action.save-configuration", NO_ICON);
+  }
 
-    ////////////////////////////////////////////////////////////////
-    // main methods
+  ////////////////////////////////////////////////////////////////
+  // main methods
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent event) {
-        ProjectBrowser.getInstance().saveScreenConfiguration();
-        if (!Configuration.save()) {
-	    Configuration.save(true);
-        }
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent event) {
+    ProjectBrowser.getInstance().saveScreenConfiguration();
+    if (!Configuration.save()) {
+      Configuration.save(true);
     }
+  }
 }
-
-
-

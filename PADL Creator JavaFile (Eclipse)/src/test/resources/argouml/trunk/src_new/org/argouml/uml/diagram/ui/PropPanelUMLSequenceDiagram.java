@@ -27,18 +27,13 @@ package org.argouml.uml.diagram.ui;
 import org.argouml.i18n.Translator;
 
 /**
- *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 3, 2003
  */
 public class PropPanelUMLSequenceDiagram extends PropPanelDiagram {
 
-    /**
-     * Constructor for PropPanelUMLSequenceDiagram.
-     */
-    public PropPanelUMLSequenceDiagram() {
-        super(Translator.localize("label.sequence-diagram"),
-                lookupIcon("SequenceDiagram"));
-    }
-
+  /** Constructor for PropPanelUMLSequenceDiagram. */
+  public PropPanelUMLSequenceDiagram() {
+    super(Translator.localize("label.sequence-diagram"), lookupIcon("SequenceDiagram"));
+  }
 }

@@ -4,15 +4,15 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
 package modec.test.visitor.example;
 
-//package pattern.visitor;
+// package pattern.visitor;
 
-//[C] 2002 Sun Microsystems, Inc.---
+// [C] 2002 Sun Microsystems, Inc.---
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,8 +28,7 @@ public class RunVisitorPattern {
   public static void main(String[] arguments) {
     System.out.println("Example for the Visitor pattern");
     System.out.println();
-    System.out
-        .println("This sample will use a ProjectCostVisitor to calculate");
+    System.out.println("This sample will use a ProjectCostVisitor to calculate");
     System.out.println(" the total amount required to complete a Project.");
     System.out.println();
 
@@ -40,22 +39,18 @@ public class RunVisitorPattern {
     }
     Project project = (Project) (DataRetriever.deserializeData("tmp/data.ser"));
 
-    System.out
-        .println("Creating a ProjectCostVisitor, to calculate the total cost of the project.");
+    System.out.println(
+        "Creating a ProjectCostVisitor, to calculate the total cost of the project.");
     ProjectCostVisitor visitor = new ProjectCostVisitor();
     visitor.setHourlyRate(100);
 
-    System.out
-        .println("Moving throuhg the Project, calculating total cost");
-    System.out
-        .println(" by passing the Visitor to each of the ProjectItems.");
+    System.out.println("Moving throuhg the Project, calculating total cost");
+    System.out.println(" by passing the Visitor to each of the ProjectItems.");
     visitProjectItems(project, visitor);
-    System.out.println("The total cost for the project is: "
-        + visitor.getTotalCost());
+    System.out.println("The total cost for the project is: " + visitor.getTotalCost());
   }
 
-  private static void visitProjectItems(ProjectItem item,
-      ProjectVisitor visitor) {
+  private static void visitProjectItems(ProjectItem item, ProjectVisitor visitor) {
     item.accept(visitor);
     if (item.getProjectItems() != null) {
       Iterator subElements = item.getProjectItems().iterator();
@@ -87,12 +82,10 @@ interface Contact extends Serializable {
 }
 
 class Task implements ProjectItem {
-  /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+  /** */
+  private static final long serialVersionUID = 1L;
 
-private String name;
+  private String name;
 
   private ArrayList projectItems = new ArrayList();
 
@@ -100,8 +93,7 @@ private String name;
 
   private double timeRequired;
 
-  public Task() {
-  }
+  public Task() {}
 
   public Task(String newName, Contact newOwner, double newTimeRequired) {
     this.name = newName;
@@ -153,12 +145,10 @@ private String name;
 }
 
 class Deliverable implements ProjectItem {
-  /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+  /** */
+  private static final long serialVersionUID = 1L;
 
-private String name;
+  private String name;
 
   private String description;
 
@@ -168,11 +158,14 @@ private String name;
 
   private double productionCost;
 
-  public Deliverable() {
-  }
+  public Deliverable() {}
 
-  public Deliverable(String newName, String newDescription, Contact newOwner,
-      double newMaterialsCost, double newProductionCost) {
+  public Deliverable(
+      String newName,
+      String newDescription,
+      Contact newOwner,
+      double newMaterialsCost,
+      double newProductionCost) {
     this.name = newName;
     this.description = newDescription;
     this.owner = newOwner;
@@ -246,12 +239,10 @@ interface ProjectItem extends Serializable {
 }
 
 class ContactImpl implements Contact {
-  /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+  /** */
+  private static final long serialVersionUID = 1L;
 
-private String firstName;
+  private String firstName;
 
   private String lastName;
 
@@ -259,11 +250,10 @@ private String firstName;
 
   private String organization;
 
-  public ContactImpl() {
-  }
+  public ContactImpl() {}
 
-  public ContactImpl(String newFirstName, String newLastName,
-      String newTitle, String newOrganization) {
+  public ContactImpl(
+      String newFirstName, String newLastName, String newTitle, String newOrganization) {
     this.firstName = newFirstName;
     this.lastName = newLastName;
     this.title = newTitle;
@@ -329,28 +319,25 @@ class DataCreator {
   }
 
   private static Serializable createData() {
-    Contact contact = new ContactImpl("Test", "Subject", "Volunteer",
-        "United Patterns Consortium");
+    Contact contact = new ContactImpl("Test", "Subject", "Volunteer", "United Patterns Consortium");
 
     Project project = new Project("Project 1", "Test Project");
 
     Task task1 = new Task("Task 1", contact, 1);
     Task task2 = new Task("Task 2", contact, 1);
 
-    project.addProjectItem(new Deliverable("Deliverable 1",
-        "Layer 1 deliverable", contact, 50.0, 50.0));
+    project.addProjectItem(
+        new Deliverable("Deliverable 1", "Layer 1 deliverable", contact, 50.0, 50.0));
     project.addProjectItem(task1);
     project.addProjectItem(task2);
-    project.addProjectItem(new DependentTask("Dependent Task 1", contact,
-        1, 1));
+    project.addProjectItem(new DependentTask("Dependent Task 1", contact, 1, 1));
 
     Task task3 = new Task("Task 3", contact, 1);
     Task task4 = new Task("Task 4", contact, 1);
     Task task5 = new Task("Task 5", contact, 1);
     Task task6 = new Task("Task 6", contact, 1);
 
-    DependentTask dtask2 = new DependentTask("Dependent Task 2", contact,
-        1, 1);
+    DependentTask dtask2 = new DependentTask("Dependent Task 2", contact, 1, 1);
 
     task1.addProjectItem(task3);
     task1.addProjectItem(task4);
@@ -359,21 +346,19 @@ class DataCreator {
 
     dtask2.addDependentTask(task5);
     dtask2.addDependentTask(task6);
-    dtask2.addProjectItem(new Deliverable("Deliverable 2",
-        "Layer 3 deliverable", contact, 50.0, 50.0));
+    dtask2.addProjectItem(
+        new Deliverable("Deliverable 2", "Layer 3 deliverable", contact, 50.0, 50.0));
 
-    task3.addProjectItem(new Deliverable("Deliverable 3",
-        "Layer 3 deliverable", contact, 50.0, 50.0));
+    task3.addProjectItem(
+        new Deliverable("Deliverable 3", "Layer 3 deliverable", contact, 50.0, 50.0));
     task4.addProjectItem(new Task("Task 7", contact, 1));
-    task4.addProjectItem(new Deliverable("Deliverable 4",
-        "Layer 3 deliverable", contact, 50.0, 50.0));
+    task4.addProjectItem(
+        new Deliverable("Deliverable 4", "Layer 3 deliverable", contact, 50.0, 50.0));
     return project;
   }
 
-  private static void serializeToFile(Serializable content, String fileName)
-      throws IOException {
-    ObjectOutputStream serOut = new ObjectOutputStream(
-        new FileOutputStream(fileName));
+  private static void serializeToFile(Serializable content, String fileName) throws IOException {
+    ObjectOutputStream serOut = new ObjectOutputStream(new FileOutputStream(fileName));
     serOut.writeObject(content);
     serOut.close();
   }
@@ -385,8 +370,7 @@ class DataRetriever {
     try {
       File inputFile = new File(fileName);
       if (inputFile.exists() && inputFile.isFile()) {
-        ObjectInputStream readIn = new ObjectInputStream(
-            new FileInputStream(fileName));
+        ObjectInputStream readIn = new ObjectInputStream(new FileInputStream(fileName));
         returnValue = readIn.readObject();
         readIn.close();
       } else {
@@ -397,27 +381,23 @@ class DataRetriever {
 
     } catch (IOException exc) {
       exc.printStackTrace();
-
     }
     return returnValue;
   }
 }
 
 class DependentTask extends Task {
-  /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+  /** */
+  private static final long serialVersionUID = 1L;
 
-private ArrayList dependentTasks = new ArrayList();
+  private ArrayList dependentTasks = new ArrayList();
 
   private double dependencyWeightingFactor;
 
-  public DependentTask() {
-  }
+  public DependentTask() {}
 
-  public DependentTask(String newName, Contact newOwner,
-      double newTimeRequired, double newWeightingFactor) {
+  public DependentTask(
+      String newName, Contact newOwner, double newTimeRequired, double newWeightingFactor) {
     super(newName, newOwner, newTimeRequired);
     this.dependencyWeightingFactor = newWeightingFactor;
   }
@@ -450,19 +430,16 @@ private ArrayList dependentTasks = new ArrayList();
 }
 
 class Project implements ProjectItem {
-  /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+  /** */
+  private static final long serialVersionUID = 1L;
 
-private String name;
+  private String name;
 
   private String description;
 
   private ArrayList projectItems = new ArrayList();
 
-  public Project() {
-  }
+  public Project() {}
 
   public Project(String newName, String newDescription) {
     this.name = newName;
@@ -539,6 +516,5 @@ class ProjectCostVisitor implements ProjectVisitor {
     this.totalCost += p.getTimeRequired() * this.hourlyRate;
   }
 
-  public void visitProject(Project p) {
-  }
+  public void visitProject(Project p) {}
 }

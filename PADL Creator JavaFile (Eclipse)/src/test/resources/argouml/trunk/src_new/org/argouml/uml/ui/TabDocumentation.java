@@ -25,7 +25,6 @@
 package org.argouml.uml.ui;
 
 import javax.swing.JScrollPane;
-
 import org.argouml.application.api.Configuration;
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
@@ -35,126 +34,122 @@ import org.tigris.swidgets.LabelledLayout;
 import org.tigris.swidgets.Vertical;
 
 /**
- * This the tab in the details pane for documentation.<p>
+ * This the tab in the details pane for documentation.
  *
- * This prop panel now uses the new (0.13.*) event implementation.<p>
+ * <p>This prop panel now uses the new (0.13.*) event implementation.
  *
- * All data in this tab is stored as Tagged Values,
- * and saved and reloaded correctly.<p>
+ * <p>All data in this tab is stored as Tagged Values, and saved and reloaded correctly.
  *
- * Selecting the menu Edit>Settings... and setting the user name
- * does not affect the author field
- * in the documentation tab. <p>
+ * <p>Selecting the menu Edit>Settings... and setting the user name does not affect the author field
+ * in the documentation tab.
  *
- * Enabling output from the documentation fields when generating code as
- * embedded in javadocs and for html/diagram creation is considered important
- * by users.<p>
+ * <p>Enabling output from the documentation fields when generating code as embedded in javadocs and
+ * for html/diagram creation is considered important by users.
  *
- * When importing sources, already saved javadoc statements are not
- * automatically added to the documenation Jtext window. When Adding notes to
- * classes the notes are not included in the documentation text window.<p>
+ * <p>When importing sources, already saved javadoc statements are not automatically added to the
+ * documenation Jtext window. When Adding notes to classes the notes are not included in the
+ * documentation text window.
  *
- * The "Since" field is not validated for real date. Change to DateField?<p>
+ * <p>The "Since" field is not validated for real date. Change to DateField?
  *
- * Note that all fields in the TabDocumentation are added automatically
- * to the tagged value tab view.<p>
+ * <p>Note that all fields in the TabDocumentation are added automatically to the tagged value tab
+ * view.
  *
- * Refactored by: raphael-langerhorst@gmx.at; 5th April 03<p>
- * Changes: <ul>
- * <li>uses LabelledLayout instead of GridBagLayout
- * <li>uses the new event pump introduced late 2002 by Jaap</ul><p>
+ * <p>Refactored by: raphael-langerhorst@gmx.at; 5th April 03
  *
- * UMLModelElementTaggedValueDocument is used to access the tagged values of an
- * MModelElement.
+ * <p>Changes:
+ *
+ * <ul>
+ *   <li>uses LabelledLayout instead of GridBagLayout
+ *   <li>uses the new event pump introduced late 2002 by Jaap
+ * </ul>
+ *
+ * <p>UMLModelElementTaggedValueDocument is used to access the tagged values of an MModelElement.
  */
 public class TabDocumentation extends PropPanel {
 
-    private static String orientation = Configuration.getString(Configuration
-            .makeKey("layout", "tabdocumentation"));
+  private static String orientation =
+      Configuration.getString(Configuration.makeKey("layout", "tabdocumentation"));
 
-    /**
-     * Construct new documentation tab
-     */
-    public TabDocumentation() {
-        super(Translator.localize("tab.documentation"), (orientation
-                .equals("West") || orientation.equals("East")) ? Vertical
-                .getInstance() : Horizontal.getInstance());
+  /** Construct new documentation tab */
+  public TabDocumentation() {
+    super(
+        Translator.localize("tab.documentation"),
+        (orientation.equals("West") || orientation.equals("East"))
+            ? Vertical.getInstance()
+            : Horizontal.getInstance());
 
-        addField(Translator.localize("label.author"), new UMLTextField2(
-                new UMLModelElementTaggedValueDocument("author")));
+    addField(
+        Translator.localize("label.author"),
+        new UMLTextField2(new UMLModelElementTaggedValueDocument("author")));
 
-        addField(Translator.localize("label.version"), new UMLTextField2(
-                new UMLModelElementTaggedValueDocument("version")));
+    addField(
+        Translator.localize("label.version"),
+        new UMLTextField2(new UMLModelElementTaggedValueDocument("version")));
 
-        addField(Translator.localize("label.since"), new UMLTextField2(
-                new UMLModelElementTaggedValueDocument("since")));
+    addField(
+        Translator.localize("label.since"),
+        new UMLTextField2(new UMLModelElementTaggedValueDocument("since")));
 
-        addField(Translator.localize("label.deprecated"),
-                new UMLDeprecatedCheckBox());
+    addField(Translator.localize("label.deprecated"), new UMLDeprecatedCheckBox());
 
-        UMLTextArea2 see = new UMLTextArea2(
-                new UMLModelElementTaggedValueDocument("see"));
-        see.setRows(2);
-        see.setLineWrap(true);
-        see.setWrapStyleWord(true);
-        JScrollPane spSee = new JScrollPane();
-        spSee.getViewport().add(see);
-        addField(Translator.localize("label.see"), spSee);
+    UMLTextArea2 see = new UMLTextArea2(new UMLModelElementTaggedValueDocument("see"));
+    see.setRows(2);
+    see.setLineWrap(true);
+    see.setWrapStyleWord(true);
+    JScrollPane spSee = new JScrollPane();
+    spSee.getViewport().add(see);
+    addField(Translator.localize("label.see"), spSee);
 
-        //make new column with LabelledLayout
-        add(LabelledLayout.getSeperator());
+    // make new column with LabelledLayout
+    add(LabelledLayout.getSeperator());
 
-        UMLTextArea2 doc = new UMLTextArea2(
-                new UMLModelElementTaggedValueDocument("documentation"));
-        doc.setRows(2);
-        doc.setLineWrap(true);
-        doc.setWrapStyleWord(true);
-        JScrollPane spDocs = new JScrollPane();
-        spDocs.getViewport().add(doc);
-        addField(Translator.localize("label.documentation"), spDocs);
+    UMLTextArea2 doc = new UMLTextArea2(new UMLModelElementTaggedValueDocument("documentation"));
+    doc.setRows(2);
+    doc.setLineWrap(true);
+    doc.setWrapStyleWord(true);
+    JScrollPane spDocs = new JScrollPane();
+    spDocs.getViewport().add(doc);
+    addField(Translator.localize("label.documentation"), spDocs);
 
-        // Comment.name text field - editing disabled
-        UMLTextArea2 comment = new UMLTextArea2(
-                new UMLModelElementCommentDocument(false));
-        comment.setRows(2);
-        comment.setLineWrap(true);
-        comment.setWrapStyleWord(true);
-        comment.setEnabled(false);
-        comment.setDisabledTextColor(comment.getForeground());
-        JScrollPane spComment = new JScrollPane();
-        spComment.getViewport().add(comment);
-        addField(Translator.localize("label.comment.name"), spComment);
+    // Comment.name text field - editing disabled
+    UMLTextArea2 comment = new UMLTextArea2(new UMLModelElementCommentDocument(false));
+    comment.setRows(2);
+    comment.setLineWrap(true);
+    comment.setWrapStyleWord(true);
+    comment.setEnabled(false);
+    comment.setDisabledTextColor(comment.getForeground());
+    JScrollPane spComment = new JScrollPane();
+    spComment.getViewport().add(comment);
+    addField(Translator.localize("label.comment.name"), spComment);
 
-        // Comment.body text field - editing disabled
-        UMLTextArea2 commentBody = new UMLTextArea2(
-                new UMLModelElementCommentDocument(true));
-        commentBody.setRows(2);
-        commentBody.setLineWrap(true);
-        commentBody.setWrapStyleWord(true);
-        commentBody.setEnabled(false);
-        commentBody.setDisabledTextColor(comment.getForeground());
-        JScrollPane spCommentBody = new JScrollPane();
-        spCommentBody.getViewport().add(commentBody);
-        addField(Translator.localize("label.comment.body"), spCommentBody);
+    // Comment.body text field - editing disabled
+    UMLTextArea2 commentBody = new UMLTextArea2(new UMLModelElementCommentDocument(true));
+    commentBody.setRows(2);
+    commentBody.setLineWrap(true);
+    commentBody.setWrapStyleWord(true);
+    commentBody.setEnabled(false);
+    commentBody.setDisabledTextColor(comment.getForeground());
+    JScrollPane spCommentBody = new JScrollPane();
+    spCommentBody.getViewport().add(commentBody);
+    addField(Translator.localize("label.comment.body"), spCommentBody);
 
-        /* Since there are no buttons on this panel, we have to set
-         * the size of the buttonpanel, otherwise the 
-         * title would not be aligned right. */
-        setButtonPanelSize(18);
-    }
+    /* Since there are no buttons on this panel, we have to set
+     * the size of the buttonpanel, otherwise the
+     * title would not be aligned right. */
+    setButtonPanelSize(18);
+  }
 
-    /**
-     * Checks if the tab should be enabled. Returns true if the target
-     * returned by getTarget is a modelelement or if that target shows up as Fig
-     * on the active diagram and has a modelelement as owner.
-     *
-     * @return true if this tab should be enabled, otherwise false.
-     */
-    public boolean shouldBeEnabled() {
-        Object target = getTarget();
-        target = (target instanceof Fig) ? ((Fig) target).getOwner() : target;
-        return Model.getFacade().isAModelElement(target);
-    }
-
+  /**
+   * Checks if the tab should be enabled. Returns true if the target returned by getTarget is a
+   * modelelement or if that target shows up as Fig on the active diagram and has a modelelement as
+   * owner.
+   *
+   * @return true if this tab should be enabled, otherwise false.
+   */
+  public boolean shouldBeEnabled() {
+    Object target = getTarget();
+    target = (target instanceof Fig) ? ((Fig) target).getOwner() : target;
+    return Model.getFacade().isAModelElement(target);
+  }
 } /* end class TabDocumentation */
-

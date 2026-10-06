@@ -29,28 +29,29 @@ import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLCheckBox2;
 
 /**
- *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 4, 2003
  */
 public class UMLAssociationEndTargetScopeCheckbox extends UMLCheckBox2 {
 
-    /**
-     * Constructor for UMLAssociationEndTargetScopeCheckbox.
-     */
-    public UMLAssociationEndTargetScopeCheckbox() {
-        super(Translator.localize("label.targetscope-classifier"),
-                ActionSetAssociationEndTargetScope.getInstance(), "ordering");
-    }
+  /** Constructor for UMLAssociationEndTargetScopeCheckbox. */
+  public UMLAssociationEndTargetScopeCheckbox() {
+    super(
+        Translator.localize("label.targetscope-classifier"),
+        ActionSetAssociationEndTargetScope.getInstance(),
+        "ordering");
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLCheckBox2#buildModel()
-     */
-    public void buildModel() {
-        if (getTarget() != null) {
-            Object associationEnd = /*(MAssociationEnd)*/ getTarget();
-            setSelected(Model.getScopeKind().getClassifier().equals(
-                    Model.getFacade().getTargetScope(associationEnd)));
-        }
+  /**
+   * @see org.argouml.uml.ui.UMLCheckBox2#buildModel()
+   */
+  public void buildModel() {
+    if (getTarget() != null) {
+      Object associationEnd = /*(MAssociationEnd)*/ getTarget();
+      setSelected(
+          Model.getScopeKind()
+              .getClassifier()
+              .equals(Model.getFacade().getTargetScope(associationEnd)));
     }
+  }
 }

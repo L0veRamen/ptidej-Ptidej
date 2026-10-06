@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -15,41 +15,37 @@
 package util.parser.java.v14.nodes;
 
 /**
- * Grammar production:
- * f0 -> "{"
- * f1 -> [ VariableInitializer() ( "," VariableInitializer() )* ]
- * f2 -> [ "," ]
- * f3 -> "}"
+ * Grammar production: f0 -> "{" f1 -> [ VariableInitializer() ( "," VariableInitializer() )* ] f2
+ * -> [ "," ] f3 -> "}"
  */
 public class ArrayInitializer implements Node {
-   /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-public NodeToken f0;
-   public NodeOptional f1;
-   public NodeOptional f2;
-   public NodeToken f3;
+  /** */
+  private static final long serialVersionUID = 1L;
 
-   public ArrayInitializer(NodeToken n0, NodeOptional n1, NodeOptional n2, NodeToken n3) {
-      this.f0 = n0;
-      this.f1 = n1;
-      this.f2 = n2;
-      this.f3 = n3;
-   }
+  public NodeToken f0;
+  public NodeOptional f1;
+  public NodeOptional f2;
+  public NodeToken f3;
 
-   public ArrayInitializer(NodeOptional n0, NodeOptional n1) {
-      this.f0 = new NodeToken("{");
-      this.f1 = n0;
-      this.f2 = n1;
-      this.f3 = new NodeToken("}");
-   }
+  public ArrayInitializer(NodeToken n0, NodeOptional n1, NodeOptional n2, NodeToken n3) {
+    this.f0 = n0;
+    this.f1 = n1;
+    this.f2 = n2;
+    this.f3 = n3;
+  }
 
-   public void accept(util.parser.java.v14.visitors.Visitor v) {
-      v.visit(this);
-   }
-   public Object accept(util.parser.java.v14.visitors.ObjectVisitor v, Object argu) {
-      return v.visit(this,argu);
-   }
+  public ArrayInitializer(NodeOptional n0, NodeOptional n1) {
+    this.f0 = new NodeToken("{");
+    this.f1 = n0;
+    this.f2 = n1;
+    this.f3 = new NodeToken("}");
+  }
+
+  public void accept(util.parser.java.v14.visitors.Visitor v) {
+    v.visit(this);
+  }
+
+  public Object accept(util.parser.java.v14.visitors.ObjectVisitor v, Object argu) {
+    return v.visit(this, argu);
+  }
 }
-

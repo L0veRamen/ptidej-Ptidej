@@ -6,13 +6,13 @@
  */
 /*
  * Copyright (c) 1997-2001 by Sun Microsystems, Inc. All Rights Reserved.
- * 
+ *
  * Sun grants you ("Licensee") a non-exclusive, royalty free, license to use,
  * modify and redistribute this software in source and binary code form,
  * provided that i) this copyright notice and license appear on all copies of
  * the software; and ii) Licensee does not utilize the software in a manner
  * which is disparaging to Sun.
- * 
+ *
  * This software is provided "AS IS," without a warranty of any kind. ALL
  * EXPRESS OR IMPLIED CONDITIONS, REPRESENTATIONS AND WARRANTIES, INCLUDING ANY
  * IMPLIED WARRANTY OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR
@@ -24,7 +24,7 @@
  * CAUSED AND REGARDLESS OF THE THEORY OF LIABILITY, ARISING OUT OF THE USE OF
  * OR INABILITY TO USE SOFTWARE, EVEN IF SUN HAS BEEN ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGES.
- * 
+ *
  * This software is not designed or intended for use in on-line control of
  * aircraft, air traffic, aircraft navigation or aircraft communications; or in
  * the design, construction, operation or maintenance of any nuclear
@@ -43,53 +43,44 @@ import java.io.Writer;
 import util.io.ProxyConsole;
 
 /**
- * StreamRedirectThread is a thread which copies it's input to
- * it's output and terminates when it completes.
+ * StreamRedirectThread is a thread which copies it's input to it's output and terminates when it
+ * completes.
  *
- * @version     @(#) StreamRedirectThread.java 1.4 03/01/23 16:22:08
+ * @version @(#) StreamRedirectThread.java 1.4 03/01/23 16:22:08
  * @author Robert Field
  */
 class StreamRedirectThread extends Thread {
 
-	private final Reader in;
-	private final Writer out;
+  private final Reader in;
+  private final Writer out;
 
-	private static final int BUFFER_SIZE = 2048;
+  private static final int BUFFER_SIZE = 2048;
 
-	/**
-	 * Set up for copy.
-	 * @param name  Name of the thread
-	 * @param in    Stream to copy from
-	 * @param out   Stream to copy to
-	 */
-	StreamRedirectThread(
-		final String name,
-		final InputStream in,
-		final OutputStream out) {
-		super(name);
-		this.in = new InputStreamReader(in);
-		this.out = new OutputStreamWriter(out);
-		this.setPriority(Thread.MAX_PRIORITY - 1);
-	}
+  /**
+   * Set up for copy.
+   *
+   * @param name Name of the thread
+   * @param in Stream to copy from
+   * @param out Stream to copy to
+   */
+  StreamRedirectThread(final String name, final InputStream in, final OutputStream out) {
+    super(name);
+    this.in = new InputStreamReader(in);
+    this.out = new OutputStreamWriter(out);
+    this.setPriority(Thread.MAX_PRIORITY - 1);
+  }
 
-	/**
-	 * Copy.
-	 */
-	public void run() {
-		try {
-			final char[] cbuf = new char[StreamRedirectThread.BUFFER_SIZE];
-			int count;
-			while ((count =
-				this.in.read(cbuf, 0, StreamRedirectThread.BUFFER_SIZE)) >= 0) {
-				this.out.write(cbuf, 0, count);
-			}
-			this.out.flush();
-		}
-		catch (final IOException exc) {
-			ProxyConsole
-				.getInstance()
-				.errorOutput()
-				.println("Child I/O Transfer - " + exc);
-		}
-	}
+  /** Copy. */
+  public void run() {
+    try {
+      final char[] cbuf = new char[StreamRedirectThread.BUFFER_SIZE];
+      int count;
+      while ((count = this.in.read(cbuf, 0, StreamRedirectThread.BUFFER_SIZE)) >= 0) {
+        this.out.write(cbuf, 0, count);
+      }
+      this.out.flush();
+    } catch (final IOException exc) {
+      ProxyConsole.getInstance().errorOutput().println("Child I/O Transfer - " + exc);
+    }
+  }
 }

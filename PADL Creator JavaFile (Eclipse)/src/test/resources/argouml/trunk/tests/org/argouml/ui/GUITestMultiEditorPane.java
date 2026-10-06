@@ -32,22 +32,22 @@ import junit.framework.TestCase;
  */
 public class GUITestMultiEditorPane extends TestCase {
 
-    /**
-     * Constructor for TestMultiEditorPane.
-     *
-     * @param arg0 is the test case name.
-     */
-    public GUITestMultiEditorPane(String arg0) {
-        super(arg0);
-    }
+  /**
+   * Constructor for TestMultiEditorPane.
+   *
+   * @param arg0 is the test case name.
+   */
+  public GUITestMultiEditorPane(String arg0) {
+    super(arg0);
+  }
 
-    /**
-     * Tests the construction of the multieditorpane. Can we construct a
-     * multieditorpane and even have an editor in it?
-     */
-    public void testConstruction() {
-	MultiEditorPane pane = new MultiEditorPane();
-	assertNotNull(pane);
-	assertEquals(pane.getComponents().length, 1);
-    }
+  /**
+   * Tests the construction of the multieditorpane. Can we construct a multieditorpane and even have
+   * an editor in it?
+   */
+  public void testConstruction() {
+    MultiEditorPane pane = new MultiEditorPane();
+    assertNotNull(pane);
+    assertEquals(pane.getComponents().length, 1);
+  }
 }

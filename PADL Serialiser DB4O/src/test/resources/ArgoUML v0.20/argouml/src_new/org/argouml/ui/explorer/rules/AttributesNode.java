@@ -27,47 +27,46 @@ package org.argouml.ui.explorer.rules;
 import org.argouml.ui.explorer.WeakExplorerNode;
 
 /**
- * This class is a support class for The Navigation panel Go Rules.
- * Don't confuse it with anything to do with GEF nodes or the like.
+ * This class is a support class for The Navigation panel Go Rules. Don't confuse it with anything
+ * to do with GEF nodes or the like.
  *
- * $Revision: 1.4 $
+ * <p>$Revision: 1.4 $
  *
- * @author  alexb, $Author: linus $
+ * @author alexb, $Author: linus $
  * @since argo 0.13.4, Created on 21 March 2003, 23:18
  */
 public class AttributesNode implements WeakExplorerNode {
 
-    private Object parent;
+  private Object parent;
 
-    /**
-     * Creates a new instance of AttributesNode
-     *
-     * @param theParent the parent node
-     */
-    public AttributesNode(Object theParent) {
+  /**
+   * Creates a new instance of AttributesNode
+   *
+   * @param theParent the parent node
+   */
+  public AttributesNode(Object theParent) {
 
-        this.parent = theParent;
-    }
+    this.parent = theParent;
+  }
 
-    /**
-     * @return the parent
-     */
-    public Object getParent() {
-	return parent;
-    }
+  /**
+   * @return the parent
+   */
+  public Object getParent() {
+    return parent;
+  }
 
-    /**
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-	return "Attributes";
-    }
+  /**
+   * @see java.lang.Object#toString()
+   */
+  public String toString() {
+    return "Attributes";
+  }
 
-    /**
-     * @see org.argouml.ui.explorer.WeakExplorerNode#subsumes(java.lang.Object)
-     */
-    public boolean subsumes(Object obj) {
-	return obj instanceof AttributesNode;
-    }
+  /**
+   * @see org.argouml.ui.explorer.WeakExplorerNode#subsumes(java.lang.Object)
+   */
+  public boolean subsumes(Object obj) {
+    return obj instanceof AttributesNode;
+  }
 }
-

@@ -1,5 +1,3 @@
 package org.ogre4j;
 
-public class MouseListener extends EventListener {
-
-}
+public class MouseListener extends EventListener {}

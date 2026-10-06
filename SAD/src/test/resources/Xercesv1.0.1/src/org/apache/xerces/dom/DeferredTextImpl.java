@@ -60,100 +60,92 @@ package org.apache.xerces.dom;
 import org.w3c.dom.*;
 
 /**
- * Text nodes hold the non-markup, non-Entity content of
- * an Element or Attribute.
- * <P>
- * When a document is first made available to the DOM, there is only
- * one Text object for each block of adjacent plain-text. Users (ie,
- * applications) may create multiple adjacent Texts during editing --
- * see {@link Element#normalize} for discussion.
- * <P>
- * Note that CDATASection is a subclass of Text. This is conceptually
- * valid, since they're really just two different ways of quoting
- * characters when they're written out as part of an XML stream.
+ * Text nodes hold the non-markup, non-Entity content of an Element or Attribute.
+ *
+ * <p>When a document is first made available to the DOM, there is only one Text object for each
+ * block of adjacent plain-text. Users (ie, applications) may create multiple adjacent Texts during
+ * editing -- see {@link Element#normalize} for discussion.
+ *
+ * <p>Note that CDATASection is a subclass of Text. This is conceptually valid, since they're really
+ * just two different ways of quoting characters when they're written out as part of an XML stream.
  *
  * @version
- * @since  PR-DOM-Level-1-19980818.
+ * @since PR-DOM-Level-1-19980818.
  */
-public class DeferredTextImpl
-    extends TextImpl
-    implements DeferredNode {
+public class DeferredTextImpl extends TextImpl implements DeferredNode {
 
-    //
-    // Constants
-    //
+  //
+  // Constants
+  //
 
-    /** Serialization version. */
-    static final long serialVersionUID = 2310613872100393425L;
+  /** Serialization version. */
+  static final long serialVersionUID = 2310613872100393425L;
 
-    //
-    // Data
-    //
+  //
+  // Data
+  //
 
-    /** Node index. */
-    protected transient int fNodeIndex;
+  /** Node index. */
+  protected transient int fNodeIndex;
 
-    //
-    // Constructors
-    //
+  //
+  // Constructors
+  //
 
-    /**
-     * This is the deferred constructor. Only the fNodeIndex is given here.
-     * All other data, can be requested from the ownerDocument via the index.
-     */
-    DeferredTextImpl(DeferredDocumentImpl ownerDocument, int nodeIndex) {
-        super(ownerDocument, null);
+  /**
+   * This is the deferred constructor. Only the fNodeIndex is given here. All other data, can be
+   * requested from the ownerDocument via the index.
+   */
+  DeferredTextImpl(DeferredDocumentImpl ownerDocument, int nodeIndex) {
+    super(ownerDocument, null);
 
-        fNodeIndex = nodeIndex;
-        syncData = true;
+    fNodeIndex = nodeIndex;
+    syncData = true;
+  } // <init>(DeferredDocumentImpl,int)
 
-    } // <init>(DeferredDocumentImpl,int)
+  //
+  // DeferredNode methods
+  //
 
-    //
-    // DeferredNode methods
-    //
+  /** Returns the node index. */
+  public int getNodeIndex() {
+    return fNodeIndex;
+  }
 
-    /** Returns the node index. */
-    public int getNodeIndex() {
-        return fNodeIndex;
+  //
+  // Protected methods
+  //
+
+  /** Synchronizes the underlying data. */
+  protected void synchronizeData() {
+
+    // no need for future synchronizations
+    syncData = false;
+
+    // get initial text value
+    DeferredDocumentImpl ownerDocument = (DeferredDocumentImpl) this.ownerDocument;
+    value = ownerDocument.getNodeValueString(fNodeIndex);
+
+    // revisit: we only normalize text nodes with Elements as parents.
+    int parent = -1;
+    if (getNodeType() == Node.TEXT_NODE
+        && (parent = ownerDocument.getParentNode(fNodeIndex)) != -1
+        && ownerDocument.getNodeType(parent) == Node.ELEMENT_NODE) {
+
+      int realNext = ownerDocument.getRealNextSibling(fNodeIndex);
+      int type = ownerDocument.getNodeType(realNext);
+      if (realNext != -1 && type == Node.TEXT_NODE) {
+        StringBuffer sb = new StringBuffer(value);
+        while (realNext != -1 && type == Node.TEXT_NODE) {
+          sb.append(ownerDocument.getNodeValueString(realNext));
+          realNext = ownerDocument.getRealNextSibling(realNext);
+          type = ownerDocument.getNodeType(realNext);
+        }
+        value = sb.toString();
+      }
     }
 
-    //
-    // Protected methods
-    //
-
-    /** Synchronizes the underlying data. */
-    protected void synchronizeData() {
-
-        // no need for future synchronizations
-        syncData = false;
-
-        // get initial text value
-        DeferredDocumentImpl ownerDocument = (DeferredDocumentImpl)this.ownerDocument;
-        value = ownerDocument.getNodeValueString(fNodeIndex);
-
-        // revisit: we only normalize text nodes with Elements as parents.
-        int parent = -1;
-        if (getNodeType() == Node.TEXT_NODE &&
-            (parent = ownerDocument.getParentNode(fNodeIndex)) != -1 &&
-            ownerDocument.getNodeType(parent) == Node.ELEMENT_NODE) {
-
-            int realNext = ownerDocument.getRealNextSibling(fNodeIndex);
-            int type     = ownerDocument.getNodeType(realNext);
-            if (realNext != -1 && type == Node.TEXT_NODE) {
-                StringBuffer sb = new StringBuffer(value);
-                while (realNext != -1 && type == Node.TEXT_NODE) {
-                    sb.append(ownerDocument.getNodeValueString(realNext));
-                    realNext = ownerDocument.getRealNextSibling(realNext);
-                    type = ownerDocument.getNodeType(realNext);
-                }
-                value = sb.toString();
-            }
-        }
-
-        // ignorable whitespace
-        ignorableWhitespace = ownerDocument.getFirstChild(fNodeIndex) == 1;
-
-    } // synchronizeData()
-
+    // ignorable whitespace
+    ignorableWhitespace = ownerDocument.getFirstChild(fNodeIndex) == 1;
+  } // synchronizeData()
 } // class DeferredTextImpl

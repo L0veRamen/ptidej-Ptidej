@@ -26,7 +26,6 @@ package org.argouml.core.propertypanels.ui;
 
 import java.util.Collections;
 import java.util.LinkedList;
-
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
@@ -37,30 +36,28 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  */
 class UMLStereotypeBaseClassListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Construct the model, listen to changes of "baseClass".
-     */
-    public UMLStereotypeBaseClassListModel() {
-        super("baseClass");
-    }
+  /** Construct the model, listen to changes of "baseClass". */
+  public UMLStereotypeBaseClassListModel() {
+    super("baseClass");
+  }
 
-    @Override
-    protected void buildModelList() {
-        removeAllElements();
-        if (Model.getFacade().isAStereotype(getTarget())) {
-            // keep them sorted
-            LinkedList<String> lst = new LinkedList<String>(
-                    Model.getFacade().getBaseClasses(getTarget()));
-            Collections.sort(lst);
-            addAll(lst);
-        }
+  @Override
+  protected void buildModelList() {
+    removeAllElements();
+    if (Model.getFacade().isAStereotype(getTarget())) {
+      // keep them sorted
+      LinkedList<String> lst =
+          new LinkedList<String>(Model.getFacade().getBaseClasses(getTarget()));
+      Collections.sort(lst);
+      addAll(lst);
     }
+  }
 
-    @Override
-    protected boolean isValidElement(Object element) {
-        if (Model.getFacade().isAStereotype(element)) {
-            return true;
-        }
-        return false;
+  @Override
+  protected boolean isValidElement(Object element) {
+    if (Model.getFacade().isAStereotype(element)) {
+      return true;
     }
+    return false;
+  }
 }

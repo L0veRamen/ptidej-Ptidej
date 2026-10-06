@@ -28,35 +28,34 @@ import java.awt.event.ActionEvent;
 import org.argouml.uml.ui.UMLAction;
 
 /**
- * A class to keep track of the users desire to have his diagram nodes
- * automatically resized.
+ * A class to keep track of the users desire to have his diagram nodes automatically resized.
  *
  * @see org.argouml.ui.cmd.CmdSetPreferredSize
  * @author Markus Klink
  */
 public class ActionAutoResize extends UMLAction {
 
-    private static boolean autoResize = false;
+  private static boolean autoResize = false;
 
-    /**
-     * The constructor.
-     */
-    public ActionAutoResize() {
-        super("action.toggle-auto-resizing", NO_ICON);
-    }
+  /** The constructor. */
+  public ActionAutoResize() {
+    super("action.toggle-auto-resizing", NO_ICON);
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-        autoResize = !autoResize;
-    }
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    autoResize = !autoResize;
+  }
 
-    /**
-     * Accessor to determine whether the nodes should be resized or not.
-     *
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement#modelChanged(
-     *         java.beans.PropertyChangeEvent)
-     */
-    public static boolean isAutoResizable() { return autoResize; }
+  /**
+   * Accessor to determine whether the nodes should be resized or not.
+   *
+   * @see org.argouml.uml.diagram.ui.FigNodeModelElement#modelChanged(
+   *     java.beans.PropertyChangeEvent)
+   */
+  public static boolean isAutoResizable() {
+    return autoResize;
+  }
 }

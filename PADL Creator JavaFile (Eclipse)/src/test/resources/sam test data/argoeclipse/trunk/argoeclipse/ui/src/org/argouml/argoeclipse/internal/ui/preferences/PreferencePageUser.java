@@ -24,68 +24,56 @@
 
 package org.argouml.argoeclipse.internal.ui.preferences;
 
+import org.argouml.application.api.Argo;
+import org.argouml.argoeclipse.internal.ui.Activator;
+import org.argouml.i18n.Translator;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-import org.argouml.application.api.Argo;
-import org.argouml.argoeclipse.internal.ui.Activator;
-import org.argouml.i18n.Translator;
-
 /**
- * This class represents a preference page that
- * is contributed to the Preferences dialog. By 
- * subclassing <samp>FieldEditorPreferencePage</samp>, we
- * can use the field support built into JFace that allows
- * us to create a page that is small and knows how to 
- * save, restore and apply itself.
- * <p>
- * This page is used to modify preferences only. They
- * are stored in the preference store that belongs to
- * the main plug-in class. That way, preferences can
- * be accessed directly via the preference store.
+ * This class represents a preference page that is contributed to the Preferences dialog. By
+ * subclassing <samp>FieldEditorPreferencePage</samp>, we can use the field support built into JFace
+ * that allows us to create a page that is small and knows how to save, restore and apply itself.
+ *
+ * <p>This page is used to modify preferences only. They are stored in the preference store that
+ * belongs to the main plug-in class. That way, preferences can be accessed directly via the
+ * preference store.
  */
+public class PreferencePageUser extends FieldEditorPreferencePage
+    implements IWorkbenchPreferencePage {
 
-public class PreferencePageUser
-	extends FieldEditorPreferencePage
-	implements IWorkbenchPreferencePage {
+  /** Construct a preference page. */
+  public PreferencePageUser() {
+    super(GRID);
+    setPreferenceStore(Activator.getDefault().getPreferenceStore());
+    setDescription("ArgoEclipse user preferences");
+  }
 
-    /**
-     * Construct a preference page.
-     */
-    public PreferencePageUser() {
-        super(GRID);
-        setPreferenceStore(Activator.getDefault().getPreferenceStore());
-        setDescription("ArgoEclipse user preferences");
-    }
+  /**
+   * Creates the field editors. Field editors are abstractions of the common GUI blocks needed to
+   * manipulate various types of preferences. Each field editor knows how to save and restore
+   * itself.
+   */
+  public void createFieldEditors() {
+    this.
 
-    /**
-     * Creates the field editors. Field editors are abstractions of
-     * the common GUI blocks needed to manipulate various types
-     * of preferences. Each field editor knows how to save and
-     * restore itself.
-     */
-    public void createFieldEditors() {
-        this.
-
-        
         // User tab settings
         addField(
-                new StringFieldEditor(Argo.KEY_USER_FULLNAME.getKey(),
-                Translator.localize("label.user"),  //$NON-NLS-1$
-                getFieldEditorParent()));
-        addField(
-                new StringFieldEditor(Argo.KEY_USER_EMAIL.getKey(), 
-                Translator.localize("label.email"),  //$NON-NLS-1$
-                getFieldEditorParent()));
+        new StringFieldEditor(
+            Argo.KEY_USER_FULLNAME.getKey(),
+            Translator.localize("label.user"), // $NON-NLS-1$
+            getFieldEditorParent()));
+    addField(
+        new StringFieldEditor(
+            Argo.KEY_USER_EMAIL.getKey(),
+            Translator.localize("label.email"), // $NON-NLS-1$
+            getFieldEditorParent()));
+  }
 
-    }
-
-    /**
-     * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
-     */
-    public void init(IWorkbench workbench) {
-    }
-
+  /**
+   * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
+   */
+  public void init(IWorkbench workbench) {}
 }

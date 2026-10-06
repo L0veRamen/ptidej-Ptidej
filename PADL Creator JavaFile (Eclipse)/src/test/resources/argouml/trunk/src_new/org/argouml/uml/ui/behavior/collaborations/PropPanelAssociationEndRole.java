@@ -26,42 +26,36 @@ package org.argouml.uml.ui.behavior.collaborations;
 
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.uml.ui.UMLLinkedList;
 import org.argouml.uml.ui.foundation.core.PropPanelAssociationEnd;
 import org.argouml.util.ConfigLoader;
 
-/**
- * The properties panel for an associationend.
- *
- */
+/** The properties panel for an associationend. */
 public class PropPanelAssociationEndRole extends PropPanelAssociationEnd {
 
-    /**
-     * Constructs the proppanel and places all scrollpanes etc. on the canvas.
-     * @see java.lang.Object#Object()
-     */
-    public PropPanelAssociationEndRole() {
-        super("AssociationEndRole", ConfigLoader.getTabPropsOrientation());
-        setAssociationLabel(Translator.localize("label.association-role"));
-        createControls();
-        positionStandardControls();
-        positionControls();
-    }
+  /**
+   * Constructs the proppanel and places all scrollpanes etc. on the canvas.
+   *
+   * @see java.lang.Object#Object()
+   */
+  public PropPanelAssociationEndRole() {
+    super("AssociationEndRole", ConfigLoader.getTabPropsOrientation());
+    setAssociationLabel(Translator.localize("label.association-role"));
+    createControls();
+    positionStandardControls();
+    positionControls();
+  }
 
-    /**
-     * @see org.argouml.uml.ui.foundation.core.PropPanelAssociationEnd#positionControls()
-     */
-    protected void positionControls() {
+  /**
+   * @see org.argouml.uml.ui.foundation.core.PropPanelAssociationEnd#positionControls()
+   */
+  protected void positionControls() {
 
-        JList baseList =
-	    new UMLLinkedList(new UMLAssociationEndRoleBaseListModel());
-        baseList.setVisibleRowCount(1);
-        addField(Translator.localize("label.base"),
-		 new JScrollPane(baseList));
+    JList baseList = new UMLLinkedList(new UMLAssociationEndRoleBaseListModel());
+    baseList.setVisibleRowCount(1);
+    addField(Translator.localize("label.base"), new JScrollPane(baseList));
 
-        super.positionControls();
-    }
-
+    super.positionControls();
+  }
 } /* end class PropPanelAssociationEndRole */

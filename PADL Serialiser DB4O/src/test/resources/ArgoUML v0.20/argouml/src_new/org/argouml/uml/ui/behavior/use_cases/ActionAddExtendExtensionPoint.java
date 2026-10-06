@@ -26,7 +26,6 @@ package org.argouml.uml.ui.behavior.use_cases;
 
 import java.util.Collection;
 import java.util.Vector;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.AbstractActionAddModelElement;
@@ -36,61 +35,56 @@ import org.argouml.uml.ui.AbstractActionAddModelElement;
  * @author jaap.branderhorst@xs4all.nl
  * @stereotype singleton
  */
-public class ActionAddExtendExtensionPoint
-    extends AbstractActionAddModelElement {
+public class ActionAddExtendExtensionPoint extends AbstractActionAddModelElement {
 
-    private static final ActionAddExtendExtensionPoint SINGLETON =
-        new ActionAddExtendExtensionPoint();
-    /**
-     * Constructor for ActionAddExtendExtensionPoint.
-     */
-    protected ActionAddExtendExtensionPoint() {
-        super();
+  private static final ActionAddExtendExtensionPoint SINGLETON =
+      new ActionAddExtendExtensionPoint();
+
+  /** Constructor for ActionAddExtendExtensionPoint. */
+  protected ActionAddExtendExtensionPoint() {
+    super();
+  }
+
+  /**
+   * @see org.argouml.uml.ui.AbstractActionAddModelElement#doIt(java.util.Vector)
+   */
+  protected void doIt(Vector selected) {
+    Model.getUseCasesHelper().setExtensionPoints(getTarget(), selected);
+  }
+
+  /**
+   * @see org.argouml.uml.ui.AbstractActionAddModelElement#getChoices()
+   */
+  protected Vector getChoices() {
+    Vector ret = new Vector();
+    if (getTarget() != null) {
+      Object extend = /*(MExtend)*/ getTarget();
+      Collection c = Model.getFacade().getExtensionPoints(Model.getFacade().getBase(extend));
+      ret.addAll(c);
     }
+    return ret;
+  }
 
-    /**
-     * @see org.argouml.uml.ui.AbstractActionAddModelElement#doIt(java.util.Vector)
-     */
-    protected void doIt(Vector selected) {
-        Model.getUseCasesHelper().setExtensionPoints(getTarget(), selected);
-    }
+  /**
+   * @see org.argouml.uml.ui.AbstractActionAddModelElement#getDialogTitle()
+   */
+  protected String getDialogTitle() {
+    return Translator.localize("dialog.title.add-extensionpoints");
+  }
 
-    /**
-     * @see org.argouml.uml.ui.AbstractActionAddModelElement#getChoices()
-     */
-    protected Vector getChoices() {
-        Vector ret = new Vector();
-        if (getTarget() != null) {
-            Object extend = /*(MExtend)*/getTarget();
-            Collection c = Model.getFacade().getExtensionPoints(
-                    Model.getFacade().getBase(extend));
-            ret.addAll(c);
-        }
-        return ret;
-    }
+  /**
+   * @see org.argouml.uml.ui.AbstractActionAddModelElement#getSelected()
+   */
+  protected Vector getSelected() {
+    Vector ret = new Vector();
+    ret.addAll(Model.getFacade().getExtensionPoints(getTarget()));
+    return ret;
+  }
 
-    /**
-     * @see org.argouml.uml.ui.AbstractActionAddModelElement#getDialogTitle()
-     */
-    protected String getDialogTitle() {
-        return Translator.localize(
-                "dialog.title.add-extensionpoints");
-    }
-
-    /**
-     * @see org.argouml.uml.ui.AbstractActionAddModelElement#getSelected()
-     */
-    protected Vector getSelected() {
-        Vector ret = new Vector();
-        ret.addAll(Model.getFacade().getExtensionPoints(getTarget()));
-        return ret;
-    }
-
-    /**
-     * @return Returns the SINGLETON.
-     */
-    public static ActionAddExtendExtensionPoint getInstance() {
-        return SINGLETON;
-    }
-
+  /**
+   * @return Returns the SINGLETON.
+   */
+  public static ActionAddExtendExtensionPoint getInstance() {
+    return SINGLETON;
+  }
 }

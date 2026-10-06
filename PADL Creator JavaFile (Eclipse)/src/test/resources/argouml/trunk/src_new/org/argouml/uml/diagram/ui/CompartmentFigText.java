@@ -25,220 +25,199 @@
 package org.argouml.uml.diagram.ui;
 
 import java.awt.Color;
-
 import org.apache.log4j.Logger;
 import org.argouml.uml.notation.NotationProvider;
 import org.tigris.gef.presentation.Fig;
 
 /**
- * A FigText class extension for FigClass/FigInterface/FigUseCase
- * compartments.<p>
+ * A FigText class extension for FigClass/FigInterface/FigUseCase compartments.
  *
- * This implementation now supports the extension point compartment in
- * a use case.<p>
+ * <p>This implementation now supports the extension point compartment in a use case.
+ *
+ * <p>
  *
  * @author thn
  */
 public class CompartmentFigText extends FigSingleLineText {
-    /**
-     * Logger.
-     */
-    private static final Logger LOG =
-	Logger.getLogger(CompartmentFigText.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(CompartmentFigText.class);
 
-    ///////////////////////////////////////////////////////////////////////////
-    //
-    // Instance variables
-    //
-    ///////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////
+  //
+  // Instance variables
+  //
+  ///////////////////////////////////////////////////////////////////////////
 
-    /**
-     * The bounding figure of the compartment containing this fig text.<p>
-     */
-    private Fig           refFig;
+  /**
+   * The bounding figure of the compartment containing this fig text.
+   *
+   * <p>
+   */
+  private Fig refFig;
 
-    /**
-     * The notation provider for the text shown in this compartment.
-     */
-    private NotationProvider notationProvider;
-    
-    /**
-     * Record whether we are currently highlighted.<p>
-     */
-    private boolean       isHighlighted;
+  /** The notation provider for the text shown in this compartment. */
+  private NotationProvider notationProvider;
 
-    /**
-     * Build a new compartment figText of the given dimensions, within
-     * the compartment described by <code>aFig</code>.<p>
-     *
-     * Invoke the parent constructor, then set the reference to the
-     * associated compartment figure. The associated FigText is marked
-     * as expand only.<p>
-     *
-     * <em>Warning</em>. Won't work properly if <code>aFig</code> is
-     * null. A warning is printed.<p>
-     *
-     * @param x      X coordinate of the top left of the FigText.
-     *
-     * @param y      Y coordinate of the top left of the FigText.
-     *
-     * @param w      Width of the FigText.
-     *
-     * @param h      Height of the FigText.
-     *
-     * @param aFig  The figure describing the whole compartment
-     * 
-     * @param np    The notationProvider. 
-     *                      See NotationProviderFactory2.
-     */
-    public CompartmentFigText(int x, int y, int w, int h, Fig aFig, 
-            NotationProvider np) {
-        super(x, y, w, h, true);
+  /**
+   * Record whether we are currently highlighted.
+   *
+   * <p>
+   */
+  private boolean isHighlighted;
 
-        if (np == null) {
-            LOG.warn("Need a NotationProvider for CompartmentFigText.");
-        }
-        notationProvider = np;
+  /**
+   * Build a new compartment figText of the given dimensions, within the compartment described by
+   * <code>aFig</code>.
+   *
+   * <p>Invoke the parent constructor, then set the reference to the associated compartment figure.
+   * The associated FigText is marked as expand only.
+   *
+   * <p><em>Warning</em>. Won't work properly if <code>aFig</code> is null. A warning is printed.
+   *
+   * <p>
+   *
+   * @param x X coordinate of the top left of the FigText.
+   * @param y Y coordinate of the top left of the FigText.
+   * @param w Width of the FigText.
+   * @param h Height of the FigText.
+   * @param aFig The figure describing the whole compartment
+   * @param np The notationProvider. See NotationProviderFactory2.
+   */
+  public CompartmentFigText(int x, int y, int w, int h, Fig aFig, NotationProvider np) {
+    super(x, y, w, h, true);
 
-        // Set the enclosing compartment fig. Warn if its null (which will
-        // break).
-        refFig = aFig;
+    if (np == null) {
+      LOG.warn("Need a NotationProvider for CompartmentFigText.");
+    }
+    notationProvider = np;
 
-        if (refFig == null) {
-            LOG.warn(this.getClass().toString()
-		     + ": Cannot create with null compartment fig");
-        }
+    // Set the enclosing compartment fig. Warn if its null (which will
+    // break).
+    refFig = aFig;
+
+    if (refFig == null) {
+      LOG.warn(this.getClass().toString() + ": Cannot create with null compartment fig");
+    }
+  }
+
+  /**
+   * Build a new compartment figText of the given dimensions, within the compartment described by
+   * <code>aFig</code>.
+   *
+   * <p>Invoke the parent constructor, then set the reference to the associated compartment figure.
+   * The associated FigText is marked as expand only.
+   *
+   * <p><em>Warning</em>. Won't work properly if <code>aFig</code> is null. A warning is printed.
+   *
+   * <p>
+   *
+   * @param x X coordinate of the top left of the FigText.
+   * @param y Y coordinate of the top left of the FigText.
+   * @param w Width of the FigText.
+   * @param h Height of the FigText.
+   * @param aFig The figure describing the whole compartment
+   * @param property The property this Fig should listen for
+   */
+  public CompartmentFigText(int x, int y, int w, int h, Fig aFig, String property) {
+    this(x, y, w, h, aFig, new String[] {property});
+  }
+
+  /**
+   * Build a new compartment figText of the given dimensions, within the compartment described by
+   * <code>aFig</code>.
+   *
+   * <p>Invoke the parent constructor, then set the reference to the associated compartment figure.
+   * The associated FigText is marked as expand only.
+   *
+   * <p><em>Warning</em>. Won't work properly if <code>aFig</code> is null. A warning is printed.
+   *
+   * <p>
+   *
+   * @param x X coordinate of the top left of the FigText.
+   * @param y Y coordinate of the top left of the FigText.
+   * @param w Width of the FigText.
+   * @param h Height of the FigText.
+   * @param aFig The figure describing the whole compartment
+   * @param properties The properties this Fig should listen for
+   */
+  public CompartmentFigText(int x, int y, int w, int h, Fig aFig, String[] properties) {
+    super(x, y, w, h, true, properties);
+
+    if (aFig == null) {
+      throw new IllegalArgumentException("A refFig must be provided");
     }
 
-    /**
-     * Build a new compartment figText of the given dimensions, within
-     * the compartment described by <code>aFig</code>.<p>
-     *
-     * Invoke the parent constructor, then set the reference to the
-     * associated compartment figure. The associated FigText is marked
-     * as expand only.<p>
-     *
-     * <em>Warning</em>. Won't work properly if <code>aFig</code> is
-     * null. A warning is printed.<p>
-     *
-     * @param x      X coordinate of the top left of the FigText.
-     *
-     * @param y      Y coordinate of the top left of the FigText.
-     *
-     * @param w      Width of the FigText.
-     *
-     * @param h      Height of the FigText.
-     *
-     * @param aFig  The figure describing the whole compartment
-     * 
-     * @param property The property this Fig should listen for
-     */
-    public CompartmentFigText(int x, int y, int w, int h, Fig aFig, 
-            String property) {
-        this(x, y, w, h, aFig, new String[] {property});
+    // Set the enclosing compartment fig. Warn if its null (which will
+    // break).
+    refFig = aFig;
+  }
+
+  /**
+   * Override for correct graphical behaviour.
+   *
+   * <p>
+   *
+   * @return Current fill status&mdash;always <code>true</code>.
+   */
+  public boolean getFilled() {
+    return false;
+  }
+
+  /**
+   * Override for correct graphical behaviour.
+   *
+   * <p>
+   *
+   * @return Current fill colour&mdash;always the fill colour of the associated compartment fig.
+   */
+  public Color getLineColor() {
+    return refFig.getLineColor();
+  }
+
+  /**
+   * Mark whether this item is to be highlighted.
+   *
+   * <p>If it is highlighted, make the superclass line width 1 rather than 0 and set the associated
+   * component fig as the target in the browser.
+   *
+   * <p>
+   *
+   * @param flag <code>true</code> if the entry is to be highlighted, <code>false</code> otherwise.
+   */
+  public void setHighlighted(boolean flag) {
+    isHighlighted = flag;
+    if (isHighlighted) {
+      super.setLineWidth(1);
+    } else {
+      super.setLineWidth(0);
     }
+  }
 
-    /**
-     * Build a new compartment figText of the given dimensions, within
-     * the compartment described by <code>aFig</code>.<p>
-     *
-     * Invoke the parent constructor, then set the reference to the
-     * associated compartment figure. The associated FigText is marked
-     * as expand only.<p>
-     *
-     * <em>Warning</em>. Won't work properly if <code>aFig</code> is
-     * null. A warning is printed.<p>
-     *
-     * @param x      X coordinate of the top left of the FigText.
-     *
-     * @param y      Y coordinate of the top left of the FigText.
-     *
-     * @param w      Width of the FigText.
-     *
-     * @param h      Height of the FigText.
-     *
-     * @param aFig  The figure describing the whole compartment
-     * 
-     * @param properties The properties this Fig should listen for
-     */
-    public CompartmentFigText(int x, int y, int w, int h, Fig aFig, 
-            String[] properties) {
-        super(x, y, w, h, true, properties);
-        
-        if (aFig == null) {
-            throw new IllegalArgumentException("A refFig must be provided");
-        }
+  /**
+   * Return whether this item is highlighted.
+   *
+   * <p>
+   *
+   * @return <code>true</code> if the entry is highlighted, <code>false</code> otherwise.
+   */
+  public boolean isHighlighted() {
+    return isHighlighted;
+  }
 
-        // Set the enclosing compartment fig. Warn if its null (which will
-        // break).
-        refFig = aFig;
-    }
+  /** The UID. */
+  private static final long serialVersionUID = 3830572062785308980L;
 
-    /**
-     * Override for correct graphical behaviour.<p>
-     *
-     * @return  Current fill status&mdash;always <code>true</code>.
-     */
-    public boolean getFilled() {
-        return false;
-    }
+  /**
+   * @return Returns the notationProvider for the text in this compartment.
+   */
+  public NotationProvider getNotationProvider() {
+    return notationProvider;
+  }
 
-    /**
-     * Override for correct graphical behaviour.<p>
-     *
-     * @return  Current fill colour&mdash;always the fill colour of the
-     *          associated compartment fig.
-     */
-    public Color getLineColor() {
-        return refFig.getLineColor();
-    }
-
-    /**
-     * Mark whether this item is to be highlighted.<p>
-     *
-     * If it is highlighted, make the superclass line width 1 rather
-     * than 0 and set the associated component fig as the target in
-     * the browser.<p>
-     *
-     * @param flag  <code>true</code> if the entry is to be highlighted,
-     *              <code>false</code> otherwise.
-     */
-    public void setHighlighted(boolean flag) {
-        isHighlighted = flag;
-        if (isHighlighted) {
-            super.setLineWidth(1);
-        } else {
-            super.setLineWidth(0);
-        }
-    }
-
-
-    /**
-     * Return whether this item is highlighted.<p>
-     *
-     * @return  <code>true</code> if the entry is highlighted,
-     *          <code>false</code> otherwise.
-     */
-    public boolean isHighlighted() {
-        return isHighlighted;
-    }
-
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = 3830572062785308980L;
-
-    /**
-     * @return Returns the notationProvider for the text in this compartment.
-     */
-    public NotationProvider getNotationProvider() {
-        return notationProvider;
-    }
-
-    /**
-     * @param np The notationProvider to set.
-     */
-    void setNotationProvider(NotationProvider np) {
-        this.notationProvider = np;
-    }
+  /**
+   * @param np The notationProvider to set.
+   */
+  void setNotationProvider(NotationProvider np) {
+    this.notationProvider = np;
+  }
 } /* End of class CompartmentFigText */

@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xerces" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -61,62 +61,57 @@ import java.util.Hashtable;
 import java.util.Locale;
 
 /**
- *
  * BooleanValidator validates that content satisfies the W3C XML Datatype for Boolean
  *
- * @author Ted Leung 
+ * @author Ted Leung
  * @version
  */
-
 public class BooleanValidator implements InternalDatatypeValidator {
-    private Locale fLocale = null;
-	private DatatypeMessageProvider fMessageProvider = new DatatypeMessageProvider();
-	/**
-     * validate that a string matches the boolean datatype
-     *
-     * validate returns true or false depending on whether the string content is a
-     * W3C integer type.
-     * 
-     * @param content A string containing the content to be validated
-     *
-     * @exception throws InvalidDatatypeException if the content is
-     *  is not a W3C integer type
-     */
+  private Locale fLocale = null;
+  private DatatypeMessageProvider fMessageProvider = new DatatypeMessageProvider();
 
-	public void validate(String content) throws InvalidDatatypeValueException {
-        if (!content.equals("true") && !content.equals("false"))
-            throw new InvalidDatatypeValueException(
-				getErrorString(DatatypeMessageProvider.NotBoolean,
-							   DatatypeMessageProvider.MSG_NONE,
-							   new Object[] { content }));
-	}
-	
-	public void validate(int contentIndex) throws InvalidDatatypeValueException {
-	}
-	
-	public void setFacets(Hashtable facets) throws UnknownFacetException, IllegalFacetException, IllegalFacetValueException {
-	    throw new IllegalFacetException(); // boolean supports no facets
-	}
-	
-	public void setFacets(int facets[]) throws UnknownFacetException, IllegalFacetException, IllegalFacetValueException {
-	    throw new IllegalFacetException(); // boolean supports no facets
-	}
-	
-	public void setBasetype(DatatypeValidator base) {
-	}
-	
-    /**
-     * set the locate to be used for error messages
-     */
-    public void setLocale(Locale locale) {
-        fLocale = locale;
-    }
+  /**
+   * validate that a string matches the boolean datatype
+   *
+   * <p>validate returns true or false depending on whether the string content is a W3C integer
+   * type.
+   *
+   * @param content A string containing the content to be validated
+   * @exception throws InvalidDatatypeException if the content is is not a W3C integer type
+   */
+  public void validate(String content) throws InvalidDatatypeValueException {
+    if (!content.equals("true") && !content.equals("false"))
+      throw new InvalidDatatypeValueException(
+          getErrorString(
+              DatatypeMessageProvider.NotBoolean,
+              DatatypeMessageProvider.MSG_NONE,
+              new Object[] {content}));
+  }
 
-    private String getErrorString(int major, int minor, Object args[]) {
-         try {
-             return fMessageProvider.createMessage(fLocale, major, minor, args);
-         } catch (Exception e) {
-             return "Illegal Errorcode "+minor;
-         }
+  public void validate(int contentIndex) throws InvalidDatatypeValueException {}
+
+  public void setFacets(Hashtable facets)
+      throws UnknownFacetException, IllegalFacetException, IllegalFacetValueException {
+    throw new IllegalFacetException(); // boolean supports no facets
+  }
+
+  public void setFacets(int facets[])
+      throws UnknownFacetException, IllegalFacetException, IllegalFacetValueException {
+    throw new IllegalFacetException(); // boolean supports no facets
+  }
+
+  public void setBasetype(DatatypeValidator base) {}
+
+  /** set the locate to be used for error messages */
+  public void setLocale(Locale locale) {
+    fLocale = locale;
+  }
+
+  private String getErrorString(int major, int minor, Object args[]) {
+    try {
+      return fMessageProvider.createMessage(fLocale, major, minor, args);
+    } catch (Exception e) {
+      return "Illegal Errorcode " + minor;
     }
+  }
 }

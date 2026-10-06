@@ -34,7 +34,6 @@ import java.awt.event.MouseListener;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -46,7 +45,6 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
-
 import org.apache.log4j.Logger;
 import org.argouml.cognitive.Designer;
 import org.argouml.cognitive.ToDoItem;
@@ -60,512 +58,488 @@ import org.argouml.ui.ProjectBrowser;
 import org.argouml.ui.SplashScreen;
 
 /**
- * The lower-left pane of the main ArgoUML window, which shows the list
- * of active critics and todo items. <p>
+ * The lower-left pane of the main ArgoUML window, which shows the list of active critics and todo
+ * items.
  *
- * This pane shows a list or tree of all the "to do" items that
- * the designer should consider. <p>
+ * <p>This pane shows a list or tree of all the "to do" items that the designer should consider.
  *
- * This class is similar to the NavigatorPane.
- * It uses the same treemodel class and JTree implementation. <p>
+ * <p>This class is similar to the NavigatorPane. It uses the same treemodel class and JTree
+ * implementation.
  *
- * Perspectives are now built here. <p>
+ * <p>Perspectives are now built here.
  *
- * Future plans may involve:<ol>
- * <li> DecisionModelListener implementation
- * <li> GoalListener implementation
+ * <p>Future plans may involve:
+ *
+ * <ol>
+ *   <li>DecisionModelListener implementation
+ *   <li>GoalListener implementation
  * </ol>
  *
- *<pre>
+ * <pre>
  * possible future additions:
  *  ToDoPerspective difficulty = new ToDoByDifficulty();
  *  ToDoPerspective skill = new ToDoBySkill();
- *</pre>
+ * </pre>
  */
 public class ToDoPane extends JPanel
-    implements ItemListener,
-        TreeSelectionListener,
-        MouseListener,
-        ToDoListListener {
-    /**
-     * Logger.
-     */
-    private static final Logger LOG = Logger.getLogger(ToDoPane.class);
+    implements ItemListener, TreeSelectionListener, MouseListener, ToDoListListener {
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(ToDoPane.class);
 
-    private static final int WARN_THRESHOLD = 50;
-    private static final int ALARM_THRESHOLD = 100;
-    private static final Color WARN_COLOR = Color.yellow;
-    private static final Color ALARM_COLOR = Color.pink;
+  private static final int WARN_THRESHOLD = 50;
+  private static final int ALARM_THRESHOLD = 100;
+  private static final Color WARN_COLOR = Color.yellow;
+  private static final Color ALARM_COLOR = Color.pink;
 
-    private static int clicksInToDoPane;
-    private static int dblClicksInToDoPane;
-    private static int toDoPerspectivesChanged;
+  private static int clicksInToDoPane;
+  private static int dblClicksInToDoPane;
+  private static int toDoPerspectivesChanged;
 
-    private JTree tree;
-    private JComboBox combo;
+  private JTree tree;
+  private JComboBox combo;
 
-    /**
-     * List of TreeModels.
-     */
-    private List<ToDoPerspective> perspectives;
-    private ToDoPerspective curPerspective;
+  /** List of TreeModels. */
+  private List<ToDoPerspective> perspectives;
 
-    private ToDoList root;
-    private JLabel countLabel;
-    private Object lastSel;
+  private ToDoPerspective curPerspective;
 
+  private ToDoList root;
+  private JLabel countLabel;
+  private Object lastSel;
 
-    /**
-     * Construct the ToDoPane.
-     *
-     * @param splash if not null, then we have to show progress in the splash
-     */
-    // TODO: This should take a ProgressMonitor or something more generic
-    // (or nothing at all since it doesn't do that much work)
-    public ToDoPane(SplashScreen splash) {
+  /**
+   * Construct the ToDoPane.
+   *
+   * @param splash if not null, then we have to show progress in the splash
+   */
+  // TODO: This should take a ProgressMonitor or something more generic
+  // (or nothing at all since it doesn't do that much work)
+  public ToDoPane(SplashScreen splash) {
 
-        setLayout(new BorderLayout());
+    setLayout(new BorderLayout());
 
-        combo = new JComboBox();
-        tree = new DisplayTextTree();
+    combo = new JComboBox();
+    tree = new DisplayTextTree();
 
-        perspectives = new ArrayList<ToDoPerspective>();
+    perspectives = new ArrayList<ToDoPerspective>();
 
-        countLabel = new JLabel(formatCountLabel(999));
-        countLabel.setBorder(BorderFactory.createEmptyBorder(0, 4, 0, 4));
+    countLabel = new JLabel(formatCountLabel(999));
+    countLabel.setBorder(BorderFactory.createEmptyBorder(0, 4, 0, 4));
 
-        JPanel toolbarPanel = new JPanel(new BorderLayout());
-        toolbarPanel.add(countLabel, BorderLayout.EAST);
-        toolbarPanel.add(combo, BorderLayout.CENTER);
-        add(toolbarPanel, BorderLayout.NORTH);
+    JPanel toolbarPanel = new JPanel(new BorderLayout());
+    toolbarPanel.add(countLabel, BorderLayout.EAST);
+    toolbarPanel.add(combo, BorderLayout.CENTER);
+    add(toolbarPanel, BorderLayout.NORTH);
 
-        add(new JScrollPane(tree), BorderLayout.CENTER);
+    add(new JScrollPane(tree), BorderLayout.CENTER);
 
-        combo.addItemListener(this);
+    combo.addItemListener(this);
 
-        tree.addTreeSelectionListener(this);
-        tree.setCellRenderer(new ToDoTreeRenderer());
-        tree.addMouseListener(this);
+    tree.addTreeSelectionListener(this);
+    tree.setCellRenderer(new ToDoTreeRenderer());
+    tree.addMouseListener(this);
 
-        // next line coming from projectbrowser
-        setRoot(Designer.theDesigner().getToDoList());
-        Designer.theDesigner().getToDoList().addToDoListListener(this);
+    // next line coming from projectbrowser
+    setRoot(Designer.theDesigner().getToDoList());
+    Designer.theDesigner().getToDoList().addToDoListListener(this);
 
-        if (splash != null) {
-            splash.getStatusBar().showStatus(
-	            Translator.localize("statusmsg.bar.making-todopane"));
-            splash.getStatusBar().showProgress(25);
-        }
-
-        setPerspectives(buildPerspectives());
-
-        setMinimumSize(new Dimension(120, 100));
-
-        Dimension preferredSize = getPreferredSize();
-        preferredSize.height = 120;
-        setPreferredSize(preferredSize);
+    if (splash != null) {
+      splash.getStatusBar().showStatus(Translator.localize("statusmsg.bar.making-todopane"));
+      splash.getStatusBar().showProgress(25);
     }
 
+    setPerspectives(buildPerspectives());
 
-    /**
-     * @param r the root
-     */
-    public void setRoot(ToDoList r) {
-        root = r;
-        updateTree();
+    setMinimumSize(new Dimension(120, 100));
+
+    Dimension preferredSize = getPreferredSize();
+    preferredSize.height = 120;
+    setPreferredSize(preferredSize);
+  }
+
+  /**
+   * @param r the root
+   */
+  public void setRoot(ToDoList r) {
+    root = r;
+    updateTree();
+  }
+
+  /**
+   * @return the root
+   */
+  public ToDoList getRoot() {
+    return root;
+  }
+
+  /**
+   * @return the perspectives treemodels
+   */
+  public List<ToDoPerspective> getPerspectiveList() {
+    return perspectives;
+  }
+
+  /**
+   * @param pers the perspectives
+   */
+  public void setPerspectives(List<ToDoPerspective> pers) {
+    perspectives = pers;
+    if (pers.isEmpty()) {
+      curPerspective = null;
+    } else {
+      curPerspective = pers.get(0);
     }
 
-    /**
-     * @return the root
-     */
-    public ToDoList getRoot() {
-        return root;
+    for (ToDoPerspective tdp : perspectives) {
+      combo.addItem(tdp);
     }
 
-
-    /**
-     * @return the perspectives treemodels
-     */
-    public List<ToDoPerspective> getPerspectiveList() {
-        return perspectives;
+    if (pers.isEmpty()) {
+      curPerspective = null;
+    } else if (pers.contains(curPerspective)) {
+      setCurPerspective(curPerspective);
+    } else {
+      setCurPerspective(perspectives.get(0));
     }
-    
-    /**
-     * @param pers the perspectives
-     */
-    public void setPerspectives(List<ToDoPerspective> pers) {
-        perspectives = pers;
-        if (pers.isEmpty()) {
-            curPerspective = null;
-        } else {
-            curPerspective = pers.get(0);
-        }
+    updateTree();
+  }
 
-        for (ToDoPerspective tdp : perspectives) {
-            combo.addItem(tdp);
-        }
+  /**
+   * @return the current perspectives
+   */
+  public ToDoPerspective getCurPerspective() {
+    return curPerspective;
+  }
 
-        if (pers.isEmpty()) {
-            curPerspective = null;
-        } else if (pers.contains(curPerspective)) {
-            setCurPerspective(curPerspective);
-        } else {
-            setCurPerspective(perspectives.get(0));
-        }
-        updateTree();
+  /**
+   * @param per the current perspective
+   */
+  public void setCurPerspective(TreeModel per) {
+    if (perspectives == null || !perspectives.contains(per)) {
+      return;
     }
-    
-    /**
-     * @return the current perspectives
-     */
-    public ToDoPerspective getCurPerspective() {
-        return curPerspective;
+    combo.setSelectedItem(per);
+    toDoPerspectivesChanged++;
+  }
+
+  /**
+   * @return the last <code>Object</code> in the first selected node's <code>TreePath</code>, or
+   *     <code>null</code> if nothing is selected
+   */
+  public Object getSelectedObject() {
+    return tree.getLastSelectedPathComponent();
+  }
+
+  /**
+   * @param item the item to be selected
+   */
+  public void selectItem(ToDoItem item) {
+    Object[] path = new Object[3];
+    Object category = null;
+    int size = curPerspective.getChildCount(root);
+    for (int i = 0; i < size; i++) {
+      category = curPerspective.getChild(root, i);
+      if (curPerspective.getIndexOfChild(category, item) != -1) {
+        break;
+      }
     }
-
-    /**
-     * @param per the current perspective
-     */
-    public void setCurPerspective(TreeModel per) {
-        if (perspectives == null || !perspectives.contains(per)) {
-	    return;
-	}
-        combo.setSelectedItem(per);
-        toDoPerspectivesChanged++;
+    if (category == null) {
+      return;
     }
+    path[0] = root;
+    path[1] = category;
+    path[2] = item;
+    TreePath trPath = new TreePath(path);
+    tree.expandPath(trPath);
+    tree.scrollPathToVisible(trPath);
+    tree.setSelectionPath(trPath);
+  }
 
-    /**
-     * @return the last <code>Object</code> in the first selected node's
-     *      <code>TreePath</code>,
-     *      or <code>null</code> if nothing is selected
-     */
-    public Object getSelectedObject() {
-        return tree.getLastSelectedPathComponent();
+  // ------------ ItemListener implementation ----------------------
+
+  /**
+   * Called when the user selects a perspective from the perspective combo.
+   *
+   * <p>{@inheritDoc}
+   */
+  public void itemStateChanged(ItemEvent e) {
+    if (e.getSource() == combo) {
+      updateTree();
     }
+  }
 
-    /**
-     * @param item the item to be selected
-     */
-    public void selectItem(ToDoItem item) {
-        Object[] path = new Object[3];
-        Object category = null;
-        int size = curPerspective.getChildCount(root);
-        for (int i = 0; i < size; i++) {
-            category = curPerspective.getChild(root, i);
-            if (curPerspective.getIndexOfChild(category, item) != -1) {
-                break;
-	    }
-        }
-        if (category == null) {
-	    return;
-	}
-        path[0] = root;
-        path[1] = category;
-        path[2] = item;
-        TreePath trPath = new TreePath(path);
-        tree.expandPath(trPath);
-        tree.scrollPathToVisible(trPath);
-        tree.setSelectionPath(trPath);
+  // -------------TreeSelectionListener implementation -----------
+
+  /*
+   * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)
+   */
+  public void valueChanged(TreeSelectionEvent e) {
+    LOG.debug("ToDoPane valueChanged");
+    // TODO: should fire its own event and ProjectBrowser
+    // should register a listener - tfm
+    Object sel = getSelectedObject();
+    ProjectBrowser.getInstance().setToDoItem(sel);
+    LOG.debug("lastselection: " + lastSel);
+    LOG.debug("sel: " + sel);
+    if (lastSel instanceof ToDoItem) {
+      ((ToDoItem) lastSel).deselect();
     }
-
-    // ------------ ItemListener implementation ----------------------
-
-    /**
-     * Called when the user selects a perspective from the perspective
-     * combo. <p>
-     * {@inheritDoc}
-     */
-    public void itemStateChanged(ItemEvent e) {
-        if (e.getSource() == combo) {
-	    updateTree();
-	}
+    if (sel instanceof ToDoItem) {
+      ((ToDoItem) sel).select();
     }
+    lastSel = sel;
+  }
 
-    // -------------TreeSelectionListener implementation -----------
+  // ------------- MouseListener implementation ---------------
 
-    /*
-     * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)
-     */
-    public void valueChanged(TreeSelectionEvent e) {
-        LOG.debug("ToDoPane valueChanged");
-        //TODO: should fire its own event and ProjectBrowser
-        //should register a listener - tfm
-        Object sel = getSelectedObject();
-        ProjectBrowser.getInstance().setToDoItem(sel);
-        LOG.debug("lastselection: " + lastSel);
-	LOG.debug("sel: " + sel);
-        if (lastSel instanceof ToDoItem) {
-	    ((ToDoItem) lastSel).deselect();
-	}
-        if (sel instanceof ToDoItem) {
-	    ((ToDoItem) sel).select();
-	}
-        lastSel = sel;
+  /*
+   * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
+   */
+  public void mousePressed(MouseEvent e) {
+    // Empty implementation.
+  }
+
+  /*
+   * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
+   */
+  public void mouseReleased(MouseEvent e) {
+    // Empty implementation.
+  }
+
+  /*
+   * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
+   */
+  public void mouseEntered(MouseEvent e) {
+    // Empty implementation.
+  }
+
+  /*
+   * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
+   */
+  public void mouseExited(MouseEvent e) {
+    // Empty implementation.
+  }
+
+  /*
+   * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
+   */
+  public void mouseClicked(MouseEvent e) {
+    int row = tree.getRowForLocation(e.getX(), e.getY());
+    TreePath path = tree.getPathForLocation(e.getX(), e.getY());
+    if (row != -1) {
+      if (e.getClickCount() >= 2) {
+        myDoubleClick(row, path);
+      } else {
+        mySingleClick(row, path);
+      }
     }
+    e.consume();
+  }
 
-    // ------------- MouseListener implementation ---------------
+  ////////////////////////////////////////////////////////////////
+  // ToDoListListener implementation
 
-    /*
-     * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
-     */
-    public void mousePressed(MouseEvent e) { 
-        // Empty implementation.
+  /**
+   * Invoke a task on the Swing thread. If we are running on the Swing thread, this happens
+   * immediately. Otherwise the task is queued for later execution using SwingUtilities.invokeLater
+   * (actually for the moment invokeAndWait but this should be resolved in future).
+   *
+   * <p>This is necessary because event notification of ToDoListener events is likely to be coming
+   * from the ToDo Validity Checker thread running in the background.
+   *
+   * @param task a Runnable task who's run() method will be invoked
+   */
+  private void swingInvoke(Runnable task) {
+    if (SwingUtilities.isEventDispatchThread()) {
+      task.run();
+    } else {
+      SwingUtilities.invokeLater(task);
     }
+  }
 
-    /*
-     * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
-     */
-    public void mouseReleased(MouseEvent e) {  
-        // Empty implementation.
-    }
-
-    /*
-     * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
-     */
-    public void mouseEntered(MouseEvent e) {  
-        // Empty implementation.
-    }
-
-    /*
-     * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
-     */
-    public void mouseExited(MouseEvent e) { 
-        // Empty implementation.
-    }
-
-    /*
-     * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
-     */
-    public void mouseClicked(MouseEvent e) {
-        int row = tree.getRowForLocation(e.getX(), e.getY());
-        TreePath path = tree.getPathForLocation(e.getX(), e.getY());
-        if (row != -1) {
-            if (e.getClickCount() >= 2) {
-                myDoubleClick(row, path);
-            } else {
-                mySingleClick(row, path);
+  /*
+   * @see org.argouml.cognitive.ToDoListListener#toDoItemsChanged(org.argouml.cognitive.ToDoListEvent)
+   */
+  public void toDoItemsChanged(final ToDoListEvent tde) {
+    swingInvoke(
+        new Runnable() {
+          public void run() {
+            if (curPerspective instanceof ToDoListListener) {
+              ((ToDoListListener) curPerspective).toDoItemsChanged(tde);
             }
-        }
-        e.consume();
-    }
-
-    ////////////////////////////////////////////////////////////////
-    // ToDoListListener implementation
-
-    /**
-     * Invoke a task on the Swing thread. If we are running on the Swing
-     * thread, this happens immediately. Otherwise the task is queued for later
-     * execution using SwingUtilities.invokeLater (actually for the moment
-     * invokeAndWait but this should be resolved in future).
-     * <p>
-     * This is necessary because event notification of ToDoListener events is
-     * likely to be coming from the ToDo Validity Checker thread running in the
-     * background.
-     * 
-     * @param task a Runnable task who's run() method will be invoked
-     */
-    private void swingInvoke(Runnable task) {
-        if (SwingUtilities.isEventDispatchThread()) {
-            task.run();
-        } else {
-            SwingUtilities.invokeLater(task);
-        }
-    }
-    
-    /*
-     * @see org.argouml.cognitive.ToDoListListener#toDoItemsChanged(org.argouml.cognitive.ToDoListEvent)
-     */
-    public void toDoItemsChanged(final ToDoListEvent tde) {
-        swingInvoke(new Runnable() {
-            public void run() {
-                if (curPerspective instanceof ToDoListListener) {
-                    ((ToDoListListener) curPerspective).toDoItemsChanged(tde);
-                }
-            }
+          }
         });
-    }
+  }
 
-
-    /*
-     * @see org.argouml.cognitive.ToDoListListener#toDoItemsAdded(org.argouml.cognitive.ToDoListEvent)
-     */
-    public void toDoItemsAdded(final ToDoListEvent tde) {
-        swingInvoke(new Runnable() {
-            public void run() {
-                if (curPerspective instanceof ToDoListListener) {
-                    ((ToDoListListener) curPerspective).toDoItemsAdded(tde);
-                }
-                List<ToDoItem> items = tde.getToDoItemList();
-                for (ToDoItem todo : items) {
-                    if (todo.getPriority() 
-                            >= ToDoItem.INTERRUPTIVE_PRIORITY) {
-                        // keep nagging until the user solves the problem:
-                        // This seems a nice way to nag:
-                        selectItem(todo);
-                        break; // Only interrupt for one todoitem
-                    }
-                }
-                updateCountLabel();
+  /*
+   * @see org.argouml.cognitive.ToDoListListener#toDoItemsAdded(org.argouml.cognitive.ToDoListEvent)
+   */
+  public void toDoItemsAdded(final ToDoListEvent tde) {
+    swingInvoke(
+        new Runnable() {
+          public void run() {
+            if (curPerspective instanceof ToDoListListener) {
+              ((ToDoListListener) curPerspective).toDoItemsAdded(tde);
             }
-        });
-    }
-    
-    /*
-     * @see org.argouml.cognitive.ToDoListListener#toDoItemsRemoved(org.argouml.cognitive.ToDoListEvent)
-     */
-    public void toDoItemsRemoved(final ToDoListEvent tde) {
-        swingInvoke(new Runnable() {
-            public void run() {
-                if (curPerspective instanceof ToDoListListener) {
-                    ((ToDoListListener) curPerspective).toDoItemsRemoved(tde);
-                }
-                updateCountLabel();
+            List<ToDoItem> items = tde.getToDoItemList();
+            for (ToDoItem todo : items) {
+              if (todo.getPriority() >= ToDoItem.INTERRUPTIVE_PRIORITY) {
+                // keep nagging until the user solves the problem:
+                // This seems a nice way to nag:
+                selectItem(todo);
+                break; // Only interrupt for one todoitem
+              }
             }
+            updateCountLabel();
+          }
         });
-    }
+  }
 
-    /*
-     * @see org.argouml.cognitive.ToDoListListener#toDoListChanged(org.argouml.cognitive.ToDoListEvent)
-     */
-    public void toDoListChanged(final ToDoListEvent tde) {
-        swingInvoke(new Runnable() {
-            public void run() {
-                if (curPerspective instanceof ToDoListListener) {
-                    ((ToDoListListener) curPerspective).toDoListChanged(tde);
-                }
-                updateCountLabel();
+  /*
+   * @see org.argouml.cognitive.ToDoListListener#toDoItemsRemoved(org.argouml.cognitive.ToDoListEvent)
+   */
+  public void toDoItemsRemoved(final ToDoListEvent tde) {
+    swingInvoke(
+        new Runnable() {
+          public void run() {
+            if (curPerspective instanceof ToDoListListener) {
+              ((ToDoListListener) curPerspective).toDoItemsRemoved(tde);
             }
+            updateCountLabel();
+          }
         });
+  }
+
+  /*
+   * @see org.argouml.cognitive.ToDoListListener#toDoListChanged(org.argouml.cognitive.ToDoListEvent)
+   */
+  public void toDoListChanged(final ToDoListEvent tde) {
+    swingInvoke(
+        new Runnable() {
+          public void run() {
+            if (curPerspective instanceof ToDoListListener) {
+              ((ToDoListListener) curPerspective).toDoListChanged(tde);
+            }
+            updateCountLabel();
+          }
+        });
+  }
+
+  /* TODO: Indicate the direction! */
+  private static String formatCountLabel(int size) {
+    switch (size) {
+      case 0:
+        return Translator.localize("label.todopane.no-items");
+      case 1:
+        return MessageFormat.format(
+            Translator.localize("label.todopane.item"),
+            new Object[] {
+              Integer.valueOf(size),
+            });
+      default:
+        return MessageFormat.format(
+            Translator.localize("label.todopane.items"),
+            new Object[] {
+              Integer.valueOf(size),
+            });
+    }
+  }
+
+  /** Update the count label. */
+  public void updateCountLabel() {
+    int size = Designer.theDesigner().getToDoList().size();
+    countLabel.setText(formatCountLabel(size));
+    countLabel.setOpaque(size > WARN_THRESHOLD);
+    countLabel.setBackground((size >= ALARM_THRESHOLD) ? ALARM_COLOR : WARN_COLOR);
+  }
+
+  /** Update the todo tree. */
+  protected void updateTree() {
+    ToDoPerspective tm = (ToDoPerspective) combo.getSelectedItem();
+    curPerspective = tm;
+    if (curPerspective == null) {
+      tree.setVisible(false);
+    } else {
+      LOG.debug("ToDoPane setting tree model");
+      curPerspective.setRoot(root);
+      tree.setShowsRootHandles(true);
+      tree.setModel(curPerspective);
+      tree.setVisible(true); // blinks?
+    }
+  }
+
+  /**
+   * Called when the user clicks once on an item in the tree.
+   *
+   * <p>Q: What should the difference be between a single and double click?
+   *
+   * <p>A: A single click selects the todo item in the tree, shows the red indication on the
+   * diagram, and selects the todo tab in the details panel. A double click additionally selects the
+   * offender in the explorer, and selects the offender in the diagram (blue selection), and selects
+   * the properties tab in the details panel. In both cases, the focus (for keyboard actions)
+   * remains in the todo tree.
+   *
+   * @param row the selected row in the tree
+   * @param path the path in the tree of the selected item
+   */
+  public static void mySingleClick(
+      @SuppressWarnings("unused") int row, @SuppressWarnings("unused") TreePath path) {
+    clicksInToDoPane++;
+  }
+
+  /**
+   * Called when the user clicks twice on an item in the tree. myDoubleClick will invoke the
+   * action() on the ToDoItem.
+   *
+   * @param row the selected row in the tree
+   * @param path the path in the tree of the selected item
+   */
+  public void myDoubleClick(
+      @SuppressWarnings("unused") int row, @SuppressWarnings("unused") TreePath path) {
+    dblClicksInToDoPane++;
+    if (getSelectedObject() == null) {
+      return;
+    }
+    Object sel = getSelectedObject();
+    if (sel instanceof ToDoItem) {
+      ((ToDoItem) sel).action();
     }
 
-    /* TODO: Indicate the direction! */
-    private static String formatCountLabel(int size) {
-        switch (size) {
-	case 0:
-	    return Translator.localize("label.todopane.no-items");
-	case 1:
-	    return MessageFormat.
-		format(Translator.localize("label.todopane.item"),
-		       new Object[] {
-			   Integer.valueOf(size),
-		       });
-	default:
-	    return MessageFormat.
-		format(Translator.localize("label.todopane.items"),
-		       new Object[] {
-			   Integer.valueOf(size),
-		       });
-        }
-    }
+    // TODO: should fire its own event and ProjectBrowser
+    // TODO: should register a listener
+    LOG.debug("2: " + getSelectedObject().toString());
+  }
 
-    /**
-     * Update the count label.
-     */
-    public void updateCountLabel() {
-        int size = Designer.theDesigner().getToDoList().size();
-        countLabel.setText(formatCountLabel(size));
-        countLabel.setOpaque(size > WARN_THRESHOLD);
-        countLabel.setBackground((size >= ALARM_THRESHOLD) ? ALARM_COLOR
-				  : WARN_COLOR);
-    }
+  /** The perspectives to be chosen in the combobox are built here. */
+  private static List<ToDoPerspective> buildPerspectives() {
 
-    /**
-     * Update the todo tree.
-     */
-    protected void updateTree() {
-        ToDoPerspective tm = (ToDoPerspective) combo.getSelectedItem();
-        curPerspective = tm;
-        if (curPerspective == null) {
-            tree.setVisible(false);
-	} else {
-            LOG.debug("ToDoPane setting tree model");
-            curPerspective.setRoot(root);
-            tree.setShowsRootHandles(true);
-            tree.setModel(curPerspective);
-            tree.setVisible(true); // blinks?
-        }
-    }
+    ToDoPerspective priority = new ToDoByPriority();
+    ToDoPerspective decision = new ToDoByDecision();
+    ToDoPerspective goal = new ToDoByGoal();
+    ToDoPerspective offender = new ToDoByOffender();
+    ToDoPerspective poster = new ToDoByPoster();
+    ToDoPerspective type = new ToDoByType();
 
-    /**
-     * Called when the user clicks once on an item in the tree. <p>
-     *
-     * Q: What should the difference be between a single
-     * and double click? <p>
-     * A: A single click selects the todo item in the tree,
-     * shows the red indication on the diagram,
-     * and selects the todo tab in the details panel.
-     * A double click additionally
-     * selects the offender in the explorer,
-     * and selects the offender in the diagram (blue selection),
-     * and selects the properties tab in the details panel.
-     * In both cases, the focus (for keyboard actions) remains in the todo tree.
-     *
-     * @param row the selected row in the tree
-     * @param path the path in the tree of the selected item
-     */
-    public static void mySingleClick(
-            @SuppressWarnings("unused") int row, 
-            @SuppressWarnings("unused") TreePath path) {
-        clicksInToDoPane++;
-    }
+    // add the perspectives to a list for the combobox
+    List<ToDoPerspective> perspectives = new ArrayList<ToDoPerspective>();
 
-    /**
-     * Called when the user clicks twice on an item in the tree.
-     * myDoubleClick will invoke the action() on the ToDoItem.
-     *
-     * @param row the selected row in the tree
-     * @param path the path in the tree of the selected item
-     */
-    public void myDoubleClick(
-            @SuppressWarnings("unused") int row, 
-            @SuppressWarnings("unused") TreePath path) {
-        dblClicksInToDoPane++;
-        if (getSelectedObject() == null) {
-	    return;
-	}
-        Object sel = getSelectedObject();
-        if (sel instanceof ToDoItem) {
-            ((ToDoItem) sel).action();
-        }
+    perspectives.add(priority);
+    perspectives.add(decision);
+    perspectives.add(goal);
+    perspectives.add(offender);
+    perspectives.add(poster);
+    perspectives.add(type);
 
-        //TODO: should fire its own event and ProjectBrowser
-        //TODO: should register a listener
-        LOG.debug("2: " + getSelectedObject().toString());
-    }
+    PerspectiveSupport.registerRule(new GoListToDecisionsToItems());
+    PerspectiveSupport.registerRule(new GoListToGoalsToItems());
+    PerspectiveSupport.registerRule(new GoListToPriorityToItem());
+    PerspectiveSupport.registerRule(new GoListToTypeToItem());
+    PerspectiveSupport.registerRule(new GoListToOffenderToItem());
+    PerspectiveSupport.registerRule(new GoListToPosterToItem());
 
-    /**
-     * The perspectives to be chosen in the combobox are built here.
-     */
-    private static List<ToDoPerspective> buildPerspectives() {
+    return perspectives;
+  }
 
-        ToDoPerspective priority = new ToDoByPriority();
-        ToDoPerspective decision = new ToDoByDecision();
-        ToDoPerspective goal = new ToDoByGoal();
-        ToDoPerspective offender = new ToDoByOffender();
-        ToDoPerspective poster = new ToDoByPoster();
-        ToDoPerspective type = new ToDoByType();
-
-        // add the perspectives to a list for the combobox
-        List<ToDoPerspective> perspectives = new ArrayList<ToDoPerspective>();
-
-        perspectives.add(priority);
-        perspectives.add(decision);
-        perspectives.add(goal);
-        perspectives.add(offender);
-        perspectives.add(poster);
-        perspectives.add(type);
-
-        PerspectiveSupport.registerRule(new GoListToDecisionsToItems());
-        PerspectiveSupport.registerRule(new GoListToGoalsToItems());
-        PerspectiveSupport.registerRule(new GoListToPriorityToItem());
-        PerspectiveSupport.registerRule(new GoListToTypeToItem());
-        PerspectiveSupport.registerRule(new GoListToOffenderToItem());
-        PerspectiveSupport.registerRule(new GoListToPosterToItem());
-
-        return perspectives;
-    }
-
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = 1911401582875302996L;
+  /** The UID. */
+  private static final long serialVersionUID = 1911401582875302996L;
 }

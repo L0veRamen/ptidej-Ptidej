@@ -22,38 +22,28 @@
 // CALIFORNIA HAS NO OBLIGATIONS TO PROVIDE MAINTENANCE, SUPPORT,
 // UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
-
 package org.argouml.uml.ui.behavior.collaborations;
 
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLMultiplicityComboBoxModel;
 
-
 /**
- *
  * @author mkl
- *
  */
-public class UMLClassifierRoleMultiplicityComboBoxModel extends
-        UMLMultiplicityComboBoxModel {
+public class UMLClassifierRoleMultiplicityComboBoxModel extends UMLMultiplicityComboBoxModel {
 
-    /**
-     * Constructor.
-     */
-    public UMLClassifierRoleMultiplicityComboBoxModel() {
-        super("multiplicity");
+  /** Constructor. */
+  public UMLClassifierRoleMultiplicityComboBoxModel() {
+    super("multiplicity");
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
+   */
+  protected Object getSelectedModelElement() {
+    if (getTarget() != null && (Model.getFacade().isAClassifierRole(getTarget()))) {
+      return Model.getFacade().toString(Model.getFacade().getMultiplicity(getTarget()));
     }
-
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
-     */
-    protected Object getSelectedModelElement() {
-        if (getTarget() != null
-                && (Model.getFacade().isAClassifierRole(getTarget()))) {
-            return Model.getFacade().toString(
-                    Model.getFacade().getMultiplicity(getTarget()));
-        }
-        return null;
-    }
-
+    return null;
+  }
 }

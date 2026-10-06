@@ -22,7 +22,6 @@
 // CALIFORNIA HAS NO OBLIGATIONS TO PROVIDE MAINTENANCE, SUPPORT,
 // UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
-
 package org.argouml.ui.explorer.rules;
 
 import java.util.ArrayList;
@@ -30,50 +29,46 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 
 /**
- * Go rule to navigate from a state to it's do-activity. Used in the package
- * perspective.
+ * Go rule to navigate from a state to it's do-activity. Used in the package perspective.
  *
  * @author jaap.branderhorst@xs4all.nl
  * @since Dec 25, 2002
  */
 public class GoStateToDoActivity extends AbstractPerspectiveRule {
 
-    /*
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
-     */
-    public Collection getChildren(Object parent) {
-        if (Model.getFacade().isAState(parent)
-                && Model.getFacade().getDoActivity(parent) != null) {
-            Collection children = new ArrayList();
+  /*
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
+   */
+  public Collection getChildren(Object parent) {
+    if (Model.getFacade().isAState(parent) && Model.getFacade().getDoActivity(parent) != null) {
+      Collection children = new ArrayList();
 
-            children.add(Model.getFacade().getDoActivity(parent));
-            return children;
-        }
-        return Collections.EMPTY_SET;
+      children.add(Model.getFacade().getDoActivity(parent));
+      return children;
     }
+    return Collections.EMPTY_SET;
+  }
 
-    /*
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
-     */
-    public Set getDependencies(Object parent) {
-        if (Model.getFacade().isAState(parent)) {
-	    Set set = new HashSet();
-	    set.add(parent);
-	    return set;
-	}
-	return Collections.EMPTY_SET;
+  /*
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
+   */
+  public Set getDependencies(Object parent) {
+    if (Model.getFacade().isAState(parent)) {
+      Set set = new HashSet();
+      set.add(parent);
+      return set;
     }
+    return Collections.EMPTY_SET;
+  }
 
-    /*
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
-     */
-    public String getRuleName() {
-        return Translator.localize("misc.state.do-activity");
-    }
-
+  /*
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
+   */
+  public String getRuleName() {
+    return Translator.localize("misc.state.do-activity");
+  }
 }

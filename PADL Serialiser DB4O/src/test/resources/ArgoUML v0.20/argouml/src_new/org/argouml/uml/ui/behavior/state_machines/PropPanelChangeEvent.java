@@ -30,29 +30,22 @@ import org.argouml.util.ConfigLoader;
 /**
  * The properties panel for a ChangeEvent.
  *
- *
  * @author oliver.heyden
  */
 public class PropPanelChangeEvent extends PropPanelEvent {
 
-    /**
-     * The constructor.
-     *
-     */
-    public PropPanelChangeEvent() {
-        super("Change event", lookupIcon("ChangeEvent"),
-              ConfigLoader.getTabPropsOrientation());
-    }
+  /** The constructor. */
+  public PropPanelChangeEvent() {
+    super("Change event", lookupIcon("ChangeEvent"), ConfigLoader.getTabPropsOrientation());
+  }
 
-    /**
-     * @see org.argouml.uml.ui.behavior.state_machines.PropPanelEvent#initialize()
-     */
-    public void initialize() {
-        super.initialize();
+  /**
+   * @see org.argouml.uml.ui.behavior.state_machines.PropPanelEvent#initialize()
+   */
+  public void initialize() {
+    super.initialize();
 
-        addAction(new ActionDeleteSingleModelElement());;
-    }
-
+    addAction(new ActionDeleteSingleModelElement());
+    ;
+  }
 }
-
-

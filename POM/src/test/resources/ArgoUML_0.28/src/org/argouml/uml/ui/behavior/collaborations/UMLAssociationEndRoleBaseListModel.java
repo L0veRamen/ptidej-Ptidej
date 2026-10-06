@@ -31,40 +31,33 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  * @since Oct 5, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class UMLAssociationEndRoleBaseListModel
-    extends UMLModelElementListModel2 {
+public class UMLAssociationEndRoleBaseListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLAssociationEndRoleBaseListModel.
-     */
-    public UMLAssociationEndRoleBaseListModel() {
-        super("base");
+  /** Constructor for UMLAssociationEndRoleBaseListModel. */
+  public UMLAssociationEndRoleBaseListModel() {
+    super("base");
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    removeAllElements();
+    if (getTarget() != null && Model.getFacade().getBase(getTarget()) != null) {
+      addElement(Model.getFacade().getBase(getTarget()));
+    }
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object base) {
+    if (!Model.getFacade().isAAssociationEnd(base)) {
+      return false;
     }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        removeAllElements();
-        if (getTarget() != null
-                && Model.getFacade().getBase(getTarget()) != null) {
-            addElement(Model.getFacade().getBase(getTarget()));
-        }
-    }
-
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object base) {
-        if (!Model.getFacade().isAAssociationEnd(base)) {
-            return false;
-        }
-
-        Object assocEndRole = getTarget();
-        Object assocRole =
-            Model.getFacade().getAssociation(assocEndRole);
-        return Model.getFacade().getConnections(
-                Model.getFacade().getBase(assocRole))
-            .contains(base);
-    }
+    Object assocEndRole = getTarget();
+    Object assocRole = Model.getFacade().getAssociation(assocEndRole);
+    return Model.getFacade().getConnections(Model.getFacade().getBase(assocRole)).contains(base);
+  }
 }

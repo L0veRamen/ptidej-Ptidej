@@ -34,26 +34,23 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  */
 public class UMLTransitionTargetListModel extends UMLModelElementListModel2 {
 
-   /**
-     * Constructor for UMLStateMachineTopListModel.
-     */
-    public UMLTransitionTargetListModel() {
-        super("target");
-    }
+  /** Constructor for UMLStateMachineTopListModel. */
+  public UMLTransitionTargetListModel() {
+    super("target");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        removeAllElements();
-        addElement(Model.getFacade().getTarget(getTarget()));
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    removeAllElements();
+    addElement(Model.getFacade().getTarget(getTarget()));
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return element == Model.getFacade().getTarget(getTarget());
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return element == Model.getFacade().getTarget(getTarget());
+  }
 }

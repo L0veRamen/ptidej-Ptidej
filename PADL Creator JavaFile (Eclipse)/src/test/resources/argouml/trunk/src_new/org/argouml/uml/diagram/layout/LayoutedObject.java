@@ -24,9 +24,5 @@
 
 package org.argouml.uml.diagram.layout;
 
-
-/**
- * This is the most common form of an layouted object.
- */
-public interface LayoutedObject {
-}
+/** This is the most common form of an layouted object. */
+public interface LayoutedObject {}

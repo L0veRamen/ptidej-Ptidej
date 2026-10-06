@@ -26,126 +26,115 @@ package org.argouml.ui;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-
 import org.apache.log4j.Logger;
 import org.argouml.cognitive.Poster;
 import org.argouml.cognitive.ToDoItem;
 import org.argouml.i18n.Translator;
 import org.tigris.swidgets.LabelledLayout;
 
-/** The email expert dialog does not work and is in
- * desperate need of some attention.
+/**
+ * The email expert dialog does not work and is in desperate need of some attention.
  *
- * Ideally, this would allow users to directly
- * contact the developers responsible for a piece
- * of code.
+ * <p>Ideally, this would allow users to directly contact the developers responsible for a piece of
+ * code.
  *
- * Enabling this feature would go along way
- * to developing a fully collaborative environment
+ * <p>Enabling this feature would go along way to developing a fully collaborative environment
  * within argo.
  */
 public class EmailExpertDialog extends ArgoDialog {
-    private static final Logger LOG =
-	Logger.getLogger(EmailExpertDialog.class);
+  private static final Logger LOG = Logger.getLogger(EmailExpertDialog.class);
 
-    ////////////////////////////////////////////////////////////////
-    // instance variables
+  ////////////////////////////////////////////////////////////////
+  // instance variables
 
-    /** This field sets the email of the recipient.
-     * As yet, the
-     * user can not access a list of contributors to a
-     * particular argo project.
-     */
-    private JTextField emailTo;
-    private JTextField emailCc;
-    /** The subject line should be automatically
-     * generated based on the class or the
-     * diagram.
-     */
-    private JTextField emailSubject;
-    private JTextArea  emailBody;
+  /**
+   * This field sets the email of the recipient. As yet, the user can not access a list of
+   * contributors to a particular argo project.
+   */
+  private JTextField emailTo;
 
-    /**
-     * The target todo item.
-     */
-    private ToDoItem target;
+  private JTextField emailCc;
 
-    /**
-     * The constructor.
-     */
-    public EmailExpertDialog() {
-        super(ProjectBrowser.getInstance(),
-            Translator.localize("dialog.title.send-email-to-expert"),
-	      ArgoDialog.OK_CANCEL_OPTION,
-	      true);
+  /** The subject line should be automatically generated based on the class or the diagram. */
+  private JTextField emailSubject;
 
-        getOkButton().setText(Translator.localize("button.send"));
-        getOkButton().setMnemonic(
-                Translator.localize("button.send.mnemonic").charAt(0));
+  private JTextArea emailBody;
 
-        emailTo = new JTextField(30);
-        emailCc = new JTextField(30);
-        emailSubject = new JTextField(30);
-        emailBody = new JTextArea(10, 30);
+  /** The target todo item. */
+  private ToDoItem target;
 
-        JLabel toLabel = new JLabel(Translator.localize("label.to"));
-        JLabel ccLabel = new JLabel(Translator.localize("label.cc"));
-        JLabel subjectLabel = new JLabel(Translator.localize("label.subject"));
+  /** The constructor. */
+  public EmailExpertDialog() {
+    super(
+        ProjectBrowser.getInstance(),
+        Translator.localize("dialog.title.send-email-to-expert"),
+        ArgoDialog.OK_CANCEL_OPTION,
+        true);
 
-        JPanel panel = new JPanel(new LabelledLayout(getLabelGap(),
-                getComponentGap()));
+    getOkButton().setText(Translator.localize("button.send"));
+    getOkButton().setMnemonic(Translator.localize("button.send.mnemonic").charAt(0));
 
-        toLabel.setLabelFor(emailTo);
-        panel.add(toLabel);
-        panel.add(emailTo);
+    emailTo = new JTextField(30);
+    emailCc = new JTextField(30);
+    emailSubject = new JTextField(30);
+    emailBody = new JTextArea(10, 30);
 
-        ccLabel.setLabelFor(emailCc);
-        panel.add(ccLabel);
-        panel.add(emailCc);
+    JLabel toLabel = new JLabel(Translator.localize("label.to"));
+    JLabel ccLabel = new JLabel(Translator.localize("label.cc"));
+    JLabel subjectLabel = new JLabel(Translator.localize("label.subject"));
 
-        subjectLabel.setLabelFor(emailSubject);
-        panel.add(subjectLabel);
-        panel.add(emailSubject);
+    JPanel panel = new JPanel(new LabelledLayout(getLabelGap(), getComponentGap()));
 
-        JScrollPane bodyScroller = new JScrollPane(emailBody);
-        bodyScroller.setPreferredSize(new Dimension(100, 50));
-        panel.add(bodyScroller);
+    toLabel.setLabelFor(emailTo);
+    panel.add(toLabel);
+    panel.add(emailTo);
 
-        setContent(panel);
+    ccLabel.setLabelFor(emailCc);
+    panel.add(ccLabel);
+    panel.add(emailCc);
+
+    subjectLabel.setLabelFor(emailSubject);
+    panel.add(subjectLabel);
+    panel.add(emailSubject);
+
+    JScrollPane bodyScroller = new JScrollPane(emailBody);
+    bodyScroller.setPreferredSize(new Dimension(100, 50));
+    panel.add(bodyScroller);
+
+    setContent(panel);
+  }
+
+  /**
+   * @param t the target object
+   */
+  public void setTarget(Object t) {
+    target = (ToDoItem) t;
+    Poster p = target.getPoster();
+    emailTo.setText(p.getExpertEmail());
+    emailSubject.setText(target.getHeadline());
+  }
+
+  /**
+   * Event handler.
+   *
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    if (e.getSource() == getOkButton()) {
+      //	    String to = emailTo.getText();
+      //	    String cc = emailCc.getText();
+      //	    String subject = emailSubject.getText();
+      LOG.warn("sending email is not implemented!");
+    } else {
+      if (e.getSource() == getCancelButton()) {
+        LOG.debug("cancel");
+      }
     }
-
-    /**
-     * @param t the target object
-     */
-    public void setTarget(Object t) {
-	target = (ToDoItem) t;
-	Poster p = target.getPoster();
-	emailTo.setText(p.getExpertEmail());
-	emailSubject.setText(target.getHeadline());
-    }
-
-    /**
-     * Event handler.
-     *
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-	super.actionPerformed(e);
-	if (e.getSource() == getOkButton()) {
-//	    String to = emailTo.getText();
-//	    String cc = emailCc.getText();
-//	    String subject = emailSubject.getText();
-	    LOG.warn("sending email is not implemented!");
-	} else {
-	    if (e.getSource() == getCancelButton()) {
-	        LOG.debug("cancel");
-	    }
-	}
-    }
+  }
 } /* end class EmailExpertDialog */

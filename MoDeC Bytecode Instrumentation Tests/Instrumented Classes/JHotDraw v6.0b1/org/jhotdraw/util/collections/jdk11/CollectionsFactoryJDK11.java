@@ -10,44 +10,43 @@
  */
 package org.jhotdraw.util.collections.jdk11;
 
+import java.util.*;
 import org.jhotdraw.util.CollectionsFactory;
 
-import java.util.*;
-
 /**
- * @author  Wolfram Kaiser <mrfloppy@users.sourceforge.net>
+ * @author Wolfram Kaiser <mrfloppy@users.sourceforge.net>
  * @version <$CURRENT_VERSION$>
  */
 public class CollectionsFactoryJDK11 extends CollectionsFactory {
-	public CollectionsFactoryJDK11() {
-		// required in order to create instances of this class via reflection
-	}
+  public CollectionsFactoryJDK11() {
+    // required in order to create instances of this class via reflection
+  }
 
-	public List createList() {
-		return new ListWrapper();
-	}
+  public List createList() {
+    return new ListWrapper();
+  }
 
-	public List createList(Collection initList) {
-		return new ListWrapper(initList);
-	}
+  public List createList(Collection initList) {
+    return new ListWrapper(initList);
+  }
 
-	public List createList(int initSize) {
-		return new ListWrapper(initSize);
-	}
+  public List createList(int initSize) {
+    return new ListWrapper(initSize);
+  }
 
-	public Map createMap() {
-		return new MapWrapper();
-	}
+  public Map createMap() {
+    return new MapWrapper();
+  }
 
-	public Map createMap(Map initMap) {
-		return new MapWrapper(initMap);
-	}
+  public Map createMap(Map initMap) {
+    return new MapWrapper(initMap);
+  }
 
-	public Set createSet() {
-		return new SetWrapper();
-	}
+  public Set createSet() {
+    return new SetWrapper();
+  }
 
-	public Set createSet(Set initSet) {
-		return new SetWrapper(initSet);
-	}
+  public Set createSet(Set initSet) {
+    return new SetWrapper(initSet);
+  }
 }

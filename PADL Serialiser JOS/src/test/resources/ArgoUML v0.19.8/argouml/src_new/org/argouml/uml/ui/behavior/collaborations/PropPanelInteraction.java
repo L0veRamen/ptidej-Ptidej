@@ -26,7 +26,6 @@ package org.argouml.uml.ui.behavior.collaborations;
 
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.uml.ui.ActionDeleteSingleModelElement;
 import org.argouml.uml.ui.ActionNavigateContext;
@@ -42,38 +41,27 @@ import org.argouml.util.ConfigLoader;
  */
 public class PropPanelInteraction extends PropPanelModelElement {
 
-    /**
-     * The constructor.
-     *
-     */
-    public PropPanelInteraction() {
-        super("Interaction", ConfigLoader.getTabPropsOrientation());
+  /** The constructor. */
+  public PropPanelInteraction() {
+    super("Interaction", ConfigLoader.getTabPropsOrientation());
 
-    	addField(Translator.localize("label.name"),
-                getNameTextField());
-    	addField(Translator.localize("label.stereotype"),
-		 getStereotypeSelector());
-        addField(Translator.localize("label.namespace"),
-		 getNamespaceScroll());
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.stereotype"), getStereotypeSelector());
+    addField(Translator.localize("label.namespace"), getNamespaceScroll());
 
-        JList contextList =
-	    new UMLLinkedList(new UMLInteractionContextListModel());
-        contextList.setVisibleRowCount(1);
-        JScrollPane contextScroll = new JScrollPane(contextList);
-        addField(Translator.localize("label.context"),
-                contextScroll);
+    JList contextList = new UMLLinkedList(new UMLInteractionContextListModel());
+    contextList.setVisibleRowCount(1);
+    JScrollPane contextScroll = new JScrollPane(contextList);
+    addField(Translator.localize("label.context"), contextScroll);
 
-        addSeperator();
+    addSeperator();
 
-        JList messagesList =
-	    new UMLLinkedList(new UMLInteractionMessagesListModel());
-      	JScrollPane messagesScroll = new JScrollPane(messagesList);
-        addField(Translator.localize("label.messages"),
-                messagesScroll);
+    JList messagesList = new UMLLinkedList(new UMLInteractionMessagesListModel());
+    JScrollPane messagesScroll = new JScrollPane(messagesList);
+    addField(Translator.localize("label.messages"), messagesScroll);
 
-        addAction(new ActionNavigateContext());
-        addAction(new ActionNewStereotype());
-        addAction(new ActionDeleteSingleModelElement());
-    }
-
+    addAction(new ActionNavigateContext());
+    addAction(new ActionNewStereotype());
+    addAction(new ActionDeleteSingleModelElement());
+  }
 }

@@ -24,7 +24,6 @@
 package org.argouml.ui.targetmanager;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.uml.ui.UMLAction;
 
 /**
@@ -33,37 +32,35 @@ import org.argouml.uml.ui.UMLAction;
  * @author jaap.branderhorst@xs4all.nl
  */
 public class NavigateTargetBackAction extends UMLAction {
-    private static NavigateTargetBackAction instance;
+  private static NavigateTargetBackAction instance;
 
-    /**
-     * @return the instance (singleton)
-     */
-    public static NavigateTargetBackAction getInstance() {
-        if (instance == null) {
-            instance = new NavigateTargetBackAction();
-        }
-        return instance;
+  /**
+   * @return the instance (singleton)
+   */
+  public static NavigateTargetBackAction getInstance() {
+    if (instance == null) {
+      instance = new NavigateTargetBackAction();
     }
+    return instance;
+  }
 
-    private NavigateTargetBackAction() {
-        super("action.navigate-back", true, HAS_ICON);
-    }
+  private NavigateTargetBackAction() {
+    super("action.navigate-back", true, HAS_ICON);
+  }
 
-    /**
-     * @see
-     * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        TargetManager.getInstance().navigateBackward();
-    }
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    TargetManager.getInstance().navigateBackward();
+  }
 
-    /**
-     * Action is possible only if navigateForwardPossible on targetManager
-     * returns true.
-     * @see org.argouml.uml.ui.UMLAction#shouldBeEnabled()
-     */
-    public boolean shouldBeEnabled() {
-        return super.shouldBeEnabled()
-            && TargetManager.getInstance().navigateBackPossible();
-    }
+  /**
+   * Action is possible only if navigateForwardPossible on targetManager returns true.
+   *
+   * @see org.argouml.uml.ui.UMLAction#shouldBeEnabled()
+   */
+  public boolean shouldBeEnabled() {
+    return super.shouldBeEnabled() && TargetManager.getInstance().navigateBackPossible();
+  }
 }

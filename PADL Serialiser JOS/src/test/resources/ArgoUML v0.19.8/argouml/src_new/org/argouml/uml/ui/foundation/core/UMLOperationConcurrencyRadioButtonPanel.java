@@ -26,7 +26,6 @@ package org.argouml.uml.ui.foundation.core;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLRadioButtonPanel;
 
@@ -35,59 +34,51 @@ import org.argouml.uml.ui.UMLRadioButtonPanel;
  *
  * @author mkl
  */
-public class UMLOperationConcurrencyRadioButtonPanel extends
-        UMLRadioButtonPanel {
+public class UMLOperationConcurrencyRadioButtonPanel extends UMLRadioButtonPanel {
 
-    private static Map labelTextsAndActionCommands =
-        new HashMap();
+  private static Map labelTextsAndActionCommands = new HashMap();
 
-    static {
-        // TODO: i18n, use Translator
-        labelTextsAndActionCommands.put("sequential",
-                ActionSetOperationConcurrencyKind.SEQUENTIAL_COMMAND);
-        labelTextsAndActionCommands.put("guarded",
-                ActionSetOperationConcurrencyKind.GUARDED_COMMAND);
-        labelTextsAndActionCommands.put("concurrent",
-                ActionSetOperationConcurrencyKind.CONCURRENT_COMMAND);
+  static {
+    // TODO: i18n, use Translator
+    labelTextsAndActionCommands.put(
+        "sequential", ActionSetOperationConcurrencyKind.SEQUENTIAL_COMMAND);
+    labelTextsAndActionCommands.put("guarded", ActionSetOperationConcurrencyKind.GUARDED_COMMAND);
+    labelTextsAndActionCommands.put(
+        "concurrent", ActionSetOperationConcurrencyKind.CONCURRENT_COMMAND);
+  }
+
+  /**
+   * Constructor.
+   *
+   * @param title the title of the panel
+   * @param horizontal determines the orientation
+   */
+  public UMLOperationConcurrencyRadioButtonPanel(String title, boolean horizontal) {
+    // TODO: i18n
+    super(
+        title,
+        labelTextsAndActionCommands,
+        "Concurrency",
+        ActionSetOperationConcurrencyKind.getInstance(),
+        horizontal);
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLRadioButtonPanel#buildModel()
+   */
+  public void buildModel() {
+    if (getTarget() != null) {
+      Object target = /* (MModelElement) */ getTarget();
+      Object kind = Model.getFacade().getConcurrency(target);
+      if (kind == null || kind.equals(Model.getConcurrencyKind().getSequential())) {
+        setSelected(ActionSetOperationConcurrencyKind.SEQUENTIAL_COMMAND);
+      } else if (kind.equals(Model.getConcurrencyKind().getGuarded())) {
+        setSelected(ActionSetOperationConcurrencyKind.GUARDED_COMMAND);
+      } else if (kind.equals(Model.getConcurrencyKind().getConcurrent())) {
+        setSelected(ActionSetOperationConcurrencyKind.CONCURRENT_COMMAND);
+      } else {
+        setSelected(ActionSetOperationConcurrencyKind.SEQUENTIAL_COMMAND);
+      }
     }
-
-    /**
-     * Constructor.
-     *
-     * @param title the title of the panel
-     * @param horizontal determines the orientation
-     */
-    public UMLOperationConcurrencyRadioButtonPanel(String title,
-            boolean horizontal) {
-        // TODO: i18n
-        super(title, labelTextsAndActionCommands, "Concurrency",
-                ActionSetOperationConcurrencyKind.getInstance(), horizontal);
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLRadioButtonPanel#buildModel()
-     */
-    public void buildModel() {
-        if (getTarget() != null) {
-            Object target = /* (MModelElement) */getTarget();
-            Object kind = Model.getFacade().getConcurrency(target);
-            if (kind == null
-                    || kind.equals(
-                            Model.getConcurrencyKind()
-                            	.getSequential())) {
-                setSelected(ActionSetOperationConcurrencyKind
-                        .SEQUENTIAL_COMMAND);
-            } else if (kind.equals(
-                    Model.getConcurrencyKind().getGuarded())) {
-                setSelected(ActionSetOperationConcurrencyKind.GUARDED_COMMAND);
-            } else if (kind.equals(
-                    Model.getConcurrencyKind().getConcurrent())) {
-                setSelected(ActionSetOperationConcurrencyKind
-                        .CONCURRENT_COMMAND);
-            } else {
-                setSelected(ActionSetOperationConcurrencyKind
-                        .SEQUENTIAL_COMMAND);
-            }
-        }
-    }
+  }
 }

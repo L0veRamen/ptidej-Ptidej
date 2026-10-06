@@ -25,39 +25,33 @@
 package org.argouml.uml.ui;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.model.Model;
 import org.argouml.ui.targetmanager.TargetManager;
 
 /**
- * Action to add a package to the selected model element in the
- * nav pane. This is a shortcut that helps build model
- * structures quickly.
+ * Action to add a package to the selected model element in the nav pane. This is a shortcut that
+ * helps build model structures quickly.
  *
  * @author alexb@tigris.org
  */
-public class ActionAddPackage  extends UMLAction {
+public class ActionAddPackage extends UMLAction {
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    /**
-     * Creates a new instance of ActionAddPackage.
-     */
-    public ActionAddPackage() {
-        super("action.add-package", NO_ICON);
-    }
+  /** Creates a new instance of ActionAddPackage. */
+  public ActionAddPackage() {
+    super("action.add-package", NO_ICON);
+  }
 
-    /**
-     * adds a package to the selected object in the nav pane.
-     *
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        Object namespace =
-	    TargetManager.getInstance().getModelTarget();
-        Model.getCoreHelper().addOwnedElement(namespace,
-            Model.getModelManagementFactory().createPackage());
-    }
-
+  /**
+   * adds a package to the selected object in the nav pane.
+   *
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    Object namespace = TargetManager.getInstance().getModelTarget();
+    Model.getCoreHelper()
+        .addOwnedElement(namespace, Model.getModelManagementFactory().createPackage());
+  }
 }

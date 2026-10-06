@@ -25,60 +25,45 @@
 package org.argouml.uml.ui.behavior.activity_graphs;
 
 import javax.swing.ImageIcon;
-
 import org.argouml.i18n.Translator;
-import org.tigris.swidgets.Orientation;
 import org.argouml.uml.ui.behavior.state_machines.AbstractPropPanelState;
 import org.argouml.util.ConfigLoader;
+import org.tigris.swidgets.Orientation;
 
 /**
- * User interface panel shown at the bottom of the screen that allows the user
- * to edit the properties of the selected UML model element.
+ * User interface panel shown at the bottom of the screen that allows the user to edit the
+ * properties of the selected UML model element.
  */
 public class PropPanelActionState extends AbstractPropPanelState {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = 4936258091606712050L;
+  /** The serial version. */
+  private static final long serialVersionUID = 4936258091606712050L;
 
-    /**
-     * Construct a default property panel for an Action State.
-     */
-    public PropPanelActionState() {
-        this("Action State", lookupIcon("ActionState"), 
-                ConfigLoader.getTabPropsOrientation());
-    }
+  /** Construct a default property panel for an Action State. */
+  public PropPanelActionState() {
+    this("Action State", lookupIcon("ActionState"), ConfigLoader.getTabPropsOrientation());
+  }
 
-    /**
-     * Construct a property panel for an Action State with the given params.
-     *
-     * @param name the name of the properties panel
-     * @param icon the icon to be shown next to the name
-     * @param orientation the orientation of the panel
-     */
-    public PropPanelActionState(String name, ImageIcon icon,
-            Orientation orientation) {
+  /**
+   * Construct a property panel for an Action State with the given params.
+   *
+   * @param name the name of the properties panel
+   * @param icon the icon to be shown next to the name
+   * @param orientation the orientation of the panel
+   */
+  public PropPanelActionState(String name, ImageIcon icon, Orientation orientation) {
 
-        super(name, icon, orientation);
+    super(name, icon, orientation);
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.container"),
-                getContainerScroll());
-        addField(Translator.localize("label.entry"),
-                getEntryScroll());
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.container"), getContainerScroll());
+    addField(Translator.localize("label.entry"), getEntryScroll());
 
-        addField(Translator.localize("label.deferrable"),
-                getDeferrableEventsScroll());
+    addField(Translator.localize("label.deferrable"), getDeferrableEventsScroll());
 
-        addSeparator();
+    addSeparator();
 
-        addField(Translator.localize("label.incoming"),
-                getIncomingScroll());
-        addField(Translator.localize("label.outgoing"),
-                getOutgoingScroll());
-
-    }
-
+    addField(Translator.localize("label.incoming"), getIncomingScroll());
+    addField(Translator.localize("label.outgoing"), getOutgoingScroll());
+  }
 } /* end class PropPanelActionState */

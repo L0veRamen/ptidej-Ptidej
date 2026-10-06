@@ -25,24 +25,20 @@
 package org.argouml.ui.cmd;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.cognitive.critics.ui.CriticBrowserDialog;
 import org.argouml.uml.ui.UMLAction;
 
-
 class ActionOpenCritics extends UMLAction {
 
-    public ActionOpenCritics() {
-        super("action.browse-critics", NO_ICON);
-    }
+  public ActionOpenCritics() {
+    super("action.browse-critics", NO_ICON);
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-	CriticBrowserDialog dialog = new CriticBrowserDialog();
-	dialog.setVisible(true);
-    }
-
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    CriticBrowserDialog dialog = new CriticBrowserDialog();
+    dialog.setVisible(true);
+  }
 } /* end class ActionOpenCritics */
-

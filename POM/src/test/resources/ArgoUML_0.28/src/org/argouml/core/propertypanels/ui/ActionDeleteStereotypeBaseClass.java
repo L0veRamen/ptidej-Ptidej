@@ -25,7 +25,6 @@
 package org.argouml.core.propertypanels.ui;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.AbstractActionRemoveElement;
@@ -38,20 +37,19 @@ import org.tigris.gef.undo.UndoManager;
  */
 class ActionDeleteStereotypeBaseClass extends AbstractActionRemoveElement {
 
-    public ActionDeleteStereotypeBaseClass() {
-        super(Translator.localize("menu.popup.remove"));
-    }
+  public ActionDeleteStereotypeBaseClass() {
+    super(Translator.localize("menu.popup.remove"));
+  }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        UndoManager.getInstance().startChain();
-        Object baseclass = getObjectToRemove();
-        if (baseclass != null) {
-            Object st = getTarget();
-            if (Model.getFacade().isAStereotype(st)) {
-                Model.getExtensionMechanismsHelper().removeBaseClass(st,
-                        baseclass);
-            }
-        }
+  @Override
+  public void actionPerformed(ActionEvent e) {
+    UndoManager.getInstance().startChain();
+    Object baseclass = getObjectToRemove();
+    if (baseclass != null) {
+      Object st = getTarget();
+      if (Model.getFacade().isAStereotype(st)) {
+        Model.getExtensionMechanismsHelper().removeBaseClass(st, baseclass);
+      }
     }
+  }
 }

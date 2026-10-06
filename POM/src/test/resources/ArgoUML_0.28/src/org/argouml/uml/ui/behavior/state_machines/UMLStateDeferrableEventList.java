@@ -34,12 +34,12 @@ import org.argouml.uml.ui.UMLMutableLinkedList;
  */
 public class UMLStateDeferrableEventList extends UMLMutableLinkedList {
 
-    /**
-     * Constructor for UMLTransitionTriggerList.
-     * @param dataModel the model
-     */
-    public UMLStateDeferrableEventList(
-        UMLModelElementListModel2 dataModel) {
-        super(dataModel);
-    }
+  /**
+   * Constructor for UMLTransitionTriggerList.
+   *
+   * @param dataModel the model
+   */
+  public UMLStateDeferrableEventList(UMLModelElementListModel2 dataModel) {
+    super(dataModel);
+  }
 }

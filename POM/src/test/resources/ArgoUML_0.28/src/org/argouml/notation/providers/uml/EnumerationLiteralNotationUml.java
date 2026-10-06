@@ -27,7 +27,6 @@ package org.argouml.notation.providers.uml;
 import java.text.ParseException;
 import java.util.Map;
 import java.util.NoSuchElementException;
-
 import org.argouml.application.events.ArgoEventPump;
 import org.argouml.application.events.ArgoEventTypes;
 import org.argouml.application.events.ArgoHelpEvent;
@@ -41,226 +40,212 @@ import org.argouml.uml.StereotypeUtility;
 import org.argouml.util.MyTokenizer;
 
 /**
- * The notation for an Enumeration Literal. <p>
- * 
- * The supported notation is: <pre>
+ * The notation for an Enumeration Literal.
+ *
+ * <p>The supported notation is:
+ *
+ * <pre>
  *     [ "<<" stereotype ">>" ] name [ ";" name ]*
  * </pre>
- * This means:<ul><li> 
- * The name is not optional (i.e. leaving it blank 
- * means deletion of the literal). <li>
- * Multiple literals may be entered at once 
- * by separating the names with a semicolon. <li> 
- * Extra literals are inserted after the one being parsed. <li>
- * A stereotype may precede the name of any literal. </ul><p>
- * 
- * As explained in issue 5000, the real implemented BNF is something like: 
+ *
+ * This means:
+ *
+ * <ul>
+ *   <li>The name is not optional (i.e. leaving it blank means deletion of the literal).
+ *   <li>Multiple literals may be entered at once by separating the names with a semicolon.
+ *   <li>Extra literals are inserted after the one being parsed.
+ *   <li>A stereotype may precede the name of any literal.
+ * </ul>
+ *
+ * <p>As explained in issue 5000, the real implemented BNF is something like:
+ *
  * <pre>
  *     ["<<" stereotype ["," stereotype]* ">>"] name [ ";" ["<<" stereotype ["," stereotype]* ">>"] name]*
  * </pre>
- * 
+ *
  * @author Michiel
  */
 public class EnumerationLiteralNotationUml extends EnumerationLiteralNotation {
 
-    /**
-     * The constructor.
-     * 
-     * @param enumLiteral the UML element
-     */
-    public EnumerationLiteralNotationUml(Object enumLiteral) {
-        super(enumLiteral);
+  /**
+   * The constructor.
+   *
+   * @param enumLiteral the UML element
+   */
+  public EnumerationLiteralNotationUml(Object enumLiteral) {
+    super(enumLiteral);
+  }
+
+  @Override
+  public String getParsingHelp() {
+    return "parsing.help.fig-enumeration-literal";
+  }
+
+  @Override
+  public void parse(Object modelElement, String text) {
+    try {
+      parseEnumerationLiteralFig(
+          Model.getFacade().getEnumeration(modelElement), modelElement, text);
+    } catch (ParseException pe) {
+      String msg = "statusmsg.bar.error.parsing.enumeration-literal";
+      Object[] args = {
+        pe.getLocalizedMessage(), Integer.valueOf(pe.getErrorOffset()),
+      };
+      ArgoEventPump.fireEvent(
+          new ArgoHelpEvent(
+              ArgoEventTypes.HELP_CHANGED, this, Translator.messageFormat(msg, args)));
     }
+  }
 
-    @Override
-    public String getParsingHelp() {
-        return "parsing.help.fig-enumeration-literal";
+  /**
+   * Parse a string representing one or more ";" separated enumeration literals.
+   *
+   * @param enumeration the enumeration that the literal belongs to
+   * @param literal the literal on which the editing will happen
+   * @param text the string to parse
+   * @throws ParseException for invalid input - so that the right message may be shown to the user
+   */
+  protected void parseEnumerationLiteralFig(Object enumeration, Object literal, String text)
+      throws ParseException {
+
+    if (enumeration == null || literal == null) {
+      return;
     }
+    Project project = ProjectManager.getManager().getCurrentProject();
 
-    @Override
-    public void parse(Object modelElement, String text) {
-        try {
-            parseEnumerationLiteralFig(
-                    Model.getFacade().getEnumeration(modelElement),
-                    modelElement, text);
-        } catch (ParseException pe) {
-            String msg = "statusmsg.bar.error.parsing.enumeration-literal";
-            Object[] args = {
-                pe.getLocalizedMessage(),
-                Integer.valueOf(pe.getErrorOffset()),
-            };
-            ArgoEventPump.fireEvent(new ArgoHelpEvent(
-                    ArgoEventTypes.HELP_CHANGED, this,
-                Translator.messageFormat(msg, args)));
-        }
+    ParseException pex = null;
+    int start = 0;
+    int end = NotationUtilityUml.indexOfNextCheckedSemicolon(text, start);
+
+    if (end == -1) {
+      /* No text. We may remove the literal. */
+      project.moveToTrash(literal);
+      return;
     }
-    
-    /**
-     * Parse a string representing one or more ";" separated 
-     * enumeration literals.
-     * 
-     * @param enumeration the enumeration that the literal belongs to
-     * @param literal the literal on which the editing will happen
-     * @param text the string to parse
-     * @throws ParseException for invalid input - so that the right 
-     * message may be shown to the user
-     */
-    protected void  parseEnumerationLiteralFig(
-            Object enumeration, Object literal, String text) 
-        throws ParseException {
-        
-        if (enumeration == null || literal == null) {
-            return;
-        }
-        Project project = ProjectManager.getManager().getCurrentProject();
+    String s = text.substring(start, end).trim();
+    if (s.length() == 0) {
+      /* No non-white chars in text? remove literal! */
+      project.moveToTrash(literal);
+      return;
+    }
+    parseEnumerationLiteral(s, literal);
 
-        ParseException pex = null;
-        int start = 0;
-        int end = NotationUtilityUml.indexOfNextCheckedSemicolon(text, start);
-        
-        if (end == -1) {
-            /* No text. We may remove the literal. */
-            project.moveToTrash(literal);
-            return;
-        }
-        String s = text.substring(start, end).trim();
-        if (s.length() == 0) {
-            /* No non-white chars in text? remove literal! */
-            project.moveToTrash(literal);
-            return;
-        }
-        parseEnumerationLiteral(s, literal);
-
-        int i = Model.getFacade().getEnumerationLiterals(enumeration)
-            .indexOf(literal);
-        // check for more literals (';' separated):
-        start = end + 1;
-        end = NotationUtilityUml.indexOfNextCheckedSemicolon(text, start);
-        while (end > start && end <= text.length()) {
-            s = text.substring(start, end).trim();
-            if (s.length() > 0) {
-                // yes, there are more:
-                Object newLiteral = 
-                    Model.getCoreFactory().createEnumerationLiteral();
-                if (newLiteral != null) {
-                    try {
-                        if (i != -1) {
-                            Model.getCoreHelper().addLiteral(
-                                    enumeration, ++i, newLiteral);
-                        } else {
-                            Model.getCoreHelper().addLiteral(
-                                    enumeration, 0, newLiteral);
-                        }
-                        parseEnumerationLiteral(s, newLiteral);
-                    } catch (ParseException ex) {
-                        if (pex == null) {
-                            pex = ex;
-                        }
-                    }
-                }
+    int i = Model.getFacade().getEnumerationLiterals(enumeration).indexOf(literal);
+    // check for more literals (';' separated):
+    start = end + 1;
+    end = NotationUtilityUml.indexOfNextCheckedSemicolon(text, start);
+    while (end > start && end <= text.length()) {
+      s = text.substring(start, end).trim();
+      if (s.length() > 0) {
+        // yes, there are more:
+        Object newLiteral = Model.getCoreFactory().createEnumerationLiteral();
+        if (newLiteral != null) {
+          try {
+            if (i != -1) {
+              Model.getCoreHelper().addLiteral(enumeration, ++i, newLiteral);
+            } else {
+              Model.getCoreHelper().addLiteral(enumeration, 0, newLiteral);
             }
-            start = end + 1;
-            end = NotationUtilityUml.indexOfNextCheckedSemicolon(text, start);
-        }
-        if (pex != null) {
-            throw pex;
-        }
-    }
-
-    protected void parseEnumerationLiteral(String text, Object literal) 
-        throws ParseException {
-        text = text.trim();
-        if (text.length() == 0) {
-            return;
-        }
-        // strip any trailing semi-colons
-        if (text.charAt(text.length() - 1) == ';') {
-            text = text.substring(0, text.length() - 2);
-        }
-        MyTokenizer st;
-
-        String name = null;
-        StringBuilder stereotype = null;
-        String token;
-
-        try {
-            st = new MyTokenizer(text, "<<,\u00AB,\u00BB,>>");
-            while (st.hasMoreTokens()) {
-                token = st.nextToken();
-
-                if ("<<".equals(token) || "\u00AB".equals(token)) {
-                    if (stereotype != null) {
-                        String msg = 
-                            "parsing.error.model-element-name.twin-stereotypes";
-                        throw new ParseException(Translator.localize(msg),
-                                st.getTokenIndex());
-                    }
-
-                    stereotype = new StringBuilder();
-                    while (true) {
-                        token = st.nextToken();
-                        if (">>".equals(token) || "\u00BB".equals(token)) {
-                            break;
-                        }
-                        stereotype.append(token);
-                    }
-                } else {
-                    if (name != null) {
-                        String msg = 
-                            "parsing.error.model-element-name.twin-names";
-                        throw new ParseException(Translator.localize(msg), 
-                                st.getTokenIndex());
-                    }
-
-                    name = token;
-                }
+            parseEnumerationLiteral(s, newLiteral);
+          } catch (ParseException ex) {
+            if (pex == null) {
+              pex = ex;
             }
-        } catch (NoSuchElementException nsee) {
-            String msg = 
-                "parsing.error.model-element-name.unexpected-name-element";
-            throw new ParseException(Translator.localize(msg),
-                    text.length());
-        } catch (ParseException pre) {
-            throw pre;
+          }
         }
-
-        if (name != null) {
-            name = name.trim();
-        }
-        if (name != null) {
-            Model.getCoreHelper().setName(literal, name);
-        }
-
-        StereotypeUtility.dealWithStereotypes(literal, stereotype, false);
-
-        return;
+      }
+      start = end + 1;
+      end = NotationUtilityUml.indexOfNextCheckedSemicolon(text, start);
     }
-
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    @Override
-    public String toString(Object modelElement, Map args) {
-        return toString(modelElement, 
-                NotationUtilityUml.isValue("useGuillemets", args));
+    if (pex != null) {
+      throw pex;
     }
+  }
 
-    private String toString(Object modelElement, boolean useGuillemets) {
-        String nameStr = "";
-        /* Heuristic algorithm: do not show stereotypes if there is no name. */
-        if (Model.getFacade().getName(modelElement) != null) {
-            nameStr = NotationUtilityUml.generateStereotype(modelElement, 
-                    useGuillemets);
-            if (nameStr.length() > 0) {
-                nameStr += " ";
+  protected void parseEnumerationLiteral(String text, Object literal) throws ParseException {
+    text = text.trim();
+    if (text.length() == 0) {
+      return;
+    }
+    // strip any trailing semi-colons
+    if (text.charAt(text.length() - 1) == ';') {
+      text = text.substring(0, text.length() - 2);
+    }
+    MyTokenizer st;
+
+    String name = null;
+    StringBuilder stereotype = null;
+    String token;
+
+    try {
+      st = new MyTokenizer(text, "<<,\u00AB,\u00BB,>>");
+      while (st.hasMoreTokens()) {
+        token = st.nextToken();
+
+        if ("<<".equals(token) || "\u00AB".equals(token)) {
+          if (stereotype != null) {
+            String msg = "parsing.error.model-element-name.twin-stereotypes";
+            throw new ParseException(Translator.localize(msg), st.getTokenIndex());
+          }
+
+          stereotype = new StringBuilder();
+          while (true) {
+            token = st.nextToken();
+            if (">>".equals(token) || "\u00BB".equals(token)) {
+              break;
             }
-            nameStr += Model.getFacade().getName(modelElement).trim();
+            stereotype.append(token);
+          }
+        } else {
+          if (name != null) {
+            String msg = "parsing.error.model-element-name.twin-names";
+            throw new ParseException(Translator.localize(msg), st.getTokenIndex());
+          }
+
+          name = token;
         }
-        return nameStr;
+      }
+    } catch (NoSuchElementException nsee) {
+      String msg = "parsing.error.model-element-name.unexpected-name-element";
+      throw new ParseException(Translator.localize(msg), text.length());
+    } catch (ParseException pre) {
+      throw pre;
     }
 
-    @Override
-    public String toString(Object modelElement, NotationSettings settings) {
-        return toString(modelElement, settings.isUseGuillemets());
+    if (name != null) {
+      name = name.trim();
+    }
+    if (name != null) {
+      Model.getCoreHelper().setName(literal, name);
     }
 
+    StereotypeUtility.dealWithStereotypes(literal, stereotype, false);
+
+    return;
+  }
+
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  @Override
+  public String toString(Object modelElement, Map args) {
+    return toString(modelElement, NotationUtilityUml.isValue("useGuillemets", args));
+  }
+
+  private String toString(Object modelElement, boolean useGuillemets) {
+    String nameStr = "";
+    /* Heuristic algorithm: do not show stereotypes if there is no name. */
+    if (Model.getFacade().getName(modelElement) != null) {
+      nameStr = NotationUtilityUml.generateStereotype(modelElement, useGuillemets);
+      if (nameStr.length() > 0) {
+        nameStr += " ";
+      }
+      nameStr += Model.getFacade().getName(modelElement).trim();
+    }
+    return nameStr;
+  }
+
+  @Override
+  public String toString(Object modelElement, NotationSettings settings) {
+    return toString(modelElement, settings.isUseGuillemets());
+  }
 }

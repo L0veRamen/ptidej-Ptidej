@@ -27,196 +27,179 @@ package org.argouml.sequence2.diagram;
 import java.awt.Polygon;
 import java.util.HashMap;
 import java.util.List;
-
 import javax.swing.Icon;
-
 import org.argouml.model.Model;
 import org.argouml.uml.diagram.ui.SelectionNodeClarifiers2;
 import org.tigris.gef.presentation.Fig;
 import org.tigris.gef.presentation.Handle;
 
 /**
- * A custom select object to handle the special requirements of reshaping a
- * classifier role.
- * 
+ * A custom select object to handle the special requirements of reshaping a classifier role.
+ *
  * @author Bob Tarling
  */
 class SelectionClassifierRole extends SelectionNodeClarifiers2 {
 
-    /**
-     * The constructor.
-     * 
-     * @param f
-     *                the fig
-     */
-    public SelectionClassifierRole(Fig f) {
-       super(f);
+  /**
+   * The constructor.
+   *
+   * @param f the fig
+   */
+  public SelectionClassifierRole(Fig f) {
+    super(f);
+  }
+
+  /**
+   * Makes sure that dragging on the CR keeps them all aligned and resizing doesn't force
+   * FigMessages overlaying.
+   *
+   * @param mX New X position (aka current mouse X position)
+   * @param mY New Y position (aka current mouse Y position)
+   * @param anX Old X position
+   * @param anY Old Y position
+   * @param hand The handle being dragged
+   */
+  @Override
+  public void dragHandle(int mX, int mY, int anX, int anY, Handle hand) {
+
+    if (!getContent().isResizable()) {
+      return;
     }
 
-    /**
-     * Makes sure that dragging on the CR keeps them all aligned and resizing
-     * doesn't force FigMessages overlaying.
-     * 
-     * @param mX
-     *                New X position (aka current mouse X position)
-     * @param mY
-     *                New Y position (aka current mouse Y position)
-     * @param anX
-     *                Old X position
-     * @param anY
-     *                Old Y position
-     * @param hand
-     *                The handle being dragged
-     */
-    @Override
-    public void dragHandle(int mX, int mY, int anX, int anY, Handle hand) {
+    final List<Fig> figs = getContent().getLayer().getContents();
 
-        if (!getContent().isResizable()) {
-            return;
+    int minimumHeight = 0;
+    for (Fig workOnFig : figs) {
+      if (workOnFig instanceof FigClassifierRole
+          && workOnFig.getMinimumSize().height > minimumHeight) {
+        minimumHeight = workOnFig.getMinimumSize().height;
+      }
+    }
+
+    int deltaY = mY - getContent().getY();
+
+    // vertical resizing
+    switch (hand.index) {
+      case Handle.NORTHWEST:
+      case Handle.NORTH:
+      case Handle.NORTHEAST:
+        int newHeight = getContent().getHeight() - deltaY;
+        if (newHeight < minimumHeight) {
+          newHeight = minimumHeight;
+          deltaY = getContent().getHeight() - newHeight;
         }
 
-        final List<Fig> figs = getContent().getLayer().getContents();
+        final HashMap<Fig, Polygon> polygonsByFig = new HashMap<Fig, Polygon>();
 
-        int minimumHeight = 0;
+        // There is a bug in GEF where positioning nodes can affect
+        // edge positions. We need to do 3 iterations to protect
+        // against that.
+
+        // 1. Remember current message paths
         for (Fig workOnFig : figs) {
-            if (workOnFig instanceof FigClassifierRole
-                    && workOnFig.getMinimumSize().height > minimumHeight) {
-                minimumHeight = workOnFig.getMinimumSize().height;
-            }
+          if (workOnFig instanceof FigMessage && !((FigMessage) workOnFig).isSelfMessage()) {
+            polygonsByFig.put(workOnFig, ((FigMessage) workOnFig).getPolygon());
+          }
         }
 
-        int deltaY = mY - getContent().getY();
-        
-        // vertical resizing
-        switch (hand.index) {
-        case Handle.NORTHWEST:
-        case Handle.NORTH:
-        case Handle.NORTHEAST:
-            int newHeight = getContent().getHeight() - deltaY;
-            if (newHeight < minimumHeight) {
-                newHeight = minimumHeight;
-                deltaY = getContent().getHeight() - newHeight;
-            }
-            
-            final HashMap<Fig, Polygon> polygonsByFig =
-            	new HashMap<Fig, Polygon>();
-            
-            // There is a bug in GEF where positioning nodes can affect
-            // edge positions. We need to do 3 iterations to protect
-            // against that.
-            
-            // 1. Remember current message paths
-            for (Fig workOnFig : figs) {
-                if (workOnFig instanceof FigMessage && 
-                		!((FigMessage) workOnFig).isSelfMessage()) {
-                    polygonsByFig.put(
-                    		workOnFig,
-                    		((FigMessage) workOnFig).getPolygon());
-                }
-            }
-
-            // 2. Reposition and resize nodes
-            for (Fig workOnFig : figs) {
-                if (workOnFig instanceof FigClassifierRole) {
-                    workOnFig.setHeight(newHeight);
-                    workOnFig.translate(0, deltaY);
-                }
-            }
-
-            // 3. Now reposition messages based on their original position
-            for (Fig workOnFig : figs) {
-                if (workOnFig instanceof FigMessage) {
-                	if (((FigMessage) workOnFig).isSelfMessage()) {
-                		((FigMessageSpline) ((FigMessage) workOnFig).getFig())
-                				.translateFig(0, deltaY);
-                	} else {
-                		polygonsByFig.get(workOnFig).translate(0, deltaY);
-                		((FigMessage) workOnFig).setPolygon(
-                				polygonsByFig.get(workOnFig));
-                	}
-                }
-            }
-            break;
-        case Handle.SOUTH:
-        case Handle.SOUTHEAST:
-        case Handle.SOUTHWEST:
-            newHeight = deltaY;
-            if (newHeight < minimumHeight) {
-                newHeight = minimumHeight;
-            }
-            for (Fig workOnFig : figs) {
-                if (workOnFig instanceof FigClassifierRole) {
-                    workOnFig.setHeight(newHeight);
-                }
-            }
-        default:
+        // 2. Reposition and resize nodes
+        for (Fig workOnFig : figs) {
+          if (workOnFig instanceof FigClassifierRole) {
+            workOnFig.setHeight(newHeight);
+            workOnFig.translate(0, deltaY);
+          }
         }
 
-        final Fig workOnFig = getContent();
-        
-        int oldCenterX = 0;
-        int newCenterX = 0;
-        // Compute the initial center position of the CR
-        if (workOnFig instanceof FigClassifierRole) {
-        	FigClassifierRole f = (FigClassifierRole) workOnFig;
-        	oldCenterX = f.getWidth() / 2 + f.getX();
+        // 3. Now reposition messages based on their original position
+        for (Fig workOnFig : figs) {
+          if (workOnFig instanceof FigMessage) {
+            if (((FigMessage) workOnFig).isSelfMessage()) {
+              ((FigMessageSpline) ((FigMessage) workOnFig).getFig()).translateFig(0, deltaY);
+            } else {
+              polygonsByFig.get(workOnFig).translate(0, deltaY);
+              ((FigMessage) workOnFig).setPolygon(polygonsByFig.get(workOnFig));
+            }
+          }
         }
-        
-        // horizontal resizing
-        switch (hand.index) {
-        case Handle.NORTHWEST:
-        case Handle.SOUTHWEST:
-            workOnFig.setWidth(workOnFig.getX() - mX + workOnFig.getWidth());
-            workOnFig.setX(mX);
-            break;
-        case Handle.NORTHEAST:
-        case Handle.SOUTHEAST:
-            workOnFig.setWidth(mX - workOnFig.getX());
-            break;
-        default:
+        break;
+      case Handle.SOUTH:
+      case Handle.SOUTHEAST:
+      case Handle.SOUTHWEST:
+        newHeight = deltaY;
+        if (newHeight < minimumHeight) {
+          newHeight = minimumHeight;
         }
-
-        // Compute the final center position of the CR
-        if (workOnFig instanceof FigClassifierRole) {
-        	FigClassifierRole f = (FigClassifierRole) workOnFig;
-        	newCenterX = f.getWidth() / 2 + f.getX();
+        for (Fig workOnFig : figs) {
+          if (workOnFig instanceof FigClassifierRole) {
+            workOnFig.setHeight(newHeight);
+          }
         }
-        
-        // Self messages act differently so it is needed to move them separetly.
-        // Only self messages of selected CR should be horizontally translated.
-        for (Fig fig : figs) {
-        	if (fig instanceof FigMessage && ((FigMessage) fig).isSelfMessage()
-        			&& Model.getCoreHelper().getDestination(fig.getOwner()).
-        					equals(workOnFig.getOwner())) {
-        		((FigMessageSpline) ((FigMessage) fig).getFig())
-	        			.translateFig(newCenterX - oldCenterX, 0);
-        	}
-		}
-        
+      default:
     }
 
-    @Override
-    protected Object getNewNode(int index) {
-        return null;
+    final Fig workOnFig = getContent();
+
+    int oldCenterX = 0;
+    int newCenterX = 0;
+    // Compute the initial center position of the CR
+    if (workOnFig instanceof FigClassifierRole) {
+      FigClassifierRole f = (FigClassifierRole) workOnFig;
+      oldCenterX = f.getWidth() / 2 + f.getX();
     }
 
-    @Override
-    protected Icon[] getIcons() {
-        return null;
+    // horizontal resizing
+    switch (hand.index) {
+      case Handle.NORTHWEST:
+      case Handle.SOUTHWEST:
+        workOnFig.setWidth(workOnFig.getX() - mX + workOnFig.getWidth());
+        workOnFig.setX(mX);
+        break;
+      case Handle.NORTHEAST:
+      case Handle.SOUTHEAST:
+        workOnFig.setWidth(mX - workOnFig.getX());
+        break;
+      default:
     }
 
-    @Override
-    protected String getInstructions(int index) {
-        return null;
+    // Compute the final center position of the CR
+    if (workOnFig instanceof FigClassifierRole) {
+      FigClassifierRole f = (FigClassifierRole) workOnFig;
+      newCenterX = f.getWidth() / 2 + f.getX();
     }
 
-    @Override
-    protected Object getNewEdgeType(int index) {
-        return null;
+    // Self messages act differently so it is needed to move them separetly.
+    // Only self messages of selected CR should be horizontally translated.
+    for (Fig fig : figs) {
+      if (fig instanceof FigMessage
+          && ((FigMessage) fig).isSelfMessage()
+          && Model.getCoreHelper().getDestination(fig.getOwner()).equals(workOnFig.getOwner())) {
+        ((FigMessageSpline) ((FigMessage) fig).getFig()).translateFig(newCenterX - oldCenterX, 0);
+      }
     }
+  }
 
-    @Override
-    protected Object getNewNodeType(int index) {
-        return null;
-    }
+  @Override
+  protected Object getNewNode(int index) {
+    return null;
+  }
+
+  @Override
+  protected Icon[] getIcons() {
+    return null;
+  }
+
+  @Override
+  protected String getInstructions(int index) {
+    return null;
+  }
+
+  @Override
+  protected Object getNewEdgeType(int index) {
+    return null;
+  }
+
+  @Override
+  protected Object getNewNodeType(int index) {
+    return null;
+  }
 }

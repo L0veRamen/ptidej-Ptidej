@@ -24,44 +24,41 @@
 
 package org.argouml.util;
 
-/**
- * Some utility methods to simplify tests of what Java Runtime is currently in
- * use.
- */
+/** Some utility methods to simplify tests of what Java Runtime is currently in use. */
 public class JavaRuntimeUtility {
-    
-    /**
-     * Determine if the java runtime found is supported by the current version
-     * of ArgoUML.
-     * 
-     * @return true if the version of Java is supported
-     */
-    public static boolean isJreSupported() {
-        String javaVersion = System.getProperty("java.version", "");
-        return (!(javaVersion.startsWith("1.4") 
-                || javaVersion.startsWith("1.3")
-                || javaVersion.startsWith("1.2")
-                || javaVersion.startsWith("1.1")));
-    }
-        
-    /**
-     * Determine if the java runtime found is JRE 5
-     * <p>Note that plugins should not rely on this method existing in
-     * it is likely to be removed without deprecation as soon as JRE 5 is
-     * no longer supported.
-     * 
-     * @return true if we're running on JRE 5
-     */
-    public static boolean isJre5() {
-        String javaVersion = System.getProperty("java.version", "");
-        return (javaVersion.startsWith("1.5"));
-    }
-    
-    /**
-     * Get the JRE version described in system properties
-     * @return the JRE version
-     */
-    public static String getJreVersion() {
-        return System.getProperty("java.version", "");
-    }
+
+  /**
+   * Determine if the java runtime found is supported by the current version of ArgoUML.
+   *
+   * @return true if the version of Java is supported
+   */
+  public static boolean isJreSupported() {
+    String javaVersion = System.getProperty("java.version", "");
+    return (!(javaVersion.startsWith("1.4")
+        || javaVersion.startsWith("1.3")
+        || javaVersion.startsWith("1.2")
+        || javaVersion.startsWith("1.1")));
+  }
+
+  /**
+   * Determine if the java runtime found is JRE 5
+   *
+   * <p>Note that plugins should not rely on this method existing in it is likely to be removed
+   * without deprecation as soon as JRE 5 is no longer supported.
+   *
+   * @return true if we're running on JRE 5
+   */
+  public static boolean isJre5() {
+    String javaVersion = System.getProperty("java.version", "");
+    return (javaVersion.startsWith("1.5"));
+  }
+
+  /**
+   * Get the JRE version described in system properties
+   *
+   * @return the JRE version
+   */
+  public static String getJreVersion() {
+    return System.getProperty("java.version", "");
+  }
 }

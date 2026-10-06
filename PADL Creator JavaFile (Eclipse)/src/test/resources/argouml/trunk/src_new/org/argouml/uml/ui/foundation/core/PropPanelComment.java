@@ -25,9 +25,7 @@
 package org.argouml.uml.ui.foundation.core;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.AbstractActionRemoveElement;
@@ -39,103 +37,87 @@ import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
 import org.argouml.util.ConfigLoader;
 
 /**
- * Proppanel for comments (notes). <p>
+ * Proppanel for comments (notes).
  *
- * In UML 1.4 and beyond, the Comment has a "body"
- * attribute to contain the comment string, although 
- * some UML tools continue to use the name attribute.
+ * <p>In UML 1.4 and beyond, the Comment has a "body" attribute to contain the comment string,
+ * although some UML tools continue to use the name attribute.
  */
 public class PropPanelComment extends PropPanelModelElement {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = -8781239511498017147L;
+  /** The serial version. */
+  private static final long serialVersionUID = -8781239511498017147L;
 
-    /**
-     * Construct a property panel for a Comment.
-     */
-    public PropPanelComment() {
-        super("Comment", ConfigLoader.getTabPropsOrientation());
+  /** Construct a property panel for a Comment. */
+  public PropPanelComment() {
+    super("Comment", ConfigLoader.getTabPropsOrientation());
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
+    addField(Translator.localize("label.name"), getNameTextField());
 
-        UMLMutableLinkedList umll = new UMLMutableLinkedList(
-                new UMLCommentAnnotatedElementListModel(), null, null);
-        umll.setDeleteAction(new ActionDeleteAnnotatedElement());
-        addField(Translator.localize("label.annotated-elements"),
-            new JScrollPane(umll));
+    UMLMutableLinkedList umll =
+        new UMLMutableLinkedList(new UMLCommentAnnotatedElementListModel(), null, null);
+    umll.setDeleteAction(new ActionDeleteAnnotatedElement());
+    addField(Translator.localize("label.annotated-elements"), new JScrollPane(umll));
 
-        addSeparator();
+    addSeparator();
 
-        UMLTextArea2 text = new UMLTextArea2(new UMLCommentBodyDocument());
-        text.setLineWrap(true);
-        text.setRows(5);
-        JScrollPane pane = new JScrollPane(text);
-        addField(Translator.localize("label.comment.body"), pane);
+    UMLTextArea2 text = new UMLTextArea2(new UMLCommentBodyDocument());
+    text.setLineWrap(true);
+    text.setRows(5);
+    JScrollPane pane = new JScrollPane(text);
+    addField(Translator.localize("label.comment.body"), pane);
 
-        addAction(new ActionNavigateContainerElement());
-        addAction(new ActionNewStereotype());
-        addAction(getDeleteAction());
-    }
+    addAction(new ActionNavigateContainerElement());
+    addAction(new ActionNewStereotype());
+    addAction(getDeleteAction());
+  }
 }
 
 class UMLCommentBodyDocument extends UMLPlainTextDocument {
-    
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = 3713801312285489580L;
 
-    /**
-     * Constructor for UMLModelElementNameDocument.
+  /** The serial version. */
+  private static final long serialVersionUID = 3713801312285489580L;
+
+  /** Constructor for UMLModelElementNameDocument. */
+  public UMLCommentBodyDocument() {
+    super("body");
+    /*
+     * TODO: This is probably not the right location
+     * for switching off the "filterNewlines".
+     * The setting gets lost after selecting a different
+     * ModelElement in the diagram.
+     * BTW, see how it is used in
+     * javax.swing.text.PlainDocument.
+     * See issue 1812.
      */
-    public UMLCommentBodyDocument() {
-        super("body"); 
-        /*
-         * TODO: This is probably not the right location
-         * for switching off the "filterNewlines".
-         * The setting gets lost after selecting a different
-         * ModelElement in the diagram.
-         * BTW, see how it is used in
-         * javax.swing.text.PlainDocument.
-         * See issue 1812.
-         */
-        putProperty("filterNewlines", Boolean.FALSE);
-    }
-    
-    /**
-     * @see org.argouml.uml.ui.UMLPlainTextDocument#setProperty(java.lang.String)
-     */
-    protected void setProperty(String text) {
-        Model.getCoreHelper().setBody(getTarget(), text);
-    }
-    
-    /**
-     * @see org.argouml.uml.ui.UMLPlainTextDocument#getProperty()
-     */
-    protected String getProperty() {
-        return (String) Model.getFacade().getBody(getTarget());
-    }
-    
+    putProperty("filterNewlines", Boolean.FALSE);
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLPlainTextDocument#setProperty(java.lang.String)
+   */
+  protected void setProperty(String text) {
+    Model.getCoreHelper().setBody(getTarget(), text);
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLPlainTextDocument#getProperty()
+   */
+  protected String getProperty() {
+    return (String) Model.getFacade().getBody(getTarget());
+  }
 }
 
 class ActionDeleteAnnotatedElement extends AbstractActionRemoveElement {
-    /**
-     * Constructor.
-     */
-    public ActionDeleteAnnotatedElement() {
-        super(Translator.localize("menu.popup.remove"));
-    }
+  /** Constructor. */
+  public ActionDeleteAnnotatedElement() {
+    super(Translator.localize("menu.popup.remove"));
+  }
 
-    /*
-     * @see org.tigris.gef.undo.UndoableAction#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent arg0) {
-        super.actionPerformed(arg0);
-        Model.getCoreHelper().removeAnnotatedElement(
-                getTarget(), getObjectToRemove());
-    }
-    
+  /*
+   * @see org.tigris.gef.undo.UndoableAction#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent arg0) {
+    super.actionPerformed(arg0);
+    Model.getCoreHelper().removeAnnotatedElement(getTarget(), getObjectToRemove());
+  }
 }

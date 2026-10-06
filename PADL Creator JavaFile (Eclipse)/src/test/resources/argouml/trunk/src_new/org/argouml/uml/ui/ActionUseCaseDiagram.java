@@ -30,46 +30,36 @@ import org.argouml.uml.diagram.DiagramFactory;
 import org.argouml.uml.diagram.ui.UMLDiagram;
 import org.argouml.uml.diagram.use_case.ui.UMLUseCaseDiagram;
 
-/**
- * Action to create a new use case diagram.
- */
+/** Action to create a new use case diagram. */
 public class ActionUseCaseDiagram extends ActionAddDiagram {
 
-    private static final Logger LOG =
-        Logger.getLogger(ActionUseCaseDiagram.class);
+  private static final Logger LOG = Logger.getLogger(ActionUseCaseDiagram.class);
 
-    /**
-     * Constructor.
-     */
-    public ActionUseCaseDiagram() {
-        super("action.usecase-diagram");
+  /** Constructor. */
+  public ActionUseCaseDiagram() {
+    super("action.usecase-diagram");
+  }
+
+  /*
+   * @see org.argouml.uml.ui.ActionAddDiagram#createDiagram(Object)
+   */
+  public UMLDiagram createDiagram(Object namespace) {
+    if (!Model.getFacade().isANamespace(namespace)) {
+      LOG.error("No namespace as argument");
+      LOG.error(namespace);
+      throw new IllegalArgumentException("The argument " + namespace + "is not a namespace.");
     }
+    return (UMLDiagram)
+        DiagramFactory.getInstance().createDiagram(UMLUseCaseDiagram.class, namespace, null);
+  }
 
-    /*
-     * @see org.argouml.uml.ui.ActionAddDiagram#createDiagram(Object)
-     */
-    public UMLDiagram createDiagram(Object namespace) {
-        if (!Model.getFacade().isANamespace(namespace)) {
-            LOG.error("No namespace as argument");
-            LOG.error(namespace);
-            throw new IllegalArgumentException(
-                "The argument " + namespace + "is not a namespace.");
-        }
-        return (UMLDiagram) DiagramFactory.getInstance().createDiagram(
-                UMLUseCaseDiagram.class,
-                namespace,
-                null);
-    }
-
-    /*
-     * @see org.argouml.uml.ui.ActionAddDiagram#isValidNamespace(Object)
-     */
-    public boolean isValidNamespace(Object handle) {
-        boolean validNamespace = false;
-        if (Model.getFacade().isAPackage(handle)
-            || Model.getFacade().isAClassifier(handle))
-            validNamespace = true;
-        return validNamespace;
-    }
-
+  /*
+   * @see org.argouml.uml.ui.ActionAddDiagram#isValidNamespace(Object)
+   */
+  public boolean isValidNamespace(Object handle) {
+    boolean validNamespace = false;
+    if (Model.getFacade().isAPackage(handle) || Model.getFacade().isAClassifier(handle))
+      validNamespace = true;
+    return validNamespace;
+  }
 } /* end class ActionUseCaseDiagram */

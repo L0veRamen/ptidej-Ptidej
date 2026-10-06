@@ -26,60 +26,53 @@ package org.argouml.uml.cognitive.critics;
 
 import java.util.Collection;
 import java.util.Iterator;
-
 import org.argouml.cognitive.Designer;
 import org.argouml.model.Model;
 import org.argouml.uml.cognitive.UMLDecision;
+
 /**
  * A critic to detect when a classifier has too many attributes.
  *
  * @author mkl
  */
 public class CrTooManyAttr extends AbstractCrTooMany {
-    
-    /**
-     * The initial threshold.
-     */
-    private static final int ATTRIBUTES_THRESHOLD = 7;
 
-    /**
-     * The constructor.
-     *
-     */
-    public CrTooManyAttr() {
-        setupHeadAndDesc();
-	addSupportedDecision(UMLDecision.STORAGE);
-	setThreshold(ATTRIBUTES_THRESHOLD);
-	addTrigger("structuralFeature");
+  /** The initial threshold. */
+  private static final int ATTRIBUTES_THRESHOLD = 7;
+
+  /** The constructor. */
+  public CrTooManyAttr() {
+    setupHeadAndDesc();
+    addSupportedDecision(UMLDecision.STORAGE);
+    setThreshold(ATTRIBUTES_THRESHOLD);
+    addTrigger("structuralFeature");
+  }
+
+  /**
+   * @see org.argouml.uml.cognitive.critics.CrUML#predicate2( java.lang.Object,
+   *     org.argouml.cognitive.Designer)
+   */
+  public boolean predicate2(Object dm, Designer dsgr) {
+    if (!(Model.getFacade().isAClassifier(dm))) {
+      return NO_PROBLEM;
     }
-
-    /**
-     * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
-     * java.lang.Object, org.argouml.cognitive.Designer)
-     */
-    public boolean predicate2(Object dm, Designer dsgr) {
-	if (!(Model.getFacade().isAClassifier(dm))) {
-            return NO_PROBLEM;
-        }
-	// TODO: consider inherited attributes?
-	Collection features = Model.getFacade().getFeatures(dm);
-	if (features == null) {
-            return NO_PROBLEM;
-        }
-	int n = 0;
-	for (Iterator iter = features.iterator(); iter.hasNext();) {
-	    if (Model.getFacade().isAStructuralFeature(iter.next())) {
-		n++;
-            }
-	}
-	if (n <= getThreshold()) {
-            return NO_PROBLEM;
-        }
-	return PROBLEM_FOUND;
+    // TODO: consider inherited attributes?
+    Collection features = Model.getFacade().getFeatures(dm);
+    if (features == null) {
+      return NO_PROBLEM;
     }
+    int n = 0;
+    for (Iterator iter = features.iterator(); iter.hasNext(); ) {
+      if (Model.getFacade().isAStructuralFeature(iter.next())) {
+        n++;
+      }
+    }
+    if (n <= getThreshold()) {
+      return NO_PROBLEM;
+    }
+    return PROBLEM_FOUND;
+  }
 
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = 1281218975903539324L;
+  /** The UID. */
+  private static final long serialVersionUID = 1281218975903539324L;
 } /* end class CrTooManyAttr */

@@ -25,41 +25,41 @@
 package org.argouml.ui;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.AbstractAction;
 import javax.swing.Icon;
-
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
 
 /**
  * An action to undo from the undo stack.
- * 
+ *
  * @author Bob Tarling
  */
 public class ActionUndo extends AbstractAction {
-    
-    private static final long serialVersionUID = 6544646406482242086L;
 
-    /**
-     * Construct the undo action with a display name
-     * @param name the name for this action
-     */
-    public ActionUndo(String name) {
-        super(name);
-    }
-    
-    /**
-     * Construct the undo action with a display name and icon.
-     * @param name the name for this action
-     * @param icon the icon to display for this action
-     */
-    public ActionUndo(String name, Icon icon) {
-        super(name, icon);
-    }
+  private static final long serialVersionUID = 6544646406482242086L;
 
-    public void actionPerformed(ActionEvent e) {
-        Project p = ProjectManager.getManager().getCurrentProject();
-        p.getUndoManager().undo();
-    }
+  /**
+   * Construct the undo action with a display name
+   *
+   * @param name the name for this action
+   */
+  public ActionUndo(String name) {
+    super(name);
+  }
+
+  /**
+   * Construct the undo action with a display name and icon.
+   *
+   * @param name the name for this action
+   * @param icon the icon to display for this action
+   */
+  public ActionUndo(String name, Icon icon) {
+    super(name, icon);
+  }
+
+  public void actionPerformed(ActionEvent e) {
+    Project p = ProjectManager.getManager().getCurrentProject();
+    p.getUndoManager().undo();
+  }
 }

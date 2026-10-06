@@ -4,17 +4,15 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
 package padl.refactoring.test.method;
 
 import java.util.Iterator;
-
-import org.junit.Assert;
-
 import junit.framework.TestCase;
+import org.junit.Assert;
 import padl.analysis.repository.AACRelationshipsAnalysis;
 import padl.creator.classfile.CompleteClassFileCreator;
 import padl.kernel.IClass;
@@ -27,227 +25,191 @@ import padl.refactoring.method.RefactoringPushDownMethod;
 /**
  * @author Saliha Bouden
  * @since 2006/03/31
- * 
  */
 public class RefactoringPushDownMethodTest extends TestCase {
-	private static IIdiomLevelModel IdiomLevelModel;
+  private static IIdiomLevelModel IdiomLevelModel;
 
-	private static final String[] paths = {
-			"../PADL Refactorings/target/test-classes/padl/refactoring/test/method/data/PushDownMethod/classD.class",
-			"../PADL Refactorings/target/test-classes/padl/refactoring/test/method/data/PushDownMethod/classE.class",
-			"../PADL Refactorings/target/test-classes/padl/refactoring/test/method/data/PushDownMethod/classF.class" };
+  private static final String[] paths = {
+    "../PADL Refactorings/target/test-classes/padl/refactoring/test/method/data/PushDownMethod/classD.class",
+    "../PADL Refactorings/target/test-classes/padl/refactoring/test/method/data/PushDownMethod/classE.class",
+    "../PADL Refactorings/target/test-classes/padl/refactoring/test/method/data/PushDownMethod/classF.class"
+  };
 
-	public RefactoringPushDownMethodTest(String name) {
-		super(name);
-	}
+  public RefactoringPushDownMethodTest(String name) {
+    super(name);
+  }
 
-	protected void setUp() throws Exception {
-		if (RefactoringPushDownMethodTest.IdiomLevelModel == null) {
-			final ICodeLevelModel codeLevelModel = Factory.getInstance()
-					.createCodeLevelModel("");
-			codeLevelModel.create(new CompleteClassFileCreator(paths, true));
-			RefactoringPushDownMethodTest.IdiomLevelModel = (IIdiomLevelModel) new AACRelationshipsAnalysis()
-					.invoke(codeLevelModel);
-		}
-	}
+  protected void setUp() throws Exception {
+    if (RefactoringPushDownMethodTest.IdiomLevelModel == null) {
+      final ICodeLevelModel codeLevelModel = Factory.getInstance().createCodeLevelModel("");
+      codeLevelModel.create(new CompleteClassFileCreator(paths, true));
+      RefactoringPushDownMethodTest.IdiomLevelModel =
+          (IIdiomLevelModel) new AACRelationshipsAnalysis().invoke(codeLevelModel);
+    }
+  }
 
-	public void testPushDownMethod() {
+  public void testPushDownMethod() {
 
-		final RefactoringPushDownMethod refactoringMethod = new RefactoringPushDownMethod(
-				RefactoringPushDownMethodTest.IdiomLevelModel);
+    final RefactoringPushDownMethod refactoringMethod =
+        new RefactoringPushDownMethod(RefactoringPushDownMethodTest.IdiomLevelModel);
 
-		final IMethod method = refactoringMethod.getMethodToRefactor(
-				"padl.refactoring.test.method.data.PushDownMethod.classD",
-				"foo");
-		if (method != null) {
-			System.out.println("Before Refactoring Push Down Method");
-			final IClass superClass = (IClass) RefactoringPushDownMethodTest.IdiomLevelModel
-					.getConstituentFromName(
-							"padl.refactoring.test.method.data.PushDownMethod.classD"
-									.toCharArray());
-			if (superClass != null) {
-				System.out.println("-----e" + superClass.getDisplayName());
-				System.out.println("-----e" + method.getDisplayName());
+    final IMethod method =
+        refactoringMethod.getMethodToRefactor(
+            "padl.refactoring.test.method.data.PushDownMethod.classD", "foo");
+    if (method != null) {
+      System.out.println("Before Refactoring Push Down Method");
+      final IClass superClass =
+          (IClass)
+              RefactoringPushDownMethodTest.IdiomLevelModel.getConstituentFromName(
+                  "padl.refactoring.test.method.data.PushDownMethod.classD".toCharArray());
+      if (superClass != null) {
+        System.out.println("-----e" + superClass.getDisplayName());
+        System.out.println("-----e" + method.getDisplayName());
 
-				final Iterator iterator = superClass
-						.getIteratorOnInheritingEntities();
-				while (iterator.hasNext()) {
-					final IClass theClass = (IClass) iterator.next();
-					final IMethod theMethod = refactoringMethod
-							.getMethodToRefactor(theClass.getDisplayName(),
-									"foo");
-					if (theMethod != null) {
-						System.out
-								.println("-----e" + theClass.getDisplayName());
-						System.out
-								.println("-----e" + theMethod.getDisplayName());
+        final Iterator iterator = superClass.getIteratorOnInheritingEntities();
+        while (iterator.hasNext()) {
+          final IClass theClass = (IClass) iterator.next();
+          final IMethod theMethod =
+              refactoringMethod.getMethodToRefactor(theClass.getDisplayName(), "foo");
+          if (theMethod != null) {
+            System.out.println("-----e" + theClass.getDisplayName());
+            System.out.println("-----e" + theMethod.getDisplayName());
+          }
+        }
+        refactoringMethod.pushDownMethod(
+            "foo",
+            "padl.refactoring.test.method.data.PushDownMethod.classD",
+            "padl.refactoring.test.method.data.PushDownMethod.classE");
+        System.out.println("After Refactoring Push Down Method");
+        final IMethod aMethod =
+            refactoringMethod.getMethodToRefactor(
+                "padl.refactoring.test.method.data.PushDownMethod.classD", "foo");
+        if (aMethod != null) {
+          System.out.println("-----e" + aMethod.getDisplayName());
+          System.out.println("-----e" + superClass.getDisplayName());
+        }
+        final Iterator iter = superClass.getIteratorOnInheritingEntities();
+        while (iter.hasNext()) {
+          final IClass theClass = (IClass) iter.next();
+          final IMethod theMethod =
+              refactoringMethod.getMethodToRefactor(theClass.getDisplayName(), "foo");
+          if (theMethod != null) {
+            System.out.println("-----e" + theClass.getDisplayName());
+            System.out.println("-----e" + theMethod.getDisplayName());
+            Assert.assertEquals("Name of the new method pushdowned", "foo", theMethod.getName());
+          }
+        }
+      }
+    }
+  }
 
-					}
-				}
-				refactoringMethod.pushDownMethod("foo",
-						"padl.refactoring.test.method.data.PushDownMethod.classD",
-						"padl.refactoring.test.method.data.PushDownMethod.classE");
-				System.out.println("After Refactoring Push Down Method");
-				final IMethod aMethod = refactoringMethod.getMethodToRefactor(
-						"padl.refactoring.test.method.data.PushDownMethod.classD",
-						"foo");
-				if (aMethod != null) {
-					System.out.println("-----e" + aMethod.getDisplayName());
-					System.out.println("-----e" + superClass.getDisplayName());
-				}
-				final Iterator iter = superClass
-						.getIteratorOnInheritingEntities();
-				while (iter.hasNext()) {
-					final IClass theClass = (IClass) iter.next();
-					final IMethod theMethod = refactoringMethod
-							.getMethodToRefactor(theClass.getDisplayName(),
-									"foo");
-					if (theMethod != null) {
-						System.out
-								.println("-----e" + theClass.getDisplayName());
-						System.out
-								.println("-----e" + theMethod.getDisplayName());
-						Assert.assertEquals("Name of the new method pushdowned",
-								"foo", theMethod.getName());
+  public void testPushDownMethodAcceptOverloading() {
 
-					}
-				}
+    final RefactoringPushDownMethod refactoringMethod =
+        new RefactoringPushDownMethod(RefactoringPushDownMethodTest.IdiomLevelModel);
 
-			}
-		}
-	}
+    final IMethod method =
+        refactoringMethod.getMethodToRefactor(
+            "padl.refactoring.test.method.data.PushDownMethod.classD", "fo");
+    if (method != null) {
+      System.out.println("Before Refactoring Push Down Method Accept Overloading");
+      final IClass superClass =
+          (IClass)
+              RefactoringPushDownMethodTest.IdiomLevelModel.getConstituentFromName(
+                  "padl.refactoring.test.method.data.PushDownMethod.classD".toCharArray());
+      if (superClass != null) {
+        System.out.println("-----e" + superClass.getDisplayName());
+        System.out.println("-----e" + method.getDisplayName());
 
-	public void testPushDownMethodAcceptOverloading() {
+        final Iterator iterator = superClass.getIteratorOnInheritingEntities();
+        while (iterator.hasNext()) {
+          final IClass theClass = (IClass) iterator.next();
+          final IMethod theMethod =
+              refactoringMethod.getMethodToRefactor(theClass.getDisplayName(), "fo");
+          if (theMethod != null) {
+            System.out.println("-----e" + theClass.getDisplayName());
+            System.out.println("-----e" + theMethod.getDisplayName());
+          }
+        }
+        refactoringMethod.pushDownMethodAcceptOverloading(
+            "fo",
+            "padl.refactoring.test.method.data.PushDownMethod.classD",
+            "padl.refactoring.test.method.data.PushDownMethod.classE");
+        System.out.println("After Refactoring Push Down Method Accept Overloading");
+        final IMethod aMethod =
+            refactoringMethod.getMethodToRefactor(
+                "padl.refactoring.test.method.data.PushDownMethod.classD", "fo");
+        if (aMethod != null) {
+          System.out.println("-----e" + aMethod.getDisplayName());
+          System.out.println("-----e" + superClass.getDisplayName());
+        }
+        final Iterator iter = superClass.getIteratorOnInheritingEntities();
+        while (iter.hasNext()) {
+          final IClass theClass = (IClass) iter.next();
+          final IMethod theMethod =
+              refactoringMethod.getMethodToRefactor(theClass.getDisplayName(), "fo");
+          if (theMethod != null) {
+            System.out.println("-----e" + theClass.getDisplayName());
+            System.out.println("-----e" + theMethod.getDisplayName());
+            Assert.assertEquals("Name of the new method renamed", "fo", theMethod.getName());
+          }
+        }
+      }
+    }
+  }
 
-		final RefactoringPushDownMethod refactoringMethod = new RefactoringPushDownMethod(
-				RefactoringPushDownMethodTest.IdiomLevelModel);
+  public void testPushDownMethod2() {
 
-		final IMethod method = refactoringMethod.getMethodToRefactor(
-				"padl.refactoring.test.method.data.PushDownMethod.classD",
-				"fo");
-		if (method != null) {
-			System.out.println(
-					"Before Refactoring Push Down Method Accept Overloading");
-			final IClass superClass = (IClass) RefactoringPushDownMethodTest.IdiomLevelModel
-					.getConstituentFromName(
-							"padl.refactoring.test.method.data.PushDownMethod.classD"
-									.toCharArray());
-			if (superClass != null) {
-				System.out.println("-----e" + superClass.getDisplayName());
-				System.out.println("-----e" + method.getDisplayName());
+    final RefactoringPushDownMethod refactoringMethod =
+        new RefactoringPushDownMethod(RefactoringPushDownMethodTest.IdiomLevelModel);
 
-				final Iterator iterator = superClass
-						.getIteratorOnInheritingEntities();
-				while (iterator.hasNext()) {
-					final IClass theClass = (IClass) iterator.next();
-					final IMethod theMethod = refactoringMethod
-							.getMethodToRefactor(theClass.getDisplayName(),
-									"fo");
-					if (theMethod != null) {
-						System.out
-								.println("-----e" + theClass.getDisplayName());
-						System.out
-								.println("-----e" + theMethod.getDisplayName());
+    final IMethod method =
+        refactoringMethod.getMethodToRefactor(
+            "padl.refactoring.test.method.data.PushDownMethod.classD", "fo");
+    if (method != null) {
+      System.out.println("Before Refactoring Push Down Method");
+      final IClass superClass =
+          (IClass)
+              RefactoringPushDownMethodTest.IdiomLevelModel.getConstituentFromName(
+                  "padl.refactoring.test.method.data.PushDownMethod.classD".toCharArray());
+      if (superClass != null) {
+        System.out.println("-----e" + superClass.getDisplayName());
+        System.out.println("-----e" + method.getDisplayName());
 
-					}
-				}
-				refactoringMethod.pushDownMethodAcceptOverloading("fo",
-						"padl.refactoring.test.method.data.PushDownMethod.classD",
-						"padl.refactoring.test.method.data.PushDownMethod.classE");
-				System.out.println(
-						"After Refactoring Push Down Method Accept Overloading");
-				final IMethod aMethod = refactoringMethod.getMethodToRefactor(
-						"padl.refactoring.test.method.data.PushDownMethod.classD",
-						"fo");
-				if (aMethod != null) {
-					System.out.println("-----e" + aMethod.getDisplayName());
-					System.out.println("-----e" + superClass.getDisplayName());
-				}
-				final Iterator iter = superClass
-						.getIteratorOnInheritingEntities();
-				while (iter.hasNext()) {
-					final IClass theClass = (IClass) iter.next();
-					final IMethod theMethod = refactoringMethod
-							.getMethodToRefactor(theClass.getDisplayName(),
-									"fo");
-					if (theMethod != null) {
-						System.out
-								.println("-----e" + theClass.getDisplayName());
-						System.out
-								.println("-----e" + theMethod.getDisplayName());
-						Assert.assertEquals("Name of the new method renamed",
-								"fo", theMethod.getName());
-
-					}
-				}
-
-			}
-		}
-	}
-
-	public void testPushDownMethod2() {
-
-		final RefactoringPushDownMethod refactoringMethod = new RefactoringPushDownMethod(
-				RefactoringPushDownMethodTest.IdiomLevelModel);
-
-		final IMethod method = refactoringMethod.getMethodToRefactor(
-				"padl.refactoring.test.method.data.PushDownMethod.classD",
-				"fo");
-		if (method != null) {
-			System.out.println("Before Refactoring Push Down Method");
-			final IClass superClass = (IClass) RefactoringPushDownMethodTest.IdiomLevelModel
-					.getConstituentFromName(
-							"padl.refactoring.test.method.data.PushDownMethod.classD"
-									.toCharArray());
-			if (superClass != null) {
-				System.out.println("-----e" + superClass.getDisplayName());
-				System.out.println("-----e" + method.getDisplayName());
-
-				final Iterator iterator = superClass
-						.getIteratorOnInheritingEntities();
-				while (iterator.hasNext()) {
-					final IClass theClass = (IClass) iterator.next();
-					final IMethod theMethod = refactoringMethod
-							.getMethodToRefactor(theClass.getDisplayName(),
-									"fo");
-					if (theMethod != null) {
-						System.out
-								.println("-----e" + theClass.getDisplayName());
-						System.out
-								.println("-----e" + theMethod.getDisplayName());
-
-					}
-				}
-				refactoringMethod.pushDownMethod("fo",
-						"padl.refactoring.test.method.data.PushDownMethod.classD",
-						"padl.refactoring.test.method.data.PushDownMethod.classE");
-				System.out.println("After Refactoring Push Down Method");
-				final IMethod aMethod = refactoringMethod.getMethodToRefactor(
-						"padl.refactoring.test.method.data.PushDownMethod.classD",
-						"fo");
-				if (aMethod != null) {
-					System.out.println("-----e" + aMethod.getDisplayName());
-					System.out.println("-----e" + superClass.getDisplayName());
-				}
-				final Iterator iter = superClass
-						.getIteratorOnInheritingEntities();
-				while (iter.hasNext()) {
-					final IClass theClass = (IClass) iter.next();
-					final IMethod theMethod = refactoringMethod
-							.getMethodToRefactor(theClass.getDisplayName(),
-									"fo");
-					if (theMethod != null) {
-						System.out
-								.println("-----e" + theClass.getDisplayName());
-						System.out
-								.println("-----e" + theMethod.getDisplayName());
-						Assert.assertEquals("Name of the new method renamed",
-								"fo", theMethod.getName());
-
-					}
-				}
-
-			}
-		}
-	}
+        final Iterator iterator = superClass.getIteratorOnInheritingEntities();
+        while (iterator.hasNext()) {
+          final IClass theClass = (IClass) iterator.next();
+          final IMethod theMethod =
+              refactoringMethod.getMethodToRefactor(theClass.getDisplayName(), "fo");
+          if (theMethod != null) {
+            System.out.println("-----e" + theClass.getDisplayName());
+            System.out.println("-----e" + theMethod.getDisplayName());
+          }
+        }
+        refactoringMethod.pushDownMethod(
+            "fo",
+            "padl.refactoring.test.method.data.PushDownMethod.classD",
+            "padl.refactoring.test.method.data.PushDownMethod.classE");
+        System.out.println("After Refactoring Push Down Method");
+        final IMethod aMethod =
+            refactoringMethod.getMethodToRefactor(
+                "padl.refactoring.test.method.data.PushDownMethod.classD", "fo");
+        if (aMethod != null) {
+          System.out.println("-----e" + aMethod.getDisplayName());
+          System.out.println("-----e" + superClass.getDisplayName());
+        }
+        final Iterator iter = superClass.getIteratorOnInheritingEntities();
+        while (iter.hasNext()) {
+          final IClass theClass = (IClass) iter.next();
+          final IMethod theMethod =
+              refactoringMethod.getMethodToRefactor(theClass.getDisplayName(), "fo");
+          if (theMethod != null) {
+            System.out.println("-----e" + theClass.getDisplayName());
+            System.out.println("-----e" + theMethod.getDisplayName());
+            Assert.assertEquals("Name of the new method renamed", "fo", theMethod.getName());
+          }
+        }
+      }
+    }
+  }
 }

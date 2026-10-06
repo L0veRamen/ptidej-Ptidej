@@ -29,44 +29,41 @@
 package org.argouml.cognitive.ui;
 
 import javax.swing.tree.TreeModel;
-
 import org.tigris.gef.util.Predicate;
 import org.tigris.gef.util.PredicateTrue;
 
 /**
  * @author MarkusK
- *
  */
 public abstract class AbstractGoList implements TreeModel {
 
-    private Predicate listPredicate = new PredicateTrue();
+  private Predicate listPredicate = new PredicateTrue();
 
-    /**
-     * @param newPredicate the new list predicate
-     */
-    public void setListPredicate(Predicate newPredicate) {
-        listPredicate = newPredicate;
-    }
+  /**
+   * @param newPredicate the new list predicate
+   */
+  public void setListPredicate(Predicate newPredicate) {
+    listPredicate = newPredicate;
+  }
 
-    /**
-     * @return the list predicate
-     */
-    public Predicate getListPredicate() {
-        return listPredicate;
-    }
+  /**
+   * @return the list predicate
+   */
+  public Predicate getListPredicate() {
+    return listPredicate;
+  }
 
-    /*
-     * @see javax.swing.tree.TreeModel#getRoot()
-     */
-    public Object getRoot() {
-        throw new UnsupportedOperationException();
-    }
+  /*
+   * @see javax.swing.tree.TreeModel#getRoot()
+   */
+  public Object getRoot() {
+    throw new UnsupportedOperationException();
+  }
 
-    /**
-     * @param r ignored
-     */
-    public void setRoot(Object r) { 
-        // does nothing
-    }
-
+  /**
+   * @param r ignored
+   */
+  public void setRoot(Object r) {
+    // does nothing
+  }
 }

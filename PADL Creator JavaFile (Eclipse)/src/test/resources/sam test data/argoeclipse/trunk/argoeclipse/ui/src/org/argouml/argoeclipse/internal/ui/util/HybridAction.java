@@ -26,89 +26,87 @@ package org.argouml.argoeclipse.internal.ui.util;
 
 import java.awt.event.ActionEvent;
 import java.net.URL;
-
+import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Display;
 
-import org.argouml.application.helpers.ResourceLoaderWrapper;
-
 /**
  * This class transforms a Swing Action in a JFace Action.
+ *
  * @author Bogdan Pistol
  */
 public class HybridAction extends org.eclipse.jface.action.Action {
 
-    private javax.swing.Action swingAction;
-    
-    private ActionEvent actionEvent;
-    
-    /**
-     * Constructor. The default style of the item will be AS_PUSH_BUTTON. 
-     * ActionEvent and ImagePath is null.
-     * 
-     * @param action swing action
-     */
-    public HybridAction(javax.swing.Action action) {
-        this(action, null);
+  private javax.swing.Action swingAction;
+
+  private ActionEvent actionEvent;
+
+  /**
+   * Constructor. The default style of the item will be AS_PUSH_BUTTON. ActionEvent and ImagePath is
+   * null.
+   *
+   * @param action swing action
+   */
+  public HybridAction(javax.swing.Action action) {
+    this(action, null);
+  }
+
+  /**
+   * Constructor. The default style of the item will be AS_PUSH_BUTTON. ActionEvent is null.
+   *
+   * @param action swing action
+   * @param imagePath the path to the image for this item
+   */
+  public HybridAction(javax.swing.Action action, String imagePath) {
+    this(action, null, org.eclipse.jface.action.Action.AS_PUSH_BUTTON, imagePath);
+  }
+
+  /**
+   * Constructor.
+   *
+   * @param action swing action
+   * @param event swing event
+   * @param style the style as in org.eclipse.jface.action.Action
+   * @param iconName the name of the image for this item
+   */
+  public HybridAction(
+      final javax.swing.Action action, ActionEvent event, int style, String iconName) {
+    super((String) action.getValue(javax.swing.Action.NAME), style);
+    swingAction = action;
+    actionEvent = event;
+    setEnabled(action.isEnabled());
+    Object o = action.getValue("SELECTED"); // $NON-NLS-1$
+    setChecked(o != null ? ((Boolean) o).booleanValue() : true);
+    o = action.getValue(javax.swing.Action.SHORT_DESCRIPTION);
+    if (o instanceof String) {
+      setToolTipText(((String) o).toString()); // + " ");
     }
-    
-    /**
-     * Constructor. The default style of the item will be AS_PUSH_BUTTON.
-     * ActionEvent is null.
-     * 
-     * @param action swing action
-     * @param imagePath the path to the image for this item
-     */
-    public HybridAction(javax.swing.Action action, String imagePath) {
-        this(action, null, org.eclipse.jface.action.Action.AS_PUSH_BUTTON,
-                imagePath);
+    if (iconName != null) {
+      URL imageUrl = ResourceLoaderWrapper.lookupIconUrl(iconName);
+      if (imageUrl != null) {
+        setImageDescriptor(ImageDescriptor.createFromURL(imageUrl));
+      }
     }
-    
-    /**
-     * Constructor.
-     * @param action swing action
-     * @param event swing event
-     * @param style the style as in org.eclipse.jface.action.Action 
-     * @param iconName the name of the image for this item
-     */
-    public HybridAction(final javax.swing.Action action, ActionEvent event,
-            int style, String iconName) {
-        super((String) action.getValue(javax.swing.Action.NAME), style);
-        swingAction = action;
-        actionEvent = event;
-        setEnabled(action.isEnabled());
-        Object o = action.getValue("SELECTED");         //$NON-NLS-1$
-        setChecked(o != null ? ((Boolean) o).booleanValue() : true);
-        o = action.getValue(javax.swing.Action.SHORT_DESCRIPTION);
-        if (o instanceof String) {
-            setToolTipText(((String) o).toString()); // + " ");
-        }
-        if (iconName != null) {
-            URL imageUrl = ResourceLoaderWrapper.lookupIconUrl(iconName);
-            if (imageUrl != null) {
-                setImageDescriptor(ImageDescriptor.createFromURL(imageUrl));
-            }
-        }
-    }
-       
-    /**
-     * Runs the command.
-     */
-    public void run() {         
-        super.run();
-        Display.getDefault().syncExec(new Runnable() {
-            public void run() {
+  }
+
+  /** Runs the command. */
+  public void run() {
+    super.run();
+    Display.getDefault()
+        .syncExec(
+            new Runnable() {
+              public void run() {
                 swingAction.actionPerformed(actionEvent);
-            }
-        });
-    }
-    
-    /**
-     * Getter for the swing action.
-     * @return the swing action
-     */
-    public javax.swing.Action getSwingAction() {
-        return swingAction;
-    }
-    
+              }
+            });
+  }
+
+  /**
+   * Getter for the swing action.
+   *
+   * @return the swing action
+   */
+  public javax.swing.Action getSwingAction() {
+    return swingAction;
+  }
 }

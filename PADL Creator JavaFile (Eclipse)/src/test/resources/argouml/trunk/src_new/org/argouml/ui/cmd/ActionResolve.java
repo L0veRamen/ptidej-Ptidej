@@ -25,30 +25,23 @@
 package org.argouml.ui.cmd;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.cognitive.ui.DismissToDoItemDialog;
 
-/**
- * The action to resolve a todo item.
- *
- */
+/** The action to resolve a todo item. */
 public class ActionResolve extends ToDoItemAction {
 
-    /**
-     * The constructor.
-     */
-    public ActionResolve() {
-        super("action.resolve-item", true);
-    }
+  /** The constructor. */
+  public ActionResolve() {
+    super("action.resolve-item", true);
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-    	super.actionPerformed(ae);
-	DismissToDoItemDialog dialog = new DismissToDoItemDialog();
-	dialog.setTarget(getRememberedTarget());
-	dialog.setVisible(true);
-    }
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    super.actionPerformed(ae);
+    DismissToDoItemDialog dialog = new DismissToDoItemDialog();
+    dialog.setTarget(getRememberedTarget());
+    dialog.setVisible(true);
+  }
 } /* end class ActionResolve */
-

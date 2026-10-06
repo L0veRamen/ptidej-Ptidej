@@ -22,50 +22,47 @@
 // CALIFORNIA HAS NO OBLIGATIONS TO PROVIDE MAINTENANCE, SUPPORT,
 // UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
-
 package org.argouml.uml.cognitive.critics;
 
 import org.argouml.cognitive.ToDoItem;
 
-
 /**
- * An abstract helper class for classes which require to set a threshold
- * argument.
- * 
+ * An abstract helper class for classes which require to set a threshold argument.
+ *
  * @author mkl
  */
 public abstract class AbstractCrTooMany extends CrUML {
 
-    private static final String THRESHOLD = "Threshold";
+  private static final String THRESHOLD = "Threshold";
 
-    /**
-     * Set the threshold.
-     *
-     * TODO: Should this be protected?
-     *
-     * @param threshold The threshold to compare to.
-     */
-    public void setThreshold(int threshold) {
-        setArg(THRESHOLD, Integer.valueOf(threshold));
-    }
+  /**
+   * Set the threshold.
+   *
+   * <p>TODO: Should this be protected?
+   *
+   * @param threshold The threshold to compare to.
+   */
+  public void setThreshold(int threshold) {
+    setArg(THRESHOLD, Integer.valueOf(threshold));
+  }
 
-    /**
-     * Gets the current threshold.
-     *
-     * TODO: Should this be protected?
-     *
-     * @return The current threshold.
-     */
-    public int getThreshold() {
-        return ((Integer) getArg(THRESHOLD)).intValue();
-    }
+  /**
+   * Gets the current threshold.
+   *
+   * <p>TODO: Should this be protected?
+   *
+   * @return The current threshold.
+   */
+  public int getThreshold() {
+    return ((Integer) getArg(THRESHOLD)).intValue();
+  }
 
-    /**
-     * Provide a default wizard to adjust the threshold.
-     *
-     * @see org.argouml.cognitive.critics.Critic#getWizardClass(org.argouml.cognitive.ToDoItem)
-     */
-    public Class getWizardClass(ToDoItem item) {
-        return WizTooMany.class;
-    }
+  /**
+   * Provide a default wizard to adjust the threshold.
+   *
+   * @see org.argouml.cognitive.critics.Critic#getWizardClass(org.argouml.cognitive.ToDoItem)
+   */
+  public Class getWizardClass(ToDoItem item) {
+    return WizTooMany.class;
+  }
 }

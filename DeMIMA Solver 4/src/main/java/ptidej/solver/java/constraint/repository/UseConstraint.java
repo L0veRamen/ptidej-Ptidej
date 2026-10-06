@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -16,24 +16,24 @@ import ptidej.solver.java.constraint.AbstractRelationshipConstraint;
 
 /**
  * Writen in CLAIRE by
- * @author Yann-Gaël Guéhéneuc
- * Translated and adapted from CLAIRE version to JAVA by
+ *
+ * @author Yann-Gaël Guéhéneuc Translated and adapted from CLAIRE version to JAVA by
  * @author Iyadh Sidhom
  * @author Salim Bensemmane
  * @author Fayeal Skhiri
  */
 public class UseConstraint extends AbstractRelationshipConstraint {
-	public UseConstraint(
-		final String name,
-		final String commande,
-		final Variable v0,
-		final Variable v1,
-		final int weight,
-		final IApproximations approximations) {
+  public UseConstraint(
+      final String name,
+      final String commande,
+      final Variable v0,
+      final Variable v1,
+      final int weight,
+      final IApproximations approximations) {
 
-		super(name, commande, v0, v1, weight, approximations);
-		this.setSymbol("-k-->");
-		this.setStrict(true);
-		this.setFieldName("knownEntities");
-	}
+    super(name, commande, v0, v1, weight, approximations);
+    this.setSymbol("-k-->");
+    this.setStrict(true);
+    this.setFieldName("knownEntities");
+  }
 }

@@ -25,9 +25,7 @@
 package org.argouml.ui.cmd;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.Action;
-
 import org.argouml.application.api.CommandLineInterface;
 import org.argouml.i18n.Translator;
 import org.argouml.kernel.Project;
@@ -41,44 +39,36 @@ import org.tigris.gef.undo.UndoableAction;
 // items on view menu
 
 /**
- * This Action will display a dialogbox listing all diagrams.
- * Doubleclicking on any listed diagram selects it.
- *
+ * This Action will display a dialogbox listing all diagrams. Doubleclicking on any listed diagram
+ * selects it.
  */
-public class ActionGotoDiagram
-	extends UndoableAction
-	implements CommandLineInterface {
+public class ActionGotoDiagram extends UndoableAction implements CommandLineInterface {
 
-    /**
-     * The constructor.
-     */
-    public ActionGotoDiagram() {
-        super(Translator.localize("action.goto-diagram"), null);
-		// Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, Translator
-				.localize("action.goto-diagram"));
+  /** The constructor. */
+  public ActionGotoDiagram() {
+    super(Translator.localize("action.goto-diagram"), null);
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize("action.goto-diagram"));
+  }
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    super.actionPerformed(ae);
+    new GotoDialog().setVisible(true);
+  }
+
+  /**
+   * @see org.argouml.application.api.CommandLineInterface#doCommand(java.lang.String)
+   */
+  public boolean doCommand(String argument) {
+    Project p = ProjectManager.getManager().getCurrentProject();
+    Diagram d = p.getDiagram(argument);
+    if (d != null) {
+      TargetManager.getInstance().setTarget(d);
+      return true;
     }
-
-
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-    	super.actionPerformed(ae);
-        new GotoDialog().setVisible(true);
-    }
-
-    /**
-     * @see org.argouml.application.api.CommandLineInterface#doCommand(java.lang.String)
-     */
-    public boolean doCommand(String argument) {
-	Project p = ProjectManager.getManager().getCurrentProject();
-        Diagram d = p.getDiagram(argument);
-        if (d != null) {
-            TargetManager.getInstance().setTarget(d);
-            return true;
-        }
-        return false;
-    }
+    return false;
+  }
 } /* end class ActionGotoDiagram */
-

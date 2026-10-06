@@ -26,8 +26,7 @@ package org.argouml.model;
 
 /**
  * An interface to act as an enumerated type for a di use case diagram
+ *
  * @author Bob Tarling
  */
-public interface SequenceDiagram extends DiDiagram {
-
-}
+public interface SequenceDiagram extends DiDiagram {}

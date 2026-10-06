@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -15,10 +15,15 @@ package sad.rule.creator.model;
  */
 public interface IRelationship extends IConstituent {
 
-	public abstract int getSourceCardinality();
-	public IConstituent getSourceConstituent();
-	public abstract int getTargetCardinality();
-	public IConstituent getTargetConstituent();
-	public void setSourceConstituent(final IConstituent aConstituent);
-	public void setTargetConstituent(final IConstituent aConstituent);
+  public abstract int getSourceCardinality();
+
+  public IConstituent getSourceConstituent();
+
+  public abstract int getTargetCardinality();
+
+  public IConstituent getTargetConstituent();
+
+  public void setSourceConstituent(final IConstituent aConstituent);
+
+  public void setTargetConstituent(final IConstituent aConstituent);
 }

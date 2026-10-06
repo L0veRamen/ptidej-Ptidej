@@ -30,15 +30,13 @@ import org.argouml.model.Model;
  * navigate to the association.
  *
  * @author mkl
- *
  */
 public class ActionNavigateAssociation extends AbstractActionNavigate {
 
-    /*
-     * @see org.argouml.uml.ui.AbstractActionNavigate#navigateTo(java.lang.Object)
-     */
-    protected Object navigateTo(Object source) {
-        return Model.getFacade().getAssociation(source);
-    }
-
+  /*
+   * @see org.argouml.uml.ui.AbstractActionNavigate#navigateTo(java.lang.Object)
+   */
+  protected Object navigateTo(Object source) {
+    return Model.getFacade().getAssociation(source);
+  }
 }

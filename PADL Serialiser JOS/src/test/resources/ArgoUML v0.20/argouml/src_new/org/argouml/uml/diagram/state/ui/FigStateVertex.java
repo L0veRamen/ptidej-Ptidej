@@ -26,7 +26,6 @@ package org.argouml.uml.diagram.state.ui;
 
 import java.util.Collection;
 import java.util.Iterator;
-
 import org.argouml.model.Model;
 import org.argouml.uml.diagram.activity.ui.SelectionActionState;
 import org.argouml.uml.diagram.ui.FigNodeModelElement;
@@ -38,103 +37,91 @@ import org.tigris.gef.graph.GraphModel;
 import org.tigris.gef.presentation.Fig;
 import org.tigris.gef.presentation.FigEdge;
 
-/**
- * Abstract class to with common behavior for nestable nodes in UML Statechart
- * diagrams.
- */
+/** Abstract class to with common behavior for nestable nodes in UML Statechart diagrams. */
 public abstract class FigStateVertex extends FigNodeModelElement {
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    /**
-     * The main constructor
-     */
-    public FigStateVertex() {
-        this.allowRemoveFromDiagram(false);
+  /** The main constructor */
+  public FigStateVertex() {
+    this.allowRemoveFromDiagram(false);
+  }
+
+  /**
+   * The constructor which hooks the Fig into the UML element
+   *
+   * @param gm ignored
+   * @param node the UML elm
+   */
+  public FigStateVertex(GraphModel gm, Object node) {
+    this();
+    setOwner(node);
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // nestable nodes
+
+  /**
+   * Overriden to make it possible to include a statevertex in a composite state.
+   *
+   * @see org.tigris.gef.presentation.Fig#setEnclosingFig(org.tigris.gef.presentation.Fig)
+   */
+  public void setEnclosingFig(Fig encloser) {
+    super.setEnclosingFig(encloser);
+    /* If this fig is not visible, do not adapt the UML model!
+     * This is used for deleting. See issue 3042. */
+    if (!isVisible()) return;
+    if (!(Model.getFacade().isAStateVertex(getOwner()))) return;
+    Object stateVertex = getOwner();
+    Object compositeState = null;
+    if (encloser != null && (Model.getFacade().isACompositeState(encloser.getOwner()))) {
+      compositeState = encloser.getOwner();
+      ((FigStateVertex) encloser).redrawEnclosedFigs();
+    } else {
+      compositeState =
+          Model.getStateMachinesHelper()
+              .getTop(Model.getStateMachinesHelper().getStateMachine(stateVertex));
     }
+    if (compositeState != null)
+      Model.getStateMachinesHelper().setContainer(stateVertex, compositeState);
+  }
 
-    /** The constructor which hooks the Fig into the UML element
-     * @param gm ignored
-     * @param node the UML elm
-     */
-    public FigStateVertex(GraphModel gm, Object node) {
-        this();
-        setOwner(node);
-    }
-
-    ////////////////////////////////////////////////////////////////
-    // nestable nodes
-
-    /**
-     * Overriden to make it possible to include a statevertex in a composite
-     * state.
-     * @see org.tigris.gef.presentation.Fig#setEnclosingFig(org.tigris.gef.presentation.Fig)
-     */
-    public void setEnclosingFig(Fig encloser) {
-        super.setEnclosingFig(encloser);
-        /* If this fig is not visible, do not adapt the UML model!
-         * This is used for deleting. See issue 3042. */
-        if  (!isVisible())
-            return;
-        if (!(Model.getFacade().isAStateVertex(getOwner()))) return;
-        Object stateVertex = getOwner();
-        Object compositeState = null;
-        if (encloser != null
-                && (Model.getFacade().isACompositeState(encloser.getOwner()))) {
-            compositeState = encloser.getOwner();
-            ((FigStateVertex) encloser).redrawEnclosedFigs();
-        } else {
-            compositeState = Model.getStateMachinesHelper().getTop(
-                    Model.getStateMachinesHelper()
-                            .getStateMachine(stateVertex));
+  /** Method to draw a StateVertex Fig's enclosed figs. */
+  public void redrawEnclosedFigs() {
+    Editor editor = Globals.curEditor();
+    if (editor != null && !getEnclosedFigs().isEmpty()) {
+      LayerDiagram lay = ((LayerDiagram) editor.getLayerManager().getActiveLayer());
+      for (int i = 0; i < getEnclosedFigs().size(); i++) {
+        FigStateVertex f = ((FigStateVertex) getEnclosedFigs().elementAt(i));
+        lay.bringInFrontOf(f, this);
+        Collection col = null;
+        Iterator it = f.getFigEdges(col).iterator();
+        while (it.hasNext()) {
+          lay.bringInFrontOf(((FigEdge) it.next()), this);
         }
-        if (compositeState != null)
-            Model.getStateMachinesHelper().setContainer(stateVertex,
-                    compositeState);
+        f.redrawEnclosedFigs();
+      }
     }
+  }
 
-    /**
-     * Method to draw a StateVertex Fig's enclosed figs.
-     */
-    public void redrawEnclosedFigs() {
-        Editor editor = Globals.curEditor();
-        if (editor != null && !getEnclosedFigs().isEmpty()) {
-            LayerDiagram lay =
-                ((LayerDiagram) editor.getLayerManager().getActiveLayer());
-            for (int i = 0; i < getEnclosedFigs().size(); i++) {
-                FigStateVertex f =
-                    ((FigStateVertex) getEnclosedFigs().elementAt(i));
-                lay.bringInFrontOf(f, this);
-                Collection col = null;
-                Iterator it = f.getFigEdges(col).iterator();
-                while (it.hasNext()) {
-                    lay.bringInFrontOf(((FigEdge) it.next()), this);
-                }
-                f.redrawEnclosedFigs();
-            }
-        }
+  /**
+   * return selectors, depending whether we deal with activity or state diagrams.
+   *
+   * @see org.tigris.gef.presentation.Fig#makeSelection()
+   */
+  public Selection makeSelection() {
+    Object pstate = getOwner();
+
+    if (pstate != null) {
+
+      if (Model.getFacade()
+          .isAActivityGraph(
+              Model.getFacade().getStateMachine(Model.getFacade().getContainer(pstate)))) {
+        return new SelectionActionState(this);
+      }
+      return new SelectionState(this);
     }
-
-    /**
-     * return selectors, depending whether we deal with activity or state
-     * diagrams.
-     *
-     * @see org.tigris.gef.presentation.Fig#makeSelection()
-     */
-    public Selection makeSelection() {
-        Object pstate = getOwner();
-
-        if (pstate != null) {
-
-            if (Model.getFacade().isAActivityGraph(
-                    Model.getFacade().getStateMachine(
-                            Model.getFacade().getContainer(pstate)))) {
-                return new SelectionActionState(this);
-            }
-            return new SelectionState(this);
-        }
-        return null;
-    }
-
+    return null;
+  }
 } /* end class FigStateVertex */

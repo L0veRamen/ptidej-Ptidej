@@ -33,30 +33,24 @@ import junit.framework.TestCase;
  */
 public class TestCollaborationsHelper extends TestCase {
 
-    /**
-     * Constructor for TestCollaborationsHelper.
-     *
-     * @param arg0 is the name of the test case.
-     */
-    public TestCollaborationsHelper(String arg0) {
-	super(arg0);
-    }
+  /**
+   * Constructor for TestCollaborationsHelper.
+   *
+   * @param arg0 is the name of the test case.
+   */
+  public TestCollaborationsHelper(String arg0) {
+    super(arg0);
+  }
 
-    /**
-     * Test for the metamodel name.
-     */
-    public void testGetMetaModelName() {
-	CheckUMLModelHelper.metaModelNameCorrect(
-			 Model.getCollaborationsFactory(),
-			 TestCollaborationsFactory.getAllModelElements());
-    }
+  /** Test for the metamodel name. */
+  public void testGetMetaModelName() {
+    CheckUMLModelHelper.metaModelNameCorrect(
+        Model.getCollaborationsFactory(), TestCollaborationsFactory.getAllModelElements());
+  }
 
-    /**
-     * Test if the stereotype is valid.
-     */
-    public void testIsValidStereoType() {
-	CheckUMLModelHelper.isValidStereoType(
-		      Model.getCollaborationsFactory(),
-		      TestCollaborationsFactory.getAllModelElements());
-    }
+  /** Test if the stereotype is valid. */
+  public void testIsValidStereoType() {
+    CheckUMLModelHelper.isValidStereoType(
+        Model.getCollaborationsFactory(), TestCollaborationsFactory.getAllModelElements());
+  }
 }

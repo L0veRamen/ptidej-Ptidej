@@ -25,58 +25,51 @@
 package org.argouml.uml.ui.behavior.state_machines;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.Action;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLCheckBox2;
 import org.tigris.gef.undo.UndoableAction;
 
 /**
- * @deprecated by mvw in V0.28alpha - not used, 
- * replaced by button in toolbar, which uses ActionAddConcurrentRegion..
+ * @deprecated by mvw in V0.28alpha - not used, replaced by button in toolbar, which uses
+ *     ActionAddConcurrentRegion..
  * @since Dec 14, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
 @Deprecated
 public class ActionSetCompositeStateConcurrent extends UndoableAction {
 
-    private static final ActionSetCompositeStateConcurrent SINGLETON =
-	new ActionSetCompositeStateConcurrent();
+  private static final ActionSetCompositeStateConcurrent SINGLETON =
+      new ActionSetCompositeStateConcurrent();
 
-    /**
-     * Constructor for ActionSetCompositeStateConcurrent.
-     */
-    protected ActionSetCompositeStateConcurrent() {
-        super(Translator.localize("action.set"), null);
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize("action.set"));
+  /** Constructor for ActionSetCompositeStateConcurrent. */
+  protected ActionSetCompositeStateConcurrent() {
+    super(Translator.localize("action.set"), null);
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize("action.set"));
+  }
+
+  /*
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    if (e.getSource() instanceof UMLCheckBox2) {
+      UMLCheckBox2 source = (UMLCheckBox2) e.getSource();
+      Object target = source.getTarget();
+      if (Model.getFacade().isACompositeState(target)) {
+        Object compositeState = target;
+        Model.getStateMachinesHelper()
+            .setConcurrent(compositeState, !Model.getFacade().isConcurrent(compositeState));
+      }
     }
+  }
 
-    /*
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        if (e.getSource() instanceof UMLCheckBox2) {
-            UMLCheckBox2 source = (UMLCheckBox2) e.getSource();
-            Object target = source.getTarget();
-            if (Model.getFacade().isACompositeState(target)) {
-                Object compositeState = target;
-                Model.getStateMachinesHelper().setConcurrent(
-                        compositeState,
-                        !Model.getFacade().isConcurrent(compositeState));
-            }
-        }
-    }
-
-    /**
-     * @return Returns the singleton.
-     */
-    public static ActionSetCompositeStateConcurrent getInstance() {
-        return SINGLETON;
-    }
-
+  /**
+   * @return Returns the singleton.
+   */
+  public static ActionSetCompositeStateConcurrent getInstance() {
+    return SINGLETON;
+  }
 }

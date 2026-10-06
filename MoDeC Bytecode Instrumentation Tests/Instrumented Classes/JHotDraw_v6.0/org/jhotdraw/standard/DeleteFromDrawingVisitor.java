@@ -11,48 +11,46 @@
 
 package org.jhotdraw.standard;
 
+import java.util.Set;
 import org.jhotdraw.framework.*;
 import org.jhotdraw.util.CollectionsFactory;
 
-import java.util.Set;
-
 /**
- * @author  Wolfram Kaiser <mrfloppy@sourceforge.net>
+ * @author Wolfram Kaiser <mrfloppy@sourceforge.net>
  * @version <$CURRENT_VERSION$>
  */
 public class DeleteFromDrawingVisitor implements FigureVisitor {
-	private Set myDeletedFigures;
-	private Drawing myDrawing;
+  private Set myDeletedFigures;
+  private Drawing myDrawing;
 
-	public DeleteFromDrawingVisitor(Drawing newDrawing) {
-		myDeletedFigures = CollectionsFactory.current().createSet();
-		setDrawing(newDrawing);
-	}
+  public DeleteFromDrawingVisitor(Drawing newDrawing) {
+    myDeletedFigures = CollectionsFactory.current().createSet();
+    setDrawing(newDrawing);
+  }
 
-	private void setDrawing(Drawing newDrawing) {
-		myDrawing = newDrawing;
-	}
+  private void setDrawing(Drawing newDrawing) {
+    myDrawing = newDrawing;
+  }
 
-	protected Drawing getDrawing() {
-		return myDrawing;
-	}
+  protected Drawing getDrawing() {
+    return myDrawing;
+  }
 
-	public void visitFigure(Figure hostFigure) {
-		if (!myDeletedFigures.contains(hostFigure) && getDrawing().containsFigure(hostFigure)) {
-			Figure orphanedFigure = getDrawing().orphan(hostFigure);
-			myDeletedFigures.add(orphanedFigure);
-		}
-	}
+  public void visitFigure(Figure hostFigure) {
+    if (!myDeletedFigures.contains(hostFigure) && getDrawing().containsFigure(hostFigure)) {
+      Figure orphanedFigure = getDrawing().orphan(hostFigure);
+      myDeletedFigures.add(orphanedFigure);
+    }
+  }
 
-	public void visitHandle(Handle hostHandle) {
-	}
+  public void visitHandle(Handle hostHandle) {}
 
-	public void visitFigureChangeListener(FigureChangeListener hostFigureChangeListener) {
-//		System.out.println("visitFigureChangeListener: " + hostFigureChangeListener);
-//		hostFigureChangeListener.visit(this);
-	}
+  public void visitFigureChangeListener(FigureChangeListener hostFigureChangeListener) {
+    //		System.out.println("visitFigureChangeListener: " + hostFigureChangeListener);
+    //		hostFigureChangeListener.visit(this);
+  }
 
-	public FigureEnumeration getDeletedFigures() {
-		return new FigureEnumerator(myDeletedFigures);
-	}
+  public FigureEnumeration getDeletedFigures() {
+    return new FigureEnumerator(myDeletedFigures);
+  }
 }

@@ -26,7 +26,6 @@ package org.argouml.uml.ui.model_management;
 
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.uml.ui.ActionNavigateNamespace;
 import org.argouml.uml.ui.UMLMutableLinkedList;
@@ -36,64 +35,52 @@ import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
 import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewTagDefinition;
 import org.argouml.util.ConfigLoader;
 
-/**
- * A Property panel for a model.
- */
-public class PropPanelModel extends PropPanelPackage  {
+/** A Property panel for a model. */
+public class PropPanelModel extends PropPanelPackage {
 
-    /**
-     * The constructor.
-      */
-    public PropPanelModel() {
-        super("Model", lookupIcon("Model"),
-                ConfigLoader.getTabPropsOrientation());
-    }
+  /** The constructor. */
+  public PropPanelModel() {
+    super("Model", lookupIcon("Model"), ConfigLoader.getTabPropsOrientation());
+  }
 
-    /**
-     * Via this method, the GUI elements are added to the proppanel. 
-     */
-    protected void placeElements() {
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        
-        /* The next 2 fields are commented out, 
-         * as long as ArgoUML does not support 
-         * more then one un-owned Model.  */
-//        addField(Translator.localize("label.namespace"),
-//                getNamespaceSelector());
+  /** Via this method, the GUI elements are added to the proppanel. */
+  protected void placeElements() {
+    addField(Translator.localize("label.name"), getNameTextField());
 
-//        add(getNamespaceVisibilityPanel());
+    /* The next 2 fields are commented out,
+     * as long as ArgoUML does not support
+     * more then one un-owned Model.  */
+    //        addField(Translator.localize("label.namespace"),
+    //                getNamespaceSelector());
 
-        add(getModifiersPanel());
-        
-        addSeparator();
-        
-        addField(Translator.localize("label.generalizations"),
-                getGeneralizationScroll());
-        addField(Translator.localize("label.specializations"),
-                getSpecializationScroll());
-        
-        addSeparator();
-        
-        addField(Translator.localize("label.owned-elements"),
-                getOwnedElementsScroll());
+    //        add(getNamespaceVisibilityPanel());
 
-        JList importList =
-            new UMLMutableLinkedList(new UMLClassifierPackageImportsListModel(),
-                new ActionAddPackageImport(),
-                null,
-                new ActionRemovePackageImport(),
-                true);
-        addField(Translator.localize("label.imported-elements"),
-                new JScrollPane(importList));
+    add(getModifiersPanel());
 
-        addAction(new ActionNavigateNamespace());
-        addAction(new ActionAddPackage());
-        addAction(new ActionAddDataType());
-        addAction(new ActionAddEnumeration());
-        addAction(new ActionNewStereotype());
-        addAction(new ActionNewTagDefinition());
-        addAction(getDeleteAction());
-    }
+    addSeparator();
 
+    addField(Translator.localize("label.generalizations"), getGeneralizationScroll());
+    addField(Translator.localize("label.specializations"), getSpecializationScroll());
+
+    addSeparator();
+
+    addField(Translator.localize("label.owned-elements"), getOwnedElementsScroll());
+
+    JList importList =
+        new UMLMutableLinkedList(
+            new UMLClassifierPackageImportsListModel(),
+            new ActionAddPackageImport(),
+            null,
+            new ActionRemovePackageImport(),
+            true);
+    addField(Translator.localize("label.imported-elements"), new JScrollPane(importList));
+
+    addAction(new ActionNavigateNamespace());
+    addAction(new ActionAddPackage());
+    addAction(new ActionAddDataType());
+    addAction(new ActionAddEnumeration());
+    addAction(new ActionNewStereotype());
+    addAction(new ActionNewTagDefinition());
+    addAction(getDeleteAction());
+  }
 } /* end class PropPanelModel */

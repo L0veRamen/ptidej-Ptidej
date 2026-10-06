@@ -33,56 +33,48 @@ import org.argouml.uml.diagram.activity.ui.UMLActivityDiagram;
 import org.argouml.uml.diagram.ui.UMLDiagram;
 
 /**
- * Action to trigger creation of a new activity diagram.<p>
- * 
- * An ActivityGraph specifies the dynamics of<ul>
- * <li> a Package, or
- * <li> a Classifier (including UseCase), or
- * <li> a BehavioralFeature.
+ * Action to trigger creation of a new activity diagram.
+ *
+ * <p>An ActivityGraph specifies the dynamics of
+ *
+ * <ul>
+ *   <li>a Package, or
+ *   <li>a Classifier (including UseCase), or
+ *   <li>a BehavioralFeature.
  * </ul>
- * 
+ *
  * @author michiel
  */
 public class ActionActivityDiagram extends ActionNewDiagram {
 
-    /**
-     * Constructor.
-     */
-    public ActionActivityDiagram() {
-        super("action.activity-diagram");
+  /** Constructor. */
+  public ActionActivityDiagram() {
+    super("action.activity-diagram");
+  }
+
+  /** Create the diagram. */
+  protected UMLDiagram createDiagram() {
+    Project p = ProjectManager.getManager().getCurrentProject();
+    Object target = TargetManager.getInstance().getModelTarget();
+    Object graph = null;
+    Object namespace = p.getRoot(); // the root model
+    if (Model.getActivityGraphsHelper().isAddingActivityGraphAllowed(target)) {
+      /* The target is a valid context */
+      graph = Model.getActivityGraphsFactory().buildActivityGraph(target);
+    } else {
+      graph = Model.getActivityGraphsFactory().createActivityGraph();
+      if (Model.getFacade().isANamespace(target)) {
+        namespace = target;
+      }
+      Model.getCoreHelper().setNamespace(graph, namespace);
+      Model.getStateMachinesFactory().buildCompositeStateOnStateMachine(graph);
     }
 
-    /**
-     * Create the diagram.
-     */
-    protected UMLDiagram createDiagram() {
-        Project p = ProjectManager.getManager().getCurrentProject();
-        Object target = TargetManager.getInstance().getModelTarget();
-        Object graph = null;
-        Object namespace = p.getRoot(); // the root model
-        if (Model.getActivityGraphsHelper().isAddingActivityGraphAllowed(
-                target)) {
-            /* The target is a valid context */
-            graph = Model.getActivityGraphsFactory().buildActivityGraph(target);
-        } else {
-            graph = Model.getActivityGraphsFactory().createActivityGraph();
-            if (Model.getFacade().isANamespace(target)) {
-                namespace = target;
-            }
-            Model.getCoreHelper().setNamespace(graph, namespace);
-            Model.getStateMachinesFactory()
-                .buildCompositeStateOnStateMachine(graph);
-        }
+    return (UMLDiagram)
+        DiagramFactory.getInstance()
+            .createDiagram(UMLActivityDiagram.class, Model.getFacade().getNamespace(graph), graph);
+  }
 
-        return (UMLDiagram) DiagramFactory.getInstance().createDiagram(
-                UMLActivityDiagram.class,
-                Model.getFacade().getNamespace(graph),
-                graph);
-    }
-
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -28844322376391273L;
-
+  /** The UID. */
+  private static final long serialVersionUID = -28844322376391273L;
 } /* end class ActionActivityDiagram */

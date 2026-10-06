@@ -26,7 +26,6 @@ package org.argouml.uml.ui.behavior.state_machines;
 
 import java.util.ArrayList;
 import java.util.Collection;
-
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.Model;
@@ -39,52 +38,47 @@ import org.argouml.uml.ui.UMLComboBoxModel2;
  * @since Dec 6, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class UMLStateMachineContextComboBoxModel
-    extends  UMLComboBoxModel2  {
+public class UMLStateMachineContextComboBoxModel extends UMLComboBoxModel2 {
 
-    /**
-     * Constructor for UMLStateMachineContextListModel.
-     */
-    public UMLStateMachineContextComboBoxModel() {
-        super("context", false);
+  /** Constructor for UMLStateMachineContextListModel. */
+  public UMLStateMachineContextComboBoxModel() {
+    super("context", false);
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    Collection elements = new ArrayList();
+    Project p = ProjectManager.getManager().getCurrentProject();
+    for (Object model : p.getUserDefinedModelList()) {
+      elements.addAll(
+          Model.getModelManagementHelper()
+              .getAllModelElementsOfKind(model, Model.getMetaTypes().getClassifier()));
+      elements.addAll(
+          Model.getModelManagementHelper()
+              .getAllModelElementsOfKind(model, Model.getMetaTypes().getBehavioralFeature()));
     }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        Collection elements = new ArrayList();
-        Project p = ProjectManager.getManager().getCurrentProject();
-        for (Object model : p.getUserDefinedModelList()) {
-            elements.addAll(Model
-                    .getModelManagementHelper().getAllModelElementsOfKind(
-                            model, Model.getMetaTypes().getClassifier()));
-            elements.addAll(Model
-                    .getModelManagementHelper().getAllModelElementsOfKind(
-                            model, 
-                            Model.getMetaTypes().getBehavioralFeature()));
-        }
+    setElements(elements);
+  }
 
-        setElements(elements);
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().isAClassifier(element)
+        || Model.getFacade().isABehavioralFeature(element);
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().isAClassifier(element)
-                || Model.getFacade().isABehavioralFeature(element);
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
+   */
+  protected Object getSelectedModelElement() {
+    return Model.getFacade().getContext(getTarget());
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
-     */
-    protected Object getSelectedModelElement() {
-        return Model.getFacade().getContext(getTarget());
-    }
-
-    public void modelChanged(UmlChangeEvent evt) {
-        /* Do nothing by design. */
-    }
-
+  public void modelChanged(UmlChangeEvent evt) {
+    /* Do nothing by design. */
+  }
 }

@@ -37,31 +37,32 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 class ArcControls extends Panel implements ActionListener {
-	private static final long serialVersionUID = 4610399459063373797L;
+  private static final long serialVersionUID = 4610399459063373797L;
 
-	TextField s;
-	TextField e;
-	ArcCanvas canvas;
+  TextField s;
+  TextField e;
+  ArcCanvas canvas;
 
-	public ArcControls(ArcCanvas canvas) {
-		Button b = null;
+  public ArcControls(ArcCanvas canvas) {
+    Button b = null;
 
-		this.canvas = canvas;
-		add(this.s = new TextField("0", 4));
-		add(this.e = new TextField("45", 4));
-		b = new Button("Fill");
-		b.addActionListener(this);
-		add(b);
-		b = new Button("Draw");
-		b.addActionListener(this);
-		add(b);
-	}
-	public void actionPerformed(ActionEvent ev) {
-		String label = ev.getActionCommand();
+    this.canvas = canvas;
+    add(this.s = new TextField("0", 4));
+    add(this.e = new TextField("45", 4));
+    b = new Button("Fill");
+    b.addActionListener(this);
+    add(b);
+    b = new Button("Draw");
+    b.addActionListener(this);
+    add(b);
+  }
 
-		this.canvas.redraw(
-			label.equals("Fill"),
-			Integer.parseInt(this.s.getText().trim()),
-			Integer.parseInt(this.e.getText().trim()));
-	}
+  public void actionPerformed(ActionEvent ev) {
+    String label = ev.getActionCommand();
+
+    this.canvas.redraw(
+        label.equals("Fill"),
+        Integer.parseInt(this.s.getText().trim()),
+        Integer.parseInt(this.e.getText().trim()));
+  }
 }

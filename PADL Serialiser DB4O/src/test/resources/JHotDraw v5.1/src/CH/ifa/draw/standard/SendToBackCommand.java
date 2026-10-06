@@ -9,35 +9,31 @@ import CH.ifa.draw.framework.DrawingView;
 import CH.ifa.draw.framework.FigureEnumeration;
 import CH.ifa.draw.util.Command;
 
-/**
- * A command to send the selection to the back of the drawing.
- */
+/** A command to send the selection to the back of the drawing. */
 public class SendToBackCommand extends Command {
 
-	private DrawingView fView;
+  private DrawingView fView;
 
-   /**
-	* Constructs a send to back command.
-	* @param name the command name
-	* @param view the target view
-	*/
-	public SendToBackCommand(String name, DrawingView view) {
-		super(name);
-		fView = view;
-	}
+  /**
+   * Constructs a send to back command.
+   *
+   * @param name the command name
+   * @param view the target view
+   */
+  public SendToBackCommand(String name, DrawingView view) {
+    super(name);
+    fView = view;
+  }
 
-	public void execute() {
-	   FigureEnumeration k = new ReverseFigureEnumerator(fView.selectionZOrdered());
-	   while (k.hasMoreElements()) {
-			fView.drawing().sendToBack(k.nextFigure());
-		}
-		fView.checkDamage();
-	}
+  public void execute() {
+    FigureEnumeration k = new ReverseFigureEnumerator(fView.selectionZOrdered());
+    while (k.hasMoreElements()) {
+      fView.drawing().sendToBack(k.nextFigure());
+    }
+    fView.checkDamage();
+  }
 
-	public boolean isExecutable() {
-		return fView.selectionCount() > 0;
-	}
-
+  public boolean isExecutable() {
+    return fView.selectionCount() > 0;
+  }
 }
-
-

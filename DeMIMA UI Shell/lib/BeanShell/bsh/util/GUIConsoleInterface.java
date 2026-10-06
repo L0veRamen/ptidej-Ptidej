@@ -7,7 +7,7 @@
  *                                                                           *
  *  The contents of this file are subject to the Sun Public License Version  *
  *  1.0 (the "License"); you may not use this file except in compliance with *
- *  the License. A copy of the License is available at http://www.sun.com    * 
+ *  the License. A copy of the License is available at http://www.sun.com    *
  *                                                                           *
  *  The Original Code is BeanShell. The Initial Developer of the Original    *
  *  Code is Pat Niemeyer. Portions created by Pat Niemeyer are Copyright     *
@@ -37,19 +37,18 @@ import bsh.ConsoleInterface;
 import java.awt.Color;
 
 /**
-	Additional capabilities of an interactive console for BeanShell.
-	Althought this is called "GUIConsoleInterface" it might just as well be 
-	used by a more sophisticated text-only command line.
-	<p>
-	Note: we may want to express the command line history, editing, 
-	and cut & paste functionality here as well at some point. 
-*/
-public interface GUIConsoleInterface extends ConsoleInterface 
-{
-	public void print( Object o, Color color );
-	public void setNameCompletion( NameCompletion nc );
-	
-	/** e.g. the wait cursor */
-	public void setWaitFeedback( boolean on );
-}
+ * Additional capabilities of an interactive console for BeanShell. Althought this is called
+ * "GUIConsoleInterface" it might just as well be used by a more sophisticated text-only command
+ * line.
+ *
+ * <p>Note: we may want to express the command line history, editing, and cut & paste functionality
+ * here as well at some point.
+ */
+public interface GUIConsoleInterface extends ConsoleInterface {
+  public void print(Object o, Color color);
 
+  public void setNameCompletion(NameCompletion nc);
+
+  /** e.g. the wait cursor */
+  public void setWaitFeedback(boolean on);
+}

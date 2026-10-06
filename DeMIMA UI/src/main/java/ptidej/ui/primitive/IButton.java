@@ -4,15 +4,18 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
 package ptidej.ui.primitive;
 
 public interface IButton extends IPrimitive {
-	String getLabel();
-	boolean isSelected();
-	void setLabel(final String label);
-	void setSelected(final boolean isSelected);
+  String getLabel();
+
+  boolean isSelected();
+
+  void setLabel(final String label);
+
+  void setSelected(final boolean isSelected);
 }

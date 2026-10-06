@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -21,72 +21,58 @@ import padl.kernel.exception.CreationException;
 import padl.kernel.impl.Factory;
 import util.io.ProxyConsole;
 
-
 /**
  * @author Yann-Gaël Guéhéneuc
- * @since  2006/11/28
+ * @since 2006/11/28
  */
 public class AggregationFetcher {
-	public static void main(final String[] args) {
-		AggregationFetcher aggregationFetcher = new AggregationFetcher();
-		aggregationFetcher.analyse("D:/Temp/Sodalia/Method Invocations/");
-	}
-	private void analyse(final String aPath) {
-		final File pathFile = new File(aPath);
-		final String[] subPaths = pathFile.list();
+  public static void main(final String[] args) {
+    AggregationFetcher aggregationFetcher = new AggregationFetcher();
+    aggregationFetcher.analyse("D:/Temp/Sodalia/Method Invocations/");
+  }
 
-		for (int i = 0; i < subPaths.length; i++) {
-			final String fileName = aPath + subPaths[i];
-			final File file = new File(fileName);
+  private void analyse(final String aPath) {
+    final File pathFile = new File(aPath);
+    final String[] subPaths = pathFile.list();
 
-			if (file.isDirectory()) {
-				this.analyse(fileName + '/');
-			}
-			else if (fileName.indexOf("-concat_des_") > 0
-					&& !fileName.endsWith(".filtered.aol")) {
+    for (int i = 0; i < subPaths.length; i++) {
+      final String fileName = aPath + subPaths[i];
+      final File file = new File(fileName);
 
-				final String name =
-					fileName.substring(fileName.lastIndexOf('/') + 1, fileName
-						.indexOf('-'));
-				final String cldFileName =
-					fileName.replaceAll("concat_", "").replaceAll(
-						".aol",
-						".cld");
+      if (file.isDirectory()) {
+        this.analyse(fileName + '/');
+      } else if (fileName.indexOf("-concat_des_") > 0 && !fileName.endsWith(".filtered.aol")) {
 
-				try {
-					System.out.print("Analysing ");
-					System.out.print(name);
-					System.out.println("...");
+        final String name =
+            fileName.substring(fileName.lastIndexOf('/') + 1, fileName.indexOf('-'));
+        final String cldFileName = fileName.replaceAll("concat_", "").replaceAll(".aol", ".cld");
 
-					ICodeLevelModel codeLevelModel =
-						Factory.getInstance().createCodeLevelModel(name);
-					codeLevelModel.create(new AOLCreator(
-						new String[] { fileName }));
+        try {
+          System.out.print("Analysing ");
+          System.out.print(name);
+          System.out.println("...");
 
-					final MethodInvocationAnalyser methodInvocationAdder =
-						new MethodInvocationAnalyser();
-					methodInvocationAdder.setCLDFile(cldFileName);
-					codeLevelModel =
-						(ICodeLevelModel) methodInvocationAdder
-							.invoke(codeLevelModel);
+          ICodeLevelModel codeLevelModel = Factory.getInstance().createCodeLevelModel(name);
+          codeLevelModel.create(new AOLCreator(new String[] {fileName}));
 
-					final IIdiomLevelModel idiomLevelModel =
-						(IIdiomLevelModel) new AACRelationshipsAnalysis(false)
-							.invoke(codeLevelModel);
+          final MethodInvocationAnalyser methodInvocationAdder = new MethodInvocationAnalyser();
+          methodInvocationAdder.setCLDFile(cldFileName);
+          codeLevelModel = (ICodeLevelModel) methodInvocationAdder.invoke(codeLevelModel);
 
-					idiomLevelModel.walk(new AggregationVisitor(
-						"D:/Temp/Sodalia/Method Invocations/" + name
-								+ ".aggregations.txt"));
-				}
-				catch (final CreationException e) {
-					e.printStackTrace(ProxyConsole.getInstance().errorOutput());
-				}
-				catch (final UnsupportedSourceModelException e) {
-					e.printStackTrace(ProxyConsole.getInstance().errorOutput());
-				}
-			}
-		}
-	}
+          final IIdiomLevelModel idiomLevelModel =
+              (IIdiomLevelModel) new AACRelationshipsAnalysis(false).invoke(codeLevelModel);
+
+          idiomLevelModel.walk(
+              new AggregationVisitor(
+                  "D:/Temp/Sodalia/Method Invocations/" + name + ".aggregations.txt"));
+        } catch (final CreationException e) {
+          e.printStackTrace(ProxyConsole.getInstance().errorOutput());
+        } catch (final UnsupportedSourceModelException e) {
+          e.printStackTrace(ProxyConsole.getInstance().errorOutput());
+        }
+      }
+    }
+  }
 }
 
 //	final AOLCreator aolCreator =

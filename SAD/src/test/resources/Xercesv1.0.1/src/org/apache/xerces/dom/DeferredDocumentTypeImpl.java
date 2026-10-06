@@ -57,162 +57,161 @@
 
 package org.apache.xerces.dom;
 
-import org.w3c.dom.*;
 import org.apache.xerces.utils.StringPool;
+import org.w3c.dom.*;
 
 /**
- * This class represents a Document Type <em>declaraction</em> in
- * the document itself, <em>not</em> a Document Type Definition (DTD).
- * An XML document may (or may not) have such a reference.
- * <P>
- * DocumentType is an Extended DOM feature, used in XML documents but
- * not in HTML.
- * <P>
- * Note that Entities and Notations are no longer children of the
- * DocumentType, but are parentless nodes hung only in their
- * appropriate NamedNodeMaps.
- * <P>
- * This area is UNDERSPECIFIED IN REC-DOM-Level-1-19981001
- * Most notably, absolutely no provision was made for storing
- * and using Element and Attribute information. Nor was the linkage
- * between Entities and Entity References nailed down solidly.
+ * This class represents a Document Type <em>declaraction</em> in the document itself, <em>not</em>
+ * a Document Type Definition (DTD). An XML document may (or may not) have such a reference.
+ *
+ * <p>DocumentType is an Extended DOM feature, used in XML documents but not in HTML.
+ *
+ * <p>Note that Entities and Notations are no longer children of the DocumentType, but are
+ * parentless nodes hung only in their appropriate NamedNodeMaps.
+ *
+ * <p>This area is UNDERSPECIFIED IN REC-DOM-Level-1-19981001 Most notably, absolutely no provision
+ * was made for storing and using Element and Attribute information. Nor was the linkage between
+ * Entities and Entity References nailed down solidly.
  *
  * @version
- * @since  PR-DOM-Level-1-19980818.
+ * @since PR-DOM-Level-1-19980818.
  */
-public class DeferredDocumentTypeImpl
-    extends DocumentTypeImpl
-    implements DeferredNode {
+public class DeferredDocumentTypeImpl extends DocumentTypeImpl implements DeferredNode {
 
-    //
-    // Constants
-    //
+  //
+  // Constants
+  //
 
-    /** Serialization version. */
-    static final long serialVersionUID = -2172579663227313509L;
+  /** Serialization version. */
+  static final long serialVersionUID = -2172579663227313509L;
 
-    //
-    // Data
-    //
+  //
+  // Data
+  //
 
-    /** Node index. */
-    protected transient int fNodeIndex;
+  /** Node index. */
+  protected transient int fNodeIndex;
 
-    //
-    // Constructors
-    //
+  //
+  // Constructors
+  //
 
-    /**
-     * This is the deferred constructor. Only the fNodeIndex is given here.
-     * All other data, can be requested from the ownerDocument via the index.
-     */
-    DeferredDocumentTypeImpl(DeferredDocumentImpl ownerDocument, int nodeIndex) {
-        super(ownerDocument, null);
+  /**
+   * This is the deferred constructor. Only the fNodeIndex is given here. All other data, can be
+   * requested from the ownerDocument via the index.
+   */
+  DeferredDocumentTypeImpl(DeferredDocumentImpl ownerDocument, int nodeIndex) {
+    super(ownerDocument, null);
 
-        fNodeIndex = nodeIndex;
-        syncData = true;
-        syncChildren = true;
+    fNodeIndex = nodeIndex;
+    syncData = true;
+    syncChildren = true;
+  } // <init>(DeferredDocumentImpl,int)
 
-    } // <init>(DeferredDocumentImpl,int)
+  //
+  // DeferredNode methods
+  //
 
-    //
-    // DeferredNode methods
-    //
+  /** Returns the node index. */
+  public int getNodeIndex() {
+    return fNodeIndex;
+  }
 
-    /** Returns the node index. */
-    public int getNodeIndex() {
-        return fNodeIndex;
+  //
+  // Protected methods
+  //
+
+  /** Synchronizes the data (name and value) for fast nodes. */
+  protected void synchronizeData() {
+
+    // no need to sync in the future
+    syncData = false;
+
+    // fluff data
+    DeferredDocumentImpl ownerDocument = (DeferredDocumentImpl) this.ownerDocument;
+    name = ownerDocument.getNodeNameString(fNodeIndex);
+
+    // public and system ids
+    StringPool pool = ownerDocument.getStringPool();
+    int extraDataIndex = ownerDocument.getNodeValue(fNodeIndex);
+    ownerDocument.getNodeType(extraDataIndex);
+    publicID = pool.toString(ownerDocument.getNodeName(extraDataIndex));
+    systemID = pool.toString(ownerDocument.getNodeValue(extraDataIndex));
+  } // synchronizeData()
+
+  /** Synchronizes the entities, notations, and elements. */
+  protected void synchronizeChildren() {
+
+    // no need to synchronize again
+    syncChildren = false;
+
+    // create new node maps
+    DeferredDocumentImpl ownerDocument = (DeferredDocumentImpl) this.ownerDocument;
+
+    entities = new NamedNodeMapImpl(ownerDocument, null);
+    notations = new NamedNodeMapImpl(ownerDocument, null);
+    elements = new NamedNodeMapImpl(ownerDocument, null);
+
+    // fill node maps
+    for (int index = ownerDocument.getFirstChild(fNodeIndex);
+        index != -1;
+        index = ownerDocument.getNextSibling(index)) {
+
+      DeferredNode node = ownerDocument.getNodeObject(index);
+      int type = node.getNodeType();
+      switch (type) {
+
+        // internal, external, and unparsed entities
+        case Node.ENTITY_NODE:
+          {
+            entities.setNamedItem(node);
+            break;
+          }
+
+        // notations
+        case Node.NOTATION_NODE:
+          {
+            notations.setNamedItem(node);
+            break;
+          }
+
+        // element definitions
+        case NodeImpl.ELEMENT_DEFINITION_NODE:
+          {
+
+            // add element definition
+            elements.setNamedItem(node);
+
+            // add attributes to element definition
+            NamedNodeMap attrs = node.getAttributes();
+            for (int attrIndex = ownerDocument.getFirstChild(node.getNodeIndex());
+                attrIndex != -1;
+                attrIndex = ownerDocument.getNextSibling(attrIndex)) {
+              DeferredNode attr = ownerDocument.getNodeObject(attrIndex);
+              attrs.setNamedItem(attr);
+            }
+            break;
+          }
+
+        // elements
+        case Node.ELEMENT_NODE:
+          {
+            if (((DocumentImpl) getOwnerDocument()).allowGrammarAccess) {
+              appendChild(node);
+              break;
+            }
+          }
+
+        // NOTE: Should never get here! -Ac
+        default:
+          {
+            System.out.println(
+                "DeferredDocumentTypeImpl#synchronizeInfo: node.getNodeType() = "
+                    + node.getNodeType()
+                    + ", class = "
+                    + node.getClass().getName());
+          }
+      }
     }
-
-    //
-    // Protected methods
-    //
-
-    /** Synchronizes the data (name and value) for fast nodes. */
-    protected void synchronizeData() {
-
-        // no need to sync in the future
-        syncData = false;
-
-        // fluff data
-        DeferredDocumentImpl ownerDocument = (DeferredDocumentImpl)this.ownerDocument;
-        name = ownerDocument.getNodeNameString(fNodeIndex);
-
-        // public and system ids
-        StringPool pool = ownerDocument.getStringPool();
-        int extraDataIndex = ownerDocument.getNodeValue(fNodeIndex);
-        ownerDocument.getNodeType(extraDataIndex);
-        publicID = pool.toString(ownerDocument.getNodeName(extraDataIndex));
-        systemID = pool.toString(ownerDocument.getNodeValue(extraDataIndex));
-
-    } // synchronizeData()
-
-    /** Synchronizes the entities, notations, and elements. */
-    protected void synchronizeChildren() {
-
-        // no need to synchronize again
-        syncChildren = false;
-
-        // create new node maps
-        DeferredDocumentImpl ownerDocument = (DeferredDocumentImpl)this.ownerDocument;
-
-        entities  = new NamedNodeMapImpl(ownerDocument, null);
-        notations = new NamedNodeMapImpl(ownerDocument, null);
-        elements  = new NamedNodeMapImpl(ownerDocument, null);
-
-        // fill node maps
-        for (int index = ownerDocument.getFirstChild(fNodeIndex);
-            index != -1;
-            index = ownerDocument.getNextSibling(index)) {
-
-            DeferredNode node = ownerDocument.getNodeObject(index);
-            int type = node.getNodeType();
-            switch (type) {
-
-                // internal, external, and unparsed entities
-                case Node.ENTITY_NODE: {
-                    entities.setNamedItem(node);
-                    break;
-                }
-
-                // notations
-                case Node.NOTATION_NODE: {
-                    notations.setNamedItem(node);
-                    break;
-                }
-
-                // element definitions
-                case NodeImpl.ELEMENT_DEFINITION_NODE: {
-
-                    // add element definition
-                    elements.setNamedItem(node);
-
-                    // add attributes to element definition
-                    NamedNodeMap attrs = node.getAttributes();
-                    for (int attrIndex = ownerDocument.getFirstChild(node.getNodeIndex());
-                         attrIndex != -1;
-                         attrIndex = ownerDocument.getNextSibling(attrIndex)) {
-                        DeferredNode attr = ownerDocument.getNodeObject(attrIndex);
-                        attrs.setNamedItem(attr);
-                    }
-                    break;
-                }
-
-                // elements
-                case Node.ELEMENT_NODE: {
-                    if (((DocumentImpl)getOwnerDocument()).allowGrammarAccess) {
-                        appendChild(node);
-                        break;
-                    }
-                }
-
-                // NOTE: Should never get here! -Ac
-                default: {
-                    System.out.println("DeferredDocumentTypeImpl#synchronizeInfo: node.getNodeType() = "+node.getNodeType()+", class = "+node.getClass().getName());
-                }
-             }
-        }
-
-    } // synchronizeChildren()
-
+  } // synchronizeChildren()
 } // class DeferredDocumentTypeImpl

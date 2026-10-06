@@ -22,67 +22,60 @@
 // CALIFORNIA HAS NO OBLIGATIONS TO PROVIDE MAINTENANCE, SUPPORT,
 // UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
-
 package org.argouml.uml.diagram.static_structure.ui;
 
 import java.awt.Color;
 import java.awt.Polygon;
 import java.awt.Rectangle;
-
 import org.tigris.gef.graph.GraphModel;
 import org.tigris.gef.presentation.FigPoly;
 
 /** Class to display graphics for a UML subsystem in a class diagram. */
-
 public class FigSubsystem extends FigPackage {
 
-    private FigPoly figPoly = new FigPoly(Color.black, Color.black);
+  private FigPoly figPoly = new FigPoly(Color.black, Color.black);
 
-    /**
-     * The main Constructor.
-     */
-    public FigSubsystem(Object modelElement, int x, int y) {
-        super(modelElement, x, y);
+  /** The main Constructor. */
+  public FigSubsystem(Object modelElement, int x, int y) {
+    super(modelElement, x, y);
 
-        int[] xpoints = {125, 125, 130, 130, 130, 135, 135};
-        int[] ypoints = {45, 40, 40, 35, 40, 40, 45};
-        Polygon polygon = new Polygon(xpoints, ypoints, 7);
-        figPoly.setPolygon(polygon);
-        figPoly.setFilled(false);
-        addFig(figPoly);
-        Rectangle r = getBounds();
-        setBounds(r.x, r.y, r.width, r.height);
-        updateEdges();
+    int[] xpoints = {125, 125, 130, 130, 130, 135, 135};
+    int[] ypoints = {45, 40, 40, 35, 40, 40, 45};
+    Polygon polygon = new Polygon(xpoints, ypoints, 7);
+    figPoly.setPolygon(polygon);
+    figPoly.setFilled(false);
+    addFig(figPoly);
+    Rectangle r = getBounds();
+    setBounds(r.x, r.y, r.width, r.height);
+    updateEdges();
+  }
+
+  /**
+   * Constructor that hooks the Fig to a UML element
+   *
+   * @param gm ignored
+   * @param node the UML element
+   */
+  public FigSubsystem(GraphModel gm, Object node) {
+    this(node, 0, 0);
+  }
+
+  /**
+   * @see org.tigris.gef.presentation.Fig#setBounds(int, int, int, int)
+   */
+  protected void setBoundsImpl(int x, int y, int w, int h) {
+
+    if (figPoly != null) {
+      Rectangle oldBounds = getBounds();
+      figPoly.translate((x - oldBounds.x) + (w - oldBounds.width), y - oldBounds.y);
     }
+    super.setBoundsImpl(x, y, w, h);
+  }
 
-    /**
-     * Constructor that hooks the Fig to a UML element
-     * @param gm ignored
-     * @param node the UML element
-     */
-    public FigSubsystem(GraphModel gm, Object node) {
-        this(node, 0, 0);
-    }
-
-    /**
-     * @see org.tigris.gef.presentation.Fig#setBounds(int, int, int, int)
-     */
-    protected void setBoundsImpl(int x, int y, int w, int h) {
-
-        if (figPoly != null) {
-            Rectangle oldBounds = getBounds();
-            figPoly.translate((x - oldBounds.x) + (w - oldBounds.width), y
-                    - oldBounds.y);
-
-        }
-        super.setBoundsImpl(x, y, w, h);
-    }
-
-    /**
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement#placeString()
-     */
-    public String placeString() {
-        return "new Subsystem";
-    }
-
+  /**
+   * @see org.argouml.uml.diagram.ui.FigNodeModelElement#placeString()
+   */
+  public String placeString() {
+    return "new Subsystem";
+  }
 } /* end class FigSubsystem */

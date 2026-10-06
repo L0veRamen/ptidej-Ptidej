@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xerces" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -60,36 +60,34 @@ package org.apache.xerces.msg;
 import java.util.ListResourceBundle;
 
 /**
- * This file contains error and warning messages for the schema datatype validator
- * The messages are arranged in key and value tuples in a ListResourceBundle.
- *
+ * This file contains error and warning messages for the schema datatype validator The messages are
+ * arranged in key and value tuples in a ListResourceBundle.
  *
  * @version
  */
 public class DatatypeMessages extends ListResourceBundle {
-    /** The list resource bundle contents. */
-    public static final Object CONTENTS[][] = {
-// Internal message formatter messages
-        { "BadMajorCode", "The majorCode parameter to createMessage was out of bounds." },
-        { "FormatFailed", "An internal error occurred while formatting the following message:\n  " },
-        { "NotBoolean", "{0} is not a boolean." },
-        { "NotDecimal", "{0} is not a decimal." },
-        { "FacetsInconsistent", "Facets are inconsistent with base type." },
-        { "IllegalFacetValue", "Illegal value {0} for facet {1}." },
-        { "IllegalDecimalFacet", "Illegal Facet for decimal type." },
-        { "UnknownFacet", "Unknown Facet: {0}." },
-        { "InvalidEnumValue", "Invalid value for Enum constant: {0}." },
-        { "OutOfBounds", "{0} is out of bounds." },
-        { "NotAnEnumValue", "{0} is not one of the specified enum values." },
-        { "NotInteger", "{0} is not an integer." },
-        { "IllegalIntegerFacet", "Illegal Facet for Integer type." },
-        { "NotReal", "{0} is not a double." },
-        { "IllegalRealFacet", "Illegal Facet for Real type." },
+  /** The list resource bundle contents. */
+  public static final Object CONTENTS[][] = {
+    // Internal message formatter messages
+    {"BadMajorCode", "The majorCode parameter to createMessage was out of bounds."},
+    {"FormatFailed", "An internal error occurred while formatting the following message:\n  "},
+    {"NotBoolean", "{0} is not a boolean."},
+    {"NotDecimal", "{0} is not a decimal."},
+    {"FacetsInconsistent", "Facets are inconsistent with base type."},
+    {"IllegalFacetValue", "Illegal value {0} for facet {1}."},
+    {"IllegalDecimalFacet", "Illegal Facet for decimal type."},
+    {"UnknownFacet", "Unknown Facet: {0}."},
+    {"InvalidEnumValue", "Invalid value for Enum constant: {0}."},
+    {"OutOfBounds", "{0} is out of bounds."},
+    {"NotAnEnumValue", "{0} is not one of the specified enum values."},
+    {"NotInteger", "{0} is not an integer."},
+    {"IllegalIntegerFacet", "Illegal Facet for Integer type."},
+    {"NotReal", "{0} is not a double."},
+    {"IllegalRealFacet", "Illegal Facet for Real type."},
+  };
 
-    };
-
-    /** Returns the list resource bundle contents. */
-    public Object[][] getContents() {
-        return CONTENTS;
-    }
+  /** Returns the list resource bundle contents. */
+  public Object[][] getContents() {
+    return CONTENTS;
+  }
 }

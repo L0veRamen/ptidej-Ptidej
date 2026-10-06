@@ -24,57 +24,49 @@
 
 package org.argouml.core.propertypanels.ui;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 import org.argouml.model.Model;
-import org.argouml.ui.targetmanager.TargetEvent;
-import org.argouml.ui.targetmanager.TargetListener;
-import org.argouml.uml.ui.UMLExpressionModel2;
 
 /**
  * @author jrobbins
  * @author jaap.branderhorst
  * @author penyaskito
  */
-class UMLInitialValueExpressionModel 
-    extends UMLExpressionModel {
+class UMLInitialValueExpressionModel extends UMLExpressionModel {
 
-    
-    
-    public UMLInitialValueExpressionModel(Object target) {
-        super(target, "initial value");
-    }
+  public UMLInitialValueExpressionModel(Object target) {
+    super(target, "initial value");
+  }
 
-    /**
-     * @return
-     * @see org.argouml.uml.ui.UMLExpressionModel2#getExpression()
-     */
-    @Override
-    public Object getExpression() {        
-        Object target = null; //TODO getTarget();
-        if (target == null) {
-            return null;
-        }
-        return Model.getFacade().getInitialValue(target);
+  /**
+   * @return
+   * @see org.argouml.uml.ui.UMLExpressionModel2#getExpression()
+   */
+  @Override
+  public Object getExpression() {
+    Object target = null; // TODO getTarget();
+    if (target == null) {
+      return null;
     }
+    return Model.getFacade().getInitialValue(target);
+  }
 
-    /**
-     * @return
-     * @see org.argouml.uml.ui.UMLExpressionModel2#newExpression()
-     */
-    @Override
-    public Object newExpression() {
-        return Model.getDataTypesFactory().createExpression("", "");
-    }
+  /**
+   * @return
+   * @see org.argouml.uml.ui.UMLExpressionModel2#newExpression()
+   */
+  @Override
+  public Object newExpression() {
+    return Model.getDataTypesFactory().createExpression("", "");
+  }
 
-    /**
-     * @param expr
-     * @see org.argouml.uml.ui.UMLExpressionModel2#setExpression(java.lang.Object)
-     */
-    @Override
-    public void setExpression(Object expression) {
-        Object target = null; // TODO  getTarget();
-        Model.getCoreHelper().setInitialValue(target, expression);
-    }
+  /**
+   * @param expr
+   * @see org.argouml.uml.ui.UMLExpressionModel2#setExpression(java.lang.Object)
+   */
+  @Override
+  public void setExpression(Object expression) {
+    Object target = null; // TODO  getTarget();
+    Model.getCoreHelper().setInitialValue(target, expression);
+  }
 }

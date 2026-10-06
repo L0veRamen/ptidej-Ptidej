@@ -27,7 +27,6 @@ package org.argouml.uml.ui.behavior.state_machines;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
-
 import org.argouml.i18n.Translator;
 import org.argouml.uml.ui.ActionDeleteSingleModelElement;
 import org.argouml.uml.ui.UMLExpressionBodyField;
@@ -39,38 +38,30 @@ import org.tigris.swidgets.GridLayout2;
 
 /**
  * The properties panel for a TimeEvent.
- * 
+ *
  * @author oliver.heyden
  */
 public class PropPanelTimeEvent extends PropPanelEvent {
 
-    /**
-     * The constructor.
-     */
-    public PropPanelTimeEvent() {
-        super("Time event", lookupIcon("TimeEvent"), ConfigLoader
-                .getTabPropsOrientation());
-    }
+  /** The constructor. */
+  public PropPanelTimeEvent() {
+    super("Time event", lookupIcon("TimeEvent"), ConfigLoader.getTabPropsOrientation());
+  }
 
-    /**
-     * @see org.argouml.uml.ui.behavior.state_machines.PropPanelEvent#initialize()
-     */
-    public void initialize() {
-        super.initialize();
+  /**
+   * @see org.argouml.uml.ui.behavior.state_machines.PropPanelEvent#initialize()
+   */
+  public void initialize() {
+    super.initialize();
 
-        UMLExpressionModel2 whenModel = new UMLTimeExpressionModel(
-                this, "when");
+    UMLExpressionModel2 whenModel = new UMLTimeExpressionModel(this, "when");
 
-        JPanel whenPanel = new JPanel(new GridLayout2());
-        whenPanel.setBorder(new TitledBorder(Translator
-                .localize("label.when")));
-        whenPanel.add(new JScrollPane(new UMLExpressionBodyField(
-                whenModel, true)));
-        whenPanel.add(new UMLExpressionLanguageField(whenModel,
-                false));
+    JPanel whenPanel = new JPanel(new GridLayout2());
+    whenPanel.setBorder(new TitledBorder(Translator.localize("label.when")));
+    whenPanel.add(new JScrollPane(new UMLExpressionBodyField(whenModel, true)));
+    whenPanel.add(new UMLExpressionLanguageField(whenModel, false));
 
-        add(whenPanel);
-        addAction(new ActionDeleteSingleModelElement());
-    }
-
+    add(whenPanel);
+    addAction(new ActionDeleteSingleModelElement());
+  }
 }

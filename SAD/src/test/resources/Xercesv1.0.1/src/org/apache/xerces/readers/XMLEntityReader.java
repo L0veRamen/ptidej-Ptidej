@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xerces" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -66,104 +66,108 @@ import org.apache.xerces.framework.XMLErrorReporter;
  * @see org.apache.xerces.framework.XMLParser
  */
 abstract class XMLEntityReader implements XMLEntityHandler.EntityReader {
-    /*
-     * Instance variables.
-     */
-    protected XMLEntityHandler fEntityHandler = null;
-    protected XMLErrorReporter fErrorReporter = null;
-    protected boolean fSendCharDataAsCharArray;
-    protected boolean fInCDSect = false;
-    private boolean fStillActive = true;
-    /*
-     * These are updated directly by the subclass implementation.
-     */
-    protected int fCarriageReturnCounter = 1;
-    protected int fLinefeedCounter = 1;
-    protected int fCharacterCounter = 1;
-    protected int fCurrentOffset = 0;
-    /**
-     * Constructor
-     */
-    protected XMLEntityReader(XMLEntityHandler entityHandler, XMLErrorReporter errorReporter, boolean sendCharDataAsCharArray) {
-        fEntityHandler = entityHandler;
-        fErrorReporter = errorReporter;
-        fSendCharDataAsCharArray = sendCharDataAsCharArray;
-    }
-    /**
-     * Constructor
-     */
-    protected XMLEntityReader(XMLEntityHandler entityHandler, XMLErrorReporter errorReporter, boolean sendCharDataAsCharArray, int lineNumber, int columnNumber) {
-        fEntityHandler = entityHandler;
-        fErrorReporter = errorReporter;
-        fSendCharDataAsCharArray = sendCharDataAsCharArray;
-        fLinefeedCounter = lineNumber;
-        fCharacterCounter = columnNumber;
-    }
-    protected void init(XMLEntityHandler entityHandler, XMLErrorReporter errorReporter, boolean sendCharDataAsCharArray, int lineNumber, int columnNumber) {
-        fEntityHandler = entityHandler;
-        fErrorReporter = errorReporter;
-        fSendCharDataAsCharArray = sendCharDataAsCharArray;
-        fLinefeedCounter = lineNumber;
-        fCharacterCounter = columnNumber;
-        fStillActive = true;
-        fInCDSect = false;
-        fCarriageReturnCounter = 1;
-        fCurrentOffset = 0;
-    }
+  /*
+   * Instance variables.
+   */
+  protected XMLEntityHandler fEntityHandler = null;
+  protected XMLErrorReporter fErrorReporter = null;
+  protected boolean fSendCharDataAsCharArray;
+  protected boolean fInCDSect = false;
+  private boolean fStillActive = true;
+  /*
+   * These are updated directly by the subclass implementation.
+   */
+  protected int fCarriageReturnCounter = 1;
+  protected int fLinefeedCounter = 1;
+  protected int fCharacterCounter = 1;
+  protected int fCurrentOffset = 0;
 
-    /**
-     * Return the current offset within this reader.
-     *
-     * @return The offset.
-     */
-    public int currentOffset() {
-        return fCurrentOffset;
-    }
+  /** Constructor */
+  protected XMLEntityReader(
+      XMLEntityHandler entityHandler,
+      XMLErrorReporter errorReporter,
+      boolean sendCharDataAsCharArray) {
+    fEntityHandler = entityHandler;
+    fErrorReporter = errorReporter;
+    fSendCharDataAsCharArray = sendCharDataAsCharArray;
+  }
 
-    /**
-     * Return the line number of the current position within the document that we are processing.
-     *
-     * @return The current line number.
-     */
-    public int getLineNumber() {
-        if (fLinefeedCounter > 1)
-            return fLinefeedCounter;
-        else
-            return fCarriageReturnCounter;
-    }
+  /** Constructor */
+  protected XMLEntityReader(
+      XMLEntityHandler entityHandler,
+      XMLErrorReporter errorReporter,
+      boolean sendCharDataAsCharArray,
+      int lineNumber,
+      int columnNumber) {
+    fEntityHandler = entityHandler;
+    fErrorReporter = errorReporter;
+    fSendCharDataAsCharArray = sendCharDataAsCharArray;
+    fLinefeedCounter = lineNumber;
+    fCharacterCounter = columnNumber;
+  }
 
-    /**
-     * Return the column number of the current position within the document that we are processing.
-     *
-     * @return The current column number.
-     */
-    public int getColumnNumber() {
-        return fCharacterCounter;
-    }
+  protected void init(
+      XMLEntityHandler entityHandler,
+      XMLErrorReporter errorReporter,
+      boolean sendCharDataAsCharArray,
+      int lineNumber,
+      int columnNumber) {
+    fEntityHandler = entityHandler;
+    fErrorReporter = errorReporter;
+    fSendCharDataAsCharArray = sendCharDataAsCharArray;
+    fLinefeedCounter = lineNumber;
+    fCharacterCounter = columnNumber;
+    fStillActive = true;
+    fInCDSect = false;
+    fCarriageReturnCounter = 1;
+    fCurrentOffset = 0;
+  }
 
-    /**
-     * This method is provided for scanner implementations.
-     */
-    public void setInCDSect(boolean inCDSect) {
-        fInCDSect = inCDSect;
-    }
+  /**
+   * Return the current offset within this reader.
+   *
+   * @return The offset.
+   */
+  public int currentOffset() {
+    return fCurrentOffset;
+  }
 
-    /**
-     * This method is provided for scanner implementations.
-     */
-    public boolean getInCDSect() {
-        return fInCDSect;
-    }
+  /**
+   * Return the line number of the current position within the document that we are processing.
+   *
+   * @return The current line number.
+   */
+  public int getLineNumber() {
+    if (fLinefeedCounter > 1) return fLinefeedCounter;
+    else return fCarriageReturnCounter;
+  }
 
-    /**
-     * This method is called by the reader subclasses at the end of input.
-     */
-    protected XMLEntityHandler.EntityReader changeReaders() throws Exception {
-        XMLEntityHandler.EntityReader nextReader = null;
-        if (fStillActive) {
-            nextReader = fEntityHandler.changeReaders();
-            fStillActive = false;
-        }
-        return nextReader;
+  /**
+   * Return the column number of the current position within the document that we are processing.
+   *
+   * @return The current column number.
+   */
+  public int getColumnNumber() {
+    return fCharacterCounter;
+  }
+
+  /** This method is provided for scanner implementations. */
+  public void setInCDSect(boolean inCDSect) {
+    fInCDSect = inCDSect;
+  }
+
+  /** This method is provided for scanner implementations. */
+  public boolean getInCDSect() {
+    return fInCDSect;
+  }
+
+  /** This method is called by the reader subclasses at the end of input. */
+  protected XMLEntityHandler.EntityReader changeReaders() throws Exception {
+    XMLEntityHandler.EntityReader nextReader = null;
+    if (fStillActive) {
+      nextReader = fEntityHandler.changeReaders();
+      fStillActive = false;
     }
+    return nextReader;
+  }
 }

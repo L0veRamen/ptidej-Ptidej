@@ -35,25 +35,22 @@ import org.argouml.uml.ui.UMLPlainTextDocument;
  */
 public class UMLDiscriminatorNameDocument extends UMLPlainTextDocument {
 
-    /**
-     * Constructor for UMLModelElementNameDocument.
-     */
-    public UMLDiscriminatorNameDocument() {
-        super("discriminator");
-    }
+  /** Constructor for UMLModelElementNameDocument. */
+  public UMLDiscriminatorNameDocument() {
+    super("discriminator");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLPlainTextDocument#setProperty(java.lang.String)
-     */
-    protected void setProperty(String text) {
-        Model.getCoreHelper().setDiscriminator(getTarget(), text);
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLPlainTextDocument#setProperty(java.lang.String)
+   */
+  protected void setProperty(String text) {
+    Model.getCoreHelper().setDiscriminator(getTarget(), text);
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLPlainTextDocument#getProperty()
-     */
-    protected String getProperty() {
-        return (String) Model.getFacade().getDiscriminator(getTarget());
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLPlainTextDocument#getProperty()
+   */
+  protected String getProperty() {
+    return (String) Model.getFacade().getDiscriminator(getTarget());
+  }
 }

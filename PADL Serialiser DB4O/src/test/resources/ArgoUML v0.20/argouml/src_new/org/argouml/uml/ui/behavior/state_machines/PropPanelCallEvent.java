@@ -28,7 +28,6 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.ui.targetmanager.TargetManager;
@@ -45,106 +44,94 @@ import org.argouml.util.ConfigLoader;
  */
 public class PropPanelCallEvent extends PropPanelEvent {
 
-    /**
-     * The constructor.
-     *
-     */
-    public PropPanelCallEvent() {
-        super("Call event", lookupIcon("CallEvent"),
-              ConfigLoader.getTabPropsOrientation());
-    }
+  /** The constructor. */
+  public PropPanelCallEvent() {
+    super("Call event", lookupIcon("CallEvent"), ConfigLoader.getTabPropsOrientation());
+  }
 
-    /**
-     * @see org.argouml.uml.ui.behavior.state_machines.PropPanelEvent#initialize()
-     */
-    public void initialize() {
-        super.initialize();
+  /**
+   * @see org.argouml.uml.ui.behavior.state_machines.PropPanelEvent#initialize()
+   */
+  public void initialize() {
+    super.initialize();
 
-        UMLSearchableComboBox operationComboBox =
-            new UMLCallEventOperationComboBox2(
-                new UMLCallEventOperationComboBoxModel());
-        addField(Translator.localize("label.operations"), operationComboBox);
+    UMLSearchableComboBox operationComboBox =
+        new UMLCallEventOperationComboBox2(new UMLCallEventOperationComboBoxModel());
+    addField(Translator.localize("label.operations"), operationComboBox);
 
-        addAction(new ActionNewParameter());
-        addAction(new ActionDeleteSingleModelElement());
-    }
-
+    addAction(new ActionNewParameter());
+    addAction(new ActionDeleteSingleModelElement());
+  }
 } /* end class PropPanelCallEvent */
 
 class UMLCallEventOperationComboBox2 extends UMLSearchableComboBox {
-    /**
-     * The constructor.
-     *
-     * @param arg0 the model
-     */
-    public UMLCallEventOperationComboBox2(UMLComboBoxModel2 arg0) {
-        super(arg0, null); // no external action; we do it ourselves
-        setEditable(false);
-    }
+  /**
+   * The constructor.
+   *
+   * @param arg0 the model
+   */
+  public UMLCallEventOperationComboBox2(UMLComboBoxModel2 arg0) {
+    super(arg0, null); // no external action; we do it ourselves
+    setEditable(false);
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        Object target = TargetManager.getInstance().getModelTarget();
-        if (Model.getFacade().isACallEvent(target)) {
-            Model.getCommonBehaviorHelper().setOperation(
-                    target,
-                    getSelectedItem());
-        }
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    Object target = TargetManager.getInstance().getModelTarget();
+    if (Model.getFacade().isACallEvent(target)) {
+      Model.getCommonBehaviorHelper().setOperation(target, getSelectedItem());
     }
+  }
 }
 
 class UMLCallEventOperationComboBoxModel extends UMLComboBoxModel2 {
-    /**
-     * The constructor.
-     */
-    public UMLCallEventOperationComboBoxModel() {
-        super("operation", true);
-    }
+  /** The constructor. */
+  public UMLCallEventOperationComboBoxModel() {
+    super("operation", true);
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        Object target = TargetManager.getInstance().getModelTarget();
-        Collection ops = new ArrayList();
-        if (Model.getFacade().isACallEvent(target)) {
-            Object ns = Model.getFacade().getNamespace(target);
-            if (Model.getFacade().isANamespace(ns)) {
-                Collection c =
-                    Model.getModelManagementHelper().getAllModelElementsOfKind(
-                            ns,
-                            Model.getMetaTypes().getClassifier());
-                Iterator i = c.iterator();
-                while (i.hasNext()) {
-                    ops.addAll(Model.getFacade().getOperations(i.next()));
-                }
-            }
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    Object target = TargetManager.getInstance().getModelTarget();
+    Collection ops = new ArrayList();
+    if (Model.getFacade().isACallEvent(target)) {
+      Object ns = Model.getFacade().getNamespace(target);
+      if (Model.getFacade().isANamespace(ns)) {
+        Collection c =
+            Model.getModelManagementHelper()
+                .getAllModelElementsOfKind(ns, Model.getMetaTypes().getClassifier());
+        Iterator i = c.iterator();
+        while (i.hasNext()) {
+          ops.addAll(Model.getFacade().getOperations(i.next()));
         }
-        setElements(ops);
+      }
     }
+    setElements(ops);
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
-     */
-    protected Object getSelectedModelElement() {
-        Object target = TargetManager.getInstance().getModelTarget();
-        if (Model.getFacade().isACallEvent(target)) {
-            return Model.getFacade().getOperation(target);
-        }
-        return null;
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
+   */
+  protected Object getSelectedModelElement() {
+    Object target = TargetManager.getInstance().getModelTarget();
+    if (Model.getFacade().isACallEvent(target)) {
+      return Model.getFacade().getOperation(target);
     }
+    return null;
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(java.lang.Object)
-     */
-    protected boolean isValidElement(Object element) {
-        Object target = TargetManager.getInstance().getModelTarget();
-        if (Model.getFacade().isACallEvent(target)) {
-            return element == Model.getFacade().getOperation(target);
-        }
-        return false;
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(java.lang.Object)
+   */
+  protected boolean isValidElement(Object element) {
+    Object target = TargetManager.getInstance().getModelTarget();
+    if (Model.getFacade().isACallEvent(target)) {
+      return element == Model.getFacade().getOperation(target);
     }
+    return false;
+  }
 }
-

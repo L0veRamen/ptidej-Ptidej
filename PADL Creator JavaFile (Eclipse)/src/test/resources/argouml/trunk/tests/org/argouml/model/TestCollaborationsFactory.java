@@ -26,165 +26,141 @@ package org.argouml.model;
 
 import junit.framework.TestCase;
 
-
 /**
- * Test the collaborations factory for all model implementations.<p>
+ * Test the collaborations factory for all model implementations.
  *
- * No imports from org.argouml.model.uml or other subpackage!
+ * <p>No imports from org.argouml.model.uml or other subpackage!
  */
 public class TestCollaborationsFactory extends TestCase {
 
-    /**
-     * All the ModelElements we are going to test.
-     */
-    private static String[] allModelElements =
-    {
-	"AssociationEndRole",
-	"AssociationRole",
-	"ClassifierRole",
-	"Collaboration",
-	"Interaction",
-	"Message",
+  /** All the ModelElements we are going to test. */
+  private static String[] allModelElements = {
+    "AssociationEndRole",
+    "AssociationRole",
+    "ClassifierRole",
+    "Collaboration",
+    "Interaction",
+    "Message",
+  };
+
+  /**
+   * The constructor.
+   *
+   * @param n the name
+   */
+  public TestCollaborationsFactory(String n) {
+    super(n);
+  }
+
+  /**
+   * @see junit.framework.TestCase#setUp()
+   */
+  public void setUp() {
+    // this should instantiate a new implementation
+    Model.getFacade();
+  }
+
+  /** Test the creation of the elements. */
+  public void testCreates() {
+
+    String[] objs = {
+      "AssociationEndRole",
+      "AssociationRole",
+      "ClassifierRole",
+      "Collaboration",
+      "Interaction",
+      "Message",
+      null,
     };
 
-    /**
-     * The constructor.
-     *
-     * @param n the name
+    CheckUMLModelHelper.createAndRelease(Model.getCollaborationsFactory(), objs);
+  }
+
+  /** Test for delete methods. */
+  public void testAllDeleteMethodsAvailable() {
+    CheckUMLModelHelper.hasDeleteMethod(Model.getCollaborationsFactory(), allModelElements);
+  }
+
+  /**
+   * Test to check whether elements which are attached to a ClassifierRole get deleted upon deletion
+   * of the ClassifierRole. These elements are Message and AssociationRole.
+   */
+  public void testDeleteClassifierRole() {
+    Object model = Model.getModelManagementFactory().createModel();
+
+    Object collab = Model.getCollaborationsFactory().buildCollaboration(model);
+    Object cr1 = Model.getCollaborationsFactory().createClassifierRole();
+    Object cr2 = Model.getCollaborationsFactory().createClassifierRole();
+    // Set namespace so buildAssocationRole works
+    Model.getCoreHelper().setNamespace(cr1, collab);
+    Model.getCoreHelper().setNamespace(cr2, collab);
+    Object role = Model.getCollaborationsFactory().buildAssociationRole(cr1, cr2);
+    assertNotNull("Failed to create role", role);
+    Object inter = Model.getCollaborationsFactory().buildInteraction(collab);
+    assertNotNull("Failed to build interaction", inter);
+    Object message = Model.getCollaborationsFactory().buildMessage(inter, role);
+    assertNotNull("Failed to build message", message);
+
+    Model.getUmlFactory().delete(cr1);
+    Model.getPump().flushModelEvents();
+
+    assertTrue("ClassifierRole not removed", Model.getUmlFactory().isRemoved(cr1));
+    assertTrue("AssociationRole not removed", Model.getUmlFactory().isRemoved(role));
+    assertTrue("Message not removed", Model.getUmlFactory().isRemoved(message));
+    /*
+     * This comment was included in a previous version (before 1/2005)
+     * of the test which had this assertion commented out:
+     * ------
+     * Interaction should not be removed when removing ClassifierRole...
+     * maybe if the last message is removed from the interaction but even
+     * then it's doubtfull since it will probably lead to backward
+     * compatibility problems in save formats.
+     * ------
+     * but my reading of the UML 1.4 specification is that an Interaction
+     * without at least one message is definitely illegal, so MDR is
+     * doing the right thing by removing it in this case where we only
+     * have a single message, which then gets deleted. - tfm
      */
-    public TestCollaborationsFactory(String n) {
-        super(n);
+    assertTrue("Interaction not removed", Model.getUmlFactory().isRemoved(inter));
+  }
+
+  /**
+   * @return Returns the allModelElements.
+   */
+  static String[] getAllModelElements() {
+    return allModelElements;
+  }
+
+  /** Test that IllegalArgumentException is thrown when a null is sent. */
+  public void testExpectedIllegalArgumentException() {
+    try {
+      Model.getCollaborationsFactory().buildActivator(null, null);
+      fail("Exception missing");
+    } catch (IllegalArgumentException e) {
+      // Correct Exception was thrown.
     }
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    public void setUp() {
-	//this should instantiate a new implementation
-	Model.getFacade();
+    try {
+      Model.getCollaborationsFactory().buildMessage(null, null);
+      fail("Exception missing");
+    } catch (IllegalArgumentException e) {
+      // Correct Exception was thrown.
     }
 
-    /**
-     * Test the creation of the elements.
-     */
-    public void testCreates() {
-
-        String[] objs = {
-	    "AssociationEndRole",
-	    "AssociationRole",
-	    "ClassifierRole",
-	    "Collaboration",
-	    "Interaction",
-	    "Message",
-	    null,
-	};
-
-        CheckUMLModelHelper.createAndRelease(
-            Model.getCollaborationsFactory(),
-            objs);
-
+    Object collab = Model.getCollaborationsFactory().createCollaboration();
+    try {
+      Model.getCollaborationsFactory().buildMessage(collab, null);
+      fail("Exception missing");
+    } catch (IllegalArgumentException e) {
+      // Correct Exception was thrown.
     }
 
-    /**
-     * Test for delete methods.
-     */
-    public void testAllDeleteMethodsAvailable() {
-        CheckUMLModelHelper.hasDeleteMethod(Model.getCollaborationsFactory(),
-                allModelElements);
+    Object inter = Model.getCollaborationsFactory().createInteraction();
+    try {
+      Model.getCollaborationsFactory().buildMessage(inter, null);
+      fail("Exception missing");
+    } catch (IllegalArgumentException e) {
+      // Correct Exception was thrown.
     }
-
-    /**
-     * Test to check whether elements which are attached to a ClassifierRole get
-     * deleted upon deletion of the ClassifierRole. These elements are
-     * Message and AssociationRole.
-     */
-    public void testDeleteClassifierRole() {
-        Object model = Model.getModelManagementFactory().createModel();
-
-        Object collab =
-	    Model.getCollaborationsFactory().buildCollaboration(model);
-        Object cr1 = Model.getCollaborationsFactory().createClassifierRole();
-        Object cr2 = Model.getCollaborationsFactory().createClassifierRole();
-        // Set namespace so buildAssocationRole works
-        Model.getCoreHelper().setNamespace(cr1, collab);
-        Model.getCoreHelper().setNamespace(cr2, collab);
-        Object role =
-	    Model.getCollaborationsFactory().buildAssociationRole(cr1, cr2);
-        assertNotNull("Failed to create role", role);
-        Object inter =
-	    Model.getCollaborationsFactory().buildInteraction(collab);
-        assertNotNull("Failed to build interaction", inter);
-        Object message =
-            Model.getCollaborationsFactory().buildMessage(inter, role);
-        assertNotNull("Failed to build message", message);
-
-        Model.getUmlFactory().delete(cr1);
-        Model.getPump().flushModelEvents();
-
-        assertTrue("ClassifierRole not removed",
-                Model.getUmlFactory().isRemoved(cr1));
-        assertTrue("AssociationRole not removed",
-                Model.getUmlFactory().isRemoved(role));
-        assertTrue("Message not removed",
-                Model.getUmlFactory().isRemoved(message));
-        /*
-         * This comment was included in a previous version (before 1/2005)
-         * of the test which had this assertion commented out:
-         * ------
-         * Interaction should not be removed when removing ClassifierRole...
-         * maybe if the last message is removed from the interaction but even
-         * then it's doubtfull since it will probably lead to backward
-         * compatibility problems in save formats.
-         * ------
-         * but my reading of the UML 1.4 specification is that an Interaction
-         * without at least one message is definitely illegal, so MDR is
-         * doing the right thing by removing it in this case where we only
-         * have a single message, which then gets deleted. - tfm
-         */
-        assertTrue("Interaction not removed",
-                Model.getUmlFactory().isRemoved(inter));
-    }
-
-    /**
-     * @return Returns the allModelElements.
-     */
-    static String[] getAllModelElements() {
-        return allModelElements;
-    }
-
-    /**
-     * Test that IllegalArgumentException is thrown when a null is sent.
-     */
-    public void testExpectedIllegalArgumentException() {
-        try {
-            Model.getCollaborationsFactory().buildActivator(null, null);
-            fail("Exception missing");
-        } catch (IllegalArgumentException e) {
-            // Correct Exception was thrown.
-        }
-
-        try {
-            Model.getCollaborationsFactory().buildMessage(null, null);
-            fail("Exception missing");
-        } catch (IllegalArgumentException e) {
-            // Correct Exception was thrown.
-        }
-
-        Object collab = Model.getCollaborationsFactory().createCollaboration();
-        try {
-            Model.getCollaborationsFactory().buildMessage(collab, null);
-            fail("Exception missing");
-        } catch (IllegalArgumentException e) {
-            // Correct Exception was thrown.
-        }
-
-        Object inter = Model.getCollaborationsFactory().createInteraction();
-        try {
-            Model.getCollaborationsFactory().buildMessage(inter, null);
-            fail("Exception missing");
-        } catch (IllegalArgumentException e) {
-            // Correct Exception was thrown.
-        }
-
-    }
+  }
 }

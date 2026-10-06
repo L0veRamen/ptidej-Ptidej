@@ -30,30 +30,27 @@ import org.restlet.data.Protocol;
 
 /**
  * Server static files using an application.
+ *
  * @author Jerome Louvel (contact@noelios.com)
  */
-public class Part06 implements Constants
-{
-	public static void main(String[] args) throws Exception
-	{
-		// Create a container
-		Container container = new Container();
-		container.getServers().add(Protocol.HTTP, 8182);
-		container.getClients().add(Protocol.FILE);
+public class Part06 implements Constants {
+  public static void main(String[] args) throws Exception {
+    // Create a container
+    Container container = new Container();
+    container.getServers().add(Protocol.HTTP, 8182);
+    container.getClients().add(Protocol.FILE);
 
-		// Create an application
-		Application application = new Application(container)
-		{
-			@Override
-			public Restlet createRoot()
-			{
-				return new Directory(getContext(), ROOT_URI);
-			}
-		};
+    // Create an application
+    Application application =
+        new Application(container) {
+          @Override
+          public Restlet createRoot() {
+            return new Directory(getContext(), ROOT_URI);
+          }
+        };
 
-		// Attach the application to the container and start it
-		container.getDefaultHost().attach("", application);
-		container.start();
-	}
-
+    // Attach the application to the container and start it
+    container.getDefaultHost().attach("", application);
+    container.start();
+  }
 }

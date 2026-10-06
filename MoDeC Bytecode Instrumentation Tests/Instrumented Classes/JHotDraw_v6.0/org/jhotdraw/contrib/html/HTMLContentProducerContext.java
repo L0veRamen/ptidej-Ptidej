@@ -11,12 +11,11 @@
 package org.jhotdraw.contrib.html;
 
 /**
- * HTMLContentProducerContext defines the interface required of clients
- * requesting HTML based contents.<br>
+ * HTMLContentProducerContext defines the interface required of clients requesting HTML based
+ * contents.<br>
  *
- * @author  Eduardo Francos - InContext
+ * @author Eduardo Francos - InContext
  * @created 30 avril 2002
  * @version <$CURRENT_VERSION$>
  */
-public interface HTMLContentProducerContext extends AttributeContentProducerContext {
-}
+public interface HTMLContentProducerContext extends AttributeContentProducerContext {}

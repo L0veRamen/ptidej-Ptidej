@@ -26,41 +26,39 @@ package org.argouml.uml.diagram.ui;
 
 import java.awt.Color;
 import java.awt.Rectangle;
-
 import org.tigris.gef.presentation.Fig;
 import org.tigris.gef.presentation.FigCircle;
 
 /**
- * The T juntion joining the dashed edge to a solid edge of an association
- * class.
+ * The T juntion joining the dashed edge to a solid edge of an association class.
+ *
  * @author Bob Tarling
  */
-
 public class FigAssociationClassTee extends FigNodeModelElement {
-    private FigCircle bigPort;
-    public FigAssociationClassTee() {
-        bigPort = new FigCircle(0, 0, 10, 10, Color.black, Color.white);
-        addFig(bigPort);
-    }
+  private FigCircle bigPort;
 
-    public boolean hit(Rectangle r) {
-        return false;
-    }
+  public FigAssociationClassTee() {
+    bigPort = new FigCircle(0, 0, 10, 10, Color.black, Color.white);
+    addFig(bigPort);
+  }
 
-    public Object deepHitPort(int x, int y) {
-        return null;
-    }
+  public boolean hit(Rectangle r) {
+    return false;
+  }
 
-    public Object hitPort(int x, int y) {
-        return null;
-    }
+  public Object deepHitPort(int x, int y) {
+    return null;
+  }
 
-    public Fig hitFig(Rectangle r) {
-        return null;
-    }
+  public Object hitPort(int x, int y) {
+    return null;
+  }
 
-    public boolean isSelectable() {
-        return false;
-    }
+  public Fig hitFig(Rectangle r) {
+    return null;
+  }
 
+  public boolean isSelectable() {
+    return false;
+  }
 }

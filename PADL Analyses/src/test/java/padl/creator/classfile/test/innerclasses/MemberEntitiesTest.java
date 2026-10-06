@@ -4,14 +4,13 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
 package padl.creator.classfile.test.innerclasses;
 
 import org.junit.Assert;
-
 import padl.analysis.UnsupportedSourceModelException;
 import padl.analysis.repository.AACRelationshipsAnalysis;
 import padl.creator.classfile.CompleteClassFileCreator;
@@ -25,37 +24,39 @@ import padl.util.Util;
 
 /**
  * @author Yann-Gaël Guéhéneuc
- * @since  2006/02/08
+ * @since 2006/02/08
  */
 public class MemberEntitiesTest extends ClassFilePrimitive {
-	private static IFirstClassEntity[] FirstClassEntities = null;
+  private static IFirstClassEntity[] FirstClassEntities = null;
 
-	public MemberEntitiesTest(final String aName) {
-		super(aName);
-	}
+  public MemberEntitiesTest(final String aName) {
+    super(aName);
+  }
 
-	protected void setUp()
-			throws CreationException, UnsupportedSourceModelException {
+  protected void setUp() throws CreationException, UnsupportedSourceModelException {
 
-		if (MemberEntitiesTest.FirstClassEntities == null) {
-			final ICodeLevelModel codeLevelModel = ClassFilePrimitive
-					.getFactory().createCodeLevelModel("");
-			codeLevelModel.create(new CompleteClassFileCreator(new String[] {
-					"../PADL Creator ClassFile/target/test-classes/ArgoUML/org/argouml/application/events/ArgoEventPump.class",
-					"../PADL Creator ClassFile/target/test-classes/ArgoUML/org/argouml/application/events/ArgoEventPump$Pair.class" }));
+    if (MemberEntitiesTest.FirstClassEntities == null) {
+      final ICodeLevelModel codeLevelModel =
+          ClassFilePrimitive.getFactory().createCodeLevelModel("");
+      codeLevelModel.create(
+          new CompleteClassFileCreator(
+              new String[] {
+                "../PADL Creator ClassFile/target/test-classes/ArgoUML/org/argouml/application/events/ArgoEventPump.class",
+                "../PADL Creator ClassFile/target/test-classes/ArgoUML/org/argouml/application/events/ArgoEventPump$Pair.class"
+              }));
 
-			final IIdiomLevelModel idiomLevelModel = (IIdiomLevelModel) new AACRelationshipsAnalysis()
-					.invoke(codeLevelModel);
+      final IIdiomLevelModel idiomLevelModel =
+          (IIdiomLevelModel) new AACRelationshipsAnalysis().invoke(codeLevelModel);
 
-			MemberEntitiesTest.FirstClassEntities = Util
-					.getArrayOfTopLevelEntities(idiomLevelModel);
-		}
-	}
+      MemberEntitiesTest.FirstClassEntities = Util.getArrayOfTopLevelEntities(idiomLevelModel);
+    }
+  }
 
-	public void testMemberEntities() {
-		Assert.assertTrue("Member class should have methods!",
-				((IMemberClass) MemberEntitiesTest.FirstClassEntities[17]
-						.getConstituentFromName("Pair"))
-						.getNumberOfConstituents() > 0);
-	}
+  public void testMemberEntities() {
+    Assert.assertTrue(
+        "Member class should have methods!",
+        ((IMemberClass) MemberEntitiesTest.FirstClassEntities[17].getConstituentFromName("Pair"))
+                .getNumberOfConstituents()
+            > 0);
+  }
 }

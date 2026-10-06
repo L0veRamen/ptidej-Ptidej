@@ -25,39 +25,33 @@
 package org.argouml.uml.ui;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.ui.targetmanager.TargetManager;
 import org.tigris.gef.undo.UndoableAction;
 
 /**
- * Action to add a package to the selected model element in the
- * explorer. This is a shortcut that helps build model
- * structures quickly.
+ * Action to add a package to the selected model element in the explorer. This is a shortcut that
+ * helps build model structures quickly.
  *
  * @author alexb@tigris.org
  */
-public class ActionAddPackage  extends UndoableAction {
+public class ActionAddPackage extends UndoableAction {
 
-    /**
-     * Creates a new instance of ActionAddPackage.
-     */
-    public ActionAddPackage() {
-        super(Translator.localize("action.add-package"));
-    }
+  /** Creates a new instance of ActionAddPackage. */
+  public ActionAddPackage() {
+    super(Translator.localize("action.add-package"));
+  }
 
-    /**
-     * Adds a package to the selected object in the nav pane.
-     *
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        Object namespace =
-            TargetManager.getInstance().getModelTarget();
-        Model.getCoreHelper().addOwnedElement(namespace,
-                Model.getModelManagementFactory().createPackage());
-    }
-
+  /**
+   * Adds a package to the selected object in the nav pane.
+   *
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    Object namespace = TargetManager.getInstance().getModelTarget();
+    Model.getCoreHelper()
+        .addOwnedElement(namespace, Model.getModelManagementFactory().createPackage());
+  }
 }

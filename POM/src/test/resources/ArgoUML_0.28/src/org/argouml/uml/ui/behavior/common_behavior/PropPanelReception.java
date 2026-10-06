@@ -26,7 +26,6 @@ package org.argouml.uml.ui.behavior.common_behavior;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.ui.LookAndFeelMgr;
 import org.argouml.uml.ui.ActionNavigateContainerElement;
@@ -39,57 +38,46 @@ import org.argouml.uml.ui.foundation.core.UMLGeneralizableElementLeafCheckBox;
 import org.argouml.uml.ui.foundation.core.UMLGeneralizableElementRootCheckBox;
 import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
 
-/**
- * PropertyPanel for a Reception.
- */
+/** PropertyPanel for a Reception. */
 public class PropPanelReception extends PropPanelFeature {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = -8572743081899344540L;
-    
-    private JPanel modifiersPanel;
+  /** The serial version. */
+  private static final long serialVersionUID = -8572743081899344540L;
 
-    /**
-     * Construct a property panel for a Reception.
-     */
-    public PropPanelReception() {
-        super("label.reception", lookupIcon("Reception"));
+  private JPanel modifiersPanel;
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.owner"),
-                getOwnerScroll());
+  /** Construct a property panel for a Reception. */
+  public PropPanelReception() {
+    super("label.reception", lookupIcon("Reception"));
 
-        add(getVisibilityPanel());
-        
-        modifiersPanel = createBorderPanel(Translator.localize(
-                    "label.modifiers"));
-        modifiersPanel.add(new UMLGeneralizableElementAbstractCheckBox());
-        modifiersPanel.add(new UMLGeneralizableElementLeafCheckBox());
-        modifiersPanel.add(new UMLGeneralizableElementRootCheckBox());
-        modifiersPanel.add(new UMLBehavioralFeatureQueryCheckBox());
-        modifiersPanel.add(new UMLFeatureOwnerScopeCheckBox());
-        add(modifiersPanel);
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.owner"), getOwnerScroll());
 
-        addSeparator();
+    add(getVisibilityPanel());
 
-        addField(Translator.localize("label.signal"),
-                new UMLReceptionSignalComboBox(this,
-                        new UMLReceptionSignalComboBoxModel()));
+    modifiersPanel = createBorderPanel(Translator.localize("label.modifiers"));
+    modifiersPanel.add(new UMLGeneralizableElementAbstractCheckBox());
+    modifiersPanel.add(new UMLGeneralizableElementLeafCheckBox());
+    modifiersPanel.add(new UMLGeneralizableElementRootCheckBox());
+    modifiersPanel.add(new UMLBehavioralFeatureQueryCheckBox());
+    modifiersPanel.add(new UMLFeatureOwnerScopeCheckBox());
+    add(modifiersPanel);
 
-        UMLTextArea2 specText = new UMLTextArea2(
-                new UMLReceptionSpecificationDocument());
-        specText.setLineWrap(true);
-        specText.setRows(5);
-        specText.setFont(LookAndFeelMgr.getInstance().getStandardFont());
-        JScrollPane specificationScroll = new JScrollPane(specText);
-        addField(Translator.localize("label.specification"),
-                specificationScroll);
+    addSeparator();
 
-        addAction(new ActionNavigateContainerElement());
-        addAction(new ActionNewStereotype());
-        addAction(getDeleteAction());
-    }
+    addField(
+        Translator.localize("label.signal"),
+        new UMLReceptionSignalComboBox(this, new UMLReceptionSignalComboBoxModel()));
+
+    UMLTextArea2 specText = new UMLTextArea2(new UMLReceptionSpecificationDocument());
+    specText.setLineWrap(true);
+    specText.setRows(5);
+    specText.setFont(LookAndFeelMgr.getInstance().getStandardFont());
+    JScrollPane specificationScroll = new JScrollPane(specText);
+    addField(Translator.localize("label.specification"), specificationScroll);
+
+    addAction(new ActionNavigateContainerElement());
+    addAction(new ActionNewStereotype());
+    addAction(getDeleteAction());
+  }
 }

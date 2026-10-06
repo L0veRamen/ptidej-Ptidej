@@ -29,11 +29,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.ListIterator;
-
 import javax.swing.JButton;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
-
 import org.apache.log4j.Logger;
 import org.argouml.application.api.Argo;
 import org.argouml.application.api.PluggableSettingsTab;
@@ -50,173 +48,157 @@ import org.argouml.uml.ui.UMLAction;
  * @author Thierry Lach
  * @since 0.9.4
  */
-public class ActionSettings extends UMLAction
-	implements ArgoModuleEventListener {
+public class ActionSettings extends UMLAction implements ArgoModuleEventListener {
 
-    ////////////////////////////////////////////////////////////////
-    // static variables
+  ////////////////////////////////////////////////////////////////
+  // static variables
 
-    /**
-     * Logger.
-     */
-    private static final Logger LOG = Logger.getLogger(Translator.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(Translator.class);
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
-    private JButton applyButton = null;
+  ////////////////////////////////////////////////////////////////
+  // constructors
+  private JButton applyButton = null;
 
-    private JTabbedPane tabs = null;
+  private JTabbedPane tabs = null;
 
-    private ArgoDialog dialog = null;
+  private ArgoDialog dialog = null;
 
-    /**
-     * Constructor.
-     */
-    public ActionSettings() {
-        super("action.settings", HAS_ICON);
-    }
+  /** Constructor. */
+  public ActionSettings() {
+    super("action.settings", HAS_ICON);
+  }
 
-    /**
-     * Helper for localization.
-     *
-     * @param key The key to localize.
-     * @return The localized String.
-     */
-    private String localize(String key) {
-        return Translator.localize(key);
-    }
+  /**
+   * Helper for localization.
+   *
+   * @param key The key to localize.
+   * @return The localized String.
+   */
+  private String localize(String key) {
+    return Translator.localize(key);
+  }
 
-    ////////////////////////////////////////////////////////////////
-    // main methods
+  ////////////////////////////////////////////////////////////////
+  // main methods
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(
-     *         java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent event) {
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed( java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent event) {
 
-        ProjectBrowser pb = ProjectBrowser.getInstance();
-        if (dialog == null) {
-            try {
-                dialog =
-                    new ArgoDialog(pb, localize("dialog.settings"),
-                        ArgoDialog.OK_CANCEL_OPTION, true) {
+    ProjectBrowser pb = ProjectBrowser.getInstance();
+    if (dialog == null) {
+      try {
+        dialog =
+            new ArgoDialog(pb, localize("dialog.settings"), ArgoDialog.OK_CANCEL_OPTION, true) {
 
-                    public void actionPerformed(ActionEvent ev) {
-                        super.actionPerformed(ev);
-                        if (ev.getSource() == getOkButton()) {
-                            handleSave();
-                        } else if (ev.getSource() == getCancelButton()) {
-                            handleCancel();
-                        }
-                    }
-                };
-
-                tabs = new JTabbedPane();
-
-                applyButton = new JButton(localize("button.apply"));
-                String mnemonic = localize("button.apply.mnemonic");
-                if (mnemonic != null && mnemonic.length() > 0) {
-                    applyButton.setMnemonic(mnemonic.charAt(0));
+              public void actionPerformed(ActionEvent ev) {
+                super.actionPerformed(ev);
+                if (ev.getSource() == getOkButton()) {
+                  handleSave();
+                } else if (ev.getSource() == getCancelButton()) {
+                  handleCancel();
                 }
-                applyButton.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        handleSave();
-                    }
-                });
-                dialog.addButton(applyButton);
+              }
+            };
 
-                ArrayList list = Argo.getPlugins(PluggableSettingsTab.class);
-                ListIterator iterator = list.listIterator();
-                while (iterator.hasNext()) {
-                    Object o = iterator.next();
-                    SettingsTabPanel stp =
-                        ((PluggableSettingsTab) o).getSettingsTabPanel();
+        tabs = new JTabbedPane();
 
-                    tabs.addTab(
-                            Translator.localize(stp.getTabKey()),
-                            stp.getTabPanel());
-                }
+        applyButton = new JButton(localize("button.apply"));
+        String mnemonic = localize("button.apply.mnemonic");
+        if (mnemonic != null && mnemonic.length() > 0) {
+          applyButton.setMnemonic(mnemonic.charAt(0));
+        }
+        applyButton.addActionListener(
+            new ActionListener() {
+              public void actionPerformed(ActionEvent e) {
+                handleSave();
+              }
+            });
+        dialog.addButton(applyButton);
 
-                // Increase width to accommodate all tabs on one row.
-                // (temporary solution until tabs are replaced with tree)
-                final int minimumWidth = 480;
-                tabs.setPreferredSize(
-                        new Dimension(Math.max(tabs.getPreferredSize().width,
-                                	       minimumWidth),
-                                      tabs.getPreferredSize().height));
+        ArrayList list = Argo.getPlugins(PluggableSettingsTab.class);
+        ListIterator iterator = list.listIterator();
+        while (iterator.hasNext()) {
+          Object o = iterator.next();
+          SettingsTabPanel stp = ((PluggableSettingsTab) o).getSettingsTabPanel();
 
-                tabs.setTabPlacement(SwingConstants.LEFT);
-                dialog.setContent(tabs);
-            } catch (Exception exception) {
-                LOG.error("got an Exception in ActionSettings", exception);
-            }
+          tabs.addTab(Translator.localize(stp.getTabKey()), stp.getTabPanel());
         }
 
-        handleRefresh();
-        dialog.toFront();
-        dialog.setVisible(true);
+        // Increase width to accommodate all tabs on one row.
+        // (temporary solution until tabs are replaced with tree)
+        final int minimumWidth = 480;
+        tabs.setPreferredSize(
+            new Dimension(
+                Math.max(tabs.getPreferredSize().width, minimumWidth),
+                tabs.getPreferredSize().height));
+
+        tabs.setTabPlacement(SwingConstants.LEFT);
+        dialog.setContent(tabs);
+      } catch (Exception exception) {
+        LOG.error("got an Exception in ActionSettings", exception);
+      }
     }
 
-    /**
-     * @see org.argouml.application.events.ArgoModuleEventListener#moduleLoaded(org.argouml.application.events.ArgoModuleEvent)
-     */
-    public void moduleLoaded(ArgoModuleEvent event) {
-    }
+    handleRefresh();
+    dialog.toFront();
+    dialog.setVisible(true);
+  }
 
-    /**
-     * @see org.argouml.application.events.ArgoModuleEventListener#moduleUnloaded(org.argouml.application.events.ArgoModuleEvent)
-     */
-    public void moduleUnloaded(ArgoModuleEvent event) {
-    }
+  /**
+   * @see
+   *     org.argouml.application.events.ArgoModuleEventListener#moduleLoaded(org.argouml.application.events.ArgoModuleEvent)
+   */
+  public void moduleLoaded(ArgoModuleEvent event) {}
 
-    /**
-     * @see org.argouml.application.events.ArgoModuleEventListener#moduleEnabled(org.argouml.application.events.ArgoModuleEvent)
-     */
-    public void moduleEnabled(ArgoModuleEvent event) {
-    }
+  /**
+   * @see
+   *     org.argouml.application.events.ArgoModuleEventListener#moduleUnloaded(org.argouml.application.events.ArgoModuleEvent)
+   */
+  public void moduleUnloaded(ArgoModuleEvent event) {}
 
-    /**
-     * @see org.argouml.application.events.ArgoModuleEventListener#moduleDisabled(org.argouml.application.events.ArgoModuleEvent)
-     */
-    public void moduleDisabled(ArgoModuleEvent event) {
-    }
+  /**
+   * @see
+   *     org.argouml.application.events.ArgoModuleEventListener#moduleEnabled(org.argouml.application.events.ArgoModuleEvent)
+   */
+  public void moduleEnabled(ArgoModuleEvent event) {}
 
-    /**
-     * Called when the user has pressed Save. Performs "Save" in all Tabs.
-     */
-    private void handleSave() {
-        for (int i = 0; i < tabs.getComponentCount(); i++) {
-            Object o = tabs.getComponent(i);
-            if (o instanceof SettingsTabPanel) {
-                ((SettingsTabPanel) o).handleSettingsTabSave();
-            }
-        }
-    }
+  /**
+   * @see
+   *     org.argouml.application.events.ArgoModuleEventListener#moduleDisabled(org.argouml.application.events.ArgoModuleEvent)
+   */
+  public void moduleDisabled(ArgoModuleEvent event) {}
 
-    /**
-     * Called when the user has pressed Cancel. Performs "Cancel" in all Tabs.
-     */
-    private void handleCancel() {
-        for (int i = 0; i < tabs.getComponentCount(); i++) {
-            Object o = tabs.getComponent(i);
-            if (o instanceof SettingsTabPanel) {
-                ((SettingsTabPanel) o).handleSettingsTabCancel();
-            }
-        }
+  /** Called when the user has pressed Save. Performs "Save" in all Tabs. */
+  private void handleSave() {
+    for (int i = 0; i < tabs.getComponentCount(); i++) {
+      Object o = tabs.getComponent(i);
+      if (o instanceof SettingsTabPanel) {
+        ((SettingsTabPanel) o).handleSettingsTabSave();
+      }
     }
+  }
 
-    /**
-     * Called when the user has pressed Refresh. Performs "Refresh" in all Tabs.
-     */
-    private void handleRefresh() {
-        for (int i = 0; i < tabs.getComponentCount(); i++) {
-            Object o = tabs.getComponent(i);
-            if (o instanceof SettingsTabPanel) {
-                ((SettingsTabPanel) o).handleSettingsTabRefresh();
-            }
-        }
+  /** Called when the user has pressed Cancel. Performs "Cancel" in all Tabs. */
+  private void handleCancel() {
+    for (int i = 0; i < tabs.getComponentCount(); i++) {
+      Object o = tabs.getComponent(i);
+      if (o instanceof SettingsTabPanel) {
+        ((SettingsTabPanel) o).handleSettingsTabCancel();
+      }
     }
+  }
+
+  /** Called when the user has pressed Refresh. Performs "Refresh" in all Tabs. */
+  private void handleRefresh() {
+    for (int i = 0; i < tabs.getComponentCount(); i++) {
+      Object o = tabs.getComponent(i);
+      if (o instanceof SettingsTabPanel) {
+        ((SettingsTabPanel) o).handleSettingsTabRefresh();
+      }
+    }
+  }
 }
 /* end class ActionSettings */
-

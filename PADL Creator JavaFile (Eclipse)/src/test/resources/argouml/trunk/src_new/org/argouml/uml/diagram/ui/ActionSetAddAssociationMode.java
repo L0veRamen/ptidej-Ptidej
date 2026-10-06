@@ -29,7 +29,6 @@
  */
 package org.argouml.uml.diagram.ui;
 
-
 import org.argouml.model.Model;
 import org.argouml.ui.CmdSetMode;
 import org.tigris.gef.base.ModeCreatePolyEdge;
@@ -39,30 +38,23 @@ import org.tigris.gef.base.ModeCreatePolyEdge;
  *
  * @author Bob Tarling
  */
-
 public class ActionSetAddAssociationMode extends CmdSetMode {
 
-    /**
-     * Serial version generated for rev. 1.2
-     */
-    private static final long serialVersionUID = -3869448253653259670L;
+  /** Serial version generated for rev. 1.2 */
+  private static final long serialVersionUID = -3869448253653259670L;
 
-    /**
-     * Construct a new ActionAddAssociation.<p>
-     *
-     * @param aggregationKind the required aggregation for the association.
-     * @param unidirectional true if this is to create a unidirectional
-     *        association
-     * @param name the action description
-     */
-    public ActionSetAddAssociationMode(Object aggregationKind,
-            boolean unidirectional,
-            String name) {
-        super(ModeCreatePolyEdge.class, "edgeClass",
-	      Model.getMetaTypes().getAssociation(), name);
-        _modeArgs.put("aggregation", aggregationKind);
-        _modeArgs.put("unidirectional", Boolean.valueOf(unidirectional));
-    }
+  /**
+   * Construct a new ActionAddAssociation.
+   *
+   * <p>
+   *
+   * @param aggregationKind the required aggregation for the association.
+   * @param unidirectional true if this is to create a unidirectional association
+   * @param name the action description
+   */
+  public ActionSetAddAssociationMode(Object aggregationKind, boolean unidirectional, String name) {
+    super(ModeCreatePolyEdge.class, "edgeClass", Model.getMetaTypes().getAssociation(), name);
+    _modeArgs.put("aggregation", aggregationKind);
+    _modeArgs.put("unidirectional", Boolean.valueOf(unidirectional));
+  }
 }
-
-

@@ -12,11 +12,13 @@
 package org.jhotdraw.framework;
 
 /**
- * @author  Wolfram Kaiser <mrfloppy@sourceforge.net>
+ * @author Wolfram Kaiser <mrfloppy@sourceforge.net>
  * @version <$CURRENT_VERSION$>
  */
 public interface FigureVisitor {
-	public void visitFigure(Figure hostFigure);
-	public void visitHandle(Handle hostHandle);
-	public void visitFigureChangeListener(FigureChangeListener hostFigureChangeListener);
+  public void visitFigure(Figure hostFigure);
+
+  public void visitHandle(Handle hostHandle);
+
+  public void visitFigureChangeListener(FigureChangeListener hostFigureChangeListener);
 }

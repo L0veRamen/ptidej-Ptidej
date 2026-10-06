@@ -30,60 +30,57 @@ import org.tigris.gef.presentation.ArrowHeadTriangle;
 
 /**
  * Fig representing a UML Abstraction.
- * <p>
-
- * Graphical representation is a dashed line and a triangle arrow-head.
- * 
+ *
+ * <p>Graphical representation is a dashed line and a triangle arrow-head.
+ *
  * @author agauthie
  */
 public class FigAbstraction extends FigDependency {
 
-    /**
-     * The constructor.
-     * 
-     * @deprecated for 0.27.3 by tfmorris. Use
-     *             {@link #FigAbstraction(Object, DiagramSettings)}.
-     */
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    public FigAbstraction() {
-        super();
-        setDestArrowHead(createEndArrow());
-    }
+  /**
+   * The constructor.
+   *
+   * @deprecated for 0.27.3 by tfmorris. Use {@link #FigAbstraction(Object, DiagramSettings)}.
+   */
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  public FigAbstraction() {
+    super();
+    setDestArrowHead(createEndArrow());
+  }
 
-    /**
-     * Create the arrow head for the abstraction. This overrides the
-     * superclass to create a filled arrow head.
-     * @return the arrow head.
-     */
-    protected ArrowHead createEndArrow() {
-        final ArrowHead arrow = new ArrowHeadTriangle();
-        arrow.setFillColor(FILL_COLOR);
-        return arrow;
-    }
+  /**
+   * Create the arrow head for the abstraction. This overrides the superclass to create a filled
+   * arrow head.
+   *
+   * @return the arrow head.
+   */
+  protected ArrowHead createEndArrow() {
+    final ArrowHead arrow = new ArrowHeadTriangle();
+    arrow.setFillColor(FILL_COLOR);
+    return arrow;
+  }
 
-    /**
-     * The constructor.
-     * 
-     * @param edge the owning UML element
-     * @deprecated for 0.27.3 by tfmorris. Use
-     *             {@link #FigAbstraction(Object, DiagramSettings)}.
-     */
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    public FigAbstraction(Object edge) {
-        this();
-        setOwner(edge);
-    }
+  /**
+   * The constructor.
+   *
+   * @param edge the owning UML element
+   * @deprecated for 0.27.3 by tfmorris. Use {@link #FigAbstraction(Object, DiagramSettings)}.
+   */
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  public FigAbstraction(Object edge) {
+    this();
+    setOwner(edge);
+  }
 
-    /**
-     * Construct a Fig.
-     * 
-     * @param owner owning UML element
-     * @param settings render settings
-     */
-    public FigAbstraction(Object owner, DiagramSettings settings) {
-        super(owner, settings);
-    }
+  /**
+   * Construct a Fig.
+   *
+   * @param owner owning UML element
+   * @param settings render settings
+   */
+  public FigAbstraction(Object owner, DiagramSettings settings) {
+    super(owner, settings);
+  }
 }
-

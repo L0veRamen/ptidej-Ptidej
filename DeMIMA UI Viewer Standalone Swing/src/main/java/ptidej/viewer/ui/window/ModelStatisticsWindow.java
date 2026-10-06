@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -18,33 +18,34 @@ import ptidej.viewer.utils.Resources;
 
 /**
  * @author Yann-Gaël Guéhéneuc
- * @since  2007/06/13
+ * @since 2007/06/13
  */
 public final class ModelStatisticsWindow extends AbstractExternalWindow {
-	private static final long serialVersionUID = 1L;
-	private final StatisticsPanel statisticsPanel;
+  private static final long serialVersionUID = 1L;
+  private final StatisticsPanel statisticsPanel;
 
-	public ModelStatisticsWindow() {
-		super("Model Statistics");
+  public ModelStatisticsWindow() {
+    super("Model Statistics");
 
-		this.setResizable(true);
-		this.setBounds(50, 50, 500, 300);
-		DesktopPane.getInstance().setLayer(this, Resources.PROJECTS_LAYER);
+    this.setResizable(true);
+    this.setBounds(50, 50, 500, 300);
+    DesktopPane.getInstance().setLayer(this, Resources.PROJECTS_LAYER);
 
-		this.statisticsPanel = StatisticsPanel.getInstance();
-		this.getContentPane().add(this.statisticsPanel);
-	}
-	public void sourceModelAvailable(
-		final SourceAndGraphModelEvent aSourceModelEvent) {
+    this.statisticsPanel = StatisticsPanel.getInstance();
+    this.getContentPane().add(this.statisticsPanel);
+  }
 
-		this.statisticsPanel.sourceModelAvailable(aSourceModelEvent);
-	}
-	public void sourceModelChanged(
-		final SourceAndGraphModelEvent aSourceModelEvent) {
+  public void sourceModelAvailable(final SourceAndGraphModelEvent aSourceModelEvent) {
 
-		this.statisticsPanel.sourceModelChanged(aSourceModelEvent);
-	}
-	public void sourceModelUnavailable() {
-		this.statisticsPanel.sourceModelUnavailable();
-	}
+    this.statisticsPanel.sourceModelAvailable(aSourceModelEvent);
+  }
+
+  public void sourceModelChanged(final SourceAndGraphModelEvent aSourceModelEvent) {
+
+    this.statisticsPanel.sourceModelChanged(aSourceModelEvent);
+  }
+
+  public void sourceModelUnavailable() {
+    this.statisticsPanel.sourceModelUnavailable();
+  }
 }

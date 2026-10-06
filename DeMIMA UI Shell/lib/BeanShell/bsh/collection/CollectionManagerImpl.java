@@ -7,7 +7,7 @@
  *                                                                           *
  *  The contents of this file are subject to the Sun Public License Version  *
  *  1.0 (the "License"); you may not use this file except in compliance with *
- *  the License. A copy of the License is available at http://www.sun.com    * 
+ *  the License. A copy of the License is available at http://www.sun.com    *
  *                                                                           *
  *  The Original Code is BeanShell. The Initial Developer of the Original    *
  *  Code is Pat Niemeyer. Portions created by Pat Niemeyer are Copyright     *
@@ -33,45 +33,34 @@
 
 package bsh.collection;
 
-import java.util.Iterator;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.Map;
-import java.lang.reflect.Array;
 import bsh.BshIterator;
+import java.util.Map;
 
 /**
-	Dynamically loaded extension supporting post 1.1 collections iterator.
- 	@author Pat Niemeyer
+ * Dynamically loaded extension supporting post 1.1 collections iterator.
+ *
+ * @author Pat Niemeyer
  */
-public class CollectionManagerImpl extends bsh.CollectionManager
-{
-	public BshIterator getBshIterator( Object obj ) 
-		throws IllegalArgumentException
-	{
-		return new CollectionIterator( obj ); 
-	}
+public class CollectionManagerImpl extends bsh.CollectionManager {
+  public BshIterator getBshIterator(Object obj) throws IllegalArgumentException {
+    return new CollectionIterator(obj);
+  }
 
-	public boolean isMap( Object obj ) 
-	{
-		if ( obj instanceof Map )
-			return true;
-		else
-			return super.isMap( obj );
-	}
+  public boolean isMap(Object obj) {
+    if (obj instanceof Map) return true;
+    else return super.isMap(obj);
+  }
 
-	public Object getFromMap( Object map, Object key ) 
-	{
-		// Hashtable implements Map
-		return ((Map)map).get(key);
-	}
+  public Object getFromMap(Object map, Object key) {
+    // Hashtable implements Map
+    return ((Map) map).get(key);
+  }
 
-	/*
-	  	Place the raw value into the map... should be unwrapped.
-	 */
-	public Object putInMap( Object map, Object key, Object value ) 
-	{
-		// Hashtable implements Map
-		return ((Map)map).put(key, value);
-	}
+  /*
+   	Place the raw value into the map... should be unwrapped.
+  */
+  public Object putInMap(Object map, Object key, Object value) {
+    // Hashtable implements Map
+    return ((Map) map).put(key, value);
+  }
 }

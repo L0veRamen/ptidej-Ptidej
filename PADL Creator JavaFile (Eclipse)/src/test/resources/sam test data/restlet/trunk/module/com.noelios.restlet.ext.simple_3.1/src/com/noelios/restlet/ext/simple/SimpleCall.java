@@ -22,221 +22,202 @@
 
 package com.noelios.restlet.ext.simple;
 
+import com.noelios.restlet.http.HttpServerCall;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import java.util.logging.Logger;
-
 import org.restlet.data.Parameter;
 import org.restlet.data.ParameterList;
-
 import simple.http.Request;
 import simple.http.Response;
 
-import com.noelios.restlet.http.HttpServerCall;
-
 /**
  * Call that is used by the Simple HTTP server.
+ *
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://semagia.com/">Semagia</a>
  * @author Jerome Louvel (contact@noelios.com)
  */
-public class SimpleCall extends HttpServerCall
-{
-	/**
-	 * Simple Request.
-	 */
-	private Request request;
+public class SimpleCall extends HttpServerCall {
+  /** Simple Request. */
+  private Request request;
 
-	/**
-	 * Simple Response.
-	 */
-	private Response response;
+  /** Simple Response. */
+  private Response response;
 
-	/**
-	 * The listening port used.
-	 */
-	private int hostPort;
+  /** The listening port used. */
+  private int hostPort;
 
-	/** Indicates if the request headers were parsed and added. */
-	private boolean requestHeadersAdded;
+  /** Indicates if the request headers were parsed and added. */
+  private boolean requestHeadersAdded;
 
-	/**
-	 * Constructs this class with the specified {@link simple.http.Request}
-	 * and {@link simple.http.Response}.
-	 * @param logger The logger to use.
-	 * @param request Request to wrap.
-	 * @param response Response to wrap.
-	 * @param confidential Inidicates if this call is acting in HTTP or HTTPS mode.
-	 * @param hostPort The listening port used.
-	 */
-	SimpleCall(Logger logger, Request request, Response response, boolean confidential,
-			int hostPort)
-	{
-		super(logger);
-		this.request = request;
-		this.response = response;
-		setConfidential(confidential);
-		this.setHostPort(hostPort);
-		this.requestHeadersAdded = false;
-	}
+  /**
+   * Constructs this class with the specified {@link simple.http.Request} and {@link
+   * simple.http.Response}.
+   *
+   * @param logger The logger to use.
+   * @param request Request to wrap.
+   * @param response Response to wrap.
+   * @param confidential Inidicates if this call is acting in HTTP or HTTPS mode.
+   * @param hostPort The listening port used.
+   */
+  SimpleCall(
+      Logger logger, Request request, Response response, boolean confidential, int hostPort) {
+    super(logger);
+    this.request = request;
+    this.response = response;
+    setConfidential(confidential);
+    this.setHostPort(hostPort);
+    this.requestHeadersAdded = false;
+  }
 
-	/**
-	 * Returns the full request URI. 
-	 * @return The full request URI.
-	 */
-	public String getRequestUri()
-	{
-		return request.getURI();
-	}
+  /**
+   * Returns the full request URI.
+   *
+   * @return The full request URI.
+   */
+  public String getRequestUri() {
+    return request.getURI();
+  }
 
-	/**
-	 * Returns the request method. 
-	 * @return The request method.
-	 */
-	public String getMethod()
-	{
-		return request.getMethod();
-	}
+  /**
+   * Returns the request method.
+   *
+   * @return The request method.
+   */
+  public String getMethod() {
+    return request.getMethod();
+  }
 
-	/**
-	 * Returns the request address.<br/>
-	 * Corresponds to the IP address of the requesting client.
-	 * @return The request address.
-	 */
-	public String getClientAddress()
-	{
-		return request.getInetAddress().getHostAddress();
-	}
+  /**
+   * Returns the request address.<br>
+   * Corresponds to the IP address of the requesting client.
+   *
+   * @return The request address.
+   */
+  public String getClientAddress() {
+    return request.getInetAddress().getHostAddress();
+  }
 
-	/**
-	 * Returns the response address.<br/>
-	 * Corresponds to the IP address of the responding server.
-	 * @return The response address.
-	 */
-	public String getServerAddress()
-	{
-		return response.getInetAddress().getHostAddress();
-	}
+  /**
+   * Returns the response address.<br>
+   * Corresponds to the IP address of the responding server.
+   *
+   * @return The response address.
+   */
+  public String getServerAddress() {
+    return response.getInetAddress().getHostAddress();
+  }
 
-	/**
-	 * Returns the list of request headers.
-	 * @return The list of request headers.
-	 */
-	public ParameterList getRequestHeaders()
-	{
-		ParameterList result = super.getRequestHeaders();
+  /**
+   * Returns the list of request headers.
+   *
+   * @return The list of request headers.
+   */
+  public ParameterList getRequestHeaders() {
+    ParameterList result = super.getRequestHeaders();
 
-		if (!this.requestHeadersAdded)
-		{
-			int headerCount = request.headerCount();
-			for (int i = 0; i < headerCount; i++)
-			{
-				result.add(new Parameter(request.getName(i), request.getValue(i)));
-			}
+    if (!this.requestHeadersAdded) {
+      int headerCount = request.headerCount();
+      for (int i = 0; i < headerCount; i++) {
+        result.add(new Parameter(request.getName(i), request.getValue(i)));
+      }
 
-			this.requestHeadersAdded = true;
-		}
+      this.requestHeadersAdded = true;
+    }
 
-		return result;
-	}
+    return result;
+  }
 
-	/**
-	 * Sends the response back to the client. Commits the status, headers and optional entity and 
-	 * send them on the network. 
-	 * @param restletResponse The high-level response.
-	 */
-	public void sendResponse(org.restlet.data.Response restletResponse) throws IOException
-	{
-		// Set the response headers
-		response.clear();
-		for (Parameter header : getResponseHeaders())
-		{
-			response.add(header.getName(), header.getValue());
-		}
+  /**
+   * Sends the response back to the client. Commits the status, headers and optional entity and send
+   * them on the network.
+   *
+   * @param restletResponse The high-level response.
+   */
+  public void sendResponse(org.restlet.data.Response restletResponse) throws IOException {
+    // Set the response headers
+    response.clear();
+    for (Parameter header : getResponseHeaders()) {
+      response.add(header.getName(), header.getValue());
+    }
 
-		// Set the status
-		response.setCode(getStatusCode());
-		response.setText(getReasonPhrase());
+    // Set the status
+    response.setCode(getStatusCode());
+    response.setText(getReasonPhrase());
 
-		// To ensure that Simple doesn't switch to chunked encoding
-		if (restletResponse.getEntity() == null)
-		{
-			response.setContentLength(0);
-		}
+    // To ensure that Simple doesn't switch to chunked encoding
+    if (restletResponse.getEntity() == null) {
+      response.setContentLength(0);
+    }
 
-		// Send the response entity
-		super.sendResponse(restletResponse);
-	}
+    // Send the response entity
+    super.sendResponse(restletResponse);
+  }
 
-	/**
-	 * Returns the request entity channel if it exists.
-	 * @return The request entity channel if it exists.
-	 */
-	public ReadableByteChannel getRequestChannel()
-	{
-		// Unsupported.
-		return null;
-	}
+  /**
+   * Returns the request entity channel if it exists.
+   *
+   * @return The request entity channel if it exists.
+   */
+  public ReadableByteChannel getRequestChannel() {
+    // Unsupported.
+    return null;
+  }
 
-	/**
-	 * Returns the request entity stream if it exists.
-	 * @return The request entity stream if it exists.
-	 */
-	public InputStream getRequestStream()
-	{
-		try
-		{
-			return request.getInputStream();
-		}
-		catch (IOException ex)
-		{
-			return null;
-		}
-	}
+  /**
+   * Returns the request entity stream if it exists.
+   *
+   * @return The request entity stream if it exists.
+   */
+  public InputStream getRequestStream() {
+    try {
+      return request.getInputStream();
+    } catch (IOException ex) {
+      return null;
+    }
+  }
 
-	/**
-	 * Returns the response channel if it exists.
-	 * @return The response channel if it exists.
-	 */
-	public WritableByteChannel getResponseChannel()
-	{
-		// Unsupported.
-		return null;
-	}
+  /**
+   * Returns the response channel if it exists.
+   *
+   * @return The response channel if it exists.
+   */
+  public WritableByteChannel getResponseChannel() {
+    // Unsupported.
+    return null;
+  }
 
-	/**
-	 * Returns the response stream if it exists.
-	 * @return The response stream if it exists.
-	 */
-	public OutputStream getResponseStream()
-	{
-		try
-		{
-			return response.getOutputStream();
-		}
-		catch (IOException ex)
-		{
-			return null;
-		}
-	}
+  /**
+   * Returns the response stream if it exists.
+   *
+   * @return The response stream if it exists.
+   */
+  public OutputStream getResponseStream() {
+    try {
+      return response.getOutputStream();
+    } catch (IOException ex) {
+      return null;
+    }
+  }
 
-	/**
-	 * Sets the listening port used.
-	 * @param hostPort The listening port used.
-	 */
-	private void setHostPort(int hostPort)
-	{
-		this.hostPort = hostPort;
-	}
+  /**
+   * Sets the listening port used.
+   *
+   * @param hostPort The listening port used.
+   */
+  private void setHostPort(int hostPort) {
+    this.hostPort = hostPort;
+  }
 
-	/**
-	 * Returns the listening port used.
-	 * @return The listening port used.
-	 */
-	protected int getHostPort()
-	{
-		return hostPort;
-	}
+  /**
+   * Returns the listening port used.
+   *
+   * @return The listening port used.
+   */
+  protected int getHostPort() {
+    return hostPort;
+  }
 }

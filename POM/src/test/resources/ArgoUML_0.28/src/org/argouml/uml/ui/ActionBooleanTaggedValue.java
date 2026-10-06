@@ -25,74 +25,66 @@
 package org.argouml.uml.ui;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.Action;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.tigris.gef.undo.UndoableAction;
 
 /**
- * An action which can be used to create arbitrary tagged values which hold
- * boolean data. It is designed (and implicitly) relies on a UMLCheckBox2.
+ * An action which can be used to create arbitrary tagged values which hold boolean data. It is
+ * designed (and implicitly) relies on a UMLCheckBox2.
  *
  * @see UMLCheckBox2
  * @author mkl
  */
 public class ActionBooleanTaggedValue extends UndoableAction {
 
-    private String tagName;
+  private String tagName;
 
-    /**
-     * The constructor takes the name of the tagged value as a string, which
-     * will hold boolean data.
-     *
-     * @param theTagName
-     *            the name of the taggedvalue containing boolean values.
-     */
-    public ActionBooleanTaggedValue(String theTagName) {
-        super(Translator.localize("Set"), null);
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize("Set"));
-        tagName = theTagName;
+  /**
+   * The constructor takes the name of the tagged value as a string, which will hold boolean data.
+   *
+   * @param theTagName the name of the taggedvalue containing boolean values.
+   */
+  public ActionBooleanTaggedValue(String theTagName) {
+    super(Translator.localize("Set"), null);
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize("Set"));
+    tagName = theTagName;
+  }
+
+  /**
+   * set the taggedvalue according to the condition of the checkbox. The taggedvalue will be created
+   * if not existing.
+   *
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    if (!(e.getSource() instanceof UMLCheckBox2)) {
+      return;
     }
 
-    /**
-     * set the taggedvalue according to the condition of the checkbox. The
-     * taggedvalue will be created if not existing.
-     *
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        if (!(e.getSource() instanceof UMLCheckBox2)) {
-            return;
-        }
+    UMLCheckBox2 source = (UMLCheckBox2) e.getSource();
+    Object obj = source.getTarget();
 
-        UMLCheckBox2 source = (UMLCheckBox2) e.getSource();
-        Object obj = source.getTarget();
-
-        if (!Model.getFacade().isAModelElement(obj)) {
-            return;
-        }
-
-        boolean newState = source.isSelected();
-
-        Object taggedValue = Model.getFacade().getTaggedValue(obj, tagName);
-        if (taggedValue == null) {
-            taggedValue =
-                    Model.getExtensionMechanismsFactory().buildTaggedValue(
-                            tagName, "");
-            // TODO: Rework to use UML 1.4 TagDefinitions - tfm
-            Model.getExtensionMechanismsHelper().addTaggedValue(
-                    obj, taggedValue);
-        }
-        if (newState) {
-            Model.getCommonBehaviorHelper().setValue(taggedValue, "true");
-        } else {
-            Model.getCommonBehaviorHelper().setValue(taggedValue, "false");
-        }
+    if (!Model.getFacade().isAModelElement(obj)) {
+      return;
     }
+
+    boolean newState = source.isSelected();
+
+    Object taggedValue = Model.getFacade().getTaggedValue(obj, tagName);
+    if (taggedValue == null) {
+      taggedValue = Model.getExtensionMechanismsFactory().buildTaggedValue(tagName, "");
+      // TODO: Rework to use UML 1.4 TagDefinitions - tfm
+      Model.getExtensionMechanismsHelper().addTaggedValue(obj, taggedValue);
+    }
+    if (newState) {
+      Model.getCommonBehaviorHelper().setValue(taggedValue, "true");
+    } else {
+      Model.getCommonBehaviorHelper().setValue(taggedValue, "false");
+    }
+  }
 }

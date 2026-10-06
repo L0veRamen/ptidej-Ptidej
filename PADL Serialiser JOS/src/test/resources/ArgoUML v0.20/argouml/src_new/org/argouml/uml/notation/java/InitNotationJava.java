@@ -30,28 +30,22 @@ import org.argouml.notation.NotationName;
 import org.argouml.notation.NotationProviderFactory2;
 
 /**
- * This class is the only one that has the knowledge of the complete list of
- * NotationProvider4 implementations for Java.
+ * This class is the only one that has the knowledge of the complete list of NotationProvider4
+ * implementations for Java.
  *
  * @author mvw@tigris.org
  */
 public class InitNotationJava {
 
-    /**
-     * static initializer, register all appropriate critics.
-     */
-    public static void init() {
-        NotationProviderFactory2 npf = NotationProviderFactory2.getInstance();
-        NotationName name = /*Notation.findNotation("Java");*/
-            Notation.makeNotation(
-                    "Java",
-                    null,
-                    Argo.lookupIconResource("JavaNotation"));
+  /** static initializer, register all appropriate critics. */
+  public static void init() {
+    NotationProviderFactory2 npf = NotationProviderFactory2.getInstance();
+    NotationName name = /*Notation.findNotation("Java");*/
+        Notation.makeNotation("Java", null, Argo.lookupIconResource("JavaNotation"));
 
-        npf.addNotationProvider(NotationProviderFactory2.TYPE_TRANSITION,
-                name, TransitionNotationJava.class);
-        npf.addNotationProvider(NotationProviderFactory2.TYPE_NAME,
-                name, ModelElementNameNotationJava.class);
-    }
-
+    npf.addNotationProvider(
+        NotationProviderFactory2.TYPE_TRANSITION, name, TransitionNotationJava.class);
+    npf.addNotationProvider(
+        NotationProviderFactory2.TYPE_NAME, name, ModelElementNameNotationJava.class);
+  }
 }

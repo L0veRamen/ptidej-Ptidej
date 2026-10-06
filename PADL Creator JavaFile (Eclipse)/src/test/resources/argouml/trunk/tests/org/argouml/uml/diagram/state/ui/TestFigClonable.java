@@ -26,123 +26,95 @@ package org.argouml.uml.diagram.state.ui;
 
 import junit.framework.TestCase;
 
-/**
- * Tests whether Figs in state.ui are clonable,
- * apart from FigStateVertex which is abstract.
- */
+/** Tests whether Figs in state.ui are clonable, apart from FigStateVertex which is abstract. */
 public class TestFigClonable extends TestCase {
 
-    /**
-     * The constructor.
-     *
-     * @param name the test name
-     */
-    public TestFigClonable(String name) {
-        super(name);
-    }
+  /**
+   * The constructor.
+   *
+   * @param name the test name
+   */
+  public TestFigClonable(String name) {
+    super(name);
+  }
 
-    /**
-     * Try to clone {@link FigBranchState}.
-     */
-    public void testBranchStateClonable() {
-	FigBranchState fig = new FigBranchState();
-	FigBranchState figclone;
+  /** Try to clone {@link FigBranchState}. */
+  public void testBranchStateClonable() {
+    FigBranchState fig = new FigBranchState();
+    FigBranchState figclone;
 
-	figclone = (FigBranchState) fig.clone();
-    }
+    figclone = (FigBranchState) fig.clone();
+  }
 
-    /**
-     * Try to clone {@link FigCompositeState}.
-     */
-    public void testCompositeStateClonable() {
-	FigCompositeState fig = new FigCompositeState();
-	FigCompositeState figclone;
+  /** Try to clone {@link FigCompositeState}. */
+  public void testCompositeStateClonable() {
+    FigCompositeState fig = new FigCompositeState();
+    FigCompositeState figclone;
 
-	figclone = (FigCompositeState) fig.clone();
-    }
+    figclone = (FigCompositeState) fig.clone();
+  }
 
-    /**
-     * Try to clone {@link FigDeepHistoryState}.
-     */
-    public void testDeepHistoryStateClonable() {
-	FigDeepHistoryState fig = new FigDeepHistoryState();
-	FigDeepHistoryState figclone;
+  /** Try to clone {@link FigDeepHistoryState}. */
+  public void testDeepHistoryStateClonable() {
+    FigDeepHistoryState fig = new FigDeepHistoryState();
+    FigDeepHistoryState figclone;
 
-	figclone = (FigDeepHistoryState) fig.clone();
-    }
+    figclone = (FigDeepHistoryState) fig.clone();
+  }
 
-    /**
-     * Try to clone {@link FigFinalState}.
-     */
-    public void testFinalStateClonable() {
-	FigFinalState fig = new FigFinalState();
-	FigFinalState figclone;
+  /** Try to clone {@link FigFinalState}. */
+  public void testFinalStateClonable() {
+    FigFinalState fig = new FigFinalState();
+    FigFinalState figclone;
 
-	figclone = (FigFinalState) fig.clone();
-    }
+    figclone = (FigFinalState) fig.clone();
+  }
 
+  /** Try to clone {@link FigForkState}. */
+  public void testForkStateClonable() {
+    FigForkState fig = new FigForkState();
+    FigForkState figclone;
 
-    /**
-     * Try to clone {@link FigForkState}.
-     */
-    public void testForkStateClonable() {
-	FigForkState fig = new FigForkState();
-	FigForkState figclone;
+    figclone = (FigForkState) fig.clone();
+  }
 
-	figclone = (FigForkState) fig.clone();
-    }
+  /** Try to clone {@link FigInitialState}. */
+  public void testInitialStateClonable() {
+    FigInitialState fig = new FigInitialState();
+    FigInitialState figclone;
 
-    /**
-     * Try to clone {@link FigInitialState}.
-     */
-    public void testInitialStateClonable() {
-	FigInitialState fig = new FigInitialState();
-	FigInitialState figclone;
+    figclone = (FigInitialState) fig.clone();
+  }
 
-	figclone = (FigInitialState) fig.clone();
-    }
+  /** Try to clone {@link FigJoinState}. */
+  public void testJoinStateClonable() {
+    FigJoinState fig = new FigJoinState();
+    FigJoinState figclone;
 
+    figclone = (FigJoinState) fig.clone();
+  }
 
-    /**
-     * Try to clone {@link FigJoinState}.
-     */
-    public void testJoinStateClonable() {
-	FigJoinState fig = new FigJoinState();
-	FigJoinState figclone;
+  /** Try to clone {@link FigShallowHistoryState}. */
+  public void testShallowHistoryStateClonable() {
+    FigShallowHistoryState fig = new FigShallowHistoryState();
+    FigShallowHistoryState figclone;
 
-	figclone = (FigJoinState) fig.clone();
-    }
+    figclone = (FigShallowHistoryState) fig.clone();
+  }
 
-    /**
-     * Try to clone {@link FigShallowHistoryState}.
-     */
-    public void testShallowHistoryStateClonable() {
-	FigShallowHistoryState fig = new FigShallowHistoryState();
-	FigShallowHistoryState figclone;
+  /** Try to clone {@linkFigState}. */
+  public void testSimpleStateClonable() {
+    FigSimpleState fig = new FigSimpleState();
+    FigSimpleState figclone;
 
-	figclone = (FigShallowHistoryState) fig.clone();
-    }
+    figclone = (FigSimpleState) fig.clone();
+  }
 
-    /**
-     * Try to clone {@linkFigState}.
-     */
-    public void testSimpleStateClonable() {
-	FigSimpleState fig = new FigSimpleState();
-	FigSimpleState figclone;
+  /** Try to clone {@link FigTransistion}. */
+  public void testTransitionClonable() {
+    FigTransition fig = new FigTransition();
+    FigTransition figclone;
 
-	figclone = (FigSimpleState) fig.clone();
-    }
-
-
-    /**
-     * Try to clone {@link FigTransistion}.
-     */
-    public void testTransitionClonable() {
-	FigTransition fig = new FigTransition();
-	FigTransition figclone;
-
-	figclone = (FigTransition) fig.clone();
-    }
-
-
+    figclone = (FigTransition) fig.clone();
+  }
 }

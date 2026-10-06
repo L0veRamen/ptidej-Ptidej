@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -25,7 +25,6 @@ import padl.cpp.kernel.IMemberStructure;
 import padl.cpp.kernel.IStructure;
 import padl.cpp.kernel.IUnion;
 import padl.cpp.kernel.event.CPPEventGenerator;
-import padl.kernel.Cardinality;
 import padl.kernel.IEntity;
 import padl.kernel.IFactory;
 import padl.kernel.IParameter;
@@ -38,101 +37,90 @@ import padl.visitor.IWalker;
  * @since 2005/07/11
  */
 public class CPPFactoryEclipse extends Factory implements ICPPFactoryEclipse {
-	private static final long serialVersionUID = 3342247491732965777L;
+  private static final long serialVersionUID = 3342247491732965777L;
 
-	private static IFactory UniqueInstance;
-	public static IFactory getInstance() {
-		if (CPPFactoryEclipse.UniqueInstance == null) {
-			CPPFactoryEclipse.UniqueInstance = new CPPFactoryEclipse();
-		}
-		return CPPFactoryEclipse.UniqueInstance;
-	}
+  private static IFactory UniqueInstance;
 
-	private CPPFactoryEclipse() {
-	}
+  public static IFactory getInstance() {
+    if (CPPFactoryEclipse.UniqueInstance == null) {
+      CPPFactoryEclipse.UniqueInstance = new CPPFactoryEclipse();
+    }
+    return CPPFactoryEclipse.UniqueInstance;
+  }
 
-	public ICPPClass createClass(final char[] anID, final char[] aName) {
-		return new CPPClass(anID, aName);
-	}
+  private CPPFactoryEclipse() {}
 
-	public IDestructor createDestructor(final char[] anID, final char[] aName) {
+  public ICPPClass createClass(final char[] anID, final char[] aName) {
+    return new CPPClass(anID, aName);
+  }
 
-		return new Destructor(anID, aName);
-	}
+  public IDestructor createDestructor(final char[] anID, final char[] aName) {
 
-	public IEnum createEnum(final char[] anID) {
+    return new Destructor(anID, aName);
+  }
 
-		return new Enum(anID);
-	}
+  public IEnum createEnum(final char[] anID) {
 
-	public IEnumValue createEnumValue(final char[] anID) {
-		final IEnumValue anEnumValue = new EnumValue(anID);
-		return anEnumValue;
-	}
+    return new Enum(anID);
+  }
 
-	public ICPPGhost createGhost(final char[] anID, final char[] aName) {
-		return new CPPGhost(anID, aName);
-	}
+  public IEnumValue createEnumValue(final char[] anID) {
+    final IEnumValue anEnumValue = new EnumValue(anID);
+    return anEnumValue;
+  }
 
-	public IGlobalField createGlobalField(
-		final char[] anID,
-		final char[] aName,
-		final char[] aType,
-		final int dimension) {
+  public ICPPGhost createGhost(final char[] anID, final char[] aName) {
+    return new CPPGhost(anID, aName);
+  }
 
-		return new GlobalField(anID, aName, aType, dimension);
-	}
+  public IGlobalField createGlobalField(
+      final char[] anID, final char[] aName, final char[] aType, final int dimension) {
 
-	public IGlobalFunction createGlobalFunction(
-		final char[] anID,
-		final char[] aName) {
+    return new GlobalField(anID, aName, aType, dimension);
+  }
 
-		return new GlobalFunction(anID, aName);
-	}
+  public IGlobalFunction createGlobalFunction(final char[] anID, final char[] aName) {
 
-	public IGlobalFunctionGhost createGlobalFunctionGhost(
-		final char[] anID,
-		final char[] aName) {
+    return new GlobalFunction(anID, aName);
+  }
 
-		return new GlobalFunctionGhost(anID, aName);
-	}
+  public IGlobalFunctionGhost createGlobalFunctionGhost(final char[] anID, final char[] aName) {
 
-	public ICPPMemberClass createMemberClass(
-		final char[] anID,
-		final char[] aName) {
+    return new GlobalFunctionGhost(anID, aName);
+  }
 
-		return new CPPMemberClass(anID, aName);
-	}
+  public ICPPMemberClass createMemberClass(final char[] anID, final char[] aName) {
 
-	public ICPPMemberGhost createMemberGhost(
-		final char[] anID,
-		final char[] aName) {
+    return new CPPMemberClass(anID, aName);
+  }
 
-		return new CPPMemberGhost(anID, aName);
-	}
+  public ICPPMemberGhost createMemberGhost(final char[] anID, final char[] aName) {
 
-	public IMemberStructure createMemberStructure(final char[] aName) {
-		return new MemberStructure(aName);
-	}
+    return new CPPMemberGhost(anID, aName);
+  }
 
-	public IParameter createParameter(
-		final IEntity anEntity,
-		final char[] aName,
-		final char[] aQualification,
-		final int dimension) {
+  public IMemberStructure createMemberStructure(final char[] aName) {
+    return new MemberStructure(aName);
+  }
 
-		return new CPPParameter(anEntity, aName, aQualification, dimension);
-	}
+  public IParameter createParameter(
+      final IEntity anEntity,
+      final char[] aName,
+      final char[] aQualification,
+      final int dimension) {
 
-	public IStructure createStructure(final char[] aName) {
-		return new Structure(aName);
-	}
+    return new CPPParameter(anEntity, aName, aQualification, dimension);
+  }
 
-	public IUnion createUnion(final char[] aName) {
-		return new Union(aName);
-	}
+  public IStructure createStructure(final char[] aName) {
+    return new Structure(aName);
+  }
 
-	protected IWalker getEventGenerator() {
-		return CPPEventGenerator.getInstance();
-	}
+  public IUnion createUnion(final char[] aName) {
+    return new Union(aName);
+  }
+
+  protected IWalker getEventGenerator() {
+    return CPPEventGenerator.getInstance();
+  }
 }

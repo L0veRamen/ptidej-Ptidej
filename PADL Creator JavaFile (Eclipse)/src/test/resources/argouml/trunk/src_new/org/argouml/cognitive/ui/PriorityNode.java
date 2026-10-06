@@ -28,78 +28,73 @@ import java.util.Vector;
 import org.argouml.cognitive.ToDoItem;
 import org.argouml.cognitive.Translator;
 
-/**
- * This class represents a "priority". Which is a classification for critics.
- *
- */
+/** This class represents a "priority". Which is a classification for critics. */
 public class PriorityNode {
 
-    // Private members.
-    private static final String HIGH =
-        Translator.localize("misc.level.high");
-    private static final String MEDIUM =
-        Translator.localize("misc.level.medium");
-    private static final String LOW =
-        Translator.localize("misc.level.low");
+  // Private members.
+  private static final String HIGH = Translator.localize("misc.level.high");
+  private static final String MEDIUM = Translator.localize("misc.level.medium");
+  private static final String LOW = Translator.localize("misc.level.low");
 
-    ////////////////////////////////////////////////////////////////
-    // static variables and methods
-    private static Vector priorities = null;
+  ////////////////////////////////////////////////////////////////
+  // static variables and methods
+  private static Vector priorities = null;
 
+  ////////////////////////////////////////////////////////////////
+  // instance variables
 
-    ////////////////////////////////////////////////////////////////
-    // instance variables
+  private String name;
 
-    private String name;
-    private int priority;
+  private int priority;
 
-    ////////////////////////////////////////////////////////////////
-    // contrsuctors
+  ////////////////////////////////////////////////////////////////
+  // contrsuctors
 
-    /**
-     * The constructor.
-     *
-     * @param n the name of this priority
-     * @param pri the priority number
-     */
-    public PriorityNode(String n, int pri) {
-	name = n;
-	priority = pri;
+  /**
+   * The constructor.
+   *
+   * @param n the name of this priority
+   * @param pri the priority number
+   */
+  public PriorityNode(String n, int pri) {
+    name = n;
+    priority = pri;
+  }
+
+  /**
+   * @return the list of all the priorities
+   */
+  public static Vector getPriorities() {
+    if (priorities == null) {
+      priorities = new Vector();
+      priorities.addElement(new PriorityNode(HIGH, ToDoItem.HIGH_PRIORITY));
+      priorities.addElement(new PriorityNode(MEDIUM, ToDoItem.MED_PRIORITY));
+      priorities.addElement(new PriorityNode(LOW, ToDoItem.LOW_PRIORITY));
     }
-
-    /**
-     * @return the list of all the priorities
-     */
-    public static Vector getPriorities() {
-        if (priorities == null) {
-            priorities = new Vector();
-            priorities.addElement(new PriorityNode(HIGH,
-                    ToDoItem.HIGH_PRIORITY));
-            priorities.addElement(new PriorityNode(MEDIUM,
-                    ToDoItem.MED_PRIORITY));
-            priorities.addElement(new PriorityNode(LOW,
-                    ToDoItem.LOW_PRIORITY));
-        }
     return priorities;
-    }
+  }
 
+  ////////////////////////////////////////////////////////////////
+  // accessors
 
-    ////////////////////////////////////////////////////////////////
-    // accessors
+  /**
+   * @return the name
+   */
+  public String getName() {
+    return name;
+  }
 
-    /**
-     * @return the name
-     */
-    public String getName() { return name; }
+  /**
+   * @return the priority
+   */
+  public int getPriority() {
+    return priority;
+  }
 
-    /**
-     * @return the priority
-     */
-    public int getPriority() { return priority; }
-
-    /**
-     * @see java.lang.Object#toString()
-     */
-    public String toString() { return getName(); }
-
+  /**
+   * @see java.lang.Object#toString()
+   */
+  public String toString() {
+    return getName();
+  }
 } /* end class PriorityNode */

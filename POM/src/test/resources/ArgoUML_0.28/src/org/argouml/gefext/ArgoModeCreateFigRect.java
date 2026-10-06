@@ -25,28 +25,26 @@
 package org.argouml.gefext;
 
 import java.awt.event.MouseEvent;
-
 import org.argouml.i18n.Translator;
 import org.tigris.gef.base.ModeCreateFigRect;
 import org.tigris.gef.presentation.Fig;
 
 /**
- * A Mode to interprete user input while creating a FigRect. All of
- *  the actual event handling is inherited from ModeCreate. This class
- *  just implements the differences needed to make it specific to
- *  rectangles.
+ * A Mode to interprete user input while creating a FigRect. All of the actual event handling is
+ * inherited from ModeCreate. This class just implements the differences needed to make it specific
+ * to rectangles.
  *
  * @author Michiel
  */
 public class ArgoModeCreateFigRect extends ModeCreateFigRect {
 
-    @Override
-    public Fig createNewItem(MouseEvent me, int snapX, int snapY) {
-        return new ArgoFigRect(snapX, snapY, 0, 0);
-    }
+  @Override
+  public Fig createNewItem(MouseEvent me, int snapX, int snapY) {
+    return new ArgoFigRect(snapX, snapY, 0, 0);
+  }
 
-    @Override
-    public String instructions() { 
-        return Translator.localize("statusmsg.help.create.rect"); 
-    }
+  @Override
+  public String instructions() {
+    return Translator.localize("statusmsg.help.create.rect");
+  }
 }

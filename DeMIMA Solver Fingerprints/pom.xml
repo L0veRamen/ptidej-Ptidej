@@ -1,112 +1,112 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>net.ptidej</groupId>
-		<artifactId>all-ptidej</artifactId>
-		<version>1.0.0</version>
-	</parent>
+    <parent>
+        <groupId>net.ptidej</groupId>
+        <artifactId>all-ptidej</artifactId>
+        <version>1.0.0</version>
+    </parent>
 
-	<groupId>net.ptidej.demima</groupId>
-	<artifactId>demima-solver-fingerprints</artifactId>
-	<name>DeMIMA Solver Fingerprints</name>
+    <groupId>net.ptidej.demima</groupId>
+    <artifactId>demima-solver-fingerprints</artifactId>
+    <name>DeMIMA Solver Fingerprints</name>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-			</plugin>
-			<plugin>
-			    <groupId>org.apache.maven.plugins</groupId>
-			    <artifactId>maven-surefire-plugin</artifactId>
-			    <configuration>
-					<excludes>
-						<!-- Excluded on purpose -->
-						<exclude>**/*Test.java</exclude>
-						<!-- I must exclude anything inside coming from -->
-						<!-- src/test/resources/JUnit v3.7/bin/junit    -->
-						<exclude>**/bin/junit/**/*.class</exclude>
-					</excludes>
-			    </configuration>
-			</plugin>
-			<!-- Must generate the test-jar for dependent tests -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <!-- Excluded on purpose -->
+                        <exclude>**/*Test.java</exclude>
+                        <!-- I must exclude anything inside coming from -->
+                        <!-- src/test/resources/JUnit v3.7/bin/junit    -->
+                        <exclude>**/bin/junit/**/*.class</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <!-- Must generate the test-jar for dependent tests -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
-	<dependencies>
-		<!-- Main dependecy -->
-		<dependency>
-			<groupId>net.ptidej.cpl</groupId>
-			<artifactId>cpl-core</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+    <dependencies>
+        <!-- Main dependecy -->
+        <dependency>
+            <groupId>net.ptidej.cpl</groupId>
+            <artifactId>cpl-core</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
-		<dependency>
-			<groupId>net.ptidej.jchoco</groupId>
-			<artifactId>jchoco-core</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+        <dependency>
+            <groupId>net.ptidej.jchoco</groupId>
+            <artifactId>jchoco-core</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
-		<dependency>
-			<groupId>net.ptidej.padl</groupId>
-			<artifactId>padl-core</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+        <dependency>
+            <groupId>net.ptidej.padl</groupId>
+            <artifactId>padl-core</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
-		<dependency>
-			<groupId>net.ptidej.pom</groupId>
-			<artifactId>pom-core</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+        <dependency>
+            <groupId>net.ptidej.pom</groupId>
+            <artifactId>pom-core</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
-		<dependency>
-			<groupId>net.ptidej.demima</groupId>
-			<artifactId>demima-core</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+        <dependency>
+            <groupId>net.ptidej.demima</groupId>
+            <artifactId>demima-core</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
-		<dependency>
-			<groupId>net.ptidej.demima</groupId>
-			<artifactId>demima-solver-java</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+        <dependency>
+            <groupId>net.ptidej.demima</groupId>
+            <artifactId>demima-solver-java</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
-		<!-- Test dependencies -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>net.ptidej.padl</groupId>
-			<artifactId>padl-creator-classfile</artifactId>
-			<version>1.0.0</version>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>net.ptidej.padl</groupId>
+            <artifactId>padl-creator-classfile</artifactId>
+            <version>1.0.0</version>
+            <scope>test</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>net.ptidej.demima</groupId>
-			<artifactId>demima-core</artifactId>
-			<version>1.0.0</version>
-			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>net.ptidej.demima</groupId>
+            <artifactId>demima-core</artifactId>
+            <version>1.0.0</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>net.ptidej.demima</groupId>
-			<artifactId>demima-solver-java</artifactId>
-			<version>1.0.0</version>
-			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>net.ptidej.demima</groupId>
+            <artifactId>demima-solver-java</artifactId>
+            <version>1.0.0</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>

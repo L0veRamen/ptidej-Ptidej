@@ -26,7 +26,6 @@ package org.argouml.uml.ui.foundation.core;
 
 import java.awt.event.ActionEvent;
 import java.util.Collection;
-
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLAction;
 import org.argouml.uml.ui.UMLComboBox2;
@@ -37,57 +36,49 @@ import org.argouml.uml.ui.UMLComboBox2;
  * @stereotype singleton
  */
 public class ActionSetModelElementStereotype extends UMLAction {
-    /**
-     * The instance.
-     */
-    private static final ActionSetModelElementStereotype SINGLETON =
-        new ActionSetModelElementStereotype();
+  /** The instance. */
+  private static final ActionSetModelElementStereotype SINGLETON =
+      new ActionSetModelElementStereotype();
 
-    /**
-     * Constructor for ActionSetModelElementStereotype.
-     */
-    protected ActionSetModelElementStereotype() {
-        super("Set", true, NO_ICON);
+  /** Constructor for ActionSetModelElementStereotype. */
+  protected ActionSetModelElementStereotype() {
+    super("Set", true, NO_ICON);
+  }
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    Object source = e.getSource();
+    Collection oldStereo = null;
+    Object newStereo = null;
+    Object target = null;
+    if (source instanceof UMLComboBox2) {
+      UMLComboBox2 combo = (UMLComboBox2) source;
+      if (Model.getFacade().isAStereotype(combo.getSelectedItem())) {
+        newStereo = /*(MStereotype)*/ combo.getSelectedItem();
+      }
+      if (Model.getFacade().isAModelElement(combo.getTarget())) {
+        target = /*(MModelElement)*/ combo.getTarget();
+        oldStereo = Model.getFacade().getStereotypes(target);
+      }
+      if ("".equals(combo.getSelectedItem())) {
+        newStereo = null;
+      }
     }
-
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        Object source = e.getSource();
-        Collection oldStereo = null;
-        Object newStereo = null;
-        Object target = null;
-        if (source instanceof UMLComboBox2) {
-            UMLComboBox2 combo = (UMLComboBox2) source;
-            if (Model.getFacade().isAStereotype(combo.getSelectedItem())) {
-                newStereo = /*(MStereotype)*/ combo.getSelectedItem();
-            }
-            if (Model.getFacade().isAModelElement(combo.getTarget())) {
-                target = /*(MModelElement)*/ combo.getTarget();
-                oldStereo = Model.getFacade().getStereotypes(target);
-            }
-	    if ("".equals(combo.getSelectedItem())) {
-	        newStereo = null;
-	    }
-        }
-        if (oldStereo != null && !oldStereo.contains(newStereo)
-                && target != null) {
-            // Add stereotypes submenu
-            if (newStereo != null) {
-                Model.getCoreHelper().addStereotype(target, newStereo);
-            }
-            super.actionPerformed(e);
-        }
+    if (oldStereo != null && !oldStereo.contains(newStereo) && target != null) {
+      // Add stereotypes submenu
+      if (newStereo != null) {
+        Model.getCoreHelper().addStereotype(target, newStereo);
+      }
+      super.actionPerformed(e);
     }
+  }
 
-    /**
-     * @return Returns the SINGLETON.
-     */
-    public static ActionSetModelElementStereotype getInstance() {
-        return SINGLETON;
-    }
-
-
-
+  /**
+   * @return Returns the SINGLETON.
+   */
+  public static ActionSetModelElementStereotype getInstance() {
+    return SINGLETON;
+  }
 }

@@ -32,68 +32,59 @@ import org.argouml.uml.diagram.activity.ui.UMLActivityDiagram;
 import org.argouml.uml.diagram.ui.UMLDiagram;
 
 /**
- * Action to trigger creation of a new activity diagram.<p>
+ * Action to trigger creation of a new activity diagram.
  *
- * This used to extend the ActionStateDiagram, but lead to problems
- * implementing shouldBeEnabled() and isValidNamespace().
+ * <p>This used to extend the ActionStateDiagram, but lead to problems implementing
+ * shouldBeEnabled() and isValidNamespace().
  */
 public class ActionActivityDiagram extends ActionAddDiagram {
 
-    private static final Logger LOG =
-        Logger.getLogger(ActionStateDiagram.class);
+  private static final Logger LOG = Logger.getLogger(ActionStateDiagram.class);
 
-    /**
-     * Constructor.
-     */
-    public ActionActivityDiagram() {
-        super("action.activity-diagram");
+  /** Constructor. */
+  public ActionActivityDiagram() {
+    super("action.activity-diagram");
+  }
+
+  /**
+   * @see org.argouml.uml.ui.ActionAddDiagram#createDiagram(java.lang.Object)
+   */
+  public UMLDiagram createDiagram(Object ns) {
+    Object target = TargetManager.getInstance().getModelTarget();
+    Object /*MActivityGraph*/ graph = Model.getActivityGraphsFactory().buildActivityGraph(target);
+    /*if (Model.getFacade().isABehavioralFeature(target)) {
+        ns = Model.getFacade().getNamespace(target);
+        // this fails always, see issue 1817
+    }*/
+    return (UMLDiagram)
+        DiagramFactory.getInstance().createDiagram(UMLActivityDiagram.class, ns, graph);
+  }
+
+  /**
+   * An ActivityGraph specifies the dynamics of<br>
+   * (i) a Package, or<br>
+   * (ii) a Classifier (including UseCase), or<br>
+   * (iii) a BehavioralFeature.
+   *
+   * <p>
+   *
+   * @see org.argouml.uml.ui.UMLAction#shouldBeEnabled()
+   */
+  public boolean shouldBeEnabled() {
+    Object obj = TargetManager.getInstance().getModelTarget();
+    return super.shouldBeEnabled()
+        && Model.getActivityGraphsHelper().isAddingActivityGraphAllowed(obj);
+  }
+
+  /**
+   * @see org.argouml.uml.ui.ActionAddDiagram#isValidNamespace(java.lang.Object)
+   */
+  public boolean isValidNamespace(Object handle) {
+    if (!Model.getFacade().isANamespace(handle)) {
+      LOG.error("No namespace as argument");
+      LOG.error(handle);
+      throw new IllegalArgumentException("The argument " + handle + "is not a namespace.");
     }
-
-    /**
-     * @see org.argouml.uml.ui.ActionAddDiagram#createDiagram(java.lang.Object)
-     */
-    public UMLDiagram createDiagram(Object ns) {
-        Object target = TargetManager.getInstance().getModelTarget();
-        Object/*MActivityGraph*/ graph =
-	    Model.getActivityGraphsFactory().buildActivityGraph(target);
-        /*if (Model.getFacade().isABehavioralFeature(target)) {
-            ns = Model.getFacade().getNamespace(target);
-            // this fails always, see issue 1817
-        }*/
-        return (UMLDiagram)DiagramFactory.getInstance().createDiagram(
-                UMLActivityDiagram.class, 
-                ns,
-                graph);
-    }
-
-    /**
-     * An ActivityGraph specifies the dynamics of<br>
-     *       (i) a Package, or<br>
-     *      (ii) a Classifier (including UseCase), or<br>
-     *     (iii) a BehavioralFeature.<p>
-     *
-     * @see org.argouml.uml.ui.UMLAction#shouldBeEnabled()
-     */
-    public boolean shouldBeEnabled() {
-        Object obj = TargetManager.getInstance().getModelTarget();
-        return super.shouldBeEnabled()
-            && Model.getActivityGraphsHelper()
-                .isAddingActivityGraphAllowed(obj);
-    }
-
-
-    /**
-     * @see org.argouml.uml.ui.ActionAddDiagram#isValidNamespace(java.lang.Object)
-     */
-    public boolean isValidNamespace(Object handle) {
-        if (!Model.getFacade().isANamespace(handle)) {
-            LOG.error("No namespace as argument");
-            LOG.error(handle);
-            throw new IllegalArgumentException(
-                "The argument " + handle + "is not a namespace.");
-        }
-        return Model.getActivityGraphsHelper()
-            .isAddingActivityGraphAllowed(handle);
-    }
-
+    return Model.getActivityGraphsHelper().isAddingActivityGraphAllowed(handle);
+  }
 } /* end class ActionActivityDiagram */

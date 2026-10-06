@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -21,26 +21,25 @@ import ptidej.ui.layout.repository.sugiyama.graph.INode;
 // TODO: This class does not enough or should be removed?
 // TODO Should be a Singleton!
 public class EdgeBuilder {
-	private final EdgeSet edges;
+  private final EdgeSet edges;
 
-	public EdgeBuilder() {
-		this.edges = new EdgeSet();
-	}
-	public EdgeSet getEdgeSet() {
-		return this.edges;
-	}
-	//	public void buildEdges(Graph aGraph) {
-	//
-	//		// for all the levels
-	//		for (int i = 0; i < aGraph.getNbLevels(); i++) {
-	//			
-	//		}
-	public void buildEdge(
-		final INode aParent,
-		final INode aChild,
-		int aDirection) {
+  public EdgeBuilder() {
+    this.edges = new EdgeSet();
+  }
 
-		this.edges.addEdge(new Edge(aDirection, null, aParent, aChild));
-		// Node aParent, Node aChild, int aDirection
-	}
+  public EdgeSet getEdgeSet() {
+    return this.edges;
+  }
+
+  //	public void buildEdges(Graph aGraph) {
+  //
+  //		// for all the levels
+  //		for (int i = 0; i < aGraph.getNbLevels(); i++) {
+  //
+  //		}
+  public void buildEdge(final INode aParent, final INode aChild, int aDirection) {
+
+    this.edges.addEdge(new Edge(aDirection, null, aParent, aChild));
+    // Node aParent, Node aChild, int aDirection
+  }
 }

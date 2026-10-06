@@ -25,73 +25,67 @@
 package org.argouml.uml.ui.behavior.state_machines;
 
 import java.util.Vector;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.AbstractActionAddModelElement;
 
 /**
- * Provide a dialog which helps the user to select one event out of an existing list, 
- * which will be used as the trigger of the transition.
- * @author MarkusK
+ * Provide a dialog which helps the user to select one event out of an existing list, which will be
+ * used as the trigger of the transition.
  *
+ * @author MarkusK
  */
 class ActionAddSignalsToSignalEvent extends AbstractActionAddModelElement {
 
-    /**
-     * The one and only instance of this class.
-     */
-    public static final ActionAddSignalsToSignalEvent SINGLETON = new ActionAddSignalsToSignalEvent();
+  /** The one and only instance of this class. */
+  public static final ActionAddSignalsToSignalEvent SINGLETON = new ActionAddSignalsToSignalEvent();
 
-    /**
-     * Constructor for ActionAddClassifierRoleBase.
-     */
-    protected ActionAddSignalsToSignalEvent() {
-        super();
-        setMultiSelect(false);
+  /** Constructor for ActionAddClassifierRoleBase. */
+  protected ActionAddSignalsToSignalEvent() {
+    super();
+    setMultiSelect(false);
+  }
+
+  /**
+   * @see org.argouml.uml.ui.AbstractActionAddModelElement#getChoices()
+   */
+  protected Vector getChoices() {
+    Vector vec = new Vector();
+
+    vec.addAll(
+        Model.getModelManagementHelper()
+            .getAllModelElementsOfKind(
+                Model.getFacade().getModel(getTarget()), Model.getMetaTypes().getSignal()));
+
+    return vec;
+  }
+
+  /**
+   * @see org.argouml.uml.ui.AbstractActionAddModelElement#getSelected()
+   */
+  protected Vector getSelected() {
+    Vector vec = new Vector();
+    Object signal = Model.getFacade().getSignal(getTarget());
+    if (signal != null) vec.add(signal);
+    return vec;
+  }
+
+  /**
+   * @see org.argouml.uml.ui.AbstractActionAddModelElement#getDialogTitle()
+   */
+  protected String getDialogTitle() {
+    return Translator.localize("dialog.title.add-signal");
+  }
+
+  /**
+   * @see org.argouml.uml.ui.AbstractActionAddModelElement#doIt(java.util.Vector)
+   */
+  protected void doIt(Vector selected) {
+    Object event = getTarget();
+    if (selected == null || selected.size() == 0) {
+      Model.getCommonBehaviorHelper().setSignal(event, null);
+    } else {
+      Model.getCommonBehaviorHelper().setSignal(event, selected.get(0));
     }
-
-    /**
-     * @see org.argouml.uml.ui.AbstractActionAddModelElement#getChoices()
-     */
-    protected Vector getChoices() {
-        Vector vec = new Vector();
-      
-      vec.addAll(Model.getModelManagementHelper().getAllModelElementsOfKind(
-      Model.getFacade().getModel(getTarget()), Model.getMetaTypes().getSignal()));
-
-        return vec;
-    }
-
-    /**
-     * @see org.argouml.uml.ui.AbstractActionAddModelElement#getSelected()
-     */
-    protected Vector getSelected() {
-        Vector vec = new Vector();
-        Object signal = Model.getFacade().getSignal(getTarget());
-        if (signal != null)
-            vec.add(signal);
-        return vec;
-    }
-
-    /**
-     * @see org.argouml.uml.ui.AbstractActionAddModelElement#getDialogTitle()
-     */
-    protected String getDialogTitle() {
-        return Translator.localize("dialog.title.add-signal");
-    }
-
-    /**
-     * @see org.argouml.uml.ui.AbstractActionAddModelElement#doIt(java.util.Vector)
-     */
-    protected void doIt(Vector selected) {
-        Object event = getTarget();
-        if (selected == null || selected.size() == 0) {
-            Model.getCommonBehaviorHelper().setSignal(event, null);
-        } else {
-            Model.getCommonBehaviorHelper().setSignal(event,
-                    selected.get(0));
-        }
-    }
-
+  }
 }

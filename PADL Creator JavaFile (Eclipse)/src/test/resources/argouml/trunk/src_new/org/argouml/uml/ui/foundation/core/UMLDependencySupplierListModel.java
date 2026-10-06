@@ -28,34 +28,30 @@ import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
 /**
- *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 3, 2003
  */
 public class UMLDependencySupplierListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLDependencySupplierListModel.
-     */
-    public UMLDependencySupplierListModel() {
-        super("supplier");
-    }
+  /** Constructor for UMLDependencySupplierListModel. */
+  public UMLDependencySupplierListModel() {
+    super("supplier");
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (getTarget() != null) {
-            setAllElements(Model.getFacade().getSuppliers(getTarget()));
-        }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (getTarget() != null) {
+      setAllElements(Model.getFacade().getSuppliers(getTarget()));
     }
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ o) {
-        return Model.getFacade().isAModelElement(o)
-            && Model.getFacade().getSuppliers(getTarget()).contains(o);
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ o) {
+    return Model.getFacade().isAModelElement(o)
+        && Model.getFacade().getSuppliers(getTarget()).contains(o);
+  }
 }

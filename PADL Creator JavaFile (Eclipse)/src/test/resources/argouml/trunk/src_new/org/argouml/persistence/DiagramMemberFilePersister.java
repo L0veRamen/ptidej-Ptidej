@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.Writer;
-
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectMember;
 import org.argouml.uml.diagram.ProjectMemberDiagram;
@@ -41,88 +40,79 @@ import org.tigris.gef.ocl.TemplateReader;
 
 /**
  * The file persister for the diagram members.
+ *
  * @author Bob Tarling
  */
 class DiagramMemberFilePersister extends MemberFilePersister {
-    /**
-     * The tee file for persistence.
-     */
-    private static final String PGML_TEE = "/org/argouml/persistence/PGML.tee";
+  /** The tee file for persistence. */
+  private static final String PGML_TEE = "/org/argouml/persistence/PGML.tee";
 
-    /**
-     * @see org.argouml.persistence.MemberFilePersister#load(org.argouml.kernel.Project,
-     * java.io.InputStream)
-     */
-    public void load(Project project, InputStream inputStream)
-        throws OpenException {
+  /**
+   * @see org.argouml.persistence.MemberFilePersister#load(org.argouml.kernel.Project,
+   *     java.io.InputStream)
+   */
+  public void load(Project project, InputStream inputStream) throws OpenException {
 
-        // If the model repository doesn't manage a DI model
-        // then we must generate our Figs by inspecting PGML
-        try {
-            // Give the parser a map of model elements
-            // keyed by their UUID. This is used to allocate
-            // figs to their owner using the "href" attribute
-            // in PGML.
-            PGMLStackParser parser = new PGMLStackParser(project.getUUIDRefs());
-            Diagram d = parser.readDiagram(inputStream, false);
-            inputStream.close();
-            project.addMember(d);
-        } catch (Exception e) {
-            if (e instanceof OpenException) {
-                throw (OpenException) e;
-            }
-            throw new OpenException(e);
-        }
+    // If the model repository doesn't manage a DI model
+    // then we must generate our Figs by inspecting PGML
+    try {
+      // Give the parser a map of model elements
+      // keyed by their UUID. This is used to allocate
+      // figs to their owner using the "href" attribute
+      // in PGML.
+      PGMLStackParser parser = new PGMLStackParser(project.getUUIDRefs());
+      Diagram d = parser.readDiagram(inputStream, false);
+      inputStream.close();
+      project.addMember(d);
+    } catch (Exception e) {
+      if (e instanceof OpenException) {
+        throw (OpenException) e;
+      }
+      throw new OpenException(e);
     }
+  }
 
-    /**
-     * @see org.argouml.persistence.MemberFilePersister#getMainTag()
-     */
-    public String getMainTag() {
-        return "pgml";
+  /**
+   * @see org.argouml.persistence.MemberFilePersister#getMainTag()
+   */
+  public String getMainTag() {
+    return "pgml";
+  }
+
+  /**
+   * Write the diagram to the given writer.
+   *
+   * @see org.argouml.persistence.MemberFilePersister#save( org.argouml.kernel.ProjectMember,
+   *     java.io.Writer, java.lang.Integer)
+   */
+  public void save(ProjectMember member, Writer writer, Integer indent) throws SaveException {
+
+    ProjectMemberDiagram diagramMember = (ProjectMemberDiagram) member;
+    OCLExpander expander;
+    try {
+      expander = new OCLExpander(TemplateReader.getInstance().read(PGML_TEE));
+    } catch (ExpansionException e) {
+      throw new SaveException(e);
     }
-
-    /**
-     * Write the diagram to the given writer.
-     *
-     * @see org.argouml.persistence.MemberFilePersister#save(
-     *         org.argouml.kernel.ProjectMember, java.io.Writer,
-     *         java.lang.Integer)
-     */
-    public void save(ProjectMember member, Writer writer, Integer indent)
-    	throws SaveException {
-
-        ProjectMemberDiagram diagramMember = (ProjectMemberDiagram) member;
-        OCLExpander expander;
-        try {
-            expander =
-                new OCLExpander(TemplateReader.getInstance().read(PGML_TEE));
-        } catch (ExpansionException e) {
-            throw new SaveException(e);
-        }
-        if (indent == null) {
-            try {
-                expander.expand(writer, diagramMember.getDiagram());
-            } catch (ExpansionException e) {
-                throw new SaveException(e);
-            }
-        } else {
-            try {
-                File tempFile = File.createTempFile("pgml", null);
-                tempFile.deleteOnExit();
-                FileWriter w = new FileWriter(tempFile);
-                expander.expand(w, diagramMember.getDiagram());
-                w.close();
-                addXmlFileToWriter(
-                        (PrintWriter) writer,
-                        tempFile,
-                        indent.intValue());
-            } catch (ExpansionException e) {
-                throw new SaveException(e);
-            } catch (IOException e) {
-                throw new SaveException(e);
-            }
-        }
+    if (indent == null) {
+      try {
+        expander.expand(writer, diagramMember.getDiagram());
+      } catch (ExpansionException e) {
+        throw new SaveException(e);
+      }
+    } else {
+      try {
+        File tempFile = File.createTempFile("pgml", null);
+        tempFile.deleteOnExit();
+        FileWriter w = new FileWriter(tempFile);
+        expander.expand(w, diagramMember.getDiagram());
+        w.close();
+        addXmlFileToWriter((PrintWriter) writer, tempFile, indent.intValue());
+      } catch (ExpansionException e) {
+        throw new SaveException(e);
+      } catch (IOException e) {
+        throw new SaveException(e);
+      }
     }
-
+  }
 }

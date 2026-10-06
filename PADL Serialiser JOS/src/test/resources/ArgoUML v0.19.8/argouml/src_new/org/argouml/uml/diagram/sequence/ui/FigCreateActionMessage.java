@@ -31,29 +31,25 @@ import org.tigris.gef.presentation.ArrowHeadGreater;
  */
 public class FigCreateActionMessage extends FigMessage {
 
-    /**
-     * @param owner the owner object
-     */
-    public FigCreateActionMessage(Object owner) {
-        super(owner);
-        setDestArrowHead(new ArrowHeadGreater());
-        setDashed(false);
-    }
+  /**
+   * @param owner the owner object
+   */
+  public FigCreateActionMessage(Object owner) {
+    super(owner);
+    setDestArrowHead(new ArrowHeadGreater());
+    setDashed(false);
+  }
 
-    /**
-     * The constructor.
-     *
-     */
-    public FigCreateActionMessage() {
-        this(null);
-    }
+  /** The constructor. */
+  public FigCreateActionMessage() {
+    this(null);
+  }
 
-    /**
-     * @see org.argouml.uml.diagram.sequence.ui.FigMessage#layoutActivations()
-     */
-    protected void layoutActivations() {
-        // TODO: Auto-generated method stub
+  /**
+   * @see org.argouml.uml.diagram.sequence.ui.FigMessage#layoutActivations()
+   */
+  protected void layoutActivations() {
+    // TODO: Auto-generated method stub
 
-    }
-
+  }
 }

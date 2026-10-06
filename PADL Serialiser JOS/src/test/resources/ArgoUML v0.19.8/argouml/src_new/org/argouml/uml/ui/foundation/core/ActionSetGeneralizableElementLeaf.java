@@ -26,50 +26,43 @@
 package org.argouml.uml.ui.foundation.core;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLAction;
 import org.argouml.uml.ui.UMLCheckBox2;
 
 /**
- *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 27, 2003
  */
 public class ActionSetGeneralizableElementLeaf extends UMLAction {
-    /**
-     * The instance.
-     */
-    private static final ActionSetGeneralizableElementLeaf SINGLETON =
-        new ActionSetGeneralizableElementLeaf();
+  /** The instance. */
+  private static final ActionSetGeneralizableElementLeaf SINGLETON =
+      new ActionSetGeneralizableElementLeaf();
 
-    /**
-     * Constructor for ActionSetElementOwnershipSpecification.
-     */
-    protected ActionSetGeneralizableElementLeaf() {
-        super("Set", true, NO_ICON);
+  /** Constructor for ActionSetElementOwnershipSpecification. */
+  protected ActionSetGeneralizableElementLeaf() {
+    super("Set", true, NO_ICON);
+  }
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    if (e.getSource() instanceof UMLCheckBox2) {
+      UMLCheckBox2 source = (UMLCheckBox2) e.getSource();
+      Object target = source.getTarget();
+      if (Model.getFacade().isAGeneralizableElement(target)
+          || Model.getFacade().isAOperation(target)) {
+        Model.getCoreHelper().setLeaf(target, source.isSelected());
+      }
     }
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        if (e.getSource() instanceof UMLCheckBox2) {
-            UMLCheckBox2 source = (UMLCheckBox2) e.getSource();
-            Object target = source.getTarget();
-            if (Model.getFacade().isAGeneralizableElement(target)
-                    || Model.getFacade().isAOperation(target)) {
-                Model.getCoreHelper().setLeaf(target, source.isSelected());
-            }
-        }
-    }
-
-    /**
-     * @return Returns the SINGLETON.
-     */
-    public static ActionSetGeneralizableElementLeaf getInstance() {
-        return SINGLETON;
-    }
-
+  /**
+   * @return Returns the SINGLETON.
+   */
+  public static ActionSetGeneralizableElementLeaf getInstance() {
+    return SINGLETON;
+  }
 }

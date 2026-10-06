@@ -38,44 +38,36 @@ import org.tigris.gef.graph.GraphModel;
  */
 public class ActionAddClassifierRole extends CmdCreateNode {
 
-    private static final long serialVersionUID = 1824497910678123381L;
+  private static final long serialVersionUID = 1824497910678123381L;
 
-    /**
-     * The constructor.
-     */
-    public ActionAddClassifierRole() {
-        super(Model.getMetaTypes().getClassifierRole(),
-                "button.new-classifierrole");
-    }
-    
-    @Override
-    protected Mode createMode(String instructions) { 
-        return new ModePlaceClassifierRole(this, instructions);
-    }
+  /** The constructor. */
+  public ActionAddClassifierRole() {
+    super(Model.getMetaTypes().getClassifierRole(), "button.new-classifierrole");
+  }
 
-    /*
-     * @see org.tigris.gef.graph.GraphFactory#makeNode()
-     */
-    public Object makeNode() {
-        Object node = null;
-        Editor ce = Globals.curEditor();
-        GraphModel gm = ce.getGraphModel();
-        if (gm instanceof SequenceDiagramGraphModel) {
-            Object collaboration =
-                ((SequenceDiagramGraphModel) gm).getCollaboration();
-            node =
-                Model.getCollaborationsFactory().buildClassifierRole(
-                        collaboration);
-            /*
-            Model.getCoreHelper().setNamespace(
-                node,
-                Model.getFacade().getNamespace( collaboration));
-            */
-        } else {
-            throw new IllegalStateException("Graphmodel is not a "
-                                            + "sequence diagram graph model");
-        }
-        return node;
-    }
+  @Override
+  protected Mode createMode(String instructions) {
+    return new ModePlaceClassifierRole(this, instructions);
+  }
 
+  /*
+   * @see org.tigris.gef.graph.GraphFactory#makeNode()
+   */
+  public Object makeNode() {
+    Object node = null;
+    Editor ce = Globals.curEditor();
+    GraphModel gm = ce.getGraphModel();
+    if (gm instanceof SequenceDiagramGraphModel) {
+      Object collaboration = ((SequenceDiagramGraphModel) gm).getCollaboration();
+      node = Model.getCollaborationsFactory().buildClassifierRole(collaboration);
+      /*
+      Model.getCoreHelper().setNamespace(
+          node,
+          Model.getFacade().getNamespace( collaboration));
+      */
+    } else {
+      throw new IllegalStateException("Graphmodel is not a " + "sequence diagram graph model");
+    }
+    return node;
+  }
 }

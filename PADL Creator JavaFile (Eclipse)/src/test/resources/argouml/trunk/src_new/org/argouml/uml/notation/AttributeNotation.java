@@ -25,20 +25,17 @@
 package org.argouml.uml.notation;
 
 /**
- * This abstract class forms the basis of all Notation providers
- * for the text shown in the attribute compartment of a Class.
- * Subclass this for all languages.
+ * This abstract class forms the basis of all Notation providers for the text shown in the attribute
+ * compartment of a Class. Subclass this for all languages.
  *
  * @author mvw@tigris.org
  */
 public abstract class AttributeNotation extends NotationProvider {
 
-    /**
-     * The constructor.
-     *
-     * @param attribute the represented attribute
-     */
-    protected AttributeNotation() {
-    }
-
+  /**
+   * The constructor.
+   *
+   * @param attribute the represented attribute
+   */
+  protected AttributeNotation() {}
 }

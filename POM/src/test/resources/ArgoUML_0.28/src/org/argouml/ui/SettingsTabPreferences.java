@@ -28,10 +28,8 @@ import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
-
 import org.argouml.application.api.Argo;
 import org.argouml.application.api.GUISettingsTabInterface;
 import org.argouml.configuration.Configuration;
@@ -41,105 +39,94 @@ import org.argouml.i18n.Translator;
  * Settings tab panel for handling ArgoUML application related settings.
  *
  * @author Thierry Lach
- * @since  0.9.4
+ * @since 0.9.4
  */
-class SettingsTabPreferences extends JPanel
-    implements GUISettingsTabInterface {
+class SettingsTabPreferences extends JPanel implements GUISettingsTabInterface {
 
-    private JCheckBox chkSplash;
-    private JCheckBox chkReloadRecent;
-    private JCheckBox chkStripDiagrams;
+  private JCheckBox chkSplash;
+  private JCheckBox chkReloadRecent;
+  private JCheckBox chkStripDiagrams;
 
-    /**
-     * The constructor.
-     *
-     */
-    SettingsTabPreferences() {
-        setLayout(new BorderLayout());
-	JPanel top = new JPanel();
-    	top.setLayout(new GridBagLayout());
+  /** The constructor. */
+  SettingsTabPreferences() {
+    setLayout(new BorderLayout());
+    JPanel top = new JPanel();
+    top.setLayout(new GridBagLayout());
 
-	GridBagConstraints checkConstraints = new GridBagConstraints();
-	checkConstraints.anchor = GridBagConstraints.LINE_START;
-	checkConstraints.gridy = 0;
-	checkConstraints.gridx = 0;
-	checkConstraints.gridwidth = 1;
-	checkConstraints.gridheight = 1;
-	checkConstraints.insets = new Insets(4, 10, 0, 10);
+    GridBagConstraints checkConstraints = new GridBagConstraints();
+    checkConstraints.anchor = GridBagConstraints.LINE_START;
+    checkConstraints.gridy = 0;
+    checkConstraints.gridx = 0;
+    checkConstraints.gridwidth = 1;
+    checkConstraints.gridheight = 1;
+    checkConstraints.insets = new Insets(4, 10, 0, 10);
 
-	checkConstraints.gridy = 2;
-	JCheckBox j = new JCheckBox(Translator.localize("label.splash"));
-        chkSplash = j;
-	top.add(chkSplash, checkConstraints);
+    checkConstraints.gridy = 2;
+    JCheckBox j = new JCheckBox(Translator.localize("label.splash"));
+    chkSplash = j;
+    top.add(chkSplash, checkConstraints);
 
-	checkConstraints.gridy++;
-        JCheckBox j2 =
-            new JCheckBox(Translator.localize("label.reload-recent"));
-        chkReloadRecent = j2;
- 	top.add(chkReloadRecent, checkConstraints);
+    checkConstraints.gridy++;
+    JCheckBox j2 = new JCheckBox(Translator.localize("label.reload-recent"));
+    chkReloadRecent = j2;
+    top.add(chkReloadRecent, checkConstraints);
 
-        checkConstraints.gridy++;
-        JCheckBox j3 =
-            new JCheckBox(Translator.localize("label.strip-diagrams"));
-        chkStripDiagrams = j3;
-        top.add(chkStripDiagrams, checkConstraints);
+    checkConstraints.gridy++;
+    JCheckBox j3 = new JCheckBox(Translator.localize("label.strip-diagrams"));
+    chkStripDiagrams = j3;
+    top.add(chkStripDiagrams, checkConstraints);
 
-        checkConstraints.fill = GridBagConstraints.HORIZONTAL;
+    checkConstraints.fill = GridBagConstraints.HORIZONTAL;
 
-	add(top, BorderLayout.NORTH);
-    }
+    add(top, BorderLayout.NORTH);
+  }
 
-    /*
-     * @see GUISettingsTabInterface#handleSettingsTabRefresh()
-     */
-    public void handleSettingsTabRefresh() {
-        chkSplash.setSelected(Configuration.getBoolean(Argo.KEY_SPLASH, true));
-        chkReloadRecent.setSelected(
-		Configuration.getBoolean(Argo.KEY_RELOAD_RECENT_PROJECT,
-					 false));
-        chkStripDiagrams.setSelected(
-                Configuration.getBoolean(Argo.KEY_XMI_STRIP_DIAGRAMS,
-                                         false));
-    }
+  /*
+   * @see GUISettingsTabInterface#handleSettingsTabRefresh()
+   */
+  public void handleSettingsTabRefresh() {
+    chkSplash.setSelected(Configuration.getBoolean(Argo.KEY_SPLASH, true));
+    chkReloadRecent.setSelected(Configuration.getBoolean(Argo.KEY_RELOAD_RECENT_PROJECT, false));
+    chkStripDiagrams.setSelected(Configuration.getBoolean(Argo.KEY_XMI_STRIP_DIAGRAMS, false));
+  }
 
-    /*
-     * @see GUISettingsTabInterface#handleSettingsTabSave()
-     */
-    public void handleSettingsTabSave() {
-        Configuration.setBoolean(Argo.KEY_SPLASH, chkSplash.isSelected());
-        Configuration.setBoolean(Argo.KEY_RELOAD_RECENT_PROJECT,
-				 chkReloadRecent.isSelected());
-        Configuration.setBoolean(Argo.KEY_XMI_STRIP_DIAGRAMS,
-                 chkStripDiagrams.isSelected());
-    }
+  /*
+   * @see GUISettingsTabInterface#handleSettingsTabSave()
+   */
+  public void handleSettingsTabSave() {
+    Configuration.setBoolean(Argo.KEY_SPLASH, chkSplash.isSelected());
+    Configuration.setBoolean(Argo.KEY_RELOAD_RECENT_PROJECT, chkReloadRecent.isSelected());
+    Configuration.setBoolean(Argo.KEY_XMI_STRIP_DIAGRAMS, chkStripDiagrams.isSelected());
+  }
 
-    /*
-     * @see GUISettingsTabInterface#handleSettingsTabCancel()
-     */
-    public void handleSettingsTabCancel() {
-        handleSettingsTabRefresh();
-    }
+  /*
+   * @see GUISettingsTabInterface#handleSettingsTabCancel()
+   */
+  public void handleSettingsTabCancel() {
+    handleSettingsTabRefresh();
+  }
 
-    /*
-     * @see org.argouml.ui.GUISettingsTabInterface#handleResetToDefault()
-     */
-    public void handleResetToDefault() {
-        // Do nothing - these buttons are not shown.
-    }
+  /*
+   * @see org.argouml.ui.GUISettingsTabInterface#handleResetToDefault()
+   */
+  public void handleResetToDefault() {
+    // Do nothing - these buttons are not shown.
+  }
 
-    /*
-     * @see GUISettingsTabInterface#getTabPanel()
-     */
-    public JPanel getTabPanel() { return this; }
+  /*
+   * @see GUISettingsTabInterface#getTabPanel()
+   */
+  public JPanel getTabPanel() {
+    return this;
+  }
 
-    /*
-     * @see GUISettingsTabInterface#getTabKey()
-     */
-    public String getTabKey() { return "tab.preferences"; }
+  /*
+   * @see GUISettingsTabInterface#getTabKey()
+   */
+  public String getTabKey() {
+    return "tab.preferences";
+  }
 
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -340220974967836979L;
+  /** The UID. */
+  private static final long serialVersionUID = -340220974967836979L;
 }
-

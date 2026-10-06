@@ -25,21 +25,18 @@
 package org.argouml.model;
 
 /**
- * This Decorator is responsible for generating mementos for any
- * mutable methods.
+ * This Decorator is responsible for generating mementos for any mutable methods.
  *
  * @author Linus Tolke
  */
-public class UndoDataTypesHelperDecorator
-	extends AbstractDataTypesHelperDecorator {
+public class UndoDataTypesHelperDecorator extends AbstractDataTypesHelperDecorator {
 
-    /**
-     * Constructor.
-     *
-     * @param component The component we are decorating.
-     */
-    UndoDataTypesHelperDecorator(DataTypesHelper component) {
-        super(component);
-    }
+  /**
+   * Constructor.
+   *
+   * @param component The component we are decorating.
+   */
+  UndoDataTypesHelperDecorator(DataTypesHelper component) {
+    super(component);
+  }
 }
-

@@ -24,17 +24,15 @@
 
 package org.argouml.model;
 
-/**
- * The different ScopeKinds.
- */
+/** The different ScopeKinds. */
 public interface ScopeKind {
-    /**
-     * @return Returns the Classifier ScopeKind.
-     */
-    Object getClassifier();
+  /**
+   * @return Returns the Classifier ScopeKind.
+   */
+  Object getClassifier();
 
-    /**
-     * @return Returns the Instance ScopeKind.
-     */
-    Object getInstance();
+  /**
+   * @return Returns the Instance ScopeKind.
+   */
+  Object getInstance();
 }

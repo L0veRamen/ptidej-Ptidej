@@ -25,48 +25,38 @@
 package org.argouml.uml.ui;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.Action;
-
 import org.argouml.i18n.Translator;
-import org.argouml.uml.diagram.ArgoDiagram;
-import org.argouml.uml.diagram.DiagramUtils;
 import org.tigris.gef.undo.UndoableAction;
 
-/**
- * Action for viewing/editing source path settings of model elements.
- */
+/** Action for viewing/editing source path settings of model elements. */
 public class ActionGenerationSettings extends UndoableAction {
 
-    /**
-     *  The constructor.
-     */
-    public ActionGenerationSettings() {
-        super(Translator
-                .localize("action.settings-for-project-code-generation"), null);
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, Translator
-                .localize("action.settings-for-project-code-generation"));
-    }
+  /** The constructor. */
+  public ActionGenerationSettings() {
+    super(Translator.localize("action.settings-for-project-code-generation"), null);
+    // Set the tooltip string:
+    putValue(
+        Action.SHORT_DESCRIPTION,
+        Translator.localize("action.settings-for-project-code-generation"));
+  }
 
+  /*
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
+  public void actionPerformed(ActionEvent ae) {
+    super.actionPerformed(ae);
+    SourcePathDialog cgd = new SourcePathDialog();
+    cgd.setVisible(true);
+  }
 
-    /*
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    @Override
-    public void actionPerformed(ActionEvent ae) {
-    	super.actionPerformed(ae);
-	SourcePathDialog cgd = new SourcePathDialog();
-	cgd.setVisible(true);
-    }
-
-    /**
-     * @return true if the action is enabled and the active diagram is a diagram
-     * @see org.tigris.gef.undo.UndoableAction#isEnabled()
-     */
-    @Override
-    public boolean isEnabled() {
-	return true;
-    }
-
+  /**
+   * @return true if the action is enabled and the active diagram is a diagram
+   * @see org.tigris.gef.undo.UndoableAction#isEnabled()
+   */
+  @Override
+  public boolean isEnabled() {
+    return true;
+  }
 }

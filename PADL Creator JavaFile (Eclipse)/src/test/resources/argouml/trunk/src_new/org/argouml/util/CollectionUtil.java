@@ -35,38 +35,34 @@ import java.util.List;
  */
 public final class CollectionUtil {
 
-    /**
-     * Can't construct a utility.
-     */
-    private CollectionUtil() {
-    }
+  /** Can't construct a utility. */
+  private CollectionUtil() {}
 
-    /**
-     * Return the first item from a collection using the most efficient
-     * method possible.
-     *
-     * @param c The Collection.
-     * @return the first element of a Collection.
-     * @throws java.util.NoSuchElementException if the collection is empty.
-     */
-    public static Object getFirstItem(Collection c) {
-        if (c instanceof List) {
-            return ((List) c).get(0);
-        }
-        return c.iterator().next();
+  /**
+   * Return the first item from a collection using the most efficient method possible.
+   *
+   * @param c The Collection.
+   * @return the first element of a Collection.
+   * @throws java.util.NoSuchElementException if the collection is empty.
+   */
+  public static Object getFirstItem(Collection c) {
+    if (c instanceof List) {
+      return ((List) c).get(0);
     }
+    return c.iterator().next();
+  }
 
-    /**
-     * Return the first item from a collection using the most efficient
-     * method possible. Returns null for an empty collection.
-     *
-     * @param c The Collection.
-     * @return the first element of a Collection.
-     */
-    public static Object getFirstItemOrNull(Collection c) {
-        if (c.size() == 0) {
-            return null;
-        }
-        return getFirstItem(c);
+  /**
+   * Return the first item from a collection using the most efficient method possible. Returns null
+   * for an empty collection.
+   *
+   * @param c The Collection.
+   * @return the first element of a Collection.
+   */
+  public static Object getFirstItemOrNull(Collection c) {
+    if (c.size() == 0) {
+      return null;
     }
+    return getFirstItem(c);
+  }
 }

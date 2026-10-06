@@ -31,179 +31,155 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Stack;
 import java.util.Vector;
-
 import org.argouml.model.Model;
 
 /**
- * This helper class generates CodePiece based code.
- * It needs some work. See issue
+ * This helper class generates CodePiece based code. It needs some work. See issue
  * http://argouml.tigris.org/issues/show_bug.cgi?id=435
  *
- * JavaRE - Code generation and reverse engineering for UML and Java.
+ * <p>JavaRE - Code generation and reverse engineering for UML and Java.
  *
  * @author Marcus Andersson andersson@users.sourceforge.net
  */
 class CodeGenerator {
-    /**
-     * Generate code for a class.
-     *
-     * @param mClass The class to generate code for.
-     * @param reader The reader to read from.
-     * @param writer The writer to write to.
-     * @throws IOException if there is a problem with reading/writing.
-     */
-    public static void generateClass(Object/*MClass*/ mClass,
-				     BufferedReader reader,
-				     BufferedWriter writer)
-	throws IOException {
+  /**
+   * Generate code for a class.
+   *
+   * @param mClass The class to generate code for.
+   * @param reader The reader to read from.
+   * @param writer The writer to write to.
+   * @throws IOException if there is a problem with reading/writing.
+   */
+  public static void generateClass(
+      Object /*MClass*/ mClass, BufferedReader reader, BufferedWriter writer) throws IOException {
 
-	ClassCodePiece ccp =
-	    new ClassCodePiece(null, Model.getFacade().getName(mClass));
-	Stack parseStateStack = new Stack();
-	parseStateStack.push(
-	        new ParseState(Model.getFacade().getNamespace(mClass)));
-	ccp.write(reader, writer, parseStateStack);
+    ClassCodePiece ccp = new ClassCodePiece(null, Model.getFacade().getName(mClass));
+    Stack parseStateStack = new Stack();
+    parseStateStack.push(new ParseState(Model.getFacade().getNamespace(mClass)));
+    ccp.write(reader, writer, parseStateStack);
 
-	writer.write("{\n");
+    writer.write("{\n");
 
-	// Features
-	Collection features = Model.getFacade().getFeatures(mClass);
-	for (Iterator i = features.iterator(); i.hasNext();) {
-	    Object feature = /*(MFeature)*/ i.next();
-	    if (Model.getFacade().isAOperation(feature)) {
-		generateOperation(/*(MOperation)*/ feature, mClass,
-				  reader, writer);
-	    }
-	    if (Model.getFacade().isAAttribute(feature)) {
-		generateAttribute(/*(MAttribute)*/ feature, mClass,
-				  reader, writer);
-	    }
-	}
-
-	// Inner classes
-	Collection elements = Model.getFacade().getOwnedElements(mClass);
-	for (Iterator i = elements.iterator(); i.hasNext();) {
-	    Object element = /*(MModelElement)*/ i.next();
-	    if (Model.getFacade().isAClass(element)) {
-		generateClass(element, reader, writer);
-	    } else if (Model.getFacade().isAInterface(element)) {
-		generateInterface(element, reader, writer);
-	    }
-	}
-
-	writer.write("}\n");
+    // Features
+    Collection features = Model.getFacade().getFeatures(mClass);
+    for (Iterator i = features.iterator(); i.hasNext(); ) {
+      Object feature = /*(MFeature)*/ i.next();
+      if (Model.getFacade().isAOperation(feature)) {
+        generateOperation(/*(MOperation)*/ feature, mClass, reader, writer);
+      }
+      if (Model.getFacade().isAAttribute(feature)) {
+        generateAttribute(/*(MAttribute)*/ feature, mClass, reader, writer);
+      }
     }
 
-    /**
-     * Generate code for an interface.
-     *
-     * @param mInterface The interface to generate code for.
-     * @param reader The reader to read from.
-     * @param writer The writer to write to.
-     * @throws IOException if there is a problem with reading/writing.
-     */
-    public static void generateInterface(Object mInterface,
-					 BufferedReader reader,
-					 BufferedWriter writer)
-	throws IOException {
-	InterfaceCodePiece icp =
-	    new InterfaceCodePiece(null, Model.getFacade().getName(mInterface));
-	Stack parseStateStack = new Stack();
-	parseStateStack.push(
-	        new ParseState(Model.getFacade().getNamespace(mInterface)));
-	icp.write(reader, writer, parseStateStack);
-
-	writer.write("{\n");
-
-	// Features
-	Collection features = Model.getFacade().getFeatures(mInterface);
-	for (Iterator i = features.iterator(); i.hasNext();) {
-	    Object feature = /*(MFeature)*/ i.next();
-	    if (Model.getFacade().isAOperation(feature)) {
-		generateOperation(/*(MOperation)*/ feature,
-				  mInterface, reader, writer);
-	    }
-	    if (Model.getFacade().isAAttribute(feature)) {
-		generateAttribute(/*(MAttribute)*/ feature,
-				  mInterface, reader, writer);
-	    }
-	}
-
-	// Inner classes
-	Collection elements = Model.getFacade().getOwnedElements(mInterface);
-	for (Iterator i = elements.iterator(); i.hasNext();) {
-	    Object element = /*(MModelElement)*/ i.next();
-	    if (Model.getFacade().isAClass(element)) {
-		generateClass(element, reader, writer);
-	    } else if (Model.getFacade().isAInterface(element)) {
-		generateInterface(element, reader, writer);
-	    }
-	}
-
-	writer.write("}\n");
+    // Inner classes
+    Collection elements = Model.getFacade().getOwnedElements(mClass);
+    for (Iterator i = elements.iterator(); i.hasNext(); ) {
+      Object element = /*(MModelElement)*/ i.next();
+      if (Model.getFacade().isAClass(element)) {
+        generateClass(element, reader, writer);
+      } else if (Model.getFacade().isAInterface(element)) {
+        generateInterface(element, reader, writer);
+      }
     }
 
-    /**
-     * Generate code for an operation.
-     *
-     * @param mOperation The operation to generate code for.
-     * @param mClassifier The classifier the operation belongs to.
-     * @param reader The reader to read from.
-     * @param writer The writer to write to.
-     * @throws IOException if there is a problem with reading/writing.
-     */
-    public static void generateOperation(Object mOperation,
-					 Object mClassifier,
-					 BufferedReader reader,
-					 BufferedWriter writer)
-	throws IOException {
+    writer.write("}\n");
+  }
 
-	OperationCodePiece ocp =
-	    new OperationCodePiece(new SimpleCodePiece(new StringBuffer(),
-						       0, 0, 0),
-				   new SimpleCodePiece(new StringBuffer(),
-						       0, 0, 0),
-				   Model.getFacade().getName(mOperation));
-	Stack parseStateStack = new Stack();
-	parseStateStack.push(new ParseState(mClassifier));
-	ocp.write(reader, writer, parseStateStack);
+  /**
+   * Generate code for an interface.
+   *
+   * @param mInterface The interface to generate code for.
+   * @param reader The reader to read from.
+   * @param writer The writer to write to.
+   * @throws IOException if there is a problem with reading/writing.
+   */
+  public static void generateInterface(
+      Object mInterface, BufferedReader reader, BufferedWriter writer) throws IOException {
+    InterfaceCodePiece icp = new InterfaceCodePiece(null, Model.getFacade().getName(mInterface));
+    Stack parseStateStack = new Stack();
+    parseStateStack.push(new ParseState(Model.getFacade().getNamespace(mInterface)));
+    icp.write(reader, writer, parseStateStack);
 
-	if (Model.getFacade().isAbstract(mOperation)
-	    || Model.getFacade().isAInterface(mClassifier)) {
+    writer.write("{\n");
 
-	    writer.write(";\n");
-	} else {
-	    writer.write("{}\n");
-	}
+    // Features
+    Collection features = Model.getFacade().getFeatures(mInterface);
+    for (Iterator i = features.iterator(); i.hasNext(); ) {
+      Object feature = /*(MFeature)*/ i.next();
+      if (Model.getFacade().isAOperation(feature)) {
+        generateOperation(/*(MOperation)*/ feature, mInterface, reader, writer);
+      }
+      if (Model.getFacade().isAAttribute(feature)) {
+        generateAttribute(/*(MAttribute)*/ feature, mInterface, reader, writer);
+      }
     }
 
-    /**
-     * Generate code for an attribute.
-     *
-     * @param mAttribute The attribute to generate code for.
-     * @param mClassifier The classifier the attribute belongs to.
-     * @param reader The reader to read from.
-     * @param writer The writer to write to.
-     * @throws IOException if there is a problem with reading/writing.
-     */
-    public static void generateAttribute(Object mAttribute,
-					 Object mClassifier,
-					 BufferedReader reader,
-					 BufferedWriter writer)
-	throws IOException {
-
-	Vector names = new Vector();
-	StringBuffer sbName =
-	    new StringBuffer(Model.getFacade().getName(mAttribute));
-	names.addElement(new SimpleCodePiece(sbName, 0, 0, 0));
-	AttributeCodePiece acp =
-	    new AttributeCodePiece(null,
-				   new SimpleCodePiece(new StringBuffer(),
-						       0, 0, 0),
-				   names);
-	Stack parseStateStack = new Stack();
-	parseStateStack.push(new ParseState(mClassifier));
-	acp.write(reader, writer, parseStateStack);
-	writer.write(";\n");
+    // Inner classes
+    Collection elements = Model.getFacade().getOwnedElements(mInterface);
+    for (Iterator i = elements.iterator(); i.hasNext(); ) {
+      Object element = /*(MModelElement)*/ i.next();
+      if (Model.getFacade().isAClass(element)) {
+        generateClass(element, reader, writer);
+      } else if (Model.getFacade().isAInterface(element)) {
+        generateInterface(element, reader, writer);
+      }
     }
+
+    writer.write("}\n");
+  }
+
+  /**
+   * Generate code for an operation.
+   *
+   * @param mOperation The operation to generate code for.
+   * @param mClassifier The classifier the operation belongs to.
+   * @param reader The reader to read from.
+   * @param writer The writer to write to.
+   * @throws IOException if there is a problem with reading/writing.
+   */
+  public static void generateOperation(
+      Object mOperation, Object mClassifier, BufferedReader reader, BufferedWriter writer)
+      throws IOException {
+
+    OperationCodePiece ocp =
+        new OperationCodePiece(
+            new SimpleCodePiece(new StringBuffer(), 0, 0, 0),
+            new SimpleCodePiece(new StringBuffer(), 0, 0, 0),
+            Model.getFacade().getName(mOperation));
+    Stack parseStateStack = new Stack();
+    parseStateStack.push(new ParseState(mClassifier));
+    ocp.write(reader, writer, parseStateStack);
+
+    if (Model.getFacade().isAbstract(mOperation) || Model.getFacade().isAInterface(mClassifier)) {
+
+      writer.write(";\n");
+    } else {
+      writer.write("{}\n");
+    }
+  }
+
+  /**
+   * Generate code for an attribute.
+   *
+   * @param mAttribute The attribute to generate code for.
+   * @param mClassifier The classifier the attribute belongs to.
+   * @param reader The reader to read from.
+   * @param writer The writer to write to.
+   * @throws IOException if there is a problem with reading/writing.
+   */
+  public static void generateAttribute(
+      Object mAttribute, Object mClassifier, BufferedReader reader, BufferedWriter writer)
+      throws IOException {
+
+    Vector names = new Vector();
+    StringBuffer sbName = new StringBuffer(Model.getFacade().getName(mAttribute));
+    names.addElement(new SimpleCodePiece(sbName, 0, 0, 0));
+    AttributeCodePiece acp =
+        new AttributeCodePiece(null, new SimpleCodePiece(new StringBuffer(), 0, 0, 0), names);
+    Stack parseStateStack = new Stack();
+    parseStateStack.push(new ParseState(mClassifier));
+    acp.write(reader, writer, parseStateStack);
+    writer.write(";\n");
+  }
 }

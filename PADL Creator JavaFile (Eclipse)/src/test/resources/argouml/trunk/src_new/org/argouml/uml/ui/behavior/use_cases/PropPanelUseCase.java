@@ -24,10 +24,8 @@
 
 package org.argouml.uml.ui.behavior.use_cases;
 
-
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.ui.targetmanager.TargetManager;
 import org.argouml.uml.ui.ActionNavigateNamespace;
@@ -38,79 +36,63 @@ import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
 import org.argouml.util.ConfigLoader;
 
 /**
- * Builds the property panel for a use case.<p>
+ * Builds the property panel for a use case.
  *
- * This is a type of Classifier, and like other Classifiers can have
- * attributes and operations (some processes use these to define
- * requirements).<p>
- * <em>Note</em>. ArgoUML does not currently support separate
- * compartments on the display for this.<p>
+ * <p>This is a type of Classifier, and like other Classifiers can have attributes and operations
+ * (some processes use these to define requirements).
+ *
+ * <p><em>Note</em>. ArgoUML does not currently support separate compartments on the display for
+ * this.
+ *
+ * <p>
  */
 public class PropPanelUseCase extends PropPanelClassifier {
 
-    /**
-     * Construct a property panel for a UseCase.
-     */
-    public PropPanelUseCase() {
-        super("UseCase",
-            lookupIcon("UseCase"),
-            ConfigLoader.getTabPropsOrientation());
+  /** Construct a property panel for a UseCase. */
+  public PropPanelUseCase() {
+    super("UseCase", lookupIcon("UseCase"), ConfigLoader.getTabPropsOrientation());
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-    	addField(Translator.localize("label.namespace"),
-                getNamespaceSelector());
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.namespace"), getNamespaceSelector());
 
-        add(getModifiersPanel());
+    add(getModifiersPanel());
 
-	addSeparator();
+    addSeparator();
 
-	addField(Translator.localize("label.generalizations"),
-            getGeneralizationScroll());
-	addField(Translator.localize("label.specializations"),
-            getSpecializationScroll());
+    addField(Translator.localize("label.generalizations"), getGeneralizationScroll());
+    addField(Translator.localize("label.specializations"), getSpecializationScroll());
 
-	JList extendsList = new UMLLinkedList(new UMLUseCaseExtendListModel());
-	addField(Translator.localize("label.extends"),
-		 new JScrollPane(extendsList));
+    JList extendsList = new UMLLinkedList(new UMLUseCaseExtendListModel());
+    addField(Translator.localize("label.extends"), new JScrollPane(extendsList));
 
-	JList includesList =
-            new UMLLinkedList(
-                    new UMLUseCaseIncludeListModel());
-	addField(Translator.localize("label.includes"),
-		 new JScrollPane(includesList));
+    JList includesList = new UMLLinkedList(new UMLUseCaseIncludeListModel());
+    addField(Translator.localize("label.includes"), new JScrollPane(includesList));
 
-	addSeparator();
+    addSeparator();
 
-        addField(Translator.localize("label.attributes"),
-                getAttributeScroll());
+    addField(Translator.localize("label.attributes"), getAttributeScroll());
 
-        addField(Translator.localize("label.association-ends"),
-                getAssociationEndScroll());
+    addField(Translator.localize("label.association-ends"), getAssociationEndScroll());
 
-        addField(Translator.localize("label.operations"),
-                getOperationScroll());
+    addField(Translator.localize("label.operations"), getOperationScroll());
 
-	JList extensionPoints =
-	    new UMLMutableLinkedList(
-	            new UMLUseCaseExtensionPointListModel(), null,
-	            ActionNewUseCaseExtensionPoint.SINGLETON);
-        addField(Translator.localize("label.extension-points"),
-            new JScrollPane(extensionPoints));
+    JList extensionPoints =
+        new UMLMutableLinkedList(
+            new UMLUseCaseExtensionPointListModel(),
+            null,
+            ActionNewUseCaseExtensionPoint.SINGLETON);
+    addField(Translator.localize("label.extension-points"), new JScrollPane(extensionPoints));
 
+    addAction(new ActionNavigateNamespace());
+    addAction(new ActionNewUseCase());
+    addAction(new ActionNewExtensionPoint());
+    addAction(TargetManager.getInstance().getAddAttributeAction());
+    addAction(TargetManager.getInstance().getAddOperationAction());
+    addAction(getActionNewReception());
+    addAction(new ActionNewStereotype());
+    addAction(getDeleteAction());
+  }
 
-        addAction(new ActionNavigateNamespace());
-        addAction(new ActionNewUseCase());
-        addAction(new ActionNewExtensionPoint());
-        addAction(TargetManager.getInstance().getAddAttributeAction());
-        addAction(TargetManager.getInstance().getAddOperationAction());
-        addAction(getActionNewReception());
-        addAction(new ActionNewStereotype());
-        addAction(getDeleteAction());
-    }
-
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = 8352300400553000518L;
+  /** The UID. */
+  private static final long serialVersionUID = 8352300400553000518L;
 } /* end class PropPanelUseCase */

@@ -33,28 +33,23 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  */
 public class UMLExtendExtensionListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLExtendExtensionComboBoxModel.
-     */
-    public UMLExtendExtensionListModel() {
-        super("extension");
+  /** Constructor for UMLExtendExtensionComboBoxModel. */
+  public UMLExtendExtensionListModel() {
+    super("extension");
+  }
 
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (!isEmpty()) removeAllElements();
+    addElement(Model.getFacade().getExtension(getTarget()));
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (!isEmpty())
-            removeAllElements();
-        addElement(Model.getFacade().getExtension(getTarget()));
-    }
-
-
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().isAUseCase(element);
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().isAUseCase(element);
+  }
 }

@@ -25,28 +25,29 @@
 package org.argouml.core.propertypanels.ui;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.model.Model;
 import org.argouml.uml.ui.AbstractActionNewModelElement;
+
 /**
  * @author mkl
  */
 public class ActionNewOFSParameter extends AbstractActionNewModelElement {
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        Object target = getTarget();
-        if (Model.getFacade().isAObjectFlowState(target)) {
-            Object type = getType(target);
-            Object parameter = Model.getCoreFactory().createParameter();
-            Model.getCoreHelper().setType(parameter, type);
-            Model.getActivityGraphsHelper().addParameter(target, parameter);
-        }
+  @Override
+  public void actionPerformed(ActionEvent e) {
+    Object target = getTarget();
+    if (Model.getFacade().isAObjectFlowState(target)) {
+      Object type = getType(target);
+      Object parameter = Model.getCoreFactory().createParameter();
+      Model.getCoreHelper().setType(parameter, type);
+      Model.getActivityGraphsHelper().addParameter(target, parameter);
     }
-    private static Object getType(Object target) {
-        Object type = Model.getFacade().getType(target);
-        if (Model.getFacade().isAClassifierInState(type)) {
-            type = Model.getFacade().getType(type);
-        }
-        return type;
+  }
+
+  private static Object getType(Object target) {
+    Object type = Model.getFacade().getType(target);
+    if (Model.getFacade().isAClassifierInState(type)) {
+      type = Model.getFacade().getType(type);
     }
+    return type;
+  }
 }

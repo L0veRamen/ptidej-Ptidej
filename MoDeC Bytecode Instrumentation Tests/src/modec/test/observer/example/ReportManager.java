@@ -4,26 +4,24 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
 package modec.test.observer.example;
 
-//package src.OBSERVER;
-//CONCRETE SUBJECT
+// package src.OBSERVER;
+// CONCRETE SUBJECT
 import java.awt.*;
 import java.awt.event.*;
-import javax.swing.*;
 import java.util.*;
+import javax.swing.*;
 
-public class ReportManager extends JFrame 
-  implements Observable {
-  /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-public static final String newline = "\n";
+public class ReportManager extends JFrame implements Observable {
+  /** */
+  private static final long serialVersionUID = 1L;
+
+  public static final String newline = "\n";
   public static final String SET_OK = "OK";
   public static final String EXIT = "Exit";
 
@@ -44,9 +42,8 @@ public static final String newline = "\n";
     this.btnExit = new JButton(ReportManager.EXIT);
     this.btnExit.setMnemonic(KeyEvent.VK_X);
 
-    //Create Labels
-    JLabel lblDepartmentList =
-      new JLabel("Select a Department:");
+    // Create Labels
+    JLabel lblDepartmentList = new JLabel("Select a Department:");
 
     ButtonHandler vf = new ButtonHandler(this);
 
@@ -55,7 +52,7 @@ public static final String newline = "\n";
 
     JPanel buttonPanel = new JPanel();
 
-    //----------------------------------------------
+    // ----------------------------------------------
     GridBagLayout gridbag = new GridBagLayout();
     buttonPanel.setLayout(gridbag);
     GridBagConstraints gbc = new GridBagConstraints();
@@ -93,8 +90,7 @@ public static final String newline = "\n";
     contentPane.add(buttonPanel, BorderLayout.CENTER);
     try {
       UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-      SwingUtilities.updateComponentTreeUI(
-        ReportManager.this);
+      SwingUtilities.updateComponentTreeUI(ReportManager.this);
     } catch (Exception ex) {
       System.out.println(ex);
     }
@@ -103,6 +99,7 @@ public static final String newline = "\n";
     setSize(250, 200);
     setVisible(true);
   }
+
   private void initialize() throws Exception {
     // fill some test data here into the listbox.
     this.cmbDepartmentList.addItem("HardWare");
@@ -114,21 +111,24 @@ public static final String newline = "\n";
     // Add to the list of Observers
     this.observersList.addElement(obs);
   }
+
   public void unRegister(Observer obs) {
     // remove from the list of Observers
 
   }
+
   public void notifyObservers() {
     // Send notify to all Observers
     for (int i = 0; i < this.observersList.size(); i++) {
-      Observer observer =
-        (Observer) this.observersList.elementAt(i);
+      Observer observer = (Observer) this.observersList.elementAt(i);
       observer.refreshData(this);
     }
   }
+
   public String getDepartment() {
     return this.department;
   }
+
   public void setDepartment(String dept) {
     this.department = dept;
   }
@@ -142,21 +142,17 @@ public static final String newline = "\n";
         System.exit(1);
       }
       if (e.getActionCommand().equals(ReportManager.SET_OK)) {
-        String dept = (String)
-                      ReportManager.this.cmbDepartmentList.getSelectedItem();
-        //change in state
+        String dept = (String) ReportManager.this.cmbDepartmentList.getSelectedItem();
+        // change in state
         this.subject.setDepartment(dept);
         this.subject.notifyObservers();
       }
     }
 
-    public ButtonHandler() {
-    }
+    public ButtonHandler() {}
+
     public ButtonHandler(ReportManager manager) {
       this.subject = manager;
     }
-
   }
-
-}// end of class
-
+} // end of class

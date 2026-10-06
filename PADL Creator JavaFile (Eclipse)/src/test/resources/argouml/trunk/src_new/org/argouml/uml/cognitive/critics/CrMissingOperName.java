@@ -31,60 +31,55 @@ import org.argouml.cognitive.ui.Wizard;
 import org.argouml.model.Model;
 import org.argouml.uml.cognitive.UMLDecision;
 
-/**
- * A critic to detect whether an operation has a name.
- */
+/** A critic to detect whether an operation has a name. */
 public class CrMissingOperName extends CrUML {
 
-    /**
-     * The constructor.
-     */
-    public CrMissingOperName() {
-        setupHeadAndDesc();
-	addSupportedDecision(UMLDecision.NAMING);
-	setKnowledgeTypes(Critic.KT_SYNTAX);
-	addTrigger("name");
+  /** The constructor. */
+  public CrMissingOperName() {
+    setupHeadAndDesc();
+    addSupportedDecision(UMLDecision.NAMING);
+    setKnowledgeTypes(Critic.KT_SYNTAX);
+    addTrigger("name");
+  }
+
+  /**
+   * @see org.argouml.uml.cognitive.critics.CrUML#predicate2( java.lang.Object,
+   *     org.argouml.cognitive.Designer)
+   */
+  public boolean predicate2(Object dm, Designer dsgr) {
+    if (!(Model.getFacade().isAOperation(dm))) return NO_PROBLEM;
+    Object oper = /*(MOperation)*/ dm;
+    String myName = Model.getFacade().getName(oper);
+    if (myName == null || myName.equals("")) return PROBLEM_FOUND;
+    if (myName.length() == 0) return PROBLEM_FOUND;
+    return NO_PROBLEM;
+  }
+
+  /**
+   * @see org.argouml.cognitive.critics.Critic#initWizard( org.argouml.cognitive.ui.Wizard)
+   */
+  public void initWizard(Wizard w) {
+    if (w instanceof WizMEName) {
+      ToDoItem item = (ToDoItem) w.getToDoItem();
+      Object me = /*(MModelElement)*/ item.getOffenders().elementAt(0);
+      String ins = super.getInstructions();
+      String sug = super.getDefaultSuggestion();
+      if (Model.getFacade().isAOperation(me)) {
+        Object a = /*(MOperation)*/ me;
+        int count = 1;
+        if (Model.getFacade().getOwner(a) != null)
+          count = Model.getFacade().getFeatures(Model.getFacade().getOwner(a)).size();
+        sug = "oper" + (count + 1);
+      }
+      ((WizMEName) w).setInstructions(ins);
+      ((WizMEName) w).setSuggestion(sug);
     }
+  }
 
-    /**
-     * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
-     * java.lang.Object, org.argouml.cognitive.Designer)
-     */
-    public boolean predicate2(Object dm, Designer dsgr) {
-	if (!(Model.getFacade().isAOperation(dm))) return NO_PROBLEM;
-	Object oper = /*(MOperation)*/ dm;
-	String myName = Model.getFacade().getName(oper);
-	if (myName == null || myName.equals("")) return PROBLEM_FOUND;
-	if (myName.length() == 0) return PROBLEM_FOUND;
-	return NO_PROBLEM;
-    }
-
-    /**
-     * @see org.argouml.cognitive.critics.Critic#initWizard(
-     *         org.argouml.cognitive.ui.Wizard)
-     */
-    public void initWizard(Wizard w) {
-	if (w instanceof WizMEName) {
-	    ToDoItem item = (ToDoItem) w.getToDoItem();
-	    Object me = /*(MModelElement)*/ item.getOffenders().elementAt(0);
-	    String ins = super.getInstructions();
-	    String sug = super.getDefaultSuggestion();
-	    if (Model.getFacade().isAOperation(me)) {
-		Object a = /*(MOperation)*/ me;
-		int count = 1;
-		if (Model.getFacade().getOwner(a) != null)
-		    count = Model.getFacade().getFeatures(
-		            Model.getFacade().getOwner(a)).size();
-		sug = "oper" + (count + 1);
-	    }
-	    ((WizMEName) w).setInstructions(ins);
-	    ((WizMEName) w).setSuggestion(sug);
-	}
-    }
-
-    /**
-     * @see org.argouml.cognitive.critics.Critic#getWizardClass(org.argouml.cognitive.ToDoItem)
-     */
-    public Class getWizardClass(ToDoItem item) { return WizMEName.class; }
-
+  /**
+   * @see org.argouml.cognitive.critics.Critic#getWizardClass(org.argouml.cognitive.ToDoItem)
+   */
+  public Class getWizardClass(ToDoItem item) {
+    return WizMEName.class;
+  }
 } /* end class CrMissingOperName */

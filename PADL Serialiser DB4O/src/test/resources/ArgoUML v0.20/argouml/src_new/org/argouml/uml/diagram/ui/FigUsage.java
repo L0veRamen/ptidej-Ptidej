@@ -24,11 +24,8 @@
 
 package org.argouml.uml.diagram.ui;
 
-import java.beans.PropertyChangeEvent;
 
-import org.argouml.notation.NotationHelper;
 import org.tigris.gef.base.Layer;
-import org.tigris.gef.presentation.FigText;
 
 /**
  * This class represents a Fig for a Usage.
@@ -37,31 +34,27 @@ import org.tigris.gef.presentation.FigText;
  */
 public class FigUsage extends FigDependency {
 
-    /**
-     * The constructor.
-     *
-     */
-    public FigUsage() {
-        super();
-    }
+  /** The constructor. */
+  public FigUsage() {
+    super();
+  }
 
-    /**
-     * The constructor.
-     *
-     * @param edge the owning UML element
-     */
-    public FigUsage(Object edge) {
-        super(edge);
-    }
+  /**
+   * The constructor.
+   *
+   * @param edge the owning UML element
+   */
+  public FigUsage(Object edge) {
+    super(edge);
+  }
 
-    /**
-     * The constructor.
-     *
-     * @param edge the owning UML element
-     * @param lay the layer
-     */
-    public FigUsage(Object edge, Layer lay) {
-        super(edge, lay);
-    }
+  /**
+   * The constructor.
+   *
+   * @param edge the owning UML element
+   * @param lay the layer
+   */
+  public FigUsage(Object edge, Layer lay) {
+    super(edge, lay);
+  }
 } /* end class FigUsage */
-

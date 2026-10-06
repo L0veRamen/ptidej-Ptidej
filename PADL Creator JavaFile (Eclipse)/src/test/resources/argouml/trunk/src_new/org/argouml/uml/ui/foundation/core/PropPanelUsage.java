@@ -28,38 +28,25 @@ import org.argouml.i18n.Translator;
 import org.argouml.uml.ui.ActionNavigateNamespace;
 import org.argouml.util.ConfigLoader;
 
-/**
- * The properties panel for a Usage.
- *
- */
+/** The properties panel for a Usage. */
 public class PropPanelUsage extends PropPanelDependency {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = 5927912703376526760L;
+  /** The serial version. */
+  private static final long serialVersionUID = 5927912703376526760L;
 
-    /**
-     * Construct a property panel for Usage elements.
-     */
-    public PropPanelUsage() {
-        super("Usage", ConfigLoader.getTabPropsOrientation());
+  /** Construct a property panel for Usage elements. */
+  public PropPanelUsage() {
+    super("Usage", ConfigLoader.getTabPropsOrientation());
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.namespace"),
-                getNamespaceSelector());
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.namespace"), getNamespaceSelector());
 
-        addSeparator();
+    addSeparator();
 
-        addField(Translator.localize("label.suppliers"),
-                getSupplierScroll());
-        addField(Translator.localize("label.clients"),
-                getClientScroll());
+    addField(Translator.localize("label.suppliers"), getSupplierScroll());
+    addField(Translator.localize("label.clients"), getClientScroll());
 
-        addAction(new ActionNavigateNamespace());
-        addAction(getDeleteAction());
-    }
-
+    addAction(new ActionNavigateNamespace());
+    addAction(getDeleteAction());
+  }
 } /* end class PropPanelUsage */
-

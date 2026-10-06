@@ -37,85 +37,81 @@ import org.tigris.swidgets.Orientation;
  */
 public class PropPanelStructuralFeature extends PropPanelFeature {
 
-    private UMLComboBox2 multiplicityComboBox;
-    private UMLComboBox2 typeComboBox;
-    private UMLRadioButtonPanel changeabilityRadioButtonPanel;
-    private UMLCheckBox2 targetScopeCheckBox;
+  private UMLComboBox2 multiplicityComboBox;
+  private UMLComboBox2 typeComboBox;
+  private UMLRadioButtonPanel changeabilityRadioButtonPanel;
+  private UMLCheckBox2 targetScopeCheckBox;
 
-    private static UMLStructuralFeatureMultiplicityComboBoxModel
-        multiplicityComboBoxModel;
-    private static UMLStructuralFeatureTypeComboBoxModel typeComboBoxModel;
+  private static UMLStructuralFeatureMultiplicityComboBoxModel multiplicityComboBoxModel;
+  private static UMLStructuralFeatureTypeComboBoxModel typeComboBoxModel;
 
-    /**
-     * Constructor for PropPanelStructuralFeature.
-     * @param name the name of the panel, to be shown at the top
-     * @param orientation the orientation of the panel
-     */
-    protected PropPanelStructuralFeature(String name,
-					 Orientation orientation) {
-	super(name, orientation);
+  /**
+   * Constructor for PropPanelStructuralFeature.
+   *
+   * @param name the name of the panel, to be shown at the top
+   * @param orientation the orientation of the panel
+   */
+  protected PropPanelStructuralFeature(String name, Orientation orientation) {
+    super(name, orientation);
+  }
 
+  /**
+   * Returns the multiplicityComboBox.
+   *
+   * @return UMLMultiplicityComboBox2
+   */
+  public UMLComboBox2 getMultiplicityComboBox() {
+    if (multiplicityComboBox == null) {
+      if (multiplicityComboBoxModel == null) {
+        multiplicityComboBoxModel = new UMLStructuralFeatureMultiplicityComboBoxModel();
+      }
+      multiplicityComboBox =
+          new UMLMultiplicityComboBox2(
+              multiplicityComboBoxModel, ActionSetStructuralFeatureMultiplicity.getInstance());
+      multiplicityComboBox.setEditable(true);
     }
+    return multiplicityComboBox;
+  }
 
-    /**
-     * Returns the multiplicityComboBox.
-     * @return UMLMultiplicityComboBox2
-     */
-    public UMLComboBox2 getMultiplicityComboBox() {
-	if (multiplicityComboBox == null) {
-	    if (multiplicityComboBoxModel == null) {
-		multiplicityComboBoxModel =
-		    new UMLStructuralFeatureMultiplicityComboBoxModel();
-	    }
-	    multiplicityComboBox =
-		new UMLMultiplicityComboBox2(multiplicityComboBoxModel,
-		    ActionSetStructuralFeatureMultiplicity.getInstance());
-	    multiplicityComboBox.setEditable(true);
-	}
-	return multiplicityComboBox;
+  /**
+   * Returns the typeComboBox.
+   *
+   * @return UMLComboBox2
+   */
+  public UMLComboBox2 getTypeComboBox() {
+    if (typeComboBox == null) {
+      if (typeComboBoxModel == null) {
+        typeComboBoxModel = new UMLStructuralFeatureTypeComboBoxModel();
+      }
+      typeComboBox =
+          new UMLComboBox2(typeComboBoxModel, ActionSetStructuralFeatureType.getInstance());
     }
+    return typeComboBox;
+  }
 
-    /**
-     * Returns the typeComboBox.
-     * @return UMLComboBox2
-     */
-    public UMLComboBox2 getTypeComboBox() {
-        if (typeComboBox == null) {
-	    if (typeComboBoxModel == null) {
-		typeComboBoxModel =
-		    new UMLStructuralFeatureTypeComboBoxModel();
-	    }
-            typeComboBox =
-		new UMLComboBox2(
-				 typeComboBoxModel,
-				 ActionSetStructuralFeatureType.getInstance());
-	}
-	return typeComboBox;
+  /**
+   * Returns the changeabilityRadioButtonPanel.
+   *
+   * @return UMLRadioButtonPanel
+   */
+  public UMLRadioButtonPanel getChangeabilityRadioButtonPanel() {
+    if (changeabilityRadioButtonPanel == null) {
+      changeabilityRadioButtonPanel =
+          new UMLStructuralFeatureChangeabilityRadioButtonPanel(
+              Translator.localize("label.changeability"), true);
     }
+    return changeabilityRadioButtonPanel;
+  }
 
-    /**
-     * Returns the changeabilityRadioButtonPanel.
-     * @return UMLRadioButtonPanel
-     */
-    public UMLRadioButtonPanel getChangeabilityRadioButtonPanel() {
-        if (changeabilityRadioButtonPanel == null) {
-            changeabilityRadioButtonPanel =
-                new UMLStructuralFeatureChangeabilityRadioButtonPanel(
-                        Translator.localize("label.changeability"),
-                        true);
-        }
-	return changeabilityRadioButtonPanel;
+  /**
+   * Returns the targetScopeCheckBox.
+   *
+   * @return UMLCheckBox2
+   */
+  public UMLCheckBox2 getTargetScopeCheckBox() {
+    if (targetScopeCheckBox == null) {
+      targetScopeCheckBox = new UMLStructuralFeatureTargetScopeCheckBox();
     }
-
-    /**
-     * Returns the targetScopeCheckBox.
-     * @return UMLCheckBox2
-     */
-    public UMLCheckBox2 getTargetScopeCheckBox() {
-        if (targetScopeCheckBox == null) {
-	    targetScopeCheckBox = new UMLStructuralFeatureTargetScopeCheckBox();
-        }
-        return targetScopeCheckBox;
-    }
-
+    return targetScopeCheckBox;
+  }
 }

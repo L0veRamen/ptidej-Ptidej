@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -19,17 +19,15 @@ import padl.path.IConstants;
  * @author Yann
  */
 class Statement extends Constituent implements IStatement {
-	private static final long serialVersionUID = 6348055409249029367L;
+  private static final long serialVersionUID = 6348055409249029367L;
 
-	public Statement(char[] anID) {
-		super(anID);
-	}
+  public Statement(char[] anID) {
+    super(anID);
+  }
 
-	protected char getPathSymbol() {
-		return IConstants.STATEMENT_SYMBOL;
-	}
+  protected char getPathSymbol() {
+    return IConstants.STATEMENT_SYMBOL;
+  }
 
-	public void endCloneSession() {
-
-	}
+  public void endCloneSession() {}
 }

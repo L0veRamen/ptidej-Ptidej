@@ -25,63 +25,55 @@
 package org.argouml.uml.ui.model_management;
 
 import java.util.Vector;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.AbstractActionAddModelElement;
 
 /**
  * Add an import to a package.
- * 
+ *
  * @author Michiel
  */
 class ActionAddPackageImport extends AbstractActionAddModelElement {
 
-    /**
-     * Constructor for ActionAddPackageImport.
-     */
-    ActionAddPackageImport() {
-        super();
-    }
+  /** Constructor for ActionAddPackageImport. */
+  ActionAddPackageImport() {
+    super();
+  }
 
-    /**
-     * @see org.argouml.uml.ui.AbstractActionAddModelElement#getChoices()
-     */
-    protected Vector getChoices() {
-        Vector vec = new Vector();
-        /* TODO: correctly implement next function 
-         * in the model subsystem for 
-         * issue 1942: */
-        vec.addAll(Model.getModelManagementHelper()
-                .getAllPossibleImports(getTarget()));
-        return vec;
-    }
+  /**
+   * @see org.argouml.uml.ui.AbstractActionAddModelElement#getChoices()
+   */
+  protected Vector getChoices() {
+    Vector vec = new Vector();
+    /* TODO: correctly implement next function
+     * in the model subsystem for
+     * issue 1942: */
+    vec.addAll(Model.getModelManagementHelper().getAllPossibleImports(getTarget()));
+    return vec;
+  }
 
-    /**
-     * @see org.argouml.uml.ui.AbstractActionAddModelElement#getSelected()
-     */
-    protected Vector getSelected() {
-        Vector vec = new Vector();
-        vec.addAll(Model.getFacade().getImportedElements(getTarget()));
-        return vec;
-    }
+  /**
+   * @see org.argouml.uml.ui.AbstractActionAddModelElement#getSelected()
+   */
+  protected Vector getSelected() {
+    Vector vec = new Vector();
+    vec.addAll(Model.getFacade().getImportedElements(getTarget()));
+    return vec;
+  }
 
-    /**
-     * @see org.argouml.uml.ui.AbstractActionAddModelElement#getDialogTitle()
-     */
-    protected String getDialogTitle() {
-        return Translator.localize("dialog.title.add-imported-elements");
-    }
+  /**
+   * @see org.argouml.uml.ui.AbstractActionAddModelElement#getDialogTitle()
+   */
+  protected String getDialogTitle() {
+    return Translator.localize("dialog.title.add-imported-elements");
+  }
 
-    /**
-     * @see
-     * org.argouml.uml.ui.AbstractActionAddModelElement#doIt(java.util.Vector)
-     */
-    protected void doIt(Vector selected) {
-        Object pack = getTarget();
-        Model.getModelManagementHelper().setImportedElements(pack, selected);
-    }
-
+  /**
+   * @see org.argouml.uml.ui.AbstractActionAddModelElement#doIt(java.util.Vector)
+   */
+  protected void doIt(Vector selected) {
+    Object pack = getTarget();
+    Model.getModelManagementHelper().setImportedElements(pack, selected);
+  }
 }
-
-

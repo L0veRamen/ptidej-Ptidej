@@ -30,53 +30,41 @@ import org.argouml.uml.ui.foundation.core.PropPanelClassifier;
 import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
 import org.argouml.util.ConfigLoader;
 
-
 /**
- * Builds the property panel for a actor.<p>
+ * Builds the property panel for a actor.
+ *
+ * <p>
  *
  * @author jrobbins
  */
-
 public class PropPanelActor extends PropPanelClassifier {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = 7368183497864490115L;
+  /** The serial version. */
+  private static final long serialVersionUID = 7368183497864490115L;
 
-    /**
-     * Construct a new property panel for an Actor.
-     */
-    public PropPanelActor() {
-    	super("Actor", lookupIcon("Actor"),
-                ConfigLoader.getTabPropsOrientation());
+  /** Construct a new property panel for an Actor. */
+  public PropPanelActor() {
+    super("Actor", lookupIcon("Actor"), ConfigLoader.getTabPropsOrientation());
 
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.namespace"), getNamespaceSelector());
 
-    	addField(Translator.localize("label.name"),
-                getNameTextField());
-    	addField(Translator.localize("label.namespace"),
-                getNamespaceSelector());
+    add(getModifiersPanel());
 
-        add(getModifiersPanel());
+    addSeparator();
 
-    	addSeparator();
+    addField(Translator.localize("label.generalizations"), getGeneralizationScroll());
+    addField(Translator.localize("label.specializations"), getSpecializationScroll());
 
-    	addField(Translator.localize("label.generalizations"),
-                getGeneralizationScroll());
-    	addField(Translator.localize("label.specializations"),
-                getSpecializationScroll());
+    addSeparator();
 
-    	addSeparator();
+    addField(Translator.localize("label.association-ends"), getAssociationEndScroll());
 
-    	addField(Translator.localize("label.association-ends"),
-            getAssociationEndScroll());
-
-        // The toolbar buttons that go at the top:
-        addAction(new ActionNavigateContainerElement());
-        addAction(new ActionNewActor());
-        addAction(getActionNewReception());
-        addAction(new ActionNewStereotype());
-        addAction(getDeleteAction());
-    }
-
+    // The toolbar buttons that go at the top:
+    addAction(new ActionNavigateContainerElement());
+    addAction(new ActionNewActor());
+    addAction(getActionNewReception());
+    addAction(new ActionNewStereotype());
+    addAction(getDeleteAction());
+  }
 } /* end class PropActor */

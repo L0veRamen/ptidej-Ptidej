@@ -31,7 +31,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.AbstractActionAddModelElement2;
@@ -43,76 +42,70 @@ import org.argouml.uml.ui.AbstractActionAddModelElement2;
  */
 class ActionAddStereotypeBaseClass extends AbstractActionAddModelElement2 {
 
-    private List<String> metaClasses;
-    
-    public ActionAddStereotypeBaseClass() {
-        super();
-        initMetaClasses();
-    }
-    
-    /**
-     * Initialize the meta-classes list. <p>
-     * 
-     * All this code is necessary to be independent of 
-     * model repository implementation, 
-     * i.e. to ensure that we have a 
-     * sorted list of strings.
-     */
-    void initMetaClasses() {
-        Collection<String> tmpMetaClasses = 
-            Model.getCoreHelper().getAllMetatypeNames();
-        if (tmpMetaClasses instanceof List) {
-            metaClasses = (List<String>) tmpMetaClasses;
-        } else {
-            metaClasses = new LinkedList<String>(tmpMetaClasses);
-        }
-        try {
-            Collections.sort(metaClasses);
-        } catch (UnsupportedOperationException e) {
-            // We got passed an unmodifiable List.  Copy it and sort the result
-            metaClasses = new LinkedList<String>(tmpMetaClasses);
-            Collections.sort(metaClasses);
-        }
-    }
-    
-    @Override
-    protected List<String> getChoices() {
-        return Collections.unmodifiableList(metaClasses);
-    }
+  private List<String> metaClasses;
 
-    @Override
-    protected String getDialogTitle() {
-        return Translator.localize("dialog.title.add-baseclasses");
-    }
+  public ActionAddStereotypeBaseClass() {
+    super();
+    initMetaClasses();
+  }
 
-    @Override
-    protected List<String> getSelected() {
-        List<String> result = new ArrayList<String>();
-        if (Model.getFacade().isAStereotype(getTarget())) {
-            Collection<String> bases = 
-                Model.getFacade().getBaseClasses(getTarget());
-            result.addAll(bases);
-        }
-        return result;
+  /**
+   * Initialize the meta-classes list.
+   *
+   * <p>All this code is necessary to be independent of model repository implementation, i.e. to
+   * ensure that we have a sorted list of strings.
+   */
+  void initMetaClasses() {
+    Collection<String> tmpMetaClasses = Model.getCoreHelper().getAllMetatypeNames();
+    if (tmpMetaClasses instanceof List) {
+      metaClasses = (List<String>) tmpMetaClasses;
+    } else {
+      metaClasses = new LinkedList<String>(tmpMetaClasses);
     }
-
-    @Override
-    protected void doIt(Collection selected) {
-        Object stereo = getTarget();
-        Set<Object> oldSet = new HashSet<Object>(getSelected());
-        Set toBeRemoved = new HashSet<Object>(oldSet);
-
-        for (Object o : selected) {
-            if (oldSet.contains(o)) {
-                toBeRemoved.remove(o);
-            } else {
-                Model.getExtensionMechanismsHelper()
-                        .addBaseClass(stereo, o);
-            }
-        }
-        for (Object o : toBeRemoved) {
-            Model.getExtensionMechanismsHelper().removeBaseClass(stereo, o);
-        }
+    try {
+      Collections.sort(metaClasses);
+    } catch (UnsupportedOperationException e) {
+      // We got passed an unmodifiable List.  Copy it and sort the result
+      metaClasses = new LinkedList<String>(tmpMetaClasses);
+      Collections.sort(metaClasses);
     }
-    
+  }
+
+  @Override
+  protected List<String> getChoices() {
+    return Collections.unmodifiableList(metaClasses);
+  }
+
+  @Override
+  protected String getDialogTitle() {
+    return Translator.localize("dialog.title.add-baseclasses");
+  }
+
+  @Override
+  protected List<String> getSelected() {
+    List<String> result = new ArrayList<String>();
+    if (Model.getFacade().isAStereotype(getTarget())) {
+      Collection<String> bases = Model.getFacade().getBaseClasses(getTarget());
+      result.addAll(bases);
+    }
+    return result;
+  }
+
+  @Override
+  protected void doIt(Collection selected) {
+    Object stereo = getTarget();
+    Set<Object> oldSet = new HashSet<Object>(getSelected());
+    Set toBeRemoved = new HashSet<Object>(oldSet);
+
+    for (Object o : selected) {
+      if (oldSet.contains(o)) {
+        toBeRemoved.remove(o);
+      } else {
+        Model.getExtensionMechanismsHelper().addBaseClass(stereo, o);
+      }
+    }
+    for (Object o : toBeRemoved) {
+      Model.getExtensionMechanismsHelper().removeBaseClass(stereo, o);
+    }
+  }
 }

@@ -30,27 +30,24 @@ import org.argouml.model.ChangeableKind;
 
 /**
  * Eclipse UML2 implementation for ChangeableKind.
- * 
+ *
  * @author Tom Morris
- * @deprecated This is a simple binary choice (isReadOnly or not) in UML2, so
- *             this is purely for backward compatibility.
+ * @deprecated This is a simple binary choice (isReadOnly or not) in UML2, so this is purely for
+ *     backward compatibility.
  */
 class ChangeableKindEUMLImpl implements ChangeableKind {
 
-
-    public Object getAddOnly() {
+  public Object getAddOnly() {
     // TODO: Change to throw exception when uses are fixed
-//        throw new NotImplementedException();
-        return "";
-    }
+    //        throw new NotImplementedException();
+    return "";
+  }
 
-    public Object getChangeable() {
-        return "changeable";
-    }
+  public Object getChangeable() {
+    return "changeable";
+  }
 
-    public Object getFrozen() {
-        return "frozen";
-    }
-
-
+  public Object getFrozen() {
+    return "frozen";
+  }
 }

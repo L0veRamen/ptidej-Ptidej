@@ -26,9 +26,7 @@ package org.argouml.uml.ui;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import javax.swing.JTextArea;
-
 import org.argouml.kernel.UmlModelMutator;
 import org.argouml.ui.LookAndFeelMgr;
 import org.argouml.ui.targetmanager.TargetListener;
@@ -36,6 +34,7 @@ import org.argouml.ui.targetmanager.TargettableModelView;
 
 /**
  * A JTextArea especially made to represent UMLPlainTextDocuments.
+ *
  * @author jaap.branderhorst@xs4all.nl
  * @since Dec 28, 2002
  */
@@ -43,36 +42,34 @@ import org.argouml.ui.targetmanager.TargettableModelView;
 public class UMLTextArea2 extends JTextArea
     implements PropertyChangeListener, TargettableModelView {
 
-    /**
-     * Serial version generated for rev 1.9
-     */
-    private static final long serialVersionUID = -9172093001792636086L;
+  /** Serial version generated for rev 1.9 */
+  private static final long serialVersionUID = -9172093001792636086L;
 
-    /**
-     * Constructor for UMLTextArea2.
-     * @param doc the plain text document
-     */
-    public UMLTextArea2(UMLDocument doc) {
-        super(doc);
-        setFont(LookAndFeelMgr.getInstance().getStandardFont());
-        addCaretListener(ActionCopy.getInstance());
-        addCaretListener(ActionCut.getInstance());
-        addCaretListener(ActionPaste.getInstance());
-        addFocusListener(ActionPaste.getInstance());
-    }
+  /**
+   * Constructor for UMLTextArea2.
+   *
+   * @param doc the plain text document
+   */
+  public UMLTextArea2(UMLDocument doc) {
+    super(doc);
+    setFont(LookAndFeelMgr.getInstance().getStandardFont());
+    addCaretListener(ActionCopy.getInstance());
+    addCaretListener(ActionCut.getInstance());
+    addCaretListener(ActionPaste.getInstance());
+    addFocusListener(ActionPaste.getInstance());
+  }
 
-    /*
-     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
-     */
-    public void propertyChange(PropertyChangeEvent evt) {
-        ((UMLDocument) getDocument()).propertyChange(evt);
-    }
+  /*
+   * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+   */
+  public void propertyChange(PropertyChangeEvent evt) {
+    ((UMLDocument) getDocument()).propertyChange(evt);
+  }
 
-    /*
-     * @see org.argouml.ui.targetmanager.TargettableModelView#getTargettableModel()
-     */
-    public TargetListener getTargettableModel() {
-        return ((UMLDocument) getDocument());
-    }
-
+  /*
+   * @see org.argouml.ui.targetmanager.TargettableModelView#getTargettableModel()
+   */
+  public TargetListener getTargettableModel() {
+    return ((UMLDocument) getDocument());
+  }
 }

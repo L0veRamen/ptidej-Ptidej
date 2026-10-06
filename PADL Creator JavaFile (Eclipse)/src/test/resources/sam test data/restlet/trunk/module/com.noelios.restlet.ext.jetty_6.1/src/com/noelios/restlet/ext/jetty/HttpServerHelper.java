@@ -31,6 +31,7 @@ import org.restlet.data.Protocol;
 
 /**
  * Jetty HTTP server connector. Here is the list of additional parameters that are supported:
+ *
  * <table>
  * 	<tr>
  * 		<th>Parameter name</th>
@@ -48,56 +49,54 @@ import org.restlet.data.Protocol;
  * 3 : Blocking BIO connector (Jetty's SocketConnector class).</td>
  * 	</tr>
  * </table>
+ *
  * @see <a href="http://jetty.mortbay.org/jetty6/">Jetty home page</a>
  * @author Jerome Louvel (contact@noelios.com)
  */
-public class HttpServerHelper extends JettyServerHelper
-{
-	/**
-	 * Constructor.
-	 * @param server The server to help.
-	 */
-	public HttpServerHelper(Server server)
-	{
-		super(server);
-		getSupportedProtocols().add(Protocol.HTTP);
-	}
+public class HttpServerHelper extends JettyServerHelper {
+  /**
+   * Constructor.
+   *
+   * @param server The server to help.
+   */
+  public HttpServerHelper(Server server) {
+    super(server);
+    getSupportedProtocols().add(Protocol.HTTP);
+  }
 
-	/**
-	 * Creates a new internal Jetty connector.
-	 * @return A new internal Jetty connector.
-	 */
-	protected AbstractConnector createConnector()
-	{
-		AbstractConnector result = null;
+  /**
+   * Creates a new internal Jetty connector.
+   *
+   * @return A new internal Jetty connector.
+   */
+  protected AbstractConnector createConnector() {
+    AbstractConnector result = null;
 
-		// Create and configure the Jetty HTTP connector
-		switch (getType())
-		{
-			case 1:
-				// Selecting NIO connector
-				result = new SelectChannelConnector();
-			break;
-			case 2:
-				// Blocking NIO connector
-				result = new BlockingChannelConnector();
-			break;
-			case 3:
-				// Blocking BIO connector
-				result = new SocketConnector();
-			break;
-		}
+    // Create and configure the Jetty HTTP connector
+    switch (getType()) {
+      case 1:
+        // Selecting NIO connector
+        result = new SelectChannelConnector();
+        break;
+      case 2:
+        // Blocking NIO connector
+        result = new BlockingChannelConnector();
+        break;
+      case 3:
+        // Blocking BIO connector
+        result = new SocketConnector();
+        break;
+    }
 
-		return result;
-	}
+    return result;
+  }
 
-	/**
-	 * Returns the type of Jetty connector to use.
-	 * @return The type of Jetty connector to use.
-	 */
-	public int getType()
-	{
-		return Integer.parseInt(getParameters().getFirstValue("type", "1"));
-	}
-
+  /**
+   * Returns the type of Jetty connector to use.
+   *
+   * @return The type of Jetty connector to use.
+   */
+  public int getType() {
+    return Integer.parseInt(getParameters().getFirstValue("type", "1"));
+  }
 }

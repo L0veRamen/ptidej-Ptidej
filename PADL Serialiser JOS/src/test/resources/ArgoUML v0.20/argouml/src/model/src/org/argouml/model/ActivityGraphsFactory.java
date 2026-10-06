@@ -24,90 +24,89 @@
 
 package org.argouml.model;
 
-
 /**
- * The interface for the factory for ActivityGraphs.<p>
+ * The interface for the factory for ActivityGraphs.
  *
- * Created from the old ActivityGraphsFactory.
+ * <p>Created from the old ActivityGraphsFactory.
  */
 public interface ActivityGraphsFactory {
-    /**
-     * Create an empty but initialized instance of a UML ActionState.
-     *
-     * @return an initialized UML ActionState instance.
-     */
-    Object createActionState();
+  /**
+   * Create an empty but initialized instance of a UML ActionState.
+   *
+   * @return an initialized UML ActionState instance.
+   */
+  Object createActionState();
 
-    /**
-     * Create an empty but initialized instance of a UML ActivityGraph.
-     *
-     * @return an initialized UML ActivityGraph instance.
-     */
-    Object createActivityGraph();
+  /**
+   * Create an empty but initialized instance of a UML ActivityGraph.
+   *
+   * @return an initialized UML ActivityGraph instance.
+   */
+  Object createActivityGraph();
 
-    /**
-     * Create an empty but initialized instance of a UML CallState.
-     *
-     * @return an initialized UML CallState instance.
-     */
-    Object createCallState();
+  /**
+   * Create an empty but initialized instance of a UML CallState.
+   *
+   * @return an initialized UML CallState instance.
+   */
+  Object createCallState();
 
-    /**
-     * Create an empty but initialized instance of a UML ClassifierInState.
-     *
-     * @return an initialized UML ClassifierInState instance.
-     */
-    Object createClassifierInState();
+  /**
+   * Create an empty but initialized instance of a UML ClassifierInState.
+   *
+   * @return an initialized UML ClassifierInState instance.
+   */
+  Object createClassifierInState();
 
-    /**
-     * Create an empty but initialized instance of a UML ObjectFlowState.
-     *
-     * @return an initialized UML ObjectFlowState instance.
-     */
-    Object createObjectFlowState();
+  /**
+   * Create an empty but initialized instance of a UML ObjectFlowState.
+   *
+   * @return an initialized UML ObjectFlowState instance.
+   */
+  Object createObjectFlowState();
 
-    /**
-     * Create an empty but initialized instance of a UML Partition.
-     *
-     * @return an initialized UML Partition instance.
-     */
-    Object createPartition();
+  /**
+   * Create an empty but initialized instance of a UML Partition.
+   *
+   * @return an initialized UML Partition instance.
+   */
+  Object createPartition();
 
-    /**
-     * Create an empty but initialized instance of a UML SubactivityState.
-     *
-     * @return an initialized UML SubactivityState instance.
-     */
-    Object createSubactivityState();
+  /**
+   * Create an empty but initialized instance of a UML SubactivityState.
+   *
+   * @return an initialized UML SubactivityState instance.
+   */
+  Object createSubactivityState();
 
-    /**
-     * Builds an activity graph owned by the given context.<p>
-     *
-     * @param theContext is a ModelElement that will own the graph.
-     * @return the new MActivityGraph as Object
-     */
-    Object buildActivityGraph(Object theContext);
+  /**
+   * Builds an activity graph owned by the given context.
+   *
+   * <p>
+   *
+   * @param theContext is a ModelElement that will own the graph.
+   * @return the new MActivityGraph as Object
+   */
+  Object buildActivityGraph(Object theContext);
 
-    /**
-     * Builds an objectflowstate. The objectflowstate will be a subvertex of
-     * the given compositestate. The parameter compositeState is of
-     * type Object to decouple the factory and model implementation as much as
-     * possible from the rest of ArgoUML.
-     *
-     * @author MVW
-     * @param compositeState the given compositestate
-     * @return Object the newly build objectflow state.
-     */
-    Object buildObjectFlowState(Object compositeState);
+  /**
+   * Builds an objectflowstate. The objectflowstate will be a subvertex of the given compositestate.
+   * The parameter compositeState is of type Object to decouple the factory and model implementation
+   * as much as possible from the rest of ArgoUML.
+   *
+   * @author MVW
+   * @param compositeState the given compositestate
+   * @return Object the newly build objectflow state.
+   */
+  Object buildObjectFlowState(Object compositeState);
 
-    /**
-     * Builds a ClassifierInState. Links it to the 2 required objects:
-     * the classifier that forms the type of this classifierInState,
-     * and the state.
-     *
-     * @param classifier the classifier (type)
-     * @param state the state (inState)
-     * @return the newly build classifierInState
-     */
-    Object buildClassifierInState(Object classifier, Object state);
+  /**
+   * Builds a ClassifierInState. Links it to the 2 required objects: the classifier that forms the
+   * type of this classifierInState, and the state.
+   *
+   * @param classifier the classifier (type)
+   * @param state the state (inState)
+   * @return the newly build classifierInState
+   */
+  Object buildClassifierInState(Object classifier, Object state);
 }

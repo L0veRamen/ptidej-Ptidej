@@ -14,98 +14,84 @@ import net.intensicode.idea.core.ConfigurableLanguage;
 import net.intensicode.idea.system.SystemContext;
 import net.intensicode.idea.util.LoggerFactory;
 
+/** TODO: Describe this! */
+final class SimpleSyntaxInstance {
+  SimpleSyntaxInstance(
+      final SystemContext aSystemContext, final InstanceConfiguration aConfiguration) {
+    mySystemContext = aSystemContext;
+    myConfiguration = aConfiguration;
+    myFileTypeBuilder = new ConfigurableFileTypeBuilder(aSystemContext);
+  }
 
+  final String getName() {
+    return myConfiguration.getName();
+  }
 
-/**
- * TODO: Describe this!
- */
-final class SimpleSyntaxInstance
-{
-    SimpleSyntaxInstance( final SystemContext aSystemContext, final InstanceConfiguration aConfiguration )
-    {
-        mySystemContext = aSystemContext;
-        myConfiguration = aConfiguration;
-        myFileTypeBuilder = new ConfigurableFileTypeBuilder( aSystemContext );
+  final void init() {
+    LOG.info("Initializing " + myConfiguration.getName());
+    final ConfigurableLanguage language =
+        ConfigurableLanguage.getOrCreate(mySystemContext, myConfiguration);
+    registerFileType(language);
+    registerColorSettingsPage(language);
+  }
+
+  final void dispose() {
+    LOG.info("Disposing " + getName());
+    unregisterFileType();
+    myFileType = null;
+  }
+
+  // Implementation
+
+  private final void registerFileType(final Language aLanguage) {
+    final FileTypeManager manager = mySystemContext.getFileTypeManager();
+    if (manager == null) return;
+
+    LOG.info("Registering file type " + getName());
+    final FileTypeConfiguration config = myConfiguration.getFileTypeConfiguration();
+    final FileType fileType = myFileTypeBuilder.getOrCreate(myConfiguration, aLanguage);
+    manager.registerFileType(fileType, config.getExtensions());
+
+    myFileType = fileType;
+  }
+
+  private final void registerColorSettingsPage(final ConfigurableLanguage aLanguage) {
+    final ColorSettingsPages instance = ColorSettingsPages.getInstance();
+    if (instance == null) return;
+
+    for (final ColorSettingsPage page : instance.getRegisteredPages()) {
+      if (page instanceof ConfigurableColorSettingsPage == false) continue;
+
+      final ConfigurableColorSettingsPage oldPage = (ConfigurableColorSettingsPage) page;
+      if (oldPage.getDisplayName().equals(myConfiguration.getName()) == false) continue;
+
+      LOG.info("Updating color settings page for " + getName());
+      oldPage.reset(myConfiguration, aLanguage);
+      return;
     }
 
-    final String getName()
-    {
-        return myConfiguration.getName();
+    LOG.info("Registering color settings page for " + getName());
+    instance.registerPage(new ConfigurableColorSettingsPage(myConfiguration, aLanguage));
+  }
+
+  private final void unregisterFileType() {
+    final FileTypeManager manager = mySystemContext.getFileTypeManager();
+    if (manager == null || myFileType == null) return;
+
+    LOG.info("Unregistering file type " + getName());
+    final FileTypeConfiguration config = myConfiguration.getFileTypeConfiguration();
+    for (final String extension : config.getExtensions()) {
+      manager.removeAssociatedExtension(myFileType, extension);
     }
+  }
 
-    final void init()
-    {
-        LOG.info( "Initializing " + myConfiguration.getName() );
-        final ConfigurableLanguage language = ConfigurableLanguage.getOrCreate( mySystemContext, myConfiguration );
-        registerFileType( language );
-        registerColorSettingsPage( language );
-    }
+  private FileType myFileType;
 
-    final void dispose()
-    {
-        LOG.info( "Disposing " + getName() );
-        unregisterFileType();
-        myFileType = null;
-    }
+  private final SystemContext mySystemContext;
 
-    // Implementation
+  private final InstanceConfiguration myConfiguration;
 
-    private final void registerFileType( final Language aLanguage )
-    {
-        final FileTypeManager manager = mySystemContext.getFileTypeManager();
-        if ( manager == null ) return;
+  private final ConfigurableFileTypeBuilder myFileTypeBuilder;
 
-        LOG.info( "Registering file type " + getName() );
-        final FileTypeConfiguration config = myConfiguration.getFileTypeConfiguration();
-        final FileType fileType = myFileTypeBuilder.getOrCreate( myConfiguration, aLanguage );
-        manager.registerFileType( fileType, config.getExtensions() );
-
-        myFileType = fileType;
-    }
-
-    private final void registerColorSettingsPage( final ConfigurableLanguage aLanguage )
-    {
-        final ColorSettingsPages instance = ColorSettingsPages.getInstance();
-        if ( instance == null ) return;
-
-        for ( final ColorSettingsPage page : instance.getRegisteredPages() )
-        {
-            if ( page instanceof ConfigurableColorSettingsPage == false ) continue;
-
-            final ConfigurableColorSettingsPage oldPage = ( ConfigurableColorSettingsPage ) page;
-            if ( oldPage.getDisplayName().equals( myConfiguration.getName() ) == false ) continue;
-
-            LOG.info( "Updating color settings page for " + getName() );
-            oldPage.reset( myConfiguration, aLanguage );
-            return;
-        }
-
-        LOG.info( "Registering color settings page for " + getName() );
-        instance.registerPage( new ConfigurableColorSettingsPage( myConfiguration, aLanguage ) );
-    }
-
-    private final void unregisterFileType()
-    {
-        final FileTypeManager manager = mySystemContext.getFileTypeManager();
-        if ( manager == null || myFileType == null ) return;
-
-        LOG.info( "Unregistering file type " + getName() );
-        final FileTypeConfiguration config = myConfiguration.getFileTypeConfiguration();
-        for ( final String extension : config.getExtensions() )
-        {
-            manager.removeAssociatedExtension( myFileType, extension );
-        }
-    }
-
-
-
-    private FileType myFileType;
-
-    private final SystemContext mySystemContext;
-
-    private final InstanceConfiguration myConfiguration;
-
-    private final ConfigurableFileTypeBuilder myFileTypeBuilder;
-
-    private static final Logger LOG = LoggerFactory.getLogger();
+  private static final Logger LOG = LoggerFactory.getLogger();
 }

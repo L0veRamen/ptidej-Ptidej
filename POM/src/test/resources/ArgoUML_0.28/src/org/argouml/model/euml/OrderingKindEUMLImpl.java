@@ -28,17 +28,14 @@ package org.argouml.model.euml;
 
 import org.argouml.model.OrderingKind;
 
-/**
- * The implementation of the OrderingKind for EUML2.
- */
+/** The implementation of the OrderingKind for EUML2. */
 class OrderingKindEUMLImpl implements OrderingKind {
 
-    public Object getOrdered() {
-        return "ordered"; //$NON-NLS-1$
-    }
+  public Object getOrdered() {
+    return "ordered"; //$NON-NLS-1$
+  }
 
-    public Object getUnordered() {
-        return "unordered"; //$NON-NLS-1$
-    }
-
+  public Object getUnordered() {
+    return "unordered"; //$NON-NLS-1$
+  }
 }

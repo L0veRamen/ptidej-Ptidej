@@ -25,9 +25,7 @@
 package org.argouml.ui.cmd;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.AbstractAction;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.cognitive.Designer;
 import org.argouml.i18n.Translator;
@@ -36,43 +34,38 @@ import org.argouml.kernel.ProjectManager;
 import org.argouml.ui.ProjectBrowser;
 import org.argouml.ui.targetmanager.TargetManager;
 
-/**
- * Action to trigger creation of a new project.
- */
+/** Action to trigger creation of a new project. */
 class ActionNew extends AbstractAction {
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    /**
-     * The constructor.
-     */
-    public ActionNew() {
-        super(Translator.localize("action.new"),
-                ResourceLoaderWrapper.lookupIcon("action.new"));
+  /** The constructor. */
+  public ActionNew() {
+    super(Translator.localize("action.new"), ResourceLoaderWrapper.lookupIcon("action.new"));
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // main methods
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    Project p = ProjectManager.getManager().getCurrentProject();
+
+    if (!ProjectBrowser.getInstance().askConfirmationAndSave()) {
+      return;
     }
 
-    ////////////////////////////////////////////////////////////////
-    // main methods
-
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        Project p = ProjectManager.getManager().getCurrentProject();
-
-        if (!ProjectBrowser.getInstance().askConfirmationAndSave()) {
-            return;
-        }
-
-        ProjectBrowser.getInstance().clearDialogs();
-	Designer.disableCritiquing();
-	Designer.clearCritiquing();
-	// clean the history
-	TargetManager.getInstance().cleanHistory();
-        p.remove();
-	p = ProjectManager.getManager().makeEmptyProject();
-	TargetManager.getInstance().setTarget(p.getDiagrams().toArray()[0]);
-	Designer.enableCritiquing();
-    }
+    ProjectBrowser.getInstance().clearDialogs();
+    Designer.disableCritiquing();
+    Designer.clearCritiquing();
+    // clean the history
+    TargetManager.getInstance().cleanHistory();
+    p.remove();
+    p = ProjectManager.getManager().makeEmptyProject();
+    TargetManager.getInstance().setTarget(p.getDiagrams().toArray()[0]);
+    Designer.enableCritiquing();
+  }
 } /* end class ActionNew */

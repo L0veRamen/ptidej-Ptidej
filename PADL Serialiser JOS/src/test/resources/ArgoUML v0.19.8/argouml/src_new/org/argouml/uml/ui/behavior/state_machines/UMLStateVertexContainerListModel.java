@@ -31,28 +31,25 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  * @since Dec 15, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class UMLStateVertexContainerListModel extends UMLModelElementListModel2
-{
+public class UMLStateVertexContainerListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLStateVertexIncomingListModel.
-     */
-    public UMLStateVertexContainerListModel() {
-        super("container");
-    }
+  /** Constructor for UMLStateVertexIncomingListModel. */
+  public UMLStateVertexContainerListModel() {
+    super("container");
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        removeAllElements();
-        addElement(Model.getFacade().getContainer(getTarget()));
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    removeAllElements();
+    addElement(Model.getFacade().getContainer(getTarget()));
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ element) {
-        return Model.getFacade().getContainer(getTarget()) == element;
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ element) {
+    return Model.getFacade().getContainer(getTarget()) == element;
+  }
 }

@@ -15,29 +15,30 @@ import java.awt.datatransfer.*;
 import java.io.*;
 
 /**
- * @author  C.L.Gilbert <dnoyeb@sourceforge.net>
+ * @author C.L.Gilbert <dnoyeb@sourceforge.net>
  * @version <$CURRENT_VERSION$>
  */
-public class DNDFiguresTransferable implements Transferable , Serializable {
-	public static DataFlavor DNDFiguresFlavor = new DataFlavor(DNDFigures.class,"DNDFigures");
-	private Object o;
+public class DNDFiguresTransferable implements Transferable, Serializable {
+  public static DataFlavor DNDFiguresFlavor = new DataFlavor(DNDFigures.class, "DNDFigures");
+  private Object o;
 
-	public DNDFiguresTransferable(Object newObject) {
-		//if object is not serializable throw exception
-		o = newObject;
-	}
-	public DataFlavor[] getTransferDataFlavors() {
-		return new DataFlavor [] {DNDFiguresFlavor };
-	}
+  public DNDFiguresTransferable(Object newObject) {
+    // if object is not serializable throw exception
+    o = newObject;
+  }
 
-	public boolean isDataFlavorSupported(DataFlavor flavor) {
-		return flavor.equals(DNDFiguresFlavor);
-	}
+  public DataFlavor[] getTransferDataFlavors() {
+    return new DataFlavor[] {DNDFiguresFlavor};
+  }
 
-	public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
-		if ( isDataFlavorSupported(flavor) == false) {
-			throw new UnsupportedFlavorException( flavor );
-		}
-		return o;
-	}
+  public boolean isDataFlavorSupported(DataFlavor flavor) {
+    return flavor.equals(DNDFiguresFlavor);
+  }
+
+  public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
+    if (isDataFlavorSupported(flavor) == false) {
+      throw new UnsupportedFlavorException(flavor);
+    }
+    return o;
+  }
 }

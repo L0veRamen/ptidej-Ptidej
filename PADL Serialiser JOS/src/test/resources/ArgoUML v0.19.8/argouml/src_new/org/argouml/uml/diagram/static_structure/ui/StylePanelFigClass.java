@@ -26,104 +26,90 @@ package org.argouml.uml.diagram.static_structure.ui;
 
 import java.awt.event.ItemEvent;
 import java.beans.PropertyChangeEvent;
-
 import javax.swing.JCheckBox;
-
 import org.argouml.kernel.ProjectManager;
 import org.argouml.ui.StylePanelFigNodeModelElement;
 import org.argouml.uml.diagram.ui.AttributesCompartmentContainer;
 import org.argouml.uml.diagram.ui.OperationsCompartmentContainer;
 
 /**
- * Stylepanel which adds an attributes and operations checkbox and depends on
- * FigClass.
+ * Stylepanel which adds an attributes and operations checkbox and depends on FigClass.
  *
  * @see FigClass
- *
  */
 public class StylePanelFigClass extends StylePanelFigNodeModelElement {
 
-    /* TODO: i18n */
-    private JCheckBox attrCheckBox = new JCheckBox("Attributes");
+  /* TODO: i18n */
+  private JCheckBox attrCheckBox = new JCheckBox("Attributes");
 
-    private JCheckBox operCheckBox = new JCheckBox("Operations");
+  private JCheckBox operCheckBox = new JCheckBox("Operations");
 
-    /**
-     * Flag to indicate that a refresh is going on.
-     */
-    private boolean refreshTransaction = false;
+  /** Flag to indicate that a refresh is going on. */
+  private boolean refreshTransaction = false;
 
-    ////////////////////////////////////////////////////////////////
-    // contructors
+  ////////////////////////////////////////////////////////////////
+  // contructors
 
-    /**
-     * The constructor.
-     *
-     */
-    public StylePanelFigClass() {
-        super();
+  /** The constructor. */
+  public StylePanelFigClass() {
+    super();
 
-        addToDisplayPane(attrCheckBox);
-        addToDisplayPane(operCheckBox);
+    addToDisplayPane(attrCheckBox);
+    addToDisplayPane(operCheckBox);
 
-        attrCheckBox.setSelected(false);
-        operCheckBox.setSelected(false);
-        attrCheckBox.addItemListener(this);
-        operCheckBox.addItemListener(this);
+    attrCheckBox.setSelected(false);
+    operCheckBox.setSelected(false);
+    attrCheckBox.addItemListener(this);
+    operCheckBox.addItemListener(this);
+  }
+
+  /**
+   * Only refresh the tab if the bounds propertyChange event arrives.
+   *
+   * @see org.argouml.ui.StylePanel#refresh(java.beans.PropertyChangeEvent)
+   */
+  public void refresh(PropertyChangeEvent e) {
+    String propertyName = e.getPropertyName();
+    if (propertyName.equals("bounds")) {
+      refresh();
     }
+  }
 
-    /**
-     * Only refresh the tab if the bounds propertyChange event arrives.
-     *
-     * @see org.argouml.ui.StylePanel#refresh(java.beans.PropertyChangeEvent)
-     */
-    public void refresh(PropertyChangeEvent e) {
-        String propertyName = e.getPropertyName();
-        if (propertyName.equals("bounds")) {
-            refresh();
-        }
+  ////////////////////////////////////////////////////////////////
+  // accessors
+
+  /**
+   * @see org.argouml.ui.TabTarget#refresh()
+   */
+  public void refresh() {
+    refreshTransaction = true;
+    super.refresh();
+    AttributesCompartmentContainer ac = (AttributesCompartmentContainer) getPanelTarget();
+    attrCheckBox.setSelected(ac.isAttributesVisible());
+    OperationsCompartmentContainer oc = (OperationsCompartmentContainer) getPanelTarget();
+    operCheckBox.setSelected(oc.isOperationsVisible());
+    refreshTransaction = false;
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // event handling
+
+  /**
+   * @see java.awt.event.ItemListener#itemStateChanged(java.awt.event.ItemEvent)
+   */
+  public void itemStateChanged(ItemEvent e) {
+    if (!refreshTransaction) {
+      Object src = e.getSource();
+
+      if (src == attrCheckBox) {
+        ((AttributesCompartmentContainer) getPanelTarget())
+            .setAttributesVisible(attrCheckBox.isSelected());
+        ProjectManager.getManager().setNeedsSave(true);
+      } else if (src == operCheckBox) {
+        ((OperationsCompartmentContainer) getPanelTarget())
+            .setOperationsVisible(operCheckBox.isSelected());
+        ProjectManager.getManager().setNeedsSave(true);
+      } else super.itemStateChanged(e);
     }
-
-    ////////////////////////////////////////////////////////////////
-    // accessors
-
-    /**
-     * @see org.argouml.ui.TabTarget#refresh()
-     */
-    public void refresh() {
-        refreshTransaction = true;
-        super.refresh();
-        AttributesCompartmentContainer ac = 
-                (AttributesCompartmentContainer) getPanelTarget();
-        attrCheckBox.setSelected(ac.isAttributesVisible());
-        OperationsCompartmentContainer oc = 
-                (OperationsCompartmentContainer) getPanelTarget();
-        operCheckBox.setSelected(oc.isOperationsVisible());
-        refreshTransaction = false;
-    }
-
-    ////////////////////////////////////////////////////////////////
-    // event handling
-
-    /**
-     * @see java.awt.event.ItemListener#itemStateChanged(java.awt.event.ItemEvent)
-     */
-    public void itemStateChanged(ItemEvent e) {
-        if (!refreshTransaction) {
-            Object src = e.getSource();
-
-            if (src == attrCheckBox) {
-                ((AttributesCompartmentContainer) getPanelTarget())
-                    .setAttributesVisible(attrCheckBox.isSelected());
-                ProjectManager.getManager().setNeedsSave(true);
-            } else if (src == operCheckBox) {
-                ((OperationsCompartmentContainer) getPanelTarget())
-                    .setOperationsVisible(operCheckBox.isSelected());
-                ProjectManager.getManager().setNeedsSave(true);
-            } else
-                super.itemStateChanged(e);
-        }
-    }
-
+  }
 } /* end class StylePanelFigClass */
-

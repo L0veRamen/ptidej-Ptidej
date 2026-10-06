@@ -26,119 +26,103 @@ package org.argouml.cognitive.ui;
 
 import java.util.Enumeration;
 import java.util.Vector;
-
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreePath;
-
 import org.argouml.cognitive.Designer;
 import org.argouml.cognitive.ToDoItem;
 import org.argouml.cognitive.ToDoList;
 
-
-/**
- * Rule for sorting the ToDo list: Type -> Item.
- *
- */
+/** Rule for sorting the ToDo list: Type -> Item. */
 public class GoListToTypeToItem extends AbstractGoList {
 
-    ////////////////////////////////////////////////////////////////
-    // TreeModel implementation
+  ////////////////////////////////////////////////////////////////
+  // TreeModel implementation
 
-
-    /**
-     * @see javax.swing.tree.TreeModel#getChild(java.lang.Object, int)
-     */
-    public Object getChild(Object parent, int index) {
-	if (parent instanceof ToDoList) {
-	    return KnowledgeTypeNode.getTypes().elementAt(index);
-	}
-	if (parent instanceof KnowledgeTypeNode) {
-	    KnowledgeTypeNode ktn = (KnowledgeTypeNode) parent;
-	    Enumeration itemEnum =
-		Designer.theDesigner().getToDoList().elements();
-	    while (itemEnum.hasMoreElements()) {
-		ToDoItem item = (ToDoItem) itemEnum.nextElement();
-		if (item.containsKnowledgeType(ktn.getName())) {
-		    if (index == 0) return item;
-		    index--;
-		}
-	    }
-	}
-	throw new IndexOutOfBoundsException("getChild shouldnt get here "
-					    + "GoListToTypeToItem");
+  /**
+   * @see javax.swing.tree.TreeModel#getChild(java.lang.Object, int)
+   */
+  public Object getChild(Object parent, int index) {
+    if (parent instanceof ToDoList) {
+      return KnowledgeTypeNode.getTypes().elementAt(index);
     }
-
-    /**
-     * @see javax.swing.tree.TreeModel#getChildCount(java.lang.Object)
-     */
-    public int getChildCount(Object parent) {
-	if (parent instanceof ToDoList) {
-	    return KnowledgeTypeNode.getTypes().size();
-	}
-	if (parent instanceof KnowledgeTypeNode) {
-	    KnowledgeTypeNode ktn = (KnowledgeTypeNode) parent;
-	    Enumeration itemEnum =
-		Designer.theDesigner().getToDoList().elements();
-	    int count = 0;
-	    while (itemEnum.hasMoreElements()) {
-		ToDoItem item = (ToDoItem) itemEnum.nextElement();
-		if (item.containsKnowledgeType(ktn.getName()))
-		    count++;
-	    }
-	    return count;
-	}
-	return 0;
+    if (parent instanceof KnowledgeTypeNode) {
+      KnowledgeTypeNode ktn = (KnowledgeTypeNode) parent;
+      Enumeration itemEnum = Designer.theDesigner().getToDoList().elements();
+      while (itemEnum.hasMoreElements()) {
+        ToDoItem item = (ToDoItem) itemEnum.nextElement();
+        if (item.containsKnowledgeType(ktn.getName())) {
+          if (index == 0) return item;
+          index--;
+        }
+      }
     }
+    throw new IndexOutOfBoundsException("getChild shouldnt get here " + "GoListToTypeToItem");
+  }
 
-    /**
-     * @see javax.swing.tree.TreeModel#getIndexOfChild(
-     * java.lang.Object, java.lang.Object)
-     */
-    public int getIndexOfChild(Object parent, Object child) {
-	if (parent instanceof ToDoList) {
-	    return KnowledgeTypeNode.getTypes().indexOf(child);
-	}
-	if (parent instanceof KnowledgeTypeNode) {
-	    // instead of makning a new vector, decrement index, return when
-	    // found and index == 0
-	    Vector candidates = new Vector();
-	    KnowledgeTypeNode ktn = (KnowledgeTypeNode) parent;
-	    Enumeration itemEnum =
-		Designer.theDesigner().getToDoList().elements();
-	    while (itemEnum.hasMoreElements()) {
-		ToDoItem item = (ToDoItem) itemEnum.nextElement();
-		if (item.containsKnowledgeType(ktn.getName()))
-		    candidates.addElement(item);
-	    }
-	    return candidates.indexOf(child);
-	}
-	return -1;
+  /**
+   * @see javax.swing.tree.TreeModel#getChildCount(java.lang.Object)
+   */
+  public int getChildCount(Object parent) {
+    if (parent instanceof ToDoList) {
+      return KnowledgeTypeNode.getTypes().size();
     }
-
-    /**
-     * @see javax.swing.tree.TreeModel#isLeaf(java.lang.Object)
-     */
-    public boolean isLeaf(Object node) {
-	if (node instanceof ToDoList) return false;
-	if (node instanceof KnowledgeTypeNode && getChildCount(node) > 0)
-	    return false;
-	return true;
+    if (parent instanceof KnowledgeTypeNode) {
+      KnowledgeTypeNode ktn = (KnowledgeTypeNode) parent;
+      Enumeration itemEnum = Designer.theDesigner().getToDoList().elements();
+      int count = 0;
+      while (itemEnum.hasMoreElements()) {
+        ToDoItem item = (ToDoItem) itemEnum.nextElement();
+        if (item.containsKnowledgeType(ktn.getName())) count++;
+      }
+      return count;
     }
+    return 0;
+  }
 
-    /**
-     * @see javax.swing.tree.TreeModel#valueForPathChanged(
-     * javax.swing.tree.TreePath, java.lang.Object)
-     */
-    public void valueForPathChanged(TreePath path, Object newValue) { }
+  /**
+   * @see javax.swing.tree.TreeModel#getIndexOfChild( java.lang.Object, java.lang.Object)
+   */
+  public int getIndexOfChild(Object parent, Object child) {
+    if (parent instanceof ToDoList) {
+      return KnowledgeTypeNode.getTypes().indexOf(child);
+    }
+    if (parent instanceof KnowledgeTypeNode) {
+      // instead of makning a new vector, decrement index, return when
+      // found and index == 0
+      Vector candidates = new Vector();
+      KnowledgeTypeNode ktn = (KnowledgeTypeNode) parent;
+      Enumeration itemEnum = Designer.theDesigner().getToDoList().elements();
+      while (itemEnum.hasMoreElements()) {
+        ToDoItem item = (ToDoItem) itemEnum.nextElement();
+        if (item.containsKnowledgeType(ktn.getName())) candidates.addElement(item);
+      }
+      return candidates.indexOf(child);
+    }
+    return -1;
+  }
 
-    /**
-     * @see javax.swing.tree.TreeModel#addTreeModelListener(javax.swing.event.TreeModelListener)
-     */
-    public void addTreeModelListener(TreeModelListener l) { }
+  /**
+   * @see javax.swing.tree.TreeModel#isLeaf(java.lang.Object)
+   */
+  public boolean isLeaf(Object node) {
+    if (node instanceof ToDoList) return false;
+    if (node instanceof KnowledgeTypeNode && getChildCount(node) > 0) return false;
+    return true;
+  }
 
-    /**
-     * @see javax.swing.tree.TreeModel#removeTreeModelListener(javax.swing.event.TreeModelListener)
-     */
-    public void removeTreeModelListener(TreeModelListener l) { }
+  /**
+   * @see javax.swing.tree.TreeModel#valueForPathChanged( javax.swing.tree.TreePath,
+   *     java.lang.Object)
+   */
+  public void valueForPathChanged(TreePath path, Object newValue) {}
 
+  /**
+   * @see javax.swing.tree.TreeModel#addTreeModelListener(javax.swing.event.TreeModelListener)
+   */
+  public void addTreeModelListener(TreeModelListener l) {}
+
+  /**
+   * @see javax.swing.tree.TreeModel#removeTreeModelListener(javax.swing.event.TreeModelListener)
+   */
+  public void removeTreeModelListener(TreeModelListener l) {}
 } /* end class GoListToTypeToItem */

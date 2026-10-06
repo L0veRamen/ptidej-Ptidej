@@ -29,81 +29,72 @@ import javax.swing.Icon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingConstants;
-
 import org.argouml.model.Model;
 import org.argouml.uml.StereotypeUtility;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
 /**
  * The swing List Model for displaying stereotypes.
+ *
  * @since Oct 24, 2005
  * @author Bob Tarling
  */
-public class UMLModelElementStereotypeListModel
-    extends UMLModelElementListModel2 {
+public class UMLModelElementStereotypeListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLModelElementNamespaceListModel.
-     */
-    public UMLModelElementStereotypeListModel() {
-        super("stereotype");
+  /** Constructor for UMLModelElementNamespaceListModel. */
+  public UMLModelElementStereotypeListModel() {
+    super("stereotype");
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    removeAllElements();
+    if (Model.getFacade().isAModelElement(getTarget())) {
+      addAll(Model.getFacade().getStereotypes(getTarget()));
     }
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        removeAllElements();
-        if (Model.getFacade().isAModelElement(getTarget())) {
-            addAll(Model.getFacade().getStereotypes(getTarget()));
-        }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().isAStereotype(element);
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildPopup(javax.swing.JPopupMenu, int)
+   */
+  public boolean buildPopup(JPopupMenu popup, int index) {
+    // Add stereotypes submenu
+    Action[] stereoActions = StereotypeUtility.getApplyStereotypeActions(getTarget());
+    if (stereoActions != null) {
+      for (int i = 0; i < stereoActions.length; ++i) {
+        popup.add(getCheckItem(stereoActions[i]));
+      }
     }
+    return true;
+  }
 
-
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().isAStereotype(element);
-    }
-
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildPopup(javax.swing.JPopupMenu, int)
-     */
-    public boolean buildPopup(JPopupMenu popup, int index) {
-        // Add stereotypes submenu
-        Action[] stereoActions =
-            StereotypeUtility.getApplyStereotypeActions(getTarget());
-        if (stereoActions != null) {
-            for (int i = 0; i < stereoActions.length; ++i) {
-                popup.add(getCheckItem(stereoActions[i]));
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Creates a new checkbox menu item attached to the specified
-     * action object and appends it to the end of this menu.
-     * TODO: This is almost a duplicate of ArgoJMenu.addCheckItem must find a
-     * way to merge.
-     *
-     * @param     a     the Action for the checkbox menu item to be added
-     * @return          the new checkbox menu item
-     */
-    private static JCheckBoxMenuItem getCheckItem(Action a) {
-        String name = (String) a.getValue(Action.NAME);
-        Icon icon = (Icon) a.getValue(Action.SMALL_ICON);
-        Boolean selected = (Boolean) a.getValue("SELECTED");
-        JCheckBoxMenuItem mi =
-            new JCheckBoxMenuItem(name, icon,
-                      (selected == null
-                       || selected.booleanValue()));
-        mi.setHorizontalTextPosition(SwingConstants.RIGHT);
-        mi.setVerticalTextPosition(SwingConstants.CENTER);
-        mi.setEnabled(a.isEnabled());
-        mi.addActionListener(a);
-        return mi;
-    }
-
+  /**
+   * Creates a new checkbox menu item attached to the specified action object and appends it to the
+   * end of this menu. TODO: This is almost a duplicate of ArgoJMenu.addCheckItem must find a way to
+   * merge.
+   *
+   * @param a the Action for the checkbox menu item to be added
+   * @return the new checkbox menu item
+   */
+  private static JCheckBoxMenuItem getCheckItem(Action a) {
+    String name = (String) a.getValue(Action.NAME);
+    Icon icon = (Icon) a.getValue(Action.SMALL_ICON);
+    Boolean selected = (Boolean) a.getValue("SELECTED");
+    JCheckBoxMenuItem mi =
+        new JCheckBoxMenuItem(name, icon, (selected == null || selected.booleanValue()));
+    mi.setHorizontalTextPosition(SwingConstants.RIGHT);
+    mi.setVerticalTextPosition(SwingConstants.CENTER);
+    mi.setEnabled(a.isEnabled());
+    mi.addActionListener(a);
+    return mi;
+  }
 }

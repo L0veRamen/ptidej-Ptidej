@@ -37,126 +37,119 @@ import org.tigris.gef.base.Selection;
 import org.tigris.gef.presentation.Fig;
 
 /**
- * Class to display graphics for a UML Class in a diagram.<p>
+ * Class to display graphics for a UML Class in a diagram.
  *
- * Note that the upper line of the name box will be blanked out
- * if there is eventually a stereotype above.
+ * <p>Note that the upper line of the name box will be blanked out if there is eventually a
+ * stereotype above.
  */
 public abstract class FigClassifierBox extends FigCompartmentBox
-        implements OperationsCompartmentContainer {
+    implements OperationsCompartmentContainer {
 
-    /**
-     * The Fig for the operations compartment (if any).
-     */
-    protected FigOperationsCompartment operationsFig;
+  /** The Fig for the operations compartment (if any). */
+  protected FigOperationsCompartment operationsFig;
 
-    /**
-     * Text highlighted by mouse actions on the diagram.<p>
-     */
-    protected CompartmentFigText highlightedFigText;
+  /**
+   * Text highlighted by mouse actions on the diagram.
+   *
+   * <p>
+   */
+  protected CompartmentFigText highlightedFigText;
 
-    protected Fig borderFig;
-    
-    /**
-     * Constructor.
-     */
-    FigClassifierBox() {
+  protected Fig borderFig;
 
-        // this rectangle marks the operation section; all operations
-        // are inside it
-        operationsFig =
-            new FigOperationsCompartment(
-                    10, 31 + ROWHEIGHT, 60, ROWHEIGHT + 2);
+  /** Constructor. */
+  FigClassifierBox() {
 
-        // Set properties of the stereotype box. Make it 1 pixel higher than
-        // before, so it overlaps the name box, and the blanking takes out both
-        // lines. Initially not set to be displayed, but this will be changed
-        // when we try to render it, if we find we have a stereotype.
-        getStereotypeFig().setFilled(true);
-        getStereotypeFig().setLineWidth(1);
-        // +1 to have 1 pixel overlap with getNameFig()
-        getStereotypeFig().setHeight(STEREOHEIGHT + 1);
+    // this rectangle marks the operation section; all operations
+    // are inside it
+    operationsFig = new FigOperationsCompartment(10, 31 + ROWHEIGHT, 60, ROWHEIGHT + 2);
 
-        borderFig = new FigEmptyRect(10, 10, 0, 0);
-        borderFig.setLineWidth(1);
-        borderFig.setLineColor(Color.black);
+    // Set properties of the stereotype box. Make it 1 pixel higher than
+    // before, so it overlaps the name box, and the blanking takes out both
+    // lines. Initially not set to be displayed, but this will be changed
+    // when we try to render it, if we find we have a stereotype.
+    getStereotypeFig().setFilled(true);
+    getStereotypeFig().setLineWidth(1);
+    // +1 to have 1 pixel overlap with getNameFig()
+    getStereotypeFig().setHeight(STEREOHEIGHT + 1);
 
-        getBigPort().setLineWidth(0);
-        getBigPort().setFillColor(Color.white);
+    borderFig = new FigEmptyRect(10, 10, 0, 0);
+    borderFig.setLineWidth(1);
+    borderFig.setLineColor(Color.black);
 
-    }
+    getBigPort().setLineWidth(0);
+    getBigPort().setFillColor(Color.white);
+  }
 
-    /**
-     * @see java.lang.Object#clone()
-     */
-    public Object clone() {
-        FigClassifierBox figClone = (FigClassifierBox) super.clone();
-        Iterator thisIter = this.getFigs().iterator();
-        while (thisIter.hasNext()) {
-            Fig thisFig = (Fig) thisIter.next();
-            if (thisFig == operationsFig) {
-                figClone.operationsFig = (FigOperationsCompartment) thisFig;
-                return figClone;
-            }
-        }
+  /**
+   * @see java.lang.Object#clone()
+   */
+  public Object clone() {
+    FigClassifierBox figClone = (FigClassifierBox) super.clone();
+    Iterator thisIter = this.getFigs().iterator();
+    while (thisIter.hasNext()) {
+      Fig thisFig = (Fig) thisIter.next();
+      if (thisFig == operationsFig) {
+        figClone.operationsFig = (FigOperationsCompartment) thisFig;
         return figClone;
+      }
     }
+    return figClone;
+  }
 
-    /**
-     * Updates the operations box. Called from modelchanged if there is
-     * a modelevent effecting the attributes and from renderingChanged in all
-     * cases.
-     */
-    protected void updateOperations() {
-        if (!isOperationsVisible()) {
-            return;
-        }
-        operationsFig.populate();
-
-        Rectangle rect = getBounds();
-        // ouch ugly but that's for a next refactoring
-        // TODO: make setBounds, calcBounds and updateBounds consistent
-        setBounds(rect.x, rect.y, rect.width, rect.height);
-        damage();
+  /**
+   * Updates the operations box. Called from modelchanged if there is a modelevent effecting the
+   * attributes and from renderingChanged in all cases.
+   */
+  protected void updateOperations() {
+    if (!isOperationsVisible()) {
+      return;
     }
+    operationsFig.populate();
 
-    /**
-     * @return The vector of graphics for operations (if any).
-     * First one is the rectangle for the entire operations box.
-     */
-    protected FigOperationsCompartment getOperationsFig() {
-        return operationsFig;
-    }
+    Rectangle rect = getBounds();
+    // ouch ugly but that's for a next refactoring
+    // TODO: make setBounds, calcBounds and updateBounds consistent
+    setBounds(rect.x, rect.y, rect.width, rect.height);
+    damage();
+  }
 
-    /**
-     * Get the bounds of the operations compartment.
-     *
-     * @return the bounds of the operations compartment
-     */
-    public Rectangle getOperationsBounds() {
-        return operationsFig.getBounds();
-    }
+  /**
+   * @return The vector of graphics for operations (if any). First one is the rectangle for the
+   *     entire operations box.
+   */
+  protected FigOperationsCompartment getOperationsFig() {
+    return operationsFig;
+  }
 
-    /**
-     * Returns the visibility status of the operations compartment.
-     *
-     * @return true if the operations are visible, false otherwise
-     *
-     * @see org.argouml.uml.diagram.ui.OperationsCompartmentContainer#isOperationsVisible()
-     */
-    public boolean isOperationsVisible() {
-        return operationsFig.isVisible();
-    }
+  /**
+   * Get the bounds of the operations compartment.
+   *
+   * @return the bounds of the operations compartment
+   */
+  public Rectangle getOperationsBounds() {
+    return operationsFig.getBounds();
+  }
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#translate(int, int)
-     */
-    public void translate(int dx, int dy) {
-        super.translate(dx, dy);
-        Editor ce = Globals.curEditor();
-        Selection sel = ce.getSelectionManager().findSelectionFor(this);
-        if (sel instanceof SelectionClass) {
-            ((SelectionClass) sel).hideButtons();
-        }
+  /**
+   * Returns the visibility status of the operations compartment.
+   *
+   * @return true if the operations are visible, false otherwise
+   * @see org.argouml.uml.diagram.ui.OperationsCompartmentContainer#isOperationsVisible()
+   */
+  public boolean isOperationsVisible() {
+    return operationsFig.isVisible();
+  }
+
+  /**
+   * @see org.tigris.gef.presentation.Fig#translate(int, int)
+   */
+  public void translate(int dx, int dy) {
+    super.translate(dx, dy);
+    Editor ce = Globals.curEditor();
+    Selection sel = ce.getSelectionManager().findSelectionFor(this);
+    if (sel instanceof SelectionClass) {
+      ((SelectionClass) sel).hideButtons();
     }
+  }
 }

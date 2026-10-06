@@ -31,52 +31,49 @@ import java.util.Collection;
  *
  * @author Bob Tarling
  */
-public abstract class AbstractActivityGraphsHelperDecorator
-	implements ActivityGraphsHelper {
+public abstract class AbstractActivityGraphsHelperDecorator implements ActivityGraphsHelper {
 
-    /**
-     * The component.
-     */
-    private ActivityGraphsHelper impl;
+  /** The component. */
+  private ActivityGraphsHelper impl;
 
-    /**
-     * @param component The component to decorate.
-     */
-    AbstractActivityGraphsHelperDecorator(ActivityGraphsHelper component) {
-        impl = component;
-    }
+  /**
+   * @param component The component to decorate.
+   */
+  AbstractActivityGraphsHelperDecorator(ActivityGraphsHelper component) {
+    impl = component;
+  }
 
-    /**
-     * The component we are decorating.
-     *
-     * @return Returns the component.
-     */
-    protected ActivityGraphsHelper getComponent() {
-        return impl;
-    }
+  /**
+   * The component we are decorating.
+   *
+   * @return Returns the component.
+   */
+  protected ActivityGraphsHelper getComponent() {
+    return impl;
+  }
 
-    /*
-     * @see org.argouml.model.ActivityGraphsHelper#findClassifierByName(java.lang.Object, java.lang.String)
-     *
-     * all methods below similarly implement methods from ActivityGraphsHelper 
-     */
-    public Object findClassifierByName(Object ofs, String s) {
-        return impl.findClassifierByName(ofs, s);
-    }
+  /*
+   * @see org.argouml.model.ActivityGraphsHelper#findClassifierByName(java.lang.Object, java.lang.String)
+   *
+   * all methods below similarly implement methods from ActivityGraphsHelper
+   */
+  public Object findClassifierByName(Object ofs, String s) {
+    return impl.findClassifierByName(ofs, s);
+  }
 
-    public Object findStateByName(Object c, String s) {
-        return impl.findStateByName(c, s);
-    }
+  public Object findStateByName(Object c, String s) {
+    return impl.findStateByName(c, s);
+  }
 
-    public boolean isAddingActivityGraphAllowed(Object context) {
-        return impl.isAddingActivityGraphAllowed(context);
-    }
+  public boolean isAddingActivityGraphAllowed(Object context) {
+    return impl.isAddingActivityGraphAllowed(context);
+  }
 
-    public void addInState(Object classifierInState, Object state) {
-        impl.addInState(classifierInState, state);
-    }
+  public void addInState(Object classifierInState, Object state) {
+    impl.addInState(classifierInState, state);
+  }
 
-    public void setInStates(Object classifierInState, Collection newStates) {
-        impl.setInStates(classifierInState, newStates);
-    }
+  public void setInStates(Object classifierInState, Collection newStates) {
+    impl.setInStates(classifierInState, newStates);
+  }
 }

@@ -25,23 +25,21 @@
 package org.argouml.argoeclipse.internal.ui.views;
 
 import javax.swing.JPanel;
-
 import org.argouml.argoeclipse.internal.core.model.Register;
 import org.argouml.argoeclipse.internal.ui.model.Panels;
 
 /**
  * The view that wrapps the Explorer Pane.
- * 
+ *
  * @author Bogdan Pistol
  */
-public class ExplorerView extends View {      
+public class ExplorerView extends View {
 
-    public ExplorerView() {
-        super(Register.EXPLORER);
-    }
-    
-    public JPanel getPanel() {
-        return Panels.getExplorerPanel();
-    }
-   
+  public ExplorerView() {
+    super(Register.EXPLORER);
+  }
+
+  public JPanel getPanel() {
+    return Panels.getExplorerPanel();
+  }
 }

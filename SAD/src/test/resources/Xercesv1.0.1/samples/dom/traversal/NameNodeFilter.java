@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xerces" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -56,57 +56,51 @@
  */
 package dom.traversal;
 
-
 import org.apache.xerces.domx.traversal.*;
 import org.w3c.dom.Node;
-import org.w3c.dom.Element;
 
- /** An example filter which enables the client to set a <b>name</b> value 
-  *  accept those node names which <b>match</b> (or explicitly <b>not match</b>) 
-  *  the set name value.
-  */
- public class NameNodeFilter implements NodeFilter {
-    
-    String fName;
-    boolean fMatch = true;
-            
-        /** The name to compare with the node name. If null, all node names  
-         *  are successfully matched. 
-         */
-        public void setName(String name) {
-            this.fName = name;
-        }
-        
-        /** Return the name to compare with node name. If null, all node names  
-         *  are successfully matched. */
-        public String getName() {
-            return this.fName;
-        }
-        
-        /** 
-         *  Controls whether the node name is accepted when it <b>does</b> match 
-         *  the setName value, or when it <b>does not</b> match the setName value. 
-         *  If the setName value is null this match value does not matter, and
-         *  all names will match.
-         *  If match is true, the node name is accepted when it matches. 
-         *  If match is false, the node name is accepted when does not match. 
-         */
-        public void setMatch(boolean match) {
-            this.fMatch = match;
-        }
-        
-        /** Return match value. */
-        public boolean getMatch() {
-            return this.fMatch;
-        }
-        
-        /** acceptNode determines if this filter accepts a node name or not. */ 
-        public short acceptNode(Node n) {
+/**
+ * An example filter which enables the client to set a <b>name</b> value accept those node names
+ * which <b>match</b> (or explicitly <b>not match</b>) the set name value.
+ */
+public class NameNodeFilter implements NodeFilter {
 
-            if (fName == null || fMatch && n.getNodeName().equals(fName) 
-            ||  !fMatch && !n.getNodeName().equals(fName))
-                return FILTER_ACCEPT;
-            else 
-                return FILTER_REJECT;
-        }
-    }
+  String fName;
+  boolean fMatch = true;
+
+  /** The name to compare with the node name. If null, all node names are successfully matched. */
+  public void setName(String name) {
+    this.fName = name;
+  }
+
+  /**
+   * Return the name to compare with node name. If null, all node names are successfully matched.
+   */
+  public String getName() {
+    return this.fName;
+  }
+
+  /**
+   * Controls whether the node name is accepted when it <b>does</b> match the setName value, or when
+   * it <b>does not</b> match the setName value. If the setName value is null this match value does
+   * not matter, and all names will match. If match is true, the node name is accepted when it
+   * matches. If match is false, the node name is accepted when does not match.
+   */
+  public void setMatch(boolean match) {
+    this.fMatch = match;
+  }
+
+  /** Return match value. */
+  public boolean getMatch() {
+    return this.fMatch;
+  }
+
+  /** acceptNode determines if this filter accepts a node name or not. */
+  public short acceptNode(Node n) {
+
+    if (fName == null
+        || fMatch && n.getNodeName().equals(fName)
+        || !fMatch && !n.getNodeName().equals(fName)) return FILTER_ACCEPT;
+    else return FILTER_REJECT;
+  }
+}

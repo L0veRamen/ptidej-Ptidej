@@ -32,540 +32,521 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 import java.util.Vector;
-
 import org.tigris.gef.util.ChildGenerator;
 import org.tigris.gef.util.Predicate;
 import org.tigris.gef.util.PredicateTrue;
 
 /**
- * An Ordered, non-duplicated collecton of objects (not exactly a
- * mathemetical set because it is ordered).
+ * An Ordered, non-duplicated collecton of objects (not exactly a mathemetical set because it is
+ * ordered).
  */
 public class ListSet implements Serializable, Set, List {
-    ////////////////////////////////////////////////////////////////
-    // constants
-    private static final int TC_LIMIT = 50;
+  ////////////////////////////////////////////////////////////////
+  // constants
+  private static final int TC_LIMIT = 50;
 
-    ////////////////////////////////////////////////////////////////
-    // instance variables
-    private Vector vector;
+  ////////////////////////////////////////////////////////////////
+  // instance variables
+  private Vector vector;
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    /**
-     * The constructor.
-     */
-    public ListSet() {
-        vector = new Vector();
+  /** The constructor. */
+  public ListSet() {
+    vector = new Vector();
+  }
+
+  /**
+   * The constructor.
+   *
+   * @param n the initial capacity of the vector
+   */
+  public ListSet(int n) {
+    vector = new Vector(n);
+  }
+
+  /**
+   * The constructor.
+   *
+   * @param o1 the first object to add
+   */
+  public ListSet(Object o1) {
+    vector = new Vector();
+    addElement(o1);
+  }
+
+  /**
+   * @param o the object to add
+   */
+  public void addElement(Object o) {
+    if (!contains(o)) {
+      vector.addElement(o);
     }
+  }
 
-    /**
-     * The constructor.
-     *
-     * @param n the initial capacity of the vector
-     */
-    public ListSet(int n) {
-        vector = new Vector(n);
+  /**
+   * @param v a collection of objects to be added
+   */
+  public void addAllElements(Collection v) {
+    if (v == null) {
+      return;
     }
+    addAllElements(v.iterator());
+  }
 
-    /**
-     * The constructor.
-     *
-     * @param o1 the first object to add
-     */
-    public ListSet(Object o1) {
-        vector = new Vector();
-        addElement(o1);
+  /**
+   * @param iter an enumeration of objects to be added
+   */
+  public void addAllElements(Enumeration iter) {
+    while (iter.hasMoreElements()) {
+      addElement(iter.nextElement());
     }
+  }
 
-    /**
-     * @param o the object to add
-     */
-    public void addElement(Object o) {
-        if (!contains(o)) {
-            vector.addElement(o);
+  /**
+   * @param iter an iterator of objects to be added
+   */
+  public void addAllElements(Iterator iter) {
+    while (iter.hasNext()) {
+      addElement(iter.next());
+    }
+  }
+
+  /**
+   * @param iter an enumeration of objects to be added
+   * @param p the predicate the objects have to fulfill to be added
+   */
+  public void addAllElementsSuchThat(Enumeration iter, Predicate p) {
+    if (p instanceof PredicateTrue) {
+      addAllElements(iter);
+    } else {
+      while (iter.hasMoreElements()) {
+        Object e = iter.nextElement();
+        if (p.predicate(e)) {
+          addElement(e);
         }
+      }
     }
+  }
 
-    /**
-     * @param v a collection of objects to be added
-     */
-    public void addAllElements(Collection v) {
-        if (v == null) {
-            return;
+  /**
+   * @param iter an iterator of objects to be added
+   * @param p the predicate the objects have to fulfill to be added
+   */
+  public void addAllElementsSuchThat(Iterator iter, Predicate p) {
+    if (p instanceof PredicateTrue) {
+      addAllElements(iter);
+    } else {
+      while (iter.hasNext()) {
+        Object e = iter.next();
+        if (p.predicate(e)) {
+          addElement(e);
         }
-        addAllElements(v.iterator());
+      }
     }
+  }
 
-    /**
-     * @param iter an enumeration of objects to be added
-     */
-    public void addAllElements(Enumeration iter) {
-        while (iter.hasMoreElements()) {
-            addElement(iter.nextElement());
-        }
+  /**
+   * @param s a listset of objects to be added
+   */
+  public void addAllElements(ListSet s) {
+    addAllElements(s.elements());
+  }
+
+  /**
+   * @param s a listset of objects to be added
+   * @param p the predicate the objects have to fulfill to be added
+   */
+  public void addAllElementsSuchThat(ListSet s, Predicate p) {
+    addAllElementsSuchThat(s.elements(), p);
+  }
+
+  /*
+   * @see java.util.Collection#remove(java.lang.Object)
+   */
+  public boolean remove(Object o) {
+    boolean result = contains(o);
+    if (o != null) {
+      vector.removeElement(o);
     }
+    return result;
+  }
 
-    /**
-     * @param iter an iterator of objects to be added
-     */
-    public void addAllElements(Iterator iter) {
-        while (iter.hasNext()) {
-            addElement(iter.next());
-        }
+  /**
+   * @param o the object to be removed
+   */
+  public void removeElement(Object o) {
+    if (o != null) {
+      vector.removeElement(o);
     }
+  }
 
-    /**
-     * @param iter an enumeration of objects to be added
-     * @param p the predicate the objects have to fulfill to be added
-     */
-    public void addAllElementsSuchThat(Enumeration iter, Predicate p) {
-        if (p instanceof PredicateTrue) {
-            addAllElements(iter);
-        } else {
-            while (iter.hasMoreElements()) {
-                Object e = iter.nextElement();
-                if (p.predicate(e)) {
-                    addElement(e);
-                }
-            }
-        }
+  /** Remove all objects. */
+  public void removeAllElements() {
+    vector.removeAllElements();
+  }
+
+  /*
+   * @see java.util.Collection#contains(java.lang.Object)
+   */
+  public boolean contains(Object o) {
+    if (o != null) {
+      return vector.contains(o);
     }
+    return false;
+  }
 
-    /**
-     * @param iter an iterator of objects to be added
-     * @param p the predicate the objects have to fulfill to be added
-     */
-    public void addAllElementsSuchThat(Iterator iter, Predicate p) {
-        if (p instanceof PredicateTrue) {
-            addAllElements(iter);
-        } else {
-            while (iter.hasNext()) {
-                Object e = iter.next();
-                if (p.predicate(e)) {
-                    addElement(e);
-                }
-            }
-        }
+  /**
+   * @param p the predicate the objects have to fulfill
+   * @return true if at least one object in the listset fulfills the predicate
+   */
+  public boolean containsSuchThat(Predicate p) {
+    return findSuchThat(p) != null;
+  }
+
+  /**
+   * Return the first object that causes the given predicate to return true.
+   *
+   * @param p the predicate the objects have to fulfill
+   * @return the found object or null
+   */
+  public Object findSuchThat(Predicate p) {
+    Enumeration elts = elements();
+    while (elts.hasMoreElements()) {
+      Object o = elts.nextElement();
+      if (p.predicate(o)) {
+        return o;
+      }
     }
+    return null;
+  }
 
-    /**
-     * @param s a listset of objects to be added
-     */
-    public void addAllElements(ListSet s) {
-        addAllElements(s.elements());
+  /**
+   * @return all the objects as enumeration
+   */
+  public Enumeration elements() {
+    return vector.elements();
+  }
+
+  /**
+   * @param index the location
+   * @return the object at the given index
+   */
+  public Object elementAt(int index) {
+    return vector.elementAt(index);
+  }
+
+  /**
+   * @return all the objects as vector
+   */
+  public Vector asVector() {
+    return vector;
+  }
+
+  /*
+   * @see java.lang.Object#hashCode()
+   *
+   * This will result in rather bad performance but at least we will
+   * not violate the contract together with {@link #equals(Object)}.
+   */
+  public int hashCode() {
+    return 0;
+  }
+
+  /*
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  public boolean equals(Object o) {
+    if (!(o instanceof ListSet)) {
+      return false;
     }
-
-    /**
-     * @param s a listset of objects to be added
-     * @param p the predicate the objects have to fulfill to be added
-     */
-    public void addAllElementsSuchThat(ListSet s, Predicate p) {
-        addAllElementsSuchThat(s.elements(), p);
+    ListSet set = (ListSet) o;
+    if (set.size() != size()) {
+      return false;
     }
-
-    /*
-     * @see java.util.Collection#remove(java.lang.Object)
-     */
-    public boolean remove(Object o) {
-        boolean result = contains(o);
-        if (o != null) {
-            vector.removeElement(o);
-        }
-        return result;
-    }
-
-    /**
-     * @param o the object to be removed
-     */
-    public void removeElement(Object o) {
-        if (o != null) {
-            vector.removeElement(o);
-        }
-    }
-
-    /**
-     * Remove all objects.
-     */
-    public void removeAllElements() {
-        vector.removeAllElements();
-    }
-
-    /*
-     * @see java.util.Collection#contains(java.lang.Object)
-     */
-    public boolean contains(Object o) {
-        if (o != null) {
-            return vector.contains(o);
-        }
+    Enumeration myEs = elements();
+    while (myEs.hasMoreElements()) {
+      Object obj = myEs.nextElement();
+      if (!(set.contains(obj))) {
         return false;
+      }
     }
+    return true;
+  }
 
-    /**
-     * @param p the predicate the objects have to fulfill
-     * @return true if at least one object in the listset fulfills the predicate
-     */
-    public boolean containsSuchThat(Predicate p) {
-        return findSuchThat(p) != null;
+  /**
+   * @return the first object
+   */
+  public Object firstElement() {
+    return vector.firstElement();
+  }
+
+  /*
+   * @see java.util.Collection#size()
+   */
+  public int size() {
+    return vector.size();
+  }
+
+  /*
+   * @see java.lang.Object#toString()
+   */
+  public String toString() {
+    String res = "Set{";
+    Enumeration eles = elements();
+    while (eles.hasMoreElements()) {
+      res += eles.nextElement();
+      if (eles.hasMoreElements()) {
+        res += ", ";
+      }
     }
+    return res + "}";
+  }
 
-    /**
-     * Return the first object that causes the given predicate to return
-     * true.
-     *
-     * @param p the predicate the objects have to fulfill
-     * @return the found object or null
-     */
-    public Object findSuchThat(Predicate p) {
-        Enumeration elts = elements();
-        while (elts.hasMoreElements()) {
-            Object o = elts.nextElement();
-            if (p.predicate(o)) {
-                return o;
-            }
-        }
-        return null;
+  /**
+   * Reply the Set of all objects that can be reached from the receiving Set by taking steps defined
+   * by the given ChildGenerator. The result includes the elements of the original Set. In order to
+   * avoid very deep searches which are often programming mistakes, only paths of length TC_LIMIT or
+   * less are considered.
+   *
+   * @param cg the given childgenerator
+   * @return the resulting listset
+   */
+  public ListSet transitiveClosure(ChildGenerator cg) {
+    return transitiveClosure(cg, TC_LIMIT, PredicateTrue.theInstance());
+  }
+
+  /**
+   * Reply the Set of all objects that can be reached from the receiving Set by taking steps defined
+   * by the given ChildGenerator. The result DOES NOT include the elements of the original Set. In
+   * order to avoid very deep searches which are often programming mistakes, only paths of length
+   * TC_LIMIT or less are considered.
+   *
+   * @param cg the given childgenerator
+   * @return the resulting listset
+   */
+  public ListSet reachable(ChildGenerator cg) {
+    return reachable(cg, TC_LIMIT, PredicateTrue.theInstance());
+  }
+
+  /**
+   * Reply the Set of all objects that can be reached from the receiving Set by taking steps defined
+   * by the given ChildGenerator. The result DOES NOT include the elements of the original Set. In
+   * order to avoid very deep searches which are often programming mistakes, only paths of given max
+   * length or less are considered. Only paths consisting of elements which all cause p.predicate()
+   * to return true are considered.
+   *
+   * @param cg the given childgenerator
+   * @param max the maximum depth
+   * @param p the predicate the objects have to fulfill
+   * @return the resulting listset
+   */
+  public ListSet reachable(ChildGenerator cg, int max, Predicate p) {
+    ListSet kids = new ListSet();
+    Enumeration rootEnum = elements();
+    while (rootEnum.hasMoreElements()) {
+      Object r = rootEnum.nextElement();
+      kids.addAllElementsSuchThat(cg.gen(r), p);
     }
+    return kids.transitiveClosure(cg, max, p);
+  }
 
-    /**
-     * @return all the objects as enumeration
-     */
-    public Enumeration elements() {
-        return vector.elements();
+  /**
+   * Reply the Set of all objects that can be reached from the receiving Set by taking steps defined
+   * by the given ChildGenerator. The result includes the elements of the original Set. In order to
+   * avoid very deep searches which are often programming mistakes, only paths of given max length
+   * or less are considered. Only paths consisting of elements which all cause p.predicate() to
+   * return true are considered.
+   *
+   * @param cg the given childgenerator
+   * @param max the maximum depth
+   * @param p the predicate the objects have to fulfill
+   * @return the resulting listset
+   */
+  public ListSet transitiveClosure(ChildGenerator cg, int max, Predicate p) {
+    int iterCount = 0;
+    int lastSize = -1;
+    ListSet touched = new ListSet();
+    ListSet frontier;
+    ListSet recent = this;
+
+    touched.addAllElements(this);
+    while ((iterCount < max) && (touched.size() > lastSize)) {
+      iterCount++;
+      lastSize = touched.size();
+      frontier = new ListSet();
+      Enumeration recentEnum = recent.elements();
+      while (recentEnum.hasMoreElements()) {
+        Enumeration frontsEnum = cg.gen(recentEnum.nextElement());
+        frontier.addAllElementsSuchThat(frontsEnum, p);
+      }
+      touched.addAllElements(frontier);
+      recent = frontier;
     }
+    return touched;
+  }
 
-    /**
-     * @param index the location
-     * @return the object at the given index
-     */
-    public Object elementAt(int index) {
-        return vector.elementAt(index);
+  /*
+   * @see java.util.Collection#isEmpty()
+   */
+  public boolean isEmpty() {
+    return vector.isEmpty();
+  }
+
+  /*
+   * @see java.util.Collection#iterator()
+   */
+  public Iterator iterator() {
+    return vector.iterator();
+  }
+
+  /*
+   * @see java.util.Collection#toArray()
+   */
+  public Object[] toArray() {
+    return vector.toArray();
+  }
+
+  /*
+   * @see java.util.Collection#toArray(java.lang.Object[])
+   */
+  public Object[] toArray(Object[] arg0) {
+    return vector.toArray(arg0);
+  }
+
+  /*
+   * @see java.util.Collection#add(java.lang.Object)
+   */
+  public boolean add(Object arg0) {
+    boolean result = contains(arg0);
+    if (!result) {
+      addElement(arg0);
     }
+    return !result;
+  }
 
-    /**
-     * @return all the objects as vector
-     */
-    public Vector asVector() {
-        return vector;
+  /*
+   * @see java.util.Collection#containsAll(java.util.Collection)
+   */
+  public boolean containsAll(Collection arg0) {
+    return vector.containsAll(arg0);
+  }
+
+  /*
+   * @see java.util.Collection#addAll(java.util.Collection)
+   */
+  public boolean addAll(Collection arg0) {
+    boolean result = containsAll(arg0);
+    addAllElements(arg0);
+    return !result;
+  }
+
+  /*
+   * @see java.util.Collection#retainAll(java.util.Collection)
+   */
+  public boolean retainAll(Collection arg0) {
+    Vector copy = (Vector) vector.clone();
+    boolean result = false;
+    for (Iterator iter = copy.iterator(); iter.hasNext(); ) {
+      Object elem = iter.next();
+      if (!arg0.contains(elem)) {
+        result = result || remove(elem);
+      }
     }
+    return result;
+  }
 
-    /*
-     * @see java.lang.Object#hashCode()
-     *
-     * This will result in rather bad performance but at least we will
-     * not violate the contract together with {@link #equals(Object)}.
-     */
-    public int hashCode() {
-        return 0;
+  /*
+   * @see java.util.Collection#removeAll(java.util.Collection)
+   */
+  public boolean removeAll(Collection arg0) {
+    boolean result = false;
+    for (Iterator iter = arg0.iterator(); iter.hasNext(); ) {
+      result = result || remove(iter.next());
     }
+    return result;
+  }
 
-    /*
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    public boolean equals(Object o) {
-        if (!(o instanceof ListSet)) {
-            return false;
-        }
-        ListSet set = (ListSet) o;
-        if (set.size() != size()) {
-            return false;
-        }
-        Enumeration myEs = elements();
-        while (myEs.hasMoreElements()) {
-            Object obj = myEs.nextElement();
-            if (!(set.contains(obj))) {
-                return false;
-            }
-        }
-        return true;
+  /*
+   * @see java.util.Collection#clear()
+   */
+  public void clear() {
+    vector.clear();
+  }
+
+  /*
+   * @see java.util.List#addAll(int, java.util.Collection)
+   */
+  public boolean addAll(int arg0, Collection arg1) {
+    return vector.addAll(arg0, arg1);
+  }
+
+  /*
+   * @see java.util.List#get(int)
+   */
+  public Object get(int index) {
+    return vector.get(index);
+  }
+
+  /*
+   * @see java.util.List#set(int, java.lang.Object)
+   */
+  public Object set(int arg0, Object o) {
+    if (contains(o)) {
+      vector.remove(o);
     }
+    return vector.set(arg0, o);
+  }
 
-
-    /**
-     * @return the first object
-     */
-    public Object firstElement() {
-        return vector.firstElement();
+  /*
+   * @see java.util.List#add(int, java.lang.Object)
+   */
+  public void add(int arg0, Object arg1) {
+    if (!vector.contains(arg1)) {
+      vector.add(arg0, arg1);
     }
+  }
 
-    /*
-     * @see java.util.Collection#size()
-     */
-    public int size() {
-        return vector.size();
-    }
+  /*
+   * @see java.util.List#remove(int)
+   */
+  public Object remove(int index) {
+    return vector.remove(index);
+  }
 
-    /*
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-        String res = "Set{";
-        Enumeration eles = elements();
-        while (eles.hasMoreElements()) {
-            res += eles.nextElement();
-            if (eles.hasMoreElements()) {
-                res += ", ";
-            }
-        }
-        return res + "}";
-    }
+  /*
+   * @see java.util.List#indexOf(java.lang.Object)
+   */
+  public int indexOf(Object o) {
+    return vector.indexOf(o);
+  }
 
-    /**
-     * Reply the Set of all objects that can be reached from the
-     * receiving Set by taking steps defined by the given
-     * ChildGenerator.  The result includes the elements of the original
-     * Set. In order to avoid very deep searches which are often
-     * programming mistakes, only paths of length TC_LIMIT or less are
-     * considered.
-     *
-     * @param cg the given childgenerator
-     * @return the resulting listset
-     */
-    public ListSet transitiveClosure(ChildGenerator cg) {
-        return transitiveClosure(cg, TC_LIMIT, PredicateTrue.theInstance());
-    }
+  /*
+   * @see java.util.List#lastIndexOf(java.lang.Object)
+   */
+  public int lastIndexOf(Object o) {
+    return vector.lastIndexOf(o);
+  }
 
-    /**
-     * Reply the Set of all objects that can be reached from the
-     * receiving Set by taking steps defined by the given
-     * ChildGenerator.  The result DOES NOT include the elements of the
-     * original Set. In order to avoid very deep searches which are
-     * often programming mistakes, only paths of length TC_LIMIT or less
-     * are considered.
-     *
-     * @param cg the given childgenerator
-     * @return the resulting listset
-     */
-    public ListSet reachable(ChildGenerator cg) {
-        return reachable(cg, TC_LIMIT, PredicateTrue.theInstance());
-    }
+  /*
+   * @see java.util.List#listIterator()
+   */
+  public ListIterator listIterator() {
+    return vector.listIterator();
+  }
 
-    /**
-     * Reply the Set of all objects that can be reached from the
-     * receiving Set by taking steps defined by the given
-     * ChildGenerator.  The result DOES NOT include the elements of the
-     * original Set. In order to avoid very deep searches which are
-     * often programming mistakes, only paths of given max length or
-     * less are considered. Only paths consisting of elements which all
-     * cause p.predicate() to return true are considered.
-     *
-     * @param cg the given childgenerator
-     * @param max the maximum depth
-     * @param p the predicate the objects have to fulfill
-     * @return the resulting listset
-     */
-    public ListSet reachable(ChildGenerator cg, int max, Predicate p) {
-        ListSet kids = new ListSet();
-        Enumeration rootEnum = elements();
-        while (rootEnum.hasMoreElements()) {
-            Object r = rootEnum.nextElement();
-            kids.addAllElementsSuchThat(cg.gen(r), p);
-        }
-        return kids.transitiveClosure(cg, max, p);
-    }
+  /*
+   * @see java.util.List#listIterator(int)
+   */
+  public ListIterator listIterator(int index) {
+    return listIterator(index);
+  }
 
-    /**
-     * Reply the Set of all objects that can be reached from the
-     * receiving Set by taking steps defined by the given
-     * ChildGenerator.  The result includes the elements of the original
-     * Set. In order to avoid very deep searches which are often
-     * programming mistakes, only paths of given max length or less are
-     * considered. Only paths consisting of elements which all cause
-     * p.predicate() to return true are considered.
-     *
-     * @param cg the given childgenerator
-     * @param max the maximum depth
-     * @param p the predicate the objects have to fulfill
-     * @return the resulting listset
-     */
-    public ListSet transitiveClosure(ChildGenerator cg, int max, Predicate p) {
-        int iterCount = 0;
-        int lastSize = -1;
-        ListSet touched = new ListSet();
-        ListSet frontier;
-        ListSet recent = this;
-
-        touched.addAllElements(this);
-        while ((iterCount < max) && (touched.size() > lastSize)) {
-            iterCount++;
-            lastSize = touched.size();
-            frontier = new ListSet();
-            Enumeration recentEnum = recent.elements();
-            while (recentEnum.hasMoreElements()) {
-                Enumeration frontsEnum = cg.gen(recentEnum.nextElement());
-                frontier.addAllElementsSuchThat(frontsEnum, p);
-            }
-            touched.addAllElements(frontier);
-            recent = frontier;
-        }
-        return touched;
-    }
-
-    /*
-     * @see java.util.Collection#isEmpty()
-     */
-    public boolean isEmpty() {
-        return vector.isEmpty();
-    }
-
-    /*
-     * @see java.util.Collection#iterator()
-     */
-    public Iterator iterator() {
-        return vector.iterator();
-    }
-
-    /*
-     * @see java.util.Collection#toArray()
-     */
-    public Object[] toArray() {
-        return vector.toArray();
-    }
-
-    /*
-     * @see java.util.Collection#toArray(java.lang.Object[])
-     */
-    public Object[] toArray(Object[] arg0) {
-        return vector.toArray(arg0);
-    }
-
-    /*
-     * @see java.util.Collection#add(java.lang.Object)
-     */
-    public boolean add(Object arg0) {
-        boolean result = contains(arg0);
-        if (!result) {
-            addElement(arg0);
-        }
-        return !result;
-    }
-
-    /*
-     * @see java.util.Collection#containsAll(java.util.Collection)
-     */
-    public boolean containsAll(Collection arg0) {
-        return vector.containsAll(arg0);
-    }
-
-
-    /*
-     * @see java.util.Collection#addAll(java.util.Collection)
-     */
-    public boolean addAll(Collection arg0) {
-        boolean result = containsAll(arg0);
-        addAllElements(arg0);
-        return !result;
-
-    }
-
-    /*
-     * @see java.util.Collection#retainAll(java.util.Collection)
-     */
-    public boolean retainAll(Collection arg0) {
-        Vector copy = (Vector) vector.clone();
-        boolean result = false;
-        for (Iterator iter = copy.iterator(); iter.hasNext();) {
-            Object elem = iter.next();
-            if (!arg0.contains(elem)) {
-                result = result || remove(elem);
-            }
-        }
-        return result;
-    }
-
-    /*
-     * @see java.util.Collection#removeAll(java.util.Collection)
-     */
-    public boolean removeAll(Collection arg0) {
-        boolean result = false;
-        for (Iterator iter = arg0.iterator(); iter.hasNext();) {
-            result = result || remove(iter.next());
-        }
-        return result;
-
-    }
-
-    /*
-     * @see java.util.Collection#clear()
-     */
-    public void clear() {
-        vector.clear();
-    }
-
-    /*
-     * @see java.util.List#addAll(int, java.util.Collection)
-     */
-    public boolean addAll(int arg0, Collection arg1) {
-        return vector.addAll(arg0, arg1);
-    }
-
-    /*
-     * @see java.util.List#get(int)
-     */
-    public Object get(int index) {
-        return vector.get(index);
-    }
-
-    /*
-     * @see java.util.List#set(int, java.lang.Object)
-     */
-    public Object set(int arg0, Object o) {
-        if (contains(o)) {
-            vector.remove(o);
-        }
-        return vector.set(arg0, o);
-    }
-
-    /*
-     * @see java.util.List#add(int, java.lang.Object)
-     */
-    public void add(int arg0, Object arg1) {
-        if (!vector.contains(arg1)) {
-            vector.add(arg0, arg1);
-        }
-    }
-
-    /*
-     * @see java.util.List#remove(int)
-     */
-    public Object remove(int index) {
-        return vector.remove(index);
-    }
-
-    /*
-     * @see java.util.List#indexOf(java.lang.Object)
-     */
-    public int indexOf(Object o) {
-        return vector.indexOf(o);
-    }
-
-    /*
-     * @see java.util.List#lastIndexOf(java.lang.Object)
-     */
-    public int lastIndexOf(Object o) {
-        return vector.lastIndexOf(o);
-    }
-
-    /*
-     * @see java.util.List#listIterator()
-     */
-    public ListIterator listIterator() {
-        return vector.listIterator();
-    }
-
-    /*
-     * @see java.util.List#listIterator(int)
-     */
-    public ListIterator listIterator(int index) {
-        return listIterator(index);
-    }
-
-    /*
-     * @see java.util.List#subList(int, int)
-     */
-    public List subList(int fromIndex, int toIndex) {
-        return subList(fromIndex, toIndex);
-    }
-
+  /*
+   * @see java.util.List#subList(int, int)
+   */
+  public List subList(int fromIndex, int toIndex) {
+    return subList(fromIndex, toIndex);
+  }
 } /* end class ListSet */

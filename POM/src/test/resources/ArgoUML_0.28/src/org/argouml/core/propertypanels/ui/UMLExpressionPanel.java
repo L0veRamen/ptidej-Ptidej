@@ -27,34 +27,28 @@ package org.argouml.core.propertypanels.ui;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
-
 import org.tigris.swidgets.LabelledLayout;
 
-
 /**
- *
  * @author penyaskito
  */
 class UMLExpressionPanel extends JPanel {
 
-    private final UMLExpressionModel model;
-    private final UMLExpressionLanguageField languageField;
-    private final UMLExpressionBodyField bodyField;
-    
-    public UMLExpressionPanel(UMLExpressionModel model, String title) {
-        
-        super(new LabelledLayout());
-        TitledBorder border = new TitledBorder(title);
-        this.setBorder(border);        
-        
-        this.model = model;
-        this.languageField = new UMLExpressionLanguageField(model,
-                false);
-        this.bodyField = new UMLExpressionBodyField(
-                model, true);
-        
-        add(languageField);        
-        add(new JScrollPane(bodyField));
-    }
-    
+  private final UMLExpressionModel model;
+  private final UMLExpressionLanguageField languageField;
+  private final UMLExpressionBodyField bodyField;
+
+  public UMLExpressionPanel(UMLExpressionModel model, String title) {
+
+    super(new LabelledLayout());
+    TitledBorder border = new TitledBorder(title);
+    this.setBorder(border);
+
+    this.model = model;
+    this.languageField = new UMLExpressionLanguageField(model, false);
+    this.bodyField = new UMLExpressionBodyField(model, true);
+
+    add(languageField);
+    add(new JScrollPane(bodyField));
+  }
 }

@@ -25,9 +25,7 @@
 package org.argouml.uml.ui.behavior.activity_graphs;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.Action;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLCheckBox2;
@@ -35,49 +33,40 @@ import org.tigris.gef.undo.UndoableAction;
 
 /**
  * Set the isSynch attribte of an ObjectFlowState.
- * 
+ *
  * @author Tom Morris
  */
 public class ActionSetSynch extends UndoableAction {
 
-    /**
-     * The instance.
-     */
-    private static final ActionSetSynch SINGLETON =
-	new ActionSetSynch();
+  /** The instance. */
+  private static final ActionSetSynch SINGLETON = new ActionSetSynch();
 
-    /**
-     * Constructor for ActionSetElementOwnershipSpecification.
-     */
-    protected ActionSetSynch() {
-        super(Translator.localize("action.set"), null);
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize("action.set"));
+  /** Constructor for ActionSetElementOwnershipSpecification. */
+  protected ActionSetSynch() {
+    super(Translator.localize("action.set"), null);
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize("action.set"));
+  }
+
+  /*
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    if (e.getSource() instanceof UMLCheckBox2) {
+      UMLCheckBox2 source = (UMLCheckBox2) e.getSource();
+      Object target = source.getTarget();
+      if (Model.getFacade().isAObjectFlowState(target)) {
+        Object m = target;
+        Model.getActivityGraphsHelper().setSynch(m, source.isSelected());
+      }
     }
+  }
 
-    /*
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        if (e.getSource() instanceof UMLCheckBox2) {
-            UMLCheckBox2 source = (UMLCheckBox2) e.getSource();
-            Object target = source.getTarget();
-            if (Model.getFacade().isAObjectFlowState(target)) {
-                Object m = target;
-                Model.getActivityGraphsHelper().setSynch(
-                        m,
-                        source.isSelected());
-            }
-        }
-    }
-
-    /**
-     * @return Returns the SINGLETON.
-     */
-    public static ActionSetSynch getInstance() {
-        return SINGLETON;
-    }
-
+  /**
+   * @return Returns the SINGLETON.
+   */
+  public static ActionSetSynch getInstance() {
+    return SINGLETON;
+  }
 }

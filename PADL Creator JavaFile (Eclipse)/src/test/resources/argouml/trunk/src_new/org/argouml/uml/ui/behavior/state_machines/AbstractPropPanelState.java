@@ -29,118 +29,97 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.i18n.Translator;
 import org.argouml.uml.ui.UMLMutableLinkedList;
 import org.tigris.swidgets.Orientation;
 
-/**
- * The abstract properties panel for a State.
- *
- */
+/** The abstract properties panel for a State. */
 public abstract class AbstractPropPanelState extends PropPanelStateVertex {
 
-    private JScrollPane entryScroll;
-    private JScrollPane exitScroll;
-    private JScrollPane doScroll;
-    private JScrollPane internalTransitionsScroll;
-    private JScrollPane deferrableEventsScroll;
-    private JList entryList;
-    private JList exitList;
-    private JList doList;
-    private JList internalTransitionList;
+  private JScrollPane entryScroll;
+  private JScrollPane exitScroll;
+  private JScrollPane doScroll;
+  private JScrollPane internalTransitionsScroll;
+  private JScrollPane deferrableEventsScroll;
+  private JList entryList;
+  private JList exitList;
+  private JList doList;
+  private JList internalTransitionList;
 
+  /**
+   * Constructor for AbstractPropPanelState.
+   *
+   * @param name the name of the properties panel, to be shown at the top
+   * @param icon the icon to be shown next to the name
+   * @param orientation the orientation of the panel
+   */
+  public AbstractPropPanelState(String name, ImageIcon icon, Orientation orientation) {
+    super(name, icon, orientation);
 
-    /**
-     * Constructor for AbstractPropPanelState.
-     * @param name the name of the properties panel, to be shown at the top
-     * @param icon the icon to be shown next to the name
-     * @param orientation the orientation of the panel
-     */
-    public AbstractPropPanelState(
-                    String name, ImageIcon icon, Orientation orientation)
-    {
-        super(name, icon, orientation);
+    JList deferrableList = new UMLStateDeferrableEventList(new UMLStateDeferrableEventListModel());
 
-        JList deferrableList = new UMLStateDeferrableEventList(
-                new UMLStateDeferrableEventListModel());
+    deferrableEventsScroll = new JScrollPane(deferrableList);
 
-        deferrableEventsScroll = new JScrollPane(deferrableList);
+    entryList = new UMLStateEntryList(new UMLStateEntryListModel());
+    entryList.setVisibleRowCount(1);
+    entryScroll = new JScrollPane(entryList);
+    exitList = new UMLStateExitList(new UMLStateExitListModel());
+    exitList.setVisibleRowCount(1);
+    exitScroll = new JScrollPane(exitList);
+    internalTransitionList =
+        new UMLMutableLinkedList(new UMLStateInternalTransition(), null, new ActionNewTransition());
+    internalTransitionsScroll = new JScrollPane(internalTransitionList);
+    doList = new UMLStateDoActivityList(new UMLStateDoActivityListModel());
+    doList.setVisibleRowCount(1);
+    doScroll = new JScrollPane(doList);
+  }
 
-        entryList = new UMLStateEntryList(new UMLStateEntryListModel());
-        entryList.setVisibleRowCount(1);
-        entryScroll = new JScrollPane(entryList);
-        exitList = new UMLStateExitList(new UMLStateExitListModel());
-        exitList.setVisibleRowCount(1);
-        exitScroll = new JScrollPane(exitList);
-        internalTransitionList = new UMLMutableLinkedList(
-                new UMLStateInternalTransition(), null,
-                new ActionNewTransition());
-        internalTransitionsScroll = new JScrollPane(internalTransitionList);
-        doList = new UMLStateDoActivityList(
-                new UMLStateDoActivityListModel());
-        doList.setVisibleRowCount(1);
-        doScroll = new JScrollPane(doList);
-    }
+  /**
+   * @see org.argouml.uml.ui.behavior.state_machines.PropPanelStateVertex#addExtraButtons()
+   */
+  protected void addExtraButtons() {
+    super.addExtraButtons();
 
-    /**
-     * @see org.argouml.uml.ui.behavior.state_machines.PropPanelStateVertex#addExtraButtons()
-     */
-    protected void addExtraButtons() {
-        super.addExtraButtons();
-        
-        Action a = new ActionNewTransition(); 
-        a.putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize("button.new-internal-transition"));
-        Icon icon = ResourceLoaderWrapper.lookupIcon("Transition");
-        a.putValue(Action.SMALL_ICON, icon);
-        addAction(a);
-    }
+    Action a = new ActionNewTransition();
+    a.putValue(Action.SHORT_DESCRIPTION, Translator.localize("button.new-internal-transition"));
+    Icon icon = ResourceLoaderWrapper.lookupIcon("Transition");
+    a.putValue(Action.SMALL_ICON, icon);
+    addAction(a);
+  }
 
-    /**
-     * @return Returns the entryScroll.
-     */
-    protected JScrollPane getEntryScroll() {
-        return entryScroll;
-    }
+  /**
+   * @return Returns the entryScroll.
+   */
+  protected JScrollPane getEntryScroll() {
+    return entryScroll;
+  }
 
+  /**
+   * @return Returns the exitScroll.
+   */
+  protected JScrollPane getExitScroll() {
+    return exitScroll;
+  }
 
-    /**
-     * @return Returns the exitScroll.
-     */
-    protected JScrollPane getExitScroll() {
-        return exitScroll;
-    }
+  /**
+   * @return Returns the doScroll.
+   */
+  protected JScrollPane getDoScroll() {
+    return doScroll;
+  }
 
+  /**
+   * @return Returns the internalTransitionsScroll.
+   */
+  protected JScrollPane getInternalTransitionsScroll() {
+    return internalTransitionsScroll;
+  }
 
-    /**
-     * @return Returns the doScroll.
-     */
-    protected JScrollPane getDoScroll() {
-        return doScroll;
-    }
-
-
-    /**
-     * @return Returns the internalTransitionsScroll.
-     */
-    protected JScrollPane getInternalTransitionsScroll() {
-        return internalTransitionsScroll;
-    }
-
-
-    /**
-     * @return Returns the deferrableEventsScroll.
-     */
-    protected JScrollPane getDeferrableEventsScroll() {
-        return deferrableEventsScroll;
-    }
-
-
-
-
+  /**
+   * @return Returns the deferrableEventsScroll.
+   */
+  protected JScrollPane getDeferrableEventsScroll() {
+    return deferrableEventsScroll;
+  }
 } /* end class AbstractPropPanelState */
-
-
-

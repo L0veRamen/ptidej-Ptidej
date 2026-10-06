@@ -25,7 +25,6 @@
 package org.argouml.uml.diagram.state.ui;
 
 import javax.swing.Icon;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.model.Model;
 import org.argouml.uml.diagram.ui.SelectionNodeClarifiers2;
@@ -36,94 +35,83 @@ import org.tigris.gef.presentation.Fig;
  */
 public class SelectionState extends SelectionNodeClarifiers2 {
 
-    private static Icon trans =
-	ResourceLoaderWrapper.lookupIconResource("Transition");
+  private static Icon trans = ResourceLoaderWrapper.lookupIconResource("Transition");
 
-    private static Icon icons[] = 
-    {null,
-     null,
-     trans,
-     trans,
-     null,
-    };
-    
-    // TODO: I18N required
-    private static String instructions[] = 
-    {null,
-     null,
-     "Add an outgoing transition",
-     "Add an incoming transition",
-     null,
-     "Move object(s)",
-    };
-    private boolean showIncoming = true;
+  private static Icon icons[] = {
+    null, null, trans, trans, null,
+  };
 
-    private boolean showOutgoing = true;
+  // TODO: I18N required
+  private static String instructions[] = {
+    null, null, "Add an outgoing transition", "Add an incoming transition", null, "Move object(s)",
+  };
+  private boolean showIncoming = true;
 
-    /**
-     * Construct a new SelectionState for the given Fig.
-     *
-     * @param f The given Fig.
-     */
-    public SelectionState(Fig f) {
-	super(f);
+  private boolean showOutgoing = true;
+
+  /**
+   * Construct a new SelectionState for the given Fig.
+   *
+   * @param f The given Fig.
+   */
+  public SelectionState(Fig f) {
+    super(f);
+  }
+
+  /**
+   * @param b true if the buton is enabled
+   */
+  public void setIncomingButtonEnabled(boolean b) {
+    showIncoming = b;
+  }
+
+  /**
+   * @param b true if the buton is enabled
+   */
+  public void setOutgoingButtonEnabled(boolean b) {
+    showOutgoing = b;
+  }
+
+  @Override
+  protected Icon[] getIcons() {
+    Icon workingIcons[] = new Icon[icons.length];
+    System.arraycopy(icons, 0, workingIcons, 0, icons.length);
+
+    if (!showOutgoing) {
+      workingIcons[RIGHT - BASE] = null;
+    }
+    if (!showIncoming) {
+      workingIcons[LEFT - BASE] = null;
     }
 
-    /**
-     * @param b true if the buton is enabled
-     */
-    public void setIncomingButtonEnabled(boolean b) {
-	showIncoming = b;
-    }
+    return workingIcons;
+  }
 
-    /**
-     * @param b true if the buton is enabled
-     */
-    public void setOutgoingButtonEnabled(boolean b) {
-	showOutgoing = b;
-    }
+  @Override
+  protected String getInstructions(int index) {
+    return instructions[index - BASE];
+  }
 
-    @Override
-    protected Icon[] getIcons() {
-        Icon workingIcons[] = new Icon[icons.length];
-        System.arraycopy(icons, 0, workingIcons, 0, icons.length);
+  @Override
+  protected Object getNewEdgeType(int index) {
+    return Model.getMetaTypes().getTransition();
+  }
 
-        if (!showOutgoing) {
-            workingIcons[RIGHT - BASE] = null;
-        }
-        if (!showIncoming) {
-            workingIcons[LEFT - BASE] = null;
-        }
-        
-        return workingIcons;
-    }
+  @Override
+  protected Object getNewNode(int index) {
+    return Model.getStateMachinesFactory().createSimpleState();
+  }
 
-    @Override
-    protected String getInstructions(int index) {
-        return instructions[index - BASE];
-    }
+  @Override
+  protected Object getNewNodeType(int index) {
+    return Model.getMetaTypes().getSimpleState();
+  }
 
-    @Override
-    protected Object getNewEdgeType(int index) {
-        return Model.getMetaTypes().getTransition();
+  @Override
+  protected boolean isReverseEdge(int index) {
+    if (index == LEFT) {
+      return true;
     }
-
-    @Override
-    protected Object getNewNode(int index) {
-        return Model.getStateMachinesFactory().createSimpleState();
-    }
-    
-    @Override
-    protected Object getNewNodeType(int index) {
-        return Model.getMetaTypes().getSimpleState();
-    }
-
-    @Override
-    protected boolean isReverseEdge(int index) {
-        if (index == LEFT) {
-            return true;
-        }
-        return false;
-    }
-
+    return false;
+  }
 }

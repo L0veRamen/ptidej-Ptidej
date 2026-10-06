@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc  and others, see in file; API and its implementation
  ******************************************************************************/
@@ -12,25 +12,29 @@ package ptidej.solver.claire;
 
 import padl.motif.visitor.IMotifWalker;
 
-public class DomainGenerator3AC4 extends
-		DomainGenerator2AC4 implements IMotifWalker {
+public class DomainGenerator3AC4 extends DomainGenerator2AC4 implements IMotifWalker {
 
-	protected String getCoupleDeclaration() {
-		return "list<tuple(integer,integer)>(";
-	}
-	protected String getCouplePrefix() {
-		return "tuple(";
-	}
-	protected String getListDeclaration() {
-		return "list<Entity>";
-	}
-	protected String getListPrefix() {
-		return "list<Entity>(";
-	}
-	protected String getListSuffix() {
-		return ")";
-	}
-	public String getName() {
-		return "PtidejSolver 3 AC4 Domain";
-	}
+  protected String getCoupleDeclaration() {
+    return "list<tuple(integer,integer)>(";
+  }
+
+  protected String getCouplePrefix() {
+    return "tuple(";
+  }
+
+  protected String getListDeclaration() {
+    return "list<Entity>";
+  }
+
+  protected String getListPrefix() {
+    return "list<Entity>(";
+  }
+
+  protected String getListSuffix() {
+    return ")";
+  }
+
+  public String getName() {
+    return "PtidejSolver 3 AC4 Domain";
+  }
 }

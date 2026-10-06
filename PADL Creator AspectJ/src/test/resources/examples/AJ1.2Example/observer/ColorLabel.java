@@ -11,24 +11,28 @@ about the software, its performance or its conformity to any specification.
 */
 
 package observer;
+
 import java.awt.Color;
 import java.awt.Label;
 
 class ColorLabel extends Label {
 
-    ColorLabel(Display display) {
-        super();
-        display.addToFrame(this);
-    }
+  ColorLabel(Display display) {
+    super();
+    display.addToFrame(this);
+  }
 
-    final static Color[] colors = {Color.red, Color.blue,
-                                   Color.green, Color.magenta};
-    private int colorIndex = 0;
-    private int cycleCount = 0;
-    void colorCycle() {
-        cycleCount++;
-        colorIndex = (colorIndex + 1) % colors.length;
-        setBackground(colors[colorIndex]);
-        setText("" + cycleCount);
-    }
+  static final Color[] colors = {
+    Color.red, Color.blue,
+    Color.green, Color.magenta
+  };
+  private int colorIndex = 0;
+  private int cycleCount = 0;
+
+  void colorCycle() {
+    cycleCount++;
+    colorIndex = (colorIndex + 1) % colors.length;
+    setBackground(colors[colorIndex]);
+    setText("" + cycleCount);
+  }
 }

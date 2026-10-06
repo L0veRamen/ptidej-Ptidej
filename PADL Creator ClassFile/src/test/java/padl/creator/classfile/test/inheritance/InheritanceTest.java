@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -19,24 +19,25 @@ import padl.kernel.exception.CreationException;
 import padl.kernel.impl.Factory;
 
 public final class InheritanceTest extends ClassFilePrimitive {
-	private ICodeLevelModel codeLevelModel;
+  private ICodeLevelModel codeLevelModel;
 
-	public InheritanceTest(String name) {
-		super(name);
-	}
-	protected void setUp() throws CreationException {
-		this.codeLevelModel =
-			Factory.getInstance().createCodeLevelModel("Inheritance");
+  public InheritanceTest(String name) {
+    super(name);
+  }
 
-		this.codeLevelModel
-			.create(new CompleteClassFileCreator(
-				new String[] { "../PADL Creator ClassFile/target/test-classes/Inheritance/jdiui.jar" }));
-	}
+  protected void setUp() throws CreationException {
+    this.codeLevelModel = Factory.getInstance().createCodeLevelModel("Inheritance");
 
-	public void testFieldAccess() {
-		final IFirstClassEntity entity =
-			(IFirstClassEntity) this.codeLevelModel
-				.getTopLevelEntityFromID("org.eclipse.jdt.internal.debug.ui.snippeteditor.ScrapbookMain");
-		Assert.assertTrue(entity.getIteratorOnInheritedEntities().hasNext());
-	}
+    this.codeLevelModel.create(
+        new CompleteClassFileCreator(
+            new String[] {"../PADL Creator ClassFile/target/test-classes/Inheritance/jdiui.jar"}));
+  }
+
+  public void testFieldAccess() {
+    final IFirstClassEntity entity =
+        (IFirstClassEntity)
+            this.codeLevelModel.getTopLevelEntityFromID(
+                "org.eclipse.jdt.internal.debug.ui.snippeteditor.ScrapbookMain");
+    Assert.assertTrue(entity.getIteratorOnInheritedEntities().hasNext());
+  }
 }

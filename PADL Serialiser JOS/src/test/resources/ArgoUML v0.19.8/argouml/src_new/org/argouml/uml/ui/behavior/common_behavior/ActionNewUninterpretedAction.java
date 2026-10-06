@@ -26,7 +26,6 @@
 package org.argouml.uml.ui.behavior.common_behavior;
 
 import javax.swing.Action;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 
@@ -36,32 +35,25 @@ import org.argouml.model.Model;
  */
 public class ActionNewUninterpretedAction extends ActionNewAction {
 
-    private static final ActionNewUninterpretedAction SINGLETON =
-        new ActionNewUninterpretedAction();
+  private static final ActionNewUninterpretedAction SINGLETON = new ActionNewUninterpretedAction();
 
-    /**
-     * Constructor for ActionNewUninterpretedAction.
-     */
-    protected ActionNewUninterpretedAction() {
-        super();
-        putValue(Action.NAME, Translator.localize(
-                "button.new-uninterpretedaction"));
-    }
+  /** Constructor for ActionNewUninterpretedAction. */
+  protected ActionNewUninterpretedAction() {
+    super();
+    putValue(Action.NAME, Translator.localize("button.new-uninterpretedaction"));
+  }
 
+  /**
+   * @see org.argouml.uml.ui.behavior.common_behavior.ActionNewAction#createAction()
+   */
+  protected Object createAction() {
+    return Model.getCommonBehaviorFactory().createUninterpretedAction();
+  }
 
-    /**
-     * @see org.argouml.uml.ui.behavior.common_behavior.ActionNewAction#createAction()
-     */
-    protected Object createAction() {
-        return Model.getCommonBehaviorFactory().createUninterpretedAction();
-    }
-
-
-    /**
-     * @return Returns the SINGLETON.
-     */
-    public static ActionNewUninterpretedAction getInstance() {
-        return SINGLETON;
-    }
-
+  /**
+   * @return Returns the SINGLETON.
+   */
+  public static ActionNewUninterpretedAction getInstance() {
+    return SINGLETON;
+  }
 }

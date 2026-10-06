@@ -37,21 +37,18 @@ import org.argouml.uml.diagram.sequence.ui.ModeCreateMessage;
  *
  * @author Bob Tarling
  */
-
 public class ActionSetAddMessageMode extends ActionSetMode {
 
-    /**
-     * Construct a new ActionSetAddMessageMode<p>
-     *
-     * @param action the UML meta type of the UML action to associate
-     * to the new message
-     * @param name the i18n code for the action name
-     */
-    public ActionSetAddMessageMode(Object action, String name) {
-        super(ModeCreateMessage.class, "edgeClass",
-  	      Model.getMetaTypes().getMessage(), name);
-        modeArgs.put("action", action);
-    }
+  /**
+   * Construct a new ActionSetAddMessageMode
+   *
+   * <p>
+   *
+   * @param action the UML meta type of the UML action to associate to the new message
+   * @param name the i18n code for the action name
+   */
+  public ActionSetAddMessageMode(Object action, String name) {
+    super(ModeCreateMessage.class, "edgeClass", Model.getMetaTypes().getMessage(), name);
+    modeArgs.put("action", action);
+  }
 }
-
-

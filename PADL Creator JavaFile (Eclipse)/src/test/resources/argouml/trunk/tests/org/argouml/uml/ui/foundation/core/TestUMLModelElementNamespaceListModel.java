@@ -25,7 +25,6 @@
 package org.argouml.uml.ui.foundation.core;
 
 import junit.framework.TestCase;
-
 import org.argouml.model.Model;
 
 /**
@@ -34,65 +33,57 @@ import org.argouml.model.Model;
  */
 public class TestUMLModelElementNamespaceListModel extends TestCase {
 
-    /**
-     * The model that we test.
-     */
-    private UMLModelElementNamespaceListModel model;
+  /** The model that we test. */
+  private UMLModelElementNamespaceListModel model;
 
-    /**
-     * The element.
-     */
-    private Object elem;
+  /** The element. */
+  private Object elem;
 
-    /**
-     * Constructor for TestUMLModelElementNamespaceListModel.
-     *
-     * @param arg0 the name of the test.
-     */
-    public TestUMLModelElementNamespaceListModel(String arg0) {
-        super(arg0);
-    }
+  /**
+   * Constructor for TestUMLModelElementNamespaceListModel.
+   *
+   * @param arg0 the name of the test.
+   */
+  public TestUMLModelElementNamespaceListModel(String arg0) {
+    super(arg0);
+  }
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        elem = Model.getCoreFactory().createClass();
-        model = new UMLModelElementNamespaceListModel();
-        model.setTarget(elem);
-        Model.getPump().flushModelEvents();
-    }
+  /**
+   * @see junit.framework.TestCase#setUp()
+   */
+  protected void setUp() throws Exception {
+    super.setUp();
+    elem = Model.getCoreFactory().createClass();
+    model = new UMLModelElementNamespaceListModel();
+    model.setTarget(elem);
+    Model.getPump().flushModelEvents();
+  }
 
-    /**
-     * @see junit.framework.TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        Model.getUmlFactory().delete(elem);
-        model = null;
-    }
+  /**
+   * @see junit.framework.TestCase#tearDown()
+   */
+  protected void tearDown() throws Exception {
+    super.tearDown();
+    Model.getUmlFactory().delete(elem);
+    model = null;
+  }
 
-    /**
-     * Test for setNameSpace.
-     */
-    public void testSetNamespace() {
-        Object ns = Model.getModelManagementFactory().createPackage();
-        Model.getCoreHelper().setNamespace(elem, ns);
-        Model.getPump().flushModelEvents();
-        assertEquals(1, model.getSize());
-        assertEquals(ns, model.getElementAt(0));
-    }
+  /** Test for setNameSpace. */
+  public void testSetNamespace() {
+    Object ns = Model.getModelManagementFactory().createPackage();
+    Model.getCoreHelper().setNamespace(elem, ns);
+    Model.getPump().flushModelEvents();
+    assertEquals(1, model.getSize());
+    assertEquals(ns, model.getElementAt(0));
+  }
 
-    /**
-     * Test removing a namespace.
-     */
-    public void testRemoveNamespace() {
-        Object ns = Model.getModelManagementFactory().createPackage();
-        Model.getCoreHelper().setNamespace(elem, ns);
-        Model.getCoreHelper().setNamespace(elem, null);
-        Model.getPump().flushModelEvents();
-        assertEquals(0, model.getSize());
-        assertTrue(model.isEmpty());
-    }
+  /** Test removing a namespace. */
+  public void testRemoveNamespace() {
+    Object ns = Model.getModelManagementFactory().createPackage();
+    Model.getCoreHelper().setNamespace(elem, ns);
+    Model.getCoreHelper().setNamespace(elem, null);
+    Model.getPump().flushModelEvents();
+    assertEquals(0, model.getSize());
+    assertTrue(model.isEmpty());
+  }
 }

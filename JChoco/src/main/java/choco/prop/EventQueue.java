@@ -16,66 +16,56 @@ package choco.prop;
 import choco.ContradictionException;
 
 /**
- * An interface for all the implementations of var queues (Constraint awake, on
- * Variable events for instance).
+ * An interface for all the implementations of var queues (Constraint awake, on Variable events for
+ * instance).
  */
 public interface EventQueue {
 
-	/**
-	 * Removes all the events and clears all the events if needed.
-	 */
+  /** Removes all the events and clears all the events if needed. */
+  public void flushEventQueue();
 
-	public void flushEventQueue();
+  /**
+   * returns the i-th pending event in the queue
+   *
+   * @param idx the index of the event
+   * @return null if the index is inproper (idx<0 or idx>=size())
+   */
+  public PropagationEvent get(int idx);
 
-	/**
-	 * returns the i-th pending event in the queue
-	 * @param idx the index of the event
-	 * @return null if the index is inproper (idx<0 or idx>=size())
-	 */
-	public PropagationEvent get(int idx);
+  /** Checks if the queue is empty. */
+  public boolean isEmpty();
 
-	/**
-	 * Checks if the queue is empty.
-	 */
+  /** Pops the next var to propagate. */
+  public PropagationEvent popEvent();
 
-	public boolean isEmpty();
+  /**
+   * Propagate one single event from the queue).
+   *
+   * @throws choco.ContradictionException
+   */
+  public void propagateOneEvent() throws ContradictionException;
 
-	/**
-	 * Pops the next var to propagate.
-	 */
+  /**
+   * Propagate some events (one or several depending on the queue).
+   *
+   * @throws choco.ContradictionException
+   */
+  public void propagateSomeEvents() throws ContradictionException;
 
-	public PropagationEvent popEvent();
+  /**
+   * Adds an event to the queue.
+   *
+   * @param event
+   */
+  public boolean pushEvent(PropagationEvent event);
 
-	/**
-	 * Propagate one single event from the queue).
-	 * @throws choco.ContradictionException
-	 */
+  /** Removes an event. */
+  public void remove(PropagationEvent event);
 
-	public void propagateOneEvent() throws ContradictionException;
-
-	/**
-	 * Propagate some events (one or several depending on the queue).
-	 * @throws choco.ContradictionException
-	 */
-
-	public void propagateSomeEvents() throws ContradictionException;
-
-	/**
-	 * Adds an event to the queue.
-	 * @param event
-	 */
-
-	public boolean pushEvent(PropagationEvent event);
-
-	/**
-	 * Removes an event.
-	 */
-
-	public void remove(PropagationEvent event);
-
-	/**
-	 * returns the number of pending events in the queue
-	 * @return the number of pending events in the queue
-	 */
-	public int size();
+  /**
+   * returns the number of pending events in the queue
+   *
+   * @return the number of pending events in the queue
+   */
+  public int size();
 }

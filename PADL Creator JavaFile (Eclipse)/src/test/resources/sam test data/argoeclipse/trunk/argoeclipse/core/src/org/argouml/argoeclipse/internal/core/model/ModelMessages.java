@@ -28,32 +28,32 @@ import org.eclipse.osgi.util.NLS;
 
 /**
  * Models message bundle.
+ *
  * @author Bogdan Pistol
  */
 public class ModelMessages extends NLS {
 
-    private static final String BUNDLE_NAME = 
-        "org.argouml.argoeclipse.internal.core." //$NON-NLS-1$
-        + "model.ModelMessages"; //$NON-NLS-1$
-    
-    public static String loadingMDRModel;
-    public static String checkHost;
-    public static String configProperties;
-    public static String argoCritics;
+  private static final String BUNDLE_NAME =
+      "org.argouml.argoeclipse.internal.core." //$NON-NLS-1$
+          + "model.ModelMessages"; //$NON-NLS-1$
 
-    public static String initMainTask;
-    public static String initSplash;
-    public static String initProjectBrowser;
-    public static String initModules;
-    public static String initFinished;
-    
-    public static String errorTitle;
-    public static String modelErrorIntro;
-    public static String modelErrorDetails;
-    public static String hostErrorIntro;
-        
-    static {
-        NLS.initializeMessages(BUNDLE_NAME, ModelMessages.class);
-    }
-    
+  public static String loadingMDRModel;
+  public static String checkHost;
+  public static String configProperties;
+  public static String argoCritics;
+
+  public static String initMainTask;
+  public static String initSplash;
+  public static String initProjectBrowser;
+  public static String initModules;
+  public static String initFinished;
+
+  public static String errorTitle;
+  public static String modelErrorIntro;
+  public static String modelErrorDetails;
+  public static String hostErrorIntro;
+
+  static {
+    NLS.initializeMessages(BUNDLE_NAME, ModelMessages.class);
+  }
 }

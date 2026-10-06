@@ -31,68 +31,55 @@ import org.argouml.uml.diagram.DiagramFactory;
 import org.argouml.uml.diagram.deployment.ui.UMLDeploymentDiagram;
 import org.argouml.uml.diagram.ui.UMLDiagram;
 
-/**
- * Action to trigger creation of a deployment diagram.
- */
+/** Action to trigger creation of a deployment diagram. */
 public class ActionDeploymentDiagram extends ActionAddDiagram {
 
-    ////////////////////////////////////////////////////////////////
-    // static variables
+  ////////////////////////////////////////////////////////////////
+  // static variables
 
-    private static final Logger LOG =
-        Logger.getLogger(ActionDeploymentDiagram.class);
+  private static final Logger LOG = Logger.getLogger(ActionDeploymentDiagram.class);
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    /**
-     * Constructor.
-     */
-    public ActionDeploymentDiagram() {
-        super("action.deployment-diagram");
+  /** Constructor. */
+  public ActionDeploymentDiagram() {
+    super("action.deployment-diagram");
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // main methods
+
+  /**
+   * @see org.argouml.uml.ui.ActionAddDiagram#createDiagram(Object)
+   */
+  public UMLDiagram createDiagram(Object handle) {
+    // a deployment diagram shows something about the whole model
+    // according to the uml spec
+    handle = ProjectManager.getManager().getCurrentProject().getRoot();
+    if (!Model.getFacade().isANamespace(handle)) {
+      LOG.error("No namespace as argument");
+      LOG.error(handle);
+      throw new IllegalArgumentException("The argument " + handle + "is not a namespace.");
     }
+    return (UMLDiagram)
+        DiagramFactory.getInstance().createDiagram(UMLDeploymentDiagram.class, handle, null);
+  }
 
-    ////////////////////////////////////////////////////////////////
-    // main methods
-
-    /**
-     * @see org.argouml.uml.ui.ActionAddDiagram#createDiagram(Object)
-     */
-    public UMLDiagram createDiagram(Object handle) {
-        // a deployment diagram shows something about the whole model
-        // according to the uml spec
-	handle = ProjectManager.getManager().getCurrentProject().getRoot();
-        if (!Model.getFacade().isANamespace(handle)) {
-            LOG.error("No namespace as argument");
-            LOG.error(handle);
-            throw new IllegalArgumentException(
-					       "The argument " + handle
-					       + "is not a namespace.");
-        }
-        return (UMLDiagram)DiagramFactory.getInstance().createDiagram(
-                UMLDeploymentDiagram.class,
-                handle,
-                null);
+  /**
+   * @see org.argouml.uml.ui.ActionAddDiagram#isValidNamespace(Object)
+   */
+  public boolean isValidNamespace(Object handle) {
+    // a deployment diagram shows something about the whole model
+    // according to the uml spec
+    handle = ProjectManager.getManager().getCurrentProject().getRoot();
+    if (!Model.getFacade().isANamespace(handle)) {
+      LOG.error("No namespace as argument");
+      LOG.error(handle);
+      throw new IllegalArgumentException("The argument " + handle + "is not a namespace.");
     }
-
-    /**
-     * @see org.argouml.uml.ui.ActionAddDiagram#isValidNamespace(Object)
-     */
-    public boolean isValidNamespace(Object handle) {
-        // a deployment diagram shows something about the whole model
-        // according to the uml spec
-        handle = ProjectManager.getManager().getCurrentProject().getRoot();
-        if (!Model.getFacade().isANamespace(handle)) {
-            LOG.error("No namespace as argument");
-            LOG.error(handle);
-            throw new IllegalArgumentException(
-					       "The argument " + handle
-					       + "is not a namespace.");
-        }
-        // may only occur as child of the model or in a package
-        return (
-		handle == ProjectManager.getManager().getCurrentProject().getModel()
-                || Model.getFacade().isAPackage(handle));
-    }
-
+    // may only occur as child of the model or in a package
+    return (handle == ProjectManager.getManager().getCurrentProject().getModel()
+        || Model.getFacade().isAPackage(handle));
+  }
 } /* end class ActionDeploymentDiagram */

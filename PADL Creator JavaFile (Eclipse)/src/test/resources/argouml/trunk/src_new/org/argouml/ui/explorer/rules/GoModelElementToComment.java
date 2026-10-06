@@ -27,47 +27,45 @@ package org.argouml.ui.explorer.rules;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 
 /**
- * Go rule for the package perspective to show the comments belonging to some
- * modelelement. <p>
- * ModelElement->Comment
+ * Go rule for the package perspective to show the comments belonging to some modelelement.
+ *
+ * <p>ModelElement->Comment
  *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 21, 2003
  */
 public class GoModelElementToComment extends AbstractPerspectiveRule {
 
-
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
-     */
-    public Collection getChildren(Object parent) {
-        if (Model.getFacade().isAModelElement(parent)) {
-            return Model.getFacade().getComments(parent);
-        }
-        return null;
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
+   */
+  public Collection getChildren(Object parent) {
+    if (Model.getFacade().isAModelElement(parent)) {
+      return Model.getFacade().getComments(parent);
     }
+    return null;
+  }
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
-     */
-    public String getRuleName() {
-        return Translator.localize ("misc.model-element.comment");
-    }
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
+   */
+  public String getRuleName() {
+    return Translator.localize("misc.model-element.comment");
+  }
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
-     */
-    public Set getDependencies(Object parent) {
-        if (Model.getFacade().isAModelElement(parent)) {
-	    Set set = new HashSet();
-	    set.add(parent);
-	    return set;
-	}
-	return null;
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
+   */
+  public Set getDependencies(Object parent) {
+    if (Model.getFacade().isAModelElement(parent)) {
+      Set set = new HashSet();
+      set.add(parent);
+      return set;
     }
+    return null;
+  }
 }

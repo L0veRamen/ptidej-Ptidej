@@ -26,10 +26,8 @@ package org.argouml.uml.ui;
 
 import java.awt.event.ActionEvent;
 import java.net.URL;
-
 import javax.swing.AbstractAction;
 import javax.swing.Icon;
-
 import org.apache.log4j.Logger;
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.i18n.Translator;
@@ -42,59 +40,55 @@ import org.argouml.ui.ProjectBrowser;
  * @see ActionOpenProject
  */
 public class ActionSaveProject extends AbstractAction {
-    /**
-     * Logger.
-     */
-    private static final Logger LOG = Logger.getLogger(ActionSaveProject.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(ActionSaveProject.class);
 
-    ////////////////////////////////////////////////////////////////
-    // static variables
+  ////////////////////////////////////////////////////////////////
+  // static variables
 
-    /**
-     * The singleton.
-     */
-    private static final ActionSaveProject INSTANCE = new ActionSaveProject();
+  /** The singleton. */
+  private static final ActionSaveProject INSTANCE = new ActionSaveProject();
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    /**
-     * @return the singleton
-     */
-    public static ActionSaveProject getInstance() {
-        return INSTANCE;
+  /**
+   * @return the singleton
+   */
+  public static ActionSaveProject getInstance() {
+    return INSTANCE;
+  }
+
+  /** The constructor. */
+  protected ActionSaveProject() {
+    super(
+        Translator.localize("action.save-project"),
+        ResourceLoaderWrapper.lookupIcon("action.save-project"));
+  }
+
+  /**
+   * The constructor.
+   *
+   * @param name the name of the action.
+   * @param icon the icon to represent this action graphically.
+   */
+  protected ActionSaveProject(String name, Icon icon) {
+    super(name, icon);
+  }
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    LOG.info("Performing save action");
+    URL url =
+        ProjectManager.getManager().getCurrentProject() != null
+            ? ProjectManager.getManager().getCurrentProject().getURL()
+            : null;
+    if (url == null) {
+      ActionSaveProjectAs.SINGLETON.actionPerformed(e);
+    } else {
+      ProjectBrowser.getInstance().trySave(true);
     }
-
-    /**
-     * The constructor.
-     */
-    protected ActionSaveProject() {
-        super(Translator.localize("action.save-project"),
-                ResourceLoaderWrapper.lookupIcon("action.save-project"));
-    }
-
-    /**
-     * The constructor.
-     * @param name the name of the action.
-     * @param icon the icon to represent this action graphically.
-     */
-    protected ActionSaveProject(String name, Icon icon) {
-        super(name, icon);
-    }
-
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        LOG.info("Performing save action");
-        URL url =
-            ProjectManager.getManager().getCurrentProject() != null
-            ? ProjectManager.getManager().getCurrentProject().getURL() : null;
-        if (url == null) {
-            ActionSaveProjectAs.SINGLETON.actionPerformed(e);
-        } else {
-            ProjectBrowser.getInstance().trySave(true);
-        }
-    }
-
+  }
 } /* end class ActionSaveProject */

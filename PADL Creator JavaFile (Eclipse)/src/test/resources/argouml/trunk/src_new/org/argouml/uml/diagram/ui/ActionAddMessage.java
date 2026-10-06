@@ -25,9 +25,7 @@
 package org.argouml.uml.diagram.ui;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.Action;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
@@ -42,71 +40,63 @@ import org.tigris.gef.undo.UndoableAction;
 
 /**
  * Action to add a message.
+ *
  * @stereotype singleton
  */
 public class ActionAddMessage extends UndoableAction {
 
-    ////////////////////////////////////////////////////////////////
-    // static variables
+  ////////////////////////////////////////////////////////////////
+  // static variables
 
-    private static ActionAddMessage singleton = new ActionAddMessage();
+  private static ActionAddMessage singleton = new ActionAddMessage();
 
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  /** The constructor. */
+  private ActionAddMessage() {
+    super(
+        Translator.localize("action.add-message"),
+        ResourceLoaderWrapper.lookupIcon("action.add-message"));
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize("action.add-message"));
+  }
 
-    /**
-     * The constructor.
-     */
-    private ActionAddMessage() {
-        super(Translator.localize("action.add-message"),
-                ResourceLoaderWrapper.lookupIcon("action.add-message"));
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize("action.add-message"));
+  ////////////////////////////////////////////////////////////////
+  // main methods
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    super.actionPerformed(ae);
+    Object target = TargetManager.getInstance().getModelTarget();
+
+    if (!(Model.getFacade().isAAssociationRole(target))
+        && Model.getFacade().isACollaboration(Model.getFacade().getNamespace(target))) {
+      return;
     }
+    // So, the target is a MAssociationRole
+    this.addMessage(target);
+  }
 
+  /**
+   * Add a message to an associationRole: it builds it using the Factory method and then it creates
+   * the Fig and adds it to the diagram.
+   *
+   * @param associationrole the associationRole to which the new message must be added
+   */
+  private void addMessage(Object associationrole) {
+    Object collaboration = Model.getFacade().getNamespace(associationrole);
+    Object message = Model.getCollaborationsFactory().buildMessage(collaboration, associationrole);
+    Editor e = Globals.curEditor();
+    GraphModel gm = e.getGraphModel();
+    Layer lay = e.getLayerManager().getActiveLayer();
+    GraphNodeRenderer gr = e.getGraphNodeRenderer();
+    FigNode figMsg = gr.getFigNodeFor(gm, lay, message, null);
+    ((FigMessage) figMsg).addPathItemToFigAssociationRole(lay);
 
-    ////////////////////////////////////////////////////////////////
-    // main methods
-
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-        super.actionPerformed(ae);
-    	Object target =  TargetManager.getInstance().getModelTarget();
-
-    	if (!(Model.getFacade().isAAssociationRole(target))
-	    && Model.getFacade().isACollaboration(Model.getFacade()
-                .getNamespace(target))) {
-    	    return;
-    	}
-        // So, the target is a MAssociationRole
-    	this.addMessage(target);
-    }
-
-    /**
-     * Add a message to an associationRole: it builds it using the
-     * Factory method and then it creates the Fig and adds it to the
-     * diagram.
-     *
-     * @param associationrole the associationRole to which the new message
-     *                        must be added
-     */
-    private void addMessage(Object associationrole) {
-        Object collaboration = Model.getFacade().getNamespace(associationrole);
-        Object message =
-            Model.getCollaborationsFactory()
-            	.buildMessage(collaboration, associationrole);
-        Editor e = Globals.curEditor();
-        GraphModel gm = e.getGraphModel();
-        Layer lay = e.getLayerManager().getActiveLayer();
-        GraphNodeRenderer gr = e.getGraphNodeRenderer();
-        FigNode figMsg = gr.getFigNodeFor(gm, lay, message, null);
-        ((FigMessage) figMsg).addPathItemToFigAssociationRole(lay);
-
-        gm.getNodes().add(message); /*MVW This is not the correct way,
+    gm.getNodes().add(message); /*MVW This is not the correct way,
         * but it allows connecting a CommentEdge to it!
         * See e.g. ActionAddNote for the correct way.
         * Testcase:
@@ -114,22 +104,21 @@ public class ActionAddMessage extends UndoableAction {
         * 2. Click the Comment tool.
         * */
 
-        TargetManager.getInstance().setTarget(message);
-    }
+    TargetManager.getInstance().setTarget(message);
+  }
 
-    /**
-     * @see org.tigris.gef.undo.UndoableAction#isEnabled()
-     */
-    public boolean isEnabled() {
-	Object target =  TargetManager.getInstance().getModelTarget();
-	return super.isEnabled()
-	    && Model.getFacade().isAAssociationRole(target);
-    }
+  /**
+   * @see org.tigris.gef.undo.UndoableAction#isEnabled()
+   */
+  public boolean isEnabled() {
+    Object target = TargetManager.getInstance().getModelTarget();
+    return super.isEnabled() && Model.getFacade().isAAssociationRole(target);
+  }
 
-    /**
-     * @return Returns the singleton.
-     */
-    public static ActionAddMessage getSingleton() {
-        return singleton;
-    }
-}  /* end class ActionAddMessage */
+  /**
+   * @return Returns the singleton.
+   */
+  public static ActionAddMessage getSingleton() {
+    return singleton;
+  }
+} /* end class ActionAddMessage */

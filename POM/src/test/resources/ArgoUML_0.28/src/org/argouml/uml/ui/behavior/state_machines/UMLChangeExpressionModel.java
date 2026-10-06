@@ -32,52 +32,47 @@ import org.argouml.uml.ui.UMLUserInterfaceContainer;
 
 /**
  * The model for the boolean expression of a ChangeEvent.
- * 
+ *
  * @author michiel
  */
 class UMLChangeExpressionModel extends UMLExpressionModel2 {
 
-    private static final Logger LOG =
-        Logger.getLogger(UMLChangeExpressionModel.class);
+  private static final Logger LOG = Logger.getLogger(UMLChangeExpressionModel.class);
 
-    /**
-     * The constructor.
-     *
-     * @param container the container of UML user interface components
-     * @param propertyName the name of the property
-     */
-    public UMLChangeExpressionModel(UMLUserInterfaceContainer container,
-            String propertyName) {
-        super(container, propertyName);
+  /**
+   * The constructor.
+   *
+   * @param container the container of UML user interface components
+   * @param propertyName the name of the property
+   */
+  public UMLChangeExpressionModel(UMLUserInterfaceContainer container, String propertyName) {
+    super(container, propertyName);
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLExpressionModel2#getExpression()
+   */
+  public Object getExpression() {
+    return Model.getFacade().getChangeExpression(TargetManager.getInstance().getTarget());
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLExpressionModel2#setExpression(java.lang.Object)
+   */
+  public void setExpression(Object expression) {
+    Object target = TargetManager.getInstance().getTarget();
+
+    if (target == null) {
+      throw new IllegalStateException("There is no target for " + getContainer());
     }
+    Model.getStateMachinesHelper().setChangeExpression(target, expression);
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLExpressionModel2#getExpression()
-     */
-    public Object getExpression() {
-        return Model.getFacade().getChangeExpression(
-                TargetManager.getInstance().getTarget());
-    }
-
-    /*
-     * @see org.argouml.uml.ui.UMLExpressionModel2#setExpression(java.lang.Object)
-     */
-    public void setExpression(Object expression) {
-        Object target = TargetManager.getInstance().getTarget();
-
-        if (target == null) {
-            throw new IllegalStateException("There is no target for "
-                    + getContainer());
-        }
-        Model.getStateMachinesHelper().setChangeExpression(target, expression);
-    }
-
-    /*
-     * @see org.argouml.uml.ui.UMLExpressionModel2#newExpression()
-     */
-    public Object newExpression() {
-        LOG.debug("new boolean expression");
-        return Model.getDataTypesFactory().createBooleanExpression("", "");
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLExpressionModel2#newExpression()
+   */
+  public Object newExpression() {
+    LOG.debug("new boolean expression");
+    return Model.getDataTypesFactory().createBooleanExpression("", "");
+  }
 }

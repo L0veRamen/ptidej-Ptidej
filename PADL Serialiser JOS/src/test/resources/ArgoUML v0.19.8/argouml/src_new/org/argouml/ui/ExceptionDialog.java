@@ -33,100 +33,99 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 
-/**
- * A window that displays an exception to the user if we can't handle it
- * in any other way.
- */
+/** A window that displays an exception to the user if we can't handle it in any other way. */
 public class ExceptionDialog extends JDialog implements ActionListener {
 
-    private JButton closeButton;
-    private JLabel northLabel;
+  private JButton closeButton;
+  private JLabel northLabel;
 
-    /**
-     * The constructor.
-     * 
-     * @param f the <code>Frame</code> from which the dialog is displayed
-     * @param e the exception
-     */
-    public ExceptionDialog(Frame f, Throwable e) {
-        this(f, "An error has occured.", e);
-    }
+  /**
+   * The constructor.
+   *
+   * @param f the <code>Frame</code> from which the dialog is displayed
+   * @param e the exception
+   */
+  public ExceptionDialog(Frame f, Throwable e) {
+    this(f, "An error has occured.", e);
+  }
 
-    /**
-     * The constructor.
-     * 
-     * @param f the <code>Frame</code> from which the dialog is displayed
-     * @param message the message
-     * @param e the exception
-     */
-    public ExceptionDialog(Frame f, String message, Throwable e) {
-        super(f);
-        message += "\n" + "Please copy and paste the stack trace below " 
-                + "and report an issue at http://www.argouml.org";
-        setResizable(true);
-        setModal(false);
-        setTitle("Error");
+  /**
+   * The constructor.
+   *
+   * @param f the <code>Frame</code> from which the dialog is displayed
+   * @param message the message
+   * @param e the exception
+   */
+  public ExceptionDialog(Frame f, String message, Throwable e) {
+    super(f);
+    message +=
+        "\n"
+            + "Please copy and paste the stack trace below "
+            + "and report an issue at http://www.argouml.org";
+    setResizable(true);
+    setModal(false);
+    setTitle("Error");
 
-        Dimension scrSize = Toolkit.getDefaultToolkit().getScreenSize();
-        getContentPane().setLayout(new BorderLayout(0, 0));
+    Dimension scrSize = Toolkit.getDefaultToolkit().getScreenSize();
+    getContentPane().setLayout(new BorderLayout(0, 0));
 
-        // the introducing label
-        northLabel = new JLabel(message);
-        getContentPane().add(northLabel, BorderLayout.NORTH);
+    // the introducing label
+    northLabel = new JLabel(message);
+    getContentPane().add(northLabel, BorderLayout.NORTH);
 
-        // the text box containing the problem messages
-        JEditorPane textArea = new JEditorPane();
-        
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        e.printStackTrace(pw);
-        String exception = sw.toString();
-        
-        textArea.setText(exception);
-        JPanel centerPanel = new JPanel(new BorderLayout());
-        centerPanel.add(new JScrollPane(textArea));
-        centerPanel.setPreferredSize(new Dimension(300, 200));
-        getContentPane().add(centerPanel);
+    // the text box containing the problem messages
+    JEditorPane textArea = new JEditorPane();
 
-        // close button
-        closeButton = new JButton(Translator.localize("button.close"));
-        JPanel bottomPanel = new JPanel();
-        bottomPanel.add(closeButton);
-        getContentPane().add(bottomPanel, BorderLayout.SOUTH);
+    StringWriter sw = new StringWriter();
+    PrintWriter pw = new PrintWriter(sw);
+    e.printStackTrace(pw);
+    String exception = sw.toString();
 
-        // listeners
-        closeButton.addActionListener(this);
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent evt) {
-                disposeDialog();
-            }
+    textArea.setText(exception);
+    JPanel centerPanel = new JPanel(new BorderLayout());
+    centerPanel.add(new JScrollPane(textArea));
+    centerPanel.setPreferredSize(new Dimension(300, 200));
+    getContentPane().add(centerPanel);
+
+    // close button
+    closeButton = new JButton(Translator.localize("button.close"));
+    JPanel bottomPanel = new JPanel();
+    bottomPanel.add(closeButton);
+    getContentPane().add(bottomPanel, BorderLayout.SOUTH);
+
+    // listeners
+    closeButton.addActionListener(this);
+    addWindowListener(
+        new WindowAdapter() {
+          public void windowClosing(WindowEvent evt) {
+            disposeDialog();
+          }
         });
 
-        Dimension contentPaneSize = getContentPane().getPreferredSize();
-        setLocation(scrSize.width / 2 - contentPaneSize.width / 2,
-                scrSize.height / 2 - contentPaneSize.height / 2);
-        pack();
-    }
+    Dimension contentPaneSize = getContentPane().getPreferredSize();
+    setLocation(
+        scrSize.width / 2 - contentPaneSize.width / 2,
+        scrSize.height / 2 - contentPaneSize.height / 2);
+    pack();
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        disposeDialog();
-    }
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    disposeDialog();
+  }
 
-    private void disposeDialog() {
-        setVisible(false); 
-        dispose();
-    }
+  private void disposeDialog() {
+    setVisible(false);
+    dispose();
+  }
 }

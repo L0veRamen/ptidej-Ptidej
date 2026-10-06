@@ -27,7 +27,6 @@ package org.argouml.uml.ui.behavior.collaborations;
 import java.beans.PropertyChangeEvent;
 import java.util.Collection;
 import java.util.Iterator;
-
 import org.argouml.model.AddAssociationEvent;
 import org.argouml.model.Model;
 import org.argouml.model.RemoveAssociationEvent;
@@ -38,115 +37,84 @@ import org.tigris.gef.presentation.Fig;
  * @since Oct 4, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class UMLClassifierRoleAvailableFeaturesListModel
-    extends UMLModelElementListModel2 {
+public class UMLClassifierRoleAvailableFeaturesListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLClassifierRoleAvailableFeaturesListModel.
-     */
-    public UMLClassifierRoleAvailableFeaturesListModel() {
-        super();
+  /** Constructor for UMLClassifierRoleAvailableFeaturesListModel. */
+  public UMLClassifierRoleAvailableFeaturesListModel() {
+    super();
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    setAllElements(Model.getCollaborationsHelper().allAvailableFeatures(getTarget()));
+  }
+
+  public void propertyChange(PropertyChangeEvent e) {
+    if (e instanceof AddAssociationEvent) {
+      if (e.getPropertyName().equals("base") && e.getSource() == getTarget()) {
+        Object clazz = /*(MClassifier)*/ getChangedElement(e);
+        addAll(Model.getFacade().getFeatures(clazz));
+        Model.getPump().addModelEventListener(this, clazz, "feature");
+      } else if (e.getPropertyName().equals("feature")
+          && Model.getFacade().getBases(getTarget()).contains(e.getSource())) {
+        addElement(getChangedElement(e));
+      }
+    } else if (e instanceof RemoveAssociationEvent) {
+      if (e.getPropertyName().equals("base") && e.getSource() == getTarget()) {
+        Object clazz = /*(MClassifier)*/ getChangedElement(e);
+        Model.getPump().removeModelEventListener(this, clazz, "feature");
+      } else if (e.getPropertyName().equals("feature")
+          && Model.getFacade().getBases(getTarget()).contains(e.getSource())) {
+        removeElement(getChangedElement(e));
+      }
+    } else {
+      super.propertyChange(e);
     }
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        setAllElements(Model.getCollaborationsHelper()
-                .allAvailableFeatures(getTarget()));
+  /**
+   * TODO: Why this function that the other models do not need?
+   *
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#setTarget(java.lang.Object)
+   */
+  public void setTarget(Object target) {
+    if (getTarget() != null) {
+      Collection bases = Model.getFacade().getBases(getTarget());
+      Iterator it = bases.iterator();
+      while (it.hasNext()) {
+        Object base = /*(MBase)*/ it.next();
+        Model.getPump().removeModelEventListener(this, base, "feature");
+      }
+      Model.getPump().removeModelEventListener(this, /*(MBase)*/ getTarget(), "base");
     }
-
-    public void propertyChange(PropertyChangeEvent e) {
-        if (e instanceof AddAssociationEvent) {
-            if (e.getPropertyName().equals("base")
-                    && e.getSource() == getTarget()) {
-                Object clazz = /*(MClassifier)*/ getChangedElement(e);
-                addAll(Model.getFacade().getFeatures(clazz));
-                Model.getPump().addModelEventListener(
-                                      this,
-                                      clazz,
-                                      "feature");
-            } else if (
-                e.getPropertyName().equals("feature")
-                && Model.getFacade().getBases(getTarget()).contains(
-                    e.getSource())) {
-                addElement(getChangedElement(e));
-            }
-        } else if (e instanceof RemoveAssociationEvent) {
-            if (e.getPropertyName().equals("base")
-                    && e.getSource() == getTarget()) {
-                Object clazz = /*(MClassifier)*/ getChangedElement(e);
-                Model.getPump().removeModelEventListener(
-                                     this,
-                                     clazz,
-                                     "feature");
-            } else if (
-                e.getPropertyName().equals("feature")
-                && Model.getFacade().getBases(getTarget()).contains(
-                       e.getSource())) {
-                removeElement(getChangedElement(e));
-            }
-        } else {
-                super.propertyChange(e);
-        }
+    target = target instanceof Fig ? ((Fig) target).getOwner() : target;
+    if (!Model.getFacade().isABase(target)) return;
+    setListTarget(target);
+    if (getTarget() != null) {
+      Collection bases = Model.getFacade().getBases(getTarget());
+      Iterator it = bases.iterator();
+      while (it.hasNext()) {
+        Object base = /*(MBase)*/ it.next();
+        Model.getPump().addModelEventListener(this, base, "feature");
+      }
+      // make sure we know it when a classifier is added as a base
+      Model.getPump().addModelEventListener(this, /*(MBase)*/ getTarget(), "base");
+      removeAllElements();
+      setBuildingModel(true);
+      buildModelList();
+      setBuildingModel(false);
+      if (getSize() > 0) {
+        fireIntervalAdded(this, 0, getSize() - 1);
+      }
     }
+  }
 
-
-    /**
-     * TODO: Why this function that the other models do not need?
-     *
-     * @see
-     * org.argouml.uml.ui.UMLModelElementListModel2#setTarget(java.lang.Object)
-     */
-    public void setTarget(Object target) {
-        if (getTarget() != null) {
-            Collection bases = Model.getFacade().getBases(getTarget());
-            Iterator it = bases.iterator();
-            while (it.hasNext()) {
-                Object base = /*(MBase)*/ it.next();
-                Model.getPump().removeModelEventListener(
-			this,
-			base,
-			"feature");
-            }
-            Model.getPump().removeModelEventListener(
-		this,
-		/*(MBase)*/ getTarget(),
-		"base");
-        }
-        target = target instanceof Fig ? ((Fig) target).getOwner() : target;
-        if (!Model.getFacade().isABase(target))
-            return;
-        setListTarget(target);
-        if (getTarget() != null) {
-            Collection bases = Model.getFacade().getBases(getTarget());
-            Iterator it = bases.iterator();
-            while (it.hasNext()) {
-                Object base = /*(MBase)*/ it.next();
-                Model.getPump().addModelEventListener(
-			this,
-			base,
-			"feature");
-            }
-            // make sure we know it when a classifier is added as a base
-            Model.getPump().addModelEventListener(
-			this,
-			/*(MBase)*/ getTarget(),
-			"base");
-            removeAllElements();
-            setBuildingModel(true);
-            buildModelList();
-            setBuildingModel(false);
-            if (getSize() > 0) {
-                fireIntervalAdded(this, 0, getSize() - 1);
-            }
-        }
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ element) {
-        return false;
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ element) {
+    return false;
+  }
 }

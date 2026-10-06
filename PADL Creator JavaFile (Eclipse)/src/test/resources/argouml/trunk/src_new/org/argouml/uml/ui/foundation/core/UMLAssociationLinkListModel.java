@@ -28,34 +28,29 @@ import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
 /**
- *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 4, 2003
  */
 public class UMLAssociationLinkListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLAssociationLinkListModel.
-     */
-    public UMLAssociationLinkListModel() {
-        super("link");
-    }
+  /** Constructor for UMLAssociationLinkListModel. */
+  public UMLAssociationLinkListModel() {
+    super("link");
+  }
 
-     /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (getTarget() != null) {
-            setAllElements(Model.getFacade().getLinks(getTarget()));
-        }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (getTarget() != null) {
+      setAllElements(Model.getFacade().getLinks(getTarget()));
     }
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ o) {
-        return Model.getFacade().isALink(o)
-            && Model.getFacade().getLinks(getTarget()).contains(o);
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ o) {
+    return Model.getFacade().isALink(o) && Model.getFacade().getLinks(getTarget()).contains(o);
+  }
 }

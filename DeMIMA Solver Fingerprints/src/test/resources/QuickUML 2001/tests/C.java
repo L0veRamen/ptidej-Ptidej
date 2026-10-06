@@ -1,4 +1,1 @@
-public class C extends Object {
-
-
-}
+public class C extends Object {}

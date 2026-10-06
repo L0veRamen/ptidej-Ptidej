@@ -29,7 +29,6 @@ import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.Iterator;
-
 import org.tigris.gef.graph.GraphModel;
 import org.tigris.gef.presentation.FigCircle;
 import org.tigris.gef.presentation.FigText;
@@ -37,171 +36,168 @@ import org.tigris.gef.presentation.FigText;
 /**
  * Class to display graphics for a UML HistoryState in a diagram.
  *
- * This abstract class is used for both a DeepHistory and a ShallowHistory.
+ * <p>This abstract class is used for both a DeepHistory and a ShallowHistory.
  *
  * @author jrobbins
  */
 public abstract class FigHistoryState extends FigStateVertex {
 
-    ////////////////////////////////////////////////////////////////
-    // constants
+  ////////////////////////////////////////////////////////////////
+  // constants
 
-    private static final int MARGIN = 2;
-    private static final int X = 10;
-    private static final int Y = 10;
-    private static final int WIDTH = 24;
-    private static final int HEIGHT = 24;
+  private static final int MARGIN = 2;
 
-    ////////////////////////////////////////////////////////////////
-    // instance variables
+  private static final int X = 10;
+  private static final int Y = 10;
+  private static final int WIDTH = 24;
+  private static final int HEIGHT = 24;
 
-    /** The main label on this icon. */
-    private FigText h;
-    private FigCircle head;
+  ////////////////////////////////////////////////////////////////
+  // instance variables
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  /** The main label on this icon. */
+  private FigText h;
 
-    /**
-     * Main constructor
-     */
-    public FigHistoryState() {
-        setBigPort(new FigCircle(X, Y, WIDTH, HEIGHT, Color.cyan, Color.cyan));
-        head = new FigCircle(X, Y, WIDTH, HEIGHT, Color.black, Color.white);
-        h = new FigText(X, Y, WIDTH - 10, HEIGHT - 10);
-        h.setText(getH());
-        h.setTextColor(Color.black);
-        h.setFilled(false);
-        h.setLineWidth(0);
+  private FigCircle head;
 
-        // add Figs to the FigNode in back-to-front order
-        addFig(getBigPort());
-        addFig(head);
-        addFig(h);
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-        setBlinkPorts(false); //make port invisble unless mouse enters
-        Rectangle r = getBounds();
-    }
+  /** Main constructor */
+  public FigHistoryState() {
+    setBigPort(new FigCircle(X, Y, WIDTH, HEIGHT, Color.cyan, Color.cyan));
+    head = new FigCircle(X, Y, WIDTH, HEIGHT, Color.black, Color.white);
+    h = new FigText(X, Y, WIDTH - 10, HEIGHT - 10);
+    h.setText(getH());
+    h.setTextColor(Color.black);
+    h.setFilled(false);
+    h.setLineWidth(0);
 
-    /**
-     * This should return the text shown at the center of the history state.
-     *
-     * @return the text at the center (H or H*)
-     */
-    protected abstract String getH();
+    // add Figs to the FigNode in back-to-front order
+    addFig(getBigPort());
+    addFig(head);
+    addFig(h);
 
-    /**
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement#placeString()
-     */
-    public String placeString() {
-        return "H";
-    }
+    setBlinkPorts(false); // make port invisble unless mouse enters
+    Rectangle r = getBounds();
+  }
 
-    /**
-     * The constructor that hooks the Fig into the UML modelelement
-     * @param gm ignored
-     * @param node the UML element
-     */
-    public FigHistoryState(GraphModel gm, Object node) {
-        this();
-        setOwner(node);
-    }
+  /**
+   * This should return the text shown at the center of the history state.
+   *
+   * @return the text at the center (H or H*)
+   */
+  protected abstract String getH();
 
-    /**
-     * @see java.lang.Object#clone()
-     */
-    public Object clone() {
-        FigHistoryState figClone = (FigHistoryState) super.clone();
-        Iterator it = figClone.getFigs().iterator();
-        figClone.setBigPort((FigCircle) it.next());
-        figClone.head = (FigCircle) it.next();
-        figClone.h = (FigText) it.next();
-        return figClone;
-    }
+  /**
+   * @see org.argouml.uml.diagram.ui.FigNodeModelElement#placeString()
+   */
+  public String placeString() {
+    return "H";
+  }
 
-    ////////////////////////////////////////////////////////////////
-    // Fig accessors
+  /**
+   * The constructor that hooks the Fig into the UML modelelement
+   *
+   * @param gm ignored
+   * @param node the UML element
+   */
+  public FigHistoryState(GraphModel gm, Object node) {
+    this();
+    setOwner(node);
+  }
 
-    /** History states are fixed size. */
-    /**
-     * @see org.tigris.gef.presentation.Fig#isResizable()
-     */
-    public boolean isResizable() {
-        return false;
-    }
+  /**
+   * @see java.lang.Object#clone()
+   */
+  public Object clone() {
+    FigHistoryState figClone = (FigHistoryState) super.clone();
+    Iterator it = figClone.getFigs().iterator();
+    figClone.setBigPort((FigCircle) it.next());
+    figClone.head = (FigCircle) it.next();
+    figClone.h = (FigText) it.next();
+    return figClone;
+  }
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#setLineColor(java.awt.Color)
-     */
-    public void setLineColor(Color col) {
-        head.setLineColor(col);
-    }
+  ////////////////////////////////////////////////////////////////
+  // Fig accessors
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#getLineColor()
-     */
-    public Color getLineColor() {
-        return head.getLineColor();
-    }
+  /** History states are fixed size. */
+  /**
+   * @see org.tigris.gef.presentation.Fig#isResizable()
+   */
+  public boolean isResizable() {
+    return false;
+  }
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#setFillColor(java.awt.Color)
-     */
-    public void setFillColor(Color col) {
-        head.setFillColor(col);
-    }
+  /**
+   * @see org.tigris.gef.presentation.Fig#setLineColor(java.awt.Color)
+   */
+  public void setLineColor(Color col) {
+    head.setLineColor(col);
+  }
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#getFillColor()
-     */
-    public Color getFillColor() {
-        return head.getFillColor();
-    }
+  /**
+   * @see org.tigris.gef.presentation.Fig#getLineColor()
+   */
+  public Color getLineColor() {
+    return head.getLineColor();
+  }
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#setFilled(boolean)
-     */
-    public void setFilled(boolean f) {
-    }
+  /**
+   * @see org.tigris.gef.presentation.Fig#setFillColor(java.awt.Color)
+   */
+  public void setFillColor(Color col) {
+    head.setFillColor(col);
+  }
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#getFilled()
-     */
-    public boolean getFilled() {
-        return true;
-    }
+  /**
+   * @see org.tigris.gef.presentation.Fig#getFillColor()
+   */
+  public Color getFillColor() {
+    return head.getFillColor();
+  }
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#setLineWidth(int)
-     */
-    public void setLineWidth(int w) {
-        head.setLineWidth(w);
-    }
+  /**
+   * @see org.tigris.gef.presentation.Fig#setFilled(boolean)
+   */
+  public void setFilled(boolean f) {}
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#getLineWidth()
-     */
-    public int getLineWidth() {
-        return head.getLineWidth();
-    }
+  /**
+   * @see org.tigris.gef.presentation.Fig#getFilled()
+   */
+  public boolean getFilled() {
+    return true;
+  }
 
-    ////////////////////////////////////////////////////////////////
-    // Event handlers
+  /**
+   * @see org.tigris.gef.presentation.Fig#setLineWidth(int)
+   */
+  public void setLineWidth(int w) {
+    head.setLineWidth(w);
+  }
 
-    /**
-     * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
-     */
-    public void mouseClicked(MouseEvent me) {
-    }
+  /**
+   * @see org.tigris.gef.presentation.Fig#getLineWidth()
+   */
+  public int getLineWidth() {
+    return head.getLineWidth();
+  }
 
-    /**
-     * Block any textentry on the diagram - there is nothing to edit!
-     *
-     * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
-     */
-    public void keyPressed(KeyEvent ke) {
-    }
+  ////////////////////////////////////////////////////////////////
+  // Event handlers
 
-    static final long serialVersionUID = 6572261327347541373L;
+  /**
+   * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
+   */
+  public void mouseClicked(MouseEvent me) {}
 
+  /**
+   * Block any textentry on the diagram - there is nothing to edit!
+   *
+   * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
+   */
+  public void keyPressed(KeyEvent ke) {}
+
+  static final long serialVersionUID = 6572261327347541373L;
 } /* end class FigHistoryState */

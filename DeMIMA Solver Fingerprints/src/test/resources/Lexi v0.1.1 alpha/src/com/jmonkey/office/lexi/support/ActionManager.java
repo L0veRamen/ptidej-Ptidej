@@ -1,4 +1,3 @@
 package com.jmonkey.office.lexi.support;
 
-public abstract class ActionManager {
-}
+public abstract class ActionManager {}

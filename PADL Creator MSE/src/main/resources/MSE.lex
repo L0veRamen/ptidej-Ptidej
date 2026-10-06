@@ -69,7 +69,7 @@ STRING_TEXT=([^\n\']|{WHITE_SPACE_CHAR}+)*
 <YYINITIAL> "("					{ return new Symbol(MSESymbols.LPAREN, "("); } 
 <YYINITIAL> ")"					{ return new Symbol(MSESymbols.RPAREN, ")"); } 
 <YYINITIAL> [ \f\n\r\t]			{ /* Ignore white space */ }
-<YYINITIAL> "'"{STRING_TEXT}"'"			     	{ return new Symbol(MSESymbols.STRING, yychar, yychar + this.yytext().length(), this.yytext().substring(1, this.yytext().length() - 2)); } 
+<YYINITIAL> "'"{STRING_TEXT}"'"			     	{ return new Symbol(MSESymbols.STRING, yychar, yychar + this.yytext().length(), this.yytext().substring(1, this.yytext().length() - 1)); } 
 <YYINITIAL> {ALPHA}({ALPHA}|{DIGIT}|".")*		{ return new Symbol(MSESymbols.NAME, yychar, yychar + this.yytext().length(), this.yytext()); } 
 <YYINITIAL> ("+"|"-")?{DIGIT}*("."{DIGIT}+)?	{ return new Symbol(MSESymbols.INTEGER, yychar, yychar + this.yytext().length(), this.yytext()); } 
 <YYINITIAL> "#" 				{ yybegin(COMMENT); }

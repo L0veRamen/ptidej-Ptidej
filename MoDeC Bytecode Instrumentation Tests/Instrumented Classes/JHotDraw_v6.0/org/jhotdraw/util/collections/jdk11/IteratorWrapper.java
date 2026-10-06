@@ -11,29 +11,30 @@
 
 package org.jhotdraw.util.collections.jdk11;
 
-import java.util.Iterator;
 import java.util.Enumeration;
+import java.util.Iterator;
 
 /**
- * @author  Wolfram Kaiser <mrfloppy@users.sourceforge.net>
+ * @author Wolfram Kaiser <mrfloppy@users.sourceforge.net>
  * @version <$CURRENT_VERSION$>
  */
 public class IteratorWrapper implements Iterator {
-	private Enumeration myEnumeration;
-	public IteratorWrapper(Enumeration enumeration) {
-		myEnumeration = enumeration;
-	}
+  private Enumeration myEnumeration;
 
-	public boolean hasNext() {
-		return myEnumeration.hasMoreElements();
-	}
+  public IteratorWrapper(Enumeration enumeration) {
+    myEnumeration = enumeration;
+  }
 
-	public Object next() {
-		return myEnumeration.nextElement();
-	}
+  public boolean hasNext() {
+    return myEnumeration.hasMoreElements();
+  }
 
-	public void remove() {
-		// do nothing or throw exception
-		//throw new UnsupportedOperationException();
-	}
+  public Object next() {
+    return myEnumeration.nextElement();
+  }
+
+  public void remove() {
+    // do nothing or throw exception
+    // throw new UnsupportedOperationException();
+  }
 }

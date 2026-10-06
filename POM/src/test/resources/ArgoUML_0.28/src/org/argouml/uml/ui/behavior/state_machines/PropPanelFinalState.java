@@ -24,7 +24,6 @@
 
 package org.argouml.uml.ui.behavior.state_machines;
 
-
 /**
  * The properties panel for a FinalState.
  *
@@ -32,30 +31,21 @@ package org.argouml.uml.ui.behavior.state_machines;
  */
 public class PropPanelFinalState extends AbstractPropPanelState {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = 4111793068615402073L;
+  /** The serial version. */
+  private static final long serialVersionUID = 4111793068615402073L;
 
-    /**
-     * Construct a new property panel for a Final State.
-     */
-    public PropPanelFinalState() {
-        super("label.final.state", lookupIcon("FinalState"));
+  /** Construct a new property panel for a Final State. */
+  public PropPanelFinalState() {
+    super("label.final.state", lookupIcon("FinalState"));
 
-        addField("label.name", getNameTextField());
-        addField("label.container", getContainerScroll());
-        addField("label.entry", getEntryScroll());
-        addField("label.do-activity", getDoScroll());
+    addField("label.name", getNameTextField());
+    addField("label.container", getContainerScroll());
+    addField("label.entry", getEntryScroll());
+    addField("label.do-activity", getDoScroll());
 
-        addSeparator();
+    addSeparator();
 
-        addField("label.incoming", getIncomingScroll());
-        addField("label.internal-transitions", getInternalTransitionsScroll());
-
-    }
-
-} 
-
-
-
+    addField("label.incoming", getIncomingScroll());
+    addField("label.internal-transitions", getInternalTransitionsScroll());
+  }
+}

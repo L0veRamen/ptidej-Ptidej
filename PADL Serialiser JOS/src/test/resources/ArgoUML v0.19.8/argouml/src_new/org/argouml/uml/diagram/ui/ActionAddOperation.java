@@ -28,7 +28,6 @@ import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
 import java.util.Iterator;
-
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.Model;
@@ -41,73 +40,63 @@ import org.argouml.uml.ui.UMLAction;
  * @stereotype singleton
  */
 public class ActionAddOperation extends UMLAction {
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    /**
-     * The constructor.
-     */
-    public ActionAddOperation() {
-        super("button.new-operation", true, HAS_ICON);
+  /** The constructor. */
+  public ActionAddOperation() {
+    super("button.new-operation", true, HAS_ICON);
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // main methods
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    Project p = ProjectManager.getManager().getCurrentProject();
+    Object target = TargetManager.getInstance().getModelTarget();
+    Object /*MClassifier*/ cls = null;
+
+    if (Model.getFacade().isAClassifier(target)) {
+      cls = target;
+    } else if (Model.getFacade().isAFeature(target)) {
+      cls = Model.getFacade().getOwner(target);
+    } else {
+      return;
     }
 
-    ////////////////////////////////////////////////////////////////
-    // main methods
+    Collection propertyChangeListeners =
+        ProjectManager.getManager().getCurrentProject().findFigsForMember(cls);
+    Object model = ProjectManager.getManager().getCurrentProject().getModel();
+    Object voidType = ProjectManager.getManager().getCurrentProject().findType("void");
+    Object oper =
+        Model.getCoreFactory().buildOperation(cls, model, voidType, propertyChangeListeners);
+    TargetManager.getInstance().setTarget(oper);
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-	Project p = ProjectManager.getManager().getCurrentProject();
-	Object target =  TargetManager.getInstance().getModelTarget();
-	Object/*MClassifier*/ cls = null;
-
-	if (Model.getFacade().isAClassifier(target)) {
-	    cls = target;
-	} else if (Model.getFacade().isAFeature(target)) {
-	    cls = Model.getFacade().getOwner(target);
-	} else {
-	    return;
-	}
-
-	Collection propertyChangeListeners =
-	    ProjectManager.getManager()
-	    	.getCurrentProject().findFigsForMember(cls);
-	Object model =
-	    ProjectManager.getManager()
-	    	.getCurrentProject().getModel();
-	Object voidType =
-	    ProjectManager.getManager()
-	    	.getCurrentProject().findType("void");
-	Object oper =
-	    Model.getCoreFactory()
-	    	.buildOperation(cls, model, voidType, propertyChangeListeners);
-        TargetManager.getInstance().setTarget(oper);
-
-        Iterator it = p.findAllPresentationsFor(cls).iterator();
-        while (it.hasNext()) {
-            PropertyChangeListener listener =
-                (PropertyChangeListener) it.next();
-            Model.getPump().removeModelEventListener(listener, oper);
-            Model.getPump().addModelEventListener(listener, oper);
-        }
-
-	super.actionPerformed(ae);
+    Iterator it = p.findAllPresentationsFor(cls).iterator();
+    while (it.hasNext()) {
+      PropertyChangeListener listener = (PropertyChangeListener) it.next();
+      Model.getPump().removeModelEventListener(listener, oper);
+      Model.getPump().addModelEventListener(listener, oper);
     }
 
-    /**
-     * @see org.argouml.uml.ui.UMLAction#shouldBeEnabled()
-     */
-    public boolean shouldBeEnabled() {
-        /* Check if multiple items are selected: */
-        if (TargetManager.getInstance().getTargets().size() > 1) {
-            return false;
-        }
+    super.actionPerformed(ae);
+  }
 
-	Object target = TargetManager.getInstance().getModelTarget();
-	return super.shouldBeEnabled()
-	    && (Model.getFacade().isAClassifier(target)
-		|| Model.getFacade().isAFeature(target))
-	    && !Model.getFacade().isASignal(target);
+  /**
+   * @see org.argouml.uml.ui.UMLAction#shouldBeEnabled()
+   */
+  public boolean shouldBeEnabled() {
+    /* Check if multiple items are selected: */
+    if (TargetManager.getInstance().getTargets().size() > 1) {
+      return false;
     }
+
+    Object target = TargetManager.getInstance().getModelTarget();
+    return super.shouldBeEnabled()
+        && (Model.getFacade().isAClassifier(target) || Model.getFacade().isAFeature(target))
+        && !Model.getFacade().isASignal(target);
+  }
 } /* end class ActionAddOperation */

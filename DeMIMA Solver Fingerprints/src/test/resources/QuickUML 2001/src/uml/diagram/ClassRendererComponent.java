@@ -2,11 +2,9 @@ package uml.diagram;
 
 import java.awt.Color;
 import java.awt.Insets;
-
 import javax.swing.BorderFactory;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
-
 import uml.ui.FlatTextArea;
 
 /**
@@ -16,7 +14,7 @@ import uml.ui.FlatTextArea;
 public class ClassRendererComponent extends CustomComponent {
 
   protected static final CustomUI classUI = new CustomUI("class");
-  protected static final Insets margin = new Insets(1,1,1,1);
+  protected static final Insets margin = new Insets(1, 1, 1, 1);
 
   protected JTextField title = new JTextField();
   protected FlatTextArea fields = new FlatTextArea(true);
@@ -24,21 +22,17 @@ public class ClassRendererComponent extends CustomComponent {
   protected int divider = -1;
 
   static { // Set up some default colors
-
     UIManager.put("class.background", new Color(0xFF, 0xFF, 0xDD));
     UIManager.put("class.foreground", Color.black);
     UIManager.put("class.border", BorderFactory.createLineBorder(Color.black, 1));
-
   }
 
-  /**
-   * Create a new Component for painting classes
-   */
+  /** Create a new Component for painting classes */
   public ClassRendererComponent() {
 
     // Layout the component
     this.setLayout(null);
-      
+
     // Title area
     title.setBorder(BorderFactory.createLineBorder(Color.black, 1));
     title.setOpaque(true);
@@ -58,9 +52,7 @@ public class ClassRendererComponent extends CustomComponent {
     this.add(members);
 
     setUI(classUI);
-
   }
-
 
   public void setTitle(String s) {
     title.setText(s);
@@ -91,11 +83,11 @@ public class ClassRendererComponent extends CustomComponent {
   }
 
   /**
-   * Create a built in layout, there seems to be a bug with current LayoutManagers
-   * placing TextAreas in scroll panes with borders in the same component correctly.
-   * They leave an extra pixel at the bottom with the hieght would be an odd number.
+   * Create a built in layout, there seems to be a bug with current LayoutManagers placing TextAreas
+   * in scroll panes with borders in the same component correctly. They leave an extra pixel at the
+   * bottom with the hieght would be an odd number.
    *
-   * This will garuntee the component will be laid out as expected.
+   * <p>This will garuntee the component will be laid out as expected.
    */
   public void doLayout() {
 
@@ -103,7 +95,7 @@ public class ClassRendererComponent extends CustomComponent {
 
     int w = this.getWidth() - (insets.left + insets.right);
     int h = this.getHeight() - (insets.top + insets.bottom);
-    
+
     int x = insets.left;
     int y = insets.top;
 
@@ -119,17 +111,15 @@ public class ClassRendererComponent extends CustomComponent {
     // Layout the fields in the middle
     //    componentHeight = (divider == -1) ? (int)((double)h*(3.0/8.0)) : divider;
 
-    componentHeight = (divider == -1) ? fields.getPreferredSize().height + 2: divider + 1;  
+    componentHeight = (divider == -1) ? fields.getPreferredSize().height + 2 : divider + 1;
     fields.reshape(x, y, w, componentHeight);
-    
+
     // Shift down
     y += componentHeight;
     h -= componentHeight;
 
-    // Layout the members at the bottom 
+    // Layout the members at the bottom
     componentHeight = h;
     members.reshape(x, y, w, componentHeight);
-
   }
-
 }

@@ -25,7 +25,6 @@
 package org.argouml.uml.ui.foundation.core;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLAction;
 import org.argouml.uml.ui.UMLComboBox2;
@@ -36,54 +35,45 @@ import org.argouml.uml.ui.UMLComboBox2;
  * @stereotype singleton
  */
 public class ActionSetModelElementNamespace extends UMLAction {
-    /**
-     * The instance.
-     */
-    private static final ActionSetModelElementNamespace SINGLETON =
-        new ActionSetModelElementNamespace();
+  /** The instance. */
+  private static final ActionSetModelElementNamespace SINGLETON =
+      new ActionSetModelElementNamespace();
 
-    /**
-     * Constructor for ActionSetModelElementNamespace.
-     */
-    protected ActionSetModelElementNamespace() {
-        super("Set", true, NO_ICON);
+  /** Constructor for ActionSetModelElementNamespace. */
+  protected ActionSetModelElementNamespace() {
+    super("Set", true, NO_ICON);
+  }
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    Object source = e.getSource();
+    Object oldNamespace = null;
+    Object newNamespace = null;
+    Object m = null;
+    if (source instanceof UMLComboBox2) {
+      UMLComboBox2 box = (UMLComboBox2) source;
+      Object o = box.getTarget();
+      if (Model.getFacade().isAModelElement(o)) {
+        m = /*(MModelElement)*/ o;
+        oldNamespace = Model.getFacade().getNamespace(m);
+      }
+      o = box.getSelectedItem();
+      if (Model.getFacade().isANamespace(o)) {
+        newNamespace = /*(MNamespace)*/ o;
+      }
     }
-
-
-
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        Object source = e.getSource();
-        Object oldNamespace = null;
-        Object newNamespace = null;
-        Object m = null;
-        if (source instanceof UMLComboBox2) {
-            UMLComboBox2 box = (UMLComboBox2) source;
-            Object o = box.getTarget();
-            if (Model.getFacade().isAModelElement(o)) {
-                m = /*(MModelElement)*/ o;
-                oldNamespace = Model.getFacade().getNamespace(m);
-            }
-            o = box.getSelectedItem();
-            if (Model.getFacade().isANamespace(o)) {
-                newNamespace = /*(MNamespace)*/ o;
-            }
-        }
-        if (newNamespace != oldNamespace && m != null && newNamespace != null) {
-            Model.getCoreHelper().setNamespace(m, newNamespace);
-            super.actionPerformed(e);
-        }
+    if (newNamespace != oldNamespace && m != null && newNamespace != null) {
+      Model.getCoreHelper().setNamespace(m, newNamespace);
+      super.actionPerformed(e);
     }
+  }
 
-
-
-    /**
-     * @return Returns the sINGLETON.
-     */
-    public static ActionSetModelElementNamespace getInstance() {
-        return SINGLETON;
-    }
-
+  /**
+   * @return Returns the sINGLETON.
+   */
+  public static ActionSetModelElementNamespace getInstance() {
+    return SINGLETON;
+  }
 }

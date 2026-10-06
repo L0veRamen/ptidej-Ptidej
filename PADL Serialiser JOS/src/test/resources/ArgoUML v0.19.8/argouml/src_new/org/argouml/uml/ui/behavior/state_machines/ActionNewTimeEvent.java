@@ -33,28 +33,25 @@ import org.argouml.model.Model;
  */
 public class ActionNewTimeEvent extends ActionNewEvent {
 
-    private static ActionNewTimeEvent singleton = new ActionNewTimeEvent();
+  private static ActionNewTimeEvent singleton = new ActionNewTimeEvent();
 
-    /**
-     * Constructor for ActionNewTimeEvent.
-     */
-    protected ActionNewTimeEvent() {
-        super();
-        putValue(NAME, Translator.localize("button.new-timeevent"));
-    }
+  /** Constructor for ActionNewTimeEvent. */
+  protected ActionNewTimeEvent() {
+    super();
+    putValue(NAME, Translator.localize("button.new-timeevent"));
+  }
 
-    /**
-     * @see org.argouml.uml.ui.behavior.state_machines.ActionNewEvent#createEvent()
-     */
-    protected Object createEvent(Object ns) {
-        return Model.getStateMachinesFactory().buildTimeEvent(ns);
-    }
+  /**
+   * @see org.argouml.uml.ui.behavior.state_machines.ActionNewEvent#createEvent()
+   */
+  protected Object createEvent(Object ns) {
+    return Model.getStateMachinesFactory().buildTimeEvent(ns);
+  }
 
-    /**
-     * @return Returns the singleton.
-     */
-    public static ActionNewTimeEvent getSingleton() {
-        return singleton;
-    }
-
+  /**
+   * @return Returns the singleton.
+   */
+  public static ActionNewTimeEvent getSingleton() {
+    return singleton;
+  }
 }

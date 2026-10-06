@@ -24,111 +24,103 @@
 
 package org.argouml.model;
 
-
 /**
- * The interface for the helper for DataTypes.<p>
+ * The interface for the helper for DataTypes.
  *
- * Created from the old DataTypesHelper.
+ * <p>Created from the old DataTypesHelper.
  */
 public interface DataTypesHelper {
 
-    /**
-     * @param kind the pseudostate kind
-     * @return true if this is a initial kind
-     */
-    boolean equalsINITIALKind(Object kind);
+  /**
+   * @param kind the pseudostate kind
+   * @return true if this is a initial kind
+   */
+  boolean equalsINITIALKind(Object kind);
 
-    /**
-     * @param kind the pseudostate kind
-     * @return if this is a history kind
-     */
-    boolean equalsDeepHistoryKind(Object kind);
+  /**
+   * @param kind the pseudostate kind
+   * @return if this is a history kind
+   */
+  boolean equalsDeepHistoryKind(Object kind);
 
-    /**
-     * @param kind the pseudostate kind
-     * @return if this is a shallow history kind
-     */
-    boolean equalsShallowHistoryKind(Object kind);
+  /**
+   * @param kind the pseudostate kind
+   * @return if this is a shallow history kind
+   */
+  boolean equalsShallowHistoryKind(Object kind);
 
-    /**
-     * @param kind the pseudostate kind
-     * @return if this is a fork kind
-     */
-    boolean equalsFORKKind(Object kind);
+  /**
+   * @param kind the pseudostate kind
+   * @return if this is a fork kind
+   */
+  boolean equalsFORKKind(Object kind);
 
-    /**
-     * @param kind the pseudostate kind
-     * @return if this is a join kind
-     */
-    boolean equalsJOINKind(Object kind);
+  /**
+   * @param kind the pseudostate kind
+   * @return if this is a join kind
+   */
+  boolean equalsJOINKind(Object kind);
 
-    /**
-     * @param kind the pseudostate kind (Choice)
-     * @return if this is a branch-choice kind
-     */
-    boolean equalsCHOICEKind(Object kind);
+  /**
+   * @param kind the pseudostate kind (Choice)
+   * @return if this is a branch-choice kind
+   */
+  boolean equalsCHOICEKind(Object kind);
 
-    /**
-     * @param kind the pseudostate kind
-     * @return if this is a junction kind
-     */
-    boolean equalsJUNCTIONKind(Object kind);
+  /**
+   * @param kind the pseudostate kind
+   * @return if this is a junction kind
+   */
+  boolean equalsJUNCTIONKind(Object kind);
 
-    /**
-     * Converts a Multiplicity to a String.
-     *
-     * @param multiplicity The Multiplicity to convert.
-     * @return The String representation of multiplicity.
-     * @throws IllegalArgumentException if multiplicity is not a Multiplicity.
-     */
-    String multiplicityToString(Object multiplicity);
+  /**
+   * Converts a Multiplicity to a String.
+   *
+   * @param multiplicity The Multiplicity to convert.
+   * @return The String representation of multiplicity.
+   * @throws IllegalArgumentException if multiplicity is not a Multiplicity.
+   */
+  String multiplicityToString(Object multiplicity);
 
-    /**
-     * Sets the body of an expression.
-     *
-     * TODO: This operation is fooling the user
-     * in thinking that the body of the object is changed.
-     * Instead, a new object is created.
-     * There is no other way: a MExpression can not be altered,
-     * once created!
-     * So, this operation returns a newly created object instead.
-     *
-     * @param handle The expression to modify.
-     * @param body The body to set.
-     * @return The newly created expression.
-     */
-    Object setBody(Object handle, String body);
+  /**
+   * Sets the body of an expression.
+   *
+   * <p>TODO: This operation is fooling the user in thinking that the body of the object is changed.
+   * Instead, a new object is created. There is no other way: a MExpression can not be altered, once
+   * created! So, this operation returns a newly created object instead.
+   *
+   * @param handle The expression to modify.
+   * @param body The body to set.
+   * @return The newly created expression.
+   */
+  Object setBody(Object handle, String body);
 
-    /**
-     * Gets the body of an expression.
-     *
-     * @param handle The expression to get.
-     * @return The body (a String).
-     */
-    String getBody(Object handle);
+  /**
+   * Gets the body of an expression.
+   *
+   * @param handle The expression to get.
+   * @return The body (a String).
+   */
+  String getBody(Object handle);
 
-    /**
-     * Sets the language of an expression.
-     *
-     * TODO: This operation is fooling the user
-     * in thinking that the body of the object is changed.
-     * Instead, a new object is created.
-     * There is no other way: a MExpression can not be altered,
-     * once created!
-     * So, this operation returns a newly created object instead.
-     *
-     * @param handle The expression.
-     * @param language The new language.
-     * @return The newly created Object.
-     */
-    Object setLanguage(Object handle, String language);
+  /**
+   * Sets the language of an expression.
+   *
+   * <p>TODO: This operation is fooling the user in thinking that the body of the object is changed.
+   * Instead, a new object is created. There is no other way: a MExpression can not be altered, once
+   * created! So, this operation returns a newly created object instead.
+   *
+   * @param handle The expression.
+   * @param language The new language.
+   * @return The newly created Object.
+   */
+  Object setLanguage(Object handle, String language);
 
-    /**
-     * Gets the language of an expression.
-     *
-     * @param handle The expression to get.
-     * @return The language (a String).
-     */
-    String getLanguage(Object handle);
-
+  /**
+   * Gets the language of an expression.
+   *
+   * @param handle The expression to get.
+   * @return The language (a String).
+   */
+  String getLanguage(Object handle);
 }

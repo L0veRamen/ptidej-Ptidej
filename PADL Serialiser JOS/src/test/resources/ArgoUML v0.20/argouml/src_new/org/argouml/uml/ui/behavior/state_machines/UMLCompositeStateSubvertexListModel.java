@@ -31,28 +31,24 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  * @since Dec 14, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class UMLCompositeStateSubvertexListModel
-    extends UMLModelElementListModel2 {
+public class UMLCompositeStateSubvertexListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLStateMachineTransitionListModel.
-     */
-    public UMLCompositeStateSubvertexListModel() {
-        super("subvertex");
-    }
+  /** Constructor for UMLStateMachineTransitionListModel. */
+  public UMLCompositeStateSubvertexListModel() {
+    super("subvertex");
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        setAllElements(Model.getFacade().getSubvertices(getTarget()));
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    setAllElements(Model.getFacade().getSubvertices(getTarget()));
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ element) {
-        return Model.getFacade().getSubvertices(getTarget()).contains(element);
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ element) {
+    return Model.getFacade().getSubvertices(getTarget()).contains(element);
+  }
 }

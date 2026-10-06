@@ -28,71 +28,63 @@ import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLComboBoxModel2;
 
 /**
- * The ComboBox model for the represented classifier 
- * of a collaboration.
- * 
+ * The ComboBox model for the represented classifier of a collaboration.
+ *
  * @author michiel
  */
-class UMLCollaborationRepresentedClassifierComboBoxModel
-    extends  UMLComboBoxModel2  {
-    
-    /**
-     * Constructor for UMLCollaborationRepresentedClassifierComboBoxModel.
-     */
-    public UMLCollaborationRepresentedClassifierComboBoxModel() {
-        super("representedClassifier", true);
-    }
-    
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        Collection classifiers = new ArrayList();
-        Project p = ProjectManager.getManager().getCurrentProject();
-        Iterator it = p.getUserDefinedModels().iterator();
-        while (it.hasNext()) {
-            Object model = it.next();
-            Collection c = Model.getModelManagementHelper()
-                .getAllModelElementsOfKind(model, 
-                    Model.getMetaTypes().getClassifier());
-            Iterator ci = c.iterator();
-            while (ci.hasNext()) {
-                Object cls = ci.next();
-                Collection s = Model.getModelManagementHelper()
-                    .getAllSurroundingNamespaces(cls);
-                if (!s.contains(getTarget())) classifiers.add(cls);
-            }
-        }
-        setElements(classifiers);
-    }
-    
-    /**
-     * Not used.
-     * 
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().isAClassifier(element)
-            && Model.getFacade().getRepresentedClassifier(getTarget()) 
-                == element;
-    }
-    
-    protected Object getSelectedModelElement() {
-        return Model.getFacade().getRepresentedClassifier(getTarget());
-    }
-    
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#propertyChange(java.beans.PropertyChangeEvent)
-     */
-    public void propertyChange(PropertyChangeEvent evt) {
-        /* Do nothing by design. */
-    }
-}
+class UMLCollaborationRepresentedClassifierComboBoxModel extends UMLComboBoxModel2 {
 
+  /** Constructor for UMLCollaborationRepresentedClassifierComboBoxModel. */
+  public UMLCollaborationRepresentedClassifierComboBoxModel() {
+    super("representedClassifier", true);
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    Collection classifiers = new ArrayList();
+    Project p = ProjectManager.getManager().getCurrentProject();
+    Iterator it = p.getUserDefinedModels().iterator();
+    while (it.hasNext()) {
+      Object model = it.next();
+      Collection c =
+          Model.getModelManagementHelper()
+              .getAllModelElementsOfKind(model, Model.getMetaTypes().getClassifier());
+      Iterator ci = c.iterator();
+      while (ci.hasNext()) {
+        Object cls = ci.next();
+        Collection s = Model.getModelManagementHelper().getAllSurroundingNamespaces(cls);
+        if (!s.contains(getTarget())) classifiers.add(cls);
+      }
+    }
+    setElements(classifiers);
+  }
+
+  /**
+   * Not used.
+   *
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().isAClassifier(element)
+        && Model.getFacade().getRepresentedClassifier(getTarget()) == element;
+  }
+
+  protected Object getSelectedModelElement() {
+    return Model.getFacade().getRepresentedClassifier(getTarget());
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#propertyChange(java.beans.PropertyChangeEvent)
+   */
+  public void propertyChange(PropertyChangeEvent evt) {
+    /* Do nothing by design. */
+  }
+}

@@ -22,12 +22,12 @@
 
 package com.noelios.restlet.ext.jetty5;
 
-import org.restlet.Server;
-
 import com.noelios.restlet.http.HttpServerHelper;
+import org.restlet.Server;
 
 /**
  * Abstract Jetty Web server connector. Here is the list of parameters that are supported:
+ *
  * <table>
  * 	<tr>
  * 		<th>Parameter name</th>
@@ -63,87 +63,84 @@ import com.noelios.restlet.http.HttpServerHelper;
  * 		<td>useForwardedForHeader</td>
  * 		<td>boolean</td>
  * 		<td>false</td>
- * 		<td>Lookup the "X-Forwarded-For" header supported by popular proxies and caches and uses it to populate 
- * the Request.getClientAddresses() method result. This information is only safe for intermediary components 
+ * 		<td>Lookup the "X-Forwarded-For" header supported by popular proxies and caches and uses it to populate
+ * the Request.getClientAddresses() method result. This information is only safe for intermediary components
  * within your local network. Other addresses could easily be changed by setting a fake header and should not
  * be trusted for serious security checks.</td>
  * 	</tr>
  * </table>
+ *
  * @see <a href="http://jetty.mortbay.com/">Jetty home page</a>
  * @author Jerome Louvel (contact@noelios.com)
  */
-public abstract class JettyServerHelper extends HttpServerHelper
-{
-	/** Serial version identifier. */
-	private static final long serialVersionUID = 1L;
+public abstract class JettyServerHelper extends HttpServerHelper {
+  /** Serial version identifier. */
+  private static final long serialVersionUID = 1L;
 
-	/** The Jetty listener (keep package prefixing). */
-	private org.mortbay.http.HttpListener listener;
+  /** The Jetty listener (keep package prefixing). */
+  private org.mortbay.http.HttpListener listener;
 
-	/**
-	 * Constructor.
-	 * @param server The server to help.
-	 */
-	public JettyServerHelper(Server server)
-	{
-		super(server);
-	}
+  /**
+   * Constructor.
+   *
+   * @param server The server to help.
+   */
+  public JettyServerHelper(Server server) {
+    super(server);
+  }
 
-	/**
-	 * Returns the Jetty listener.
-	 * @return The Jetty listener.
-	 */
-	public org.mortbay.http.HttpListener getListener()
-	{
-		return this.listener;
-	}
+  /**
+   * Returns the Jetty listener.
+   *
+   * @return The Jetty listener.
+   */
+  public org.mortbay.http.HttpListener getListener() {
+    return this.listener;
+  }
 
-	/**
-	 * Sets the Jetty listener.
-	 * @param listener The Jetty listener.
-	 */
-	public void setListener(org.mortbay.http.HttpListener listener)
-	{
-		this.listener = listener;
-	}
+  /**
+   * Sets the Jetty listener.
+   *
+   * @param listener The Jetty listener.
+   */
+  public void setListener(org.mortbay.http.HttpListener listener) {
+    this.listener = listener;
+  }
 
-	/** Start connector. */
-	public void start() throws Exception
-	{
-		getListener().start();
-	}
+  /** Start connector. */
+  public void start() throws Exception {
+    getListener().start();
+  }
 
-	/** Stop connector. */
-	public void stop() throws Exception
-	{
-		getListener().stop();
-	}
+  /** Stop connector. */
+  public void stop() throws Exception {
+    getListener().stop();
+  }
 
-	/**
-	 * Returns the minumum threads waiting to service requests.
-	 * @return The minumum threads waiting to service requests.
-	 */
-	public int getMinThreads()
-	{
-		return Integer.parseInt(getParameters().getFirstValue("minThreads", "2"));
-	}
+  /**
+   * Returns the minumum threads waiting to service requests.
+   *
+   * @return The minumum threads waiting to service requests.
+   */
+  public int getMinThreads() {
+    return Integer.parseInt(getParameters().getFirstValue("minThreads", "2"));
+  }
 
-	/**
-	 * Returns the maximum threads that will service requests.
-	 * @return The maximum threads that will service requests.
-	 */
-	public int getMaxThreads()
-	{
-		return Integer.parseInt(getParameters().getFirstValue("maxThreads", "256"));
-	}
+  /**
+   * Returns the maximum threads that will service requests.
+   *
+   * @return The maximum threads that will service requests.
+   */
+  public int getMaxThreads() {
+    return Integer.parseInt(getParameters().getFirstValue("maxThreads", "256"));
+  }
 
-	/**
-	 * Returns the time for an idle thread to wait for a request or read.
-	 * @return The time for an idle thread to wait for a request or read.
-	 */
-	public int getMaxIdleTimeMs()
-	{
-		return Integer.parseInt(getParameters().getFirstValue("maxIdleTimeMs", "10000"));
-	}
-
+  /**
+   * Returns the time for an idle thread to wait for a request or read.
+   *
+   * @return The time for an idle thread to wait for a request or read.
+   */
+  public int getMaxIdleTimeMs() {
+    return Integer.parseInt(getParameters().getFirstValue("maxIdleTimeMs", "10000"));
+  }
 }

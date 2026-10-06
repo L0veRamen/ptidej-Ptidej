@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -16,15 +16,16 @@ import padl.util.adapter.InterfaceAdapter;
 
 /**
  * @author Yann-Gaël Guéhéneuc
- * @since  2004/12/20
+ * @since 2004/12/20
  */
 public class RemovedInterface extends InterfaceAdapter implements IInterface {
-	private static final long serialVersionUID = 8431318495759716272L;
+  private static final long serialVersionUID = 8431318495759716272L;
 
-	public RemovedInterface(final IInterface anInterface) {
-		super(anInterface);
-	}
-	public IConstituent getClone() {
-		return new RemovedInterface((IInterface) super.getClone());
-	}
+  public RemovedInterface(final IInterface anInterface) {
+    super(anInterface);
+  }
+
+  public IConstituent getClone() {
+    return new RemovedInterface((IInterface) super.getClone());
+  }
 }

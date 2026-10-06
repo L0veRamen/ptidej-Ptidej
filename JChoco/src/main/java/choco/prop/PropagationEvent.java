@@ -15,38 +15,28 @@ package choco.prop;
 
 import choco.ContradictionException;
 
-/**
- * An interface for all implementations of events.
- */
+/** An interface for all implementations of events. */
 public interface PropagationEvent {
-	/**
-	 * Value of the state in the queue: -1 means the var is being propagated.
-	 * (see VarEvent.qState)
-	 */
-	public final static int POPPING = -1;
+  /**
+   * Value of the state in the queue: -1 means the var is being propagated. (see VarEvent.qState)
+   */
+  public static final int POPPING = -1;
 
-	/**
-	 * Clears the var if it not useful anymore.
-	 */
+  /** Clears the var if it not useful anymore. */
+  public void clear();
 
-	public void clear();
+  /** Returns the object, whose modification is described by the event */
+  public Object getModifiedObject();
 
-	/**
-	 * Returns the object, whose modification is described by the event
-	 */
+  /** Tests whether a propagation var is active in the propagation network. */
+  public boolean isActive(int idx);
 
-	public Object getModifiedObject();
-
-	/**
-	 * Tests whether a propagation var is active in the propagation network.
-	 */
-
-	public boolean isActive(int idx);
-
-	/**
-	 * Propagates the var through calls to the propagation engine.
-	 * @return true if the event has been fully propagated (and can thus be discarded), false otherwise
-	 * @throws choco.ContradictionException
-	 */
-	public boolean propagateEvent() throws ContradictionException;
+  /**
+   * Propagates the var through calls to the propagation engine.
+   *
+   * @return true if the event has been fully propagated (and can thus be discarded), false
+   *     otherwise
+   * @throws choco.ContradictionException
+   */
+  public boolean propagateEvent() throws ContradictionException;
 }

@@ -26,36 +26,30 @@
  */
 package org.argouml.uml;
 
-import org.argouml.model.UUIDManager;
-
 import junit.framework.TestCase;
+import org.argouml.model.UUIDManager;
 
 /**
  * @author MarkusK
- *
  */
 public class TestUUIDManager extends TestCase {
 
+  /**
+   * The constructor.
+   *
+   * @param name the name of the test
+   */
+  public TestUUIDManager(String name) {
+    super(name);
+  }
 
-    /**
-     * The constructor.
-     *
-     * @param name the name of the test
-     */
-    public TestUUIDManager(String name) {
-        super(name);
-    }
+  /** Test the UUIDManager.getInstance().getNewUUID() function. */
+  public void testGetNewUUID() {
+    String uuid1 = UUIDManager.getInstance().getNewUUID();
+    String uuid2 = UUIDManager.getInstance().getNewUUID();
 
-    /**
-     * Test the UUIDManager.getInstance().getNewUUID() function.
-     */
-    public void testGetNewUUID() {
-        String uuid1 = UUIDManager.getInstance().getNewUUID();
-        String uuid2 = UUIDManager.getInstance().getNewUUID();
-
-        assertNotNull(uuid1);
-        assertNotNull(uuid2);
-        assertTrue(!uuid1.equals(uuid2));
-    }
-
+    assertNotNull(uuid1);
+    assertNotNull(uuid2);
+    assertTrue(!uuid1.equals(uuid2));
+  }
 }

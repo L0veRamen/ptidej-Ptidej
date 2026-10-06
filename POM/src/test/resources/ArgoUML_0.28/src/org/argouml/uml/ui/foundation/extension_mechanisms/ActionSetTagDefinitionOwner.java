@@ -26,9 +26,7 @@ package org.argouml.uml.ui.foundation.extension_mechanisms;
 
 import java.awt.AWTEvent;
 import java.awt.event.ActionEvent;
-
 import javax.swing.Action;
-
 import org.apache.log4j.Logger;
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.i18n.Translator;
@@ -37,58 +35,41 @@ import org.argouml.uml.ui.UMLComboBox2;
 import org.tigris.gef.undo.UndoableAction;
 
 /**
- *
  * @author mkl
- *
  */
 public class ActionSetTagDefinitionOwner extends UndoableAction {
-    /**
-     * Logger.
-     */
-    private static final Logger LOG =
-        Logger.getLogger(ActionSetTagDefinitionOwner.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(ActionSetTagDefinitionOwner.class);
 
-    /**
-     * The Singleton.
-     */
-    public static final ActionSetTagDefinitionOwner SINGLETON =
-            new ActionSetTagDefinitionOwner();
+  /** The Singleton. */
+  public static final ActionSetTagDefinitionOwner SINGLETON = new ActionSetTagDefinitionOwner();
 
-    /**
-     * Constructor.
-     */
-    public ActionSetTagDefinitionOwner() {
-        super(Translator.localize("Set"),
-                ResourceLoaderWrapper.lookupIcon("Set"));
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize("Set"));
+  /** Constructor. */
+  public ActionSetTagDefinitionOwner() {
+    super(Translator.localize("Set"), ResourceLoaderWrapper.lookupIcon("Set"));
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize("Set"));
+  }
+
+  /*
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    Object source = e.getSource();
+    LOG.info("Receiving " + e + "/" + e.getID() + "/" + e.getActionCommand());
+    if (source instanceof UMLComboBox2 && e.getModifiers() == AWTEvent.MOUSE_EVENT_MASK) {
+      UMLComboBox2 combo = (UMLComboBox2) source;
+      Object o = combo.getSelectedItem();
+      final Object tagDefinition = combo.getTarget();
+      LOG.info("Set owner to " + o);
+      if (Model.getFacade().isAStereotype(o) && Model.getFacade().isATagDefinition(tagDefinition)) {
+        Model.getCoreHelper().setOwner(tagDefinition, o);
+      }
     }
+  }
 
-    /*
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        Object source = e.getSource();
-        LOG.info("Receiving " + e + "/" + e.getID() + "/"
-                + e.getActionCommand());
-        if (source instanceof UMLComboBox2
-                && e.getModifiers() == AWTEvent.MOUSE_EVENT_MASK) {
-            UMLComboBox2 combo = (UMLComboBox2) source;
-            Object o = combo.getSelectedItem();
-            final Object tagDefinition = combo.getTarget();
-            LOG.info("Set owner to " + o);
-            if (Model.getFacade().isAStereotype(o)
-                    && Model.getFacade().isATagDefinition(tagDefinition)) {
-                Model.getCoreHelper().setOwner(tagDefinition, o);
-            }
-        }
-    }
-
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -5230402929326015086L;
+  /** The UID. */
+  private static final long serialVersionUID = -5230402929326015086L;
 }

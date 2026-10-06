@@ -31,47 +31,35 @@ import org.argouml.uml.ui.ActionNavigateNamespace;
 import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
 import org.argouml.util.ConfigLoader;
 
-/**
- * The properties panel for an Interface.
- *
- */
+/** The properties panel for an Interface. */
 public class PropPanelInterface extends PropPanelClassifier {
 
-    /**
-     * The constructor.
-     */
-    public PropPanelInterface() {
-	super("Interface", ConfigLoader.getTabPropsOrientation());
+  /** The constructor. */
+  public PropPanelInterface() {
+    super("Interface", ConfigLoader.getTabPropsOrientation());
 
-	addField(Translator.localize("label.name"), getNameTextField());
-	addField(Translator.localize("label.stereotype"),
-            getStereotypeSelector());
-	addField(Translator.localize("label.namespace"),
-            getNamespaceSelector());
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.stereotype"), getStereotypeSelector());
+    addField(Translator.localize("label.namespace"), getNamespaceSelector());
 
-	add(getModifiersPanel());
-	add(getNamespaceVisibilityPanel());
+    add(getModifiersPanel());
+    add(getNamespaceVisibilityPanel());
 
-	addSeperator();
+    addSeperator();
 
-	addField(Translator.localize("label.generalizations"),
-            getGeneralizationScroll());
-	addField(Translator.localize("label.specializations"),
-            getSpecializationScroll());
+    addField(Translator.localize("label.generalizations"), getGeneralizationScroll());
+    addField(Translator.localize("label.specializations"), getSpecializationScroll());
 
-	addSeperator();
+    addSeperator();
 
-	addField(Translator.localize("label.association-ends"),
-            getAssociationEndScroll());
-	addField(Translator.localize("label.operations"),
-            getFeatureScroll());
+    addField(Translator.localize("label.association-ends"), getAssociationEndScroll());
+    addField(Translator.localize("label.operations"), getFeatureScroll());
 
-	addAction(new ActionNavigateNamespace());
-	addAction(new ActionAddOperation());
-	addAction(getActionNewReception());
-	addAction(new ActionNewInterface());
-	addAction(new ActionNewStereotype());
-	addAction(new ActionDeleteSingleModelElement());
-    }
-
+    addAction(new ActionNavigateNamespace());
+    addAction(new ActionAddOperation());
+    addAction(getActionNewReception());
+    addAction(new ActionNewInterface());
+    addAction(new ActionNewStereotype());
+    addAction(new ActionDeleteSingleModelElement());
+  }
 } /* end class PropPanelInterface */

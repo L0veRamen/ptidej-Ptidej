@@ -4,12 +4,14 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
 package ptidej.occurrences;
 
+import au.com.bytecode.opencsv.CSVReader;
+import au.com.bytecode.opencsv.CSVWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -18,197 +20,168 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import au.com.bytecode.opencsv.CSVReader;
-import au.com.bytecode.opencsv.CSVWriter;
 import util.io.ProxyDisk;
 
 public class CombinatorAllInOne {
-	private static final String FILE_EXTENSION = "csv";
-	private static final String FILE_HEADER = "All Data for ";
+  private static final String FILE_EXTENSION = "csv";
+  private static final String FILE_HEADER = "All Data for ";
 
-	public static void main(final String[] args) {
-		final CombinatorAllInOne combinatorPerProgramPerVersion =
-			new CombinatorAllInOne();
+  public static void main(final String[] args) {
+    final CombinatorAllInOne combinatorPerProgramPerVersion = new CombinatorAllInOne();
 
-		final TableModel dataTable = new TableModel();
-		// By default, the table must include one cell (one row, one column)...
-		dataTable.addColumn("Class Names");
-		dataTable.addRow(new String[] { "Data Name" });
+    final TableModel dataTable = new TableModel();
+    // By default, the table must include one cell (one row, one column)...
+    dataTable.addColumn("Class Names");
+    dataTable.addRow(new String[] {"Data Name"});
 
-		combinatorPerProgramPerVersion.populateTable(
-			"D:/Documents/Papers/2011/WCRE (Yann and Giulio)/Data/",
-			dataTable);
-		combinatorPerProgramPerVersion
-			.writeTableToCSVFile(
-				dataTable,
-				"D:/Documents/Papers/2011/WCRE (Yann and Giulio)/Data/All Data In One File.csv");
-	}
-	private final Map<String, Integer> mapOfColumnNamesWithColumnPositions = new HashMap<>();
-	//	private final Map mapOfRowNamesWithRowPositions = new HashMap();
-	private void addValueToTable(
-		final TableModel aDataTable,
-		final String aColumnName,
-		final String aRowName,
-		final String aValue) {
+    combinatorPerProgramPerVersion.populateTable(
+        "D:/Documents/Papers/2011/WCRE (Yann and Giulio)/Data/", dataTable);
+    combinatorPerProgramPerVersion.writeTableToCSVFile(
+        dataTable, "D:/Documents/Papers/2011/WCRE (Yann and Giulio)/Data/All Data In One File.csv");
+  }
 
-		// This is the only method that writes into the table.
+  private final Map<String, Integer> mapOfColumnNamesWithColumnPositions = new HashMap<>();
 
-		int columnNumber =
-			this.findColumnNumberFromName(aDataTable, aColumnName);
+  //	private final Map mapOfRowNamesWithRowPositions = new HashMap();
+  private void addValueToTable(
+      final TableModel aDataTable,
+      final String aColumnName,
+      final String aRowName,
+      final String aValue) {
 
-		// Yann 2011/06/17: Assumption...
-		// I assume that there is no duplicate inside a data file and between files!
-		//	int rowNumber = this.findRowNumberFromName(aDataTable, aRowName);
-		//	if (rowNumber == -1) {
-		final int rowNumber = aDataTable.getRowCount() - 1;
-		if (!aDataTable.getValueAt(rowNumber, 0).equals(aRowName)) {
-			aDataTable.addRow(new String[0]);
-			aDataTable.setValueAt(aRowName, rowNumber + 1, 0);
-			aDataTable.setValueAt(aValue, rowNumber + 1, columnNumber);
-		}
-		else {
-			aDataTable.setValueAt(aValue, rowNumber, columnNumber);
-		}
-	}
-	private int findColumnNumberFromName(
-		final TableModel aDataTable,
-		final String aColumnName) {
+    // This is the only method that writes into the table.
 
-		if (!this.mapOfColumnNamesWithColumnPositions.containsKey(aColumnName)) {
-			System.out.print("\tAdding missing column: ");
-			System.out.println(aColumnName);
+    int columnNumber = this.findColumnNumberFromName(aDataTable, aColumnName);
 
-			aDataTable.addColumn(aColumnName);
-			final int columnNumber = aDataTable.getColumnCount() - 1;
-			aDataTable.setValueAt(aColumnName, 0, columnNumber);
+    // Yann 2011/06/17: Assumption...
+    // I assume that there is no duplicate inside a data file and between files!
+    //	int rowNumber = this.findRowNumberFromName(aDataTable, aRowName);
+    //	if (rowNumber == -1) {
+    final int rowNumber = aDataTable.getRowCount() - 1;
+    if (!aDataTable.getValueAt(rowNumber, 0).equals(aRowName)) {
+      aDataTable.addRow(new String[0]);
+      aDataTable.setValueAt(aRowName, rowNumber + 1, 0);
+      aDataTable.setValueAt(aValue, rowNumber + 1, columnNumber);
+    } else {
+      aDataTable.setValueAt(aValue, rowNumber, columnNumber);
+    }
+  }
 
-			this.mapOfColumnNamesWithColumnPositions.put(
-				aColumnName,
-				Integer.valueOf(columnNumber));
-		}
+  private int findColumnNumberFromName(final TableModel aDataTable, final String aColumnName) {
 
-		return this.mapOfColumnNamesWithColumnPositions
-			.get(aColumnName).intValue();
-	}
-	//	private int findRowNumberFromName(
-	//		final TableModel aDataTable,
-	//		final String aRowName) {
-	//
-	//		if (!this.mapOfRowNamesWithRowPositions.containsKey(aRowName)) {
-	//			System.out.println(aRowName);
-	//			int rowPosition = -1;
-	//			final int rowCount = aDataTable.getRowCount();
-	//			for (int i = 0; i < rowCount; i++) {
-	//				final String rowValue = (String) aDataTable.getValueAt(i, 0);
-	//				if (rowValue.equals(aRowName)) {
-	//					break;
-	//				}
-	//			}
-	//
-	//			this.mapOfRowNamesWithRowPositions.put(aRowName, Integer.valueOf(
-	//				rowPosition));
-	//		}
-	//
-	//		return ((Integer) this.mapOfRowNamesWithRowPositions.get(aRowName))
-	//			.intValue();
-	//	}
-	private void populateTable(
-		final String aRootPath,
-		final TableModel aDataTable) {
+    if (!this.mapOfColumnNamesWithColumnPositions.containsKey(aColumnName)) {
+      System.out.print("\tAdding missing column: ");
+      System.out.println(aColumnName);
 
-		final String[] fileNames = new File(aRootPath).list();
-		for (int i = 0; i < fileNames.length; i++) {
-			final String filePath = aRootPath + fileNames[i];
-			final File file = new File(filePath);
-			if (fileNames[i].startsWith(CombinatorAllInOne.FILE_HEADER)
-					&& fileNames[i].endsWith(CombinatorAllInOne.FILE_EXTENSION)
-					&& file.isFile()) {
+      aDataTable.addColumn(aColumnName);
+      final int columnNumber = aDataTable.getColumnCount() - 1;
+      aDataTable.setValueAt(aColumnName, 0, columnNumber);
 
-				final String endOfFileName =
-					fileNames[i].substring(
-						CombinatorAllInOne.FILE_HEADER.length(),
-						fileNames[i].length()
-								- CombinatorAllInOne.FILE_EXTENSION.length()
-								- 1);
-				final String programName =
-					endOfFileName.substring(0, endOfFileName.indexOf(' '));
-				final String versionName =
-					endOfFileName.substring(endOfFileName.indexOf(' ') + 1);
+      this.mapOfColumnNamesWithColumnPositions.put(aColumnName, Integer.valueOf(columnNumber));
+    }
 
-				System.out.print("Merging data of ");
-				System.out.print(programName);
-				System.out.print(" ");
-				System.out.print(versionName);
-				System.out.println("...");
+    return this.mapOfColumnNamesWithColumnPositions.get(aColumnName).intValue();
+  }
 
-				try {
-					final CSVReader allDataForCurrentProgramAndVersion =
-						new CSVReader(new FileReader(file));
+  //	private int findRowNumberFromName(
+  //		final TableModel aDataTable,
+  //		final String aRowName) {
+  //
+  //		if (!this.mapOfRowNamesWithRowPositions.containsKey(aRowName)) {
+  //			System.out.println(aRowName);
+  //			int rowPosition = -1;
+  //			final int rowCount = aDataTable.getRowCount();
+  //			for (int i = 0; i < rowCount; i++) {
+  //				final String rowValue = (String) aDataTable.getValueAt(i, 0);
+  //				if (rowValue.equals(aRowName)) {
+  //					break;
+  //				}
+  //			}
+  //
+  //			this.mapOfRowNamesWithRowPositions.put(aRowName, Integer.valueOf(
+  //				rowPosition));
+  //		}
+  //
+  //		return ((Integer) this.mapOfRowNamesWithRowPositions.get(aRowName))
+  //			.intValue();
+  //	}
+  private void populateTable(final String aRootPath, final TableModel aDataTable) {
 
-					final String[] dataNames =
-						allDataForCurrentProgramAndVersion.readNext();
+    final String[] fileNames = new File(aRootPath).list();
+    for (int i = 0; i < fileNames.length; i++) {
+      final String filePath = aRootPath + fileNames[i];
+      final File file = new File(filePath);
+      if (fileNames[i].startsWith(CombinatorAllInOne.FILE_HEADER)
+          && fileNames[i].endsWith(CombinatorAllInOne.FILE_EXTENSION)
+          && file.isFile()) {
 
-					String[] currentDataValues;
-					while ((currentDataValues =
-						allDataForCurrentProgramAndVersion.readNext()) != null) {
-						final int numberOfDataPoints =
-							currentDataValues.length - 1;
+        final String endOfFileName =
+            fileNames[i].substring(
+                CombinatorAllInOne.FILE_HEADER.length(),
+                fileNames[i].length() - CombinatorAllInOne.FILE_EXTENSION.length() - 1);
+        final String programName = endOfFileName.substring(0, endOfFileName.indexOf(' '));
+        final String versionName = endOfFileName.substring(endOfFileName.indexOf(' ') + 1);
 
-						final StringBuffer rowName = new StringBuffer();
-						rowName.append(programName);
-						rowName.append(" ");
-						rowName.append(versionName);
-						rowName.append(" -- ");
-						rowName.append(currentDataValues[0]);
+        System.out.print("Merging data of ");
+        System.out.print(programName);
+        System.out.print(" ");
+        System.out.print(versionName);
+        System.out.println("...");
 
-						System.out.print("\tAdding ");
-						System.out.print(numberOfDataPoints);
-						System.out.print(" data points for: ");
-						System.out.println(rowName);
+        try {
+          final CSVReader allDataForCurrentProgramAndVersion = new CSVReader(new FileReader(file));
 
-						for (int j = 1; j < numberOfDataPoints; j++) {
-							final String dataValue = currentDataValues[j];
-							this.addValueToTable(
-								aDataTable,
-								dataNames[j],
-								rowName.toString(),
-								dataValue);
-						}
-					}
+          final String[] dataNames = allDataForCurrentProgramAndVersion.readNext();
 
-					allDataForCurrentProgramAndVersion.close();
-				}
-				catch (final FileNotFoundException e) {
-					e.printStackTrace();
-				}
-				catch (final IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-	private void writeTableToCSVFile(
-		final TableModel aDataTable,
-		final String anOutputFile) {
+          String[] currentDataValues;
+          while ((currentDataValues = allDataForCurrentProgramAndVersion.readNext()) != null) {
+            final int numberOfDataPoints = currentDataValues.length - 1;
 
-		try {
-			final CSVWriter csvWriter =
-				new CSVWriter(ProxyDisk.getInstance().fileAbsoluteOutput(
-					anOutputFile), ',');
+            final StringBuffer rowName = new StringBuffer();
+            rowName.append(programName);
+            rowName.append(" ");
+            rowName.append(versionName);
+            rowName.append(" -- ");
+            rowName.append(currentDataValues[0]);
 
-			final List<List<String>> dataVector = aDataTable.getDataVector();
-			final Iterator<List<String>> interatorOnRows = dataVector.iterator();
-			while (interatorOnRows.hasNext()) {
-				final List<String> rowVector = interatorOnRows.next();
-				final String[] rowArray = new String[rowVector.size()];
-				rowVector.toArray(rowArray);
-				csvWriter.writeNext(rowArray);
-			}
-			csvWriter.close();
-		}
-		catch (final IOException e) {
-			e.printStackTrace();
-		}
-	}
+            System.out.print("\tAdding ");
+            System.out.print(numberOfDataPoints);
+            System.out.print(" data points for: ");
+            System.out.println(rowName);
+
+            for (int j = 1; j < numberOfDataPoints; j++) {
+              final String dataValue = currentDataValues[j];
+              this.addValueToTable(aDataTable, dataNames[j], rowName.toString(), dataValue);
+            }
+          }
+
+          allDataForCurrentProgramAndVersion.close();
+        } catch (final FileNotFoundException e) {
+          e.printStackTrace();
+        } catch (final IOException e) {
+          e.printStackTrace();
+        }
+      }
+    }
+  }
+
+  private void writeTableToCSVFile(final TableModel aDataTable, final String anOutputFile) {
+
+    try {
+      final CSVWriter csvWriter =
+          new CSVWriter(ProxyDisk.getInstance().fileAbsoluteOutput(anOutputFile), ',');
+
+      final List<List<Object>> dataVector = aDataTable.getDataVector();
+      final Iterator<List<Object>> interatorOnRows = dataVector.iterator();
+      while (interatorOnRows.hasNext()) {
+        final List<Object> rowVector = interatorOnRows.next();
+        final String[] rowArray = new String[rowVector.size()];
+        rowVector.toArray(rowArray);
+        csvWriter.writeNext(rowArray);
+      }
+      csvWriter.close();
+    } catch (final IOException e) {
+      e.printStackTrace();
+    }
+  }
 }

@@ -4,14 +4,14 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc  and others, see in file; API and its implementation
  ******************************************************************************/
 package padl.creator.javafile.eclipse.test.others;
 
-import org.junit.Assert;
 import junit.framework.TestCase;
+import org.junit.Assert;
 import padl.analysis.UnsupportedSourceModelException;
 import padl.analysis.repository.AACRelationshipsAnalysis;
 import padl.creator.javafile.eclipse.test.util.Utils;
@@ -21,84 +21,67 @@ import padl.kernel.IFirstClassEntity;
 import padl.kernel.IIdiomLevelModel;
 
 public class NesrineTest extends TestCase {
-	public NesrineTest(final String name) {
-		super(name);
-	}
+  public NesrineTest(final String name) {
+    super(name);
+  }
 
-	public void test1erCas() {
-		final String sourcePath =
-			"../PADL Creator JavaFile (Eclipse)/target/test-classes/Nesrine's/1er Cas/";
-		final String classPathEntry = "";
+  public void test1erCas() {
+    final String sourcePath =
+        "../PADL Creator JavaFile (Eclipse)/target/test-classes/Nesrine's/1er Cas/";
+    final String classPathEntry = "";
 
-		try {
-			final ICodeLevelModel codeLevelModel =
-				Utils.createCompleteJavaFilesPadlModel(
-					"",
-					sourcePath,
-					classPathEntry);
+    try {
+      final ICodeLevelModel codeLevelModel =
+          Utils.createCompleteJavaFilesPadlModel("", sourcePath, classPathEntry);
 
-			final IIdiomLevelModel idiomLevelModel =
-				(IIdiomLevelModel) new AACRelationshipsAnalysis()
-					.invoke(codeLevelModel);
+      final IIdiomLevelModel idiomLevelModel =
+          (IIdiomLevelModel) new AACRelationshipsAnalysis().invoke(codeLevelModel);
 
-			final IFirstClassEntity clazz =
-				idiomLevelModel
-					.getTopLevelEntityFromID("galleryService.implementation.ImageServiceImpl");
-			final ICreation creation =
-				(ICreation) clazz.getConstituentFromID("addImage_>PADL<_2");
-			Assert.assertNotNull(creation);
-		}
-		catch (final UnsupportedSourceModelException e) {
-			e.printStackTrace();
-		}
-	}
-	public void test2emeCas() {
-		final String sourcePath =
-			"../PADL Creator JavaFile (Eclipse)/target/test-classes/Nesrine's/2ème Cas/";
-		final String classPathEntry = "";
+      final IFirstClassEntity clazz =
+          idiomLevelModel.getTopLevelEntityFromID("galleryService.implementation.ImageServiceImpl");
+      final ICreation creation = (ICreation) clazz.getConstituentFromID("addImage_>PADL<_2");
+      Assert.assertNotNull(creation);
+    } catch (final UnsupportedSourceModelException e) {
+      e.printStackTrace();
+    }
+  }
 
-		try {
-			final ICodeLevelModel codeLevelModel =
-				Utils.createCompleteJavaFilesPadlModel(
-					"",
-					sourcePath,
-					classPathEntry);
+  public void test2emeCas() {
+    final String sourcePath =
+        "../PADL Creator JavaFile (Eclipse)/target/test-classes/Nesrine's/2ème Cas/";
+    final String classPathEntry = "";
 
-			final IIdiomLevelModel idiomLevelModel =
-				(IIdiomLevelModel) new AACRelationshipsAnalysis()
-					.invoke(codeLevelModel);
+    try {
+      final ICodeLevelModel codeLevelModel =
+          Utils.createCompleteJavaFilesPadlModel("", sourcePath, classPathEntry);
 
-			Assert.assertNotNull(idiomLevelModel);
-		}
-		catch (final UnsupportedSourceModelException e) {
-			e.printStackTrace();
-		}
-	}
-	public void test3emeCas() {
-		final String sourcePath =
-			"../PADL Creator JavaFile (Eclipse)/target/test-classes/Nesrine's/3ème Cas/";
-		final String classPathEntry = "";
+      final IIdiomLevelModel idiomLevelModel =
+          (IIdiomLevelModel) new AACRelationshipsAnalysis().invoke(codeLevelModel);
 
-		try {
-			final ICodeLevelModel codeLevelModel =
-				Utils.createCompleteJavaFilesPadlModel(
-					"",
-					sourcePath,
-					classPathEntry);
+      Assert.assertNotNull(idiomLevelModel);
+    } catch (final UnsupportedSourceModelException e) {
+      e.printStackTrace();
+    }
+  }
 
-			final IIdiomLevelModel idiomLevelModel =
-				(IIdiomLevelModel) new AACRelationshipsAnalysis()
-					.invoke(codeLevelModel);
+  public void test3emeCas() {
+    final String sourcePath =
+        "../PADL Creator JavaFile (Eclipse)/target/test-classes/Nesrine's/3ème Cas/";
+    final String classPathEntry = "";
 
-			final IFirstClassEntity clazz =
-				idiomLevelModel
-					.getTopLevelEntityFromID("com.mycompany.business.OrgManager");
-			final ICreation creation =
-				(ICreation) clazz.getConstituentFromID("OrgManager_>PADL<_2");
-			Assert.assertNotNull(creation);
-		}
-		catch (final UnsupportedSourceModelException e) {
-			e.printStackTrace();
-		}
-	}
+    try {
+      final ICodeLevelModel codeLevelModel =
+          Utils.createCompleteJavaFilesPadlModel("", sourcePath, classPathEntry);
+
+      final IIdiomLevelModel idiomLevelModel =
+          (IIdiomLevelModel) new AACRelationshipsAnalysis().invoke(codeLevelModel);
+
+      final IFirstClassEntity clazz =
+          idiomLevelModel.getTopLevelEntityFromID("com.mycompany.business.OrgManager");
+      final ICreation creation = (ICreation) clazz.getConstituentFromID("OrgManager_>PADL<_2");
+      Assert.assertNotNull(creation);
+    } catch (final UnsupportedSourceModelException e) {
+      e.printStackTrace();
+    }
+  }
 }

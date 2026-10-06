@@ -14,7 +14,6 @@ package org.jhotdraw.util;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
-
 import org.jhotdraw.framework.*;
 import org.jhotdraw.framework.Drawing;
 import org.jhotdraw.framework.DrawingView;
@@ -22,192 +21,200 @@ import org.jhotdraw.framework.Figure;
 import org.jhotdraw.framework.Handle;
 
 /**
- * @author  Wolfram Kaiser <mrfloppy@sourceforge.net>
+ * @author Wolfram Kaiser <mrfloppy@sourceforge.net>
  * @version <$CURRENT_VERSION$>
  */
 public class UndoableHandle implements Handle {
 
-	private Handle myWrappedHandle;
-	private DrawingView myDrawingView;
+  private Handle myWrappedHandle;
+  private DrawingView myDrawingView;
 
-	/**
-	 * Constructor for <code>UndoableHandle</code>.
-	 * @param newWrappedHandle
-	 */
-	public UndoableHandle(Handle newWrappedHandle) {
-		setWrappedHandle(newWrappedHandle);
-	}
+  /**
+   * Constructor for <code>UndoableHandle</code>.
+   *
+   * @param newWrappedHandle
+   */
+  public UndoableHandle(Handle newWrappedHandle) {
+    setWrappedHandle(newWrappedHandle);
+  }
 
-	/**
-	 * Constructor for <code>UndoableHandle</code>.
-	 * @param newWrappedHandle
-	 * @param newDrawingView
-	 * @deprecated use the constructor without the DrawingView instead
-	 */
-	public UndoableHandle(Handle newWrappedHandle, DrawingView newDrawingView) {
-		setWrappedHandle(newWrappedHandle);
-		setDrawingView(newDrawingView);
-	}
-	
-	/**
-	 * Locates the handle on the figure. The handle is drawn
-	 * centered around the returned point.
-	 * @see org.jhotdraw.framework.Handle#locate()
-	 */
-	public Point locate() {
-		return getWrappedHandle().locate();
-	}
+  /**
+   * Constructor for <code>UndoableHandle</code>.
+   *
+   * @param newWrappedHandle
+   * @param newDrawingView
+   * @deprecated use the constructor without the DrawingView instead
+   */
+  public UndoableHandle(Handle newWrappedHandle, DrawingView newDrawingView) {
+    setWrappedHandle(newWrappedHandle);
+    setDrawingView(newDrawingView);
+  }
 
-	/**
-	 * Tracks the start of the interaction. The default implementation
-	 * does nothing.
-	 * @param x the x position where the interaction started
-	 * @param y the y position where the interaction started
-	 * @param view the handles container
-	 * @see org.jhotdraw.framework.Handle#invokeStart(int, int, org.jhotdraw.framework.DrawingView)
-	 */
-	public void invokeStart(int x, int y, DrawingView view) {
-		getWrappedHandle().invokeStart(x, y, view);
-	}
+  /**
+   * Locates the handle on the figure. The handle is drawn centered around the returned point.
+   *
+   * @see org.jhotdraw.framework.Handle#locate()
+   */
+  public Point locate() {
+    return getWrappedHandle().locate();
+  }
 
-	/**
-	 * Tracks the start of the interaction. The default implementation
-	 * does nothing.
-	 * @param x the x position where the interaction started
-	 * @param y the y position where the interaction started
-	 * @see org.jhotdraw.framework.Handle#invokeStart(int, int, org.jhotdraw.framework.Drawing)
-	 * @deprecated As of version 4.1,
-	 * use invokeStart(x, y, drawingView)
-	 */
-	public void invokeStart(int x, int y, Drawing drawing) {
-		getWrappedHandle().invokeStart(x, y, drawing);
-	}
+  /**
+   * Tracks the start of the interaction. The default implementation does nothing.
+   *
+   * @param x the x position where the interaction started
+   * @param y the y position where the interaction started
+   * @param view the handles container
+   * @see org.jhotdraw.framework.Handle#invokeStart(int, int, org.jhotdraw.framework.DrawingView)
+   */
+  public void invokeStart(int x, int y, DrawingView view) {
+    getWrappedHandle().invokeStart(x, y, view);
+  }
 
-	/**
-	 * Tracks a step of the interaction.
-	 * @param x the current x position
-	 * @param y the current y position
-	 * @param anchorX the x position where the interaction started
-	 * @param anchorY the y position where the interaction started
-	 * @see org.jhotdraw.framework.Handle#invokeStep(int, int, int, int, org.jhotdraw.framework.DrawingView)
-	 */
-	public void invokeStep(int x, int y, int anchorX, int anchorY, DrawingView view) {
-		getWrappedHandle().invokeStep(x, y, anchorX, anchorY, view);
-	}
+  /**
+   * Tracks the start of the interaction. The default implementation does nothing.
+   *
+   * @param x the x position where the interaction started
+   * @param y the y position where the interaction started
+   * @see org.jhotdraw.framework.Handle#invokeStart(int, int, org.jhotdraw.framework.Drawing)
+   * @deprecated As of version 4.1, use invokeStart(x, y, drawingView)
+   */
+  public void invokeStart(int x, int y, Drawing drawing) {
+    getWrappedHandle().invokeStart(x, y, drawing);
+  }
 
-	/**
-	 * Tracks a step of the interaction.
-	 * @param dx x delta of this step
-	 * @param dy y delta of this step
-	 * @see org.jhotdraw.framework.Handle#invokeStep(int, int, org.jhotdraw.framework.Drawing)
-	 * @deprecated As of version 4.1,
-	 * use invokeStep(x, y, anchorX, anchorY, drawingView)
-	 */
-	public void invokeStep(int dx, int dy, Drawing drawing) {
-		getWrappedHandle().invokeStep(dx, dy, drawing);
-	}
+  /**
+   * Tracks a step of the interaction.
+   *
+   * @param x the current x position
+   * @param y the current y position
+   * @param anchorX the x position where the interaction started
+   * @param anchorY the y position where the interaction started
+   * @see org.jhotdraw.framework.Handle#invokeStep(int, int, int, int,
+   *     org.jhotdraw.framework.DrawingView)
+   */
+  public void invokeStep(int x, int y, int anchorX, int anchorY, DrawingView view) {
+    getWrappedHandle().invokeStep(x, y, anchorX, anchorY, view);
+  }
 
-	/**
-	 * Tracks the end of the interaction.
-	 * @param x the current x position
-	 * @param y the current y position
-	 * @param anchorX the x position where the interaction started
-	 * @param anchorY the y position where the interaction started
-	 * @see org.jhotdraw.framework.Handle#invokeEnd(int, int, int, int, org.jhotdraw.framework.DrawingView)
-	 */
-	public void invokeEnd(int x, int y, int anchorX, int anchorY, DrawingView view) {
-		getWrappedHandle().invokeEnd(x, y, anchorX, anchorY, view);
+  /**
+   * Tracks a step of the interaction.
+   *
+   * @param dx x delta of this step
+   * @param dy y delta of this step
+   * @see org.jhotdraw.framework.Handle#invokeStep(int, int, org.jhotdraw.framework.Drawing)
+   * @deprecated As of version 4.1, use invokeStep(x, y, anchorX, anchorY, drawingView)
+   */
+  public void invokeStep(int dx, int dy, Drawing drawing) {
+    getWrappedHandle().invokeStep(dx, dy, drawing);
+  }
 
-		Undoable undoableActivity = getWrappedHandle().getUndoActivity();
-		if ((undoableActivity != null) && (undoableActivity.isUndoable())) {
-			view.editor().getUndoManager().pushUndo(undoableActivity);
-			view.editor().getUndoManager().clearRedos();
-		}
-	}
+  /**
+   * Tracks the end of the interaction.
+   *
+   * @param x the current x position
+   * @param y the current y position
+   * @param anchorX the x position where the interaction started
+   * @param anchorY the y position where the interaction started
+   * @see org.jhotdraw.framework.Handle#invokeEnd(int, int, int, int,
+   *     org.jhotdraw.framework.DrawingView)
+   */
+  public void invokeEnd(int x, int y, int anchorX, int anchorY, DrawingView view) {
+    getWrappedHandle().invokeEnd(x, y, anchorX, anchorY, view);
 
-	/**
-	 * Tracks the end of the interaction.
-	 * @see org.jhotdraw.framework.Handle#invokeEnd(int, int, org.jhotdraw.framework.Drawing)
-	 * @deprecated As of version 4.1,
-	 * use invokeEnd(x, y, anchorX, anchorY, drawingView).
-	 */
-	public void invokeEnd(int dx, int dy, Drawing drawing) {
-		getWrappedHandle().invokeEnd(dx, dy, drawing);
-	}
+    Undoable undoableActivity = getWrappedHandle().getUndoActivity();
+    if ((undoableActivity != null) && (undoableActivity.isUndoable())) {
+      view.editor().getUndoManager().pushUndo(undoableActivity);
+      view.editor().getUndoManager().clearRedos();
+    }
+  }
 
-	/**
-	 * Gets the handle's owner.
-	 * @see org.jhotdraw.framework.Handle#owner()
-	 */
-	public Figure owner() {
-		return getWrappedHandle().owner();
-	}
+  /**
+   * Tracks the end of the interaction.
+   *
+   * @see org.jhotdraw.framework.Handle#invokeEnd(int, int, org.jhotdraw.framework.Drawing)
+   * @deprecated As of version 4.1, use invokeEnd(x, y, anchorX, anchorY, drawingView).
+   */
+  public void invokeEnd(int dx, int dy, Drawing drawing) {
+    getWrappedHandle().invokeEnd(dx, dy, drawing);
+  }
 
-	/**
-	 * Gets the display box of the handle.
-	 * @see org.jhotdraw.framework.Handle#displayBox()
-	 */
-	public Rectangle displayBox() {
-		return getWrappedHandle().displayBox();
-	}
+  /**
+   * Gets the handle's owner.
+   *
+   * @see org.jhotdraw.framework.Handle#owner()
+   */
+  public Figure owner() {
+    return getWrappedHandle().owner();
+  }
 
-	/**
-	 * Tests if a point is contained in the handle.
-	 * @see org.jhotdraw.framework.Handle#containsPoint(int, int)
-	 */
-	public boolean containsPoint(int x, int y) {
-		return getWrappedHandle().containsPoint(x, y);
-	}
+  /**
+   * Gets the display box of the handle.
+   *
+   * @see org.jhotdraw.framework.Handle#displayBox()
+   */
+  public Rectangle displayBox() {
+    return getWrappedHandle().displayBox();
+  }
 
-	/**
-	 * Draws this handle.
-	 * @see org.jhotdraw.framework.Handle#draw(java.awt.Graphics)
-	 */
-	public void draw(Graphics g) {
-		getWrappedHandle().draw(g);
-	}
+  /**
+   * Tests if a point is contained in the handle.
+   *
+   * @see org.jhotdraw.framework.Handle#containsPoint(int, int)
+   */
+  public boolean containsPoint(int x, int y) {
+    return getWrappedHandle().containsPoint(x, y);
+  }
 
-	protected void setWrappedHandle(Handle newWrappedHandle) {
-		myWrappedHandle = newWrappedHandle;
-	}
-	
-	protected Handle getWrappedHandle() {
-		return myWrappedHandle;
-	}
+  /**
+   * Draws this handle.
+   *
+   * @see org.jhotdraw.framework.Handle#draw(java.awt.Graphics)
+   */
+  public void draw(Graphics g) {
+    getWrappedHandle().draw(g);
+  }
 
-	/**
-	 * @deprecated attribute not required anymore
-	 */
-	public DrawingView getDrawingView() {
-		return myDrawingView;
-	}
-	
-	/**
-	 * @deprecated attribute not required anymore
-	 */
-	protected void setDrawingView(DrawingView newDrawingView) {
-		myDrawingView = newDrawingView;
-	}
+  protected void setWrappedHandle(Handle newWrappedHandle) {
+    myWrappedHandle = newWrappedHandle;
+  }
 
-	/**
-	 * @see org.jhotdraw.framework.Handle#getUndoActivity()
-	 */
-	public Undoable getUndoActivity() {
-		return new UndoableAdapter(getDrawingView());
-	}
+  protected Handle getWrappedHandle() {
+    return myWrappedHandle;
+  }
 
-	/**
-	 * @see org.jhotdraw.framework.Handle#setUndoActivity(org.jhotdraw.util.Undoable)
-	 */
-	public void setUndoActivity(Undoable newUndoableActivity) {
-		// do nothing: always return default UndoableAdapter
-	}
+  /**
+   * @deprecated attribute not required anymore
+   */
+  public DrawingView getDrawingView() {
+    return myDrawingView;
+  }
 
-	/**
-	 * @see org.jhotdraw.framework.Handle#getCursor()
-	 */
-	public Cursor getCursor() {
-		return getWrappedHandle().getCursor();
-	}
+  /**
+   * @deprecated attribute not required anymore
+   */
+  protected void setDrawingView(DrawingView newDrawingView) {
+    myDrawingView = newDrawingView;
+  }
 
+  /**
+   * @see org.jhotdraw.framework.Handle#getUndoActivity()
+   */
+  public Undoable getUndoActivity() {
+    return new UndoableAdapter(getDrawingView());
+  }
+
+  /**
+   * @see org.jhotdraw.framework.Handle#setUndoActivity(org.jhotdraw.util.Undoable)
+   */
+  public void setUndoActivity(Undoable newUndoableActivity) {
+    // do nothing: always return default UndoableAdapter
+  }
+
+  /**
+   * @see org.jhotdraw.framework.Handle#getCursor()
+   */
+  public Cursor getCursor() {
+    return getWrappedHandle().getCursor();
+  }
 }

@@ -34,26 +34,23 @@ import org.argouml.uml.ui.UMLCheckBox2;
  */
 public class UMLStructuralFeatureTargetScopeCheckBox extends UMLCheckBox2 {
 
+  /** Constructor for UMLStructuralFeatureTargetScopeCheckBox. */
+  public UMLStructuralFeatureTargetScopeCheckBox() {
+    super(
+        Translator.localize("label.classifier"),
+        ActionSetStructuralFeatureTargetScope.getInstance(),
+        "targetScope");
+  }
 
-    /**
-     * Constructor for UMLStructuralFeatureTargetScopeCheckBox.
-     */
-    public UMLStructuralFeatureTargetScopeCheckBox() {
-        super(Translator.localize("label.classifier"),
-	      ActionSetStructuralFeatureTargetScope.getInstance(),
-	      "targetScope");
+  /**
+   * @see org.argouml.uml.ui.UMLCheckBox2#buildModel()
+   */
+  public void buildModel() {
+    // repair action for possible NP after load
+    if (Model.getFacade().getTargetScope(getTarget()) == null) {
+      Model.getCoreHelper().setTargetScope(getTarget(), Model.getScopeKind().getInstance());
     }
-
-    /**
-     * @see org.argouml.uml.ui.UMLCheckBox2#buildModel()
-     */
-    public void buildModel() {
-        // repair action for possible NP after load
-        if (Model.getFacade().getTargetScope(getTarget()) == null) {
-            Model.getCoreHelper().setTargetScope(getTarget(),
-                    Model.getScopeKind().getInstance());
-        }
-        setSelected(Model.getFacade().getTargetScope(getTarget()).equals(
-                Model.getScopeKind().getClassifier()));
-    }
+    setSelected(
+        Model.getFacade().getTargetScope(getTarget()).equals(Model.getScopeKind().getClassifier()));
+  }
 }

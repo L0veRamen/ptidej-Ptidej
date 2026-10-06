@@ -29,30 +29,30 @@
  */
 package org.argouml.uml.diagram.ui;
 
-
 import org.argouml.model.Model;
 import org.argouml.ui.CmdSetMode;
 
 /**
- * An extension of CmdSetMode to create all the parts of an association
- * class.
+ * An extension of CmdSetMode to create all the parts of an association class.
  *
  * @author Bob Tarling
  */
-
 public class ActionSetAddAssociationEndMode extends CmdSetMode {
 
-    private static final long serialVersionUID = 2908695768709766241L;
+  private static final long serialVersionUID = 2908695768709766241L;
 
-    /**
-     * Construct a new ActionSetAddAssociationEndMode.<p>
-     *
-     * @param name the action description
-     */
-    public ActionSetAddAssociationEndMode(String name) {
-        super(ModeCreateAssociationEnd.class, "edgeClass",
-              Model.getMetaTypes().getAssociationEnd(), name);
-    }
+  /**
+   * Construct a new ActionSetAddAssociationEndMode.
+   *
+   * <p>
+   *
+   * @param name the action description
+   */
+  public ActionSetAddAssociationEndMode(String name) {
+    super(
+        ModeCreateAssociationEnd.class,
+        "edgeClass",
+        Model.getMetaTypes().getAssociationEnd(),
+        name);
+  }
 }
-
-

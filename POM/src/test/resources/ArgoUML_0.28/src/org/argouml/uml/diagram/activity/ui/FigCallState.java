@@ -25,90 +25,85 @@
 package org.argouml.uml.diagram.activity.ui;
 
 import java.awt.Rectangle;
-
 import org.argouml.notation.NotationProviderFactory2;
 import org.argouml.uml.diagram.DiagramSettings;
 import org.tigris.gef.base.Selection;
 import org.tigris.gef.graph.GraphModel;
 
-
 /**
- * Class to display graphics for a UML CallState in a diagram.<p>
- * 
- * The UML 1.3 standard does not contain a description of CallState
- * in the Notation Guide chapters. The later UML versions correct this omission.
- * So, for UML 1.3 it looks the same as an ActionState, and
- * the only difference with an ActionState is
- * the extra Well-Formedness rule for a CallState.<p>
- * 
- * This Fig resembles the FigActionState very much!
+ * Class to display graphics for a UML CallState in a diagram.
+ *
+ * <p>The UML 1.3 standard does not contain a description of CallState in the Notation Guide
+ * chapters. The later UML versions correct this omission. So, for UML 1.3 it looks the same as an
+ * ActionState, and the only difference with an ActionState is the extra Well-Formedness rule for a
+ * CallState.
+ *
+ * <p>This Fig resembles the FigActionState very much!
  *
  * @author MVW
  */
 public class FigCallState extends FigActionState {
 
-    /**
-     * Main Constructor FigCallState (called from file loading)
-     * @deprecated for 0.27.4 by tfmorris.  Use 
-     * {@link #FigCallState(Object, Rectangle, DiagramSettings)}.
-     */
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    public FigCallState() {
-        super();
-    }
+  /**
+   * Main Constructor FigCallState (called from file loading)
+   *
+   * @deprecated for 0.27.4 by tfmorris. Use {@link #FigCallState(Object, Rectangle,
+   *     DiagramSettings)}.
+   */
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  public FigCallState() {
+    super();
+  }
 
-    /**
-     * Constructor FigCallState that hooks the Fig into
-     * an existing UML model element
-     * @param gm ignored!
-     * @param node owner, i.e. the UML element
-     * @deprecated for 0.27.4 by tfmorris.  Use 
-     * {@link #FigCallState(Object, Rectangle, DiagramSettings)}.
-     */
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    public FigCallState(@SuppressWarnings("unused") GraphModel gm, 
-            Object node) {
-        this();
-        setOwner(node);
-    }
-    
-    /**
-     * Construct a new FigCallState.
-     * 
-     * @param owner owning UML element
-     * @param bounds position and size
-     * @param settings rendering settings
-     */
-    public FigCallState(Object owner, Rectangle bounds, 
-            DiagramSettings settings) {
-        super(owner, bounds, settings);
-    }
+  /**
+   * Constructor FigCallState that hooks the Fig into an existing UML model element
+   *
+   * @param gm ignored!
+   * @param node owner, i.e. the UML element
+   * @deprecated for 0.27.4 by tfmorris. Use {@link #FigCallState(Object, Rectangle,
+   *     DiagramSettings)}.
+   */
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  public FigCallState(@SuppressWarnings("unused") GraphModel gm, Object node) {
+    this();
+    setOwner(node);
+  }
 
-    /*
-     * @see org.argouml.uml.diagram.activity.ui.FigActionState#getNotationProviderType()
-     */
-    @Override
-    protected int getNotationProviderType() {
-        return NotationProviderFactory2.TYPE_CALLSTATE;
-    }
+  /**
+   * Construct a new FigCallState.
+   *
+   * @param owner owning UML element
+   * @param bounds position and size
+   * @param settings rendering settings
+   */
+  public FigCallState(Object owner, Rectangle bounds, DiagramSettings settings) {
+    super(owner, bounds, settings);
+  }
 
-    /*
-     * @see java.lang.Object#clone()
-     */
-    @Override
-    public Object clone() {
-        FigCallState figClone = (FigCallState) super.clone();
-        return figClone;
-    }
+  /*
+   * @see org.argouml.uml.diagram.activity.ui.FigActionState#getNotationProviderType()
+   */
+  @Override
+  protected int getNotationProviderType() {
+    return NotationProviderFactory2.TYPE_CALLSTATE;
+  }
 
-    /*
-     * @see org.argouml.uml.diagram.state.ui.FigStateVertex#makeSelection()
-     */
-    @Override
-    public Selection makeSelection() {
-        return new SelectionCallState(this);
-    }
+  /*
+   * @see java.lang.Object#clone()
+   */
+  @Override
+  public Object clone() {
+    FigCallState figClone = (FigCallState) super.clone();
+    return figClone;
+  }
 
+  /*
+   * @see org.argouml.uml.diagram.state.ui.FigStateVertex#makeSelection()
+   */
+  @Override
+  public Selection makeSelection() {
+    return new SelectionCallState(this);
+  }
 }

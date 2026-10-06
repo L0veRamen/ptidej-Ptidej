@@ -29,7 +29,6 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.AbstractAction;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultListSelectionModel;
@@ -44,7 +43,6 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
@@ -56,243 +54,230 @@ import org.argouml.uml.ui.foundation.extension_mechanisms.UMLTagDefinitionComboB
 import org.tigris.gef.presentation.Fig;
 import org.tigris.toolbar.ToolBar;
 
-/**
- * Table view of a Model Element's Tagged Values.
- */
+/** Table view of a Model Element's Tagged Values. */
 public class TabTaggedValues extends AbstractArgoJPanel
     implements TabModelTarget, ListSelectionListener {
 
-    ////////////////////////////////////////////////////////////////
-    // instance variables
-    private Object target;
-    private TabTaggedValuesModel tableModel = null;
-    private boolean shouldBeEnabled = false;
-    private JTable table = new JTable(10, 2);
-    private JLabel titleLabel;
-    private JToolBar buttonPanel;
+  ////////////////////////////////////////////////////////////////
+  // instance variables
+  private Object target;
 
-    private UMLComboBox2 tagDefinitionsComboBox;
+  private TabTaggedValuesModel tableModel = null;
+  private boolean shouldBeEnabled = false;
+  private JTable table = new JTable(10, 2);
+  private JLabel titleLabel;
+  private JToolBar buttonPanel;
 
-    private UMLComboBoxModel2 tagDefinitionsComboBoxModel;
+  private UMLComboBox2 tagDefinitionsComboBox;
 
+  private UMLComboBoxModel2 tagDefinitionsComboBoxModel;
 
-    /**
-     * The constructor.
-     */
-    public TabTaggedValues() {
-        super("tab.tagged-values");
-        buttonPanel = new ToolBar();
-        buttonPanel.putClientProperty("JToolBar.isRollover",  Boolean.TRUE);
-        buttonPanel.setFloatable(false);
+  /** The constructor. */
+  public TabTaggedValues() {
+    super("tab.tagged-values");
+    buttonPanel = new ToolBar();
+    buttonPanel.putClientProperty("JToolBar.isRollover", Boolean.TRUE);
+    buttonPanel.setFloatable(false);
 
-        JButton b = new JButton();
-        buttonPanel.add(b);
-        b.setToolTipText(
-                Translator.localize("button.button.new-tagdefinition"));
-        b.setAction(new ActionNewTagDefinition());
+    JButton b = new JButton();
+    buttonPanel.add(b);
+    b.setToolTipText(Translator.localize("button.button.new-tagdefinition"));
+    b.setAction(new ActionNewTagDefinition());
 
-        b = new JButton();
-        buttonPanel.add(b);
-        b.setToolTipText(Translator.localize("button.delete"));
-        b.setAction(new ActionRemoveTaggedValue(this));
-  
-        tableModel = new TabTaggedValuesModel(this);
-        table.setModel(tableModel);
-        table.setRowSelectionAllowed(false);
-        tagDefinitionsComboBoxModel = new UMLTagDefinitionComboBoxModel();
-        tagDefinitionsComboBox = new UMLComboBox2(tagDefinitionsComboBoxModel);
-        //tagDefinitionsComboBox.setDoubleBuffered(true);
-        //tagDefinitionsComboBox.setEditable(true);
-        Class tagDefinitionClass = (Class) Model.getMetaTypes()
-                .getTagDefinition();
-        tagDefinitionsComboBox.setRenderer(new UMLListCellRenderer2(false));
-        table.setDefaultEditor(tagDefinitionClass,
-                new DefaultCellEditor(tagDefinitionsComboBox));
-        table.setDefaultRenderer(tagDefinitionClass,
-                new UMLTableCellRenderer());
-        table.getSelectionModel().addListSelectionListener(this);
+    b = new JButton();
+    buttonPanel.add(b);
+    b.setToolTipText(Translator.localize("button.delete"));
+    b.setAction(new ActionRemoveTaggedValue(this));
 
-        JScrollPane sp = new JScrollPane(table);
-        Font labelFont = LookAndFeelMgr.getInstance().getSmallFont();
-        table.setFont(labelFont);
+    tableModel = new TabTaggedValuesModel(this);
+    table.setModel(tableModel);
+    table.setRowSelectionAllowed(false);
+    tagDefinitionsComboBoxModel = new UMLTagDefinitionComboBoxModel();
+    tagDefinitionsComboBox = new UMLComboBox2(tagDefinitionsComboBoxModel);
+    // tagDefinitionsComboBox.setDoubleBuffered(true);
+    // tagDefinitionsComboBox.setEditable(true);
+    Class tagDefinitionClass = (Class) Model.getMetaTypes().getTagDefinition();
+    tagDefinitionsComboBox.setRenderer(new UMLListCellRenderer2(false));
+    table.setDefaultEditor(tagDefinitionClass, new DefaultCellEditor(tagDefinitionsComboBox));
+    table.setDefaultRenderer(tagDefinitionClass, new UMLTableCellRenderer());
+    table.getSelectionModel().addListSelectionListener(this);
 
-        titleLabel = new JLabel("none");
-        resizeColumns();
-        setLayout(new BorderLayout());
-        titleLabel.setLabelFor(buttonPanel);
+    JScrollPane sp = new JScrollPane(table);
+    Font labelFont = LookAndFeelMgr.getInstance().getSmallFont();
+    table.setFont(labelFont);
 
-        JPanel topPane = new JPanel(new BorderLayout());
-        topPane.add(titleLabel, BorderLayout.WEST);
-        topPane.add(buttonPanel, BorderLayout.CENTER);
+    titleLabel = new JLabel("none");
+    resizeColumns();
+    setLayout(new BorderLayout());
+    titleLabel.setLabelFor(buttonPanel);
 
-        add(topPane, BorderLayout.NORTH);
-        add(sp, BorderLayout.CENTER);
+    JPanel topPane = new JPanel(new BorderLayout());
+    topPane.add(titleLabel, BorderLayout.WEST);
+    topPane.add(buttonPanel, BorderLayout.CENTER);
+
+    add(topPane, BorderLayout.NORTH);
+    add(sp, BorderLayout.CENTER);
+  }
+
+  /** Resize the columns. */
+  public void resizeColumns() {
+    TableColumn keyCol = table.getColumnModel().getColumn(0);
+    TableColumn valCol = table.getColumnModel().getColumn(1);
+    keyCol.setMinWidth(50);
+    keyCol.setWidth(150);
+    keyCol.setPreferredWidth(150);
+    valCol.setMinWidth(250);
+    valCol.setWidth(550);
+    valCol.setPreferredWidth(550);
+    // _table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+    table.sizeColumnsToFit(-1);
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // accessors
+
+  /**
+   * @see org.argouml.ui.TabTarget#setTarget(java.lang.Object)
+   */
+  public void setTarget(Object theTarget) {
+    if (table.isEditing()) {
+      TableCellEditor ce = table.getCellEditor();
+      if (ce != null && !ce.stopCellEditing()) {
+        ce.cancelCellEditing();
+      }
     }
 
-    /**
-     * Resize the columns.
-     */
-    public void resizeColumns() {
-        TableColumn keyCol = table.getColumnModel().getColumn(0);
-        TableColumn valCol = table.getColumnModel().getColumn(1);
-        keyCol.setMinWidth(50);
-        keyCol.setWidth(150);
-        keyCol.setPreferredWidth(150);
-        valCol.setMinWidth(250);
-        valCol.setWidth(550);
-        valCol.setPreferredWidth(550);
-        //_table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-        table.sizeColumnsToFit(-1);
+    Object t = (theTarget instanceof Fig) ? ((Fig) theTarget).getOwner() : theTarget;
+    if (!(Model.getFacade().isAModelElement(t))) {
+      target = null;
+      shouldBeEnabled = false;
+      return;
     }
+    target = t;
+    shouldBeEnabled = true;
 
-    ////////////////////////////////////////////////////////////////
-    // accessors
+    tagDefinitionsComboBoxModel.setTarget(t);
 
-    /**
-     * @see org.argouml.ui.TabTarget#setTarget(java.lang.Object)
-     */
-    public void setTarget(Object theTarget) {
-        if (table.isEditing()) {
-            TableCellEditor ce = table.getCellEditor();
-            if (ce != null && !ce.stopCellEditing()) {
-                ce.cancelCellEditing();
-            }
-        }
+    table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
-        Object t = (theTarget instanceof Fig)
-                    ? ((Fig) theTarget).getOwner() : theTarget;
-        if (!(Model.getFacade().isAModelElement(t))) {
-            target = null;
-            shouldBeEnabled = false;
-            return;
-        }
-        target = t;
-        shouldBeEnabled = true;
+    tableModel.setTarget(target);
+    table.sizeColumnsToFit(0);
 
-        tagDefinitionsComboBoxModel.setTarget(t);
-
-        table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-
-        tableModel.setTarget(target);
-        table.sizeColumnsToFit(0);
-
-        if (target != null) {
-            titleLabel.setText("Target: "
-				+ Model.getFacade().getUMLClassName(target)
-				+ " ("
-				+ Model.getFacade().getName(target) + ")");
-        } else {
-            titleLabel.setText("none");
-        }
-        validate();
+    if (target != null) {
+      titleLabel.setText(
+          "Target: "
+              + Model.getFacade().getUMLClassName(target)
+              + " ("
+              + Model.getFacade().getName(target)
+              + ")");
+    } else {
+      titleLabel.setText("none");
     }
+    validate();
+  }
 
-    /**
-     * @see org.argouml.ui.TabTarget#getTarget()
-     */
-    public Object getTarget() { return target; }
+  /**
+   * @see org.argouml.ui.TabTarget#getTarget()
+   */
+  public Object getTarget() {
+    return target;
+  }
 
-    /**
-     * @see org.argouml.ui.TabTarget#refresh()
-     */
-    public void refresh() { setTarget(target); }
+  /**
+   * @see org.argouml.ui.TabTarget#refresh()
+   */
+  public void refresh() {
+    setTarget(target);
+  }
 
-    /**
-     * @see org.argouml.ui.TabTarget#shouldBeEnabled(java.lang.Object)
-     */
-    public boolean shouldBeEnabled(Object theTarget) {
-        Object t = (theTarget instanceof Fig)
-            ? ((Fig) theTarget).getOwner() : theTarget;
-        if (!(Model.getFacade().isAModelElement(t))) {
-            shouldBeEnabled = false;
-            return shouldBeEnabled;
-        }
-        shouldBeEnabled = true;
-        return true;
+  /**
+   * @see org.argouml.ui.TabTarget#shouldBeEnabled(java.lang.Object)
+   */
+  public boolean shouldBeEnabled(Object theTarget) {
+    Object t = (theTarget instanceof Fig) ? ((Fig) theTarget).getOwner() : theTarget;
+    if (!(Model.getFacade().isAModelElement(t))) {
+      shouldBeEnabled = false;
+      return shouldBeEnabled;
     }
+    shouldBeEnabled = true;
+    return true;
+  }
 
-    /**
-     * @see org.argouml.ui.targetmanager.TargetListener#targetAdded(
-     *         org.argouml.ui.targetmanager.TargetEvent)
-     */
-    public void targetAdded(TargetEvent e) {
-        setTarget(e.getNewTarget());
+  /**
+   * @see org.argouml.ui.targetmanager.TargetListener#targetAdded(
+   *     org.argouml.ui.targetmanager.TargetEvent)
+   */
+  public void targetAdded(TargetEvent e) {
+    setTarget(e.getNewTarget());
+  }
+
+  /**
+   * @see org.argouml.ui.targetmanager.TargetListener#targetRemoved(
+   *     org.argouml.ui.targetmanager.TargetEvent)
+   */
+  public void targetRemoved(TargetEvent e) {
+    setTarget(e.getNewTarget());
+  }
+
+  /**
+   * @see org.argouml.ui.targetmanager.TargetListener#targetSet(
+   *     org.argouml.ui.targetmanager.TargetEvent)
+   */
+  public void targetSet(TargetEvent e) {
+    setTarget(e.getNewTarget());
+  }
+
+  /**
+   * @return Returns the tableModel.
+   */
+  protected TabTaggedValuesModel getTableModel() {
+    return tableModel;
+  }
+
+  /**
+   * @return Returns the table.
+   */
+  protected JTable getTable() {
+    return table;
+  }
+
+  /**
+   * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
+   */
+  public void valueChanged(ListSelectionEvent e) {
+    if (!e.getValueIsAdjusting()) {
+      DefaultListSelectionModel sel = (DefaultListSelectionModel) e.getSource();
+      ArrayList tvs = new ArrayList(Model.getFacade().getTaggedValuesCollection(target));
+      if (sel.getLeadSelectionIndex() < tvs.size()) {
+        Object tagDef = Model.getFacade().getTagDefinition(tvs.get(sel.getLeadSelectionIndex()));
+        tagDefinitionsComboBoxModel.setSelectedItem(tagDef);
+      }
     }
-
-    /**
-     * @see org.argouml.ui.targetmanager.TargetListener#targetRemoved(
-     *         org.argouml.ui.targetmanager.TargetEvent)
-     */
-    public void targetRemoved(TargetEvent e) {
-        setTarget(e.getNewTarget());
-
-    }
-
-    /**
-     * @see org.argouml.ui.targetmanager.TargetListener#targetSet(
-     *         org.argouml.ui.targetmanager.TargetEvent)
-     */
-    public void targetSet(TargetEvent e) {
-        setTarget(e.getNewTarget());
-    }
-
-    /**
-     * @return Returns the tableModel.
-     */
-    protected TabTaggedValuesModel getTableModel() {
-        return tableModel;
-    }
-    /**
-     * @return Returns the table.
-     */
-    protected JTable getTable() {
-        return table;
-    }
-
-    /**
-     * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
-     */
-    public void valueChanged(ListSelectionEvent e) {
-        if (!e.getValueIsAdjusting()) {
-            DefaultListSelectionModel sel = (DefaultListSelectionModel) e
-                    .getSource();
-            ArrayList tvs = new ArrayList(Model.getFacade()
-                    .getTaggedValuesCollection(target));
-            if (sel.getLeadSelectionIndex() < tvs.size()) {
-                Object tagDef = Model.getFacade().getTagDefinition(
-                        tvs.get(sel.getLeadSelectionIndex()));
-                tagDefinitionsComboBoxModel.setSelectedItem(tagDef);
-            }
-        }
-    }
-
+  }
 } /* end class TabTaggedValues */
 
 class ActionRemoveTaggedValue extends AbstractAction {
 
-    private TabTaggedValues tab;
+  private TabTaggedValues tab;
 
-    /**
-     * The constructor.
-     */
-    public ActionRemoveTaggedValue(TabTaggedValues tabtv) {
-        super("", ResourceLoaderWrapper.lookupIconResource("Delete"));
-        tab = tabtv;
-    }
+  /** The constructor. */
+  public ActionRemoveTaggedValue(TabTaggedValues tabtv) {
+    super("", ResourceLoaderWrapper.lookupIconResource("Delete"));
+    tab = tabtv;
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        TabTaggedValuesModel model = tab.getTableModel();
-        JTable table = tab.getTable();
-        int row = table.getSelectedRow();
-        List c = new ArrayList(
-                Model.getFacade().getTaggedValuesCollection(tab.getTarget()));
-        if ((row != -1) && (c.size() > row)) {
-            c.remove(row);
-            Model.getCoreHelper().setTaggedValues(tab.getTarget(), c);
-            model.fireTableChanged(new TableModelEvent(model));
-        }
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    TabTaggedValuesModel model = tab.getTableModel();
+    JTable table = tab.getTable();
+    int row = table.getSelectedRow();
+    List c = new ArrayList(Model.getFacade().getTaggedValuesCollection(tab.getTarget()));
+    if ((row != -1) && (c.size() > row)) {
+      c.remove(row);
+      Model.getCoreHelper().setTaggedValues(tab.getTarget(), c);
+      model.fireTableChanged(new TableModelEvent(model));
     }
+  }
 }

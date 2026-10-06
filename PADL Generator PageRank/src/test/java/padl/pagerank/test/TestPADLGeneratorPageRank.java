@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -16,12 +16,15 @@ import junit.framework.TestSuite;
  * @author yann
  */
 public class TestPADLGeneratorPageRank extends TestSuite {
-	public static TestSuite suite() {
-		final TestPADLGeneratorPageRank suite = new TestPADLGeneratorPageRank();
-		suite.setName(TestPADLGeneratorPageRank.class.getName());
+  public static TestSuite suite() {
+    final TestPADLGeneratorPageRank suite = new TestPADLGeneratorPageRank();
+    suite.setName(TestPADLGeneratorPageRank.class.getName());
 
-		suite.addTestSuite(SanityTest.class);
+    suite.addTestSuite(SanityTest.class);
+    suite.addTestSuite(RankingTest.class);
+    suite.addTestSuite(PageRankRankingBuilderTest.class);
+    suite.addTestSuite(InputDataGeneratorTest.class);
 
-		return suite;
-	}
+    return suite;
+  }
 }

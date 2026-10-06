@@ -3,42 +3,31 @@ package net.intensicode.idea.config.loaded;
 import net.intensicode.idea.config.CommentConfiguration;
 import net.intensicode.idea.config.ConfigurationProperties;
 
+/** TODO: Describe this! */
+final class LoadedCommentConfiguration implements CommentConfiguration {
+  LoadedCommentConfiguration(final ConfigurationProperties aProperties) {
+    myProperties = aProperties;
+  }
 
+  // From CommentConfiguration
 
-/**
- * TODO: Describe this!
- */
-final class LoadedCommentConfiguration implements CommentConfiguration
-{
-    LoadedCommentConfiguration( final ConfigurationProperties aProperties )
-    {
-        myProperties = aProperties;
-    }
+  public final String getLineCommentPrefix() {
+    return myProperties.getProperty(COMMENT_LINE);
+  }
 
-    // From CommentConfiguration
+  public final String getBlockCommentPrefix() {
+    return myProperties.getProperty(COMMENT_BLOCK_PREFIX);
+  }
 
-    public final String getLineCommentPrefix()
-    {
-        return myProperties.getProperty( COMMENT_LINE );
-    }
+  public final String getBlockCommentSuffix() {
+    return myProperties.getProperty(COMMENT_BLOCK_SUFFIX);
+  }
 
-    public final String getBlockCommentPrefix()
-    {
-        return myProperties.getProperty( COMMENT_BLOCK_PREFIX );
-    }
+  private final ConfigurationProperties myProperties;
 
-    public final String getBlockCommentSuffix()
-    {
-        return myProperties.getProperty( COMMENT_BLOCK_SUFFIX );
-    }
+  private static final String COMMENT_LINE = "Comment.Line";
 
+  private static final String COMMENT_BLOCK_PREFIX = "Comment.BlockPrefix";
 
-
-    private final ConfigurationProperties myProperties;
-
-    private static final String COMMENT_LINE = "Comment.Line";
-
-    private static final String COMMENT_BLOCK_PREFIX = "Comment.BlockPrefix";
-
-    private static final String COMMENT_BLOCK_SUFFIX = "Comment.BlockSuffix";
+  private static final String COMMENT_BLOCK_SUFFIX = "Comment.BlockSuffix";
 }

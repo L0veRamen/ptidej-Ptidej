@@ -25,7 +25,6 @@
 package org.argouml.uml.ui.foundation.core;
 
 import junit.framework.TestCase;
-
 import org.argouml.model.Model;
 
 /**
@@ -34,88 +33,74 @@ import org.argouml.model.Model;
  */
 public class TestUMLModelElementElementResidenceListModel extends TestCase {
 
-    /**
-     * The element.
-     */
-    private Object elem;
+  /** The element. */
+  private Object elem;
 
-    /**
-     * The model that we test.
-     */
-    private UMLModelElementElementResidenceListModel list;
+  /** The model that we test. */
+  private UMLModelElementElementResidenceListModel list;
 
-    /**
-     * Constructor for TestUMLModelElementElementResidenceListModel.
-     * @param arg0 is the name of the test case.
-     */
-    public TestUMLModelElementElementResidenceListModel(String arg0) {
-        super(arg0);
+  /**
+   * Constructor for TestUMLModelElementElementResidenceListModel.
+   *
+   * @param arg0 is the name of the test case.
+   */
+  public TestUMLModelElementElementResidenceListModel(String arg0) {
+    super(arg0);
+  }
+
+  /**
+   * @see junit.framework.TestCase#setUp()
+   */
+  protected void setUp() throws Exception {
+    super.setUp();
+    elem = Model.getUmlFactory().buildNode(Model.getMetaTypes().getUMLClass());
+    list = new UMLModelElementElementResidenceListModel();
+    list.setTarget(elem);
+    Model.getPump().addModelEventListener(list, elem);
+    Model.getPump().flushModelEvents();
+  }
+
+  /**
+   * @see junit.framework.TestCase#tearDown()
+   */
+  protected void tearDown() throws Exception {
+    super.tearDown();
+    //        elem.remove();
+    //        Model.getUmlFactory().delete(elem);
+    list = null;
+  }
+
+  /** Test addElementResidence(). */
+  public void testElementAdded() {
+    Object res = Model.getCoreFactory().createElementResidence();
+    Model.getCoreHelper().addElementResidence(elem, res);
+    Model.getPump().flushModelEvents();
+    assertTrue(list.getSize() == 1);
+    assertTrue(list.getElementAt(0) == res);
+  }
+
+  /** Test removeElementResidence(). */
+  public void testElementRemoved() {
+    Object res = Model.getCoreFactory().createElementResidence();
+    Model.getCoreHelper().addElementResidence(elem, res);
+    Model.getPump().flushModelEvents();
+    assertTrue(list.getSize() == 1);
+    assertTrue(list.getElementAt(0) == res);
+    Model.getCoreHelper().removeElementResidence(elem, res);
+    Model.getPump().flushModelEvents();
+    assertTrue(list.getSize() == 0);
+  }
+
+  /** Test getting an element when there is none. */
+  public void testNoElements() {
+    Model.getPump().flushModelEvents();
+    try {
+      list.getElementAt(0);
+      fail();
+    } catch (ArrayIndexOutOfBoundsException a) {
+      // The correct exception is thrown.
     }
-
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        elem =
-            Model.getUmlFactory().buildNode(
-                Model.getMetaTypes().getUMLClass());
-        list = new UMLModelElementElementResidenceListModel();
-        list.setTarget(elem);
-        Model.getPump().addModelEventListener(list, elem);
-        Model.getPump().flushModelEvents();
-    }
-
-    /**
-     * @see junit.framework.TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-//        elem.remove();
-//        Model.getUmlFactory().delete(elem);
-        list = null;
-    }
-
-    /**
-     * Test addElementResidence().
-     */
-    public void testElementAdded() {
-        Object res = Model.getCoreFactory().createElementResidence();
-        Model.getCoreHelper().addElementResidence(elem, res);
-        Model.getPump().flushModelEvents();
-        assertTrue(list.getSize() == 1);
-        assertTrue(list.getElementAt(0) == res);
-    }
-
-    /**
-     * Test removeElementResidence().
-     */
-    public void testElementRemoved() {
-        Object res = Model.getCoreFactory().createElementResidence();
-        Model.getCoreHelper().addElementResidence(elem, res);
-        Model.getPump().flushModelEvents();
-        assertTrue(list.getSize() == 1);
-        assertTrue(list.getElementAt(0) == res);
-        Model.getCoreHelper().removeElementResidence(elem, res);
-        Model.getPump().flushModelEvents();
-        assertTrue(list.getSize() == 0);
-    }
-
-    /**
-     * Test getting an element when there is none.
-     */
-    public void testNoElements() {
-        Model.getPump().flushModelEvents();
-        try {
-            list.getElementAt(0);
-            fail();
-        } catch (ArrayIndexOutOfBoundsException a) {
-            // The correct exception is thrown.
-        }
-        assertTrue(list.size() == 0);
-        assertTrue(Model.getFacade().getElementResidences(elem).isEmpty());
-    }
-
-
-
+    assertTrue(list.size() == 0);
+    assertTrue(Model.getFacade().getElementResidences(elem).isEmpty());
+  }
 }

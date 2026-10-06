@@ -25,7 +25,6 @@
 package org.argouml.uml.ui.behavior.collaborations;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
@@ -33,41 +32,34 @@ import org.argouml.uml.ui.UMLComboBox2;
 import org.tigris.gef.undo.UndoableAction;
 
 /**
- * This Action sets the represented classifier 
- * of a collaboration.
- * 
+ * This Action sets the represented classifier of a collaboration.
+ *
  * @author michiel
  */
 class ActionSetRepresentedClassifierCollaboration extends UndoableAction {
 
-    /**
-     * Constructor for ActionSetCompositeStateConcurrent.
-     */
-    ActionSetRepresentedClassifierCollaboration() {
-        super(Translator.localize("action.set"),
-                ResourceLoaderWrapper.lookupIcon("action.set"));
-    }
+  /** Constructor for ActionSetCompositeStateConcurrent. */
+  ActionSetRepresentedClassifierCollaboration() {
+    super(Translator.localize("action.set"), ResourceLoaderWrapper.lookupIcon("action.set"));
+  }
 
-    /*
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        if (e.getSource() instanceof UMLComboBox2) {
-            UMLComboBox2 source = (UMLComboBox2) e.getSource();
-            Object target = source.getTarget();
-            Object newValue = source.getSelectedItem();
-            /* The selected value may be "" to 
-             * clear the represented classifier. */
-            if (!Model.getFacade().isAClassifier(newValue)) {
-                newValue = null;
-            }
-            if (Model.getFacade().getRepresentedClassifier(target)
-                    != newValue) {
-                Model.getCollaborationsHelper().setRepresentedClassifier(
-                        target, newValue);
-            }
-        }
+  /*
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    if (e.getSource() instanceof UMLComboBox2) {
+      UMLComboBox2 source = (UMLComboBox2) e.getSource();
+      Object target = source.getTarget();
+      Object newValue = source.getSelectedItem();
+      /* The selected value may be "" to
+       * clear the represented classifier. */
+      if (!Model.getFacade().isAClassifier(newValue)) {
+        newValue = null;
+      }
+      if (Model.getFacade().getRepresentedClassifier(target) != newValue) {
+        Model.getCollaborationsHelper().setRepresentedClassifier(target, newValue);
+      }
     }
-
+  }
 }

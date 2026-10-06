@@ -25,9 +25,7 @@
 package org.argouml.ui;
 
 import java.awt.Frame;
-
 import javax.swing.AbstractButton;
-
 import org.argouml.i18n.Translator;
 import org.tigris.swidgets.Dialog;
 
@@ -38,56 +36,50 @@ import org.tigris.swidgets.Dialog;
  */
 public class ArgoDialog extends Dialog {
 
-    /**
-     * Suffix to calculate the mnemonic key from the key.
-     */
-    private static final String MNEMONIC_KEY_SUFFIX = ".mnemonic";
+  /** Suffix to calculate the mnemonic key from the key. */
+  private static final String MNEMONIC_KEY_SUFFIX = ".mnemonic";
 
-    /**
-     * @see Dialog#Dialog(Frame, String, boolean)
-     *
-     * Creates a new ArgoDialog with the default optionType.
-     */
-    public ArgoDialog(Frame owner, String title, boolean modal) {
-        super(owner, title, modal);
-    }
+  /**
+   * @see Dialog#Dialog(Frame, String, boolean)
+   *     <p>Creates a new ArgoDialog with the default optionType.
+   */
+  public ArgoDialog(Frame owner, String title, boolean modal) {
+    super(owner, title, modal);
+  }
 
-    /**
-     * @see Dialog#Dialog(Frame, String, int, boolean)
-     *
-     * Creates a new ArgoDialog with the specified optionType.
-     */
-    public ArgoDialog(Frame owner,
-		      String title, int optionType, boolean modal) {
-        super(owner, title, optionType, modal);
-    }
+  /**
+   * @see Dialog#Dialog(Frame, String, int, boolean)
+   *     <p>Creates a new ArgoDialog with the specified optionType.
+   */
+  public ArgoDialog(Frame owner, String title, int optionType, boolean modal) {
+    super(owner, title, optionType, modal);
+  }
 
-    /**
-     * @see org.tigris.swidgets.Dialog#nameButtons()
-     */
-    protected void nameButtons() {
-        nameButton(getOkButton(), "button.ok");
-        nameButton(getCancelButton(), "button.cancel");
-        nameButton(getCloseButton(), "button.close");
-        nameButton(getYesButton(), "button.yes");
-        nameButton(getNoButton(), "button.no");
-        nameButton(getHelpButton(), "button.help");
-    }
+  /**
+   * @see org.tigris.swidgets.Dialog#nameButtons()
+   */
+  protected void nameButtons() {
+    nameButton(getOkButton(), "button.ok");
+    nameButton(getCancelButton(), "button.cancel");
+    nameButton(getCloseButton(), "button.close");
+    nameButton(getYesButton(), "button.yes");
+    nameButton(getNoButton(), "button.no");
+    nameButton(getHelpButton(), "button.help");
+  }
 
-    /**
-     * Allocates names for a button.
-     *
-     * @param button The button to give names.
-     * @param key The key used to localize the button.
-     */
-    protected void nameButton(AbstractButton button, String key) {
-        if (button != null) {
-            button.setText(Translator.localize(key));
-            String mnemonic =
-		Translator.localize(key + MNEMONIC_KEY_SUFFIX);
-            if (mnemonic != null && mnemonic.length() > 0) {
-                button.setMnemonic(mnemonic.charAt(0));
-            }
-        }
+  /**
+   * Allocates names for a button.
+   *
+   * @param button The button to give names.
+   * @param key The key used to localize the button.
+   */
+  protected void nameButton(AbstractButton button, String key) {
+    if (button != null) {
+      button.setText(Translator.localize(key));
+      String mnemonic = Translator.localize(key + MNEMONIC_KEY_SUFFIX);
+      if (mnemonic != null && mnemonic.length() > 0) {
+        button.setMnemonic(mnemonic.charAt(0));
+      }
     }
+  }
 }

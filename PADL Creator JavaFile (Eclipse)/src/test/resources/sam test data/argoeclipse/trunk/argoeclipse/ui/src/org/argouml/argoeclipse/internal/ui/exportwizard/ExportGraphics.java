@@ -24,86 +24,87 @@
 
 package org.argouml.argoeclipse.internal.ui.exportwizard;
 
+import org.argouml.argoeclipse.internal.core.model.Register;
+import org.argouml.argoeclipse.internal.ui.model.Actions;
+import org.argouml.argoeclipse.internal.ui.util.HybridAction;
+import org.argouml.argoeclipse.internal.ui.wizard.ExternalResourcePage;
+import org.argouml.uml.ui.ActionSaveGraphics;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 
-import org.argouml.argoeclipse.internal.core.model.Register;
-import org.argouml.argoeclipse.internal.ui.model.Actions;
-import org.argouml.argoeclipse.internal.ui.util.HybridAction;
-import org.argouml.argoeclipse.internal.ui.wizard.ExternalResourcePage;
-import org.argouml.uml.ui.ActionSaveGraphics;
-
 /**
  * Deals with the export Graphics wizard.
- * @author Bogdan Pistol 
+ *
+ * @author Bogdan Pistol
  */
 public class ExportGraphics extends Wizard implements IExportWizard {
-    
-    static final String[] FILE_EXTENSIONS = new String[] {"png",  //$NON-NLS-1$
-                                                          "gif",  //$NON-NLS-1$
-                                                          "svg",  //$NON-NLS-1$
-                                                          "ps",  //$NON-NLS-1$
-                                                          "eps"  //$NON-NLS-1$
-    };
 
-    /**
-     * The wizard page.
-     */
-    private ExternalResourcePage page;
-     
-    /*
-     * @see org.eclipse.jface.wizard.Wizard#addPage(org.eclipse.jface.wizard.IWizardPage)
-     */
-    public void addPages() {
-        if (!verifyProjectOpen()) {
-            return;
-        }
-        page = new ExternalResourcePage(
-                ExportWizardMessages.exportGraphicsTitle,
-                ExportWizardMessages.exportGraphicsDescription, 
-                FILE_EXTENSIONS,
-                ExternalResourcePage.EXPORT_FILE);
-        addPage(page);
+  static final String[] FILE_EXTENSIONS =
+      new String[] {
+        "png", //$NON-NLS-1$
+        "gif", //$NON-NLS-1$
+        "svg", //$NON-NLS-1$
+        "ps", //$NON-NLS-1$
+        "eps" //$NON-NLS-1$
+      };
+
+  /** The wizard page. */
+  private ExternalResourcePage page;
+
+  /*
+   * @see org.eclipse.jface.wizard.Wizard#addPage(org.eclipse.jface.wizard.IWizardPage)
+   */
+  public void addPages() {
+    if (!verifyProjectOpen()) {
+      return;
     }
+    page =
+        new ExternalResourcePage(
+            ExportWizardMessages.exportGraphicsTitle,
+            ExportWizardMessages.exportGraphicsDescription,
+            FILE_EXTENSIONS,
+            ExternalResourcePage.EXPORT_FILE);
+    addPage(page);
+  }
 
-    /**
-     * Verifies if the diagram editor is opened.
-     * @return true for opened and false otherwise
-     */
-    protected boolean verifyProjectOpen() {
-        if (!Register.getInstance().isRegistered(Register.EDITOR)) {
-            MessageDialog.openError(getShell(),
-                    ExportWizardMessages.diagramWarningTitle,
-                    ExportWizardMessages.diagramWarningDescription);
-            return false;
-        } else {
-            return true;
-        }
+  /**
+   * Verifies if the diagram editor is opened.
+   *
+   * @return true for opened and false otherwise
+   */
+  protected boolean verifyProjectOpen() {
+    if (!Register.getInstance().isRegistered(Register.EDITOR)) {
+      MessageDialog.openError(
+          getShell(),
+          ExportWizardMessages.diagramWarningTitle,
+          ExportWizardMessages.diagramWarningDescription);
+      return false;
+    } else {
+      return true;
     }
+  }
 
-    /*
-     * @see org.eclipse.jface.wizard.Wizard#performFinish()
-     */
-    public boolean performFinish() {       
-        String result = page.getResourcePath();
-        if (result == null) {
-            return false;
-        }
-        HybridAction action =
-                (HybridAction) Actions.getInstance().getActionExportGraphics();
-        ((ActionSaveGraphics) action.getSwingAction()).doCommand(result);
-        page.refreshResource();
-        return true;
+  /*
+   * @see org.eclipse.jface.wizard.Wizard#performFinish()
+   */
+  public boolean performFinish() {
+    String result = page.getResourcePath();
+    if (result == null) {
+      return false;
     }
+    HybridAction action = (HybridAction) Actions.getInstance().getActionExportGraphics();
+    ((ActionSaveGraphics) action.getSwingAction()).doCommand(result);
+    page.refreshResource();
+    return true;
+  }
 
-    /*
-     * @see org.eclipse.ui.IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
-     */
-    public void init(IWorkbench workbench, IStructuredSelection selection) {
-        setWindowTitle(ExportWizardMessages.exportWizardTitle);        
-    }
-
+  /*
+   * @see org.eclipse.ui.IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
+   */
+  public void init(IWorkbench workbench, IStructuredSelection selection) {
+    setWindowTitle(ExportWizardMessages.exportWizardTitle);
+  }
 }

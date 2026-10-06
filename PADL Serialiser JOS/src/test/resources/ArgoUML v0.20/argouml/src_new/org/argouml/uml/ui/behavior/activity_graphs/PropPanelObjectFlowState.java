@@ -26,76 +26,61 @@ package org.argouml.uml.ui.behavior.activity_graphs;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
-
 import org.argouml.i18n.Translator;
-import org.tigris.swidgets.Orientation;
 import org.argouml.uml.ui.UMLSearchableComboBox;
 import org.argouml.uml.ui.behavior.state_machines.AbstractPropPanelState;
 import org.argouml.util.ConfigLoader;
+import org.tigris.swidgets.Orientation;
 
 /**
- *
  * @author mkl
- *
  */
 public class PropPanelObjectFlowState extends AbstractPropPanelState {
 
-    private JComboBox classifierComboBox;
+  private JComboBox classifierComboBox;
 
-    private UMLObjectFlowStateClassifierComboBoxModel classifierComboBoxModel =
-        new UMLObjectFlowStateClassifierComboBoxModel();
+  private UMLObjectFlowStateClassifierComboBoxModel classifierComboBoxModel =
+      new UMLObjectFlowStateClassifierComboBoxModel();
 
-    /**
-     * Constructor
-     */
-    public PropPanelObjectFlowState() {
-        this("ObjectFlowState", lookupIcon("ObjectFlowState"), ConfigLoader
-                .getTabPropsOrientation());
+  /** Constructor */
+  public PropPanelObjectFlowState() {
+    this("ObjectFlowState", lookupIcon("ObjectFlowState"), ConfigLoader.getTabPropsOrientation());
+  }
+
+  /**
+   * Constructor
+   *
+   * @param name the name of the properties panel, shown at the top
+   * @param icon the icon shown at the top
+   * @param orientation the orientation
+   */
+  public PropPanelObjectFlowState(String name, ImageIcon icon, Orientation orientation) {
+    super(name, icon, ConfigLoader.getTabPropsOrientation());
+
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.stereotype"), getStereotypeSelector());
+    addField(Translator.localize("label.container"), getContainerScroll());
+
+    // field for Classifier(InState)
+    addField(Translator.localize("label.type"), getClassifierComboBox());
+
+    // TODO: Add field for State
+
+    addSeperator();
+
+    addField(Translator.localize("label.incoming"), getIncomingScroll());
+    addField(Translator.localize("label.outgoing"), getOutgoingScroll());
+  }
+
+  /**
+   * @return the combo box for the type (Classifier or ClassifierInState)
+   */
+  protected JComboBox getClassifierComboBox() {
+    if (classifierComboBox == null) {
+      classifierComboBox =
+          new UMLSearchableComboBox(
+              classifierComboBoxModel, ActionSetObjectFlowStateClassifier.SINGLETON, true);
     }
-
-    /**
-     * Constructor
-     *
-     * @param name the name of the properties panel, shown at the top
-     * @param icon the icon shown at the top
-     * @param orientation the orientation
-     */
-    public PropPanelObjectFlowState(String name, ImageIcon icon,
-            Orientation orientation) {
-        super(name, icon, ConfigLoader.getTabPropsOrientation());
-
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.stereotype"),
-                getStereotypeSelector());
-        addField(Translator.localize("label.container"),
-                getContainerScroll());
-
-        // field for Classifier(InState)
-        addField(Translator.localize("label.type"),
-                getClassifierComboBox());
-
-        //TODO: Add field for State
-
-        addSeperator();
-
-        addField(Translator.localize("label.incoming"),
-                getIncomingScroll());
-        addField(Translator.localize("label.outgoing"),
-                getOutgoingScroll());
-
-    }
-
-    /**
-     * @return the combo box for the type (Classifier or ClassifierInState)
-     */
-    protected JComboBox getClassifierComboBox() {
-        if (classifierComboBox == null) {
-            classifierComboBox = new UMLSearchableComboBox(
-                    classifierComboBoxModel,
-                    ActionSetObjectFlowStateClassifier.SINGLETON, true);
-        }
-        return classifierComboBox;
-
-    }
+    return classifierComboBox;
+  }
 }

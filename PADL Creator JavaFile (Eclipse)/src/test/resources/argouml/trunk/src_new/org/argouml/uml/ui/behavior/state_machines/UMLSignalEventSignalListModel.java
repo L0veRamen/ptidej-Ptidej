@@ -29,32 +29,27 @@ import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
 /**
- *
  * @author MarkusK
- *
  */
 class UMLSignalEventSignalListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLTransitionTriggerListModel.
-     */
-    public UMLSignalEventSignalListModel() {
-        super("signal");
-    }
+  /** Constructor for UMLTransitionTriggerListModel. */
+  public UMLSignalEventSignalListModel() {
+    super("signal");
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        removeAllElements();
-        addElement(Model.getFacade().getSignal(getTarget()));
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    removeAllElements();
+    addElement(Model.getFacade().getSignal(getTarget()));
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ element) {
-        return element == Model.getFacade().getSignal(getTarget());
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ element) {
+    return element == Model.getFacade().getSignal(getTarget());
+  }
 }

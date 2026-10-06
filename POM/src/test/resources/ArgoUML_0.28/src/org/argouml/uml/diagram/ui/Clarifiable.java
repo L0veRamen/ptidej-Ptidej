@@ -27,14 +27,13 @@ package org.argouml.uml.diagram.ui;
 import java.awt.Graphics;
 
 /**
- * Interface for objects which can be "clarified." This means they support the
- * method paintClarifiers() to highlight a piece of the graphic. Used by the
- * Critics subsystem to highlight problem areas.
- * 
+ * Interface for objects which can be "clarified." This means they support the method
+ * paintClarifiers() to highlight a piece of the graphic. Used by the Critics subsystem to highlight
+ * problem areas.
+ *
  * @author Tom Morris
  */
 public interface Clarifiable {
 
-    void paintClarifiers(Graphics g);
-
+  void paintClarifiers(Graphics g);
 }

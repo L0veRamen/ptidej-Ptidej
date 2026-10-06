@@ -25,12 +25,11 @@
 package org.argouml.application.api;
 
 /**
- * An interface which identifies an ArgoUML plug-in as a resource bundle.
- * Plug-ins are replacements or additions to standard Argo classes.
+ * An interface which identifies an ArgoUML plug-in as a resource bundle. Plug-ins are replacements
+ * or additions to standard Argo classes.
  *
  * @author Thierry Lach
  * @since 0.9.4
  */
-public interface PluggableResourceBundle extends Pluggable {
-} /* End interface PluggableResourceBundle */
-
+public interface PluggableResourceBundle
+    extends Pluggable {} /* End interface PluggableResourceBundle */

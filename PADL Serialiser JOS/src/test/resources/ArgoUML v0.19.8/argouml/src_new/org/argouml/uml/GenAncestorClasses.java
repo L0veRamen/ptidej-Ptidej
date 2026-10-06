@@ -27,48 +27,46 @@ package org.argouml.uml;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Vector;
-
 import org.argouml.model.Model;
 import org.tigris.gef.util.ChildGenerator;
-/** Utility class to generate the base classes of a class. It
- *  recursively moves up the class hierarchy.  But it does that in a
- *  safe way that will not hang in case of cyclic inheritance.
+
+/**
+ * Utility class to generate the base classes of a class. It recursively moves up the class
+ * hierarchy. But it does that in a safe way that will not hang in case of cyclic inheritance.
  */
 public class GenAncestorClasses implements ChildGenerator {
-    //public static GenAncestorClasses TheInstance = new GenAncestorClasses();
+  // public static GenAncestorClasses TheInstance = new GenAncestorClasses();
 
-    /**
-     * @see org.tigris.gef.util.ChildGenerator#gen(java.lang.Object)
-     */
-    public Enumeration gen(Object cls) {
-	Vector res = new Vector();
+  /**
+   * @see org.tigris.gef.util.ChildGenerator#gen(java.lang.Object)
+   */
+  public Enumeration gen(Object cls) {
+    Vector res = new Vector();
 
-	if (!(Model.getFacade().isAGeneralizableElement(cls))) {
-                return res.elements();
-        }
-	Collection gens = Model.getFacade().getGeneralizations(cls);
-	if (gens == null) return res.elements();
-	accumulateAncestors(cls, res);
-	return res.elements();
+    if (!(Model.getFacade().isAGeneralizableElement(cls))) {
+      return res.elements();
     }
+    Collection gens = Model.getFacade().getGeneralizations(cls);
+    if (gens == null) return res.elements();
+    accumulateAncestors(cls, res);
+    return res.elements();
+  }
 
-    /**
-     * @param cls the class (in fact any GeneralizableElement will do)
-     * @param accum the accumulated list of generalizations
-     */
-    public void accumulateAncestors(Object/*MGeneralizableElement*/ cls,
-            Vector accum) {
-	Vector gens = new Vector(Model.getFacade().getGeneralizations(cls));
-	if (gens == null) return;
-	int size = gens.size();
-	for (int i = 0; i < size; i++) {
-	    Object/*MGeneralization*/ g = /*(MGeneralization)*/
-	                                    (gens).elementAt(i);
-	    Object ge = Model.getFacade().getParent(g);
-	    if (!accum.contains(ge)) {
-		accum.add(ge);
-		accumulateAncestors(cls, accum);
-	    }
-	}
+  /**
+   * @param cls the class (in fact any GeneralizableElement will do)
+   * @param accum the accumulated list of generalizations
+   */
+  public void accumulateAncestors(Object /*MGeneralizableElement*/ cls, Vector accum) {
+    Vector gens = new Vector(Model.getFacade().getGeneralizations(cls));
+    if (gens == null) return;
+    int size = gens.size();
+    for (int i = 0; i < size; i++) {
+      Object /*MGeneralization*/ g = /*(MGeneralization)*/ (gens).elementAt(i);
+      Object ge = Model.getFacade().getParent(g);
+      if (!accum.contains(ge)) {
+        accum.add(ge);
+        accumulateAncestors(cls, accum);
+      }
     }
+  }
 } /* end class GenAncestorClasses */

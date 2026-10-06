@@ -27,7 +27,6 @@ package org.argouml.uml.cognitive;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Vector;
-
 import org.argouml.kernel.Project;
 import org.argouml.model.Model;
 import org.tigris.gef.base.Diagram;
@@ -35,55 +34,54 @@ import org.tigris.gef.util.ChildGenerator;
 
 /**
  * Convenience class gives critics access to parts of the project.
- * 
- * It defines a gen() function that returns the "children" of any given part of
- * the UML model. It traverses a Project to Diagrams and Models, then uses
- * getModelElementContents to traverse the Models. <p>
- * 
- * Argo's critic Agency uses this to apply critics where appropriate.
- * 
+ *
+ * <p>It defines a gen() function that returns the "children" of any given part of the UML model. It
+ * traverses a Project to Diagrams and Models, then uses getModelElementContents to traverse the
+ * Models.
+ *
+ * <p>Argo's critic Agency uses this to apply critics where appropriate.
+ *
  * @see org.argouml.cognitive.critics.Agency
  * @stereotype singleton
  * @author jrobbins
  */
 public class ChildGenFind implements ChildGenerator {
-    private static final ChildGenFind SINGLETON = new ChildGenFind();
+  private static final ChildGenFind SINGLETON = new ChildGenFind();
 
-    /**
-     * Reply a Collection of the children of the given Object
-     *
-     * @see org.tigris.gef.util.ChildGenerator#gen(java.lang.Object)
-     */
-    public Enumeration gen(Object o) {
-	if (o instanceof Project) {
-	    Project p = (Project) o;
-	    Vector res = new Vector();
-	    res.addAll(p.getUserDefinedModels());
-	    res.addAll(p.getDiagrams());
-	    return res.elements();
-	}
-        
-        if (o instanceof Diagram) {
-            Diagram d = (Diagram) o;
-
-            Vector res = new Vector();
-            res.addAll(d.getGraphModel().getNodes());
-            res.addAll(d.getGraphModel().getEdges());
-            return res.elements();
-        }
-
-	if (Model.getFacade().isAModelElement(o)) {
-            return Collections.enumeration(Model.getFacade()
-                    .getModelElementContents(o));
-        }
-        
-	return new Vector().elements();
+  /**
+   * Reply a Collection of the children of the given Object
+   *
+   * @see org.tigris.gef.util.ChildGenerator#gen(java.lang.Object)
+   */
+  public Enumeration gen(Object o) {
+    if (o instanceof Project) {
+      Project p = (Project) o;
+      Vector res = new Vector();
+      res.addAll(p.getUserDefinedModels());
+      res.addAll(p.getDiagrams());
+      return res.elements();
     }
 
-    /**
-     * @return Returns the SINGLETON.
-     */
-    public static ChildGenFind getSingleton() {
-        return SINGLETON;
+    if (o instanceof Diagram) {
+      Diagram d = (Diagram) o;
+
+      Vector res = new Vector();
+      res.addAll(d.getGraphModel().getNodes());
+      res.addAll(d.getGraphModel().getEdges());
+      return res.elements();
     }
+
+    if (Model.getFacade().isAModelElement(o)) {
+      return Collections.enumeration(Model.getFacade().getModelElementContents(o));
+    }
+
+    return new Vector().elements();
+  }
+
+  /**
+   * @return Returns the SINGLETON.
+   */
+  public static ChildGenFind getSingleton() {
+    return SINGLETON;
+  }
 } /* end class ChildGenFind */

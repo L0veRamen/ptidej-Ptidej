@@ -28,47 +28,44 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 
 /**
- * Rule for Summary->Association.
- * This class is a Go Rule for the "Class - centric" Navigation perspective.
+ * Rule for Summary->Association. This class is a Go Rule for the "Class - centric" Navigation
+ * perspective.
  *
  * @author alexb, d00mst
  * @since argo 0.13.4, Created on 21 March 2003, 23:18
  */
 public class GoSummaryToAssociation extends AbstractPerspectiveRule {
 
-    /*
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
-     */
-    public String getRuleName() {
-        return Translator.localize("misc.summary.association");
-    }
+  /*
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
+   */
+  public String getRuleName() {
+    return Translator.localize("misc.summary.association");
+  }
 
-    /*
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
-     */
-    public Collection getChildren(Object parent) {
-	if (parent instanceof AssociationsNode) {
-	    return Model.getCoreHelper()
-                .getAssociations(((AssociationsNode) parent).getParent());
-	}
-	return Collections.EMPTY_SET;
+  /*
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
+   */
+  public Collection getChildren(Object parent) {
+    if (parent instanceof AssociationsNode) {
+      return Model.getCoreHelper().getAssociations(((AssociationsNode) parent).getParent());
     }
+    return Collections.EMPTY_SET;
+  }
 
-    /*
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
-     */
-    public Set getDependencies(Object parent) {
-        if (parent instanceof AssociationsNode) {
-	    Set set = new HashSet();
-	    set.add(((AssociationsNode) parent).getParent());
-	    return set;
-	}
-	return Collections.EMPTY_SET;
+  /*
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
+   */
+  public Set getDependencies(Object parent) {
+    if (parent instanceof AssociationsNode) {
+      Set set = new HashSet();
+      set.add(((AssociationsNode) parent).getParent());
+      return set;
     }
-    
+    return Collections.EMPTY_SET;
+  }
 }

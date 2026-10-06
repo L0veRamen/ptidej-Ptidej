@@ -28,105 +28,107 @@ import javax.swing.Icon;
 
 /**
  * Encapsulates a language name and other properties.
+ *
  * @author Daniele Tamino
  */
 public class Language {
 
-    private String name;
-    private String title;
-    private Icon icon;
+  private String name;
+  private String title;
+  private Icon icon;
 
-    /**
-     * @param theName The name of the language.
-     * @param theTitle A string representing the language for display.
-     * @param theIcon An icon for the language.
-     */
-    public Language(String theName, String theTitle, Icon theIcon) {
-        this.name = theName;
-        if (theTitle == null) {
-            this.title = theName;
-        } else {
-            this.title = theTitle;
-        }
-        this.icon = theIcon;
+  /**
+   * @param theName The name of the language.
+   * @param theTitle A string representing the language for display.
+   * @param theIcon An icon for the language.
+   */
+  public Language(String theName, String theTitle, Icon theIcon) {
+    this.name = theName;
+    if (theTitle == null) {
+      this.title = theName;
+    } else {
+      this.title = theTitle;
     }
+    this.icon = theIcon;
+  }
 
-    /**
-     * Creates a language with no icon.
-     * @param theName The name of the language.
-     * @param theTitle A string representing the language for display.
-     */
-    public Language(String theName, String theTitle) {
-        this(theName, theTitle, null);
-    }
+  /**
+   * Creates a language with no icon.
+   *
+   * @param theName The name of the language.
+   * @param theTitle A string representing the language for display.
+   */
+  public Language(String theName, String theTitle) {
+    this(theName, theTitle, null);
+  }
 
-    /**
-     * Creates a language with title equal to the name.
-     * @param theName The name of the language.
-     * @param theIcon An icon for the language.
-     */
-    public Language(String theName, Icon theIcon) {
-        this(theName, theName, theIcon);
-    }
+  /**
+   * Creates a language with title equal to the name.
+   *
+   * @param theName The name of the language.
+   * @param theIcon An icon for the language.
+   */
+  public Language(String theName, Icon theIcon) {
+    this(theName, theName, theIcon);
+  }
 
-    /**
-     * Creates a language with title equal to the name and no icon.
-     * @param theName The name of the language.
-     */
-    public Language(String theName) {
-        this(theName, theName, null);
-    }
+  /**
+   * Creates a language with title equal to the name and no icon.
+   *
+   * @param theName The name of the language.
+   */
+  public Language(String theName) {
+    this(theName, theName, null);
+  }
 
-    /**
-     * @return Returns the icon.
-     */
-    public Icon getIcon() {
-        return icon;
-    }
+  /**
+   * @return Returns the icon.
+   */
+  public Icon getIcon() {
+    return icon;
+  }
 
-    /**
-     * @param theIcon The icon to set.
-     */
-    public void setIcon(Icon theIcon) {
-        this.icon = theIcon;
-    }
+  /**
+   * @param theIcon The icon to set.
+   */
+  public void setIcon(Icon theIcon) {
+    this.icon = theIcon;
+  }
 
-    /**
-     * @return Returns the name.
-     */
-    public String getName() {
-        return name;
-    }
+  /**
+   * @return Returns the name.
+   */
+  public String getName() {
+    return name;
+  }
 
-    /**
-     * @param theName The name to set.
-     */
-    public void setName(String theName) {
-        this.name = theName;
-    }
+  /**
+   * @param theName The name to set.
+   */
+  public void setName(String theName) {
+    this.name = theName;
+  }
 
-    /**
-     * @return Returns the title, which should be a string representing
-     * the language, in a form suitable for display.
-     */
-    public String getTitle() {
-        return title;
-    }
+  /**
+   * @return Returns the title, which should be a string representing the language, in a form
+   *     suitable for display.
+   */
+  public String getTitle() {
+    return title;
+  }
 
-    /**
-     * @param theTitle A string representing the language, in a form suitable
-     * for display.
-     */
-    public void setTitle(String theTitle) {
-        this.title = theTitle;
-    }
+  /**
+   * @param theTitle A string representing the language, in a form suitable for display.
+   */
+  public void setTitle(String theTitle) {
+    this.title = theTitle;
+  }
 
-    /**
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-        String tit = getTitle();
-        return tit == null ? "(no name)" : tit;
-    }
-
+  /**
+   * @see java.lang.Object#toString()
+   */
+  public String toString() {
+    String tit = getTitle();
+    return tit == null ? "(no name)" : tit;
+  }
 }

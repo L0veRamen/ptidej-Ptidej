@@ -29,46 +29,38 @@ import org.tigris.gef.base.CmdPrint;
 import org.tigris.gef.base.Diagram;
 
 ////////////////////////////////////////////////////////////////
-//file menu actions
-/**
- * print the current active diagram.
- */
+// file menu actions
+/** print the current active diagram. */
 public class PrintManager {
 
-    private final CmdPrint printCmd = new CmdPrint();
+  private final CmdPrint printCmd = new CmdPrint();
 
-    private static final PrintManager INSTANCE = new PrintManager();
+  private static final PrintManager INSTANCE = new PrintManager();
 
-    /**
-     * @return the instance of the printmanager
-     */
-    public static PrintManager getInstance() {
-        return INSTANCE;
+  /**
+   * @return the instance of the printmanager
+   */
+  public static PrintManager getInstance() {
+    return INSTANCE;
+  }
+
+  /** The constructor. */
+  private PrintManager() {}
+
+  /** Print the active diagram */
+  public void print() {
+    Object target = ProjectManager.getManager().getCurrentProject().getActiveDiagram();
+    if (target instanceof Diagram) {
+      String n = ((Diagram) target).getName();
+      printCmd.setDiagramName(n);
+      printCmd.doIt();
     }
+  }
 
-    /**
-     * The constructor.
-     */
-    private PrintManager() {
-    }
-
-    /**
-     * Print the active diagram
-     */
-    public void print() {
-        Object target = ProjectManager.getManager().getCurrentProject()
-                .getActiveDiagram();
-        if (target instanceof Diagram) {
-            String n = ((Diagram) target).getName();
-            printCmd.setDiagramName(n);
-            printCmd.doIt();
-        }
-    }
-
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void showPageSetupDialog() {
-        printCmd.doPageSetup();
-    }
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void showPageSetupDialog() {
+    printCmd.doPageSetup();
+  }
 } /* end class ActionPrint */

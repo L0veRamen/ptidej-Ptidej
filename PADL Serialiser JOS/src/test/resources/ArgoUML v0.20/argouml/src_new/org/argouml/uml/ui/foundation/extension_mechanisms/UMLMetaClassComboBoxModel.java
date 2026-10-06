@@ -28,51 +28,46 @@ package org.argouml.uml.ui.foundation.extension_mechanisms;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLComboBoxModel2;
 
 /**
- * A model for stereotypes to handle their base class, or as it is a class from
- * the UML metamodel its metaclass.
+ * A model for stereotypes to handle their base class, or as it is a class from the UML metamodel
+ * its metaclass.
  *
  * @author mkl
  */
 public class UMLMetaClassComboBoxModel extends UMLComboBoxModel2 {
 
-    private Collection metaClasses = 
-            Model.getCoreHelper().getAllMetatypeNames();
+  private Collection metaClasses = Model.getCoreHelper().getAllMetatypeNames();
 
-    /**
-     * Constructor.
-     */
-    public UMLMetaClassComboBoxModel() {
-        super("baseClass", true);
-        Collections.sort((List) metaClasses);
+  /** Constructor. */
+  public UMLMetaClassComboBoxModel() {
+    super("baseClass", true);
+    Collections.sort((List) metaClasses);
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
+   */
+  protected Object getSelectedModelElement() {
+    if (getTarget() != null) {
+      return Model.getFacade().getBaseClass(getTarget());
     }
+    return null;
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
-     */
-    protected Object getSelectedModelElement() {
-        if (getTarget() != null) {
-            return Model.getFacade().getBaseClass(getTarget());
-        }
-        return null;
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    setElements(metaClasses);
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        setElements(metaClasses);
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return metaClasses.contains(element);
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return metaClasses.contains(element);
+  }
 }

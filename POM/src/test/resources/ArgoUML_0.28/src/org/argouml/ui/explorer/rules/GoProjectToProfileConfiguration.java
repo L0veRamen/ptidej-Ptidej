@@ -28,40 +28,36 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
-
 import org.argouml.i18n.Translator;
 import org.argouml.kernel.Project;
 
-/**
- * Rule for Project->Profile.
- *
- */
+/** Rule for Project->Profile. */
 public class GoProjectToProfileConfiguration extends AbstractPerspectiveRule {
 
-    /*
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
-     */
-    public String getRuleName() {
-	return Translator.localize("misc.project.profileconfiguration");
-    }
+  /*
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
+   */
+  public String getRuleName() {
+    return Translator.localize("misc.project.profileconfiguration");
+  }
 
-    /*
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
-     */
-    public Collection getChildren(Object parent) {
-	if (parent instanceof Project) {
-            Collection l = new ArrayList();
-            l.add(((Project) parent).getProfileConfiguration());
-	    return l;
-	}
-	return Collections.EMPTY_LIST;
+  /*
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
+   */
+  public Collection getChildren(Object parent) {
+    if (parent instanceof Project) {
+      Collection l = new ArrayList();
+      l.add(((Project) parent).getProfileConfiguration());
+      return l;
     }
+    return Collections.EMPTY_LIST;
+  }
 
-    /*
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
-     */
-    public Set getDependencies(Object parent) {
-        // TODO: What?
-	return Collections.EMPTY_SET;
-    }
+  /*
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
+   */
+  public Set getDependencies(Object parent) {
+    // TODO: What?
+    return Collections.EMPTY_SET;
+  }
 }

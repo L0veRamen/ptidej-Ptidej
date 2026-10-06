@@ -25,36 +25,27 @@
 package org.argouml.ui.cmd;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.i18n.Translator;
 
-
 ////////////////////////////////////////////////////////////////
 // file menu actions
-/**
- * Print the current active diagram.
- */
+/** Print the current active diagram. */
 public class ActionPrint extends AbstractAction {
 
-    /**
-     * The constructor.
-     */
-    public ActionPrint() {
-        super(Translator.localize("action.print"),
-                ResourceLoaderWrapper.lookupIcon("action.print"));
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize("action.print"));
-    }
+  /** The constructor. */
+  public ActionPrint() {
+    super(Translator.localize("action.print"), ResourceLoaderWrapper.lookupIcon("action.print"));
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize("action.print"));
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-        PrintManager.getInstance().print();
-    }
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    PrintManager.getInstance().print();
+  }
 } /* end class ActionPrint */

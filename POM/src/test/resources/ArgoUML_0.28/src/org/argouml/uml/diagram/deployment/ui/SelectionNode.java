@@ -25,7 +25,6 @@
 package org.argouml.uml.diagram.deployment.ui;
 
 import javax.swing.Icon;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.model.Model;
 import org.argouml.uml.diagram.ui.SelectionNodeClarifiers2;
@@ -36,68 +35,56 @@ import org.tigris.gef.presentation.Fig;
  */
 public class SelectionNode extends SelectionNodeClarifiers2 {
 
-    private static Icon associationIcon =
-            ResourceLoaderWrapper.lookupIconResource("Association");
+  private static Icon associationIcon = ResourceLoaderWrapper.lookupIconResource("Association");
 
-    private static Icon icons[] = 
-    {associationIcon,
-     associationIcon,
-     associationIcon,
-     associationIcon,
-     null,
-    };
-    
-    // TODO: I18N required
-    private static String instructions[] = 
-    {"Add a node",
-     "Add a node",
-     "Add a node",
-     "Add a node",
-     null,
-     "Move object(s)",
-    };
+  private static Icon icons[] = {
+    associationIcon, associationIcon, associationIcon, associationIcon, null,
+  };
 
-    /**
-     * Construct a new SelectionNode for the given Fig.
-     *
-     * @param f The given Fig.
-     */
-    public SelectionNode(Fig f) {
-        super(f);
+  // TODO: I18N required
+  private static String instructions[] = {
+    "Add a node", "Add a node", "Add a node", "Add a node", null, "Move object(s)",
+  };
+
+  /**
+   * Construct a new SelectionNode for the given Fig.
+   *
+   * @param f The given Fig.
+   */
+  public SelectionNode(Fig f) {
+    super(f);
+  }
+
+  @Override
+  protected Icon[] getIcons() {
+    return icons;
+  }
+
+  @Override
+  protected String getInstructions(int index) {
+    return instructions[index - BASE];
+  }
+
+  @Override
+  protected Object getNewEdgeType(int index) {
+    return Model.getMetaTypes().getAssociation();
+  }
+
+  @Override
+  protected Object getNewNode(int index) {
+    return Model.getCoreFactory().createNode();
+  }
+
+  @Override
+  protected Object getNewNodeType(int index) {
+    return Model.getMetaTypes().getNode();
+  }
+
+  @Override
+  protected boolean isReverseEdge(int index) {
+    if (index == BOTTOM || index == LEFT) {
+      return true;
     }
-
-    @Override
-    protected Icon[] getIcons() {
-        return icons;
-    }
-
-    @Override
-    protected String getInstructions(int index) {
-        return instructions[index - BASE];
-    }
-
-    @Override
-    protected Object getNewEdgeType(int index) {
-        return Model.getMetaTypes().getAssociation();
-    }
-
-    @Override
-    protected Object getNewNode(int index) {
-        return Model.getCoreFactory().createNode();
-    }
-    
-    @Override
-    protected Object getNewNodeType(int index) {
-        return Model.getMetaTypes().getNode();
-    }
-
-    @Override
-    protected boolean isReverseEdge(int index) {
-        if (index == BOTTOM || index == LEFT) {
-            return true;
-        }
-        return false;
-    }
-
+    return false;
+  }
 }
-

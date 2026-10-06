@@ -31,51 +31,51 @@
   -->
 
 <xsl:stylesheet version="2.0"
-    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 >
-  
-  <xsl:key name="xmi.id-key" match="*" use="@xmi.id"/>
-  
-  <!-- update IDs -->
-  <xsl:template match="@xmi.id">
-    <xsl:variable name="uuid" select="../@xmi.uuid"/>
-    <xsl:choose>
-      <!-- if we have a UUID, change the xmi.id to its value -->
-      <xsl:when test="$uuid">
-         <xsl:attribute name="xmi.id">
-            <xsl:value-of select="$uuid"/>
-          </xsl:attribute>
-      </xsl:when>
-      <!-- otherwise just copy over the current value -->
-      <xsl:otherwise>
-        <xsl:copy>
-          <xsl:apply-templates select="@*"/>
-        </xsl:copy>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
 
-  <!-- update ID references to match -->
-  <xsl:template match="@xmi.idref">
-    <xsl:variable name="uuid" select="key('xmi.id-key',string(.))/@xmi.uuid"/>
-    <xsl:choose>
-      <!-- if we have a UUID, update the idref with it -->
-      <xsl:when test="$uuid">
-         <xsl:attribute name="xmi.idref">
-            <xsl:value-of select="$uuid"/>
-          </xsl:attribute>
-      </xsl:when>
-      <!-- otherwise just copy over the current value -->
-      <xsl:otherwise>
-        <xsl:copy>
-          <xsl:apply-templates select="@*"/>
-        </xsl:copy>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
+    <xsl:key name="xmi.id-key" match="*" use="@xmi.id"/>
 
-  <!-- delete all the UUIDs since they aren't being used -->
-  <xsl:template match="@xmi.uuid">
-  </xsl:template>
+    <!-- update IDs -->
+    <xsl:template match="@xmi.id">
+        <xsl:variable name="uuid" select="../@xmi.uuid"/>
+        <xsl:choose>
+            <!-- if we have a UUID, change the xmi.id to its value -->
+            <xsl:when test="$uuid">
+                <xsl:attribute name="xmi.id">
+                    <xsl:value-of select="$uuid"/>
+                </xsl:attribute>
+            </xsl:when>
+            <!-- otherwise just copy over the current value -->
+            <xsl:otherwise>
+                <xsl:copy>
+                    <xsl:apply-templates select="@*"/>
+                </xsl:copy>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+
+    <!-- update ID references to match -->
+    <xsl:template match="@xmi.idref">
+        <xsl:variable name="uuid" select="key('xmi.id-key',string(.))/@xmi.uuid"/>
+        <xsl:choose>
+            <!-- if we have a UUID, update the idref with it -->
+            <xsl:when test="$uuid">
+                <xsl:attribute name="xmi.idref">
+                    <xsl:value-of select="$uuid"/>
+                </xsl:attribute>
+            </xsl:when>
+            <!-- otherwise just copy over the current value -->
+            <xsl:otherwise>
+                <xsl:copy>
+                    <xsl:apply-templates select="@*"/>
+                </xsl:copy>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+
+    <!-- delete all the UUIDs since they aren't being used -->
+    <xsl:template match="@xmi.uuid">
+    </xsl:template>
 
 </xsl:stylesheet>

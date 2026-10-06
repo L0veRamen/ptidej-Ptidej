@@ -25,85 +25,81 @@
 package org.argouml.uml.ui;
 
 import javax.swing.ComboBoxModel;
-
 import org.argouml.model.Model;
 
 /**
- * A searchable combobox. Searchable means that the user only has to type the
- * starting of a modelelement name to select that modelelement. The first
- * modelelement that conforms to the typed text is selected.
+ * A searchable combobox. Searchable means that the user only has to type the starting of a
+ * modelelement name to select that modelelement. The first modelelement that conforms to the typed
+ * text is selected.
+ *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 5, 2003
  */
 public class UMLSearchableComboBox extends UMLEditableComboBox {
 
-    /**
-     * Constructor for UMLSearchableComboBox.
-     * @param model the model
-     * @param selectAction the action for selection
-     * @param showIcon true if we show an icon in the list
-     */
-    public UMLSearchableComboBox(UMLComboBoxModel2 model,
-            UMLAction selectAction, boolean showIcon) {
-        super(model, selectAction, showIcon);
-    }
+  /**
+   * Constructor for UMLSearchableComboBox.
+   *
+   * @param model the model
+   * @param selectAction the action for selection
+   * @param showIcon true if we show an icon in the list
+   */
+  public UMLSearchableComboBox(UMLComboBoxModel2 model, UMLAction selectAction, boolean showIcon) {
+    super(model, selectAction, showIcon);
+  }
 
-    /**
-     * Constructor for UMLSearchableComboBox.
-     * @param arg0 the model
-     * @param selectAction the action for selection
-     */
-    public UMLSearchableComboBox(UMLComboBoxModel2 arg0,
-            UMLAction selectAction) {
-        this(arg0, selectAction, true);
-    }
+  /**
+   * Constructor for UMLSearchableComboBox.
+   *
+   * @param arg0 the model
+   * @param selectAction the action for selection
+   */
+  public UMLSearchableComboBox(UMLComboBoxModel2 arg0, UMLAction selectAction) {
+    this(arg0, selectAction, true);
+  }
 
-    /**
-     * Searches amongst the modelelements (the elements in the listmodel) for an
-     * item that conforms to the parameter item. If such an element is a
-     * MModelelement, the name should start with the item (which is a String).
-     * Otherwise the text that is shown in the combobox should start with the
-     * text. As the element is found, this is made to the selected item.
-     *
-     * @see org.argouml.uml.ui.UMLEditableComboBox#doOnEdit(Object)
-     */
-    protected void doOnEdit(Object item) {
-        Object element = search(item);
-        if (element != null) {
-            setSelectedItem(element);
+  /**
+   * Searches amongst the modelelements (the elements in the listmodel) for an item that conforms to
+   * the parameter item. If such an element is a MModelelement, the name should start with the item
+   * (which is a String). Otherwise the text that is shown in the combobox should start with the
+   * text. As the element is found, this is made to the selected item.
+   *
+   * @see org.argouml.uml.ui.UMLEditableComboBox#doOnEdit(Object)
+   */
+  protected void doOnEdit(Object item) {
+    Object element = search(item);
+    if (element != null) {
+      setSelectedItem(element);
+    }
+  }
+
+  /**
+   * Does the actual searching. Returns the item found or null if there is no item found.
+   *
+   * @param item the string entered by the user
+   * @return Object the found object from the list, or null if none found
+   */
+  protected Object search(Object item) {
+    String text = (String) item;
+    ComboBoxModel model = getModel();
+    for (int i = 0; i < model.getSize(); i++) {
+      Object element = model.getElementAt(i);
+      if (Model.getFacade().isABase(element)) {
+        if (getRenderer() instanceof UMLListCellRenderer2) {
+          String labelText = ((UMLListCellRenderer2) getRenderer()).makeText(element);
+          if (labelText != null && labelText.startsWith(text)) {
+            return element;
+          }
         }
-    }
-
-    /**
-     * Does the actual searching. Returns the item found or null if there is no
-     * item found.
-     * @param item the string entered by the user
-     * @return Object the found object from the list, or null if none found
-     */
-    protected Object search(Object item) {
-        String text = (String) item;
-        ComboBoxModel model = getModel();
-        for (int i = 0; i < model.getSize(); i++) {
-            Object element = model.getElementAt(i);
-            if (Model.getFacade().isABase(element)) {
-                if (getRenderer() instanceof UMLListCellRenderer2) {
-                    String labelText = ((UMLListCellRenderer2) getRenderer())
-                        .makeText(element);
-                    if (labelText != null && labelText.startsWith(text)) {
-                        return element;
-                    }
-                }
-                if (Model.getFacade().isAModelElement(element)) {
-                    Object/*MModelElement*/ elem = element;
-                    String name = Model.getFacade().getName(elem);
-                    if (name != null && name.startsWith(text)) {
-                        return element;
-                    }
-                }
-            }
-
+        if (Model.getFacade().isAModelElement(element)) {
+          Object /*MModelElement*/ elem = element;
+          String name = Model.getFacade().getName(elem);
+          if (name != null && name.startsWith(text)) {
+            return element;
+          }
         }
-        return null;
+      }
     }
-
+    return null;
+  }
 }

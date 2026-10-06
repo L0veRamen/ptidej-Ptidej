@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc  and others, see in file; API and its implementation
  ******************************************************************************/
@@ -14,15 +14,14 @@ import parser.defuse.Entity;
 
 public class MethodEntity extends Entity {
 
-	public MethodEntity(
-		final char[] name,
-		final char[] signature,
-		final char[] type,
-		final char[] lineNumber,
-		final char[] parent,
-		final char[] key) {
-		super(name, signature, type, lineNumber, parent, key);
-		// TODO Auto-generated constructor stub
-	}
-
+  public MethodEntity(
+      final char[] name,
+      final char[] signature,
+      final char[] type,
+      final char[] lineNumber,
+      final char[] parent,
+      final char[] key) {
+    super(name, signature, type, lineNumber, parent, key);
+    // TODO Auto-generated constructor stub
+  }
 }

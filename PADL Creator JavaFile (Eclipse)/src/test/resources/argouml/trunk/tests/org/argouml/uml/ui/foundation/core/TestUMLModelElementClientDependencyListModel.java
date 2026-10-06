@@ -25,7 +25,6 @@
 package org.argouml.uml.ui.foundation.core;
 
 import junit.framework.TestCase;
-
 import org.argouml.model.Model;
 
 /**
@@ -34,94 +33,77 @@ import org.argouml.model.Model;
  */
 public class TestUMLModelElementClientDependencyListModel extends TestCase {
 
-    /**
-     * The number of elements used in the tests.
-     */
-    private static final int NO_OF_ELEMENTS = 10;
+  /** The number of elements used in the tests. */
+  private static final int NO_OF_ELEMENTS = 10;
 
-    /**
-     * The element.
-     */
-    private Object elem;
+  /** The element. */
+  private Object elem;
 
-    /**
-     * The model that we test.
-     */
-    private UMLModelElementClientDependencyListModel model;
+  /** The model that we test. */
+  private UMLModelElementClientDependencyListModel model;
 
-    /**
-     * The uml model / namespace where the element resists.
-     */
-    private Object ns;
+  /** The uml model / namespace where the element resists. */
+  private Object ns;
 
-    /**
-     * Constructor for TestUMLModelElementClientDependencyListModel.
-     * @param arg0 is the name of the test case.
-     */
-    public TestUMLModelElementClientDependencyListModel(String arg0) {
-        super(arg0);
+  /**
+   * Constructor for TestUMLModelElementClientDependencyListModel.
+   *
+   * @param arg0 is the name of the test case.
+   */
+  public TestUMLModelElementClientDependencyListModel(String arg0) {
+    super(arg0);
+  }
+
+  /**
+   * @see junit.framework.TestCase#setUp()
+   */
+  protected void setUp() throws Exception {
+    super.setUp();
+    ns = Model.getModelManagementFactory().createModel();
+    elem = Model.getCoreFactory().buildClass(ns);
+    model = new UMLModelElementClientDependencyListModel();
+    model.setTarget(elem);
+    Model.getPump().flushModelEvents();
+  }
+
+  /**
+   * @see junit.framework.TestCase#tearDown()
+   */
+  protected void tearDown() throws Exception {
+    super.tearDown();
+    Model.getUmlFactory().delete(elem);
+    Model.getUmlFactory().delete(ns);
+    model = null;
+  }
+
+  /** Tests the programmatically adding of multiple elements to the list. */
+  public void testAddMultiple() {
+    Object[] suppliers = new Object[NO_OF_ELEMENTS];
+    Object[] dependencies = new Object[NO_OF_ELEMENTS];
+    for (int i = 0; i < NO_OF_ELEMENTS; i++) {
+      suppliers[i] = Model.getCoreFactory().buildClass(ns);
+      dependencies[i] = Model.getCoreFactory().buildDependency(elem, suppliers[i]);
     }
+    Model.getPump().flushModelEvents();
+    assertEquals(NO_OF_ELEMENTS, model.getSize());
+    assertEquals(model.getElementAt(NO_OF_ELEMENTS / 2), dependencies[NO_OF_ELEMENTS / 2]);
+    assertEquals(model.getElementAt(0), dependencies[0]);
+    assertEquals(model.getElementAt(NO_OF_ELEMENTS - 1), dependencies[NO_OF_ELEMENTS - 1]);
+  }
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        ns = Model.getModelManagementFactory().createModel();
-        elem = Model.getCoreFactory().buildClass(ns);
-        model = new UMLModelElementClientDependencyListModel();
-        model.setTarget(elem);
-        Model.getPump().flushModelEvents();
+  /** Test the removal of several elements from the list. */
+  public void testRemoveMultiple() {
+    Object[] suppliers = new Object[NO_OF_ELEMENTS];
+    Object[] dependencies = new Object[NO_OF_ELEMENTS];
+    for (int i = 0; i < NO_OF_ELEMENTS; i++) {
+      suppliers[i] = Model.getCoreFactory().buildClass(ns);
+      dependencies[i] = Model.getCoreFactory().buildDependency(elem, suppliers[i]);
     }
-
-    /**
-     * @see junit.framework.TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        Model.getUmlFactory().delete(elem);
-        Model.getUmlFactory().delete(ns);
-        model = null;
+    for (int i = 0; i < NO_OF_ELEMENTS / 2; i++) {
+      Model.getCoreHelper().removeClientDependency(elem, dependencies[i]);
     }
-
-    /**
-     * Tests the programmatically adding of multiple elements to the list.
-     */
-    public void testAddMultiple() {
-        Object[] suppliers = new Object[NO_OF_ELEMENTS];
-        Object[] dependencies = new Object[NO_OF_ELEMENTS];
-        for (int i = 0; i < NO_OF_ELEMENTS; i++) {
-            suppliers[i] = Model.getCoreFactory().buildClass(ns);
-            dependencies[i] =
-                Model.getCoreFactory().buildDependency(elem, suppliers[i]);
-        }
-        Model.getPump().flushModelEvents();
-        assertEquals(NO_OF_ELEMENTS, model.getSize());
-        assertEquals(
-                model.getElementAt(NO_OF_ELEMENTS / 2),
-                dependencies[NO_OF_ELEMENTS / 2]);
-        assertEquals(model.getElementAt(0), dependencies[0]);
-        assertEquals(
-                model.getElementAt(NO_OF_ELEMENTS - 1),
-                dependencies[NO_OF_ELEMENTS - 1]);
-    }
-
-    /**
-     * Test the removal of several elements from the list.
-     */
-    public void testRemoveMultiple() {
-        Object[] suppliers = new Object[NO_OF_ELEMENTS];
-        Object[] dependencies = new Object[NO_OF_ELEMENTS];
-        for (int i = 0; i < NO_OF_ELEMENTS; i++) {
-            suppliers[i] = Model.getCoreFactory().buildClass(ns);
-            dependencies[i] =
-                Model.getCoreFactory().buildDependency(elem, suppliers[i]);
-        }
-        for (int i = 0; i < NO_OF_ELEMENTS / 2; i++) {
-            Model.getCoreHelper().removeClientDependency(elem, dependencies[i]);
-        }
-        Model.getPump().flushModelEvents();
-        assertEquals(NO_OF_ELEMENTS - (NO_OF_ELEMENTS / 2), model.getSize());
-        assertEquals(dependencies[NO_OF_ELEMENTS / 2], model.getElementAt(0));
-    }
+    Model.getPump().flushModelEvents();
+    assertEquals(NO_OF_ELEMENTS - (NO_OF_ELEMENTS / 2), model.getSize());
+    assertEquals(dependencies[NO_OF_ELEMENTS / 2], model.getElementAt(0));
+  }
 }

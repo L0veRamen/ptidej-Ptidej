@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xerces" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -55,30 +55,38 @@
  * <http://www.apache.org/>.
  */
 
-//package org.w3c.dom.traversal;
+// package org.w3c.dom.traversal;
 package org.apache.xerces.domx.traversal;
 
 import org.w3c.dom.Node;
 
 /**
- * This interface is the W3C DOM Level 2 candidate, 
- * which if accepted will likely exist in the package:
- * org.w3c.dom.traversal
+ * This interface is the W3C DOM Level 2 candidate, which if accepted will likely exist in the
+ * package: org.w3c.dom.traversal
  */
-
 public interface TreeWalker {
-    
-    public int                getWhatToShow();
-    public NodeFilter         getFilter();
-    public boolean            getExpandEntityReferences();
-    public Node               getCurrentNode();
-    public void               setCurrentNode(Node currentNode);
-    public Node               parentNode();
-    public Node               firstChild();
-    public Node               lastChild();
-    public Node               previousSibling();
-    public Node               nextSibling();
-    public Node               previousNode();
-    public Node               nextNode();
-}
 
+  public int getWhatToShow();
+
+  public NodeFilter getFilter();
+
+  public boolean getExpandEntityReferences();
+
+  public Node getCurrentNode();
+
+  public void setCurrentNode(Node currentNode);
+
+  public Node parentNode();
+
+  public Node firstChild();
+
+  public Node lastChild();
+
+  public Node previousSibling();
+
+  public Node nextSibling();
+
+  public Node previousNode();
+
+  public Node nextNode();
+}

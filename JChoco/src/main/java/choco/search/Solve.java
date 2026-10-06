@@ -12,8 +12,7 @@ package choco.search;
 import choco.Problem;
 
 public class Solve extends AbstractGlobalSearchSolver {
-	public Solve(final Problem pb) {
-		super(pb);
-	}
-
+  public Solve(final Problem pb) {
+    super(pb);
+  }
 }

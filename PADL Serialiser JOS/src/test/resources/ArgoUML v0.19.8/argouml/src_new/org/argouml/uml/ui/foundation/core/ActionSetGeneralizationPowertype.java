@@ -25,7 +25,6 @@
 package org.argouml.uml.ui.foundation.core;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLAction;
@@ -37,58 +36,47 @@ import org.argouml.uml.ui.UMLComboBox2;
  */
 public class ActionSetGeneralizationPowertype extends UMLAction {
 
+  private static final ActionSetGeneralizationPowertype SINGLETON =
+      new ActionSetGeneralizationPowertype();
 
+  /** Constructor for ActionSetStructuralFeatureType. */
+  protected ActionSetGeneralizationPowertype() {
+    super(Translator.localize("Set"), true, NO_ICON);
+  }
 
-    private static final ActionSetGeneralizationPowertype SINGLETON =
-        new ActionSetGeneralizationPowertype();
-
-    /**
-     * Constructor for ActionSetStructuralFeatureType.
-     */
-    protected ActionSetGeneralizationPowertype() {
-        super(Translator.localize("Set"), true, NO_ICON);
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    Object source = e.getSource();
+    Object oldClassifier = null;
+    Object newClassifier = null;
+    Object gen = null;
+    if (source instanceof UMLComboBox2) {
+      UMLComboBox2 box = (UMLComboBox2) source;
+      Object o = box.getTarget();
+      if (Model.getFacade().isAGeneralization(o)) {
+        gen = /*(MGeneralization)*/ o;
+        oldClassifier = Model.getFacade().getPowertype(gen);
+      }
+      o = box.getSelectedItem();
+      if (Model.getFacade().isAClassifier(o)) {
+        newClassifier = /*(MClassifier)*/ o;
+      }
     }
-
-
-
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        Object source = e.getSource();
-        Object oldClassifier = null;
-        Object newClassifier = null;
-        Object gen = null;
-        if (source instanceof UMLComboBox2) {
-            UMLComboBox2 box = (UMLComboBox2) source;
-            Object o = box.getTarget();
-            if (Model.getFacade().isAGeneralization(o)) {
-                gen = /*(MGeneralization)*/ o;
-                oldClassifier = Model.getFacade().getPowertype(gen);
-            }
-            o = box.getSelectedItem();
-            if (Model.getFacade().isAClassifier(o)) {
-                newClassifier = /*(MClassifier)*/ o;
-            }
-        }
-        if (newClassifier != oldClassifier && gen != null) {
-            newClassifier = /*(MClassifier)*/ Model.getModelManagementHelper()
-                .getCorrespondingElement(
-                        newClassifier,
-                        Model.getFacade().getModel(gen));
-            Model.getCoreHelper().setPowertype(gen, newClassifier);
-        }
-
+    if (newClassifier != oldClassifier && gen != null) {
+      newClassifier = /*(MClassifier)*/
+          Model.getModelManagementHelper()
+              .getCorrespondingElement(newClassifier, Model.getFacade().getModel(gen));
+      Model.getCoreHelper().setPowertype(gen, newClassifier);
     }
+  }
 
-
-
-    /**
-     * @return Returns the SINGLETON.
-     */
-    public static ActionSetGeneralizationPowertype getInstance() {
-        return SINGLETON;
-    }
-
+  /**
+   * @return Returns the SINGLETON.
+   */
+  public static ActionSetGeneralizationPowertype getInstance() {
+    return SINGLETON;
+  }
 }

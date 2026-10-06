@@ -26,7 +26,6 @@ package org.argouml.uml.diagram.ui;
 
 import java.awt.event.ActionEvent;
 import java.util.Iterator;
-
 import org.argouml.model.Model;
 import org.argouml.uml.diagram.static_structure.ui.UMLClassDiagram;
 import org.argouml.uml.reveng.DiagramInterface;
@@ -34,66 +33,58 @@ import org.tigris.gef.base.Globals;
 import org.tigris.gef.undo.UndoableAction;
 
 /**
- * ActionAddAllClassesFromModel enables pasting of an existing node into a
- * Diagram.
+ * ActionAddAllClassesFromModel enables pasting of an existing node into a Diagram.
  *
- * @author Timothy M. Lebo (Oct 2003)
- * Smart Information Flow Technologies.
+ * @author Timothy M. Lebo (Oct 2003) Smart Information Flow Technologies.
  */
 public class ActionAddAllClassesFromModel extends UndoableAction {
 
-    private Object object;
+  private Object object;
 
-    /**
-     * Constructor
-     *
-     * @param name the name of the action
-     * @param o the Diagram
-     */
-    public ActionAddAllClassesFromModel(String name, Object o) {
-        super(name);
-        object = o;
+  /**
+   * Constructor
+   *
+   * @param name the name of the action
+   * @param o the Diagram
+   */
+  public ActionAddAllClassesFromModel(String name, Object o) {
+    super(name);
+    object = o;
+  }
+
+  /**
+   * @see javax.swing.Action#isEnabled()
+   */
+  public boolean isEnabled() {
+    return object instanceof UMLClassDiagram;
+  }
+
+  /**
+   * actionPerformed
+   *
+   * <p>Finds all of the classes within the same namespace as the UMLClassDiagram that was given to
+   * me in my constructor and adds them to the UMLClassDiagram.
+   *
+   * @param ae - the ActionEvent
+   * @author Timothy M. Lebo (Oct 2003) Smart Information Flow Technologies.
+   */
+  public void actionPerformed(ActionEvent ae) {
+    super.actionPerformed(ae);
+    if (object instanceof UMLClassDiagram) {
+
+      // Use DiagramInterface to add classes to diagram
+      DiagramInterface diagram = new DiagramInterface(Globals.curEditor());
+      diagram.setCurrentDiagram((UMLClassDiagram) object);
+
+      Object namespace = ((UMLClassDiagram) object).getNamespace();
+      Iterator elements = Model.getFacade().getOwnedElements(namespace).iterator();
+      while (elements.hasNext()) {
+        Object element = elements.next();
+        if (Model.getFacade().isAClass(element)
+            && !Model.getFacade().isAAssociationClass(element)) {
+          diagram.addClass(element, false);
+        }
+      }
     }
-
-    /**
-     * @see javax.swing.Action#isEnabled()
-     */
-    public boolean isEnabled() {
-	return object instanceof UMLClassDiagram;
-    }
-
-    /**
-     * actionPerformed
-     *
-     * Finds all of the classes within the same namespace as the
-     * UMLClassDiagram that was given to me in my constructor and adds
-     * them to the UMLClassDiagram.
-     *
-     * @param ae - the ActionEvent
-     *
-     * @author Timothy M. Lebo (Oct 2003)
-     * Smart Information Flow Technologies.
-     */
-    public void actionPerformed(ActionEvent ae) {
-        super.actionPerformed(ae);
-	if (object instanceof UMLClassDiagram) {
-
-	    // Use DiagramInterface to add classes to diagram
-	    DiagramInterface diagram =
-		new DiagramInterface(Globals.curEditor());
-	    diagram.setCurrentDiagram((UMLClassDiagram) object);
-
-	    Object namespace = ((UMLClassDiagram) object).getNamespace();
-	    Iterator elements =
-		Model.getFacade().getOwnedElements(namespace).iterator();
-	    while (elements.hasNext()) {
-		Object element = elements.next();
-		if (Model.getFacade().isAClass(element)
-		    && !Model.getFacade().isAAssociationClass(element)) {
-		    diagram.addClass(element, false);
-		}
-	    }
-	}
-    }
-
+  }
 } // ActionAddAllClassesFromModel

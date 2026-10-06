@@ -27,59 +27,57 @@ package org.argouml.uml.diagram.ui;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-
 import org.tigris.gef.presentation.FigText;
 
 /**
- * A SingleLine FigText to provide consistency across Figs displaying single
- * lines of text.<ul>
- * <li>The display area is transparent</li>
- * <li>Text is center justified</li>
- * <li>There is no line border</li>
- * <li>There is space below the line for a "Clarifier", 
- * i.e. a red squiggly line.</li></ul>
- * 
+ * A SingleLine FigText to provide consistency across Figs displaying single lines of text.
+ *
+ * <ul>
+ *   <li>The display area is transparent
+ *   <li>Text is center justified
+ *   <li>There is no line border
+ *   <li>There is space below the line for a "Clarifier", i.e. a red squiggly line.
+ * </ul>
+ *
  * @author Bob Tarling
  */
 public class FigSingleLineText extends FigText {
 
-    /**
-     * @see FigText(int, int, int, int, boolean)
-     */
-    public FigSingleLineText(int x, int y, int w, int h, boolean expandOnly) {
-        super(x, y, w, h, expandOnly);
+  /**
+   * @see FigText(int, int, int, int, boolean)
+   */
+  public FigSingleLineText(int x, int y, int w, int h, boolean expandOnly) {
+    super(x, y, w, h, expandOnly);
 
-        setFont(FigNodeModelElement.getLabelFont());
-        setTextColor(Color.black);
-        setFilled(false);
-        setTabAction(FigText.END_EDITING);
-        setReturnAction(FigText.END_EDITING);
-        setLineWidth(0);
+    setFont(FigNodeModelElement.getLabelFont());
+    setTextColor(Color.black);
+    setFilled(false);
+    setTabAction(FigText.END_EDITING);
+    setReturnAction(FigText.END_EDITING);
+    setLineWidth(0);
+  }
+
+  public Dimension getMinimumSize() {
+    Dimension d = new Dimension();
+
+    Font font = getFont();
+
+    if (font == null) {
+      return d;
     }
-
-
-
-    public Dimension getMinimumSize() {
-        Dimension d = new Dimension();
-
-        Font font = getFont();
-
-        if (font == null) {
-            return d;
-        }
-        int maxW = getFontMetrics().stringWidth(getText());
-        int maxH = 0;
-        //int maxDescent = _fm.getMaxDescent();
-        if (getFontMetrics() == null) {
-            maxH = font.getSize();
-        } else {
-            maxH = getFontMetrics().getHeight();
-        }
-        int maxDescent = 0;
-        int overallH = (maxH + getTopMargin() + getBotMargin());
-        int overallW = maxW + getLeftMargin() + getRightMargin();
-        d.width = overallW;
-        d.height = overallH;
-        return d;
+    int maxW = getFontMetrics().stringWidth(getText());
+    int maxH = 0;
+    // int maxDescent = _fm.getMaxDescent();
+    if (getFontMetrics() == null) {
+      maxH = font.getSize();
+    } else {
+      maxH = getFontMetrics().getHeight();
     }
+    int maxDescent = 0;
+    int overallH = (maxH + getTopMargin() + getBotMargin());
+    int overallW = maxW + getLeftMargin() + getRightMargin();
+    d.width = overallW;
+    d.height = overallH;
+    return d;
+  }
 }

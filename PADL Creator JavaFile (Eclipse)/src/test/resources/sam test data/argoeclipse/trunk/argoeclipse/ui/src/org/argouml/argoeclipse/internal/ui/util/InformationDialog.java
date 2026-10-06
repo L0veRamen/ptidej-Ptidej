@@ -24,6 +24,7 @@
 
 package org.argouml.argoeclipse.internal.ui.util;
 
+import org.argouml.i18n.Translator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -36,85 +37,71 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import org.argouml.i18n.Translator;
-
 /**
  * An dialog that informs the user.
+ *
  * @author Bogdan Pistol
  */
 public class InformationDialog extends Dialog {
-    
-    /**
-     * The message of the dialog.
-     */
-    private String messageDetails;
-    
-    /**
-     * A short description.
-     */
-    private String messageHeader;
-    
-    /**
-     * The messageTitle of the dialog.
-     */
-    private String messageTitle;
-    
-    /**
-     * The string on the Close button.
-     */
-    private String closeButtonText;
-    
-    /**
-     * @param parent the parent shell
-     * @param title the title of the dialog
-     * @param header a short description
-     * @param details the message for the user
-     */
-    public InformationDialog(Shell parent, String title, String header,
-            String details) {
-        super(parent, 0);
-        messageTitle = title;
-        messageDetails = details;
-        messageHeader = header;
-        closeButtonText = Translator.localize("button.close"); //$NON-NLS-1$
-    }
-    
-    /**
-     * Opens the dialog.
-     */
-    public void open () {
-        Shell parent = getParent();
-        final Shell shell = new Shell(parent, SWT.DIALOG_TRIM
-                | SWT.APPLICATION_MODAL);
-        shell.setText(messageTitle);
-        GridLayout layout = new GridLayout();
-        layout.verticalSpacing = 15;
-        layout.marginTop = 15;
-        shell.setLayout(layout);
-        shell.setLayoutData(new GridData(GridData.FILL_BOTH));
-        new Label(shell, SWT.NONE).setText(messageHeader);
-        Text text = new Text(shell, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL
-                | SWT.MULTI);
-        text.setLayoutData(new GridData(GridData.FILL_BOTH));
-        text.setText(messageDetails);
-        text.setEditable(false);
-        Button close = new Button(shell, SWT.PUSH);
-        String spaces = "    "; //$NON-NLS-1$
-        close.setText(spaces + closeButtonText + spaces);
-        close.setLayoutData(new GridData(SWT.CENTER, SWT.NONE, false, false));
-        close.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-                super.widgetSelected(e);
-                shell.dispose();
-            }
+
+  /** The message of the dialog. */
+  private String messageDetails;
+
+  /** A short description. */
+  private String messageHeader;
+
+  /** The messageTitle of the dialog. */
+  private String messageTitle;
+
+  /** The string on the Close button. */
+  private String closeButtonText;
+
+  /**
+   * @param parent the parent shell
+   * @param title the title of the dialog
+   * @param header a short description
+   * @param details the message for the user
+   */
+  public InformationDialog(Shell parent, String title, String header, String details) {
+    super(parent, 0);
+    messageTitle = title;
+    messageDetails = details;
+    messageHeader = header;
+    closeButtonText = Translator.localize("button.close"); // $NON-NLS-1$
+  }
+
+  /** Opens the dialog. */
+  public void open() {
+    Shell parent = getParent();
+    final Shell shell = new Shell(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
+    shell.setText(messageTitle);
+    GridLayout layout = new GridLayout();
+    layout.verticalSpacing = 15;
+    layout.marginTop = 15;
+    shell.setLayout(layout);
+    shell.setLayoutData(new GridData(GridData.FILL_BOTH));
+    new Label(shell, SWT.NONE).setText(messageHeader);
+    Text text = new Text(shell, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.MULTI);
+    text.setLayoutData(new GridData(GridData.FILL_BOTH));
+    text.setText(messageDetails);
+    text.setEditable(false);
+    Button close = new Button(shell, SWT.PUSH);
+    String spaces = "    "; // $NON-NLS-1$
+    close.setText(spaces + closeButtonText + spaces);
+    close.setLayoutData(new GridData(SWT.CENTER, SWT.NONE, false, false));
+    close.addSelectionListener(
+        new SelectionAdapter() {
+          public void widgetSelected(SelectionEvent e) {
+            super.widgetSelected(e);
+            shell.dispose();
+          }
         });
-        shell.open();
-        Display display = parent.getDisplay();
-        while (!shell.isDisposed()) {
-            if (!display.readAndDispatch()) {
-                display.sleep();
-            }
-        }
+    shell.open();
+    Display display = parent.getDisplay();
+    while (!shell.isDisposed()) {
+      if (!display.readAndDispatch()) {
+        display.sleep();
+      }
     }
-    
+  }
 }

@@ -4,20 +4,18 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
 package sad.codesmell.detection.repository.LongMethod;
 
+import com.ibm.toad.cfparse.utils.Access;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-
-import com.ibm.toad.cfparse.utils.Access;
-
 import padl.kernel.IAbstractLevelModel;
 import padl.kernel.IClass;
 import padl.kernel.IEntity;
@@ -32,105 +30,87 @@ import sad.util.BoxPlot;
 
 /**
  * This class represents the detection of the code smell <CODESMELL>
- * 
- * @author Auto generated
  *
+ * @author Auto generated
  */
-
 public class LongMethodClassDetection extends AbstractCodeSmellDetection
-		implements ICodeSmellDetection {
+    implements ICodeSmellDetection {
 
-	public String getName() {
-		return "LongMethodClassDetection";
-	}
+  public String getName() {
+    return "LongMethodClassDetection";
+  }
 
-	public void detect(final IAbstractLevelModel anAbstractLevelModel) {
-		final Set LongMethodClassClassesFound = new HashSet();
-		final HashMap mapOfClassesWithValues = new HashMap();
-		final HashMap mapClassesWithMethods = new HashMap();
+  public void detect(final IAbstractLevelModel anAbstractLevelModel) {
+    final Set<CodeSmell> LongMethodClassClassesFound = new HashSet<>();
+    final HashMap<IEntity, Double[]> mapOfClassesWithValues = new HashMap<>();
+    final HashMap<IClass, IMethod> mapClassesWithMethods = new HashMap<>();
 
-		final Iterator iter = anAbstractLevelModel
-				.getIteratorOnTopLevelEntities();
-		while (iter.hasNext()) {
-			final IEntity entity = (IEntity) iter.next();
-			if (entity instanceof IClass) {
-				final IClass aClass = (IClass) entity;
-				IClass classOfLongMethodClass = null;
-				IMethod LongMethodClass = null;
-				Integer longValue = Integer.valueOf(0);
+    final Iterator iter = anAbstractLevelModel.getIteratorOnTopLevelEntities();
+    while (iter.hasNext()) {
+      final IEntity entity = (IEntity) iter.next();
+      if (entity instanceof IClass) {
+        final IClass aClass = (IClass) entity;
+        IClass classOfLongMethodClass = null;
+        IMethod LongMethodClass = null;
+        Integer longValue = Integer.valueOf(0);
 
-				// for each class, we get the LongMethodClass
-				final Iterator iter2 = aClass
-						.getIteratorOnConstituents(IMethod.class);
-				while (iter2.hasNext()) {
-					final IMethod aMethod = (IMethod) iter2.next();
-					if (!aMethod.isAbstract()
-							&& !Access.isNative(aMethod.getVisibility())) {
-						final Integer value = Integer
-								.valueOf(aMethod.getCodeLines().length);
+        // for each class, we get the LongMethodClass
+        final Iterator iter2 = aClass.getIteratorOnConstituents(IMethod.class);
+        while (iter2.hasNext()) {
+          final IMethod aMethod = (IMethod) iter2.next();
+          if (!aMethod.isAbstract() && !Access.isNative(aMethod.getVisibility())) {
+            final Integer value = Integer.valueOf(aMethod.getCodeLines().length);
 
-						if (!(value == null)) {
-							if (value.compareTo(longValue) > 0) {
-								longValue = value;
-								LongMethodClass = aMethod;
-								classOfLongMethodClass = aClass;
-							}
+            if (!(value == null)) {
+              if (value.compareTo(longValue) > 0) {
+                longValue = value;
+                LongMethodClass = aMethod;
+                classOfLongMethodClass = aClass;
+              }
 
-							// we put in a map the class with its LongMethodClass
-							mapClassesWithMethods.put(classOfLongMethodClass,
-									LongMethodClass);
+              // we put in a map the class with its LongMethodClass
+              mapClassesWithMethods.put(classOfLongMethodClass, LongMethodClass);
 
-							// we put in a map the class with the value of its
-							// longest method
-							mapOfClassesWithValues.put(classOfLongMethodClass,
-									new Double[] {
-											Double.valueOf(
-													longValue.doubleValue()),
-											Double.valueOf(0) });
-						}
-					}
-				} // End of iterator of methods
-			}
-		} // End of iterator of classes
+              // we put in a map the class with the value of its
+              // longest method
+              mapOfClassesWithValues.put(
+                  classOfLongMethodClass,
+                  new Double[] {Double.valueOf(longValue.doubleValue()), Double.valueOf(0)});
+            }
+          }
+        } // End of iterator of methods
+      }
+    } // End of iterator of classes
 
-		final BoxPlot boxPlot = new BoxPlot(mapOfClassesWithValues, 8.0);
-		setBoxPlot(boxPlot);
+    final BoxPlot boxPlot = new BoxPlot(mapOfClassesWithValues, 8.0);
+    setBoxPlot(boxPlot);
 
-		final Map mapOfLongMethodClasssFromBoxPlot = boxPlot.getHighValues();
+    final Map mapOfLongMethodClasssFromBoxPlot = boxPlot.getHighValues();
 
-		final Iterator iter3 = mapOfLongMethodClasssFromBoxPlot.keySet()
-				.iterator();
-		while (iter3.hasNext()) {
-			// we get first the mapMethodsWithClass(aClass, longMethod)
-			final IClass aClass = (IClass) iter3.next();
-			final IMethod aLongMethodClass = (IMethod) mapClassesWithMethods
-					.get(aClass);
+    final Iterator iter3 = mapOfLongMethodClasssFromBoxPlot.keySet().iterator();
+    while (iter3.hasNext()) {
+      // we get first the mapMethodsWithClass(aClass, longMethod)
+      final IClass aClass = (IClass) iter3.next();
+      final IMethod aLongMethodClass = (IMethod) mapClassesWithMethods.get(aClass);
 
-			try {
-				ClassProperty classProp = new ClassProperty(aClass);
+      try {
+        ClassProperty classProp = new ClassProperty(aClass);
 
-				double LOC = ((Double[]) mapOfClassesWithValues.get(aClass))[0]
-						.doubleValue();
-				MethodProperty mp = new MethodProperty(aLongMethodClass);
+        double LOC = ((Double[]) mapOfClassesWithValues.get(aClass))[0].doubleValue();
+        MethodProperty mp = new MethodProperty(aLongMethodClass);
 
-				HashMap thresholdMap = new HashMap();
-				thresholdMap.put("METHOD_LOC_UpperQuartile",
-						Double.valueOf(boxPlot.getUpperQuartile()));
-				thresholdMap.put("METHOD_LOC_MaxBound",
-						Double.valueOf(boxPlot.getMaxBound()));
-				mp.addProperty(new MetricProperty("LOC", LOC, thresholdMap));
-				classProp.addProperty(mp);
+        HashMap<String, Double> thresholdMap = new HashMap<>();
+        thresholdMap.put("METHOD_LOC_UpperQuartile", Double.valueOf(boxPlot.getUpperQuartile()));
+        thresholdMap.put("METHOD_LOC_MaxBound", Double.valueOf(boxPlot.getMaxBound()));
+        mp.addProperty(new MetricProperty("LOC", LOC, thresholdMap));
+        classProp.addProperty(mp);
 
-				LongMethodClassClassesFound
-						.add(new CodeSmell("LongMethodClass", "", classProp));
-			}
-			catch (Exception e) {
-				// Not suppose to append :(
-			}
-		}
+        LongMethodClassClassesFound.add(new CodeSmell("LongMethodClass", "", classProp));
+      } catch (Exception e) {
+        // Not suppose to append :(
+      }
+    }
 
-		this.setSetOfSmells(LongMethodClassClassesFound);
-
-	}
-
+    this.setSetOfSmells(LongMethodClassClassesFound);
+  }
 }

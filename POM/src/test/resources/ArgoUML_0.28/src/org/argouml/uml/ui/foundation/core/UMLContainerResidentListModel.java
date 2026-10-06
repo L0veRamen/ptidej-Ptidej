@@ -28,36 +28,28 @@ import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
 /**
- * ListModel for resident relations and containers, such as Node,
- * ComponentInstance, NodeInstance.
+ * ListModel for resident relations and containers, such as Node, ComponentInstance, NodeInstance.
  *
  * @author mkl
- *
  */
-public class UMLContainerResidentListModel
-    extends UMLModelElementListModel2 {
+public class UMLContainerResidentListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor.
-     */
-    public UMLContainerResidentListModel() {
-        super("resident");
-    }
+  /** Constructor. */
+  public UMLContainerResidentListModel() {
+    super("resident");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        setAllElements(Model.getFacade().getResidents(getTarget()));
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    setAllElements(Model.getFacade().getResidents(getTarget()));
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object o) {
-        return (Model.getFacade().isAComponent(o)
-                || Model.getFacade().isAInstance(o));
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object o) {
+    return (Model.getFacade().isAComponent(o) || Model.getFacade().isAInstance(o));
+  }
 }
-

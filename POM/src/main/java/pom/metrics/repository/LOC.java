@@ -4,16 +4,14 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
 package pom.metrics.repository;
 
-import java.util.Iterator;
-
 import com.ibm.toad.cfparse.utils.Access;
-
+import java.util.Iterator;
 import padl.kernel.IAbstractModel;
 import padl.kernel.IClass;
 import padl.kernel.IFirstClassEntity;
@@ -23,46 +21,38 @@ import pom.metrics.IUnaryMetric;
 import util.io.ProxyConsole;
 
 public class LOC extends AbstractMetric implements IMetric, IUnaryMetric {
-	protected double concretelyCompute(final IAbstractModel anAbstractModel,
-			final IFirstClassEntity anEntity) {
+  protected double concretelyCompute(
+      final IAbstractModel anAbstractModel, final IFirstClassEntity anEntity) {
 
-		int loc = 0;
+    int loc = 0;
 
-		if (anEntity instanceof IClass) {
-			final IClass clazz = (IClass) anEntity;
+    if (anEntity instanceof IClass) {
+      final IClass clazz = (IClass) anEntity;
 
-			final Iterator iteratorOnMethods = clazz
-					.getIteratorOnConstituents(IMethod.class);
-			while (iteratorOnMethods.hasNext()) {
-				final IMethod method = (IMethod) iteratorOnMethods.next();
-				if (!method.isAbstract()
-						&& !Access.isNative(method.getVisibility())) {
+      final Iterator iteratorOnMethods = clazz.getIteratorOnConstituents(IMethod.class);
+      while (iteratorOnMethods.hasNext()) {
+        final IMethod method = (IMethod) iteratorOnMethods.next();
+        if (!method.isAbstract() && !Access.isNative(method.getVisibility())) {
 
-					final String[] codeLines = method.getCodeLines();
-					if (codeLines.length != 0) {
-						loc += method.getCodeLines().length;
-					}
-					else {
-						ProxyConsole.getInstance().debugOutput()
-								.print(this.getClass().getName());
-						ProxyConsole.getInstance().debugOutput()
-								.print(" reports that ");
-						ProxyConsole.getInstance().debugOutput()
-								.print(clazz.getName());
-						ProxyConsole.getInstance().debugOutput().print('.');
-						ProxyConsole.getInstance().debugOutput()
-								.print(method.getName());
-						ProxyConsole.getInstance().debugOutput()
-								.println(" has no code lines!");
-					}
-				}
-			}
-		}
+          final String[] codeLines = method.getCodeLines();
+          if (codeLines.length != 0) {
+            loc += method.getCodeLines().length;
+          } else {
+            ProxyConsole.getInstance().debugOutput().print(this.getClass().getName());
+            ProxyConsole.getInstance().debugOutput().print(" reports that ");
+            ProxyConsole.getInstance().debugOutput().print(clazz.getName());
+            ProxyConsole.getInstance().debugOutput().print('.');
+            ProxyConsole.getInstance().debugOutput().print(method.getName());
+            ProxyConsole.getInstance().debugOutput().println(" has no code lines!");
+          }
+        }
+      }
+    }
 
-		return loc;
-	}
+    return loc;
+  }
 
-	public String getDefinition() {
-		return "Number of lines of code of all the methods of an entity.";
-	}
+  public String getDefinition() {
+    return "Number of lines of code of all the methods of an entity.";
+  }
 }

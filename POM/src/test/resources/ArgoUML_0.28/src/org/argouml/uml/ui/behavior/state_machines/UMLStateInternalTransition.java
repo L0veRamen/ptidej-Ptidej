@@ -33,26 +33,22 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  */
 public class UMLStateInternalTransition extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLStateInternalTransition.
-     */
-    public UMLStateInternalTransition() {
-        super("internalTransition");
-    }
+  /** Constructor for UMLStateInternalTransition. */
+  public UMLStateInternalTransition() {
+    super("internalTransition");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        setAllElements(Model.getFacade().getInternalTransitions(getTarget()));
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    setAllElements(Model.getFacade().getInternalTransitions(getTarget()));
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().getInternalTransitions(getTarget())
-            .contains(element);
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().getInternalTransitions(getTarget()).contains(element);
+  }
 }

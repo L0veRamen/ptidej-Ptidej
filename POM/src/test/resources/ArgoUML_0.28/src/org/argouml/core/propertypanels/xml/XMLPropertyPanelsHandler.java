@@ -29,52 +29,49 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * This handles the XML events by SAX Api for building 
- * the property panels.
+ * This handles the XML events by SAX Api for building the property panels.
+ *
  * @author penyaskito
  */
 public class XMLPropertyPanelsHandler extends DefaultHandler {
 
-    /**
-     * The panel that will host the controls. 
-     */
-    private final XMLPropertyPanelsData data;  
-    private XMLPropertyPanelsDataRecord current = null;
-    
-    /**
-     * Default constructor.
-     * @param theData The XMLPropertyPanelsData that will 
-     * host the info read.
-     */
-    public XMLPropertyPanelsHandler(XMLPropertyPanelsData theData) {
-        this.data = theData;
-    }
+  /** The panel that will host the controls. */
+  private final XMLPropertyPanelsData data;
 
-    public void startElement(String namespaceURI, String localName, 
-            String qName, Attributes attr) throws SAXException { 
-        XMLPropertyPanelsDataRecord record = 
-            new XMLPropertyPanelsDataRecord(localName, attr.getValue("name"));
-        
-        if (isChild(localName)) {
-            current.addChild(record);
-        }
-        else if (hasChildren(localName)) {
-            current = record;
-            data.addProperty(record);
-        }
-        else {
-            data.addProperty(record);
-        }
-    }
+  private XMLPropertyPanelsDataRecord current = null;
 
-    private boolean isChild(String elementName) {
-        // for now, the only child are checkboxes.
-        return "checkbox".equals(elementName);
-    }
+  /**
+   * Default constructor.
+   *
+   * @param theData The XMLPropertyPanelsData that will host the info read.
+   */
+  public XMLPropertyPanelsHandler(XMLPropertyPanelsData theData) {
+    this.data = theData;
+  }
 
-    private boolean hasChildren(String elementName) {
-        // for now, the only element that can have 
-        // children are checkgroups.
-        return "checkgroup".equals(elementName);
+  public void startElement(String namespaceURI, String localName, String qName, Attributes attr)
+      throws SAXException {
+    XMLPropertyPanelsDataRecord record =
+        new XMLPropertyPanelsDataRecord(localName, attr.getValue("name"));
+
+    if (isChild(localName)) {
+      current.addChild(record);
+    } else if (hasChildren(localName)) {
+      current = record;
+      data.addProperty(record);
+    } else {
+      data.addProperty(record);
     }
+  }
+
+  private boolean isChild(String elementName) {
+    // for now, the only child are checkboxes.
+    return "checkbox".equals(elementName);
+  }
+
+  private boolean hasChildren(String elementName) {
+    // for now, the only element that can have
+    // children are checkgroups.
+    return "checkgroup".equals(elementName);
+  }
 }

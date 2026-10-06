@@ -26,85 +26,80 @@ package org.argouml.uml.diagram.ui;
 
 import java.awt.event.ActionEvent;
 import java.util.Iterator;
-
 import javax.swing.Action;
-
 import org.argouml.i18n.Translator;
 import org.argouml.ui.targetmanager.TargetManager;
 import org.tigris.gef.undo.UndoableAction;
 
 /**
- * This class adds the common algorithms
- * for handling multiple targets
- * for a checkbox menuitem to the UMLAction.
+ * This class adds the common algorithms for handling multiple targets for a checkbox menuitem to
+ * the UMLAction.
  *
  * @author mvw@tigris.org
  */
 abstract class AbstractActionCheckBoxMenuItem extends UndoableAction {
 
-    /**
-     * @param key the name (to be localized)
-     */
-    public AbstractActionCheckBoxMenuItem(String key) {
-        super(Translator.localize(key), null);
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize(key));
-    }
+  /**
+   * @param key the name (to be localized)
+   */
+  public AbstractActionCheckBoxMenuItem(String key) {
+    super(Translator.localize(key), null);
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize(key));
+  }
 
-    /**
-     * This action should be enabled when: <ul>
-     * <li>all targets are modelelements that support this checkmark and
-     * <li>all targets have the checkmark either on or off
-     *     (mixed is not yet supported, but could be if a tri-state
-     *     checkmark is implemented).
-     * </ul>
-     */
-    public boolean isEnabled() {
-        boolean result = true;
-        boolean commonValue = true; // only initialized to prevent warning
-        boolean first = true;
-        Iterator i = TargetManager.getInstance().getTargets().iterator();
-        while (i.hasNext() && result) {
-            Object t = i.next();
-            try {
-                boolean value = valueOfTarget(t);
-                if (first) {
-                    commonValue = value;
-                    first = false;
-                }
-                result &= (commonValue == value);
-            } catch (IllegalArgumentException e) {
-                result = false; //not supported for this target
-            }
+  /**
+   * This action should be enabled when:
+   *
+   * <ul>
+   *   <li>all targets are modelelements that support this checkmark and
+   *   <li>all targets have the checkmark either on or off (mixed is not yet supported, but could be
+   *       if a tri-state checkmark is implemented).
+   * </ul>
+   */
+  public boolean isEnabled() {
+    boolean result = true;
+    boolean commonValue = true; // only initialized to prevent warning
+    boolean first = true;
+    Iterator i = TargetManager.getInstance().getTargets().iterator();
+    while (i.hasNext() && result) {
+      Object t = i.next();
+      try {
+        boolean value = valueOfTarget(t);
+        if (first) {
+          commonValue = value;
+          first = false;
         }
-        return result;
+        result &= (commonValue == value);
+      } catch (IllegalArgumentException e) {
+        result = false; // not supported for this target
+      }
     }
+    return result;
+  }
 
-    /**
-     * @param t the target modelelement
-     * @return the value of the checkmark for this modelelement
-     */
-    abstract boolean valueOfTarget(Object t);
+  /**
+   * @param t the target modelelement
+   * @return the value of the checkmark for this modelelement
+   */
+  abstract boolean valueOfTarget(Object t);
 
-    /**
-     * This action is performed on ALL targets.
-     *
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public final void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        Iterator i = TargetManager.getInstance().getTargets().iterator();
-        while (i.hasNext()) {
-            Object t = i.next();
-            toggleValueOfTarget(t);
-        }
+  /**
+   * This action is performed on ALL targets.
+   *
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public final void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    Iterator i = TargetManager.getInstance().getTargets().iterator();
+    while (i.hasNext()) {
+      Object t = i.next();
+      toggleValueOfTarget(t);
     }
+  }
 
-    /**
-     * @param t the target modelelement
-     */
-    abstract void toggleValueOfTarget(Object t);
+  /**
+   * @param t the target modelelement
+   */
+  abstract void toggleValueOfTarget(Object t);
 }
-
-

@@ -30,7 +30,6 @@ import java.awt.Rectangle;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyVetoException;
 import java.util.Iterator;
-
 import org.argouml.model.AddAssociationEvent;
 import org.argouml.model.AttributeChangeEvent;
 import org.argouml.model.Model;
@@ -44,257 +43,244 @@ import org.tigris.gef.presentation.FigRRect;
 import org.tigris.gef.presentation.FigText;
 
 /**
- * Class to display graphics for a UML ActionState in a diagram.
- * It contains a multiline textfield for the Entry Action Expression.
+ * Class to display graphics for a UML ActionState in a diagram. It contains a multiline textfield
+ * for the Entry Action Expression.
  *
  * @author ics 125b silverbullet team
  */
 public class FigActionState extends FigStateVertex {
 
-    ////////////////////////////////////////////////////////////////
-    // constants
+  ////////////////////////////////////////////////////////////////
+  // constants
 
-    private static final int PADDING = 8;
+  private static final int PADDING = 8;
 
-    ////////////////////////////////////////////////////////////////
-    // instance variables
+  ////////////////////////////////////////////////////////////////
+  // instance variables
 
-    private FigRRect cover;
+  private FigRRect cover;
 
-    private NotationProvider4 notationProvider;
+  private NotationProvider4 notationProvider;
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    /**
-     * Constructor FigActionState.
-     */
-    public FigActionState() {
-        setBigPort(new FigRRect(10 + 1, 10 + 1, 90 - 2, 25 - 2, Color.cyan,
-                Color.cyan));
-        ((FigRRect) getBigPort()).setCornerRadius(getBigPort().getHeight() / 2);
-        cover = new FigRRect(10, 10, 90, 25, Color.black, Color.white);
-        cover.setCornerRadius(getHeight() / 2);
+  /** Constructor FigActionState. */
+  public FigActionState() {
+    setBigPort(new FigRRect(10 + 1, 10 + 1, 90 - 2, 25 - 2, Color.cyan, Color.cyan));
+    ((FigRRect) getBigPort()).setCornerRadius(getBigPort().getHeight() / 2);
+    cover = new FigRRect(10, 10, 90, 25, Color.black, Color.white);
+    cover.setCornerRadius(getHeight() / 2);
 
-        // overrule the single-line namefig created by the parent
-        setNameFig(new FigMultiLineText(10 + PADDING, 10, 90 - PADDING * 2, 25,
-                true));
-        getNameFig().setLineWidth(0);
-        getNameFig().setText(placeString());
-        getNameFig().setBotMargin(7); // make space for the clarifier
-        getNameFig().setTopMargin(7); // for vertical symmetry
-        getNameFig().setRightMargin(4); // margin between text and border
-        getNameFig().setLeftMargin(4);
-        getNameFig().setJustification(FigText.JUSTIFY_CENTER);
+    // overrule the single-line namefig created by the parent
+    setNameFig(new FigMultiLineText(10 + PADDING, 10, 90 - PADDING * 2, 25, true));
+    getNameFig().setLineWidth(0);
+    getNameFig().setText(placeString());
+    getNameFig().setBotMargin(7); // make space for the clarifier
+    getNameFig().setTopMargin(7); // for vertical symmetry
+    getNameFig().setRightMargin(4); // margin between text and border
+    getNameFig().setLeftMargin(4);
+    getNameFig().setJustification(FigText.JUSTIFY_CENTER);
 
-        getBigPort().setLineWidth(0);
+    getBigPort().setLineWidth(0);
 
-        // add Figs to the FigNode in back-to-front order
-        addFig(getBigPort());
-        addFig(cover);
-        addFig(getNameFig());
+    // add Figs to the FigNode in back-to-front order
+    addFig(getBigPort());
+    addFig(cover);
+    addFig(getNameFig());
 
-        //setBlinkPorts(false); //make port invisble unless mouse enters
-        Rectangle r = getBounds();
-        setBounds(r.x, r.y, r.width, r.height);
+    // setBlinkPorts(false); //make port invisble unless mouse enters
+    Rectangle r = getBounds();
+    setBounds(r.x, r.y, r.width, r.height);
+  }
+
+  /**
+   * Constructor FigActionState.
+   *
+   * @param gm ignored!
+   * @param node owner
+   */
+  public FigActionState(GraphModel gm, Object node) {
+    this();
+    setOwner(node);
+  }
+
+  /**
+   * @see org.argouml.uml.diagram.state.ui.FigStateVertex#initNotationProviders(java.lang.Object)
+   */
+  protected void initNotationProviders(Object own) {
+    super.initNotationProviders(own);
+    if (Model.getFacade().isAActionState(own)) {
+      notationProvider =
+          NotationProviderFactory2.getInstance()
+              .getNotationProvider(NotationProviderFactory2.TYPE_ACTIONSTATE, this, own);
     }
+  }
 
-    /**
-     * Constructor FigActionState.
-     *
-     * @param gm ignored!
-     * @param node owner
-     */
-    public FigActionState(GraphModel gm, Object node) {
-        this();
-        setOwner(node);
+  /**
+   * @see org.argouml.uml.diagram.ui.FigNodeModelElement#placeString()
+   */
+  public String placeString() {
+    return "new ActionState";
+  }
+
+  /**
+   * @see java.lang.Object#clone()
+   */
+  public Object clone() {
+    FigActionState figClone = (FigActionState) super.clone();
+    Iterator it = figClone.getFigs().iterator();
+    figClone.setBigPort((FigRRect) it.next());
+    figClone.cover = (FigRRect) it.next();
+    figClone.setNameFig((FigText) it.next());
+    return figClone;
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // Fig accessors
+
+  /**
+   * @see org.tigris.gef.presentation.Fig#getMinimumSize()
+   */
+  public Dimension getMinimumSize() {
+    Dimension nameDim = getNameFig().getMinimumSize();
+    int w = nameDim.width + PADDING * 2;
+    int h = nameDim.height + PADDING;
+    return new Dimension(w, h);
+  }
+
+  /**
+   * @see org.tigris.gef.presentation.Fig#setBoundsImpl(int, int, int, int)
+   *     <p>Override setBounds to keep shapes looking right.
+   */
+  protected void setBoundsImpl(int x, int y, int w, int h) {
+    if (getNameFig() == null) {
+      return;
     }
+    Rectangle oldBounds = getBounds();
 
-    /**
-     * @see org.argouml.uml.diagram.state.ui.FigStateVertex#initNotationProviders(java.lang.Object)
-     */
-    protected void initNotationProviders(Object own) {
-        super.initNotationProviders(own);
-        if (Model.getFacade().isAActionState(own)) {
-            notationProvider =
-                NotationProviderFactory2.getInstance().getNotationProvider(
-                    NotationProviderFactory2.TYPE_ACTIONSTATE, this, own);
+    getNameFig().setBounds(x + PADDING, y, w - PADDING * 2, h - PADDING);
+    getBigPort().setBounds(x + 1, y + 1, w - 2, h - 2);
+    cover.setBounds(x, y, w, h);
+    ((FigRRect) getBigPort()).setCornerRadius(h);
+    cover.setCornerRadius(h);
+
+    calcBounds();
+    updateEdges();
+    firePropChange("bounds", oldBounds, getBounds());
+  }
+
+  /**
+   * @see org.tigris.gef.presentation.Fig#setLineColor(java.awt.Color)
+   */
+  public void setLineColor(Color col) {
+    cover.setLineColor(col);
+  }
+
+  /**
+   * @see org.tigris.gef.presentation.Fig#getLineColor()
+   */
+  public Color getLineColor() {
+    return cover.getLineColor();
+  }
+
+  /**
+   * @see org.tigris.gef.presentation.Fig#setFillColor(java.awt.Color)
+   */
+  public void setFillColor(Color col) {
+    cover.setFillColor(col);
+  }
+
+  /**
+   * @see org.tigris.gef.presentation.Fig#getFillColor()
+   */
+  public Color getFillColor() {
+    return cover.getFillColor();
+  }
+
+  /**
+   * @see org.tigris.gef.presentation.Fig#setFilled(boolean)
+   */
+  public void setFilled(boolean f) {
+    cover.setFilled(f);
+  }
+
+  /**
+   * @see org.tigris.gef.presentation.Fig#getFilled()
+   */
+  public boolean getFilled() {
+    return cover.getFilled();
+  }
+
+  /**
+   * @see org.tigris.gef.presentation.Fig#setLineWidth(int)
+   */
+  public void setLineWidth(int w) {
+    cover.setLineWidth(w);
+  }
+
+  /**
+   * @see org.tigris.gef.presentation.Fig#getLineWidth()
+   */
+  public int getLineWidth() {
+    return cover.getLineWidth();
+  }
+
+  /**
+   * @see
+   *     org.argouml.uml.diagram.ui.FigNodeModelElement#modelChanged(java.beans.PropertyChangeEvent)
+   */
+  protected void modelChanged(PropertyChangeEvent mee) {
+    super.modelChanged(mee);
+    if (mee instanceof AddAssociationEvent || mee instanceof AttributeChangeEvent) {
+      if (mee.getSource() == getOwner() && mee.getPropertyName().equals("entry")) {
+        if (mee.getNewValue() != null) {
+          Model.getPump().addModelEventListener(this, mee.getNewValue(), "script");
         }
-    }
-
-    /**
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement#placeString()
-     */
-    public String placeString() {
-        return "new ActionState";
-    }
-
-    /**
-     * @see java.lang.Object#clone()
-     */
-    public Object clone() {
-        FigActionState figClone = (FigActionState) super.clone();
-        Iterator it = figClone.getFigs().iterator();
-        figClone.setBigPort((FigRRect) it.next());
-        figClone.cover = (FigRRect) it.next();
-        figClone.setNameFig((FigText) it.next());
-        return figClone;
-    }
-
-    ////////////////////////////////////////////////////////////////
-    // Fig accessors
-
-    /**
-     * @see org.tigris.gef.presentation.Fig#getMinimumSize()
-     */
-    public Dimension getMinimumSize() {
-        Dimension nameDim = getNameFig().getMinimumSize();
-        int w = nameDim.width + PADDING * 2;
-        int h = nameDim.height + PADDING;
-        return new Dimension(w, h);
-    }
-
-    /**
-     * @see org.tigris.gef.presentation.Fig#setBoundsImpl(int, int, int, int)
-     *
-     * Override setBounds to keep shapes looking right.
-     */
-    protected void setBoundsImpl(int x, int y, int w, int h) {
-        if (getNameFig() == null) {
-            return;
+        updateNameText();
+        damage();
+      } else {
+        if (getOwner() != null && Model.getFacade().getEntry(getOwner()) == mee.getSource()) {
+          updateNameText();
+          damage();
         }
-        Rectangle oldBounds = getBounds();
-
-        getNameFig().setBounds(x + PADDING, y, w - PADDING * 2, h - PADDING);
-        getBigPort().setBounds(x + 1, y + 1, w - 2, h - 2);
-        cover.setBounds(x, y, w, h);
-        ((FigRRect) getBigPort()).setCornerRadius(h);
-        cover.setCornerRadius(h);
-
-        calcBounds();
-        updateEdges();
-        firePropChange("bounds", oldBounds, getBounds());
+      }
+    } else if (mee instanceof RemoveAssociationEvent) {
+      if (mee.getOldValue() != null && mee.getPropertyName().equals("entry")) {
+        Model.getPump().removeModelEventListener(this, mee.getOldValue(), "script");
+        updateNameText();
+        damage();
+      }
     }
+  }
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#setLineColor(java.awt.Color)
-     */
-    public void setLineColor(Color col) {
-        cover.setLineColor(col);
+  /**
+   * @see org.argouml.uml.diagram.ui.FigNodeModelElement#updateNameText()
+   */
+  protected void updateNameText() {
+    if (notationProvider != null) {
+      getNameFig().setText(notationProvider.toString());
     }
+  }
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#getLineColor()
-     */
-    public Color getLineColor() {
-        return cover.getLineColor();
+  /**
+   * @see
+   *     org.argouml.uml.diagram.ui.FigNodeModelElement#textEdited(org.tigris.gef.presentation.FigText)
+   */
+  protected void textEdited(FigText ft) throws PropertyVetoException {
+    ft.setText(notationProvider.parse(ft.getText()));
+  }
+
+  /**
+   * @see
+   *     org.argouml.uml.diagram.ui.FigNodeModelElement#textEditStarted(org.tigris.gef.presentation.FigText)
+   */
+  protected void textEditStarted(FigText ft) {
+    if (ft == getNameFig()) {
+      showHelp(notationProvider.getParsingHelp());
     }
+  }
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#setFillColor(java.awt.Color)
-     */
-    public void setFillColor(Color col) {
-        cover.setFillColor(col);
-    }
-
-    /**
-     * @see org.tigris.gef.presentation.Fig#getFillColor()
-     */
-    public Color getFillColor() {
-        return cover.getFillColor();
-    }
-
-    /**
-     * @see org.tigris.gef.presentation.Fig#setFilled(boolean)
-     */
-    public void setFilled(boolean f) {
-        cover.setFilled(f);
-    }
-
-    /**
-     * @see org.tigris.gef.presentation.Fig#getFilled()
-     */
-    public boolean getFilled() {
-        return cover.getFilled();
-    }
-
-    /**
-     * @see org.tigris.gef.presentation.Fig#setLineWidth(int)
-     */
-    public void setLineWidth(int w) {
-        cover.setLineWidth(w);
-    }
-
-    /**
-     * @see org.tigris.gef.presentation.Fig#getLineWidth()
-     */
-    public int getLineWidth() {
-        return cover.getLineWidth();
-    }
-
-    /**
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement#modelChanged(java.beans.PropertyChangeEvent)
-     */
-    protected void modelChanged(PropertyChangeEvent mee) {
-        super.modelChanged(mee);
-        if (mee instanceof AddAssociationEvent
-                || mee instanceof AttributeChangeEvent) {
-            if (mee.getSource() == getOwner()
-                && mee.getPropertyName().equals("entry")) {
-                if (mee.getNewValue() != null) {
-                    Model.getPump().addModelEventListener(this,
-                                            mee.getNewValue(), "script");
-                }
-                updateNameText();
-                damage();
-            } else {
-                if (getOwner() != null
-                        && Model.getFacade().getEntry(getOwner()) == mee
-                                .getSource()) {
-                    updateNameText();
-                    damage();
-                }
-            }
-        } else if (mee instanceof RemoveAssociationEvent) {
-            if (mee.getOldValue() != null
-                    && mee.getPropertyName().equals("entry")) {
-                Model.getPump().removeModelEventListener(this,
-                        mee.getOldValue(), "script");
-                updateNameText();
-                damage();
-            }
-        }
-    }
-
-
-    /**
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement#updateNameText()
-     */
-    protected void updateNameText() {
-        if (notationProvider != null) {
-            getNameFig().setText(notationProvider.toString());
-        }
-    }
-
-
-    /**
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement#textEdited(org.tigris.gef.presentation.FigText)
-     */
-    protected void textEdited(FigText ft) throws PropertyVetoException {
-        ft.setText(notationProvider.parse(ft.getText()));
-    }
-
-    /**
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement#textEditStarted(org.tigris.gef.presentation.FigText)
-     */
-    protected void textEditStarted(FigText ft) {
-        if (ft == getNameFig()) {
-            showHelp(notationProvider.getParsingHelp());
-        }
-    }
-
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -3526461404860044420L;
+  /** The UID. */
+  private static final long serialVersionUID = -3526461404860044420L;
 } /* end class FigActionState */

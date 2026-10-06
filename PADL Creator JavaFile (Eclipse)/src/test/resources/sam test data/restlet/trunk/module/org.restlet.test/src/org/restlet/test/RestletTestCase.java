@@ -24,10 +24,10 @@ package org.restlet.test;
 import junit.framework.TestCase;
 
 /**
- * Marker class. All Restlet tests should be derived from this class. 
+ * Marker class. All Restlet tests should be derived from this class.
+ *
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
-public abstract class RestletTestCase extends TestCase
-{
-	// Currently emtpy.
+public abstract class RestletTestCase extends TestCase {
+  // Currently emtpy.
 }

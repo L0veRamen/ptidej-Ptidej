@@ -27,40 +27,36 @@ package org.argouml.argoeclipse.internal.ui.util;
 import java.awt.BorderLayout;
 import java.awt.Frame;
 import java.awt.Panel;
-
 import javax.swing.JPanel;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.widgets.Composite;
 
 /**
- * This is a utility class used by views and the editor for common
- * wrapping AWT/Swing in SWT.
- * 
+ * This is a utility class used by views and the editor for common wrapping AWT/Swing in SWT.
+ *
  * @author Bogdan Pistol
  */
 public class SwingWrapper {
-    
-    /**
-     * The wrapper.
-     * 
-     * @param swingPanel Swing component
-     * @param parent SWT component
-     * @return a JPanel layer placed between the composite parent and awtPanel
-     */
-    public static JPanel wrap(JPanel swingPanel, Composite parent) {
-        Composite composite = new Composite(parent, SWT.EMBEDDED);
-        Frame frame = SWT_AWT.new_Frame(composite);
-        Panel panel = new Panel();
-        panel.setLayout(new BorderLayout());
-        frame.add(panel);
-        JPanel rootJPanel = new JPanel();
-        rootJPanel.setLayout(new BorderLayout());
-        panel.add(rootJPanel);
 
-        rootJPanel.add(swingPanel);
-        return rootJPanel;
-    }
+  /**
+   * The wrapper.
+   *
+   * @param swingPanel Swing component
+   * @param parent SWT component
+   * @return a JPanel layer placed between the composite parent and awtPanel
+   */
+  public static JPanel wrap(JPanel swingPanel, Composite parent) {
+    Composite composite = new Composite(parent, SWT.EMBEDDED);
+    Frame frame = SWT_AWT.new_Frame(composite);
+    Panel panel = new Panel();
+    panel.setLayout(new BorderLayout());
+    frame.add(panel);
+    JPanel rootJPanel = new JPanel();
+    rootJPanel.setLayout(new BorderLayout());
+    panel.add(rootJPanel);
 
+    rootJPanel.add(swingPanel);
+    return rootJPanel;
+  }
 }

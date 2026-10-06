@@ -26,77 +26,69 @@ package org.argouml.argoeclipse.internal.ui.model;
 
 /**
  * The paths to icons for actions.
- * @author Bogdan Pistol 
+ *
+ * @author Bogdan Pistol
  */
 class IconPaths {
 
+  /*
+   * Paths for images relative to argoImagesPath.
+   */
+  static final String NEW_PATH = "New"; // $NON-NLS-1$
 
+  static final String OPEN_PATH = "OpenProject"; // $NON-NLS-1$
 
-    /*
-     * Paths for images relative to argoImagesPath.
-     */
-    static final String NEW_PATH = "New"; //$NON-NLS-1$
+  static final String SAVE_PATH = "SaveProject"; // $NON-NLS-1$
 
-    static final String OPEN_PATH = "OpenProject"; //$NON-NLS-1$
+  static final String SAVE_AS_PATH = "SaveProjectAs"; // $NON-NLS-1$
 
-    static final String SAVE_PATH = "SaveProject"; //$NON-NLS-1$
+  static final String IMPORT_SOURCES_PATH = "ImportSources"; // $NON-NLS-1$
 
-    static final String SAVE_AS_PATH = "SaveProjectAs"; //$NON-NLS-1$
+  static final String PAGE_SETUP_PATH = "PageSetup"; // $NON-NLS-1$
 
-    static final String IMPORT_SOURCES_PATH = "ImportSources"; //$NON-NLS-1$
+  static final String PRINT_PATH = "Print"; // $NON-NLS-1$
 
-    static final String PAGE_SETUP_PATH = "PageSetup"; //$NON-NLS-1$
+  static final String NAVIGATE_BACK_PATH = "NavigateBack"; // $NON-NLS-1$
 
-    static final String PRINT_PATH = "Print"; //$NON-NLS-1$
+  static final String NAVIGATE_FORWARD_PATH = "NavigateForward"; // $NON-NLS-1$
 
-    static final String NAVIGATE_BACK_PATH = "NavigateBack"; //$NON-NLS-1$
+  static final String REMOVE_FROM_DIAGRAM_PATH = "RemoveFromDiagram"; // $NON-NLS-1$
 
-    static final String NAVIGATE_FORWARD_PATH = "NavigateForward"; //$NON-NLS-1$
+  static final String DELETE_FROM_MODEL_PATH = "DeleteFromModel"; // $NON-NLS-1$
 
-    static final String REMOVE_FROM_DIAGRAM_PATH = 
-        "RemoveFromDiagram"; //$NON-NLS-1$
+  static final String SETTINGS_PATH = "Settings"; // $NON-NLS-1$
 
-    static final String DELETE_FROM_MODEL_PATH = 
-        "DeleteFromModel"; //$NON-NLS-1$
+  static final String FIND_PATH = "Find"; // $NON-NLS-1$
 
-    static final String SETTINGS_PATH = "Settings"; //$NON-NLS-1$
+  static final String ZOOM_OUT_PATH = "ZoomOut"; // $NON-NLS-1$
 
-    static final String FIND_PATH = "Find"; //$NON-NLS-1$
+  static final String ZOOM_RESET_PATH = "ZoomReset"; // $NON-NLS-1$
 
-    static final String ZOOM_OUT_PATH = "ZoomOut"; //$NON-NLS-1$
+  static final String ZOOM_IN_PATH = "ZoomIn"; // $NON-NLS-1$
 
-    static final String ZOOM_RESET_PATH = "ZoomReset"; //$NON-NLS-1$
+  static final String USECASE_DIAGRAM_PATH = "UseCaseDiagram"; // $NON-NLS-1$
 
-    static final String ZOOM_IN_PATH = "ZoomIn"; //$NON-NLS-1$
+  static final String CLASS_DIAGRAM_PATH = "ClassDiagram"; // $NON-NLS-1$
 
-    static final String USECASE_DIAGRAM_PATH = "UseCaseDiagram"; //$NON-NLS-1$
+  static final String SEQUENCE_DIAGRAM_PATH = "SequenceDiagram"; // $NON-NLS-1$
 
-    static final String CLASS_DIAGRAM_PATH = "ClassDiagram"; //$NON-NLS-1$
+  static final String COLLABORATION_DIAGRAM_PATH = "CollaborationDiagram"; // $NON-NLS-1$
 
-    static final String SEQUENCE_DIAGRAM_PATH = "SequenceDiagram"; //$NON-NLS-1$
+  static final String STATE_DIAGRAM_PATH = "StateDiagram"; // $NON-NLS-1$
 
-    static final String COLLABORATION_DIAGRAM_PATH = 
-        "CollaborationDiagram"; //$NON-NLS-1$
+  static final String ACTIVITY_DIAGRAM_PATH = "ActivityDiagram"; // $NON-NLS-1$
 
-    static final String STATE_DIAGRAM_PATH = "StateDiagram"; //$NON-NLS-1$
+  static final String DEPLOYMENT_DIAGRAM_PATH = "DeploymentDiagram"; // $NON-NLS-1$
 
-    static final String ACTIVITY_DIAGRAM_PATH = "ActivityDiagram"; //$NON-NLS-1$
+  static final String ABOUT_PATH = "AboutArgoUML"; // $NON-NLS-1$
 
-    static final String DEPLOYMENT_DIAGRAM_PATH = 
-        "DeploymentDiagram"; //$NON-NLS-1$
+  static final String DISTRIBUTE_HORIZONTAL_SPACING_PATH =
+      "DistributeHorizontalSpacing"; //$NON-NLS-1$
 
-    static final String ABOUT_PATH = "AboutArgoUML"; //$NON-NLS-1$
+  static final String DISTRIBUTE_HORIZONTAL_CENTERS_PATH =
+      "DistributeHorizontalCenters"; //$NON-NLS-1$
 
-    static final String DISTRIBUTE_HORIZONTAL_SPACING_PATH =
-            "DistributeHorizontalSpacing"; //$NON-NLS-1$
+  static final String DISTRIBUTE_VERTICAL_SPACING_PATH = "DistributeVerticalSpacing"; // $NON-NLS-1$
 
-    static final String DISTRIBUTE_HORIZONTAL_CENTERS_PATH =
-            "DistributeHorizontalCenters"; //$NON-NLS-1$
-
-    static final String DISTRIBUTE_VERTICAL_SPACING_PATH =
-            "DistributeVerticalSpacing"; //$NON-NLS-1$
-
-    static final String DISTRIBUTE_VERTICAL_CENTERS_PATH =
-            "DistributeVerticalCenters"; //$NON-NLS-1$
-
+  static final String DISTRIBUTE_VERTICAL_CENTERS_PATH = "DistributeVerticalCenters"; // $NON-NLS-1$
 }

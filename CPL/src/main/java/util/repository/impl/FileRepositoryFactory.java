@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -19,191 +19,172 @@ import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
-
 import util.io.ProxyConsole;
 import util.repository.FileAccessException;
 import util.repository.IFileRepository;
 import util.repository.IRepository;
 
 public class FileRepositoryFactory {
-	private static FileRepositoryFactory UniqueInstance;
+  private static FileRepositoryFactory UniqueInstance;
 
-	public static FileRepositoryFactory getInstance() {
-		if (FileRepositoryFactory.UniqueInstance == null) {
-			FileRepositoryFactory.UniqueInstance = new FileRepositoryFactory();
-		}
-		return FileRepositoryFactory.UniqueInstance;
-	}
+  public static FileRepositoryFactory getInstance() {
+    if (FileRepositoryFactory.UniqueInstance == null) {
+      FileRepositoryFactory.UniqueInstance = new FileRepositoryFactory();
+    }
+    return FileRepositoryFactory.UniqueInstance;
+  }
 
-	private static File getRunningPath(final IRepository aRepository) {
-		// Yann 2013/08/14: Test of the JAR-in-JAR version of Ptidej
-		// If this system property is set, then I use it and assume
-		// that it points to the JAR-in-JAR :-)
-		final String pathToJarInJar = System.getenv("ptidej.jarinjar.path");
-		if (pathToJarInJar != null) {
-			return new File(pathToJarInJar);
-		}
+  private static File getRunningPath(final IRepository aRepository) {
+    // Yann 2013/08/14: Test of the JAR-in-JAR version of Ptidej
+    // If this system property is set, then I use it and assume
+    // that it points to the JAR-in-JAR :-)
+    final String pathToJarInJar = System.getenv("ptidej.jarinjar.path");
+    if (pathToJarInJar != null) {
+      return new File(pathToJarInJar);
+    }
 
-		// Yann 2013/07/06: Crappy piece of code because of Sun!
-		// See http://stackoverflow.com/questions/4114702/how-to-get-name-of-jar-which-is-a-desktop-application-run-from
-		try {
-			final URI pathURI = aRepository.getClass().getProtectionDomain()
-					.getCodeSource().getLocation().toURI();
-			File pathFile = new File(pathURI);
-			if (pathFile.isDirectory()) {
-				ProxyConsole.getInstance().warningOutput()
-						.print(FileRepositoryFactory.class.getName());
-				ProxyConsole.getInstance().warningOutput()
-						.print(" has for running path: ");
-				ProxyConsole.getInstance().warningOutput().println(pathFile);
-			}
-			else {
-				pathFile = new File(
-						URLDecoder.decode(pathURI.getPath(), "UTF-8"));
-				ProxyConsole.getInstance().warningOutput()
-						.print(FileRepositoryFactory.class.getName());
-				ProxyConsole.getInstance().warningOutput()
-						.print(" has for running URI: ");
-				ProxyConsole.getInstance().warningOutput().println(pathFile);
-			}
+    // Yann 2013/07/06: Crappy piece of code because of Sun!
+    // See
+    // http://stackoverflow.com/questions/4114702/how-to-get-name-of-jar-which-is-a-desktop-application-run-from
+    try {
+      final URI pathURI =
+          aRepository.getClass().getProtectionDomain().getCodeSource().getLocation().toURI();
+      File pathFile = new File(pathURI);
+      if (pathFile.isDirectory()) {
+        ProxyConsole.getInstance().warningOutput().print(FileRepositoryFactory.class.getName());
+        ProxyConsole.getInstance().warningOutput().print(" has for running path: ");
+        ProxyConsole.getInstance().warningOutput().println(pathFile);
+      } else {
+        pathFile = new File(URLDecoder.decode(pathURI.getPath(), "UTF-8"));
+        ProxyConsole.getInstance().warningOutput().print(FileRepositoryFactory.class.getName());
+        ProxyConsole.getInstance().warningOutput().print(" has for running URI: ");
+        ProxyConsole.getInstance().warningOutput().println(pathFile);
+      }
 
-			return pathFile;
-		}
-		catch (final UnsupportedEncodingException | URISyntaxException e) {
-			ProxyConsole.getInstance().errorOutput()
-					.print(FileRepositoryFactory.class.getName());
-			ProxyConsole.getInstance().errorOutput().print(": ");
-			ProxyConsole.getInstance().errorOutput().print(e.getMessage());
-		}
+      return pathFile;
+    } catch (final UnsupportedEncodingException | URISyntaxException e) {
+      ProxyConsole.getInstance().errorOutput().print(FileRepositoryFactory.class.getName());
+      ProxyConsole.getInstance().errorOutput().print(": ");
+      ProxyConsole.getInstance().errorOutput().print(e.getMessage());
+    }
 
-		return new File(System.getProperty("user.dir"));
-	}
+    return new File(System.getProperty("user.dir"));
+  }
 
-	private Map<IRepository, IFileRepository> repositories = new HashMap<IRepository, IFileRepository>();
+  private Map<IRepository, IFileRepository> repositories =
+      new HashMap<IRepository, IFileRepository>();
 
-	public FileRepositoryFactory() {
-	}
+  public FileRepositoryFactory() {}
 
-	public IFileRepository getFileRepository(final IRepository aRepository) {
-		if (!this.repositories.containsKey(aRepository)) {
-			if (this.isEclipsePlugin(aRepository)) {
-				// TODO Implement!
-				//	final EclipseBundleRepository eclipseRepository =
-				//		new EclipseBundleRepository(cl, resourceNames);
-				final EclipseBundleRepository eclipseRepository = null;
-				this.repositories.put(aRepository, eclipseRepository);
-			}
-			else if (this.isFoldersAndFiles(aRepository)) {
-				this.repositories.put(aRepository,
-						new FileFolderRepository(aRepository));
-			}
-			else if (this.isFlatJar(aRepository)) {
-				this.repositories.put(aRepository,
-						JarFileRepository.getInstance(FileRepositoryFactory
-								.getRunningPath(aRepository)
-								.getAbsolutePath()));
-			}
-			else if (this.isJarsInJar(aRepository)) {
-				this.repositories.put(aRepository,
-						JarFileRepository.getInstance(FileRepositoryFactory
-								.getRunningPath(aRepository)
-								.getAbsolutePath()));
-			}
-			else {
-				throw new RuntimeException(new FileAccessException(
-						"FileRepositoryFactory cannot identify the type of repository!"));
-			}
-		}
+  public IFileRepository getFileRepository(final IRepository aRepository) {
+    if (!this.repositories.containsKey(aRepository)) {
+      if (this.isEclipsePlugin(aRepository)) {
+        // TODO Implement!
+        //	final EclipseBundleRepository eclipseRepository =
+        //		new EclipseBundleRepository(cl, resourceNames);
+        final EclipseBundleRepository eclipseRepository = null;
+        this.repositories.put(aRepository, eclipseRepository);
+      } else if (this.isFoldersAndFiles(aRepository)) {
+        this.repositories.put(aRepository, new FileFolderRepository(aRepository));
+      } else if (this.isFlatJar(aRepository)) {
+        this.repositories.put(
+            aRepository,
+            JarFileRepository.getInstance(
+                FileRepositoryFactory.getRunningPath(aRepository).getAbsolutePath()));
+      } else if (this.isJarsInJar(aRepository)) {
+        this.repositories.put(
+            aRepository,
+            JarFileRepository.getInstance(
+                FileRepositoryFactory.getRunningPath(aRepository).getAbsolutePath()));
+      } else {
+        throw new RuntimeException(
+            new FileAccessException(
+                "FileRepositoryFactory cannot identify the type of repository!"));
+      }
+    }
 
-		return this.repositories.get(aRepository);
-	}
+    return this.repositories.get(aRepository);
+  }
 
-	private boolean isEclipsePlugin(final IRepository aRepository) {
-		// Check if run within environments like eclipse
-		final ClassLoader cl = aRepository.getClass().getClassLoader();
-		try {
-			final Class workspaceClass = cl
-					.loadClass("org.eclipse.core.resources.IWorkspace");
-			final Class resourcesClass = cl
-					.loadClass("org.eclipse.core.resources.ResourcesPlugin");
-			if (workspaceClass != null || resourcesClass != null) {
-				// In eclipse
-				final Method getWorkspace = resourcesClass
-						.getDeclaredMethod("getWorkspace", new Class[0]);
-				final Object o = getWorkspace.invoke(resourcesClass,
-						new Object[] {});
-				if (o != null) {
-					// There is a workspace, we should use eclipse bundles
-					ProxyConsole.getInstance().warningOutput()
-							.print(this.getClass().getName());
-					ProxyConsole.getInstance().warningOutput().print(
-							" is creating an EclipseBundleRepository for: ");
-					ProxyConsole.getInstance().warningOutput()
-							.println(EclipseBundleRepository.class.getName());
+  private boolean isEclipsePlugin(final IRepository aRepository) {
+    // Check if run within environments like eclipse
+    final ClassLoader cl = aRepository.getClass().getClassLoader();
+    try {
+      final Class<?> workspaceClass = cl.loadClass("org.eclipse.core.resources.IWorkspace");
+      final Class<?> resourcesClass = cl.loadClass("org.eclipse.core.resources.ResourcesPlugin");
+      if (workspaceClass != null || resourcesClass != null) {
+        // In eclipse
+        final Method getWorkspace = resourcesClass.getDeclaredMethod("getWorkspace", new Class[0]);
+        final Object o = getWorkspace.invoke(resourcesClass, new Object[] {});
+        if (o != null) {
+          // There is a workspace, we should use eclipse bundles
+          ProxyConsole.getInstance().warningOutput().print(this.getClass().getName());
+          ProxyConsole.getInstance()
+              .warningOutput()
+              .print(" is creating an EclipseBundleRepository for: ");
+          ProxyConsole.getInstance()
+              .warningOutput()
+              .println(EclipseBundleRepository.class.getName());
 
-					return true;
-				}
-			}
-		}
-		catch (ClassNotFoundException | NoSuchMethodException
-				| SecurityException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException e) {
-			// ProxyConsole.getInstance().errorOutput().println("Class org.eclipse.core.resources.IWorkspace not found");
-		}
+          return true;
+        }
+      }
+    } catch (ClassNotFoundException
+        | NoSuchMethodException
+        | SecurityException
+        | IllegalAccessException
+        | IllegalArgumentException
+        | InvocationTargetException e) {
+      // ProxyConsole.getInstance().errorOutput().println("Class
+      // org.eclipse.core.resources.IWorkspace not found");
+    }
 
-		return false;
-	}
+    return false;
+  }
 
-	private boolean isFlatJar(final IRepository aRepository) {
-		ProxyConsole.getInstance().warningOutput()
-				.print(this.getClass().getName());
-		ProxyConsole.getInstance().warningOutput()
-				.print(" is creating a JarFileRepository for: ");
-		ProxyConsole.getInstance().warningOutput()
-				.println(JarFileRepository.class.getName());
+  private boolean isFlatJar(final IRepository aRepository) {
+    ProxyConsole.getInstance().warningOutput().print(this.getClass().getName());
+    ProxyConsole.getInstance().warningOutput().print(" is creating a JarFileRepository for: ");
+    ProxyConsole.getInstance().warningOutput().println(JarFileRepository.class.getName());
 
-		return true;
-	}
+    return true;
+  }
 
-	private boolean isFoldersAndFiles(final IRepository aRepository) {
-		final File path = FileRepositoryFactory.getRunningPath(aRepository);
-		if (path.isDirectory()) {
-			ProxyConsole.getInstance().warningOutput()
-					.print(this.getClass().getName());
-			ProxyConsole.getInstance().warningOutput()
-					.print(" is creating a ClassFileRepository for: ");
-			ProxyConsole.getInstance().warningOutput()
-					.println(FileFolderRepository.class.getName());
+  private boolean isFoldersAndFiles(final IRepository aRepository) {
+    final File path = FileRepositoryFactory.getRunningPath(aRepository);
+    if (path.isDirectory()) {
+      ProxyConsole.getInstance().warningOutput().print(this.getClass().getName());
+      ProxyConsole.getInstance().warningOutput().print(" is creating a ClassFileRepository for: ");
+      ProxyConsole.getInstance().warningOutput().println(FileFolderRepository.class.getName());
 
-			return true;
-		}
+      return true;
+    }
 
-		return false;
-	}
+    return false;
+  }
 
-	private boolean isJarsInJar(final IRepository aRepository) {
-		// Warning! Eclipse of course does funny things...
-		try {
-			final Class jarInJarLoader = aRepository.getClass()
-					.getClassLoader().loadClass(
-							"org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader");
+  private boolean isJarsInJar(final IRepository aRepository) {
+    // Warning! Eclipse of course does funny things...
+    try {
+      final Class<?> jarInJarLoader =
+          aRepository
+              .getClass()
+              .getClassLoader()
+              .loadClass("org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader");
 
-			if (jarInJarLoader != null) {
-				ProxyConsole.getInstance().warningOutput()
-						.print(this.getClass().getName());
-				ProxyConsole.getInstance().warningOutput()
-						.print(" is creating a JarFileRepository for: ");
-				ProxyConsole.getInstance().warningOutput()
-						.println(jarInJarLoader.getName());
+      if (jarInJarLoader != null) {
+        ProxyConsole.getInstance().warningOutput().print(this.getClass().getName());
+        ProxyConsole.getInstance().warningOutput().print(" is creating a JarFileRepository for: ");
+        ProxyConsole.getInstance().warningOutput().println(jarInJarLoader.getName());
 
-				return true;
-			}
-		}
-		catch (final ClassNotFoundException e) {
-			ProxyConsole.getInstance().errorOutput().println(
-					"Class org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader not found");
-		}
+        return true;
+      }
+    } catch (final ClassNotFoundException e) {
+      ProxyConsole.getInstance()
+          .errorOutput()
+          .println("Class org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader not found");
+    }
 
-		return false;
-	}
+    return false;
+  }
 }

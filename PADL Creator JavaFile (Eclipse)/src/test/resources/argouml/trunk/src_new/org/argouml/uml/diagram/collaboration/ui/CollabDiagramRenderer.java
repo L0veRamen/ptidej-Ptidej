@@ -25,7 +25,6 @@
 package org.argouml.uml.diagram.collaboration.ui;
 
 import java.util.Map;
-
 import org.apache.log4j.Logger;
 import org.argouml.model.Model;
 import org.argouml.uml.diagram.UmlDiagramRenderer;
@@ -41,9 +40,10 @@ import org.tigris.gef.presentation.FigEdge;
 import org.tigris.gef.presentation.FigNode;
 
 /**
- * This class defines a renderer object for UML Collaboration Diagrams.
- * In a collaboration Diagram the following UML objects are displayed with the
- * following Figs:<p>
+ * This class defines a renderer object for UML Collaboration Diagrams. In a collaboration Diagram
+ * the following UML objects are displayed with the following Figs:
+ *
+ * <p>
  *
  * <pre>
  *   UML Object       ---  Fig
@@ -53,118 +53,111 @@ import org.tigris.gef.presentation.FigNode;
  *   MComment         ---  FigComment
  * </pre>
  *
- * Provides {@link #getFigNodeFor} to implement the
- * {@link org.tigris.gef.graph.GraphNodeRenderer} interface and
- * {@link #getFigEdgeFor} to implement the
- * {@link org.tigris.gef.graph.GraphEdgeRenderer} interface.<p>
+ * Provides {@link #getFigNodeFor} to implement the {@link org.tigris.gef.graph.GraphNodeRenderer}
+ * interface and {@link #getFigEdgeFor} to implement the {@link
+ * org.tigris.gef.graph.GraphEdgeRenderer} interface.
  *
- * <em>Note</em>. Should be implemented as a singleton - we don't really
- * need a separate instance for each use case diagram.<p>
+ * <p><em>Note</em>. Should be implemented as a singleton - we don't really need a separate instance
+ * for each use case diagram.
  *
+ * <p>
  *
  * @author agauthie
  */
 public class CollabDiagramRenderer extends UmlDiagramRenderer {
-    /**
-     * Logger.
-     */
-    private static final Logger LOG =
-	Logger.getLogger(CollabDiagramRenderer.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(CollabDiagramRenderer.class);
 
-    /**
-     * Return a Fig that can be used to represent the given node.
-     *
-     * @see org.tigris.gef.graph.GraphNodeRenderer#getFigNodeFor(
-     *         org.tigris.gef.graph.GraphModel, org.tigris.gef.base.Layer,
-     *         java.lang.Object, java.util.Map)
-     */
-    public FigNode getFigNodeFor(GraphModel gm, Layer lay,
-				 Object node, Map styleAttributes) {
-	if (Model.getFacade().isAClassifierRole(node)) {
-	    return new FigClassifierRole(gm, lay, node);
-	}
-	if (Model.getFacade().isAMessage(node)) {
-	    return new FigMessage(gm, lay, node);
-	}
-	if (Model.getFacade().isAComment(node)) {
-            return new FigComment(gm, node);
-        }
-	LOG.debug("TODO: CollabDiagramRenderer getFigNodeFor");
-	return null;
+  /**
+   * Return a Fig that can be used to represent the given node.
+   *
+   * @see org.tigris.gef.graph.GraphNodeRenderer#getFigNodeFor( org.tigris.gef.graph.GraphModel,
+   *     org.tigris.gef.base.Layer, java.lang.Object, java.util.Map)
+   */
+  public FigNode getFigNodeFor(GraphModel gm, Layer lay, Object node, Map styleAttributes) {
+    if (Model.getFacade().isAClassifierRole(node)) {
+      return new FigClassifierRole(gm, lay, node);
+    }
+    if (Model.getFacade().isAMessage(node)) {
+      return new FigMessage(gm, lay, node);
+    }
+    if (Model.getFacade().isAComment(node)) {
+      return new FigComment(gm, node);
+    }
+    LOG.debug("TODO: CollabDiagramRenderer getFigNodeFor");
+    return null;
+  }
+
+  /**
+   * Return a Fig that can be used to represent the given edge, Generally the same code as for the
+   * ClassDiagram, since its very related to it.
+   *
+   * @see org.tigris.gef.graph.GraphEdgeRenderer#getFigEdgeFor( org.tigris.gef.graph.GraphModel,
+   *     org.tigris.gef.base.Layer, java.lang.Object, java.util.Map)
+   */
+  public FigEdge getFigEdgeFor(GraphModel gm, Layer lay, Object edge, Map styleAttributes) {
+
+    FigEdge newEdge = null;
+    if (Model.getFacade().isAAssociationRole(edge)) {
+      newEdge = new FigAssociationRole(edge, lay);
+    } else if (Model.getFacade().isAGeneralization(edge)) {
+      newEdge = new FigGeneralization(edge, lay);
+    } else if (Model.getFacade().isADependency(edge)) {
+      newEdge = new FigDependency(edge, lay);
+    } else if (edge instanceof CommentEdge) {
+      newEdge = new FigEdgeNote(edge, lay);
     }
 
-    /**
-     * Return a Fig that can be used to represent the given edge,
-     * Generally the same code as for the ClassDiagram, since its
-     * very related to it.
-     *
-     * @see org.tigris.gef.graph.GraphEdgeRenderer#getFigEdgeFor(
-     * org.tigris.gef.graph.GraphModel,
-     * org.tigris.gef.base.Layer, java.lang.Object, java.util.Map)
-     */
-    public FigEdge getFigEdgeFor(GraphModel gm, Layer lay,
-				 Object edge, Map styleAttributes) {
-        
-        FigEdge newEdge = null;
-        if (Model.getFacade().isAAssociationRole(edge)) {
-            newEdge = new FigAssociationRole(edge, lay);
-        } else if (Model.getFacade().isAGeneralization(edge)) {
-            newEdge = new FigGeneralization(edge, lay);
-        } else if (Model.getFacade().isADependency(edge)) {
-            newEdge = new FigDependency(edge , lay);
-        } else if (edge instanceof CommentEdge) {
-            newEdge = new FigEdgeNote(edge, lay);
-        }
-    
-        if (newEdge == null) {
-            throw new IllegalArgumentException(
-                    "Don't know how to create FigEdge for model type "
-                    + edge.getClass().getName());
-        }
-
-        if (newEdge.getSourcePortFig() == null) {
-            Object source;
-            if (edge instanceof CommentEdge) {
-                source = ((CommentEdge) edge).getSource();
-            } else {
-                source = Model.getUmlHelper().getSource(edge);
-            }
-            setSourcePort(newEdge, (FigNode) lay.presentationFor(source));
-        }
-
-        if (newEdge.getDestPortFig() == null) {
-            Object dest;
-            if (edge instanceof CommentEdge) {
-                dest = ((CommentEdge) edge).getDestination();
-            } else {
-                dest = Model.getUmlHelper().getDestination(edge);
-            }
-            setDestPort(newEdge, (FigNode) lay.presentationFor(dest));
-        }
-
-        if (newEdge.getSourcePortFig() == null
-                || newEdge.getDestPortFig() == null) {
-            throw new IllegalStateException("Edge of type "
-                    + newEdge.getClass().getName()
-                    + " created with no source or destination port");
-        }
-
-        assert newEdge != null : "There has been no FigEdge created";
-        assert (newEdge.getDestFigNode() != null) : "The FigEdge has no dest node";
-        assert (newEdge.getDestPortFig() != null) : "The FigEdge has no dest port";
-        assert (newEdge.getSourceFigNode() != null) : "The FigEdge has no source node";;
-        assert (newEdge.getSourcePortFig() != null) : "The FigEdge has no source port";;
-        
-        return newEdge;
-    }
-    
-    private void setSourcePort(FigEdge edge, FigNode source) {
-        edge.setSourcePortFig(source);
-        edge.setSourceFigNode(source);
+    if (newEdge == null) {
+      throw new IllegalArgumentException(
+          "Don't know how to create FigEdge for model type " + edge.getClass().getName());
     }
 
-    private void setDestPort(FigEdge edge, FigNode dest) {
-        edge.setDestPortFig(dest);
-        edge.setDestFigNode(dest);
+    if (newEdge.getSourcePortFig() == null) {
+      Object source;
+      if (edge instanceof CommentEdge) {
+        source = ((CommentEdge) edge).getSource();
+      } else {
+        source = Model.getUmlHelper().getSource(edge);
+      }
+      setSourcePort(newEdge, (FigNode) lay.presentationFor(source));
     }
+
+    if (newEdge.getDestPortFig() == null) {
+      Object dest;
+      if (edge instanceof CommentEdge) {
+        dest = ((CommentEdge) edge).getDestination();
+      } else {
+        dest = Model.getUmlHelper().getDestination(edge);
+      }
+      setDestPort(newEdge, (FigNode) lay.presentationFor(dest));
+    }
+
+    if (newEdge.getSourcePortFig() == null || newEdge.getDestPortFig() == null) {
+      throw new IllegalStateException(
+          "Edge of type "
+              + newEdge.getClass().getName()
+              + " created with no source or destination port");
+    }
+
+    assert newEdge != null : "There has been no FigEdge created";
+    assert (newEdge.getDestFigNode() != null) : "The FigEdge has no dest node";
+    assert (newEdge.getDestPortFig() != null) : "The FigEdge has no dest port";
+    assert (newEdge.getSourceFigNode() != null) : "The FigEdge has no source node";
+    ;
+    assert (newEdge.getSourcePortFig() != null) : "The FigEdge has no source port";
+    ;
+
+    return newEdge;
+  }
+
+  private void setSourcePort(FigEdge edge, FigNode source) {
+    edge.setSourcePortFig(source);
+    edge.setSourceFigNode(source);
+  }
+
+  private void setDestPort(FigEdge edge, FigNode dest) {
+    edge.setDestPortFig(dest);
+    edge.setDestFigNode(dest);
+  }
 } /* end class CollabDiagramRenderer */

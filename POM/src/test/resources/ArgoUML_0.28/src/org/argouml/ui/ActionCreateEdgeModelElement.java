@@ -26,9 +26,7 @@ package org.argouml.ui;
 
 import java.awt.event.ActionEvent;
 import java.text.MessageFormat;
-
 import javax.swing.AbstractAction;
-
 import org.apache.log4j.Logger;
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.IllegalModelElementConnectionException;
@@ -41,55 +39,45 @@ import org.argouml.ui.explorer.ExplorerPopup;
  * @author Bob Tarling
  */
 public class ActionCreateEdgeModelElement extends AbstractAction {
-    
-    private static final Logger LOG =
-        Logger.getLogger(ExplorerPopup.class);
-    
-    private final Object metaType; 
-    private final Object source; 
-    private final Object dest;
 
-    /**
-     * Create a new model element which in graph terminology is an edge,
-     * ie a model element that links two other model elements and makes
-     * no sense to exist by itelf.
-     * @param theMetaType The type of model element to create
-     * @param theSource The source model element to link
-     * @param theDestination The destination model element to link
-     * @param relationshipDescr A textual description that describes how
-     *                          source relates to destination
-     */
-    public ActionCreateEdgeModelElement(
-            final Object theMetaType, 
-            final Object theSource, 
-            final Object theDestination,
-            final String relationshipDescr) {
-        super(MessageFormat.format(
+  private static final Logger LOG = Logger.getLogger(ExplorerPopup.class);
+
+  private final Object metaType;
+  private final Object source;
+  private final Object dest;
+
+  /**
+   * Create a new model element which in graph terminology is an edge, ie a model element that links
+   * two other model elements and makes no sense to exist by itelf.
+   *
+   * @param theMetaType The type of model element to create
+   * @param theSource The source model element to link
+   * @param theDestination The destination model element to link
+   * @param relationshipDescr A textual description that describes how source relates to destination
+   */
+  public ActionCreateEdgeModelElement(
+      final Object theMetaType,
+      final Object theSource,
+      final Object theDestination,
+      final String relationshipDescr) {
+    super(
+        MessageFormat.format(
             relationshipDescr,
             new Object[] {
-                DisplayTextTree.getModelElementDisplayName(theSource),
-                DisplayTextTree.getModelElementDisplayName(
-                        theDestination)}));
-        this.metaType = theMetaType;
-        this.source = theSource;
-        this.dest = theDestination;
-    }
+              DisplayTextTree.getModelElementDisplayName(theSource),
+              DisplayTextTree.getModelElementDisplayName(theDestination)
+            }));
+    this.metaType = theMetaType;
+    this.source = theSource;
+    this.dest = theDestination;
+  }
 
-    public void actionPerformed(ActionEvent e) {
-        Object rootModel = 
-            ProjectManager.getManager().getCurrentProject().getModel();
-        try {
-            Model.getUmlFactory().buildConnection(
-                metaType,
-                source,
-                null,
-                dest,
-                null,
-                null,
-                rootModel);
-        } catch (IllegalModelElementConnectionException e1) {
-            LOG.error("Exception", e1);
-        }
+  public void actionPerformed(ActionEvent e) {
+    Object rootModel = ProjectManager.getManager().getCurrentProject().getModel();
+    try {
+      Model.getUmlFactory().buildConnection(metaType, source, null, dest, null, null, rootModel);
+    } catch (IllegalModelElementConnectionException e1) {
+      LOG.error("Exception", e1);
     }
+  }
 }
-

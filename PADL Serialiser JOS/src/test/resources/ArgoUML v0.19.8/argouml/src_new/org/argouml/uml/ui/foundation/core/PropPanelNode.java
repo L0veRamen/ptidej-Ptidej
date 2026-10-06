@@ -25,10 +25,8 @@
 package org.argouml.uml.ui.foundation.core;
 
 import java.util.Collection;
-
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.ActionDeleteSingleModelElement;
@@ -38,68 +36,59 @@ import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
 import org.argouml.util.ConfigLoader;
 
 /**
- * TODO: this property panel needs refactoring to remove dependency on
- *       old gui components.
+ * TODO: this property panel needs refactoring to remove dependency on old gui components.
  *
  * @author 5eichler
  */
 public class PropPanelNode extends PropPanelClassifier {
 
-    /**
-     * The constructor.
-     *
-     */
-    public PropPanelNode() {
-        super("Node", lookupIcon("Node"),
-                ConfigLoader.getTabPropsOrientation());
+  /** The constructor. */
+  public PropPanelNode() {
+    super("Node", lookupIcon("Node"), ConfigLoader.getTabPropsOrientation());
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
+    addField(Translator.localize("label.name"), getNameTextField());
 
-        addField(Translator.localize("label.stereotype"),
-                getStereotypeSelector());
-        addField(Translator.localize("label.namespace"),
-                getNamespaceSelector());
+    addField(Translator.localize("label.stereotype"), getStereotypeSelector());
+    addField(Translator.localize("label.namespace"), getNamespaceSelector());
 
-        add(getModifiersPanel());
+    add(getModifiersPanel());
 
-        addSeperator();
+    addSeperator();
 
-        addField("Generalizations:", getGeneralizationScroll());
+    addField("Generalizations:", getGeneralizationScroll());
 
-        addField("Specializations:", getSpecializationScroll());
+    addField("Specializations:", getSpecializationScroll());
 
-        addSeperator();
+    addSeperator();
 
-        JList resList = new UMLLinkedList(new UMLContainerResidentListModel());
-        addField(Translator.localize("label.residents"),
-                new JScrollPane(resList));
+    JList resList = new UMLLinkedList(new UMLContainerResidentListModel());
+    addField(Translator.localize("label.residents"), new JScrollPane(resList));
 
-        addAction(new ActionNavigateContainerElement());
-        addAction(getActionNewReception());
-        addAction(new ActionNewStereotype());
-        addAction(new ActionDeleteSingleModelElement());
+    addAction(new ActionNavigateContainerElement());
+    addAction(getActionNewReception());
+    addAction(new ActionNewStereotype());
+    addAction(new ActionDeleteSingleModelElement());
+  }
+
+  /**
+   * @return the residents of this node
+   */
+  public Collection getResidents() {
+    Collection components = null;
+    Object target = getTarget();
+    if (Model.getFacade().isANode(target)) {
+      components = Model.getFacade().getResidents(target);
     }
+    return components;
+  }
 
-    /**
-     * @return the residents of this node
-     */
-    public Collection getResidents() {
-        Collection components = null;
-        Object target = getTarget();
-        if (Model.getFacade().isANode(target)) {
-            components = Model.getFacade().getResidents(target);
-        }
-        return components;
+  /**
+   * @param components set the residents of this node
+   */
+  public void setResidents(Collection components) {
+    Object target = getTarget();
+    if (Model.getFacade().isANode(target)) {
+      Model.getCoreHelper().setResidents(target, components);
     }
-
-    /**
-     * @param components set the residents of this node
-     */
-    public void setResidents(Collection components) {
-        Object target = getTarget();
-        if (Model.getFacade().isANode(target)) {
-            Model.getCoreHelper().setResidents(target, components);
-        }
-    }
+  }
 } /* end class PropPanelNode */

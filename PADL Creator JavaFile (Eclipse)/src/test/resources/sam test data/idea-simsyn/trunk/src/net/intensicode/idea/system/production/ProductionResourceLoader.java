@@ -1,56 +1,41 @@
 package net.intensicode.idea.system.production;
 
-import net.intensicode.idea.system.ResourceLoader;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import net.intensicode.idea.system.ResourceLoader;
 
+/** TODO: Describe this! */
+final class ProductionResourceLoader implements ResourceLoader {
+  ProductionResourceLoader() {}
 
+  // From ResourceLoader
 
-/**
- * TODO: Describe this!
- */
-final class ProductionResourceLoader implements ResourceLoader
-{
-    ProductionResourceLoader()
-    {
+  public boolean isAvailable(String aResourcePath) {
+    final InputStream stream = stream(aResourcePath);
+    try {
+      stream.close();
+      return true;
+    } catch (final Throwable t) {
+      return false;
     }
+  }
 
-    // From ResourceLoader
+  public final Reader read(final String aResourcePath) throws IOException {
+    final InputStream stream = stream(aResourcePath);
+    if (stream == null) throw new IOException("Resource not found: " + aResourcePath);
+    return new InputStreamReader(stream);
+  }
 
-    public boolean isAvailable( String aResourcePath )
-    {
-        final InputStream stream = stream( aResourcePath );
-        try
-        {
-            stream.close();
-            return true;
-        }
-        catch ( final Throwable t )
-        {
-            return false;
-        }
-    }
+  public final InputStream stream(final String aResourcePath) {
+    final String resourcePath = makeResourcePath(aResourcePath);
+    return getClass().getResourceAsStream(resourcePath);
+  }
 
-    public final Reader read( final String aResourcePath ) throws IOException
-    {
-        final InputStream stream = stream( aResourcePath );
-        if ( stream == null ) throw new IOException( "Resource not found: " + aResourcePath );
-        return new InputStreamReader( stream );
-    }
+  // Implementation
 
-    public final InputStream stream( final String aResourcePath )
-    {
-        final String resourcePath = makeResourcePath( aResourcePath );
-        return getClass().getResourceAsStream( resourcePath );
-    }
-
-    // Implementation
-
-    private final String makeResourcePath( final String aResourcePath )
-    {
-        return "/" + aResourcePath;
-    }
+  private final String makeResourcePath(final String aResourcePath) {
+    return "/" + aResourcePath;
+  }
 }

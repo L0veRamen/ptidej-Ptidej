@@ -29,7 +29,6 @@ import java.awt.Rectangle;
 import java.beans.PropertyVetoException;
 import java.util.Collection;
 import java.util.List;
-
 import org.apache.log4j.Logger;
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
@@ -55,244 +54,238 @@ import org.tigris.gef.presentation.FigNode;
  * @author penyaskito
  */
 public class UMLSequenceDiagram extends UMLDiagram {
-    
-    private Object[] actions;
 
-    private static final Logger LOG = Logger
-        .getLogger(UMLSequenceDiagram.class);
-    
-    /**
-     * TODO: Document!
-     * 
-     * @deprecated for 0.28 by tfmorris.  Use 
-     * {@link #UMLActivityDiagram(String, Object, GraphModel)}.
-     */
-    @Deprecated
-    public UMLSequenceDiagram() {
-        super();
-        // Create the graph model
-        MutableGraphModel gm = new SequenceDiagramGraphModel(); 
-        setGraphModel(gm);
-        
-        // Create the layer
-        LayerPerspective lay = new
-            LayerPerspectiveMutable(this.getName(), gm);
-        setLayer(lay);
-        
-        // Create the renderer
-        SequenceDiagramRenderer renderer = new SequenceDiagramRenderer();
-        lay.setGraphNodeRenderer(renderer);
-        lay.setGraphEdgeRenderer(renderer);
-        
-        LOG.debug("Created sequence diagram");
+  private Object[] actions;
+
+  private static final Logger LOG = Logger.getLogger(UMLSequenceDiagram.class);
+
+  /**
+   * TODO: Document!
+   *
+   * @deprecated for 0.28 by tfmorris. Use {@link #UMLActivityDiagram(String, Object, GraphModel)}.
+   */
+  @Deprecated
+  public UMLSequenceDiagram() {
+    super();
+    // Create the graph model
+    MutableGraphModel gm = new SequenceDiagramGraphModel();
+    setGraphModel(gm);
+
+    // Create the layer
+    LayerPerspective lay = new LayerPerspectiveMutable(this.getName(), gm);
+    setLayer(lay);
+
+    // Create the renderer
+    SequenceDiagramRenderer renderer = new SequenceDiagramRenderer();
+    lay.setGraphNodeRenderer(renderer);
+    lay.setGraphEdgeRenderer(renderer);
+
+    LOG.debug("Created sequence diagram");
+  }
+
+  /**
+   * Creates a new UmlSequenceDiagram with a collaboration.
+   *
+   * @param collaboration The collaboration
+   */
+  public UMLSequenceDiagram(Object collaboration) {
+    this();
+    try {
+      this.setName(getNewDiagramName());
+    } catch (PropertyVetoException e) {
+      LOG.error("Exception", e);
     }
-    
-    /**
-     * Creates a new UmlSequenceDiagram with a collaboration.
-     * @param collaboration The collaboration
-     * 
-     */
-    public UMLSequenceDiagram(Object collaboration) {
-        this();
-        try {
-            this.setName(getNewDiagramName());
-        } catch (PropertyVetoException e) {
-            LOG.error("Exception", e);
+    ((SequenceDiagramGraphModel) getGraphModel()).setCollaboration(collaboration);
+    setNamespace(collaboration);
+  }
+
+  /**
+   * Get the Uml actions that can be performed in the diagram
+   *
+   * @return An array with the Uml actions
+   * @see org.argouml.uml.diagram.ui.UMLDiagram#getUmlActions()
+   */
+  @Override
+  protected Object[] getUmlActions() {
+    if (actions == null) {
+      actions = new Object[8];
+      int i = 0;
+      actions[i++] = new RadioAction(new ActionAddClassifierRole());
+      actions[i++] =
+          new RadioAction(
+              new ActionSetAddMessageMode(
+                  Model.getMetaTypes().getCallAction(), "button.new-callaction"));
+      actions[i++] =
+          new RadioAction(
+              new ActionSetAddMessageMode(
+                  Model.getMetaTypes().getSendAction(), "button.new-sendaction"));
+      actions[i++] =
+          new RadioAction(
+              new ActionSetAddMessageMode(
+                  Model.getMetaTypes().getReturnAction(), "button.new-returnaction"));
+      actions[i++] =
+          new RadioAction(
+              new ActionSetAddMessageMode(
+                  Model.getMetaTypes().getCreateAction(), "button.new-createaction"));
+      actions[i++] =
+          new RadioAction(
+              new ActionSetAddMessageMode(
+                  Model.getMetaTypes().getDestroyAction(), "button.new-destroyaction"));
+      actions[i++] =
+          new RadioAction(new ActionSetMode(ModeBroomMessages.class, "button.broom-messages"));
+    }
+    return actions;
+  }
+
+  /**
+   * Get the localized label name for the diagram
+   *
+   * @return The localized label name for the diagram
+   * @see org.argouml.uml.diagram.ui.UMLDiagram#getLabelName()
+   */
+  @Override
+  public String getLabelName() {
+    return Translator.localize("label.sequence-diagram");
+  }
+
+  @Override
+  public void encloserChanged(FigNode enclosed, FigNode oldEncloser, FigNode newEncloser) {
+    // Do nothing.
+  }
+
+  @Override
+  public boolean isRelocationAllowed(Object base) {
+    return Model.getFacade().isACollaboration(base);
+  }
+
+  @SuppressWarnings("unchecked")
+  public Collection getRelocationCandidates(Object root) {
+    return Model.getModelManagementHelper()
+        .getAllModelElementsOfKindWithModel(root, Model.getMetaTypes().getCollaboration());
+  }
+
+  @Override
+  public boolean relocate(Object base) {
+    ((SequenceDiagramGraphModel) getGraphModel()).setCollaboration(base);
+    setNamespace(base);
+    damage();
+    return true;
+  }
+
+  /**
+   * A sequence diagram can accept all classifiers. It will add them as a new Classifier Role with
+   * that classifier as a base.
+   *
+   * @param objectToAccept element to test for acceptability
+   * @return true if the element is acceptable
+   * @see org.argouml.uml.diagram.ui.UMLDiagram#doesAccept(java.lang.Object)
+   */
+  @Override
+  public boolean doesAccept(Object objectToAccept) {
+    if (Model.getFacade().isAClassifier(objectToAccept)) {
+      return true;
+    } else if (Model.getFacade().isAComment(objectToAccept)) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Creates a new Classifier Role with a specified base.
+   *
+   * @param base
+   * @return The new CR
+   */
+  private Object makeNewCR(Object base) {
+    Object node = null;
+    Editor ce = Globals.curEditor();
+    GraphModel gm = ce.getGraphModel();
+    if (gm instanceof SequenceDiagramGraphModel) {
+      Object collaboration = ((SequenceDiagramGraphModel) gm).getCollaboration();
+      node = Model.getCollaborationsFactory().buildClassifierRole(collaboration);
+    }
+    Model.getCollaborationsHelper().addBase(node, base);
+
+    return node;
+  }
+
+  /**
+   * Creates the Fig for the CR. Y position will be adjusted to match other the other CRs.
+   *
+   * @param classifierRole
+   * @param location The position where to put the new fig.
+   * @return
+   */
+  private FigClassifierRole makeNewFigCR(Object classifierRole, Point location) {
+    if (classifierRole != null) {
+      Rectangle bounds = new Rectangle();
+
+      // Y position of the new CR should match existing CRs Y position
+      for (Fig fig : (List<Fig>) getLayer().getContentsNoEdges()) {
+        if (fig instanceof FigClassifierRole) {
+          bounds.y = fig.getY();
+          bounds.height = fig.getHeight();
+          break;
         }
-        ((SequenceDiagramGraphModel) getGraphModel()).
-            setCollaboration(collaboration);
-        setNamespace(collaboration);
-    }
-    
-    /**
-     * Get the Uml actions that can be performed in the diagram 
-     * @return An array with the Uml actions 
-     * @see org.argouml.uml.diagram.ui.UMLDiagram#getUmlActions()
-     */
-    @Override
-    protected Object[] getUmlActions() {
-        if (actions == null) {
-            actions = new Object[8];
-            int i = 0;
-            actions[i++] = new RadioAction(new ActionAddClassifierRole());
-            actions[i++] = new RadioAction(new ActionSetAddMessageMode(
-                    Model.getMetaTypes().getCallAction(),
-                    "button.new-callaction"));
-            actions[i++] = new RadioAction(new ActionSetAddMessageMode(
-                    Model.getMetaTypes().getSendAction(),
-                    "button.new-sendaction"));
-            actions[i++] = new RadioAction(new ActionSetAddMessageMode(
-                    Model.getMetaTypes().getReturnAction(),
-                    "button.new-returnaction"));
-            actions[i++] = new RadioAction(new ActionSetAddMessageMode(
-                    Model.getMetaTypes().getCreateAction(),
-                    "button.new-createaction"));
-            actions[i++] = new RadioAction(new ActionSetAddMessageMode(
-                    Model.getMetaTypes().getDestroyAction(),
-                    "button.new-destroyaction"));
-            actions[i++] = new RadioAction(new ActionSetMode(
-                    ModeBroomMessages.class,
-                    "button.broom-messages"));
+      }
+      if (location != null) {
+        if (bounds.y == 0) {
+          bounds.y = location.y;
         }
-        return actions;
+        bounds.x = location.x;
+      }
+
+      FigClassifierRole newCR = new FigClassifierRole(classifierRole, bounds, getDiagramSettings());
+      getGraphModel().getNodes().add(newCR.getOwner());
+
+      return newCR;
     }
-    
-    /**
-     * Get the localized label name for the diagram
-     * @return The localized label name for the diagram
-     * @see org.argouml.uml.diagram.ui.UMLDiagram#getLabelName()
-     */
-    @Override
-    public String getLabelName() {
-        return Translator.localize("label.sequence-diagram");
+    return null;
+  }
+
+  @Override
+  public FigNode drop(Object droppedObject, Point location) {
+    FigNode figNode = null;
+
+    // If location is non-null, convert to a rectangle that we can use
+    Rectangle bounds = null;
+    if (location != null) {
+      bounds = new Rectangle(location.x, location.y, 0, 0);
     }
-    
-    @Override
-    public void encloserChanged(FigNode enclosed, FigNode oldEncloser,
-            FigNode newEncloser) {
-    	// Do nothing.        
-    }
-    
-    @Override
-    public boolean isRelocationAllowed(Object base)  {
-    	return Model.getFacade().isACollaboration(base);
+    DiagramSettings settings = getDiagramSettings();
+
+    if (Model.getFacade().isAComment(droppedObject)) {
+      figNode = new FigComment(droppedObject, bounds, settings);
+    } else if (Model.getFacade().isAClassifierRole(droppedObject)) {
+      if (!getGraphModel().getNodes().contains(droppedObject)) {
+        figNode = makeNewFigCR(droppedObject, location);
+      }
+    } else if (Model.getFacade().isAClassifier(droppedObject)) {
+      figNode = makeNewFigCR(makeNewCR(droppedObject), location);
     }
 
-    @SuppressWarnings("unchecked")
-    public Collection getRelocationCandidates(Object root) {
-        return 
-        Model.getModelManagementHelper().getAllModelElementsOfKindWithModel(
-            root, Model.getMetaTypes().getCollaboration());
+    if (figNode != null) {
+      LOG.debug("Dropped object " + droppedObject + " converted to " + figNode);
+    } else {
+      LOG.debug("Dropped object NOT added " + droppedObject);
     }
+    return figNode;
+  }
 
-    @Override
-    public boolean relocate(Object base) {
-        ((SequenceDiagramGraphModel) getGraphModel())
-	    	.setCollaboration(base);
-        setNamespace(base);
-        damage();
-        return true;
+  @Override
+  public String getInstructions(Object droppedObject) {
+    if (Model.getFacade().isAClassifierRole(droppedObject)) {
+      return super.getInstructions(droppedObject);
+    } else if (Model.getFacade().isAClassifier(droppedObject)) {
+      return Translator.localize(
+          "misc.message.click-on-diagram-to-add-as-cr",
+          new Object[] {Model.getFacade().toString(droppedObject)});
     }
-    
-    /**
-     * A sequence diagram can accept all classifiers. It will add them as a new 
-     * Classifier Role with that classifier as a base.
-     * @param objectToAccept element to test for acceptability
-     * @return true if the element is acceptable
-     * @see org.argouml.uml.diagram.ui.UMLDiagram#doesAccept(java.lang.Object)
-     */
-    @Override
-    public boolean doesAccept(Object objectToAccept) {
-        if (Model.getFacade().isAClassifier(objectToAccept)) {
-            return true;
-        } else if (Model.getFacade().isAComment(objectToAccept)) {
-            return true;
-        }
-        return false;
-    }
-    
-    /**
-     * Creates a new Classifier Role with a specified base.
-     * @param base
-     * @return The new CR
-     */
-    private Object makeNewCR(Object base) {
-        Object node = null;
-        Editor ce = Globals.curEditor();
-        GraphModel gm = ce.getGraphModel();
-        if (gm instanceof SequenceDiagramGraphModel) {
-            Object collaboration =
-                ((SequenceDiagramGraphModel) gm).getCollaboration();
-            node =
-                Model.getCollaborationsFactory().buildClassifierRole(
-                        collaboration);
-        }
-        Model.getCollaborationsHelper().addBase(node, base);
-        
-        return node;
-    }
-    
-    /**
-     * Creates the Fig for the CR. Y position will be adjusted to match other 
-     * the other CRs.
-     * @param classifierRole
-     * @param location The position where to put the new fig.
-     * @return
-     */
-    private FigClassifierRole makeNewFigCR(Object classifierRole, 
-            Point location) {
-        if (classifierRole != null) {
-            Rectangle bounds = new Rectangle();
-            
-            // Y position of the new CR should match existing CRs Y position
-            for (Fig fig : (List<Fig>) getLayer().getContentsNoEdges()) {
-                if (fig instanceof FigClassifierRole) {
-                    bounds.y = fig.getY();
-                    bounds.height = fig.getHeight();
-                    break;
-                }
-            }
-            if (location != null) {
-                if (bounds.y == 0) {
-                    bounds.y = location.y;
-                }
-                bounds.x = location.x;
-            }
+    return super.getInstructions(droppedObject);
+  }
 
-            FigClassifierRole newCR = new FigClassifierRole(classifierRole,
-                    bounds, getDiagramSettings());
-            getGraphModel().getNodes().add(newCR.getOwner());
-            
-            return newCR;
-        }
-        return null;
-    }
-    
-    @Override
-    public FigNode drop(Object droppedObject, Point location) {
-        FigNode figNode = null;
-        
-
-        // If location is non-null, convert to a rectangle that we can use
-        Rectangle bounds = null;
-        if (location != null) {
-            bounds = new Rectangle(location.x, location.y, 0, 0);
-        }
-        DiagramSettings settings = getDiagramSettings();
-        
-        if (Model.getFacade().isAComment(droppedObject)) {
-            figNode = new FigComment(droppedObject, bounds, settings);
-        } else if (Model.getFacade().isAClassifierRole(droppedObject)) {
-            if (!getGraphModel().getNodes().contains(droppedObject)) {
-                figNode = makeNewFigCR(droppedObject, location);  
-            }
-        } else if (Model.getFacade().isAClassifier(droppedObject)) {
-            figNode = makeNewFigCR(makeNewCR(droppedObject), location);
-        }
-        
-        if (figNode != null) {
-            LOG.debug("Dropped object " + droppedObject + " converted to " 
-                    + figNode);
-        } else {
-            LOG.debug("Dropped object NOT added " + droppedObject);
-        }
-        return figNode;
-    }
-    
-    @Override
-    public String getInstructions(Object droppedObject) {
-    	if (Model.getFacade().isAClassifierRole(droppedObject)) {
-    	    return super.getInstructions(droppedObject);
-    	} else if (Model.getFacade().isAClassifier(droppedObject)) {
-            return Translator.localize(
-                    "misc.message.click-on-diagram-to-add-as-cr",
-                    new Object[] {Model.getFacade().toString(droppedObject)});
-        }
-        return super.getInstructions(droppedObject);
-    }
-    
-    @Override
-    public ModePlace getModePlace(GraphFactory gf, String instructions) {
-        return new ModePlaceClassifierRole(gf, instructions);
-    }
+  @Override
+  public ModePlace getModePlace(GraphFactory gf, String instructions) {
+    return new ModePlaceClassifierRole(gf, instructions);
+  }
 }

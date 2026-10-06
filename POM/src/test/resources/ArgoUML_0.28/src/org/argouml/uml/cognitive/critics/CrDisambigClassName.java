@@ -26,9 +26,7 @@ package org.argouml.uml.cognitive.critics;
 
 import java.util.Collection;
 import java.util.Iterator;
-
 import javax.swing.Icon;
-
 import org.argouml.cognitive.Critic;
 import org.argouml.cognitive.Designer;
 import org.argouml.cognitive.ToDoItem;
@@ -37,115 +35,110 @@ import org.argouml.model.Model;
 import org.argouml.uml.cognitive.UMLDecision;
 
 /**
- * Well-formedness rule for Package. Check that the alias for an imported
- * element doesn't conflict with any existing name. Section 4.14.3.3 of UML 1.4
- * spec.
- * <p>
- * Other types of name conflicts in a Namespace are checked by
- * {@link CrNameConflict}.
- * <p>
- * TODO: MVW: If an Alias is the same as another class' name, then this critic
- * fires, but the explanation and wizard are wrong!
+ * Well-formedness rule for Package. Check that the alias for an imported element doesn't conflict
+ * with any existing name. Section 4.14.3.3 of UML 1.4 spec.
+ *
+ * <p>Other types of name conflicts in a Namespace are checked by {@link CrNameConflict}.
+ *
+ * <p>TODO: MVW: If an Alias is the same as another class' name, then this critic fires, but the
+ * explanation and wizard are wrong!
  */
 public class CrDisambigClassName extends CrUML {
 
-    /**
-     * The constructor.
-     */
-    public CrDisambigClassName() {
-        setupHeadAndDesc();
-	addSupportedDecision(UMLDecision.NAMING);
-	setKnowledgeTypes(Critic.KT_SYNTAX);
-	addTrigger("name");
-	addTrigger("elementOwnership");
+  /** The constructor. */
+  public CrDisambigClassName() {
+    setupHeadAndDesc();
+    addSupportedDecision(UMLDecision.NAMING);
+    setKnowledgeTypes(Critic.KT_SYNTAX);
+    addTrigger("name");
+    addTrigger("elementOwnership");
+  }
+
+  /*
+   * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
+   *      java.lang.Object, org.argouml.cognitive.Designer)
+   */
+  public boolean predicate2(Object dm, Designer dsgr) {
+    // TODO: The WFR doesn't restrict this to Classifiers - tfm
+    if (!(Model.getFacade().isAClassifier(dm))) {
+      return NO_PROBLEM;
+    }
+    Object classifier = dm;
+    String designMaterialName = Model.getFacade().getName(classifier);
+    // @ if (myNameString.equals(Name.UNSPEC)) return NO_PROBLEM;
+
+    if (designMaterialName != null && designMaterialName.length() == 0) {
+      return NO_PROBLEM;
     }
 
-    /*
-     * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
-     *      java.lang.Object, org.argouml.cognitive.Designer)
-     */
-    public boolean predicate2(Object dm, Designer dsgr) {
+    Collection elementImports = Model.getFacade().getElementImports2(classifier);
+    if (elementImports == null) {
+      return NO_PROBLEM;
+    }
+    // TODO: This is only checking immediate siblings when it needs
+    // to be checking all imported elements both here and by our
+    // parents and also taking into account visibility
+    for (Iterator iter = elementImports.iterator(); iter.hasNext(); ) {
+      Object imp = iter.next();
+      Object pack = Model.getFacade().getPackage(imp);
+      String alias = Model.getFacade().getAlias(imp);
+      if (alias == null || alias.length() == 0) {
+        alias = designMaterialName;
+      }
+      Collection siblings = Model.getFacade().getOwnedElements(pack);
+      if (siblings == null) {
+        return NO_PROBLEM;
+      }
+      Iterator elems = siblings.iterator();
+      while (elems.hasNext()) {
+        Object eo = elems.next();
+        Object me = /*Model.getFacade().getModelElement(*/ eo /*)*/;
         // TODO: The WFR doesn't restrict this to Classifiers - tfm
-	if (!(Model.getFacade().isAClassifier(dm))) {
-	    return NO_PROBLEM;
-	}
-	Object classifier = dm;
-	String designMaterialName = Model.getFacade().getName(classifier);
-	//@ if (myNameString.equals(Name.UNSPEC)) return NO_PROBLEM;
-
-	if (designMaterialName != null && designMaterialName.length() == 0) {
-	    return NO_PROBLEM;
-	}
-
-	Collection elementImports = 
-            Model.getFacade().getElementImports2(classifier);
-	if (elementImports == null) {
-	    return NO_PROBLEM;
-	}
-        // TODO: This is only checking immediate siblings when it needs
-        // to be checking all imported elements both here and by our
-        // parents and also taking into account visibility
-	for (Iterator iter = elementImports.iterator(); iter.hasNext();) {
-	    Object imp = iter.next();
-	    Object pack = Model.getFacade().getPackage(imp);
-            String alias = Model.getFacade().getAlias(imp);
-            if (alias == null || alias.length() == 0) {
-                alias = designMaterialName;
-            }
-	    Collection siblings = Model.getFacade().getOwnedElements(pack);
-	    if (siblings == null) {
-	        return NO_PROBLEM;
-	    }
-	    Iterator elems = siblings.iterator();
-	    while (elems.hasNext()) {
-		Object eo = elems.next();
-		Object me = /*Model.getFacade().getModelElement(*/eo/*)*/;
-                // TODO: The WFR doesn't restrict this to Classifiers - tfm
-		if (!(Model.getFacade().isAClassifier(me))) {
-		    continue;
-		}
-		if (me == classifier) {
-		    continue;
-		}
-		String meName = Model.getFacade().getName(me);
-		if (meName == null || meName.equals("")) {
-		    continue;
-		}
-		if (meName.equals(alias)) {
-		    return PROBLEM_FOUND;
-		}
-	    }
-	}
-	return NO_PROBLEM;
+        if (!(Model.getFacade().isAClassifier(me))) {
+          continue;
+        }
+        if (me == classifier) {
+          continue;
+        }
+        String meName = Model.getFacade().getName(me);
+        if (meName == null || meName.equals("")) {
+          continue;
+        }
+        if (meName.equals(alias)) {
+          return PROBLEM_FOUND;
+        }
+      }
     }
+    return NO_PROBLEM;
+  }
 
-    /*
-     * @see org.argouml.cognitive.Poster#getClarifier()
-     */
-    public Icon getClarifier() {
-	return ClClassName.getTheInstance();
+  /*
+   * @see org.argouml.cognitive.Poster#getClarifier()
+   */
+  public Icon getClarifier() {
+    return ClClassName.getTheInstance();
+  }
+
+  /*
+   * @see org.argouml.cognitive.critics.Critic#initWizard(
+   *         org.argouml.cognitive.ui.Wizard)
+   */
+  public void initWizard(Wizard w) {
+    if (w instanceof WizMEName) {
+      ToDoItem item = (ToDoItem) w.getToDoItem();
+      Object me = item.getOffenders().get(0);
+      String sug = Model.getFacade().getName(me);
+      String ins = super.getInstructions();
+      ((WizMEName) w).setInstructions(ins);
+      ((WizMEName) w).setSuggestion(sug);
+      ((WizMEName) w).setMustEdit(true);
     }
+  }
 
-    /*
-     * @see org.argouml.cognitive.critics.Critic#initWizard(
-     *         org.argouml.cognitive.ui.Wizard)
-     */
-    public void initWizard(Wizard w) {
-	if (w instanceof WizMEName) {
-	    ToDoItem item = (ToDoItem) w.getToDoItem();
-	    Object me = item.getOffenders().get(0);
-	    String sug = Model.getFacade().getName(me);
-	    String ins = super.getInstructions();
-	    ((WizMEName) w).setInstructions(ins);
-	    ((WizMEName) w).setSuggestion(sug);
-	    ((WizMEName) w).setMustEdit(true);
-	}
-    }
-
-    /*
-     * @see org.argouml.cognitive.critics.Critic#getWizardClass(org.argouml.cognitive.ToDoItem)
-     */
-    public Class getWizardClass(ToDoItem item) { return WizMEName.class; }
-
-
+  /*
+   * @see org.argouml.cognitive.critics.Critic#getWizardClass(org.argouml.cognitive.ToDoItem)
+   */
+  public Class getWizardClass(ToDoItem item) {
+    return WizMEName.class;
+  }
 }

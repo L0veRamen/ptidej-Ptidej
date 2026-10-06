@@ -26,10 +26,8 @@ package org.argouml.util;
 
 import java.io.File;
 import java.net.URL;
-
-import org.junit.Assert;
-
 import org.argouml.application.Main;
+import org.junit.Assert;
 
 /**
  * This class is a helper for testing things connected to the Main class.
@@ -38,49 +36,45 @@ import org.argouml.application.Main;
  * @stereotype utility
  */
 public final class CheckMain {
-    /**
-     * Constructor.
-     */
-    private CheckMain() {
+  /** Constructor. */
+  private CheckMain() {}
+
+  /**
+   * Call main in the application.
+   *
+   * @param args The arguments to use.
+   */
+  public static void callMain(String[] args) {
+    Main.main(args);
+  }
+
+  /**
+   * Convert a relative filename (from the tests source tree) to an URL.
+   *
+   * <p>This function have a set of ways to attempt to find the file. If it doesn't succeed, it
+   * makes the test case fail.
+   *
+   * <p>
+   *
+   * @param filename The name to search for.
+   * @return The URL.
+   */
+  public static File getTestModel(String filename) {
+    // This works when running the test from within Eclipse.
+    // Apparantly Eclipse runs the tests using a classloader that
+    // has the tests Folder among the URL:s.
+    URL url = CheckMain.class.getClassLoader().getResource(filename);
+    if (url != null) {
+      return new File(url.getFile());
     }
 
-    /**
-     * Call main in the application.
-     *
-     * @param args The arguments to use.
-     */
-    public static void callMain(String[] args) {
-        Main.main(args);
+    // We have the path provided from the build script.
+    String dir = System.getProperty("argouml.tests.dir");
+    if (dir != null) {
+      return new File(dir, filename);
     }
 
-
-    /**
-     * Convert a relative filename (from the tests source tree)
-     * to an URL.<p>
-     *
-     * This function have a set of ways to attempt to find the file. If
-     * it doesn't succeed, it makes the test case fail.<p>
-     *
-     * @param filename The name to search for.
-     * @return The URL.
-     */
-    public static File getTestModel(String filename) {
-        // This works when running the test from within Eclipse.
-        // Apparantly Eclipse runs the tests using a classloader that
-        // has the tests Folder among the URL:s.
-        URL url = CheckMain.class.getClassLoader().getResource(filename);
-        if (url != null) {
-            return new File(url.getFile());
-        }
-
-        // We have the path provided from the build script.
-        String dir = System.getProperty("argouml.tests.dir");
-        if (dir != null) {
-            return new File(dir, filename);
-        }
-
-        Assert.fail("Could not locate the model " + filename);
-        return null;
-    }
+    Assert.fail("Could not locate the model " + filename);
+    return null;
+  }
 }
-

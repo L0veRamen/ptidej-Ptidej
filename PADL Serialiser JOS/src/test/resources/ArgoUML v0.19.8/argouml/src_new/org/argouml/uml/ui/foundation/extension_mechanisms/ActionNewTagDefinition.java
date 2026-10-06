@@ -25,9 +25,7 @@
 package org.argouml.uml.ui.foundation.extension_mechanisms;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.Action;
-
 import org.argouml.i18n.Translator;
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
@@ -36,51 +34,41 @@ import org.argouml.ui.targetmanager.TargetManager;
 import org.argouml.uml.ui.AbstractActionNewModelElement;
 import org.tigris.gef.presentation.Fig;
 
-
 /**
- * This action creates a new TagDefinition in the current Model or Stereotype or 
- * Package.
+ * This action creates a new TagDefinition in the current Model or Stereotype or Package.
  *
  * @author rastaman@tigris.org
  */
 public class ActionNewTagDefinition extends AbstractActionNewModelElement {
 
-    /**
-     * The constructor.
-     */
-    public ActionNewTagDefinition() {
-        super("button.new-tagdefinition");
-        putValue(Action.NAME, Translator.localize("button.new-tagdefinition"));
-    }
+  /** The constructor. */
+  public ActionNewTagDefinition() {
+    super("button.new-tagdefinition");
+    putValue(Action.NAME, Translator.localize("button.new-tagdefinition"));
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        Object t = TargetManager.getInstance().getTarget();
-        if (t instanceof Fig) t = ((Fig) t).getOwner();
-        Object owner = null;
-        Object namespace = null;
-        if (Model.getFacade().isAStereotype(t)) {
-            owner = t;
-            namespace = Model.getFacade().getNamespace(owner);
-        } else {
-            if (Model.getFacade().isAPackage(t))
-                namespace = t;
-            else {
-                Project p = ProjectManager.getManager().getCurrentProject();
-                Object model = p.getModel();
-                namespace = model;
-            }            
-        }
-        Object newTagDefinition = Model.getExtensionMechanismsFactory()
-            .buildTagDefinition(
-                    (String) null,
-                    owner,
-                    namespace
-            );
-        TargetManager.getInstance().setTarget(newTagDefinition);
-        super.actionPerformed(e);
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    Object t = TargetManager.getInstance().getTarget();
+    if (t instanceof Fig) t = ((Fig) t).getOwner();
+    Object owner = null;
+    Object namespace = null;
+    if (Model.getFacade().isAStereotype(t)) {
+      owner = t;
+      namespace = Model.getFacade().getNamespace(owner);
+    } else {
+      if (Model.getFacade().isAPackage(t)) namespace = t;
+      else {
+        Project p = ProjectManager.getManager().getCurrentProject();
+        Object model = p.getModel();
+        namespace = model;
+      }
     }
-    
+    Object newTagDefinition =
+        Model.getExtensionMechanismsFactory().buildTagDefinition((String) null, owner, namespace);
+    TargetManager.getInstance().setTarget(newTagDefinition);
+    super.actionPerformed(e);
+  }
 }

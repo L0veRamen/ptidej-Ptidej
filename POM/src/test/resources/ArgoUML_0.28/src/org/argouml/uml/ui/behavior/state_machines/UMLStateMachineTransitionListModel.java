@@ -31,29 +31,24 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  * @since Dec 6, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class UMLStateMachineTransitionListModel
-    extends UMLModelElementListModel2 {
+public class UMLStateMachineTransitionListModel extends UMLModelElementListModel2 {
 
+  /** Constructor for UMLStateMachineTransitionListModel. */
+  public UMLStateMachineTransitionListModel() {
+    super("transition");
+  }
 
-    /**
-     * Constructor for UMLStateMachineTransitionListModel.
-     */
-    public UMLStateMachineTransitionListModel() {
-        super("transition");
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    setAllElements(Model.getFacade().getTransitions(getTarget()));
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        setAllElements(Model.getFacade().getTransitions(getTarget()));
-    }
-
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().getTransitions(getTarget()).contains(element);
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().getTransitions(getTarget()).contains(element);
+  }
 }

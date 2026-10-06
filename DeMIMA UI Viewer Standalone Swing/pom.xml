@@ -1,239 +1,239 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<groupId>net.ptidej.demima</groupId>
-	<artifactId>demima-ui-viewer-swing</artifactId>
-	<name>DeMIMA UI Viewer Swing</name>
+    <groupId>net.ptidej.demima</groupId>
+    <artifactId>demima-ui-viewer-swing</artifactId>
+    <name>DeMIMA UI Viewer Swing</name>
 
-	<parent>
-		<groupId>net.ptidej</groupId>
-		<artifactId>all-ptidej</artifactId>
-		<version>1.0.0</version>
-	</parent>
+    <parent>
+        <groupId>net.ptidej</groupId>
+        <artifactId>all-ptidej</artifactId>
+        <version>1.0.0</version>
+    </parent>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-			</plugin>
-			<!-- Must generate the test-jar for dependent tests -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-							<classpathPrefix>${project.build.finalName}.lib/</classpathPrefix>
-							<mainClass>ptidej.viewer.ProjectViewer</mainClass>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>3.1.0</version>
-				<executions>
-					<execution>
-						<phase>process-classes</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-						<configuration>
-							<target>
-								<unzip src="${project.basedir}/../CPL/src/main/resources/cfparse.jar"
-									dest="${project.build.outputDirectory}" />
-							</target>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<archive>
-						<manifest>
-							<mainClass>ptidej.viewer.ProjectViewer</mainClass>
-						</manifest>
-					</archive>
-					<descriptors>
-						<descriptor>src/assembly/jar-with-dependencies.xml</descriptor>
-					</descriptors>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
+            <!-- Must generate the test-jar for dependent tests -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>${project.build.finalName}.lib/</classpathPrefix>
+                            <mainClass>ptidej.viewer.ProjectViewer</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <unzip src="${project.basedir}/../CPL/src/main/resources/cfparse.jar"
+                                       dest="${project.build.outputDirectory}"/>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>ptidej.viewer.ProjectViewer</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptors>
+                        <descriptor>src/assembly/jar-with-dependencies.xml</descriptor>
+                    </descriptors>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
-	<dependencies>
-		<dependency>
-			<groupId>net.ptidej.cpl</groupId>
-			<artifactId>cpl-core</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+    <dependencies>
+        <dependency>
+            <groupId>net.ptidej.cpl</groupId>
+            <artifactId>cpl-core</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
-		<dependency>
-			<groupId>net.ptidej.padl</groupId>
-			<artifactId>padl-core</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+        <dependency>
+            <groupId>net.ptidej.padl</groupId>
+            <artifactId>padl-core</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
-		<dependency>
-			<groupId>net.ptidej.demima</groupId>
-			<artifactId>demima-core</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+        <dependency>
+            <groupId>net.ptidej.demima</groupId>
+            <artifactId>demima-core</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
-		<dependency>
-			<groupId>net.ptidej.demima</groupId>
-			<artifactId>demima-ui</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+        <dependency>
+            <groupId>net.ptidej.demima</groupId>
+            <artifactId>demima-ui</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
-		<dependency>
-			<groupId>net.ptidej.demima</groupId>
-			<artifactId>demima-ui-analysis</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+        <dependency>
+            <groupId>net.ptidej.demima</groupId>
+            <artifactId>demima-ui-analysis</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
-		<dependency>
-			<groupId>net.ptidej.demima</groupId>
-			<artifactId>demima-ui-layouts</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+        <dependency>
+            <groupId>net.ptidej.demima</groupId>
+            <artifactId>demima-ui-layouts</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
-		<dependency>
-			<groupId>net.ptidej.demima</groupId>
-			<artifactId>demima-ui-primitives-awt</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+        <dependency>
+            <groupId>net.ptidej.demima</groupId>
+            <artifactId>demima-ui-primitives-awt</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
-		<dependency>
-			<groupId>net.ptidej.demima</groupId>
-			<artifactId>demima-ui-viewer-awt</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+        <dependency>
+            <groupId>net.ptidej.demima</groupId>
+            <artifactId>demima-ui-viewer-awt</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
-		<dependency>
-			<groupId>net.ptidej.demima</groupId>
-			<artifactId>demima-ui-viewer-extensions</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+        <dependency>
+            <groupId>net.ptidej.demima</groupId>
+            <artifactId>demima-ui-viewer-extensions</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
-		<dependency>
-			<groupId>net.ptidej.demima</groupId>
-			<artifactId>demima-solver-claire</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+        <dependency>
+            <groupId>net.ptidej.demima</groupId>
+            <artifactId>demima-solver-claire</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
-		<dependency>
-			<groupId>net.ptidej.demima</groupId>
-			<artifactId>demima-solver-java</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+        <dependency>
+            <groupId>net.ptidej.demima</groupId>
+            <artifactId>demima-solver-java</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
-		<dependency>
-			<groupId>net.ptidej.demima</groupId>
-			<artifactId>demima-solver-fingerprints</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+        <dependency>
+            <groupId>net.ptidej.demima</groupId>
+            <artifactId>demima-solver-fingerprints</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
-		<dependency>
-			<groupId>net.ptidej.epi</groupId>
-			<artifactId>epi-core</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+        <dependency>
+            <groupId>net.ptidej.epi</groupId>
+            <artifactId>epi-core</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
-		<dependency>
-			<groupId>net.ptidej.padl</groupId>
-			<artifactId>padl-design-motifs</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+        <dependency>
+            <groupId>net.ptidej.padl</groupId>
+            <artifactId>padl-design-motifs</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
-		<dependency>
-			<groupId>net.ptidej.padl</groupId>
-			<artifactId>padl-generator</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+        <dependency>
+            <groupId>net.ptidej.padl</groupId>
+            <artifactId>padl-generator</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
-		<dependency>
-			<groupId>net.ptidej.padl</groupId>
-			<artifactId>padl-micro-pattern-analysis</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+        <dependency>
+            <groupId>net.ptidej.padl</groupId>
+            <artifactId>padl-micro-pattern-analysis</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
-		<dependency>
-			<groupId>net.ptidej.sad</groupId>
-			<artifactId>sad-core</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+        <dependency>
+            <groupId>net.ptidej.sad</groupId>
+            <artifactId>sad-core</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
-		<dependency>
-			<groupId>net.ptidej.sad</groupId>
-			<artifactId>sad-rules-creator</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+        <dependency>
+            <groupId>net.ptidej.sad</groupId>
+            <artifactId>sad-rules-creator</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
-		<dependency>
-			<groupId>net.ptidej.squad</groupId>
-			<artifactId>squad-core</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+        <dependency>
+            <groupId>net.ptidej.squad</groupId>
+            <artifactId>squad-core</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
-		<dependency>
-			<groupId>org.apache.xmlgraphics</groupId>
-			<artifactId>batik-anim</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-anim</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>org.apache.xmlgraphics</groupId>
-			<artifactId>batik-svggen</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-svggen</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>org.apache.xmlgraphics</groupId>
-			<artifactId>batik-transcoder</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-transcoder</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>org.apache.xmlgraphics</groupId>
-			<artifactId>batik-codec</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-codec</artifactId>
+        </dependency>
 
-		<!--
-		DIRTY HACK (cf. https://wiki.ptidej.net/doku.php?id=dirty_hack)
-		These two last dependencies MUST COME LAST because they bring with them
-		aspectjtools, which itself bring with it an old version of SubMonitor,
-		which leads to
-			java.lang.NoSuchMethodError: 'org.eclipse.core.runtime.SubMonitor
-		org.eclipse.core.runtime.SubMonitor.split(int)' 
-		-->
-		<dependency>
-			<groupId>net.ptidej.padl</groupId>
-			<artifactId>padl-creator-aspectj</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+        <!--
+        DIRTY HACK (cf. https://wiki.ptidej.net/doku.php?id=dirty_hack)
+        These two last dependencies MUST COME LAST because they bring with them
+        aspectjtools, which itself bring with it an old version of SubMonitor,
+        which leads to
+            java.lang.NoSuchMethodError: 'org.eclipse.core.runtime.SubMonitor
+        org.eclipse.core.runtime.SubMonitor.split(int)'
+        -->
+        <dependency>
+            <groupId>net.ptidej.padl</groupId>
+            <artifactId>padl-creator-aspectj</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
-		<dependency>
-			<groupId>net.ptidej.demima</groupId>
-			<artifactId>demima-ui-aspectj</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>net.ptidej.demima</groupId>
+            <artifactId>demima-ui-aspectj</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+    </dependencies>
 </project>

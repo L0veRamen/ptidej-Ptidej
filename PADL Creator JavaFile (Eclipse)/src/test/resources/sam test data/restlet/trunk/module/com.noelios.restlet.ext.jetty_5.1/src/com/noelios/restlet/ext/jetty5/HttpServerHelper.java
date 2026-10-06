@@ -28,6 +28,7 @@ import org.restlet.data.Protocol;
 
 /**
  * Jetty HTTP server connector. Here is the list of additional parameters that are supported:
+ *
  * <table>
  * 	<tr>
  * 		<td>lowResourcePersistTimeMs</td>
@@ -36,55 +37,49 @@ import org.restlet.data.Protocol;
  * 		<td>Time in ms that connections will persist if listener is low on resources.</td>
  * 	</tr>
  * </table>
+ *
  * @see <a href="http://jetty.mortbay.com/">Jetty home page</a>
  * @author Jerome Louvel (contact@noelios.com)
  */
-public class HttpServerHelper extends JettyServerHelper
-{
-	/**
-	 * Constructor.
-	 * @param server The server to help.
-	 */
-	public HttpServerHelper(Server server)
-	{
-		super(server);
-		getSupportedProtocols().add(Protocol.HTTP);
-	}
+public class HttpServerHelper extends JettyServerHelper {
+  /**
+   * Constructor.
+   *
+   * @param server The server to help.
+   */
+  public HttpServerHelper(Server server) {
+    super(server);
+    getSupportedProtocols().add(Protocol.HTTP);
+  }
 
-	/** Start hook. */
-	public void start() throws Exception
-	{
-		HttpListener listener;
+  /** Start hook. */
+  public void start() throws Exception {
+    HttpListener listener;
 
-		if (getServer().getAddress() != null)
-		{
-			listener = new HttpListener(this, new InetAddrPort(getServer().getAddress(),
-					getServer().getPort()));
-		}
-		else
-		{
-			listener = new HttpListener(this);
-			listener.setPort(getServer().getPort());
-		}
+    if (getServer().getAddress() != null) {
+      listener =
+          new HttpListener(this, new InetAddrPort(getServer().getAddress(), getServer().getPort()));
+    } else {
+      listener = new HttpListener(this);
+      listener.setPort(getServer().getPort());
+    }
 
-		// Configure the listener
-		listener.setMinThreads(getMinThreads());
-		listener.setMaxThreads(getMaxThreads());
-		listener.setMaxIdleTimeMs(getMaxIdleTimeMs());
-		listener.setLowResourcePersistTimeMs(getLowResourcePersistTimeMs());
+    // Configure the listener
+    listener.setMinThreads(getMinThreads());
+    listener.setMaxThreads(getMaxThreads());
+    listener.setMaxIdleTimeMs(getMaxIdleTimeMs());
+    listener.setLowResourcePersistTimeMs(getLowResourcePersistTimeMs());
 
-		setListener(listener);
-		super.start();
-	}
+    setListener(listener);
+    super.start();
+  }
 
-	/**
-	 * Returns time in ms that connections will persist if listener is low on resources.
-	 * @return Time in ms that connections will persist if listener is low on resources.
-	 */
-	public int getLowResourcePersistTimeMs()
-	{
-		return Integer.parseInt(getParameters().getFirstValue("lowResourcePersistTimeMs",
-				"2000"));
-	}
-
+  /**
+   * Returns time in ms that connections will persist if listener is low on resources.
+   *
+   * @return Time in ms that connections will persist if listener is low on resources.
+   */
+  public int getLowResourcePersistTimeMs() {
+    return Integer.parseInt(getParameters().getFirstValue("lowResourcePersistTimeMs", "2000"));
+  }
 }

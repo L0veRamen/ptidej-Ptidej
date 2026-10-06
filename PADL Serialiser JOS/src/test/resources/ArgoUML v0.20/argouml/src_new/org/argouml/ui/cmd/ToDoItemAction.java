@@ -27,42 +27,39 @@ package org.argouml.ui.cmd;
 import org.argouml.cognitive.ToDoItem;
 import org.argouml.uml.ui.UMLAction;
 
-
-
 abstract class ToDoItemAction extends UMLAction {
 
-    private Object rememberedTarget = null;
+  private Object rememberedTarget = null;
 
-    public ToDoItemAction(String name, boolean hasIcon) {
-	super(name, hasIcon);
+  public ToDoItemAction(String name, boolean hasIcon) {
+    super(name, hasIcon);
+  }
+
+  /**
+   * @return returns the rememberedTarget
+   */
+  protected Object getRememberedTarget() {
+    return rememberedTarget;
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLAction#updateEnabled(java.lang.Object)
+   */
+  public void updateEnabled(Object target) {
+    if (target == null) {
+      setEnabled(false);
+      return;
     }
 
-    /**
-     * @return returns the rememberedTarget
-     */
-    protected Object getRememberedTarget() {
-        return rememberedTarget;
-    }
+    rememberedTarget = target;
+    setEnabled(shouldBeEnabled(target));
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLAction#updateEnabled(java.lang.Object)
-     */
-    public void updateEnabled(Object target) {
-	if (target == null) {
-	    setEnabled(false);
-	    return;
-	}
-
-	rememberedTarget = target;
-	setEnabled(shouldBeEnabled(target));
-    }
-
-    /**
-     * @param target the current target
-     * @return true if the action icon should be enabled (i.e. not downlighted)
-     */
-    public boolean shouldBeEnabled(Object target) {
-	return target instanceof ToDoItem;
-    }
+  /**
+   * @param target the current target
+   * @return true if the action icon should be enabled (i.e. not downlighted)
+   */
+  public boolean shouldBeEnabled(Object target) {
+    return target instanceof ToDoItem;
+  }
 }
-

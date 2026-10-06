@@ -11,47 +11,45 @@
 
 package org.jhotdraw.standard;
 
+import java.util.Set;
 import org.jhotdraw.framework.*;
 import org.jhotdraw.util.CollectionsFactory;
 
-import java.util.Set;
-
 /**
- * @author  Wolfram Kaiser <mrfloppy@sourceforge.net>
+ * @author Wolfram Kaiser <mrfloppy@sourceforge.net>
  * @version <$CURRENT_VERSION$>
  */
 public class InsertIntoDrawingVisitor implements FigureVisitor {
-	private Set myInsertedFigures;
-	private Drawing myDrawing;
+  private Set myInsertedFigures;
+  private Drawing myDrawing;
 
-	public InsertIntoDrawingVisitor(Drawing newDrawing) {
-		myInsertedFigures = CollectionsFactory.current().createSet();
-		setDrawing(newDrawing);
-	}
+  public InsertIntoDrawingVisitor(Drawing newDrawing) {
+    myInsertedFigures = CollectionsFactory.current().createSet();
+    setDrawing(newDrawing);
+  }
 
-	private void setDrawing(Drawing newDrawing) {
-		myDrawing = newDrawing;
-	}
+  private void setDrawing(Drawing newDrawing) {
+    myDrawing = newDrawing;
+  }
 
-	protected Drawing getDrawing() {
-		return myDrawing;
-	}
+  protected Drawing getDrawing() {
+    return myDrawing;
+  }
 
-	public void visitFigure(Figure hostFigure) {
-		if (!myInsertedFigures.contains(hostFigure) && !getDrawing().includes(hostFigure)) {
-			Figure addedFigure = getDrawing().add(hostFigure);
-			myInsertedFigures.add(addedFigure);
-		}
-	}
+  public void visitFigure(Figure hostFigure) {
+    if (!myInsertedFigures.contains(hostFigure) && !getDrawing().includes(hostFigure)) {
+      Figure addedFigure = getDrawing().add(hostFigure);
+      myInsertedFigures.add(addedFigure);
+    }
+  }
 
-	public void visitHandle(Handle hostHandle) {
-	}
+  public void visitHandle(Handle hostHandle) {}
 
-	public void visitFigureChangeListener(FigureChangeListener hostFigureChangeListener) {
-//		hostFigureChangeListener.visit(this);
-	}
+  public void visitFigureChangeListener(FigureChangeListener hostFigureChangeListener) {
+    //		hostFigureChangeListener.visit(this);
+  }
 
-	public FigureEnumeration getInsertedFigures() {
-		return new FigureEnumerator(myInsertedFigures);
-	}
+  public FigureEnumeration getInsertedFigures() {
+    return new FigureEnumerator(myInsertedFigures);
+  }
 }

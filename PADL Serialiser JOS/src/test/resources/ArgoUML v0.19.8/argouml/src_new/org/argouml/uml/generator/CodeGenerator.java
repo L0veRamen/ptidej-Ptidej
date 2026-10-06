@@ -27,53 +27,48 @@ package org.argouml.uml.generator;
 import java.util.Collection;
 
 /**
- * Defines the methods to generate source code from the model.
- * Each class providing code generation functionality should implement
- * this.
- * Replaces the FileGenerator interface.
+ * Defines the methods to generate source code from the model. Each class providing code generation
+ * functionality should implement this. Replaces the FileGenerator interface.
  */
 public interface CodeGenerator {
-    /**
-     * The file seperator for this operating system.
-     */
-    public static final String FILE_SEPARATOR =
-        System.getProperty("file.separator");
+  /** The file seperator for this operating system. */
+  public static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
-    // FIXME: maybe convert all Collections of modelelements
-    // into Sets, because they shall not contain duplicate elements.
-    
-    /**
-     * Generate code for the specified classifiers. If generation of
-     * dependencies is requested, then every file the specified elements
-     * depends on is generated too (e.g. if the class MyClass has an attribute
-     * of type OtherClass, then files for OtherClass are generated too).
-     * 
-     * @param elements the UML model elements to generate code for.
-     * @param deps Recursively generate dependency files too. 
-     * @return A collection of SourceUnit objects. The collection may be empty
-     * if no file is generated.
-     */
-    Collection generate(Collection elements, boolean deps);
+  // FIXME: maybe convert all Collections of modelelements
+  // into Sets, because they shall not contain duplicate elements.
 
-    /**
-     * Generate files for the specified classifiers.
-     * @see #generate(Collection, boolean)
-     * @param elements the UML model elements to generate code for.
-     * @param path The source base path.
-     * @param deps Recursively generate dependency files too.
-     * @return The filenames (with relative path) as a collection of Strings.
-     * The collection may be empty if no file will be generated.
-     */
-    Collection generateFiles(Collection elements, String path, boolean deps);
+  /**
+   * Generate code for the specified classifiers. If generation of dependencies is requested, then
+   * every file the specified elements depends on is generated too (e.g. if the class MyClass has an
+   * attribute of type OtherClass, then files for OtherClass are generated too).
+   *
+   * @param elements the UML model elements to generate code for.
+   * @param deps Recursively generate dependency files too.
+   * @return A collection of SourceUnit objects. The collection may be empty if no file is
+   *     generated.
+   */
+  Collection generate(Collection elements, boolean deps);
 
-    /**
-     * Returns a list of files that will be generated from the specified
-     * modelelements.
-     * @see #generate(Collection, boolean)
-     * @param elements the UML model elements to generate code for.
-     * @param deps Recursively generate dependency files too. 
-     * @return The filenames (with relative path) as a collection of Strings.
-     * The collection may be empty if no file will be generated.
-     */
-    Collection generateFileList(Collection elements, boolean deps);
+  /**
+   * Generate files for the specified classifiers.
+   *
+   * @see #generate(Collection, boolean)
+   * @param elements the UML model elements to generate code for.
+   * @param path The source base path.
+   * @param deps Recursively generate dependency files too.
+   * @return The filenames (with relative path) as a collection of Strings. The collection may be
+   *     empty if no file will be generated.
+   */
+  Collection generateFiles(Collection elements, String path, boolean deps);
+
+  /**
+   * Returns a list of files that will be generated from the specified modelelements.
+   *
+   * @see #generate(Collection, boolean)
+   * @param elements the UML model elements to generate code for.
+   * @param deps Recursively generate dependency files too.
+   * @return The filenames (with relative path) as a collection of Strings. The collection may be
+   *     empty if no file will be generated.
+   */
+  Collection generateFileList(Collection elements, boolean deps);
 }

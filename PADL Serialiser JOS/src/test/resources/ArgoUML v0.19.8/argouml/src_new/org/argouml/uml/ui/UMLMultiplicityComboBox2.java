@@ -27,50 +27,46 @@ package org.argouml.uml.ui;
 import org.argouml.model.Model;
 
 /**
- * An editable and searchable combobox to edit the multiplicity attribute of
- * some modelelement.
+ * An editable and searchable combobox to edit the multiplicity attribute of some modelelement.
  *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 5, 2003
  */
 public class UMLMultiplicityComboBox2 extends UMLSearchableComboBox {
 
-    /**
-     * Constructor for UMLMultiplicityComboBox2.
-     * @param arg0 the combobox model
-     * @param selectAction the action
-     */
-    public UMLMultiplicityComboBox2(UMLComboBoxModel2 arg0,
-            UMLAction selectAction) {
-        super(arg0, selectAction);
-    }
+  /**
+   * Constructor for UMLMultiplicityComboBox2.
+   *
+   * @param arg0 the combobox model
+   * @param selectAction the action
+   */
+  public UMLMultiplicityComboBox2(UMLComboBoxModel2 arg0, UMLAction selectAction) {
+    super(arg0, selectAction);
+  }
 
-    /**
-     * On enter, the text the user has filled in the textfield is first checked
-     * to see if it's a valid multiplicity. If so then that is the multiplicity
-     * to be set. If not, the combobox searches for a multiplicity starting with
-     * the given text. If there is no multiplicity starting with the given text,
-     * the old value is reset in the comboboxeditor.
-     * @see org.argouml.uml.ui.UMLEditableComboBox#doOnEdit(java.lang.Object)
-     */
-    protected void doOnEdit(Object item) {
-        String text = (String) item;
-        Object/*MMultiplicity*/ multi = null;
-        try {
-            multi =
-                Model.getDataTypesFactory()
-                	.createMultiplicity(text); //new MMultiplicity(text);
-        } catch (IllegalArgumentException e) {
-            Object o = search(text);
-            if (o != null ) {
-                multi = o;
-            }
-        }
-        if (multi != null) {
-            setSelectedItem(multi);
-        } else {
-            getEditor().setItem(getSelectedItem());
-        }
+  /**
+   * On enter, the text the user has filled in the textfield is first checked to see if it's a valid
+   * multiplicity. If so then that is the multiplicity to be set. If not, the combobox searches for
+   * a multiplicity starting with the given text. If there is no multiplicity starting with the
+   * given text, the old value is reset in the comboboxeditor.
+   *
+   * @see org.argouml.uml.ui.UMLEditableComboBox#doOnEdit(java.lang.Object)
+   */
+  protected void doOnEdit(Object item) {
+    String text = (String) item;
+    Object /*MMultiplicity*/ multi = null;
+    try {
+      multi = Model.getDataTypesFactory().createMultiplicity(text); // new MMultiplicity(text);
+    } catch (IllegalArgumentException e) {
+      Object o = search(text);
+      if (o != null) {
+        multi = o;
+      }
     }
-
+    if (multi != null) {
+      setSelectedItem(multi);
+    } else {
+      getEditor().setItem(getSelectedItem());
+    }
+  }
 }

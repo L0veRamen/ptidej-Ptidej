@@ -26,80 +26,72 @@ package org.argouml.uml.ui.behavior.common_behavior;
 
 import javax.swing.JMenu;
 import javax.swing.JPopupMenu;
-
 import org.argouml.i18n.Translator;
 import org.argouml.uml.ui.ActionRemoveModelElement;
 import org.argouml.uml.ui.UMLMutableLinkedList;
 
 /**
- * The popupmenu shown by several lists on the proppanels when the user wants
- * to add or delete an action.
+ * The popupmenu shown by several lists on the proppanels when the user wants to add or delete an
+ * action.
+ *
  * @since Dec 15, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
 public class PopupMenuNewAction extends JPopupMenu {
 
+  /**
+   * Constructs a new popupmenu. The given parameter role determines what the purpose is of the
+   * actions that can be created via this popupmenu. The parameter must comply to the interface
+   * Roles defined on ActionNewAction.
+   *
+   * @param role the role
+   * @param list the list
+   */
+  public PopupMenuNewAction(String role, UMLMutableLinkedList list) {
+    super();
 
-    /**
-     * Constructs a new popupmenu. The given parameter role determines what
-     * the purpose is of the actions that can be created via this popupmenu.
-     * The parameter must comply to the interface Roles
-     * defined on ActionNewAction.
-     * @param role the role
-     * @param list the list
-     */
-    public PopupMenuNewAction(String role, UMLMutableLinkedList list) {
-        super();
+    JMenu newMenu = new JMenu();
+    newMenu.setText(Translator.localize("action.new"));
 
-        JMenu newMenu = new JMenu();
-        newMenu.setText(Translator.localize("action.new"));
+    newMenu.add(ActionNewCallAction.getInstance());
+    ActionNewCallAction.getInstance().setTarget(list.getTarget());
+    ActionNewCallAction.getInstance().putValue(ActionNewAction.ROLE, role);
 
-        newMenu.add(ActionNewCallAction.getInstance());
-        ActionNewCallAction.getInstance().setTarget(list.getTarget());
-        ActionNewCallAction.getInstance().putValue(ActionNewAction.ROLE, role);
+    newMenu.add(ActionNewCreateAction.getInstance());
+    ActionNewCreateAction.getInstance().setTarget(list.getTarget());
+    ActionNewCreateAction.getInstance().putValue(ActionNewAction.ROLE, role);
 
-        newMenu.add(ActionNewCreateAction.getInstance());
-        ActionNewCreateAction.getInstance().setTarget(list.getTarget());
-        ActionNewCreateAction.getInstance()
-            .putValue(ActionNewAction.ROLE, role);
+    newMenu.add(ActionNewDestroyAction.getInstance());
+    ActionNewDestroyAction.getInstance().setTarget(list.getTarget());
+    ActionNewDestroyAction.getInstance().putValue(ActionNewAction.ROLE, role);
 
-        newMenu.add(ActionNewDestroyAction.getInstance());
-        ActionNewDestroyAction.getInstance().setTarget(list.getTarget());
-        ActionNewDestroyAction.getInstance()
-            .putValue(ActionNewAction.ROLE, role);
+    newMenu.add(ActionNewReturnAction.getInstance());
+    ActionNewReturnAction.getInstance().setTarget(list.getTarget());
+    ActionNewReturnAction.getInstance().putValue(ActionNewAction.ROLE, role);
 
-        newMenu.add(ActionNewReturnAction.getInstance());
-        ActionNewReturnAction.getInstance().setTarget(list.getTarget());
-        ActionNewReturnAction.getInstance()
-            .putValue(ActionNewAction.ROLE, role);
+    newMenu.add(ActionNewSendAction.getInstance());
+    ActionNewSendAction.getInstance().setTarget(list.getTarget());
+    ActionNewSendAction.getInstance().putValue(ActionNewAction.ROLE, role);
 
-        newMenu.add(ActionNewSendAction.getInstance());
-        ActionNewSendAction.getInstance().setTarget(list.getTarget());
-        ActionNewSendAction.getInstance().putValue(ActionNewAction.ROLE, role);
+    newMenu.add(ActionNewTerminateAction.getInstance());
+    ActionNewTerminateAction.getInstance().setTarget(list.getTarget());
+    ActionNewTerminateAction.getInstance().putValue(ActionNewAction.ROLE, role);
 
-        newMenu.add(ActionNewTerminateAction.getInstance());
-        ActionNewTerminateAction.getInstance().setTarget(list.getTarget());
-        ActionNewTerminateAction.getInstance()
-            .putValue(ActionNewAction.ROLE, role);
+    newMenu.add(ActionNewUninterpretedAction.getInstance());
+    ActionNewUninterpretedAction.getInstance().setTarget(list.getTarget());
+    ActionNewUninterpretedAction.getInstance().putValue(ActionNewAction.ROLE, role);
 
-        newMenu.add(ActionNewUninterpretedAction.getInstance());
-        ActionNewUninterpretedAction.getInstance().setTarget(list.getTarget());
-        ActionNewUninterpretedAction.getInstance()
-            .putValue(ActionNewAction.ROLE, role);
+    newMenu.add(ActionNewActionSequence.getInstance());
+    ActionNewActionSequence.getInstance().setTarget(list.getTarget());
+    ActionNewActionSequence.getInstance().putValue(ActionNewAction.ROLE, role);
 
+    add(newMenu);
 
-        newMenu.add(ActionNewActionSequence.getInstance());
-        ActionNewActionSequence.getInstance().setTarget(list.getTarget());
-        ActionNewActionSequence.getInstance()
-            .putValue(ActionNewAction.ROLE, role);
+    addSeparator();
 
-        add(newMenu);
-
-        addSeparator();
-
-        // TODO: This needs to be fixed to work for ActionSequences - tfm
-        ActionRemoveModelElement.SINGLETON.setObjectToRemove(ActionNewAction
-             .getAction(role, list.getTarget()));
-        add(ActionRemoveModelElement.SINGLETON);
-    }
+    // TODO: This needs to be fixed to work for ActionSequences - tfm
+    ActionRemoveModelElement.SINGLETON.setObjectToRemove(
+        ActionNewAction.getAction(role, list.getTarget()));
+    add(ActionRemoveModelElement.SINGLETON);
+  }
 }

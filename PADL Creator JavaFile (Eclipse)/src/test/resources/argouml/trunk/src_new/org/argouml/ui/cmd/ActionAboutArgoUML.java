@@ -25,42 +25,34 @@
 package org.argouml.ui.cmd;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.AbstractAction;
 import javax.swing.JFrame;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.i18n.Translator;
 import org.argouml.ui.AboutBox;
 import org.argouml.ui.ArgoFrame;
 
-
-/**
- * The action to show the About ArgoUML dialog.
- */
+/** The action to show the About ArgoUML dialog. */
 public class ActionAboutArgoUML extends AbstractAction {
 
-    /**
-     * Constructor.
-     */
-    public ActionAboutArgoUML() {
-        super(Translator.localize("action.about-argouml"),
-                ResourceLoaderWrapper.lookupIcon("action.about-argouml"));
-    }
+  /** Constructor. */
+  public ActionAboutArgoUML() {
+    super(
+        Translator.localize("action.about-argouml"),
+        ResourceLoaderWrapper.lookupIcon("action.about-argouml"));
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-	JFrame jframe = ArgoFrame.getInstance();
-	AboutBox box = new AboutBox(jframe, true);
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    JFrame jframe = ArgoFrame.getInstance();
+    AboutBox box = new AboutBox(jframe, true);
 
-	box.setLocationRelativeTo(jframe);
-	box.setVisible(true);
-    }
+    box.setLocationRelativeTo(jframe);
+    box.setVisible(true);
+  }
 
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = 7988731727182091682L;
+  /** The UID. */
+  private static final long serialVersionUID = 7988731727182091682L;
 } /* end class ActionAboutArgoUML */

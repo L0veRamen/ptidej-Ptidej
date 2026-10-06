@@ -28,28 +28,27 @@ import org.tigris.gef.presentation.FigText;
 
 /**
  * A specialist FigText for display the model element name.
+ *
  * @author Bob Tarling
  */
 public class FigName extends FigText {
-    /**
-     * The constructor.
-     *
-     * @param x horizontal distance to the left
-     * @param y vertical distance from the top
-     * @param w width
-     * @param h heigth
-     * @param expandOnly true if the fig can grow if the text changes,
-     *                   but not shrink
-     */
-    public FigName(int x, int y, int w, int h, boolean expandOnly) {
-        super (x, y, w, h, expandOnly);
-    }
+  /**
+   * The constructor.
+   *
+   * @param x horizontal distance to the left
+   * @param y vertical distance from the top
+   * @param w width
+   * @param h heigth
+   * @param expandOnly true if the fig can grow if the text changes, but not shrink
+   */
+  public FigName(int x, int y, int w, int h, boolean expandOnly) {
+    super(x, y, w, h, expandOnly);
+  }
 
-
-    /**
-     * @see org.tigris.gef.presentation.Fig#setLineWidth(int)
-     */
-    public void setLineWidth(int arg0) {
-        super.setLineWidth(0);
-    }
+  /**
+   * @see org.tigris.gef.presentation.Fig#setLineWidth(int)
+   */
+  public void setLineWidth(int arg0) {
+    super.setLineWidth(0);
+  }
 }

@@ -25,128 +25,116 @@
 package org.argouml.cognitive.ui;
 
 import java.util.List;
-
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreePath;
-
 import org.argouml.cognitive.Designer;
 import org.argouml.cognitive.ToDoItem;
 import org.argouml.cognitive.ToDoList;
 
-
-/**
- * Rule for sorting the ToDo list: Priority -> Item.
- *
- */
+/** Rule for sorting the ToDo list: Priority -> Item. */
 public class GoListToPriorityToItem extends AbstractGoList {
 
-    ////////////////////////////////////////////////////////////////
-    // TreeModel implementation
+  ////////////////////////////////////////////////////////////////
+  // TreeModel implementation
 
-    /*
-     * @see javax.swing.tree.TreeModel#getChild(java.lang.Object, int)
-     */
-    public Object getChild(Object parent, int index) {
-	if (parent instanceof ToDoList) {
-	    return PriorityNode.getPriorityList().get(index);
-	}
-	if (parent instanceof PriorityNode) {
-            PriorityNode pn = (PriorityNode) parent;
-            List<ToDoItem> itemList = 
-                Designer.theDesigner().getToDoList().getToDoItemList();
-            synchronized (itemList) {
-                for (ToDoItem item : itemList) {
-                    if (item.getPriority() == pn.getPriority()) {
-                        if (index == 0) {
-                            return item;
-                        }
-                        index--;
-                    }
-                }
+  /*
+   * @see javax.swing.tree.TreeModel#getChild(java.lang.Object, int)
+   */
+  public Object getChild(Object parent, int index) {
+    if (parent instanceof ToDoList) {
+      return PriorityNode.getPriorityList().get(index);
+    }
+    if (parent instanceof PriorityNode) {
+      PriorityNode pn = (PriorityNode) parent;
+      List<ToDoItem> itemList = Designer.theDesigner().getToDoList().getToDoItemList();
+      synchronized (itemList) {
+        for (ToDoItem item : itemList) {
+          if (item.getPriority() == pn.getPriority()) {
+            if (index == 0) {
+              return item;
             }
+            index--;
+          }
         }
-	throw new IndexOutOfBoundsException("getChild shouldnt get here "
-					    + "GoListToPriorityToItem");
+      }
     }
+    throw new IndexOutOfBoundsException("getChild shouldnt get here " + "GoListToPriorityToItem");
+  }
 
-    /*
-     * @see javax.swing.tree.TreeModel#getChildCount(java.lang.Object)
-     */
-    public int getChildCount(Object parent) {
-	if (parent instanceof ToDoList) {
-	    return PriorityNode.getPriorityList().size();
-	}
-	if (parent instanceof PriorityNode) {
-	    PriorityNode pn = (PriorityNode) parent;
-            int count = 0;
-            List<ToDoItem> itemList = Designer.theDesigner().getToDoList()
-                    .getToDoItemList();
-            synchronized (itemList) {
-                for (ToDoItem item : itemList) {
-                    if (item.getPriority() == pn.getPriority()) {
-                        count++;
-                    }
-                }
+  /*
+   * @see javax.swing.tree.TreeModel#getChildCount(java.lang.Object)
+   */
+  public int getChildCount(Object parent) {
+    if (parent instanceof ToDoList) {
+      return PriorityNode.getPriorityList().size();
+    }
+    if (parent instanceof PriorityNode) {
+      PriorityNode pn = (PriorityNode) parent;
+      int count = 0;
+      List<ToDoItem> itemList = Designer.theDesigner().getToDoList().getToDoItemList();
+      synchronized (itemList) {
+        for (ToDoItem item : itemList) {
+          if (item.getPriority() == pn.getPriority()) {
+            count++;
+          }
+        }
+      }
+      return count;
+    }
+    return 0;
+  }
+
+  /*
+   * @see javax.swing.tree.TreeModel#getIndexOfChild(java.lang.Object, java.lang.Object)
+   */
+  public int getIndexOfChild(Object parent, Object child) {
+    if (parent instanceof ToDoList) {
+      return PriorityNode.getPriorityList().indexOf(child);
+    }
+    if (parent instanceof PriorityNode) {
+      int index = 0;
+      PriorityNode pn = (PriorityNode) parent;
+      List<ToDoItem> itemList = Designer.theDesigner().getToDoList().getToDoItemList();
+      synchronized (itemList) {
+        for (ToDoItem item : itemList) {
+          if (item.getPriority() == pn.getPriority()) {
+            if (item == child) {
+              return index;
             }
-            return count;
+            index++;
+          }
         }
-	return 0;
+      }
     }
-   
-    
-    /*
-     * @see javax.swing.tree.TreeModel#getIndexOfChild(java.lang.Object, java.lang.Object)
-     */
-    public int getIndexOfChild(Object parent, Object child) {
-	if (parent instanceof ToDoList) {
-	    return PriorityNode.getPriorityList().indexOf(child);
-	}
-	if (parent instanceof PriorityNode) {
-            int index = 0;
-            PriorityNode pn = (PriorityNode) parent;
-            List<ToDoItem> itemList = Designer.theDesigner().getToDoList()
-                    .getToDoItemList();
-            synchronized (itemList) {
-                for (ToDoItem item : itemList) {
-                    if (item.getPriority() == pn.getPriority()) {
-                        if (item == child) {
-                            return index;
-                        }
-                        index++;
-                    }
-                }
-            }
-        }
-        return -1;
+    return -1;
+  }
+
+  /*
+   * @see javax.swing.tree.TreeModel#isLeaf(java.lang.Object)
+   */
+  public boolean isLeaf(Object node) {
+    if (node instanceof ToDoList) {
+      return false;
     }
-
-    /*
-     * @see javax.swing.tree.TreeModel#isLeaf(java.lang.Object)
-     */
-    public boolean isLeaf(Object node) {
-	if (node instanceof ToDoList) {
-	    return false;
-	}
-	if (node instanceof PriorityNode && getChildCount(node) > 0) {
-	    return false;
-	}
-	return true;
+    if (node instanceof PriorityNode && getChildCount(node) > 0) {
+      return false;
     }
+    return true;
+  }
 
-    /*
-     * @see javax.swing.tree.TreeModel#valueForPathChanged(
-     * javax.swing.tree.TreePath, java.lang.Object)
-     */
-    public void valueForPathChanged(TreePath path, Object newValue) { }
+  /*
+   * @see javax.swing.tree.TreeModel#valueForPathChanged(
+   * javax.swing.tree.TreePath, java.lang.Object)
+   */
+  public void valueForPathChanged(TreePath path, Object newValue) {}
 
-    /*
-     * @see javax.swing.tree.TreeModel#addTreeModelListener(javax.swing.event.TreeModelListener)
-     */
-    public void addTreeModelListener(TreeModelListener l) { }
+  /*
+   * @see javax.swing.tree.TreeModel#addTreeModelListener(javax.swing.event.TreeModelListener)
+   */
+  public void addTreeModelListener(TreeModelListener l) {}
 
-    /*
-     * @see javax.swing.tree.TreeModel#removeTreeModelListener(javax.swing.event.TreeModelListener)
-     */
-    public void removeTreeModelListener(TreeModelListener l) { }
-
+  /*
+   * @see javax.swing.tree.TreeModel#removeTreeModelListener(javax.swing.event.TreeModelListener)
+   */
+  public void removeTreeModelListener(TreeModelListener l) {}
 }

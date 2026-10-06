@@ -25,7 +25,6 @@
 package org.argouml.uml.ui.behavior.collaborations;
 
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.uml.ui.ActionNavigateContainerElement;
 import org.argouml.uml.ui.UMLComboBox2;
@@ -36,78 +35,65 @@ import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
 import org.argouml.util.ConfigLoader;
 
 /**
- * Property panel for collaborations. 
+ * Property panel for collaborations.
  *
  * @author jaap.branderhorst@xs4all.nl
  */
 public class PropPanelCollaboration extends PropPanelNamespace {
 
-    /**
-     * The serial version.
+  /** The serial version. */
+  private static final long serialVersionUID = 5642815840272293391L;
+
+  /** Construct a property panel for a Collaboration. */
+  public PropPanelCollaboration() {
+    super("Collaboration", ConfigLoader.getTabPropsOrientation());
+
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.namespace"), getNamespaceSelector());
+
+    // the represented classifier
+    UMLComboBox2 representedClassifierComboBox =
+        new UMLComboBox2(
+            new UMLCollaborationRepresentedClassifierComboBoxModel(),
+            new ActionSetRepresentedClassifierCollaboration());
+    addField(
+        Translator.localize("label.represented-classifier"),
+        new UMLComboBoxNavigator(
+            this,
+            Translator.localize("label.represented-classifier." + "navigate.tooltip"),
+            representedClassifierComboBox));
+
+    // the represented operation
+    UMLComboBox2 representedOperationComboBox =
+        new UMLComboBox2(
+            new UMLCollaborationRepresentedOperationComboBoxModel(),
+            new ActionSetRepresentedOperationCollaboration());
+    addField(
+        Translator.localize("label.represented-operation"),
+        new UMLComboBoxNavigator(
+            this,
+            Translator.localize("label.represented-operation." + "navigate.tooltip"),
+            representedOperationComboBox));
+
+    addSeparator();
+
+    UMLLinkedList interactionList = new UMLLinkedList(new UMLCollaborationInteractionListModel());
+    interactionList.setVisibleRowCount(1);
+    addField(Translator.localize("label.interaction"), new JScrollPane(interactionList));
+
+    UMLLinkedList constrainingList =
+        new UMLLinkedList(new UMLCollaborationConstrainingElementListModel());
+    addField(Translator.localize("label.constraining-elements"), new JScrollPane(constrainingList));
+
+    addSeparator();
+
+    /* Add the owned-elements field
+     * with ClassifierRoles and AssociationRoles:
      */
-    private static final long serialVersionUID = 5642815840272293391L;
+    addField(Translator.localize("label.owned-elements"), getOwnedElementsScroll());
 
-    /**
-     * Construct a property panel for a Collaboration.
-     */
-    public PropPanelCollaboration() {
-        super("Collaboration", ConfigLoader.getTabPropsOrientation());
-
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.namespace"),
-                getNamespaceSelector());
-
-        // the represented classifier
-        UMLComboBox2 representedClassifierComboBox =
-            new UMLComboBox2(
-                     new UMLCollaborationRepresentedClassifierComboBoxModel(),
-                     new ActionSetRepresentedClassifierCollaboration());
-        addField(Translator.localize("label.represented-classifier"),
-                new UMLComboBoxNavigator(
-                        this,
-                        Translator.localize(
-                                "label.represented-classifier."
-                                + "navigate.tooltip"),
-                        representedClassifierComboBox));
-
-        // the represented operation
-        UMLComboBox2 representedOperationComboBox =
-            new UMLComboBox2(
-                     new UMLCollaborationRepresentedOperationComboBoxModel(),
-                     new ActionSetRepresentedOperationCollaboration());
-        addField(Translator.localize("label.represented-operation"),
-                new UMLComboBoxNavigator(
-                        this,
-                        Translator.localize(
-                                "label.represented-operation."
-                                + "navigate.tooltip"),
-                        representedOperationComboBox));
-
-        addSeparator();
-
-        UMLLinkedList interactionList =
-	    new UMLLinkedList(new UMLCollaborationInteractionListModel());
-        interactionList.setVisibleRowCount(1);
-        addField(Translator.localize("label.interaction"),
-            new JScrollPane(interactionList));
-
-        UMLLinkedList constrainingList =
-	    new UMLLinkedList(
-                new UMLCollaborationConstrainingElementListModel());
-        addField(Translator.localize("label.constraining-elements"),
-            new JScrollPane(constrainingList));
-
-        addSeparator();
-
-        /* Add the owned-elements field 
-         * with ClassifierRoles and AssociationRoles:
-         */
-        addField(Translator.localize("label.owned-elements"),
-                getOwnedElementsScroll());
-        
-        addAction(new ActionNavigateContainerElement());
-        addAction(new ActionNewStereotype());
-        addAction(getDeleteAction());
-    }
+    addAction(new ActionNavigateContainerElement());
+    addAction(new ActionNewStereotype());
+    addAction(getDeleteAction());
+  }
 }

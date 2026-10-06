@@ -24,10 +24,8 @@
 
 package org.argouml.uml.ui.behavior.common_behavior;
 
-import junit.framework.TestCase;
-
 import javax.swing.Action;
-
+import junit.framework.TestCase;
 import org.argouml.i18n.Translator;
 
 /**
@@ -37,30 +35,27 @@ import org.argouml.i18n.Translator;
  */
 public class TestActionNewReception extends TestCase {
 
-    /**
-     * The constructor.
-     *
-     * @param arg0 the name of the test
-     */
-    public TestActionNewReception(String arg0) {
-        super(arg0);
-    }
+  /**
+   * The constructor.
+   *
+   * @param arg0 the name of the test
+   */
+  public TestActionNewReception(String arg0) {
+    super(arg0);
+  }
 
-    /**
-     * @see TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        Translator.init();
-    }
+  /**
+   * @see TestCase#setUp()
+   */
+  protected void setUp() throws Exception {
+    super.setUp();
+    Translator.init();
+  }
 
-    /**
-     * Test whether the icon of this action can be found.
-     */
-    public void testHasIcon() {
-        ActionNewReception action = new ActionNewReception();
+  /** Test whether the icon of this action can be found. */
+  public void testHasIcon() {
+    ActionNewReception action = new ActionNewReception();
 
-        assertNotNull(action.getValue(Action.SMALL_ICON));
-    }
-
+    assertNotNull(action.getValue(Action.SMALL_ICON));
+  }
 }

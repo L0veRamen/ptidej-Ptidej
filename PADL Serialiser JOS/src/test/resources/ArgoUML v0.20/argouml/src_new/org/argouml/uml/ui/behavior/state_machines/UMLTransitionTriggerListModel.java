@@ -34,26 +34,23 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  */
 public class UMLTransitionTriggerListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLTransitionTriggerListModel.
-     */
-    public UMLTransitionTriggerListModel() {
-        super("trigger");
-    }
+  /** Constructor for UMLTransitionTriggerListModel. */
+  public UMLTransitionTriggerListModel() {
+    super("trigger");
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        removeAllElements();
-        addElement(Model.getFacade().getTrigger(getTarget()));
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    removeAllElements();
+    addElement(Model.getFacade().getTrigger(getTarget()));
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ element) {
-        return element == Model.getFacade().getTrigger(getTarget());
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ element) {
+    return element == Model.getFacade().getTrigger(getTarget());
+  }
 }

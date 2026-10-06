@@ -25,7 +25,6 @@
 package org.argouml.core.propertypanels.ui;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.AbstractActionRemoveElement;
@@ -34,25 +33,23 @@ import org.argouml.uml.ui.AbstractActionRemoveElement;
  * @author mkl
  */
 public class ActionRemoveOFSParameter extends AbstractActionRemoveElement {
-    /**
-     * Constructor.
-     */
-    public ActionRemoveOFSParameter() {
-        super(Translator.localize("menu.popup.remove"));
-    }
+  /** Constructor. */
+  public ActionRemoveOFSParameter() {
+    super(Translator.localize("menu.popup.remove"));
+  }
 
-    /*
-     * @see org.tigris.gef.undo.UndoableAction#actionPerformed(java.awt.event.ActionEvent)
-     */
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        Object param = getObjectToRemove();
-        if (param != null) {
-            Object t = getTarget();
-            if (Model.getFacade().isAObjectFlowState(t)) {
-                Model.getActivityGraphsHelper().removeParameter(t, param);
-            }
-        }
+  /*
+   * @see org.tigris.gef.undo.UndoableAction#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    Object param = getObjectToRemove();
+    if (param != null) {
+      Object t = getTarget();
+      if (Model.getFacade().isAObjectFlowState(t)) {
+        Model.getActivityGraphsHelper().removeParameter(t, param);
+      }
     }
+  }
 }

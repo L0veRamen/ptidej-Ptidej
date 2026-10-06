@@ -26,9 +26,7 @@ package org.argouml.uml.cognitive.critics;
 
 import java.util.Enumeration;
 import java.util.Vector;
-
 import javax.swing.Icon;
-
 import org.argouml.cognitive.Designer;
 import org.argouml.cognitive.ToDoItem;
 import org.argouml.cognitive.critics.Critic;
@@ -39,227 +37,220 @@ import org.argouml.model.Model;
 import org.argouml.uml.cognitive.UMLDecision;
 
 /**
- * This critic checks whether a given name in the Model resembles or matches
- * a reserved UML keyword or java keyword.
+ * This critic checks whether a given name in the Model resembles or matches a reserved UML keyword
+ * or java keyword.
  */
 public class CrReservedName extends CrUML {
 
-    ////////////////////////////////////////////////////////////////
-    // static variables
+  ////////////////////////////////////////////////////////////////
+  // static variables
 
-    private static Vector umlReserved = new Vector();
-    private static Vector javaReserved = new Vector();
+  private static Vector umlReserved = new Vector();
 
+  private static Vector javaReserved = new Vector();
 
-    static {
-	umlReserved.addElement("none");
-	umlReserved.addElement("interface");
-	umlReserved.addElement("sequential");
-	umlReserved.addElement("guarded");
-	umlReserved.addElement("concurrent");
-	umlReserved.addElement("frozen");
-	umlReserved.addElement("aggregate");
-	umlReserved.addElement("composite");
-	umlReserved.addElement("becomes");
-	umlReserved.addElement("call");
-	umlReserved.addElement("component");
-	//_umlReserved.addElement("copy");
-	//_umlReserved.addElement("create");
-	umlReserved.addElement("deletion");
-	umlReserved.addElement("derived");
-	//_umlReserved.addElement("document");
-	umlReserved.addElement("enumeration");
-	umlReserved.addElement("extends");
-	umlReserved.addElement("facade");
-	//_umlReserved.addElement("file");
-	umlReserved.addElement("framework");
-	umlReserved.addElement("friend");
-	umlReserved.addElement("import");
-	umlReserved.addElement("inherits");
-	umlReserved.addElement("instance");
-	umlReserved.addElement("invariant");
-	umlReserved.addElement("library");
-	//_umlReserved.addElement("node");
-	umlReserved.addElement("metaclass");
-	umlReserved.addElement("powertype");
-	umlReserved.addElement("private");
-	umlReserved.addElement("process");
-	umlReserved.addElement("requirement");
-	//_umlReserved.addElement("send");
-	umlReserved.addElement("stereotype");
-	umlReserved.addElement("stub");
-	umlReserved.addElement("subclass");
-	umlReserved.addElement("subtype");
-	umlReserved.addElement("system");
-	umlReserved.addElement("table");
-	umlReserved.addElement("thread");
-	umlReserved.addElement("type");
-	umlReserved.addElement("useCaseModel");
-	umlReserved.addElement("uses");
-	umlReserved.addElement("utility");
-	//_umlReserved.addElement("destroy");
-	umlReserved.addElement("implementationClass");
-	umlReserved.addElement("postcondition");
-	umlReserved.addElement("precondition");
-	umlReserved.addElement("topLevelPackage");
-	umlReserved.addElement("subtraction");
+  static {
+    umlReserved.addElement("none");
+    umlReserved.addElement("interface");
+    umlReserved.addElement("sequential");
+    umlReserved.addElement("guarded");
+    umlReserved.addElement("concurrent");
+    umlReserved.addElement("frozen");
+    umlReserved.addElement("aggregate");
+    umlReserved.addElement("composite");
+    umlReserved.addElement("becomes");
+    umlReserved.addElement("call");
+    umlReserved.addElement("component");
+    // _umlReserved.addElement("copy");
+    // _umlReserved.addElement("create");
+    umlReserved.addElement("deletion");
+    umlReserved.addElement("derived");
+    // _umlReserved.addElement("document");
+    umlReserved.addElement("enumeration");
+    umlReserved.addElement("extends");
+    umlReserved.addElement("facade");
+    // _umlReserved.addElement("file");
+    umlReserved.addElement("framework");
+    umlReserved.addElement("friend");
+    umlReserved.addElement("import");
+    umlReserved.addElement("inherits");
+    umlReserved.addElement("instance");
+    umlReserved.addElement("invariant");
+    umlReserved.addElement("library");
+    // _umlReserved.addElement("node");
+    umlReserved.addElement("metaclass");
+    umlReserved.addElement("powertype");
+    umlReserved.addElement("private");
+    umlReserved.addElement("process");
+    umlReserved.addElement("requirement");
+    // _umlReserved.addElement("send");
+    umlReserved.addElement("stereotype");
+    umlReserved.addElement("stub");
+    umlReserved.addElement("subclass");
+    umlReserved.addElement("subtype");
+    umlReserved.addElement("system");
+    umlReserved.addElement("table");
+    umlReserved.addElement("thread");
+    umlReserved.addElement("type");
+    umlReserved.addElement("useCaseModel");
+    umlReserved.addElement("uses");
+    umlReserved.addElement("utility");
+    // _umlReserved.addElement("destroy");
+    umlReserved.addElement("implementationClass");
+    umlReserved.addElement("postcondition");
+    umlReserved.addElement("precondition");
+    umlReserved.addElement("topLevelPackage");
+    umlReserved.addElement("subtraction");
 
-	//     _umlReserved.addElement("initial");
-	//     _umlReserved.addElement("final");
-	//     _umlReserved.addElement("fork");
-	//     _umlReserved.addElement("join");
-	//     _umlReserved.addElement("history");
+    //     _umlReserved.addElement("initial");
+    //     _umlReserved.addElement("final");
+    //     _umlReserved.addElement("fork");
+    //     _umlReserved.addElement("join");
+    //     _umlReserved.addElement("history");
 
-	javaReserved.addElement("public");
-	javaReserved.addElement("private");
-	javaReserved.addElement("protected");
-	javaReserved.addElement("package");
-	javaReserved.addElement("import");
-	javaReserved.addElement("java");
-	javaReserved.addElement("class");
-	javaReserved.addElement("interface");
-	javaReserved.addElement("extends");
-	javaReserved.addElement("implements");
-	javaReserved.addElement("native");
-	javaReserved.addElement("boolean");
-	javaReserved.addElement("void");
-	javaReserved.addElement("int");
-	javaReserved.addElement("char");
-	javaReserved.addElement("float");
-	javaReserved.addElement("long");
-	javaReserved.addElement("short");
-	javaReserved.addElement("byte");
-	javaReserved.addElement("double");
-	javaReserved.addElement("String");
-	javaReserved.addElement("Vector");
-	javaReserved.addElement("Hashtable");
-	javaReserved.addElement("Properties");
-	javaReserved.addElement("null");
-	javaReserved.addElement("true");
-	javaReserved.addElement("false");
-	javaReserved.addElement("rest");
-	javaReserved.addElement("operator");
-	javaReserved.addElement("inner");
-	javaReserved.addElement("outer");
-	javaReserved.addElement("this");
-	javaReserved.addElement("super");
-	javaReserved.addElement("byvalue");
-	javaReserved.addElement("cast");
-	javaReserved.addElement("const");
-	javaReserved.addElement("future");
-	javaReserved.addElement("generic");
-	javaReserved.addElement("goto");
-	javaReserved.addElement("throws");
-	javaReserved.addElement("try");
-	javaReserved.addElement("catch");
-	javaReserved.addElement("finally");
-	javaReserved.addElement("new");
-	javaReserved.addElement("synchronized");
-	javaReserved.addElement("static");
-	javaReserved.addElement("final");
-	javaReserved.addElement("abstract");
-	javaReserved.addElement("for");
-	javaReserved.addElement("if");
-	javaReserved.addElement("else");
-	javaReserved.addElement("while");
-	javaReserved.addElement("return");
-	javaReserved.addElement("continue");
-	javaReserved.addElement("break");
-	javaReserved.addElement("do");
-	javaReserved.addElement("until");
-	javaReserved.addElement("switch");
-	javaReserved.addElement("case");
-	javaReserved.addElement("default");
-	javaReserved.addElement("instanceof");
-	javaReserved.addElement("var");
-	javaReserved.addElement("volatile");
-	javaReserved.addElement("transient");
+    javaReserved.addElement("public");
+    javaReserved.addElement("private");
+    javaReserved.addElement("protected");
+    javaReserved.addElement("package");
+    javaReserved.addElement("import");
+    javaReserved.addElement("java");
+    javaReserved.addElement("class");
+    javaReserved.addElement("interface");
+    javaReserved.addElement("extends");
+    javaReserved.addElement("implements");
+    javaReserved.addElement("native");
+    javaReserved.addElement("boolean");
+    javaReserved.addElement("void");
+    javaReserved.addElement("int");
+    javaReserved.addElement("char");
+    javaReserved.addElement("float");
+    javaReserved.addElement("long");
+    javaReserved.addElement("short");
+    javaReserved.addElement("byte");
+    javaReserved.addElement("double");
+    javaReserved.addElement("String");
+    javaReserved.addElement("Vector");
+    javaReserved.addElement("Hashtable");
+    javaReserved.addElement("Properties");
+    javaReserved.addElement("null");
+    javaReserved.addElement("true");
+    javaReserved.addElement("false");
+    javaReserved.addElement("rest");
+    javaReserved.addElement("operator");
+    javaReserved.addElement("inner");
+    javaReserved.addElement("outer");
+    javaReserved.addElement("this");
+    javaReserved.addElement("super");
+    javaReserved.addElement("byvalue");
+    javaReserved.addElement("cast");
+    javaReserved.addElement("const");
+    javaReserved.addElement("future");
+    javaReserved.addElement("generic");
+    javaReserved.addElement("goto");
+    javaReserved.addElement("throws");
+    javaReserved.addElement("try");
+    javaReserved.addElement("catch");
+    javaReserved.addElement("finally");
+    javaReserved.addElement("new");
+    javaReserved.addElement("synchronized");
+    javaReserved.addElement("static");
+    javaReserved.addElement("final");
+    javaReserved.addElement("abstract");
+    javaReserved.addElement("for");
+    javaReserved.addElement("if");
+    javaReserved.addElement("else");
+    javaReserved.addElement("while");
+    javaReserved.addElement("return");
+    javaReserved.addElement("continue");
+    javaReserved.addElement("break");
+    javaReserved.addElement("do");
+    javaReserved.addElement("until");
+    javaReserved.addElement("switch");
+    javaReserved.addElement("case");
+    javaReserved.addElement("default");
+    javaReserved.addElement("instanceof");
+    javaReserved.addElement("var");
+    javaReserved.addElement("volatile");
+    javaReserved.addElement("transient");
 
-	javaReserved.addElement("assert");
+    javaReserved.addElement("assert");
+  }
+
+  ////////////////////////////////////////////////////////////////
+  /** Constructor. */
+  public CrReservedName() {
+    setupHeadAndDesc();
+    setPriority(ToDoItem.HIGH_PRIORITY);
+    addSupportedDecision(UMLDecision.NAMING);
+    setKnowledgeTypes(Critic.KT_SYNTAX);
+    addTrigger("name");
+    addTrigger("feature_name");
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // Critic implementation
+
+  /**
+   * @see org.argouml.uml.cognitive.critics.CrUML#predicate2( java.lang.Object,
+   *     org.argouml.cognitive.Designer)
+   */
+  public boolean predicate2(Object dm, Designer dsgr) {
+    if (!(Model.getFacade().isPrimaryObject(dm))) return NO_PROBLEM;
+
+    if (!(Model.getFacade().isAModelElement(dm))) return NO_PROBLEM;
+    String meName = Model.getFacade().getName(dm);
+    if (meName == null || meName.equals("")) return NO_PROBLEM;
+    String nameStr = meName;
+    if (nameStr == null || nameStr.length() == 0) return NO_PROBLEM;
+
+    if (isBuiltin(nameStr)) return NO_PROBLEM;
+
+    Enumeration names = umlReserved.elements();
+    while (names.hasMoreElements()) {
+      String word = (String) names.nextElement();
+      if (word.equalsIgnoreCase(nameStr)) return PROBLEM_FOUND;
     }
 
+    return NO_PROBLEM;
+  }
 
+  /**
+   * Dont critique the built-in java types, they are supposed to have those "reserved" names.
+   *
+   * @param name The name of the type to test.
+   * @return true if it is a builtin.
+   */
+  private boolean isBuiltin(String name) {
+    Project p = ProjectManager.getManager().getCurrentProject();
+    Object type = p.findTypeInDefaultModel(name);
+    return type != null;
+  }
 
+  /**
+   * @see org.argouml.cognitive.Poster#getClarifier()
+   */
+  public Icon getClarifier() {
+    return ClClassName.getTheInstance();
+  }
 
-    ////////////////////////////////////////////////////////////////
-    /** 
-     * Constructor.
-     */
-    public CrReservedName() {
-        setupHeadAndDesc();
-	setPriority(ToDoItem.HIGH_PRIORITY);
-	addSupportedDecision(UMLDecision.NAMING);
-	setKnowledgeTypes(Critic.KT_SYNTAX);
-	addTrigger("name");
-	addTrigger("feature_name");
+  /**
+   * @see org.argouml.cognitive.critics.Critic#initWizard( org.argouml.cognitive.ui.Wizard)
+   */
+  public void initWizard(Wizard w) {
+    if (w instanceof WizMEName) {
+      ToDoItem item = (ToDoItem) w.getToDoItem();
+      String sug = Model.getFacade().getName(item.getOffenders().elementAt(0));
+      String ins = "Change the name to something different.";
+      ((WizMEName) w).setInstructions(ins);
+      ((WizMEName) w).setSuggestion(sug);
+      ((WizMEName) w).setMustEdit(true);
     }
+  }
 
-    ////////////////////////////////////////////////////////////////
-    // Critic implementation
-
-    /**
-     * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
-     * java.lang.Object, org.argouml.cognitive.Designer)
-     */
-    public boolean predicate2(Object dm, Designer dsgr) {
-	if (!(Model.getFacade().isPrimaryObject(dm))) return NO_PROBLEM;
-
-        if (!(Model.getFacade().isAModelElement(dm))) return NO_PROBLEM;
-        String meName = Model.getFacade().getName(dm);
-        if (meName == null || meName.equals("")) return NO_PROBLEM;
-        String nameStr = meName;
-        if (nameStr == null || nameStr.length() == 0) return NO_PROBLEM;
-
-	if (isBuiltin(nameStr))
-	    return NO_PROBLEM;
-
-        Enumeration names = umlReserved.elements();
-        while (names.hasMoreElements()) {
-            String word = (String) names.nextElement();
-            if (word.equalsIgnoreCase(nameStr)) return PROBLEM_FOUND;
-        }
-
-        return NO_PROBLEM;
-    }
-
-    /** Dont critique the built-in java types, they are supposed to
-     * have those "reserved" names.
-     *
-     * @param name The name of the type to test.
-     * @return true if it is a builtin.
-     */
-    private boolean isBuiltin(String name) {
-        Project p = ProjectManager.getManager().getCurrentProject();
-        Object type = p.findTypeInDefaultModel(name);
-        return type != null;
-    }
-
-
-    /**
-     * @see org.argouml.cognitive.Poster#getClarifier()
-     */
-    public Icon getClarifier() { return ClClassName.getTheInstance(); }
-
-    /**
-     * @see org.argouml.cognitive.critics.Critic#initWizard(
-     *         org.argouml.cognitive.ui.Wizard)
-     */
-    public void initWizard(Wizard w) {
-	if (w instanceof WizMEName) {
-	    ToDoItem item = (ToDoItem) w.getToDoItem();
-	    String sug = 
-	        Model.getFacade().getName(item.getOffenders().elementAt(0));
-	    String ins = "Change the name to something different.";
-	    ((WizMEName) w).setInstructions(ins);
-	    ((WizMEName) w).setSuggestion(sug);
-	    ((WizMEName) w).setMustEdit(true);
-	}
-    }
-
-    /**
-     * @see org.argouml.cognitive.critics.Critic#getWizardClass(org.argouml.cognitive.ToDoItem)
-     */
-    public Class getWizardClass(ToDoItem item) { return WizMEName.class; }
-
+  /**
+   * @see org.argouml.cognitive.critics.Critic#getWizardClass(org.argouml.cognitive.ToDoItem)
+   */
+  public Class getWizardClass(ToDoItem item) {
+    return WizMEName.class;
+  }
 } /* end class CrReservedName */
-

@@ -19,19 +19,19 @@ import junit.framework.TestSuite;
  */
 public class AllTests {
 
-	public static void main(String[] args) {
-		junit.textui.TestRunner.run(AllTests.class);
-	}
+  public static void main(String[] args) {
+    junit.textui.TestRunner.run(AllTests.class);
+  }
 
-	public static Test suite() {
-		TestSuite suite = new TestSuite("Test for org.jhotdraw.test.samples.pert");
-		//$JUnit-BEGIN$
-		suite.addTest(new TestSuite(PertAppletTest.class));
-		suite.addTest(new TestSuite(PertApplicationTest.class));
-		suite.addTest(new TestSuite(PertDependencyTest.class));
-		suite.addTest(new TestSuite(PertFigureCreationToolTest.class));
-		suite.addTest(new TestSuite(PertFigureTest.class));
-		//$JUnit-END$
-		return suite;
-	}
+  public static Test suite() {
+    TestSuite suite = new TestSuite("Test for org.jhotdraw.test.samples.pert");
+    // $JUnit-BEGIN$
+    suite.addTest(new TestSuite(PertAppletTest.class));
+    suite.addTest(new TestSuite(PertApplicationTest.class));
+    suite.addTest(new TestSuite(PertDependencyTest.class));
+    suite.addTest(new TestSuite(PertFigureCreationToolTest.class));
+    suite.addTest(new TestSuite(PertFigureTest.class));
+    // $JUnit-END$
+    return suite;
+  }
 }

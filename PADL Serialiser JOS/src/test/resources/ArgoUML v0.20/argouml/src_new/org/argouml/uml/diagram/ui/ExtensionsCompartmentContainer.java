@@ -25,23 +25,23 @@
 package org.argouml.uml.diagram.ui;
 
 /**
- * An interface to be implemented by any Fig that contains
- * a Extensions Compartment.
+ * An interface to be implemented by any Fig that contains a Extensions Compartment.
  *
  * @author mvw@tigris.org
  */
 public interface ExtensionsCompartmentContainer {
 
-    /**
-     * Determine if the operations compartment is visible.
-     * @return true if the operations compartment is visible.
-     */
-    boolean isExtensionPointVisible();
+  /**
+   * Determine if the operations compartment is visible.
+   *
+   * @return true if the operations compartment is visible.
+   */
+  boolean isExtensionPointVisible();
 
-    /**
-     * Set the visibility of the operations compartment.
-     * @param visible the new visibility status.
-     */
-    void setExtensionPointVisible(boolean visible);
-
+  /**
+   * Set the visibility of the operations compartment.
+   *
+   * @param visible the new visibility status.
+   */
+  void setExtensionPointVisible(boolean visible);
 }

@@ -34,11 +34,10 @@ import org.argouml.uml.ui.PropPanelFactory;
  */
 public class SequenceDiagramPropPanelFactory implements PropPanelFactory {
 
-    public PropPanel createPropPanel(Object object) {
-        if (object instanceof UMLSequenceDiagram) {
-            return new PropPanelUMLSequenceDiagram();
-        }
-        return null;
+  public PropPanel createPropPanel(Object object) {
+    if (object instanceof UMLSequenceDiagram) {
+      return new PropPanelUMLSequenceDiagram();
     }
-
+    return null;
+  }
 }

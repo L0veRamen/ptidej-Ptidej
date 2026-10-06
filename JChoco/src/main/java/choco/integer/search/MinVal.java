@@ -12,12 +12,13 @@ package choco.integer.search;
 import choco.search.AbstractSearchHeuristic;
 
 public class MinVal extends AbstractSearchHeuristic implements IValSelector {
-	/**
-	 * selecting the lowest value in the domain
-	 * @param x the variable under consideration
-	 * @return what seems the most interesting value for branching
-	 */
-	public int getBestVal(final choco.integer.var.IntDomainVar x) {
-		return x.getInf();
-	}
+  /**
+   * selecting the lowest value in the domain
+   *
+   * @param x the variable under consideration
+   * @return what seems the most interesting value for branching
+   */
+  public int getBestVal(final choco.integer.var.IntDomainVar x) {
+    return x.getInf();
+  }
 }

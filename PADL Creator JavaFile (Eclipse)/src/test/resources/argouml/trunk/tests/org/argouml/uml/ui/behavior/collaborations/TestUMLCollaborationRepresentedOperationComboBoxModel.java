@@ -25,7 +25,6 @@
 package org.argouml.uml.ui.behavior.collaborations;
 
 import junit.framework.TestCase;
-
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.Model;
@@ -36,74 +35,68 @@ import org.argouml.ui.targetmanager.TargetManager;
  * @since Oct 29, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class TestUMLCollaborationRepresentedOperationComboBoxModel
-    extends TestCase {
+public class TestUMLCollaborationRepresentedOperationComboBoxModel extends TestCase {
 
-    private Object elem;
-    private Object oper;
-    private UMLCollaborationRepresentedOperationComboBoxModel model;
+  private Object elem;
+  private Object oper;
+  private UMLCollaborationRepresentedOperationComboBoxModel model;
 
-    /**
-     * Constructor for TestUMLCollaborationRepresentedOperationComboBoxModel.
-     *
-     * @param arg0 is the name of the test case.
+  /**
+   * Constructor for TestUMLCollaborationRepresentedOperationComboBoxModel.
+   *
+   * @param arg0 is the name of the test case.
+   */
+  public TestUMLCollaborationRepresentedOperationComboBoxModel(String arg0) {
+    super(arg0);
+  }
+
+  /**
+   * @see junit.framework.TestCase#setUp()
+   */
+  protected void setUp() throws Exception {
+    super.setUp();
+    elem = Model.getCollaborationsFactory().createCollaboration();
+    model = new UMLCollaborationRepresentedOperationComboBoxModel();
+    TargetManager.getInstance().setTarget(elem);
+    Model.getPump().flushModelEvents();
+
+    Project p = ProjectManager.getManager().getCurrentProject();
+    Object m = p.getRoot();
+    Object clazz = Model.getCoreFactory().buildClass(m);
+    oper = Model.getCoreFactory().createOperation();
+    Model.getCoreHelper().setOwner(oper, clazz);
+    Model.getCollaborationsHelper().setRepresentedOperation(elem, oper);
+    Model.getPump().flushModelEvents();
+    /* Simulate a target change. */
+    model.targetSet(new TargetEvent(this, null, null, new Object[] {elem}));
+  }
+
+  /**
+   * @see junit.framework.TestCase#tearDown()
+   */
+  protected void tearDown() throws Exception {
+    super.tearDown();
+    Model.getUmlFactory().delete(elem);
+    model = null;
+  }
+
+  /** Test setting the represented operation. */
+  public void testSetRepresentedOperation() {
+    /*
+     * Now the model should contain
+     * the one operation + the "" for clearing.
      */
-    public TestUMLCollaborationRepresentedOperationComboBoxModel(String arg0) {
-        super(arg0);
-    }
+    assertEquals(2, model.getSize());
+    assertEquals(oper, model.getElementAt(0));
+  }
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        elem = Model.getCollaborationsFactory().createCollaboration();
-        model = new UMLCollaborationRepresentedOperationComboBoxModel();
-        TargetManager.getInstance().setTarget(elem);
-        Model.getPump().flushModelEvents();
-        
-        Project p = ProjectManager.getManager().getCurrentProject();
-        Object m = p.getRoot();
-        Object clazz = Model.getCoreFactory().buildClass(m);
-        oper = Model.getCoreFactory().createOperation();
-        Model.getCoreHelper().setOwner(oper, clazz);
-        Model.getCollaborationsHelper().setRepresentedOperation(elem, oper);
-        Model.getPump().flushModelEvents();
-        /* Simulate a target change. */
-        model.targetSet(new TargetEvent(this, null, null, new Object[] {elem}));
-    }
-
-    /**
-     * @see junit.framework.TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        Model.getUmlFactory().delete(elem);
-        model = null;
-    }
-
-    /**
-     * Test setting the represented operation.
-     */
-    public void testSetRepresentedOperation() {
-        /*
-         * Now the model should contain
-         * the one operation + the "" for clearing.
-         */
-        assertEquals(2, model.getSize());
-        assertEquals(oper, model.getElementAt(0));
-    }
-
-    /**
-     * Test removing the represented operation.
-     */
-    public void testExtraRepresentedOperation() {
-        Object op = Model.getCoreFactory().createOperation();
-        Model.getCollaborationsHelper().setRepresentedOperation(elem, op);
-        /* Simulate a target change. */
-        model.targetSet(new TargetEvent(this, null, null, new Object[] {elem}));
-        Model.getPump().flushModelEvents();
-        assertEquals(3, model.getSize());
-    }
-
+  /** Test removing the represented operation. */
+  public void testExtraRepresentedOperation() {
+    Object op = Model.getCoreFactory().createOperation();
+    Model.getCollaborationsHelper().setRepresentedOperation(elem, op);
+    /* Simulate a target change. */
+    model.targetSet(new TargetEvent(this, null, null, new Object[] {elem}));
+    Model.getPump().flushModelEvents();
+    assertEquals(3, model.getSize());
+  }
 }

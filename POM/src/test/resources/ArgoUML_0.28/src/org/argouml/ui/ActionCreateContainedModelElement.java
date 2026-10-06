@@ -25,44 +25,37 @@
 package org.argouml.ui;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.model.Model;
 import org.argouml.ui.targetmanager.TargetManager;
 import org.argouml.uml.ui.AbstractActionNewModelElement;
 
 /**
- * An action to create a model element to be contained by the 
- * target model element.
+ * An action to create a model element to be contained by the target model element.
  *
  * @author Scott Roberts
  */
-public class ActionCreateContainedModelElement
-            extends AbstractActionNewModelElement {
+public class ActionCreateContainedModelElement extends AbstractActionNewModelElement {
 
-    private Object metaType; 
+  private Object metaType;
 
-    /**
-     * Construct the action.
-     * 
-     * @param theMetaType the element to be created
-     * @param target the container that will own the new element
-     * @param menuDescr the description for the menu item label.
-     */
-    public ActionCreateContainedModelElement(
-            Object theMetaType, 
-            Object target,
-            String menuDescr) {
-        super(menuDescr);
-        
-        metaType = theMetaType;
-        
-        setTarget(target);
-    }
+  /**
+   * Construct the action.
+   *
+   * @param theMetaType the element to be created
+   * @param target the container that will own the new element
+   * @param menuDescr the description for the menu item label.
+   */
+  public ActionCreateContainedModelElement(Object theMetaType, Object target, String menuDescr) {
+    super(menuDescr);
 
-    public void actionPerformed(ActionEvent e) {            
-        Object newElement = Model.getUmlFactory().buildNode(metaType, 
-                getTarget());
-            
-        TargetManager.getInstance().setTarget(newElement);                
-    }
+    metaType = theMetaType;
+
+    setTarget(target);
+  }
+
+  public void actionPerformed(ActionEvent e) {
+    Object newElement = Model.getUmlFactory().buildNode(metaType, getTarget());
+
+    TargetManager.getInstance().setTarget(newElement);
+  }
 }

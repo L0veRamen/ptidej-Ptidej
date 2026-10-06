@@ -31,29 +31,24 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  * @since Dec 14, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class UMLStateDeferrableEventListModel
-    extends UMLModelElementListModel2 {
+public class UMLStateDeferrableEventListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLStateDeferrableEventListModel.
-     */
-    public UMLStateDeferrableEventListModel() {
-        super("deferrableEvent");
-    }
+  /** Constructor for UMLStateDeferrableEventListModel. */
+  public UMLStateDeferrableEventListModel() {
+    super("deferrableEvent");
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        setAllElements(Model.getFacade().getDeferrableEvents(getTarget()));
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    setAllElements(Model.getFacade().getDeferrableEvents(getTarget()));
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ element) {
-        return Model.getFacade().getDeferrableEvents(getTarget())
-        	.contains(element);
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ element) {
+    return Model.getFacade().getDeferrableEvents(getTarget()).contains(element);
+  }
 }

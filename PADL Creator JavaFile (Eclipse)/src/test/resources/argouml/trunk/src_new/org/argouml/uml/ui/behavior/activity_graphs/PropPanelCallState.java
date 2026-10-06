@@ -29,7 +29,6 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.i18n.Translator;
 import org.argouml.uml.ui.behavior.state_machines.AbstractPropPanelState;
@@ -44,78 +43,59 @@ import org.tigris.swidgets.Orientation;
  */
 public class PropPanelCallState extends AbstractPropPanelState {
 
-    private JScrollPane callActionEntryScroll;
-    private JList callActionEntryList;
+  private JScrollPane callActionEntryScroll;
+  private JList callActionEntryList;
 
-    /**
-     * The constructor.
-     *
-     */
-    public PropPanelCallState() {
-        this("CallState", lookupIcon("CallState"), ConfigLoader
-                .getTabPropsOrientation());
-    }
+  /** The constructor. */
+  public PropPanelCallState() {
+    this("CallState", lookupIcon("CallState"), ConfigLoader.getTabPropsOrientation());
+  }
 
-    /**
-     * @param name the name of the properties panel
-     * @param icon the icon to be shown next to the name
-     * @param orientation the orientation of the panel
-     */
-    public PropPanelCallState(String name, ImageIcon icon,
-            Orientation orientation) {
+  /**
+   * @param name the name of the properties panel
+   * @param icon the icon to be shown next to the name
+   * @param orientation the orientation of the panel
+   */
+  public PropPanelCallState(String name, ImageIcon icon, Orientation orientation) {
 
-        super(name, icon, orientation);
+    super(name, icon, orientation);
 
-        callActionEntryList =
-            new UMLCallStateEntryList(
-                new UMLStateEntryListModel());
-        callActionEntryList.setVisibleRowCount(1);
-        callActionEntryScroll = new JScrollPane(callActionEntryList);
+    callActionEntryList = new UMLCallStateEntryList(new UMLStateEntryListModel());
+    callActionEntryList.setVisibleRowCount(1);
+    callActionEntryScroll = new JScrollPane(callActionEntryList);
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.container"),
-                getContainerScroll());
-        addField(Translator.localize("label.entry"),
-                getCallActionEntryScroll());
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.container"), getContainerScroll());
+    addField(Translator.localize("label.entry"), getCallActionEntryScroll());
 
-        addField(Translator.localize("label.deferrable"),
-                getDeferrableEventsScroll());
+    addField(Translator.localize("label.deferrable"), getDeferrableEventsScroll());
 
-        addSeparator();
+    addSeparator();
 
-        addField(Translator.localize("label.incoming"),
-                getIncomingScroll());
-        addField(Translator.localize("label.outgoing"),
-                getOutgoingScroll());
-    }
+    addField(Translator.localize("label.incoming"), getIncomingScroll());
+    addField(Translator.localize("label.outgoing"), getOutgoingScroll());
+  }
 
-    /**
-     * Let's add a buttun to create a CallAction.
-     *
-     * @see org.argouml.uml.ui.behavior.state_machines.PropPanelStateVertex#addExtraButtons()
-     */
-    protected void addExtraButtons() {
-        Action a = new ActionNewEntryCallAction();
-        a.putValue(Action.SHORT_DESCRIPTION,
-                Translator.localize("button.new-callaction"));
-        Icon icon = ResourceLoaderWrapper.lookupIcon("CallAction");
-        a.putValue(Action.SMALL_ICON, icon);
-        addAction(a);
-    }
+  /**
+   * Let's add a buttun to create a CallAction.
+   *
+   * @see org.argouml.uml.ui.behavior.state_machines.PropPanelStateVertex#addExtraButtons()
+   */
+  protected void addExtraButtons() {
+    Action a = new ActionNewEntryCallAction();
+    a.putValue(Action.SHORT_DESCRIPTION, Translator.localize("button.new-callaction"));
+    Icon icon = ResourceLoaderWrapper.lookupIcon("CallAction");
+    a.putValue(Action.SMALL_ICON, icon);
+    addAction(a);
+  }
 
-    /**
-     * @return Returns the entryScroll.
-     */
-    protected JScrollPane getCallActionEntryScroll() {
-        return callActionEntryScroll;
-    }
+  /**
+   * @return Returns the entryScroll.
+   */
+  protected JScrollPane getCallActionEntryScroll() {
+    return callActionEntryScroll;
+  }
 
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -8830997687737785261L;
+  /** The UID. */
+  private static final long serialVersionUID = -8830997687737785261L;
 }
-
-
-

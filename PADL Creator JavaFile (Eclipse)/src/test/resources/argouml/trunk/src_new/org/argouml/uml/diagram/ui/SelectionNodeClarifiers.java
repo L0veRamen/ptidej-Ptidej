@@ -25,52 +25,45 @@
 package org.argouml.uml.diagram.ui;
 
 import java.awt.Graphics;
-
 import org.tigris.gef.base.SelectionButtons;
 import org.tigris.gef.presentation.Fig;
 
 /**
- *
- *
- *
  * @author jrobbins
  */
 public class SelectionNodeClarifiers extends SelectionButtons {
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    /** Construct a new SelectionNodeClarifiers for the given Fig
-     *
-     * @param f the given Fig
-     */
-    public SelectionNodeClarifiers(Fig f) {
-        super(f);
-    }
+  /**
+   * Construct a new SelectionNodeClarifiers for the given Fig
+   *
+   * @param f the given Fig
+   */
+  public SelectionNodeClarifiers(Fig f) {
+    super(f);
+  }
 
-    /**
-     * Paint the handles at the four corners and midway along each edge of the
-     * bounding box.
-     *
-     * @see org.tigris.gef.base.Selection#paint(java.awt.Graphics)
-     */
-    public void paint(Graphics g) {
-        ((FigNodeModelElement) getContent()).paintClarifiers(g);
-        super.paint(g);
-    }
+  /**
+   * Paint the handles at the four corners and midway along each edge of the bounding box.
+   *
+   * @see org.tigris.gef.base.Selection#paint(java.awt.Graphics)
+   */
+  public void paint(Graphics g) {
+    ((FigNodeModelElement) getContent()).paintClarifiers(g);
+    super.paint(g);
+  }
 
-    /**
-     * @see org.tigris.gef.base.SelectionButtons#paintButtons(java.awt.Graphics)
-     */
-    public void paintButtons(Graphics g) {
-    }
+  /**
+   * @see org.tigris.gef.base.SelectionButtons#paintButtons(java.awt.Graphics)
+   */
+  public void paintButtons(Graphics g) {}
 
-    /**
-     * @see org.tigris.gef.base.SelectionButtons#getNewNode(int)
-     */
-    protected Object getNewNode(int arg0) {
-        return null;
-    }
-
+  /**
+   * @see org.tigris.gef.base.SelectionButtons#getNewNode(int)
+   */
+  protected Object getNewNode(int arg0) {
+    return null;
+  }
 } /* end class SelectionNodeClarifiers */
-

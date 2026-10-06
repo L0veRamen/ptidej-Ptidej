@@ -25,7 +25,7 @@
 /**
  * Reading and writing preserved sections from the code
  *
- * @author  Marian
+ * @author Marian
  */
 package org.argouml.language.csharp.generator;
 
@@ -37,147 +37,141 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-
 import org.apache.log4j.Logger;
 
-/**
- * This class is used by GeneratorCSharp for handling of code sections.
- */
+/** This class is used by GeneratorCSharp for handling of code sections. */
 public class Section {
-    private Map mAry;
+  private Map mAry;
 
-    private static final Logger LOG = Logger.getLogger(Section.class);
+  private static final Logger LOG = Logger.getLogger(Section.class);
 
-    private static final String BEGIN = "// section ";
-    private static final String END1 = " begin";
-    private static final String END2 = " end";
+  private static final String BEGIN = "// section ";
+  private static final String END1 = " begin";
+  private static final String END2 = " end";
 
-    /**
-     * Creates a new instance of Section.
-     */
-    public Section() {
-        mAry = new HashMap();
-        mAry.clear();
-    }
+  /** Creates a new instance of Section. */
+  public Section() {
+    mAry = new HashMap();
+    mAry.clear();
+  }
 
-    /**
-     * @param id the string to generate
-     * @param indent the indentation
-     * @return the generated string
-     */
-    public static String generate(String id, String indent) {
-        String s = "";
-        s += indent + BEGIN + id + END1 + "\n";
-        s += indent + BEGIN + id + END2 + "\n";
-        return s;
-    }
+  /**
+   * @param id the string to generate
+   * @param indent the indentation
+   * @return the generated string
+   */
+  public static String generate(String id, String indent) {
+    String s = "";
+    s += indent + BEGIN + id + END1 + "\n";
+    s += indent + BEGIN + id + END2 + "\n";
+    return s;
+  }
 
-    /**
-     * @param filename The filename to write to.
-     * @param indent The indent that we use.
-     */
-    // TODO:
-    // check if sections are not used within the file and put them as comments
-    // at the end of the file.
-    // hint: use a second Map to compare with the used keys
-    // =======================================================================
-    public void write(String filename, String indent) {
-        try {
-            LOG.debug("Start reading");
-            FileReader f = new FileReader(filename);
-            BufferedReader fr = new BufferedReader(f);
-            FileWriter fw = new FileWriter(filename + ".out");
-            LOG.debug("Total size of Map: " + mAry.size());
-            String line = "";
-            while (line != null) {
-                line = fr.readLine();
-                if (line != null) {
-                    String sectionId = getSectionId(line);
-                    if (sectionId != null) {
-                        String content = (String) mAry.get(sectionId);
-                        fw.write(line + "\n");
-                        if (content != null) {
-                            fw.write(content);
-                            // LOG.debug(line);
-                            // System.out.print(content);
-                        }
-                        line = fr.readLine(); // read end section;
-                        mAry.remove(sectionId);
-                    }
-                    fw.write(line + "\n");
-                    // LOG.debug(line);
-                }
+  /**
+   * @param filename The filename to write to.
+   * @param indent The indent that we use.
+   */
+  // TODO:
+  // check if sections are not used within the file and put them as comments
+  // at the end of the file.
+  // hint: use a second Map to compare with the used keys
+  // =======================================================================
+  public void write(String filename, String indent) {
+    try {
+      LOG.debug("Start reading");
+      FileReader f = new FileReader(filename);
+      BufferedReader fr = new BufferedReader(f);
+      FileWriter fw = new FileWriter(filename + ".out");
+      LOG.debug("Total size of Map: " + mAry.size());
+      String line = "";
+      while (line != null) {
+        line = fr.readLine();
+        if (line != null) {
+          String sectionId = getSectionId(line);
+          if (sectionId != null) {
+            String content = (String) mAry.get(sectionId);
+            fw.write(line + "\n");
+            if (content != null) {
+              fw.write(content);
+              // LOG.debug(line);
+              // System.out.print(content);
             }
-            if (!mAry.isEmpty()) {
-                fw.write("/* lost code following: \n");
-                Set mapEntries = mAry.entrySet();
-                Iterator itr = mapEntries.iterator();
-                while (itr.hasNext()) {
-                    Map.Entry entry = (Map.Entry) itr.next();
-                    fw.write(indent + BEGIN + entry.getKey() + END1 + "\n");
-                    fw.write((String) entry.getValue());
-                    fw.write(indent + BEGIN + entry.getKey() + END2 + "\n");
-                }
+            line = fr.readLine(); // read end section;
+            mAry.remove(sectionId);
+          }
+          fw.write(line + "\n");
+          // LOG.debug(line);
+        }
+      }
+      if (!mAry.isEmpty()) {
+        fw.write("/* lost code following: \n");
+        Set mapEntries = mAry.entrySet();
+        Iterator itr = mapEntries.iterator();
+        while (itr.hasNext()) {
+          Map.Entry entry = (Map.Entry) itr.next();
+          fw.write(indent + BEGIN + entry.getKey() + END1 + "\n");
+          fw.write((String) entry.getValue());
+          fw.write(indent + BEGIN + entry.getKey() + END2 + "\n");
+        }
+      }
+
+      fr.close();
+      fw.close();
+    } catch (IOException e) {
+      LOG.debug("Error: " + e.toString());
+    }
+  }
+
+  /**
+   * @param filename the name of the file
+   */
+  public void read(String filename) {
+    try {
+      LOG.debug("Start reading");
+      FileReader f = new FileReader(filename);
+      BufferedReader fr = new BufferedReader(f);
+
+      String line = "";
+      String content = "";
+      boolean inSection = false;
+      while (line != null) {
+        line = fr.readLine();
+        if (line != null) {
+          if (inSection) {
+            String sectionId = getSectionId(line);
+            if (sectionId != null) {
+              inSection = false;
+              mAry.put(sectionId, content);
+              content = "";
+            } else {
+              content += line + "\n";
             }
-
-            fr.close();
-            fw.close();
-        } catch (IOException e) {
-            LOG.debug("Error: " + e.toString());
-        }
-    }
-
-    /**
-     * @param filename the name of the file
-     */
-    public void read(String filename) {
-        try {
-            LOG.debug("Start reading");
-            FileReader f = new FileReader(filename);
-            BufferedReader fr = new BufferedReader(f);
-
-            String line = "";
-            String content = "";
-            boolean inSection = false;
-            while (line != null) {
-                line = fr.readLine();
-                if (line != null) {
-                    if (inSection) {
-                        String sectionId = getSectionId(line);
-                        if (sectionId != null) {
-                            inSection = false;
-                            mAry.put(sectionId, content);
-                            content = "";
-                        } else {
-                            content += line + "\n";
-                        }
-                    } else {
-                        String sectionId = getSectionId(line);
-                        if (sectionId != null) {
-                            inSection = true;
-                        }
-                    }
-                }
+          } else {
+            String sectionId = getSectionId(line);
+            if (sectionId != null) {
+              inSection = true;
             }
-            fr.close();
-
-        } catch (IOException e) {
-            LOG.debug("Error: " + e.toString());
+          }
         }
+      }
+      fr.close();
+
+    } catch (IOException e) {
+      LOG.debug("Error: " + e.toString());
     }
+  }
 
-    private static String getSectionId(String line) {
-        int first = line.indexOf(BEGIN);
-        int second = line.indexOf(END1);
-        if (second < 0) {
-            second = line.indexOf(END2);
-        }
-        String s = null;
-        if ((first > 0) && (second > 0)) {
-            first = first + BEGIN.length();
-            s = line.substring(first, second);
-        }
-        return s;
+  private static String getSectionId(String line) {
+    int first = line.indexOf(BEGIN);
+    int second = line.indexOf(END1);
+    if (second < 0) {
+      second = line.indexOf(END2);
     }
-
+    String s = null;
+    if ((first > 0) && (second > 0)) {
+      first = first + BEGIN.length();
+      s = line.substring(first, second);
+    }
+    return s;
+  }
 }

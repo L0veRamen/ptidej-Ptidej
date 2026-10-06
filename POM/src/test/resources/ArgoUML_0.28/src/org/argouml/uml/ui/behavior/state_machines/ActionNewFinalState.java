@@ -25,9 +25,7 @@
 package org.argouml.uml.ui.behavior.state_machines;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.Action;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.AbstractActionNewModelElement;
@@ -38,29 +36,26 @@ import org.argouml.uml.ui.AbstractActionNewModelElement;
  */
 public class ActionNewFinalState extends AbstractActionNewModelElement {
 
-    private static ActionNewFinalState singleton = new ActionNewFinalState();
+  private static ActionNewFinalState singleton = new ActionNewFinalState();
 
-    /**
-     * Constructor for ActionNewFinalState.
-     */
-    protected ActionNewFinalState() {
-        super();
-        putValue(Action.NAME, Translator.localize("button.new-finalstate"));
-    }
+  /** Constructor for ActionNewFinalState. */
+  protected ActionNewFinalState() {
+    super();
+    putValue(Action.NAME, Translator.localize("button.new-finalstate"));
+  }
 
-    /*
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        Model.getStateMachinesFactory().buildFinalState(getTarget());
-    }
+  /*
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    Model.getStateMachinesFactory().buildFinalState(getTarget());
+  }
 
-    /**
-     * @return Returns the singleton.
-     */
-    public static ActionNewFinalState getSingleton() {
-        return singleton;
-    }
-
+  /**
+   * @return Returns the singleton.
+   */
+  public static ActionNewFinalState getSingleton() {
+    return singleton;
+  }
 }

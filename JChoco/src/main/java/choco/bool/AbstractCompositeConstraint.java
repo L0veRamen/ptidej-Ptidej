@@ -17,13 +17,11 @@ import choco.AbstractConstraint;
 import choco.Constraint;
 import choco.Var;
 
-/**
- * An abstract class for all implementations of listeners over search variables.
- */
+/** An abstract class for all implementations of listeners over search variables. */
 public abstract class AbstractCompositeConstraint extends AbstractConstraint
-		implements CompositeConstraint {
-	Constraint[] subConstraints;
-	int[] offsets;
-	Var[] additionalVars;
-	int[] additionalIndices;
+    implements CompositeConstraint {
+  Constraint[] subConstraints;
+  int[] offsets;
+  Var[] additionalVars;
+  int[] additionalIndices;
 }

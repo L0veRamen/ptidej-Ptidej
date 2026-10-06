@@ -25,70 +25,62 @@
 package org.argouml.uml.ui.behavior.collaborations;
 
 import junit.framework.TestCase;
-
 import org.argouml.model.Model;
 
 /**
  * @since Oct 30, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class TestUMLMessageActionListModel
-    extends TestCase {
+public class TestUMLMessageActionListModel extends TestCase {
 
-    private UMLMessageActionListModel model;
-    private Object elem;
+  private UMLMessageActionListModel model;
+  private Object elem;
 
-    /**
-     * Constructor for TestUMLMessageActionListModel.
-     *
-     * @param arg0 is the name of the test case.
-     */
-    public TestUMLMessageActionListModel(String arg0) {
-        super(arg0);
-    }
+  /**
+   * Constructor for TestUMLMessageActionListModel.
+   *
+   * @param arg0 is the name of the test case.
+   */
+  public TestUMLMessageActionListModel(String arg0) {
+    super(arg0);
+  }
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        elem = Model.getCollaborationsFactory().createMessage();
-        model = new UMLMessageActionListModel();
-        model.setTarget(elem);
-        Model.getPump().flushModelEvents();
-    }
+  /**
+   * @see junit.framework.TestCase#setUp()
+   */
+  protected void setUp() throws Exception {
+    super.setUp();
+    elem = Model.getCollaborationsFactory().createMessage();
+    model = new UMLMessageActionListModel();
+    model.setTarget(elem);
+    Model.getPump().flushModelEvents();
+  }
 
-    /**
-     * @see junit.framework.TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        Model.getUmlFactory().delete(elem);
-        model = null;
-    }
+  /**
+   * @see junit.framework.TestCase#tearDown()
+   */
+  protected void tearDown() throws Exception {
+    super.tearDown();
+    Model.getUmlFactory().delete(elem);
+    model = null;
+  }
 
-    /**
-     * Test setAction().
-     */
-    public void testSetAction() {
-        Object action =
-	    Model.getCommonBehaviorFactory().createUninterpretedAction();
-        Model.getCollaborationsHelper().setAction(elem, action);
-        Model.getPump().flushModelEvents();
-        assertEquals(1, model.getSize());
-        assertEquals(action, model.getElementAt(0));
-    }
+  /** Test setAction(). */
+  public void testSetAction() {
+    Object action = Model.getCommonBehaviorFactory().createUninterpretedAction();
+    Model.getCollaborationsHelper().setAction(elem, action);
+    Model.getPump().flushModelEvents();
+    assertEquals(1, model.getSize());
+    assertEquals(action, model.getElementAt(0));
+  }
 
-    /**
-     * Test setAction() for removing.
-     */
-    public void testRemoveAction() {
-        Object action =
-	    Model.getCommonBehaviorFactory().createUninterpretedAction();
-        Model.getCollaborationsHelper().setAction(elem, action);
-        Model.getCollaborationsHelper().setAction(elem, null);
-        Model.getPump().flushModelEvents();
-        assertEquals(0, model.getSize());
-        assertTrue(model.isEmpty());
-    }
+  /** Test setAction() for removing. */
+  public void testRemoveAction() {
+    Object action = Model.getCommonBehaviorFactory().createUninterpretedAction();
+    Model.getCollaborationsHelper().setAction(elem, action);
+    Model.getCollaborationsHelper().setAction(elem, null);
+    Model.getPump().flushModelEvents();
+    assertEquals(0, model.getSize());
+    assertTrue(model.isEmpty());
+  }
 }

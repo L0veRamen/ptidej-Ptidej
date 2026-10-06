@@ -22,12 +22,10 @@
 // CALIFORNIA HAS NO OBLIGATIONS TO PROVIDE MAINTENANCE, SUPPORT,
 // UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
-
 package org.argouml.uml.cognitive.critics;
 
-import org.argouml.model.Model;
-
 import junit.framework.TestCase;
+import org.argouml.model.Model;
 
 /**
  * Testing the class {@link CrUnconventionalPackName}.
@@ -35,37 +33,33 @@ import junit.framework.TestCase;
  * @author mkl
  */
 public class TestCrUnconventionalPackName extends TestCase {
-    /**
-     * An instance of the class to test.
-     */
-    private CrUnconventionalPackName cr = new CrUnconventionalPackName();
+  /** An instance of the class to test. */
+  private CrUnconventionalPackName cr = new CrUnconventionalPackName();
 
-    /**
-     * The constructor.
-     *
-     * @param arg0 The test case name.
-     */
-    public TestCrUnconventionalPackName(String arg0) {
-        super(arg0);
-    }
+  /**
+   * The constructor.
+   *
+   * @param arg0 The test case name.
+   */
+  public TestCrUnconventionalPackName(String arg0) {
+    super(arg0);
+  }
 
-    /**
-     * Testing computeSuggestion.
-     */
-    public void testComputeSuggestion() {
-        assertEquals("packageName", cr.computeSuggestion(null));
-        assertEquals("x", cr.computeSuggestion("X"));
-    }
-    
-    public void testPredicate2() {
-        Object me = Model.getModelManagementFactory().createPackage();
-        Model.getCoreHelper().setName(me, null);
-        assertFalse(cr.predicate2(me, null));
-        
-        Model.getCoreHelper().setName(me, "Uppercase");
-        assertTrue(cr.predicate2(me, null));
-        
-        Model.getCoreHelper().setName(me, "lowercase");
-        assertFalse(cr.predicate2(me, null));
-    }
+  /** Testing computeSuggestion. */
+  public void testComputeSuggestion() {
+    assertEquals("packageName", cr.computeSuggestion(null));
+    assertEquals("x", cr.computeSuggestion("X"));
+  }
+
+  public void testPredicate2() {
+    Object me = Model.getModelManagementFactory().createPackage();
+    Model.getCoreHelper().setName(me, null);
+    assertFalse(cr.predicate2(me, null));
+
+    Model.getCoreHelper().setName(me, "Uppercase");
+    assertTrue(cr.predicate2(me, null));
+
+    Model.getCoreHelper().setName(me, "lowercase");
+    assertFalse(cr.predicate2(me, null));
+  }
 }

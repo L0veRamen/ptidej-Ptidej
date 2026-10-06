@@ -26,39 +26,34 @@
 package org.argouml.uml.ui.behavior.state_machines;
 
 import javax.swing.JPopupMenu;
-
 import org.argouml.uml.ui.UMLModelElementListModel2;
 import org.argouml.uml.ui.UMLMutableLinkedList;
 import org.argouml.uml.ui.behavior.common_behavior.ActionNewSignal;
 
 /**
- *
  * @author MarkusK
- *
  */
 class UMLSignalEventSignalList extends UMLMutableLinkedList {
 
-    /**
-     * Constructor for UMLTransitionTriggerList.
-     * @param dataModel the model
-     */
-    public UMLSignalEventSignalList(
-        UMLModelElementListModel2 dataModel) {
-        super(dataModel, null, null, null, true);
-        setDelete(false);
-        setDeleteAction(null);
-    }
+  /**
+   * Constructor for UMLTransitionTriggerList.
+   *
+   * @param dataModel the model
+   */
+  public UMLSignalEventSignalList(UMLModelElementListModel2 dataModel) {
+    super(dataModel, null, null, null, true);
+    setDelete(false);
+    setDeleteAction(null);
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLMutableLinkedList#getPopupMenu()
-     */
-    public JPopupMenu getPopupMenu() {
-        JPopupMenu menu = new JPopupMenu();
-        ActionAddSignalsToSignalEvent.SINGLETON.setTarget(getTarget());
-        menu.add(ActionAddSignalsToSignalEvent.SINGLETON);
-        menu.add(new ActionNewSignal());
-        return menu;
-    }
-
-
+  /**
+   * @see org.argouml.uml.ui.UMLMutableLinkedList#getPopupMenu()
+   */
+  public JPopupMenu getPopupMenu() {
+    JPopupMenu menu = new JPopupMenu();
+    ActionAddSignalsToSignalEvent.SINGLETON.setTarget(getTarget());
+    menu.add(ActionAddSignalsToSignalEvent.SINGLETON);
+    menu.add(new ActionNewSignal());
+    return menu;
+  }
 }

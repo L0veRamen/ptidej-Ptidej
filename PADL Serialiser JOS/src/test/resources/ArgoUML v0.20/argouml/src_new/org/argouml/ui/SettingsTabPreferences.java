@@ -37,132 +37,134 @@ import org.argouml.application.api.Configuration;
 import org.argouml.application.api.SettingsTabPanel;
 import org.argouml.application.helpers.SettingsTabHelper;
 
-/** Action object for handling Argo settings
+/**
+ * Action object for handling Argo settings
  *
- *  @author Thierry Lach
- *  @since  0.9.4
+ * @author Thierry Lach
+ * @since 0.9.4
  */
-public class SettingsTabPreferences extends SettingsTabHelper
-    implements SettingsTabPanel {
+public class SettingsTabPreferences extends SettingsTabHelper implements SettingsTabPanel {
 
-    private JCheckBox chkSplash = null;
-    private JCheckBox chkPreload = null;
-    private JCheckBox chkReloadRecent = null;
+  private JCheckBox chkSplash = null;
+  private JCheckBox chkPreload = null;
+  private JCheckBox chkReloadRecent = null;
 
-    /**
-     * The constructor.
-     *
-     */
-    public SettingsTabPreferences() {
-        super();
-        setLayout(new BorderLayout());
-	JPanel top = new JPanel();
-    	top.setLayout(new GridBagLayout());
+  /** The constructor. */
+  public SettingsTabPreferences() {
+    super();
+    setLayout(new BorderLayout());
+    JPanel top = new JPanel();
+    top.setLayout(new GridBagLayout());
 
-	GridBagConstraints checkConstraints = new GridBagConstraints();
-	checkConstraints.anchor = GridBagConstraints.WEST;
-	checkConstraints.gridy = 0;
-	checkConstraints.gridx = 0;
-	checkConstraints.gridwidth = 1;
-	checkConstraints.gridheight = 1;
-	checkConstraints.insets = new Insets(0, 30, 0, 4);
+    GridBagConstraints checkConstraints = new GridBagConstraints();
+    checkConstraints.anchor = GridBagConstraints.WEST;
+    checkConstraints.gridy = 0;
+    checkConstraints.gridx = 0;
+    checkConstraints.gridwidth = 1;
+    checkConstraints.gridheight = 1;
+    checkConstraints.insets = new Insets(0, 30, 0, 4);
 
-	GridBagConstraints labelConstraints = new GridBagConstraints();
-	labelConstraints.anchor = GridBagConstraints.EAST;
-	labelConstraints.gridy = 0;
-	labelConstraints.gridx = 0;
-	labelConstraints.gridwidth = 1;
-	labelConstraints.gridheight = 1;
-	labelConstraints.insets = new Insets(2, 10, 2, 4);
+    GridBagConstraints labelConstraints = new GridBagConstraints();
+    labelConstraints.anchor = GridBagConstraints.EAST;
+    labelConstraints.gridy = 0;
+    labelConstraints.gridx = 0;
+    labelConstraints.gridwidth = 1;
+    labelConstraints.gridheight = 1;
+    labelConstraints.insets = new Insets(2, 10, 2, 4);
 
-	GridBagConstraints fieldConstraints = new GridBagConstraints();
-	fieldConstraints.anchor = GridBagConstraints.WEST;
-	fieldConstraints.fill = GridBagConstraints.HORIZONTAL;
-	fieldConstraints.gridy = 0;
-	fieldConstraints.gridx = 1;
-	fieldConstraints.gridwidth = 3;
-	fieldConstraints.gridheight = 1;
-	fieldConstraints.weightx = 1.0;
-	fieldConstraints.insets = new Insets(0, 4, 0, 20);
+    GridBagConstraints fieldConstraints = new GridBagConstraints();
+    fieldConstraints.anchor = GridBagConstraints.WEST;
+    fieldConstraints.fill = GridBagConstraints.HORIZONTAL;
+    fieldConstraints.gridy = 0;
+    fieldConstraints.gridx = 1;
+    fieldConstraints.gridwidth = 3;
+    fieldConstraints.gridheight = 1;
+    fieldConstraints.weightx = 1.0;
+    fieldConstraints.insets = new Insets(0, 4, 0, 20);
 
-	checkConstraints.gridy = 0;
-	labelConstraints.gridy = 0;
-	fieldConstraints.gridy = 0;
-        chkSplash = createCheckBox("label.splash");
-	top.add(chkSplash, checkConstraints);
-	top.add(new JLabel(""), labelConstraints);
-	top.add(new JLabel(""), fieldConstraints);
+    checkConstraints.gridy = 0;
+    labelConstraints.gridy = 0;
+    fieldConstraints.gridy = 0;
+    chkSplash = createCheckBox("label.splash");
+    top.add(chkSplash, checkConstraints);
+    top.add(new JLabel(""), labelConstraints);
+    top.add(new JLabel(""), fieldConstraints);
 
-	checkConstraints.gridy = 1;
-        chkPreload = createCheckBox("label.preload");
- 	top.add(chkPreload, checkConstraints);
+    checkConstraints.gridy = 1;
+    chkPreload = createCheckBox("label.preload");
+    top.add(chkPreload, checkConstraints);
 
-	checkConstraints.gridy = 3;
-        chkReloadRecent = createCheckBox("label.reload-recent");
- 	top.add(chkReloadRecent, checkConstraints);
+    checkConstraints.gridy = 3;
+    chkReloadRecent = createCheckBox("label.reload-recent");
+    top.add(chkReloadRecent, checkConstraints);
 
-	add(top, BorderLayout.NORTH);
-    }
+    add(top, BorderLayout.NORTH);
+  }
 
-    /**
-     * @see org.argouml.application.api.SettingsTabPanel#handleSettingsTabRefresh()
-     */
-    public void handleSettingsTabRefresh() {
-        chkSplash.setSelected(Configuration.getBoolean(Argo.KEY_SPLASH, true));
-        chkPreload.setSelected(Configuration.getBoolean(Argo.KEY_PRELOAD,
-                true));
-        chkReloadRecent.setSelected(
-		Configuration.getBoolean(Argo.KEY_RELOAD_RECENT_PROJECT,
-					 false));
-    }
+  /**
+   * @see org.argouml.application.api.SettingsTabPanel#handleSettingsTabRefresh()
+   */
+  public void handleSettingsTabRefresh() {
+    chkSplash.setSelected(Configuration.getBoolean(Argo.KEY_SPLASH, true));
+    chkPreload.setSelected(Configuration.getBoolean(Argo.KEY_PRELOAD, true));
+    chkReloadRecent.setSelected(Configuration.getBoolean(Argo.KEY_RELOAD_RECENT_PROJECT, false));
+  }
 
-    /**
-     * @see org.argouml.application.api.SettingsTabPanel#handleSettingsTabSave()
-     */
-    public void handleSettingsTabSave() {
-        Configuration.setBoolean(Argo.KEY_SPLASH, chkSplash.isSelected());
-        Configuration.setBoolean(Argo.KEY_PRELOAD, chkPreload.isSelected());
-        Configuration.setBoolean(Argo.KEY_RELOAD_RECENT_PROJECT,
-				 chkReloadRecent.isSelected());
-    }
+  /**
+   * @see org.argouml.application.api.SettingsTabPanel#handleSettingsTabSave()
+   */
+  public void handleSettingsTabSave() {
+    Configuration.setBoolean(Argo.KEY_SPLASH, chkSplash.isSelected());
+    Configuration.setBoolean(Argo.KEY_PRELOAD, chkPreload.isSelected());
+    Configuration.setBoolean(Argo.KEY_RELOAD_RECENT_PROJECT, chkReloadRecent.isSelected());
+  }
 
-    /**
-     * @see org.argouml.application.api.SettingsTabPanel#handleSettingsTabCancel()
-     */
-    public void handleSettingsTabCancel() {
-        handleSettingsTabRefresh();
-    }
+  /**
+   * @see org.argouml.application.api.SettingsTabPanel#handleSettingsTabCancel()
+   */
+  public void handleSettingsTabCancel() {
+    handleSettingsTabRefresh();
+  }
 
-    /**
-     * @see org.argouml.application.api.ArgoModule#getModuleName()
-     */
-    public String getModuleName() { return "SettingsTabPreferences"; }
+  /**
+   * @see org.argouml.application.api.ArgoModule#getModuleName()
+   */
+  public String getModuleName() {
+    return "SettingsTabPreferences";
+  }
 
-    /**
-     * @see org.argouml.application.api.ArgoModule#getModuleDescription()
-     */
-    public String getModuleDescription() {
-	return "Settings Tab for Preferences";
-    }
+  /**
+   * @see org.argouml.application.api.ArgoModule#getModuleDescription()
+   */
+  public String getModuleDescription() {
+    return "Settings Tab for Preferences";
+  }
 
-    /**
-     * @see org.argouml.application.api.ArgoModule#getModuleAuthor()
-     */
-    public String getModuleAuthor() { return "ArgoUML Core"; }
+  /**
+   * @see org.argouml.application.api.ArgoModule#getModuleAuthor()
+   */
+  public String getModuleAuthor() {
+    return "ArgoUML Core";
+  }
 
-    /**
-     * @see org.argouml.application.api.ArgoModule#getModuleVersion()
-     */
-    public String getModuleVersion() { return ArgoVersion.getVersion(); }
+  /**
+   * @see org.argouml.application.api.ArgoModule#getModuleVersion()
+   */
+  public String getModuleVersion() {
+    return ArgoVersion.getVersion();
+  }
 
-    /**
-     * @see org.argouml.application.api.ArgoModule#getModuleKey()
-     */
-    public String getModuleKey() { return "module.settings.preferences"; }
+  /**
+   * @see org.argouml.application.api.ArgoModule#getModuleKey()
+   */
+  public String getModuleKey() {
+    return "module.settings.preferences";
+  }
 
-    /**
-     * @see org.argouml.application.api.SettingsTabPanel#getTabKey()
-     */
-    public String getTabKey() { return "tab.preferences"; }
+  /**
+   * @see org.argouml.application.api.SettingsTabPanel#getTabKey()
+   */
+  public String getTabKey() {
+    return "tab.preferences";
+  }
 }
-

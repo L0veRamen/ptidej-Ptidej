@@ -13,20 +13,15 @@
 
 package choco;
 
-/**
- * An interface for all objects from constraint programs.
- */
+/** An interface for all objects from constraint programs. */
 public interface Entity {
-	/**
-	 * Retrieves the problem of the entity.
-	 */
+  /** Retrieves the problem of the entity. */
+  public Problem getProblem();
 
-	public Problem getProblem();
-
-	/**
-	 * pretty printing of the object. This String is not constant and may depend on the context.
-	 * @return a readable string representation of the object
-	 */
-	public String pretty();
-
+  /**
+   * pretty printing of the object. This String is not constant and may depend on the context.
+   *
+   * @return a readable string representation of the object
+   */
+  public String pretty();
 }

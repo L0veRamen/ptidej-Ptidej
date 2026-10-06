@@ -24,62 +24,56 @@
 
 package org.argouml.model;
 
+import junit.framework.TestCase;
 import org.easymock.MockControl;
 
-import junit.framework.TestCase;
-
 /**
- * This is an extremely simple example for testing with a mock model.
- * The purpose of this is to show how to set up the Mock Model correctly.
+ * This is an extremely simple example for testing with a mock model. The purpose of this is to show
+ * how to set up the Mock Model correctly.
  *
  * @author Linus Tolke
  */
 public class TestAGHelperWithMock extends TestCase {
-    MockModelImplementation mockModelImplementation;
-    MockControl controlAGH;
+  MockModelImplementation mockModelImplementation;
+  MockControl controlAGH;
 
-    /**
-     * Constructor.
-     *
-     * @param arg0 The name of the test case.
-     */
-    public TestAGHelperWithMock(String arg0) {
-        super(arg0);
-    }
+  /**
+   * Constructor.
+   *
+   * @param arg0 The name of the test case.
+   */
+  public TestAGHelperWithMock(String arg0) {
+    super(arg0);
+  }
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    public void setUp() {
-        System.setProperty("argouml.model.implementation",
-                "org.argouml.model.MockModelImplementation");
-        Model.getFacade(); // Load the model.
+  /**
+   * @see junit.framework.TestCase#setUp()
+   */
+  public void setUp() {
+    System.setProperty("argouml.model.implementation", "org.argouml.model.MockModelImplementation");
+    Model.getFacade(); // Load the model.
 
-        mockModelImplementation = MockModelImplementation.getLatest();
+    mockModelImplementation = MockModelImplementation.getLatest();
 
-        assertNotNull("MockModelImplementation not created", mockModelImplementation);
+    assertNotNull("MockModelImplementation not created", mockModelImplementation);
 
-        // Must be called after setImplementation.
-        mockModelImplementation.reset();
-    }
+    // Must be called after setImplementation.
+    mockModelImplementation.reset();
+  }
 
-    /**
-     * @see junit.framework.TestCase#tearDown()
-     */
-    public void tearDown() {
-        mockModelImplementation.verify();
-    }
+  /**
+   * @see junit.framework.TestCase#tearDown()
+   */
+  public void tearDown() {
+    mockModelImplementation.verify();
+  }
 
-    /**
-     * Testing ActivityGraphsHelper.
-     */
-    public void testAGHelper() {
-        mockModelImplementation.getActivityGraphsHelper()
-            .isAddingActivityGraphAllowed(null);
-        mockModelImplementation.getActivityGraphsHelperControl()
-            .setReturnValue(false);
-        mockModelImplementation.replay();
+  /** Testing ActivityGraphsHelper. */
+  public void testAGHelper() {
+    mockModelImplementation.getActivityGraphsHelper().isAddingActivityGraphAllowed(null);
+    mockModelImplementation.getActivityGraphsHelperControl().setReturnValue(false);
+    mockModelImplementation.replay();
 
-        Model.getActivityGraphsHelper().isAddingActivityGraphAllowed(null);
-    }
+    Model.getActivityGraphsHelper().isAddingActivityGraphAllowed(null);
+  }
 }

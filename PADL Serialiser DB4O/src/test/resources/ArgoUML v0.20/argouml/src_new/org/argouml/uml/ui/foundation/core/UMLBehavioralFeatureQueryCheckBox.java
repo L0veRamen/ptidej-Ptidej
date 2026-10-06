@@ -28,25 +28,23 @@ import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLCheckBox2;
 
-/**
- */
+/** */
 public class UMLBehavioralFeatureQueryCheckBox extends UMLCheckBox2 {
 
-    /**
-     * Constructor.
-     */
-    public UMLBehavioralFeatureQueryCheckBox() {
-        super(Translator.localize("label.query"),
-                ActionSetBehavioralFeatureQuery.getInstance(), "isQuery");
-    }
+  /** Constructor. */
+  public UMLBehavioralFeatureQueryCheckBox() {
+    super(
+        Translator.localize("label.query"),
+        ActionSetBehavioralFeatureQuery.getInstance(),
+        "isQuery");
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLCheckBox2#buildModel()
-     */
-    public void buildModel() {
-        if (getTarget() != null) {
-            setSelected(Model.getFacade().isQuery(getTarget()));
-        }
+  /**
+   * @see org.argouml.uml.ui.UMLCheckBox2#buildModel()
+   */
+  public void buildModel() {
+    if (getTarget() != null) {
+      setSelected(Model.getFacade().isQuery(getTarget()));
     }
-
+  }
 }

@@ -27,7 +27,6 @@ package org.argouml.uml.diagram.sequence.ui;
 import java.beans.PropertyVetoException;
 import java.util.Collection;
 import java.util.Hashtable;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.diagram.sequence.SequenceDiagramGraphModel;
@@ -38,170 +37,161 @@ import org.argouml.uml.diagram.ui.UMLDiagram;
 import org.tigris.gef.presentation.FigNode;
 
 /**
- * The diagram for sequence diagrams.<p>
+ * The diagram for sequence diagrams.
  *
- * Totally rewritten for release 0.16.<p>
+ * <p>Totally rewritten for release 0.16.
+ *
+ * <p>
  *
  * @author jaap.branderhorst@xs4all.nl Aug 3, 2003
  * @author 5eichler@informatik.uni-hamburg.de originally.
  */
 public class UMLSequenceDiagram extends UMLDiagram {
 
-    private static final long serialVersionUID = 4143700589122465301L;
-    
-    private Object[] actions;
-    static final String SEQUENCE_CONTRACT_BUTTON = "button.sequence-contract";
-    static final String SEQUENCE_EXPAND_BUTTON = "button.sequence-expand";
+  private static final long serialVersionUID = 4143700589122465301L;
 
-    /**
-     * Constructs a new sequence diagram with a default name and NO namespace.
-     * Namespaces are used to determine the 'owner' of the diagram for diagrams
-     * but that's plain misuse.
-     */
-    public UMLSequenceDiagram() {
-        // TODO: All super constructors should take a GraphModel
-        super();
-        // Dirty hack to remove the trash the Diagram constructor leaves
-        SequenceDiagramGraphModel gm =
-            new SequenceDiagramGraphModel();
-        setGraphModel(gm);
-        SequenceDiagramLayer lay =
-            new SequenceDiagramLayer(this.getName(), gm);
-        SequenceDiagramRenderer rend = new SequenceDiagramRenderer();
-        lay.setGraphEdgeRenderer(rend);
-        lay.setGraphNodeRenderer(rend);
-        setLayer(lay);
+  private Object[] actions;
+  static final String SEQUENCE_CONTRACT_BUTTON = "button.sequence-contract";
+  static final String SEQUENCE_EXPAND_BUTTON = "button.sequence-expand";
+
+  /**
+   * Constructs a new sequence diagram with a default name and NO namespace. Namespaces are used to
+   * determine the 'owner' of the diagram for diagrams but that's plain misuse.
+   */
+  public UMLSequenceDiagram() {
+    // TODO: All super constructors should take a GraphModel
+    super();
+    // Dirty hack to remove the trash the Diagram constructor leaves
+    SequenceDiagramGraphModel gm = new SequenceDiagramGraphModel();
+    setGraphModel(gm);
+    SequenceDiagramLayer lay = new SequenceDiagramLayer(this.getName(), gm);
+    SequenceDiagramRenderer rend = new SequenceDiagramRenderer();
+    lay.setGraphEdgeRenderer(rend);
+    lay.setGraphNodeRenderer(rend);
+    setLayer(lay);
+  }
+
+  /**
+   * The constructor.
+   *
+   * @param collaboration the collaboration
+   */
+  public UMLSequenceDiagram(Object collaboration) {
+    this();
+    try {
+      setName(getNewDiagramName());
+    } catch (PropertyVetoException pve) {
     }
+    // TODO: This should check that it's receiving the argument type that
+    // it expects
+    ((SequenceDiagramGraphModel) getGraphModel()).setCollaboration(collaboration);
+    setNamespace(collaboration); // See issue 3373.
+  }
 
-    /**
-     * The constructor.
-     *
-     * @param collaboration the collaboration
-     */
-    public UMLSequenceDiagram(Object collaboration) {
-        this();
-        try {
-            setName(getNewDiagramName());
-        } catch (PropertyVetoException pve) {
-        }
-        // TODO: This should check that it's receiving the argument type that
-        // it expects
-        ((SequenceDiagramGraphModel) getGraphModel())
-	    .setCollaboration(collaboration);
-        setNamespace(collaboration); //See issue 3373.
+  @Override
+  public Object getOwner() {
+    return getNamespace();
+  }
+
+  @Override
+  public String getLabelName() {
+    return Translator.localize("label.sequence-diagram");
+  }
+
+  /**
+   * Must return an array of actions via which the model can be manipulated. To use the 'nested
+   * actions' feature (like the different association types on UMLClassDiagram) these nested actions
+   * must be in an array of their own.
+   *
+   * <p>In case of the sequence diagram this method must return the following actions:
+   *
+   * <ul>
+   *   <li>Action to create an object
+   *   <li>Action to add a procedural link
+   *   <li>Action to add a create link
+   *   <li>Action to add a asynchronous link
+   *   <li>Action to add a synchronous link
+   *   <li>Action to add a return link
+   * </ul>
+   *
+   * {@inheritDoc}
+   */
+  protected Object[] getUmlActions() {
+    if (actions == null) {
+      actions = new Object[7];
+      actions[0] = new RadioAction(new ActionAddClassifierRole());
+
+      actions[1] =
+          new RadioAction(
+              new ActionSetAddMessageMode(
+                  Model.getMetaTypes().getCallAction(), "button.new-callaction"));
+      actions[2] =
+          new RadioAction(
+              new ActionSetAddMessageMode(
+                  Model.getMetaTypes().getReturnAction(), "button.new-returnaction"));
+      actions[3] =
+          new RadioAction(
+              new ActionSetAddMessageMode(
+                  Model.getMetaTypes().getCreateAction(), "button.new-createaction"));
+      actions[4] =
+          new RadioAction(
+              new ActionSetAddMessageMode(
+                  Model.getMetaTypes().getDestroyAction(), "button.new-destroyaction"));
+
+      Hashtable<String, Object> args = new Hashtable<String, Object>();
+
+      args.put("name", SEQUENCE_EXPAND_BUTTON);
+      actions[5] =
+          new RadioAction(new ActionSetMode(ModeExpand.class, args, SEQUENCE_EXPAND_BUTTON));
+      args.clear();
+      args.put("name", SEQUENCE_CONTRACT_BUTTON);
+      actions[6] =
+          new RadioAction(new ActionSetMode(ModeContract.class, args, SEQUENCE_CONTRACT_BUTTON));
     }
+    return actions;
+  }
 
+  @Override
+  public Object getNamespace() {
+    return ((SequenceDiagramGraphModel) getGraphModel()).getCollaboration();
+  }
 
-    @Override
-    public Object getOwner() {
-        return getNamespace();
-    }
+  @Override
+  public void setNamespace(Object ns) {
+    ((SequenceDiagramGraphModel) getGraphModel()).setCollaboration(ns);
+    super.setNamespace(ns);
+  }
 
-    @Override
-    public String getLabelName() {
-        return Translator.localize("label.sequence-diagram");
-    }
+  /**
+   * Method called by Project.removeDiagram to clean up the mess in this diagram when the diagram is
+   * removed.
+   */
+  public void cleanUp() {
+    /*
+            ProjectManager.getManager().getCurrentProject().moveToTrash(collab);
+    */
+  }
 
-    /**
-     * Must return an array of actions via which the model can be
-     * manipulated. To use the 'nested actions' feature (like the
-     * different association types on UMLClassDiagram) these nested
-     * actions must be in an array of their own.<p>
-     *
-     * In case of the sequence diagram this method must return the
-     * following actions:<ul>
-     * <li>Action to create an object
-     * <li>Action to add a procedural link
-     * <li>Action to add a create link
-     * <li>Action to add a asynchronous link
-     * <li>Action to add a synchronous link
-     * <li>Action to add a return link
-     * </ul>
-     *
-     * {@inheritDoc}
-     */
-    protected Object[] getUmlActions() {
-        if (actions == null) {
-            actions = new Object[7];
-            actions[0] = new RadioAction(new ActionAddClassifierRole());
-            
-            actions[1] = new RadioAction(new ActionSetAddMessageMode(
-        	    Model.getMetaTypes().getCallAction(),
-        	    "button.new-callaction"));
-            actions[2] = new RadioAction(new ActionSetAddMessageMode(
-        	    Model.getMetaTypes().getReturnAction(),
-        	    "button.new-returnaction"));
-            actions[3] = new RadioAction(new ActionSetAddMessageMode(
-        	    Model.getMetaTypes().getCreateAction(),
-        	    "button.new-createaction"));
-            actions[4] = new RadioAction(new ActionSetAddMessageMode(
-        	    Model.getMetaTypes().getDestroyAction(),
-        	    "button.new-destroyaction"));
+  @Override
+  public boolean isRelocationAllowed(Object base) {
+    return Model.getFacade().isACollaboration(base);
+  }
 
-            Hashtable<String, Object> args = new Hashtable<String, Object>();
+  @SuppressWarnings("unchecked")
+  public Collection getRelocationCandidates(Object root) {
+    return Model.getModelManagementHelper()
+        .getAllModelElementsOfKindWithModel(root, Model.getMetaTypes().getCollaboration());
+  }
 
-            args.put("name", SEQUENCE_EXPAND_BUTTON);
-            actions[5] =
-		new RadioAction(new ActionSetMode(ModeExpand.class,
-					       args,
-					       SEQUENCE_EXPAND_BUTTON));
-            args.clear();
-            args.put("name", SEQUENCE_CONTRACT_BUTTON);
-            actions[6] =
-		new RadioAction(new ActionSetMode(ModeContract.class,
-					       args,
-					       SEQUENCE_CONTRACT_BUTTON));
-        }
-        return actions;
-    }
+  @Override
+  public boolean relocate(Object base) {
+    ((SequenceDiagramGraphModel) getGraphModel()).setCollaboration(base);
+    setNamespace(base);
+    damage();
+    return true;
+  }
 
-
-    @Override
-    public Object getNamespace() {
-        return ((SequenceDiagramGraphModel) getGraphModel()).getCollaboration();
-    }
-
-
-    @Override
-    public void setNamespace(Object ns) {
-        ((SequenceDiagramGraphModel) getGraphModel()).setCollaboration(ns);
-        super.setNamespace(ns);
-    }
-
-    /**
-     * Method called by Project.removeDiagram to clean up the mess in
-     * this diagram when the diagram is removed.
-     */
-    public void cleanUp() {
-/*
-        ProjectManager.getManager().getCurrentProject().moveToTrash(collab);
-*/
-    }
-
-    @Override
-    public boolean isRelocationAllowed(Object base)  {
-    	return Model.getFacade().isACollaboration(base);
-    }
-
-    @SuppressWarnings("unchecked")
-    public Collection getRelocationCandidates(Object root) {
-        return 
-        Model.getModelManagementHelper().getAllModelElementsOfKindWithModel(
-            root, Model.getMetaTypes().getCollaboration());
-    }
-
-    @Override
-    public boolean relocate(Object base) {
-        ((SequenceDiagramGraphModel) getGraphModel())
-	    	.setCollaboration(base);
-        setNamespace(base);
-        damage();
-        return true;
-    }
-
-    public void encloserChanged(FigNode enclosed, 
-            FigNode oldEncloser, FigNode newEncloser) {
-        // Do nothing.        
-    }
-
+  public void encloserChanged(FigNode enclosed, FigNode oldEncloser, FigNode newEncloser) {
+    // Do nothing.
+  }
 }

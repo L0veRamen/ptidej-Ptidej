@@ -26,7 +26,6 @@ package org.argouml.uml.cognitive.critics;
 
 import java.util.Collection;
 import java.util.Iterator;
-
 import org.argouml.cognitive.Designer;
 import org.argouml.cognitive.ListSet;
 import org.argouml.cognitive.ToDoItem;
@@ -37,135 +36,125 @@ import org.argouml.uml.diagram.deployment.ui.UMLDeploymentDiagram;
 import org.argouml.uml.diagram.ui.FigDependency;
 
 /**
- * A critic to detect when in a deployment-diagram the supplier or the
- * client of a dependency is a mobject and inside a figComponent and
- * the other end is a mobject and inside a figComponentInstance
+ * A critic to detect when in a deployment-diagram the supplier or the client of a dependency is a
+ * mobject and inside a figComponent and the other end is a mobject and inside a
+ * figComponentInstance
  *
  * @author 5eichler
  */
 public class CrWrongDepEnds extends CrUML {
 
-    /**
-     * The constructor.
-     */
-    public CrWrongDepEnds() {
-        setupHeadAndDesc();
-	addSupportedDecision(UMLDecision.PATTERNS);
-    }
+  /** The constructor. */
+  public CrWrongDepEnds() {
+    setupHeadAndDesc();
+    addSupportedDecision(UMLDecision.PATTERNS);
+  }
 
-    /**
-     * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
-     * java.lang.Object, org.argouml.cognitive.Designer)
-     */
-    public boolean predicate2(Object dm, Designer dsgr) {
-	if (!(dm instanceof UMLDeploymentDiagram)) return NO_PROBLEM;
-	UMLDeploymentDiagram dd = (UMLDeploymentDiagram) dm;
-	ListSet offs = computeOffenders(dd);
-	if (offs == null) return NO_PROBLEM;
-	return PROBLEM_FOUND;
-    }
+  /**
+   * @see org.argouml.uml.cognitive.critics.CrUML#predicate2( java.lang.Object,
+   *     org.argouml.cognitive.Designer)
+   */
+  public boolean predicate2(Object dm, Designer dsgr) {
+    if (!(dm instanceof UMLDeploymentDiagram)) return NO_PROBLEM;
+    UMLDeploymentDiagram dd = (UMLDeploymentDiagram) dm;
+    ListSet offs = computeOffenders(dd);
+    if (offs == null) return NO_PROBLEM;
+    return PROBLEM_FOUND;
+  }
 
-    /**
-     * @see org.argouml.cognitive.critics.Critic#toDoItem(
-     * java.lang.Object, org.argouml.cognitive.Designer)
-     */
-    public ToDoItem toDoItem(Object dm, Designer dsgr) {
-	UMLDeploymentDiagram dd = (UMLDeploymentDiagram) dm;
-	ListSet offs = computeOffenders(dd);
-	return new UMLToDoItem(this, offs, dsgr);
-    }
+  /**
+   * @see org.argouml.cognitive.critics.Critic#toDoItem( java.lang.Object,
+   *     org.argouml.cognitive.Designer)
+   */
+  public ToDoItem toDoItem(Object dm, Designer dsgr) {
+    UMLDeploymentDiagram dd = (UMLDeploymentDiagram) dm;
+    ListSet offs = computeOffenders(dd);
+    return new UMLToDoItem(this, offs, dsgr);
+  }
 
-    /**
-     * @see org.argouml.cognitive.Poster#stillValid(
-     * org.argouml.cognitive.ToDoItem, org.argouml.cognitive.Designer)
-     */
-    public boolean stillValid(ToDoItem i, Designer dsgr) {
-	if (!isActive()) return false;
-	ListSet offs = i.getOffenders();
-	UMLDeploymentDiagram dd = (UMLDeploymentDiagram) offs.firstElement();
-	//if (!predicate(dm, dsgr)) return false;
-	ListSet newOffs = computeOffenders(dd);
-	boolean res = offs.equals(newOffs);
-	return res;
-    }
+  /**
+   * @see org.argouml.cognitive.Poster#stillValid( org.argouml.cognitive.ToDoItem,
+   *     org.argouml.cognitive.Designer)
+   */
+  public boolean stillValid(ToDoItem i, Designer dsgr) {
+    if (!isActive()) return false;
+    ListSet offs = i.getOffenders();
+    UMLDeploymentDiagram dd = (UMLDeploymentDiagram) offs.firstElement();
+    // if (!predicate(dm, dsgr)) return false;
+    ListSet newOffs = computeOffenders(dd);
+    boolean res = offs.equals(newOffs);
+    return res;
+  }
 
-    /**
-     * If there are deps that are going from inside a FigComponent to
-     * inside a FigComponentInstance the returned vector-set is not
-     * null.  Then in the vector-set are the UMLDeploymentDiagram and
-     * all FigDependencies with this characteristic and their
-     * FigObjects described over the supplier and client.
-     *
-     * @param dd the diagram to check
-     * @return the set of offenders
-     */
-    public ListSet computeOffenders(UMLDeploymentDiagram dd) {
-	Collection figs = dd.getLayer().getContents();
-	ListSet offs = null;
-	int size = figs.size();
-        Iterator figIter = figs.iterator();
-	while (figIter.hasNext()) {
-	    Object obj = figIter.next();
-	    if (!(obj instanceof FigDependency)) {
-                continue;
+  /**
+   * If there are deps that are going from inside a FigComponent to inside a FigComponentInstance
+   * the returned vector-set is not null. Then in the vector-set are the UMLDeploymentDiagram and
+   * all FigDependencies with this characteristic and their FigObjects described over the supplier
+   * and client.
+   *
+   * @param dd the diagram to check
+   * @return the set of offenders
+   */
+  public ListSet computeOffenders(UMLDeploymentDiagram dd) {
+    Collection figs = dd.getLayer().getContents();
+    ListSet offs = null;
+    int size = figs.size();
+    Iterator figIter = figs.iterator();
+    while (figIter.hasNext()) {
+      Object obj = figIter.next();
+      if (!(obj instanceof FigDependency)) {
+        continue;
+      }
+      FigDependency figDependency = (FigDependency) obj;
+      if (!(Model.getFacade().isADependency(figDependency.getOwner()))) {
+        continue;
+      }
+      Object dependency = figDependency.getOwner();
+      Collection suppliers = Model.getFacade().getSuppliers(dependency);
+      int count = 0;
+      if (suppliers != null && (suppliers.size() > 0)) {
+        Iterator it = suppliers.iterator();
+        while (it.hasNext()) {
+          Object moe = /*(MModelElement)*/ it.next();
+          if (Model.getFacade().isAObject(moe)) {
+            Object objSup = /*(MObject)*/ moe;
+            if (Model.getFacade().getElementResidences(objSup) != null
+                && (Model.getFacade().getElementResidences(objSup).size() > 0)) {
+              count += 2;
             }
-	    FigDependency figDependency = (FigDependency) obj;
-	    if (!(Model.getFacade().isADependency(figDependency.getOwner()))) {
-                continue;
+            if (Model.getFacade().getComponentInstance(objSup) != null) {
+              count++;
             }
-	    Object dependency = figDependency.getOwner();
-	    Collection suppliers = Model.getFacade().getSuppliers(dependency);
-	    int count = 0;
-	    if (suppliers != null && (suppliers.size() > 0)) {
-		Iterator it = suppliers.iterator();
-		while (it.hasNext()) {
-		    Object moe = /*(MModelElement)*/ it.next();
-		    if (Model.getFacade().isAObject(moe)) {
-			Object objSup = /*(MObject)*/ moe;
-			if (Model.getFacade().getElementResidences(objSup) 
-			        != null
-			    && (Model.getFacade().getElementResidences(objSup)
-			            .size() > 0)) {
-			    count += 2;
-                        }
-			if (Model.getFacade().getComponentInstance(objSup) 
-			        != null) {
-			    count++;
-                        }
-		    }
-		}
-	    }
-	    Collection clients = Model.getFacade().getClients(dependency);
-	    if (clients != null && (clients.size() > 0)) {
-		Iterator it = clients.iterator();
-		while (it.hasNext()) {
-		    Object moe = /*(MModelElement)*/ it.next();
-		    if (Model.getFacade().isAObject(moe)) {
-			Object objCli = /*(MObject)*/ moe;
-			if (Model.getFacade().getElementResidences(objCli) 
-			        != null
-			    && (Model.getFacade().getElementResidences(objCli)
-			            .size() > 0)) {
-			    count += 2;
-                        }
-			if (Model.getFacade().getComponentInstance(objCli) 
-			        != null) {
-			    count++;
-                        }
-		    }
-		}
-	    }
-	    if (count == 3) {
-		if (offs == null) {
-		    offs = new ListSet();
-		    offs.addElement(dd);
-		}
-		offs.addElement(figDependency);
-		offs.addElement(figDependency.getSourcePortFig());
-		offs.addElement(figDependency.getDestPortFig());
-	    }
-	}
-	return offs;
+          }
+        }
+      }
+      Collection clients = Model.getFacade().getClients(dependency);
+      if (clients != null && (clients.size() > 0)) {
+        Iterator it = clients.iterator();
+        while (it.hasNext()) {
+          Object moe = /*(MModelElement)*/ it.next();
+          if (Model.getFacade().isAObject(moe)) {
+            Object objCli = /*(MObject)*/ moe;
+            if (Model.getFacade().getElementResidences(objCli) != null
+                && (Model.getFacade().getElementResidences(objCli).size() > 0)) {
+              count += 2;
+            }
+            if (Model.getFacade().getComponentInstance(objCli) != null) {
+              count++;
+            }
+          }
+        }
+      }
+      if (count == 3) {
+        if (offs == null) {
+          offs = new ListSet();
+          offs.addElement(dd);
+        }
+        offs.addElement(figDependency);
+        offs.addElement(figDependency.getSourcePortFig());
+        offs.addElement(figDependency.getDestPortFig());
+      }
     }
-
+    return offs;
+  }
 } /* end class CrWrongDepEnds.java */

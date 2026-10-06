@@ -94,581 +94,572 @@ import org.eclipse.uml2.uml.Usage;
 import org.eclipse.uml2.uml.UseCase;
 import org.eclipse.uml2.uml.VisibilityKind;
 
-
-
-/**
- * The implementation of the MetaTypes for EUML2.
- */
+/** The implementation of the MetaTypes for EUML2. */
 final class MetaTypesEUMLImpl implements MetaTypes {
 
-    /**
-     * The model implementation.
-     */
-    private EUMLModelImplementation modelImpl;
-
-    /**
-     * Constructor.
-     * 
-     * @param implementation
-     *            The ModelImplementation.
-     */
-    public MetaTypesEUMLImpl(EUMLModelImplementation implementation) {
-        modelImpl = implementation;
-    }
-
-    public Object getAbstraction() {
-        return Abstraction.class;
-    }
-
-    public Object getAction() {
-        return Action.class;
-    }
-
-    public Object getActionExpression() {
-        // TODO: Auto-generated method stub
-        throw new NotYetImplementedException();
-    }
-
-    public Object getActionState() {
-        // TODO: ActionState, CallState, and SubactivityState have been
-        // replaced in UML 2.0 by explicitly modeled Actions
-        return State.class;
-    }
-    
-//    public Object getActivityGraph() {
-//        return ActivityGraph.class;
-//    }
-
-    public Object getActor() {
-        return Actor.class;
-    }
-
-    public Object getAggregationKind() {
-        return AggregationKind.class;
-    }
-    
-    public Object getArtifact() {
-        return Artifact.class;
-    }
-
-    public Object getAssociation() {
-        return Association.class;
-    }
-
-    public Object getAssociationClass() {
-        return AssociationClass.class;
-    }
-
-    public Object getAssociationEnd() {
-        // an AssociationEnd is now a Property owned by an Association
-        return Property.class;
-    }
-
-    public Object getAssociationEndRole() {
-        // TODO: In UML 2.0, ClassifierRole, AssociationRole, and
-        // AssociationEndRole have been replaced by the internal 
-        // structure of the Collaboration
-        return Classifier.class;
-    }
-
-    public Object getAssociationRole() {
-        // TODO: In UML 2.0, ClassifierRole, AssociationRole, and
-        // AssociationEndRole have been replaced by the internal 
-        // structure of the Collaboration
-        return Classifier.class;
-    }
-
-    public Object getAttribute() {
-        return Property.class;
-    }
-
-    public Object getBehavioralFeature() {
-        return BehavioralFeature.class;
-    }
-    
-    public Object getBinding() {
-        return TemplateBinding.class;
-    }
-
-    public Object getBooleanExpression() {
-        // TODO: Auto-generated method stub
-        throw new NotYetImplementedException();
-    }
-
-    public Object getCallAction() {
-        return CallAction.class;
-    }
-
-    public Object getCallConcurrencyKind() {
-        return CallConcurrencyKind.class;
-    }
-
-    public Object getCallState() {
-        // TODO: ActionState, CallState, and SubactivityState have been replaced
-        // in UML 2.0 by explicitly modeled Actions
-        return State.class;
-    }
-
-    public Object getClassifier() {
-        return Classifier.class;
-    }
-
-    public Object getClassifierRole() {
-        // TODO: In UML 2.0, ClassifierRole, AssociationRole, and
-        // AssociationEndRole have been replaced by the internal 
-        // structure of the Collaboration
-        return Classifier.class;
-    }
-
-    public Object getCollaboration() {
-        return Collaboration.class;
-    }
-
-    public Object getComment() {
-        return Comment.class;
-    }
-
-    public Object getComponent() {
-        return Component.class;
-    }
-
-    public Object getComponentInstance() {
-        // TODO: Gone in UML 2.x
-        // return place holder for now
-        return InstanceSpecification.class;
-    }
-
-    public Object getCompositeState() {
-        // TODO: no separate CompositeState in UML 2.1 - tfm
-        return State.class;
-    }
-    
-    public Object getConstraint() {
-        return Constraint.class;
-    }
-
-    public Object getCreateAction() {
-        // TODO: Auto-generated method stub
-        throw new NotYetImplementedException();
-    }
-
-    public Object getDataType() {
-        return DataType.class;
-    }
-
-    public Object getDependency() {
-        return Dependency.class;
-    }
-
-    public Object getDestroyAction() {
-        // TODO: Auto-generated method stub
-        throw new NotYetImplementedException();
-    }
-    
-    public Object getElementImport() {
-        return ElementImport.class;
-    }
-
-    public Object getEnumeration() {
-        return Enumeration.class;
-    }
-
-    public Object getEnumerationLiteral() {
-        return EnumerationLiteral.class;
-    }
-
-    public Object getEvent() {
-        // TODO: Auto-generated method stub
-        throw new NotYetImplementedException();
-    }
-
-    public Object getException() {
-        // TODO: Exception has been removed for UML 2.x
-        // just return Signal for now - tfm
-        return Signal.class;
-    }
-
-    public Object getExtend() {
-        return Extend.class;
-    }
-
-    public Object getExtensionPoint() {
-        return ExtensionPoint.class;
-    }
-    
-    public Object getFinalState() {
-        return FinalState.class;
-    }
-
-    public Object getGeneralizableElement() {
-        // Gone in UML 2.x - just Classifier now
-        return Classifier.class;
-    }
-
-    public Object getGeneralization() {
-        return Generalization.class;
-    }
-
-    public Object getGuard() {
-        // TODO: Not really the same thing, but close
-        return InteractionConstraint.class;
-    }
-
-    public Object getInclude() {
-        return Include.class;
-    }
-
-    public Object getInstance() {
-        // TODO: Check for changed semantics - tfm
-        return InstanceSpecification.class;
-    }
-
-    public Object getInteraction() {
-        return Interaction.class;
-    }
-
-    public Object getInterface() {
-        return Interface.class;
-    }
-
-    public Object getLink() {
-        // TODO: Gone in UML 2.1
-        // It is now an InstanceSpecification with an 
-        // Association as its classifier
-        return InstanceSpecification.class;
-    }
-
-    public Object getMessage() {
-        return Message.class;
-    }
-
-    public Object getModel() {
-        return Model.class;
-    }
-
-    public Object getModelElement() {
-        return Element.class;
-    }
-
-    public Object getMultiplicity() {
-        return MultiplicityElement.class;
-    }
-
-    public String getName(Object element) {
-        Class clazz;
-        if (element instanceof Class) {
-            clazz = (Class) element;
-        } else {
-            clazz = element.getClass();
-        }
-        String name = clazz.getName();
-
-        // The name of the meta type is the class name (after the last .)
-        // and before the next $ or end of class name.
-        int startName = name.lastIndexOf('.') + 1;
-
-        // Eclipse UML2 implementation classes end with "Impl"
-        final String suffix = "Impl"; //$NON-NLS-1$
-        int endName = name.length();
-        if (name.endsWith(suffix)) {
-            endName -= suffix.length();
-        }
-
-        return name.substring(startName, endName);
-    }
-
-    public Object getNamespace() {
-        return Namespace.class;
-    }
-
-    public Object getNode() {
-        return Node.class;
-    }
-
-    public Object getNodeInstance() {
-        // TODO: Gone in UML 2.x
-        // Return place holder for now
-        return InstanceSpecification.class;
-    }
-
-    public Object getObject() {
-        throw new NotImplementedException();
-        // TODO: what to use: InstanceSpecification, ObjectNode, etc?
-//        return org.eclipse.uml2.uml.ObjectNode.class;
-    }
-
-    public Object getObjectFlowState() {
-        // TODO: not in UML 2.1
-        return ObjectNode.class;
-    }
-
-    public Object getOperation() {
-        return Operation.class;
-    }
-
-    public Object getPackage() {
-        return org.eclipse.uml2.uml.Package.class;
-    }
-
-    public Object getParameter() {
-        return Parameter.class;
-    }
-
-    public Object getParameterDirectionKind() {
-        return ParameterDirectionKind.class;
-    }
-
-    public Object getPartition() {
-        return ActivityPartition.class;
-    }
-
-    public Object getPackageImport() {
-        return PackageImport.class;
-    }
-    
-    public Object getPseudostate() {
-        return Pseudostate.class;
-    }
-
-    public Object getPseudostateKind() {
-        return PseudostateKind.class;
-    }
-
-    public Object getReception() {
-        return Reception.class;
-    }
-
-    public Object getReturnAction() {
-        // TODO: Auto-generated method stub
-        throw new NotYetImplementedException();
-    }
-
-    public Object getScopeKind() {
-        // Not in UML 2.x - deprecated in Model API
-        throw new NotImplementedException();
-    }
-
-    public Object getSendAction() {
-        // TODO: Auto-generated method stub
-        throw new NotYetImplementedException();
-    }
-
-    public Object getSignal() {
-        return Signal.class;
-    }
-
-    public Object getSimpleState() {
-        // TODO: Gone in UML 2.1
-        return State.class;
-    }
-
-    public Object getState() {
-        return State.class;
-    }
-
-    public Object getStateMachine() {
-        return StateMachine.class;
-    }
-
-    public Object getStateVertex() {
-        // TODO: State & Vertex are independent classes in UML 2.1
-        return State.class;
-    }
-
-    public Object getStereotype() {
-        return Stereotype.class;
-    }
-
-    public Object getStimulus() {
-        // TODO: Auto-generated method stub
-        throw new NotYetImplementedException();
-    }
-
-    public Object getStubState() {
-        // TODO: gone in UML 2.1
-        return State.class;
-    }
-
-    public Object getSubactivityState() {
-        // TODO: ActionState, CallState, and SubactivityState have been replaced
-        // in UML 2.0 by explicitly modeled Actions
-        return State.class;
-    }
-
-    public Object getSubmachineState() {
-        // TODO: gone in UML 2.1
-        return State.class;
-    }
-
-    public Object getSubsystem() {
-        // Changed in UML 2.1 - Component with <<subsystem>> stereotype
-        // TODO: We should deprecate this?
-        return Component.class;
-    }
-
-    public Object getSynchState() {
-        // TODO: no separate SyncState in UML 2.1 - tfm
-        return State.class;
-    }
-
-    public Object getTagDefinition() {
-        // TODO: In UML 2.x a TagDefinition has become a Property on a Stereotype
-        // Anything that uses this will probably need to be reviewed/changed.
-        // Just return Property for now.
-        return Property.class;
-    }
-
-    public Object getTaggedValue() {
-        throw new NotYetImplementedException();
-    }
-    
-    public Object getTemplateArgument() {
-        // TODO: Check that this is correct
-        return TemplateParameterSubstitution.class;
-    }
-
-    public Object getTemplateParameter() {
-        return TemplateParameter.class;
-    }
-    
-    public Object getTerminateAction() {
-        // TODO: Auto-generated method stub
-        throw new NotYetImplementedException();
-    }
-
-    public Object getTransition() {
-        return Transition.class;
-    }
-
-    public Object getUMLClass() {
-        return org.eclipse.uml2.uml.Class.class;
-    }
-
-    public Object getUsage() {
-        return Usage.class;
-    }
-
-    public Object getUseCase() {
-        return UseCase.class;
-    }
-
-    public Object getVisibilityKind() {
-        return VisibilityKind.class;
-    }
-
-    
-    public Object getActionSequence() {
-        // TODO: Need UML 2.x equivalent
-        return null /*ActionSequence.class*/;
-    }
-
-    public Object getArgument() {
-        // TODO: Need UML 2.x equivalent
-        return null /*Argument.class*/;
-    }
-
-    public Object getAttributeLink() {
-        // TODO: Need UML 2.x equivalent
-        return null /*AttributeLink.class*/;
-    }
-
-    public Object getCallEvent() {
-        return CallEvent.class;
-    }
-
-    public Object getChangeEvent() {
-        return ChangeEvent.class;
-    }
-
-    public Object getClassifierInState() {
-        // TODO: Need UML 2.x equivalent
-        return null /*ClassifierInState.class*/;
-    }
-
-    public Object getCollaborationInstanceSet() {
-        // TODO: Need UML 2.x equivalent
-        return null /*CollaborationInstanceSet.class*/;
-    }
-
-    public Object getDataValue() {
-        // TODO: Need UML 2.x equivalent
-        return null /*DataValue.class*/;
-    }
-
-    public Object getElement() {
-        return Element.class;
-    }
-
-    public Object getElementResidence() {
-        // TODO: Need UML 2.x equivalent
-        return null /*ElementResidence.class*/;
-    }
-
-    public Object getExpression() {
-        return Expression.class;
-    }
-
-    public Object getFeature() {
-        return Feature.class;
-    }
-
-    public Object getFlow() {
-        // TODO: Need UML 2.x equivalent
-        return null /*Flow.class*/;
-    }
-
-    public Object getInteractionInstanceSet() {
-        // TODO: Need UML 2.x equivalent
-        return null /*InteractionInstanceSet.class*/;
-    }
-
-    public Object getLinkEnd() {
-        // TODO: Need UML 2.x equivalent
-        return null /*LinkEnd.class*/;
-    }
-
-    public Object getLinkObject() {
-        // TODO: Need UML 2.x equivalent
-        return null /*LinkObject.class*/;
-    }
-
-    public Object getMethod() {
-        // TODO: Need UML 2.x equivalent
-        return null /*Method.class*/;
-    }
-
-    public Object getMultiplicityRange() {
-        return MultiplicityElement.class;
-    }
-
-    public Object getPrimitiveType() {
-        return PrimitiveType.class;
-    }
-
-    public Object getRelationship() {
-        return Relationship.class;
-    }
-
-    public Object getSignalEvent() {
-        return SignalEvent.class;
-    }
-
-    public Object getStructuralFeature() {
-        return StructuralFeature.class;
-    }
-
-    public Object getSubsystemInstance() {
-        // TODO: Need UML 2.x equivalent
-        return null /*SubsystemInstance.class*/;
-    }
-
-    public Object getTimeEvent() {
-        return TimeEvent.class;
-    }
-
-    public Object getUninterpretedAction() {
-        // TODO: Need UML 2.x equivalent
-        return null /*UninterpretedAction.class*/;
-    }
-
+  /** The model implementation. */
+  private EUMLModelImplementation modelImpl;
+
+  /**
+   * Constructor.
+   *
+   * @param implementation The ModelImplementation.
+   */
+  public MetaTypesEUMLImpl(EUMLModelImplementation implementation) {
+    modelImpl = implementation;
+  }
+
+  public Object getAbstraction() {
+    return Abstraction.class;
+  }
+
+  public Object getAction() {
+    return Action.class;
+  }
+
+  public Object getActionExpression() {
+    // TODO: Auto-generated method stub
+    throw new NotYetImplementedException();
+  }
+
+  public Object getActionState() {
+    // TODO: ActionState, CallState, and SubactivityState have been
+    // replaced in UML 2.0 by explicitly modeled Actions
+    return State.class;
+  }
+
+  //    public Object getActivityGraph() {
+  //        return ActivityGraph.class;
+  //    }
+
+  public Object getActor() {
+    return Actor.class;
+  }
+
+  public Object getAggregationKind() {
+    return AggregationKind.class;
+  }
+
+  public Object getArtifact() {
+    return Artifact.class;
+  }
+
+  public Object getAssociation() {
+    return Association.class;
+  }
+
+  public Object getAssociationClass() {
+    return AssociationClass.class;
+  }
+
+  public Object getAssociationEnd() {
+    // an AssociationEnd is now a Property owned by an Association
+    return Property.class;
+  }
+
+  public Object getAssociationEndRole() {
+    // TODO: In UML 2.0, ClassifierRole, AssociationRole, and
+    // AssociationEndRole have been replaced by the internal
+    // structure of the Collaboration
+    return Classifier.class;
+  }
+
+  public Object getAssociationRole() {
+    // TODO: In UML 2.0, ClassifierRole, AssociationRole, and
+    // AssociationEndRole have been replaced by the internal
+    // structure of the Collaboration
+    return Classifier.class;
+  }
+
+  public Object getAttribute() {
+    return Property.class;
+  }
+
+  public Object getBehavioralFeature() {
+    return BehavioralFeature.class;
+  }
+
+  public Object getBinding() {
+    return TemplateBinding.class;
+  }
+
+  public Object getBooleanExpression() {
+    // TODO: Auto-generated method stub
+    throw new NotYetImplementedException();
+  }
+
+  public Object getCallAction() {
+    return CallAction.class;
+  }
+
+  public Object getCallConcurrencyKind() {
+    return CallConcurrencyKind.class;
+  }
+
+  public Object getCallState() {
+    // TODO: ActionState, CallState, and SubactivityState have been replaced
+    // in UML 2.0 by explicitly modeled Actions
+    return State.class;
+  }
+
+  public Object getClassifier() {
+    return Classifier.class;
+  }
+
+  public Object getClassifierRole() {
+    // TODO: In UML 2.0, ClassifierRole, AssociationRole, and
+    // AssociationEndRole have been replaced by the internal
+    // structure of the Collaboration
+    return Classifier.class;
+  }
+
+  public Object getCollaboration() {
+    return Collaboration.class;
+  }
+
+  public Object getComment() {
+    return Comment.class;
+  }
+
+  public Object getComponent() {
+    return Component.class;
+  }
+
+  public Object getComponentInstance() {
+    // TODO: Gone in UML 2.x
+    // return place holder for now
+    return InstanceSpecification.class;
+  }
+
+  public Object getCompositeState() {
+    // TODO: no separate CompositeState in UML 2.1 - tfm
+    return State.class;
+  }
+
+  public Object getConstraint() {
+    return Constraint.class;
+  }
+
+  public Object getCreateAction() {
+    // TODO: Auto-generated method stub
+    throw new NotYetImplementedException();
+  }
+
+  public Object getDataType() {
+    return DataType.class;
+  }
+
+  public Object getDependency() {
+    return Dependency.class;
+  }
+
+  public Object getDestroyAction() {
+    // TODO: Auto-generated method stub
+    throw new NotYetImplementedException();
+  }
+
+  public Object getElementImport() {
+    return ElementImport.class;
+  }
+
+  public Object getEnumeration() {
+    return Enumeration.class;
+  }
+
+  public Object getEnumerationLiteral() {
+    return EnumerationLiteral.class;
+  }
+
+  public Object getEvent() {
+    // TODO: Auto-generated method stub
+    throw new NotYetImplementedException();
+  }
+
+  public Object getException() {
+    // TODO: Exception has been removed for UML 2.x
+    // just return Signal for now - tfm
+    return Signal.class;
+  }
+
+  public Object getExtend() {
+    return Extend.class;
+  }
+
+  public Object getExtensionPoint() {
+    return ExtensionPoint.class;
+  }
+
+  public Object getFinalState() {
+    return FinalState.class;
+  }
+
+  public Object getGeneralizableElement() {
+    // Gone in UML 2.x - just Classifier now
+    return Classifier.class;
+  }
+
+  public Object getGeneralization() {
+    return Generalization.class;
+  }
+
+  public Object getGuard() {
+    // TODO: Not really the same thing, but close
+    return InteractionConstraint.class;
+  }
+
+  public Object getInclude() {
+    return Include.class;
+  }
+
+  public Object getInstance() {
+    // TODO: Check for changed semantics - tfm
+    return InstanceSpecification.class;
+  }
+
+  public Object getInteraction() {
+    return Interaction.class;
+  }
+
+  public Object getInterface() {
+    return Interface.class;
+  }
+
+  public Object getLink() {
+    // TODO: Gone in UML 2.1
+    // It is now an InstanceSpecification with an
+    // Association as its classifier
+    return InstanceSpecification.class;
+  }
+
+  public Object getMessage() {
+    return Message.class;
+  }
+
+  public Object getModel() {
+    return Model.class;
+  }
+
+  public Object getModelElement() {
+    return Element.class;
+  }
+
+  public Object getMultiplicity() {
+    return MultiplicityElement.class;
+  }
+
+  public String getName(Object element) {
+    Class clazz;
+    if (element instanceof Class) {
+      clazz = (Class) element;
+    } else {
+      clazz = element.getClass();
+    }
+    String name = clazz.getName();
+
+    // The name of the meta type is the class name (after the last .)
+    // and before the next $ or end of class name.
+    int startName = name.lastIndexOf('.') + 1;
+
+    // Eclipse UML2 implementation classes end with "Impl"
+    final String suffix = "Impl"; // $NON-NLS-1$
+    int endName = name.length();
+    if (name.endsWith(suffix)) {
+      endName -= suffix.length();
+    }
+
+    return name.substring(startName, endName);
+  }
+
+  public Object getNamespace() {
+    return Namespace.class;
+  }
+
+  public Object getNode() {
+    return Node.class;
+  }
+
+  public Object getNodeInstance() {
+    // TODO: Gone in UML 2.x
+    // Return place holder for now
+    return InstanceSpecification.class;
+  }
+
+  public Object getObject() {
+    throw new NotImplementedException();
+    // TODO: what to use: InstanceSpecification, ObjectNode, etc?
+    //        return org.eclipse.uml2.uml.ObjectNode.class;
+  }
+
+  public Object getObjectFlowState() {
+    // TODO: not in UML 2.1
+    return ObjectNode.class;
+  }
+
+  public Object getOperation() {
+    return Operation.class;
+  }
+
+  public Object getPackage() {
+    return org.eclipse.uml2.uml.Package.class;
+  }
+
+  public Object getParameter() {
+    return Parameter.class;
+  }
+
+  public Object getParameterDirectionKind() {
+    return ParameterDirectionKind.class;
+  }
+
+  public Object getPartition() {
+    return ActivityPartition.class;
+  }
+
+  public Object getPackageImport() {
+    return PackageImport.class;
+  }
+
+  public Object getPseudostate() {
+    return Pseudostate.class;
+  }
+
+  public Object getPseudostateKind() {
+    return PseudostateKind.class;
+  }
+
+  public Object getReception() {
+    return Reception.class;
+  }
+
+  public Object getReturnAction() {
+    // TODO: Auto-generated method stub
+    throw new NotYetImplementedException();
+  }
+
+  public Object getScopeKind() {
+    // Not in UML 2.x - deprecated in Model API
+    throw new NotImplementedException();
+  }
+
+  public Object getSendAction() {
+    // TODO: Auto-generated method stub
+    throw new NotYetImplementedException();
+  }
+
+  public Object getSignal() {
+    return Signal.class;
+  }
+
+  public Object getSimpleState() {
+    // TODO: Gone in UML 2.1
+    return State.class;
+  }
+
+  public Object getState() {
+    return State.class;
+  }
+
+  public Object getStateMachine() {
+    return StateMachine.class;
+  }
+
+  public Object getStateVertex() {
+    // TODO: State & Vertex are independent classes in UML 2.1
+    return State.class;
+  }
+
+  public Object getStereotype() {
+    return Stereotype.class;
+  }
+
+  public Object getStimulus() {
+    // TODO: Auto-generated method stub
+    throw new NotYetImplementedException();
+  }
+
+  public Object getStubState() {
+    // TODO: gone in UML 2.1
+    return State.class;
+  }
+
+  public Object getSubactivityState() {
+    // TODO: ActionState, CallState, and SubactivityState have been replaced
+    // in UML 2.0 by explicitly modeled Actions
+    return State.class;
+  }
+
+  public Object getSubmachineState() {
+    // TODO: gone in UML 2.1
+    return State.class;
+  }
+
+  public Object getSubsystem() {
+    // Changed in UML 2.1 - Component with <<subsystem>> stereotype
+    // TODO: We should deprecate this?
+    return Component.class;
+  }
+
+  public Object getSynchState() {
+    // TODO: no separate SyncState in UML 2.1 - tfm
+    return State.class;
+  }
+
+  public Object getTagDefinition() {
+    // TODO: In UML 2.x a TagDefinition has become a Property on a Stereotype
+    // Anything that uses this will probably need to be reviewed/changed.
+    // Just return Property for now.
+    return Property.class;
+  }
+
+  public Object getTaggedValue() {
+    throw new NotYetImplementedException();
+  }
+
+  public Object getTemplateArgument() {
+    // TODO: Check that this is correct
+    return TemplateParameterSubstitution.class;
+  }
+
+  public Object getTemplateParameter() {
+    return TemplateParameter.class;
+  }
+
+  public Object getTerminateAction() {
+    // TODO: Auto-generated method stub
+    throw new NotYetImplementedException();
+  }
+
+  public Object getTransition() {
+    return Transition.class;
+  }
+
+  public Object getUMLClass() {
+    return org.eclipse.uml2.uml.Class.class;
+  }
+
+  public Object getUsage() {
+    return Usage.class;
+  }
+
+  public Object getUseCase() {
+    return UseCase.class;
+  }
+
+  public Object getVisibilityKind() {
+    return VisibilityKind.class;
+  }
+
+  public Object getActionSequence() {
+    // TODO: Need UML 2.x equivalent
+    return null /*ActionSequence.class*/;
+  }
+
+  public Object getArgument() {
+    // TODO: Need UML 2.x equivalent
+    return null /*Argument.class*/;
+  }
+
+  public Object getAttributeLink() {
+    // TODO: Need UML 2.x equivalent
+    return null /*AttributeLink.class*/;
+  }
+
+  public Object getCallEvent() {
+    return CallEvent.class;
+  }
+
+  public Object getChangeEvent() {
+    return ChangeEvent.class;
+  }
+
+  public Object getClassifierInState() {
+    // TODO: Need UML 2.x equivalent
+    return null /*ClassifierInState.class*/;
+  }
+
+  public Object getCollaborationInstanceSet() {
+    // TODO: Need UML 2.x equivalent
+    return null /*CollaborationInstanceSet.class*/;
+  }
+
+  public Object getDataValue() {
+    // TODO: Need UML 2.x equivalent
+    return null /*DataValue.class*/;
+  }
+
+  public Object getElement() {
+    return Element.class;
+  }
+
+  public Object getElementResidence() {
+    // TODO: Need UML 2.x equivalent
+    return null /*ElementResidence.class*/;
+  }
+
+  public Object getExpression() {
+    return Expression.class;
+  }
+
+  public Object getFeature() {
+    return Feature.class;
+  }
+
+  public Object getFlow() {
+    // TODO: Need UML 2.x equivalent
+    return null /*Flow.class*/;
+  }
+
+  public Object getInteractionInstanceSet() {
+    // TODO: Need UML 2.x equivalent
+    return null /*InteractionInstanceSet.class*/;
+  }
+
+  public Object getLinkEnd() {
+    // TODO: Need UML 2.x equivalent
+    return null /*LinkEnd.class*/;
+  }
+
+  public Object getLinkObject() {
+    // TODO: Need UML 2.x equivalent
+    return null /*LinkObject.class*/;
+  }
+
+  public Object getMethod() {
+    // TODO: Need UML 2.x equivalent
+    return null /*Method.class*/;
+  }
+
+  public Object getMultiplicityRange() {
+    return MultiplicityElement.class;
+  }
+
+  public Object getPrimitiveType() {
+    return PrimitiveType.class;
+  }
+
+  public Object getRelationship() {
+    return Relationship.class;
+  }
+
+  public Object getSignalEvent() {
+    return SignalEvent.class;
+  }
+
+  public Object getStructuralFeature() {
+    return StructuralFeature.class;
+  }
+
+  public Object getSubsystemInstance() {
+    // TODO: Need UML 2.x equivalent
+    return null /*SubsystemInstance.class*/;
+  }
+
+  public Object getTimeEvent() {
+    return TimeEvent.class;
+  }
+
+  public Object getUninterpretedAction() {
+    // TODO: Need UML 2.x equivalent
+    return null /*UninterpretedAction.class*/;
+  }
 }

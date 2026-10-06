@@ -28,35 +28,29 @@ import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
 /**
- *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 26, 2003
  */
-public class UMLClassifierObjectFlowStateListModel
-    extends UMLModelElementListModel2 {
+public class UMLClassifierObjectFlowStateListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLClassifierObjectFlowStateListModel.
-     */
-    public UMLClassifierObjectFlowStateListModel() {
-        super("objectFlowState");
+  /** Constructor for UMLClassifierObjectFlowStateListModel. */
+  public UMLClassifierObjectFlowStateListModel() {
+    super("objectFlowState");
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (getTarget() != null) {
+      setAllElements(Model.getFacade().getObjectFlowStates(getTarget()));
     }
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (getTarget() != null) {
-            setAllElements(Model.getFacade().getObjectFlowStates(getTarget()));
-        }
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ element) {
-        return Model.getFacade().getObjectFlowStates(getTarget())
-        	.contains(element);
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ element) {
+    return Model.getFacade().getObjectFlowStates(getTarget()).contains(element);
+  }
 }

@@ -31,31 +31,27 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  * @since Oct 12, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class UMLModelElementConstraintListModel
-    extends UMLModelElementListModel2 {
+public class UMLModelElementConstraintListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLModelElementConstraintListModel.
-     */
-    public UMLModelElementConstraintListModel() {
-        super("constraint");
+  /** Constructor for UMLModelElementConstraintListModel. */
+  public UMLModelElementConstraintListModel() {
+    super("constraint");
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (getTarget() != null) {
+      setAllElements(Model.getFacade().getConstraints(getTarget()));
     }
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (getTarget() != null) {
-            setAllElements(Model.getFacade().getConstraints(getTarget()));
-        }
-    }
-
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object o) {
-        return Model.getFacade().isAConstraint(o)
-            && Model.getFacade().getConstraints(getTarget()).contains(o);
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object o) {
+    return Model.getFacade().isAConstraint(o)
+        && Model.getFacade().getConstraints(getTarget()).contains(o);
+  }
 }

@@ -23,6 +23,7 @@
 // UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 package org.argouml.uml.ui;
+
 import org.apache.log4j.Logger;
 import org.argouml.model.Model;
 import org.argouml.ui.targetmanager.TargetManager;
@@ -30,72 +31,59 @@ import org.argouml.uml.diagram.DiagramFactory;
 import org.argouml.uml.diagram.collaboration.ui.UMLCollaborationDiagram;
 import org.argouml.uml.diagram.ui.UMLDiagram;
 
-/** 
- * Action to trigger creation of new collaboration diagram.
- */
+/** Action to trigger creation of new collaboration diagram. */
 public class ActionCollaborationDiagram extends ActionAddDiagram {
 
-    private static final Logger LOG =
-        Logger.getLogger(ActionCollaborationDiagram.class);
+  private static final Logger LOG = Logger.getLogger(ActionCollaborationDiagram.class);
 
-    /**
-     * Constructor.
-     */
-    public ActionCollaborationDiagram() {
-        super("action.collaboration-diagram");
+  /** Constructor. */
+  public ActionCollaborationDiagram() {
+    super("action.collaboration-diagram");
+  }
+
+  /**
+   * @see org.argouml.uml.ui.ActionAddDiagram#createDiagram(Object)
+   */
+  public UMLDiagram createDiagram(Object namespace) {
+    if (!Model.getFacade().isANamespace(namespace)) {
+      LOG.error("No namespace as argument");
+      LOG.error(namespace);
+      throw new IllegalArgumentException("The argument " + namespace + "is not a namespace.");
     }
-
-    /**
-     * @see org.argouml.uml.ui.ActionAddDiagram#createDiagram(Object)
-     */
-    public UMLDiagram createDiagram(Object namespace) {
-        if (!Model.getFacade().isANamespace(namespace)) {
-            LOG.error("No namespace as argument");
-            LOG.error(namespace);
-            throw new IllegalArgumentException(
-                "The argument " + namespace + "is not a namespace.");
-        }
-        Object target = TargetManager.getInstance().getModelTarget();
-        Object collaboration = null;
-        if (Model.getFacade().isAOperation(target)) {
-            collaboration = Model.getCollaborationsFactory()
-                            .buildCollaboration(namespace, target);
-        } else if (Model.getFacade().isAClassifier(target)) {
-            collaboration = Model.getCollaborationsFactory()
-                            .buildCollaboration(namespace, target);
-        }
-        return (UMLDiagram)DiagramFactory.getInstance().createDiagram(
-                UMLCollaborationDiagram.class, 
-                collaboration,
-                null);
+    Object target = TargetManager.getInstance().getModelTarget();
+    Object collaboration = null;
+    if (Model.getFacade().isAOperation(target)) {
+      collaboration = Model.getCollaborationsFactory().buildCollaboration(namespace, target);
+    } else if (Model.getFacade().isAClassifier(target)) {
+      collaboration = Model.getCollaborationsFactory().buildCollaboration(namespace, target);
     }
+    return (UMLDiagram)
+        DiagramFactory.getInstance()
+            .createDiagram(UMLCollaborationDiagram.class, collaboration, null);
+  }
 
-    /**
-     * @see org.argouml.uml.ui.ActionAddDiagram#isValidNamespace(java.lang.Object)
-     */
-    public boolean isValidNamespace(Object handle) {
-        if (!Model.getFacade().isANamespace(handle)) {
-            LOG.error("No namespace as argument");
-            LOG.error(handle);
-            throw new IllegalArgumentException(
-                "The argument " + handle + "is not a namespace.");
-        }
-        return Model.getCollaborationsHelper()
-                                    .isAddingCollaborationAllowed(handle);
+  /**
+   * @see org.argouml.uml.ui.ActionAddDiagram#isValidNamespace(java.lang.Object)
+   */
+  public boolean isValidNamespace(Object handle) {
+    if (!Model.getFacade().isANamespace(handle)) {
+      LOG.error("No namespace as argument");
+      LOG.error(handle);
+      throw new IllegalArgumentException("The argument " + handle + "is not a namespace.");
     }
+    return Model.getCollaborationsHelper().isAddingCollaborationAllowed(handle);
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLAction#shouldBeEnabled()
-     */
-    public boolean shouldBeEnabled() {
-        Object target = TargetManager.getInstance().getModelTarget();
-        if (Model.getFacade().isAOperation(target))
-            return super.shouldBeEnabled()
-                && Model.getCollaborationsHelper()
-                    .isAddingCollaborationAllowed(target);
-        else if (Model.getFacade().isANamespace(target))
-                return super.shouldBeEnabled() && isValidNamespace(target);
-        return false;
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLAction#shouldBeEnabled()
+   */
+  public boolean shouldBeEnabled() {
+    Object target = TargetManager.getInstance().getModelTarget();
+    if (Model.getFacade().isAOperation(target))
+      return super.shouldBeEnabled()
+          && Model.getCollaborationsHelper().isAddingCollaborationAllowed(target);
+    else if (Model.getFacade().isANamespace(target))
+      return super.shouldBeEnabled() && isValidNamespace(target);
+    return false;
+  }
 } /* end class ActionCollaborationDiagram */

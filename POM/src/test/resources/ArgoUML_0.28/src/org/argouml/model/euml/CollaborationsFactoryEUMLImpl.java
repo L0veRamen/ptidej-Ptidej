@@ -30,125 +30,116 @@ import org.argouml.model.AbstractModelFactory;
 import org.argouml.model.CollaborationsFactory;
 import org.eclipse.uml2.uml.UMLFactory;
 
-/**
- * Eclipse UML2 implementation of CollaborationsFactory.
- */
-class CollaborationsFactoryEUMLImpl implements CollaborationsFactory,
-        AbstractModelFactory {
+/** Eclipse UML2 implementation of CollaborationsFactory. */
+class CollaborationsFactoryEUMLImpl implements CollaborationsFactory, AbstractModelFactory {
 
-    /**
-     * The model implementation.
-     */
-    private EUMLModelImplementation modelImpl;
+  /** The model implementation. */
+  private EUMLModelImplementation modelImpl;
 
-    /**
-     * Constructor.
-     *
-     * @param implementation The ModelImplementation.
-     */
-    public CollaborationsFactoryEUMLImpl(EUMLModelImplementation implementation) {
-        modelImpl = implementation;
+  /**
+   * Constructor.
+   *
+   * @param implementation The ModelImplementation.
+   */
+  public CollaborationsFactoryEUMLImpl(EUMLModelImplementation implementation) {
+    modelImpl = implementation;
+  }
+
+  public Object buildActivator(Object owner, Object interaction) {
+    // TODO: Auto-generated method stub
+    return null;
+  }
+
+  public Object buildAssociationEndRole(Object atype) {
+    // TODO: Auto-generated method stub
+    return null;
+  }
+
+  public Object buildAssociationRole(Object from, Object to) {
+    // TODO: Auto-generated method stub
+    return null;
+  }
+
+  @Deprecated
+  public Object buildAssociationRole(
+      Object from, Object agg1, Object to, Object agg2, Boolean unidirectional) {
+    if (unidirectional == null) {
+      return buildAssociationRole(from, agg1, to, agg2, false);
+    } else {
+      return buildAssociationRole(from, agg1, to, agg2, unidirectional.booleanValue());
     }
+  }
 
-    public Object buildActivator(Object owner, Object interaction) {
-        // TODO: Auto-generated method stub
-        return null;
-    }
+  public Object buildAssociationRole(
+      Object from, Object agg1, Object to, Object agg2, boolean unidirectional) {
+    // TODO: Auto-generated method stub
+    return null;
+  }
 
-    public Object buildAssociationEndRole(Object atype) {
-        // TODO: Auto-generated method stub
-        return null;
-    }
+  public Object buildAssociationRole(Object link) {
+    // TODO: Auto-generated method stub
+    return null;
+  }
 
-    public Object buildAssociationRole(Object from, Object to) {
-        // TODO: Auto-generated method stub
-        return null;
-    }
+  public Object buildClassifierRole(Object collaboration) {
+    // TODO: Auto-generated method stub
+    return null;
+  }
 
-    @Deprecated
-    public Object buildAssociationRole(Object from, Object agg1, Object to,
-            Object agg2, Boolean unidirectional) {
-        if (unidirectional == null) {
-            return buildAssociationRole(from, agg1, to, agg2, false);
-        } else {
-            return buildAssociationRole(from, agg1, to, agg2, 
-                    unidirectional.booleanValue());
-        }
-    }
+  public Object buildCollaboration(Object handle) {
+    // TODO: Auto-generated method stub
+    return null;
+  }
 
-    public Object buildAssociationRole(Object from, Object agg1, Object to,
-            Object agg2, boolean unidirectional) {
-        // TODO: Auto-generated method stub
-        return null;
-    }
+  public Object buildCollaboration(Object namespace, Object representedElement) {
+    // TODO: Auto-generated method stub
+    return null;
+  }
 
-    public Object buildAssociationRole(Object link) {
-        // TODO: Auto-generated method stub
-        return null;
-    }
+  public Object buildInteraction(Object handle) {
+    // TODO: Auto-generated method stub
+    return null;
+  }
 
-    public Object buildClassifierRole(Object collaboration) {
-        // TODO: Auto-generated method stub
-        return null;
-    }
+  public Object buildMessage(Object acollab, Object arole) {
+    // TODO: Auto-generated method stub
+    return null;
+  }
 
-    public Object buildCollaboration(Object handle) {
-        // TODO: Auto-generated method stub
-        return null;
-    }
+  public Object createAssociationEndRole() {
+    // TODO: Auto-generated method stub
+    return null;
+  }
 
-    public Object buildCollaboration(Object namespace, 
-            Object representedElement) {
-        // TODO: Auto-generated method stub
-        return null;
-    }
+  public Object createAssociationRole() {
+    // TODO: Auto-generated method stub
+    return null;
+  }
 
-    public Object buildInteraction(Object handle) {
-        // TODO: Auto-generated method stub
-        return null;
-    }
+  public Object createClassifierRole() {
+    // TODO: Auto-generated method stub
+    return null;
+  }
 
-    public Object buildMessage(Object acollab, Object arole) {
-        // TODO: Auto-generated method stub
-        return null;
-    }
+  public Object createCollaboration() {
+    return UMLFactory.eINSTANCE.createCollaboration();
+  }
 
-    public Object createAssociationEndRole() {
-        // TODO: Auto-generated method stub
-        return null;
-    }
+  public Object createCollaborationInstanceSet() {
+    // TODO: Auto-generated method stub
+    return null;
+  }
 
-    public Object createAssociationRole() {
-        // TODO: Auto-generated method stub
-        return null;
-    }
+  public Object createInteraction() {
+    return UMLFactory.eINSTANCE.createInteraction();
+  }
 
-    public Object createClassifierRole() {
-        // TODO: Auto-generated method stub
-        return null;
-    }
+  public Object createInteractionInstanceSet() {
+    // TODO: Auto-generated method stub
+    return null;
+  }
 
-    public Object createCollaboration() {
-        return UMLFactory.eINSTANCE.createCollaboration();
-    }
-
-    public Object createCollaborationInstanceSet() {
-        // TODO: Auto-generated method stub
-        return null;
-    }
-
-    public Object createInteraction() {
-        return UMLFactory.eINSTANCE.createInteraction();
-    }
-
-    public Object createInteractionInstanceSet() {
-        // TODO: Auto-generated method stub
-        return null;
-    }
-
-    public Object createMessage() {
-        return UMLFactory.eINSTANCE.createMessage();
-    }
-
-
+  public Object createMessage() {
+    return UMLFactory.eINSTANCE.createMessage();
+  }
 }

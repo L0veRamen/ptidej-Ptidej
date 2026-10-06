@@ -29,9 +29,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-
 import javax.swing.Action;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.ui.UndoableAction;
@@ -41,7 +39,6 @@ import org.tigris.gef.base.Globals;
 import org.tigris.gef.base.Selection;
 import org.tigris.gef.presentation.Fig;
 
-
 /**
  * This action shows or hides the path in the name.
  *
@@ -49,94 +46,88 @@ import org.tigris.gef.presentation.Fig;
  */
 class ActionSetPath extends UndoableAction {
 
-    private static final UndoableAction SHOW_PATH =
-        new ActionSetPath(false);
-    private static final UndoableAction HIDE_PATH =
-        new ActionSetPath(true);
+  private static final UndoableAction SHOW_PATH = new ActionSetPath(false);
+  private static final UndoableAction HIDE_PATH = new ActionSetPath(true);
 
-    private boolean isPathVisible;
+  private boolean isPathVisible;
 
-    /**
-     * Constructor.
-     *
-     * @param isVisible <tt>true</tt> if the path is visible.
-     */
-    public ActionSetPath(boolean isVisible) {
-        super();
-        isPathVisible = isVisible;
-        String name;
-        if (isVisible) {
-            name = Translator.localize("menu.popup.hide.path");
-        } else {
-            name = Translator.localize("menu.popup.show.path");
-        }
-        putValue(Action.NAME, name);
+  /**
+   * Constructor.
+   *
+   * @param isVisible <tt>true</tt> if the path is visible.
+   */
+  public ActionSetPath(boolean isVisible) {
+    super();
+    isPathVisible = isVisible;
+    String name;
+    if (isVisible) {
+      name = Translator.localize("menu.popup.hide.path");
+    } else {
+      name = Translator.localize("menu.popup.show.path");
     }
-    
-    /**
-     * Static function to return the path show and/or hide actions 
-     * needed for the selected Figs.
-     * 
-     * @return Only returns the actions for the menu-items that make sense for
-     *         the current selection.
-     */
-    public static Collection<UndoableAction> getActions() {
-        Collection<UndoableAction> actions = new ArrayList<UndoableAction>();
-        Editor ce = Globals.curEditor();
-        List<Fig> figs = ce.getSelectionManager().getFigs();
-        for (Fig f : figs) {
-            if (f instanceof PathContainer) {
-                Object owner = f.getOwner();
-                if (Model.getFacade().isAModelElement(owner)) {
-                    Object ns = Model.getFacade().getNamespace(owner);
-                    if (ns != null) {
-                        /* Only show the path item when there is 
-                         * an owning namespace. */
-                        if (((PathContainer) f).isPathVisible()) {
-                            actions.add(HIDE_PATH);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-        for (Fig f : figs) {
-            if (f instanceof PathContainer) {
-                Object owner = f.getOwner();
-                if (Model.getFacade().isAModelElement(owner)) {
-                    Object ns = Model.getFacade().getNamespace(owner);
-                    if (ns != null) {
-                        /* Only show the path item when there is 
-                         * an owning namespace. */
-                        if (!((PathContainer) f).isPathVisible()) {
-                            actions.add(SHOW_PATH);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-        return actions;
-    }
+    putValue(Action.NAME, name);
+  }
 
-    /**
-     * @see org.tigris.gef.undo.UndoableAction#actionPerformed(java.awt.event.ActionEvent)
-     */
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-
-        // enumerate all selected figures and update their path accordingly  
-        Iterator< ? > i =
-            Globals.curEditor().getSelectionManager().selections().iterator();
-        while (i.hasNext()) {
-            Selection sel = (Selection) i.next();
-            Fig f = sel.getContent();
-		        
-            if (f instanceof PathContainer) {
-                ((PathContainer) f).setPathVisible(!isPathVisible);
+  /**
+   * Static function to return the path show and/or hide actions needed for the selected Figs.
+   *
+   * @return Only returns the actions for the menu-items that make sense for the current selection.
+   */
+  public static Collection<UndoableAction> getActions() {
+    Collection<UndoableAction> actions = new ArrayList<UndoableAction>();
+    Editor ce = Globals.curEditor();
+    List<Fig> figs = ce.getSelectionManager().getFigs();
+    for (Fig f : figs) {
+      if (f instanceof PathContainer) {
+        Object owner = f.getOwner();
+        if (Model.getFacade().isAModelElement(owner)) {
+          Object ns = Model.getFacade().getNamespace(owner);
+          if (ns != null) {
+            /* Only show the path item when there is
+             * an owning namespace. */
+            if (((PathContainer) f).isPathVisible()) {
+              actions.add(HIDE_PATH);
+              break;
             }
+          }
         }
+      }
     }
-    
+    for (Fig f : figs) {
+      if (f instanceof PathContainer) {
+        Object owner = f.getOwner();
+        if (Model.getFacade().isAModelElement(owner)) {
+          Object ns = Model.getFacade().getNamespace(owner);
+          if (ns != null) {
+            /* Only show the path item when there is
+             * an owning namespace. */
+            if (!((PathContainer) f).isPathVisible()) {
+              actions.add(SHOW_PATH);
+              break;
+            }
+          }
+        }
+      }
+    }
+    return actions;
+  }
+
+  /**
+   * @see org.tigris.gef.undo.UndoableAction#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+
+    // enumerate all selected figures and update their path accordingly
+    Iterator<?> i = Globals.curEditor().getSelectionManager().selections().iterator();
+    while (i.hasNext()) {
+      Selection sel = (Selection) i.next();
+      Fig f = sel.getContent();
+
+      if (f instanceof PathContainer) {
+        ((PathContainer) f).setPathVisible(!isPathVisible);
+      }
+    }
+  }
 }

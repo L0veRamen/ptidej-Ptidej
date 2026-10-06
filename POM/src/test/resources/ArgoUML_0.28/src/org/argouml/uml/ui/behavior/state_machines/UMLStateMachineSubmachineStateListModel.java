@@ -31,29 +31,24 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  * @since Dec 6, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class UMLStateMachineSubmachineStateListModel
-    extends UMLModelElementListModel2 {
+public class UMLStateMachineSubmachineStateListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLStateMachineSubmachineStateListModel.
-     */
-    public UMLStateMachineSubmachineStateListModel() {
-        super("submachineState");
-    }
+  /** Constructor for UMLStateMachineSubmachineStateListModel. */
+  public UMLStateMachineSubmachineStateListModel() {
+    super("submachineState");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        setAllElements(Model.getFacade().getSubmachineStates(getTarget()));
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    setAllElements(Model.getFacade().getSubmachineStates(getTarget()));
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().getSubmachineStates(getTarget())
-        	.contains(element);
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().getSubmachineStates(getTarget()).contains(element);
+  }
 }

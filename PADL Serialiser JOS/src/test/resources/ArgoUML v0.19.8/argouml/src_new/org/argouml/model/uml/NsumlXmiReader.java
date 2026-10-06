@@ -25,235 +25,225 @@
 package org.argouml.model.uml;
 
 import java.io.IOException;
-
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
-
 import org.apache.log4j.Logger;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
 import ru.novosoft.uml.MFactory;
 import ru.novosoft.uml.model_management.MModel;
 
 /**
- * Parses an XMI file. Extended from the NSUML XMIReader since this
- * reader does not handle errorhandling very well and is not very well
- * programmed at all. This led to issues loading xmi files and hanging ArgoUML
- * by doing that.
+ * Parses an XMI file. Extended from the NSUML XMIReader since this reader does not handle
+ * errorhandling very well and is not very well programmed at all. This led to issues loading xmi
+ * files and hanging ArgoUML by doing that.
  *
  * @author Jaap Branderhorst
  * @see ru.novosoft.uml.xmi.XMIReader
  */
 class NsumlXmiReader extends ru.novosoft.uml.xmi.XMIReader {
-    private static final Logger LOG = Logger.getLogger(NsumlXmiReader.class);
+  private static final Logger LOG = Logger.getLogger(NsumlXmiReader.class);
 
-    private boolean errors = false;
-    private org.xml.sax.Parser theParser = null;
+  private boolean errors = false;
+  private org.xml.sax.Parser theParser = null;
 
-    /**
-     * Constructor for XMIReader.
-     * @throws SAXException when there is a XML problem
-     * @throws ParserConfigurationException if a parser cannot
-     * be created which satisfies the requested configuration
-     */
-    public NsumlXmiReader() throws SAXException, ParserConfigurationException {
-        super();
-        SAXParserFactory saxpf = SAXParserFactory.newInstance();
-        saxpf.setValidating(false);
-        saxpf.setNamespaceAware(false);
+  /**
+   * Constructor for XMIReader.
+   *
+   * @throws SAXException when there is a XML problem
+   * @throws ParserConfigurationException if a parser cannot be created which satisfies the
+   *     requested configuration
+   */
+  public NsumlXmiReader() throws SAXException, ParserConfigurationException {
+    super();
+    SAXParserFactory saxpf = SAXParserFactory.newInstance();
+    saxpf.setValidating(false);
+    saxpf.setNamespaceAware(false);
 
-        setParser(saxpf.newSAXParser().getParser());
+    setParser(saxpf.newSAXParser().getParser());
 
-        getParser().setErrorHandler(this);
-        getParser().setDocumentHandler(this);
-        getParser().setEntityResolver(this);
+    getParser().setErrorHandler(this);
+    getParser().setDocumentHandler(this);
+    getParser().setEntityResolver(this);
+  }
 
+  /**
+   * Constructor for XMIReader.
+   *
+   * @param pFactory the factory
+   * @throws SAXException if there is a XML problem
+   * @throws ParserConfigurationException if a parser cannot be created which satisfies the
+   *     requested configuration
+   */
+  public NsumlXmiReader(MFactory pFactory) throws SAXException, ParserConfigurationException {
+    super(pFactory);
+    SAXParserFactory saxpf = SAXParserFactory.newInstance();
+    saxpf.setValidating(false);
+    saxpf.setNamespaceAware(false);
+
+    setParser(saxpf.newSAXParser().getParser());
+
+    getParser().setErrorHandler(this);
+    getParser().setDocumentHandler(this);
+    getParser().setEntityResolver(this);
+  }
+
+  /**
+   * Parses an xmi inputsource. Sets errors to true if an exception is thrown. Could not change the
+   * API from the superclass. Therefore this strange construction.
+   *
+   * @see ru.novosoft.uml.xmi.XMIReader#parseStream(InputSource)
+   */
+  protected void parseSourceStream(InputSource pIs) throws SAXException, IOException {
+
+    cleanup();
+
+    try {
+      getParser().parse(pIs);
+      performLinking();
+    } catch (IOException e) {
+      LOG.error("IOException while trying to read inputsource " + pIs.getSystemId(), e);
+      throw e;
+    } catch (SAXException e) {
+      LOG.error("Parsing error while trying to parse inputsource " + pIs.getSystemId(), e);
+      throw e;
+    } catch (ClassCastException e) {
+      LOG.error("Parsing error while trying to parse inputsource " + pIs.getSystemId(), e);
+      throw new SAXException(e);
     }
+  }
 
-    /**
-     * Constructor for XMIReader.
-     * @param pFactory the factory
-     * @throws SAXException if there is a XML problem
-     * @throws ParserConfigurationException if a parser cannot
-     * be created which satisfies the requested configuration
-     */
-    public NsumlXmiReader(MFactory pFactory)
-        throws SAXException, ParserConfigurationException {
-        super(pFactory);
-        SAXParserFactory saxpf = SAXParserFactory.newInstance();
-        saxpf.setValidating(false);
-        saxpf.setNamespaceAware(false);
+  /*  Please do not delete this commented out code. Bob Tarling 3 Mar 2004.
+  //  This is useful for discovering load problems with corrupt XMI
+  //
+  //  NSUML isn't particularly good at reporting detail of errors
+  //  and unfortunately is a bit too protective of it's data to just extend.
+  //
+  //  To make use of this code -
+  //   a) Make the class public
+  //   b) Refactor to move this class to ru.novosoft.uml.xmi
+  //   c) Uncomment the code.
+  //
+  //  By pretending to be part of the NSUML package this code can now get
+  //  access to the links attribute of the NSUML XMIReader and report on
+  //  (or ignore) any corrupt data.
+  //
+  // To ignore and not just report you also have to uncomment the 2
+  // //i.remove(); lines
+  //
+  //  This technique was used to fix
+  //  http://argouml.tigris.org/issues/show_bug.cgi?id=2547 and
+  //  http://argouml.tigris.org/issues/show_bug.cgi?id=2566 and will no
+  //  doubt prove useful again.
+  //
+  */
+  //    protected void performLinking() {
+  //        try {
+  //            java.util.Iterator i = links.iterator();
+  //            Object link = null;
+  //            while(i.hasNext()) {
+  //                link = i.next();
+  //                Class c = link.getClass();
+  //                java.lang.reflect.Field[] fields = c.getDeclaredFields();
+  //                boolean methodType = fields[2].getBoolean(link);
+  //                Object sourceObject = fields[0].get(link);
+  //                if (sourceObject instanceof ru.novosoft.uml.MBase) {
+  //                    if (methodType) {
+  //                        String parameterXMIID =  (String)fields[3].get(link);
+  //                        String parameterXMIUUID =
+  //                          (String)fields[4].get(link);
+  //                        Object objectParameter =  getObject(parameterXMIID,
+  //                                                          parameterXMIUUID);
+  //                        Object methodName =  fields[1].get(link);
+  //                        if (methodName.equals("type")
+  //                            && !(objectParameter instanceof
+  //                            ru.novosoft.uml.foundation.core.MModelElement)) {
+  //                            if (sourceObject instanceof
+  //                                ru.novosoft.uml.foundation.core.MAssociationEnd)
+  //                            {
+  //                                System.out.println("Link data from XMI "
+  //                                    + sourceObject + " " + methodName + " "
+  //                                    + parameterXMIID + " " + parameterXMIUUID
+  //                                    + " " + objectParameter);
+  //                                //i.remove();
+  //                            }
+  //                            if (sourceObject instanceof
+  //                                ru.novosoft.uml.foundation.core.MStructuralFeature)
+  //                            {
+  //                                System.out.println("Link data from XMI "
+  //                                    + sourceObject + " " + methodName + " "
+  //                                    + parameterXMIID + " " + parameterXMIUUID
+  //                                    + " " + objectParameter);
+  //                                //i.remove();
+  //                            }
+  //                        }
+  //                    } else {
+  //                        String parameterXMIID =  (String)fields[3].get(link);
+  //                        String parameterXMIUUID = (String)fields[4].get(link);
+  //                        Object objectParameter =
+  //                            getObject(parameterXMIID, parameterXMIUUID);
+  //                        if (!(objectParameter instanceof
+  //                            ru.novosoft.uml.foundation.core.MModelElement)) {
+  //                            Object methodName =  fields[1].get(link);
+  //                            System.out.println("Invalid link data from XMI "
+  //                                + sourceObject + " " + methodName + " "
+  //                                + parameterXMIID + " " + parameterXMIUUID
+  //                                + " " + objectParameter);
+  //                            //i.remove();
+  //                        }
+  //                    }
+  //                }
+  //            }
+  //        } catch (Exception e) {
+  //            System.out.println("Reflection failed");
+  //            e.printStackTrace();
+  //        }
+  //        super.performLinking();
+  //    }
 
-        setParser(saxpf.newSAXParser().getParser());
-
-        getParser().setErrorHandler(this);
-        getParser().setDocumentHandler(this);
-        getParser().setEntityResolver(this);
-
+  /**
+   * Parses a given inputsource to a model. Does not override the novosoft parse method since that
+   * does not have the right signature.
+   *
+   * @param pIs the input source for parsing
+   * @return MModel the UML model
+   * @throws SAXException if there is an XML problem
+   * @throws IOException if there is a file I/O problem
+   */
+  public MModel parseToModel(InputSource pIs) throws SAXException, IOException {
+    parseSourceStream(pIs);
+    MModel model = getParsedModel();
+    if (errors) {
+      throw new SAXException("Errors parsing XMI");
     }
+    return model;
+  }
 
-    /**
-     * Parses an xmi inputsource. Sets errors to true if an exception is
-     * thrown. Could not change the API from the superclass. Therefore this
-     * strange construction.
-     * @see ru.novosoft.uml.xmi.XMIReader#parseStream(InputSource)
-     */
-    protected void parseSourceStream(InputSource pIs)
-        throws SAXException, IOException {
+  /**
+   * @param e true if there are errors
+   */
+  public void setErrors(boolean e) {
+    errors = e;
+  }
 
-        cleanup();
+  /**
+   * @return true if there were errors
+   */
+  public boolean getErrors() {
+    return errors;
+  }
 
-        try {
-            getParser().parse(pIs);
-            performLinking();
-        } catch (IOException e) {
-            LOG.error("IOException while trying to read inputsource "
-                + pIs.getSystemId(), e);
-            throw e;
-        } catch (SAXException e) {
-            LOG.error("Parsing error while trying to parse inputsource "
-                + pIs.getSystemId(), e);
-            throw e;
-        } catch (ClassCastException e) {
-            LOG.error("Parsing error while trying to parse inputsource "
-                + pIs.getSystemId(), e);
-            throw new SAXException(e);
-        }
+  /**
+   * @param parser the parser
+   */
+  public void setParser(org.xml.sax.Parser parser) {
+    theParser = parser;
+  }
 
-    }
-
-/*  Please do not delete this commented out code. Bob Tarling 3 Mar 2004.
-//  This is useful for discovering load problems with corrupt XMI
-//
-//  NSUML isn't particularly good at reporting detail of errors
-//  and unfortunately is a bit too protective of it's data to just extend.
-//
-//  To make use of this code -
-//   a) Make the class public
-//   b) Refactor to move this class to ru.novosoft.uml.xmi
-//   c) Uncomment the code.
-//
-//  By pretending to be part of the NSUML package this code can now get
-//  access to the links attribute of the NSUML XMIReader and report on
-//  (or ignore) any corrupt data.
-//
-// To ignore and not just report you also have to uncomment the 2
-// //i.remove(); lines
-//
-//  This technique was used to fix
-//  http://argouml.tigris.org/issues/show_bug.cgi?id=2547 and
-//  http://argouml.tigris.org/issues/show_bug.cgi?id=2566 and will no
-//  doubt prove useful again.
-//
-*/
-//    protected void performLinking() {
-//        try {
-//            java.util.Iterator i = links.iterator();
-//            Object link = null;
-//            while(i.hasNext()) {
-//                link = i.next();
-//                Class c = link.getClass();
-//                java.lang.reflect.Field[] fields = c.getDeclaredFields();
-//                boolean methodType = fields[2].getBoolean(link);
-//                Object sourceObject = fields[0].get(link);
-//                if (sourceObject instanceof ru.novosoft.uml.MBase) {
-//                    if (methodType) {
-//                        String parameterXMIID =  (String)fields[3].get(link);
-//                        String parameterXMIUUID =
-//                          (String)fields[4].get(link);
-//                        Object objectParameter =  getObject(parameterXMIID,
-//                                                          parameterXMIUUID);
-//                        Object methodName =  fields[1].get(link);
-//                        if (methodName.equals("type")
-//                            && !(objectParameter instanceof
-//                            ru.novosoft.uml.foundation.core.MModelElement)) {
-//                            if (sourceObject instanceof
-//                                ru.novosoft.uml.foundation.core.MAssociationEnd)
-//                            {
-//                                System.out.println("Link data from XMI "
-//                                    + sourceObject + " " + methodName + " "
-//                                    + parameterXMIID + " " + parameterXMIUUID
-//                                    + " " + objectParameter);
-//                                //i.remove();
-//                            }
-//                            if (sourceObject instanceof
-//                                ru.novosoft.uml.foundation.core.MStructuralFeature)
-//                            {
-//                                System.out.println("Link data from XMI "
-//                                    + sourceObject + " " + methodName + " "
-//                                    + parameterXMIID + " " + parameterXMIUUID
-//                                    + " " + objectParameter);
-//                                //i.remove();
-//                            }
-//                        }
-//                    } else {
-//                        String parameterXMIID =  (String)fields[3].get(link);
-//                        String parameterXMIUUID = (String)fields[4].get(link);
-//                        Object objectParameter =
-//                            getObject(parameterXMIID, parameterXMIUUID);
-//                        if (!(objectParameter instanceof
-//                            ru.novosoft.uml.foundation.core.MModelElement)) {
-//                            Object methodName =  fields[1].get(link);
-//                            System.out.println("Invalid link data from XMI "
-//                                + sourceObject + " " + methodName + " "
-//                                + parameterXMIID + " " + parameterXMIUUID
-//                                + " " + objectParameter);
-//                            //i.remove();
-//                        }
-//                    }
-//                }
-//            }
-//        } catch (Exception e) {
-//            System.out.println("Reflection failed");
-//            e.printStackTrace();
-//        }
-//        super.performLinking();
-//    }
-
-    /**
-     * Parses a given inputsource to a model. Does not override the novosoft
-     * parse method since that does not have the right signature.
-     * @param pIs the input source for parsing
-     * @return MModel the UML model
-     * @throws SAXException if there is an XML problem
-     * @throws IOException if there is a file I/O problem
-     */
-    public MModel parseToModel(InputSource pIs)
-        throws SAXException, IOException {
-        parseSourceStream(pIs);
-        MModel model = getParsedModel();
-        if (errors) {
-            throw new SAXException("Errors parsing XMI");
-        }
-        return model;
-    }
-
-    /**
-     * @param e true if there are errors
-     */
-    public void setErrors(boolean e) {
-        errors = e;
-    }
-
-    /**
-     * @return true if there were errors
-     */
-    public boolean getErrors() {
-        return errors;
-    }
-
-    /**
-     * @param parser the parser
-     */
-    public void setParser(org.xml.sax.Parser parser) {
-        theParser = parser;
-    }
-
-    /**
-     * @return the parser
-     */
-    public org.xml.sax.Parser getParser() {
-        return theParser;
-    }
+  /**
+   * @return the parser
+   */
+  public org.xml.sax.Parser getParser() {
+    return theParser;
+  }
 }

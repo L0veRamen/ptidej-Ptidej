@@ -3,7 +3,7 @@
 package org.argouml.uml.reveng.classfile;
 
 public interface ClassfileParserTokenTypes {
-	int EOF = 1;
-	int NULL_TREE_LOOKAHEAD = 3;
-	int BYTE = 4;
+  int EOF = 1;
+  int NULL_TREE_LOOKAHEAD = 3;
+  int BYTE = 4;
 }

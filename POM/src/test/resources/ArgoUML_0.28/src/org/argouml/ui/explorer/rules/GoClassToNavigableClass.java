@@ -31,81 +31,77 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 
-/**
- * Rule for Class->Navigable Class.
- *
- */
+/** Rule for Class->Navigable Class. */
 public class GoClassToNavigableClass extends AbstractPerspectiveRule {
 
-    /*
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
-     */
-    public String getRuleName() {
-        return Translator.localize("misc.class.navigable-class");
+  /*
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
+   */
+  public String getRuleName() {
+    return Translator.localize("misc.class.navigable-class");
+  }
+
+  /*
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
+   */
+  public Collection getChildren(Object parent) {
+    if (!Model.getFacade().isAClass(parent)) {
+      return Collections.EMPTY_SET;
     }
 
-    /*
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
-     */
-    public Collection getChildren(Object parent) {
-        if (!Model.getFacade().isAClass(parent)) {
-            return Collections.EMPTY_SET;
-        }
+    List childClasses = new ArrayList();
 
-        List childClasses = new ArrayList();
-
-        Collection ends = Model.getFacade().getAssociationEnds(parent);
-        if (ends == null) {
-            return Collections.EMPTY_SET;
-        }
-
-        Iterator it = ends.iterator();
-        while (it.hasNext()) {
-            Object ae = /*(MAssociationEnd)*/ it.next();
-            Object asc = Model.getFacade().getAssociation(ae);
-            Collection allEnds = Model.getFacade().getConnections(asc);
-
-            Object otherEnd = null;
-            Iterator endIt = allEnds.iterator();
-            if (endIt.hasNext()) {
-                otherEnd = /*(MAssociationEnd)*/ endIt.next();
-                if (ae != otherEnd && endIt.hasNext()) {
-                    otherEnd = /*(MAssociationEnd)*/ endIt.next();
-                    if (ae != otherEnd) {
-                        otherEnd = null;
-                    }
-                }
-            }
-
-            if (otherEnd == null) {
-                continue;
-            }
-            if (!Model.getFacade().isNavigable(otherEnd)) {
-                continue;
-            }
-            if (childClasses.contains(Model.getFacade().getType(otherEnd))) {
-                continue;
-            }
-            childClasses.add(Model.getFacade().getType(otherEnd));
-            // TODO: handle n-way Associations
-        }
-
-        return childClasses;
+    Collection ends = Model.getFacade().getAssociationEnds(parent);
+    if (ends == null) {
+      return Collections.EMPTY_SET;
     }
 
-    /*
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
-     */
-    public Set getDependencies(Object parent) {
-        if (Model.getFacade().isAClass(parent)) {
-	    Set set = new HashSet();
-	    set.add(parent);
-	    return set;
-	}
-	return Collections.EMPTY_SET;
+    Iterator it = ends.iterator();
+    while (it.hasNext()) {
+      Object ae = /*(MAssociationEnd)*/ it.next();
+      Object asc = Model.getFacade().getAssociation(ae);
+      Collection allEnds = Model.getFacade().getConnections(asc);
+
+      Object otherEnd = null;
+      Iterator endIt = allEnds.iterator();
+      if (endIt.hasNext()) {
+        otherEnd = /*(MAssociationEnd)*/ endIt.next();
+        if (ae != otherEnd && endIt.hasNext()) {
+          otherEnd = /*(MAssociationEnd)*/ endIt.next();
+          if (ae != otherEnd) {
+            otherEnd = null;
+          }
+        }
+      }
+
+      if (otherEnd == null) {
+        continue;
+      }
+      if (!Model.getFacade().isNavigable(otherEnd)) {
+        continue;
+      }
+      if (childClasses.contains(Model.getFacade().getType(otherEnd))) {
+        continue;
+      }
+      childClasses.add(Model.getFacade().getType(otherEnd));
+      // TODO: handle n-way Associations
     }
+
+    return childClasses;
+  }
+
+  /*
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
+   */
+  public Set getDependencies(Object parent) {
+    if (Model.getFacade().isAClass(parent)) {
+      Set set = new HashSet();
+      set.add(parent);
+      return set;
+    }
+    return Collections.EMPTY_SET;
+  }
 }

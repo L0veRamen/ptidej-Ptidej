@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xerces" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -65,54 +65,48 @@ import org.xml.sax.Locator;
  * @version
  */
 public interface XMLErrorReporter {
-    //
-    // Constants
-    //
+  //
+  // Constants
+  //
 
-    /** Warning type. */
-    public static final int ERRORTYPE_WARNING = 0;
+  /** Warning type. */
+  public static final int ERRORTYPE_WARNING = 0;
 
-    /** Error type. */
-    public static final int ERRORTYPE_RECOVERABLE_ERROR = 1;
+  /** Error type. */
+  public static final int ERRORTYPE_RECOVERABLE_ERROR = 1;
 
-    /** Fatal error type. */
-    public static final int ERRORTYPE_FATAL_ERROR = 2;
+  /** Fatal error type. */
+  public static final int ERRORTYPE_FATAL_ERROR = 2;
 
-    /**
-     * Set the default locator to use when reporting errors.
-     */
-    public void setLocator(Locator locator);
+  /** Set the default locator to use when reporting errors. */
+  public void setLocator(Locator locator);
 
-    /**
-     * Get the default locator to use when reporting errors.
-     */
-    public Locator getLocator();
+  /** Get the default locator to use when reporting errors. */
+  public Locator getLocator();
 
-    /**
-     * Report an error detected by a component of the XML parser.
-     * In a typical implementation of this interface, this method
-     * would call the error handler registered by the user with
-     * the appropriate error information.
-     *
-     * @param locator       Used to determine the location of the error.
-     * @param errorDomain   The error domain of the error.
-     * @param majorCode     The major key for the message text.
-     * @param minorCode     The minor key for the message text.
-     * @param args          The arguments to be used as replacement text
-     *                      in the message created.
-     * @param errorType     The type of error (ERRORTYPE_WARNING, ERRORTYPE_RECOVERABLE_ERROR, ERRORTYPE_FATAL_ERROR).
-     *
-     * @see #ERRORTYPE_WARNING
-     * @see #ERRORTYPE_RECOVERABLE_ERROR
-     * @see #ERRORTYPE_FATAL_ERROR
-     *
-     * @exception Exception Thrown if the parser should not continue
-     *                      to the error being handled.
-     */
-    public void reportError(Locator locator,
-                            String errorDomain,
-                            int majorCode,
-                            int minorCode,
-                            Object args[],
-                            int errorType) throws Exception;
+  /**
+   * Report an error detected by a component of the XML parser. In a typical implementation of this
+   * interface, this method would call the error handler registered by the user with the appropriate
+   * error information.
+   *
+   * @param locator Used to determine the location of the error.
+   * @param errorDomain The error domain of the error.
+   * @param majorCode The major key for the message text.
+   * @param minorCode The minor key for the message text.
+   * @param args The arguments to be used as replacement text in the message created.
+   * @param errorType The type of error (ERRORTYPE_WARNING, ERRORTYPE_RECOVERABLE_ERROR,
+   *     ERRORTYPE_FATAL_ERROR).
+   * @see #ERRORTYPE_WARNING
+   * @see #ERRORTYPE_RECOVERABLE_ERROR
+   * @see #ERRORTYPE_FATAL_ERROR
+   * @exception Exception Thrown if the parser should not continue to the error being handled.
+   */
+  public void reportError(
+      Locator locator,
+      String errorDomain,
+      int majorCode,
+      int minorCode,
+      Object args[],
+      int errorType)
+      throws Exception;
 }

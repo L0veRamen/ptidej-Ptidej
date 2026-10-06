@@ -27,45 +27,43 @@ package org.argouml.uml.ui;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import javax.swing.JTextArea;
-
 import org.argouml.ui.targetmanager.TargetListener;
 import org.argouml.ui.targetmanager.TargettableModelView;
 
 /**
  * A JTextArea especially made to represent UMLPlainTextDocuments.
+ *
  * @author jaap.branderhorst@xs4all.nl
  * @since Dec 28, 2002
  */
 public class UMLTextArea2 extends JTextArea
     implements PropertyChangeListener, TargettableModelView {
 
+  /**
+   * Constructor for UMLTextArea2.
+   *
+   * @param doc the plain text document
+   */
+  public UMLTextArea2(UMLPlainTextDocument doc) {
+    super(doc);
+    addCaretListener(ActionCopy.getInstance());
+    addCaretListener(ActionCut.getInstance());
+    addCaretListener(ActionPaste.getInstance());
+    addFocusListener(ActionPaste.getInstance());
+  }
 
-    /**
-     * Constructor for UMLTextArea2.
-     * @param doc the plain text document
-     */
-    public UMLTextArea2(UMLPlainTextDocument doc) {
-        super(doc);
-        addCaretListener(ActionCopy.getInstance());
-        addCaretListener(ActionCut.getInstance());
-        addCaretListener(ActionPaste.getInstance());
-        addFocusListener(ActionPaste.getInstance());
-    }
+  /**
+   * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+   */
+  public void propertyChange(PropertyChangeEvent evt) {
+    ((UMLPlainTextDocument) getDocument()).propertyChange(evt);
+  }
 
-    /**
-     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
-     */
-    public void propertyChange(PropertyChangeEvent evt) {
-        ((UMLPlainTextDocument) getDocument()).propertyChange(evt);
-    }
-
-    /**
-     * @see org.argouml.ui.targetmanager.TargettableModelView#getTargettableModel()
-     */
-    public TargetListener getTargettableModel() {
-        return ((TargetListener) getDocument());
-    }
-
+  /**
+   * @see org.argouml.ui.targetmanager.TargettableModelView#getTargettableModel()
+   */
+  public TargetListener getTargettableModel() {
+    return ((TargetListener) getDocument());
+  }
 }

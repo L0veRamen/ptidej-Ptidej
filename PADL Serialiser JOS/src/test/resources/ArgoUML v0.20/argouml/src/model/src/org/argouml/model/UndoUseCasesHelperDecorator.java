@@ -25,21 +25,18 @@
 package org.argouml.model;
 
 /**
- * This Decorator is responsible for generating mementos for any
- * mutable methods.
+ * This Decorator is responsible for generating mementos for any mutable methods.
  *
  * @author Linus Tolke
  */
-public class UndoUseCasesHelperDecorator
-	extends AbstractUseCasesHelperDecorator {
+public class UndoUseCasesHelperDecorator extends AbstractUseCasesHelperDecorator {
 
-    /**
-     * Constructor.
-     *
-     * @param component The component we are decorating.
-     */
-    UndoUseCasesHelperDecorator(UseCasesHelper component) {
-        super(component);
-    }
+  /**
+   * Constructor.
+   *
+   * @param component The component we are decorating.
+   */
+  UndoUseCasesHelperDecorator(UseCasesHelper component) {
+    super(component);
+  }
 }
-

@@ -34,45 +34,38 @@ import org.argouml.uml.ui.UMLComboBoxModel2;
  * @since Oct 10, 2002
  * @author jaap.branderhorst@xs4all.nl, alexb
  */
-public class UMLObjectFlowStateClassifierComboBoxModel
-    extends UMLComboBoxModel2 {
+public class UMLObjectFlowStateClassifierComboBoxModel extends UMLComboBoxModel2 {
 
-    /**
-     * Constructor.
-     * TODO: MVW: I do not understand this! Is it correct?
-     */
-    public UMLObjectFlowStateClassifierComboBoxModel() {
-        super("classifier", false);
-        Model.getPump().addClassModelEventListener(this,
-                Model.getMetaTypes().getClassifier(), "type");
+  /** Constructor. TODO: MVW: I do not understand this! Is it correct? */
+  public UMLObjectFlowStateClassifierComboBoxModel() {
+    super("classifier", false);
+    Model.getPump().addClassModelEventListener(this, Model.getMetaTypes().getClassifier(), "type");
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object o) {
+    return Model.getFacade().isAClassifier(o);
+    // && CoreHelper.getHelper().isValidNamespace(
+    //      /*(MModelElement)*/ getTarget(), /*(MNamespace)*/ o)
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    Object model = ProjectManager.getManager().getCurrentProject().getModel();
+    setElements(Model.getCoreHelper().getAllClassifiers(model));
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
+   */
+  protected Object getSelectedModelElement() {
+    if (getTarget() != null) {
+      return Model.getFacade().getType(getTarget());
     }
-
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object o) {
-        return Model.getFacade().isAClassifier(o);
-        // && CoreHelper.getHelper().isValidNamespace(
-        //      /*(MModelElement)*/ getTarget(), /*(MNamespace)*/ o)
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        Object model =
-            ProjectManager.getManager().getCurrentProject().getModel();
-        setElements(Model.getCoreHelper().getAllClassifiers(model));
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
-     */
-    protected Object getSelectedModelElement() {
-        if (getTarget() != null) {
-            return Model.getFacade().getType(getTarget());
-        }
-        return null;
-    }
-
+    return null;
+  }
 }

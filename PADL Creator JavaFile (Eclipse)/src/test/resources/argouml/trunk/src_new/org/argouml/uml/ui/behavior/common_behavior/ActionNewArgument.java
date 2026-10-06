@@ -25,35 +25,32 @@
 package org.argouml.uml.ui.behavior.common_behavior;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.model.Model;
 import org.argouml.ui.targetmanager.TargetManager;
 import org.argouml.uml.ui.AbstractActionNewModelElement;
 
 /**
  * Create new arguments for actions
- * @author MarkusK
  *
+ * @author MarkusK
  */
 public class ActionNewArgument extends AbstractActionNewModelElement {
 
-    /**
-     * Constructor for ActionNewArgument.
-     */
-    public ActionNewArgument() {
-        super();
-    }
+  /** Constructor for ActionNewArgument. */
+  public ActionNewArgument() {
+    super();
+  }
 
-    /*
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        Object target = getTarget();
-        if (Model.getFacade().isAAction(target)) {
-            Object argument = Model.getCommonBehaviorFactory().createArgument();
-            Model.getCommonBehaviorHelper().addActualArgument(target, argument);
-            TargetManager.getInstance().setTarget(argument);
-        }
+  /*
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    Object target = getTarget();
+    if (Model.getFacade().isAAction(target)) {
+      Object argument = Model.getCommonBehaviorFactory().createArgument();
+      Model.getCommonBehaviorHelper().addActualArgument(target, argument);
+      TargetManager.getInstance().setTarget(argument);
     }
+  }
 }

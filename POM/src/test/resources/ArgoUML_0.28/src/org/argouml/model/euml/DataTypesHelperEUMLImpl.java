@@ -29,94 +29,88 @@ package org.argouml.model.euml;
 import org.argouml.model.DataTypesHelper;
 import org.eclipse.uml2.uml.MultiplicityElement;
 
-
-/**
- * The implementation of the DataTypesHelper for EUML2.
- */
+/** The implementation of the DataTypesHelper for EUML2. */
 class DataTypesHelperEUMLImpl implements DataTypesHelper {
 
-    /**
-     * The model implementation.
-     */
-    private EUMLModelImplementation modelImpl;
+  /** The model implementation. */
+  private EUMLModelImplementation modelImpl;
 
-    /**
-     * Constructor.
-     *
-     * @param implementation The ModelImplementation.
-     */
-    public DataTypesHelperEUMLImpl(EUMLModelImplementation implementation) {
-        modelImpl = implementation;
-    }
+  /**
+   * Constructor.
+   *
+   * @param implementation The ModelImplementation.
+   */
+  public DataTypesHelperEUMLImpl(EUMLModelImplementation implementation) {
+    modelImpl = implementation;
+  }
 
-    public boolean equalsCHOICEKind(Object kind) {
-        // TODO: Auto-generated method stub
-        return false;
-    }
+  public boolean equalsCHOICEKind(Object kind) {
+    // TODO: Auto-generated method stub
+    return false;
+  }
 
-    public boolean equalsDeepHistoryKind(Object kind) {
-        // TODO: Auto-generated method stub
-        return false;
-    }
+  public boolean equalsDeepHistoryKind(Object kind) {
+    // TODO: Auto-generated method stub
+    return false;
+  }
 
-    public boolean equalsFORKKind(Object kind) {
-        // TODO: Auto-generated method stub
-        return false;
-    }
+  public boolean equalsFORKKind(Object kind) {
+    // TODO: Auto-generated method stub
+    return false;
+  }
 
-    public boolean equalsINITIALKind(Object kind) {
-        // TODO: Auto-generated method stub
-        return false;
-    }
+  public boolean equalsINITIALKind(Object kind) {
+    // TODO: Auto-generated method stub
+    return false;
+  }
 
-    public boolean equalsJOINKind(Object kind) {
-        // TODO: Auto-generated method stub
-        return false;
-    }
+  public boolean equalsJOINKind(Object kind) {
+    // TODO: Auto-generated method stub
+    return false;
+  }
 
-    public boolean equalsJUNCTIONKind(Object kind) {
-        // TODO: Auto-generated method stub
-        return false;
-    }
+  public boolean equalsJUNCTIONKind(Object kind) {
+    // TODO: Auto-generated method stub
+    return false;
+  }
 
-    public boolean equalsShallowHistoryKind(Object kind) {
-        // TODO: Auto-generated method stub
-        return false;
-    }
+  public boolean equalsShallowHistoryKind(Object kind) {
+    // TODO: Auto-generated method stub
+    return false;
+  }
 
-    public String getBody(Object handle) {
-        // TODO: Auto-generated method stub
-        return null;
-    }
+  public String getBody(Object handle) {
+    // TODO: Auto-generated method stub
+    return null;
+  }
 
-    public String getLanguage(Object handle) {
-        // TODO: Auto-generated method stub
-        return null;
-    }
+  public String getLanguage(Object handle) {
+    // TODO: Auto-generated method stub
+    return null;
+  }
 
-    public String multiplicityToString(Object multiplicity) {
-        if (!(multiplicity instanceof MultiplicityElement)) {
-            throw new IllegalArgumentException("multiplicity must be instance of MultiplicityElement"); //$NON-NLS-1$
-        }
-        MultiplicityElement mult = (MultiplicityElement) multiplicity;
-        if (mult.getLower() == mult.getUpper()) {
-            return DataTypesFactoryEUMLImpl.boundToString(mult.getLower());
-        } else {
-            return DataTypesFactoryEUMLImpl.boundToString(
-                    mult.getLower())
-                    + ".."
-                    + DataTypesFactoryEUMLImpl.boundToString(mult.getUpper());
-        }
+  public String multiplicityToString(Object multiplicity) {
+    if (!(multiplicity instanceof MultiplicityElement)) {
+      throw new IllegalArgumentException(
+          "multiplicity must be instance of MultiplicityElement"); //$NON-NLS-1$
     }
-    
-    public Object setBody(Object handle, String body) {
-        // TODO: Auto-generated method stub
-        return null;
+    MultiplicityElement mult = (MultiplicityElement) multiplicity;
+    if (mult.getLower() == mult.getUpper()) {
+      return DataTypesFactoryEUMLImpl.boundToString(mult.getLower());
+    } else {
+      return DataTypesFactoryEUMLImpl.boundToString(mult.getLower())
+          + ".."
+          + DataTypesFactoryEUMLImpl.boundToString(mult.getUpper());
     }
+  }
 
-    public Object setLanguage(Object handle, String language) {
-        // TODO: Auto-generated method stub
-        return null;
-    }
+  public Object setBody(Object handle, String body) {
+    // TODO: Auto-generated method stub
+    return null;
+  }
 
+  public Object setLanguage(Object handle, String language) {
+    // TODO: Auto-generated method stub
+    return null;
+  }
 }

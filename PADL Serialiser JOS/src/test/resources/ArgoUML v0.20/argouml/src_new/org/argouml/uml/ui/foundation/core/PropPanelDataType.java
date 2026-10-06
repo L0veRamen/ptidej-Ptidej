@@ -26,12 +26,10 @@ package org.argouml.uml.ui.foundation.core;
 
 import java.awt.event.ActionEvent;
 import java.util.Collection;
-
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.Model;
@@ -44,121 +42,94 @@ import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
 import org.argouml.util.ConfigLoader;
 import org.tigris.swidgets.Orientation;
 
-/**
- * The properties panel for a Datatype.
- */
+/** The properties panel for a Datatype. */
 public class PropPanelDataType extends PropPanelClassifier {
 
-    private JScrollPane operationScroll;
+  private JScrollPane operationScroll;
 
-    private static UMLClassAttributeListModel attributeListModel =
-        new UMLClassAttributeListModel();
+  private static UMLClassAttributeListModel attributeListModel = new UMLClassAttributeListModel();
 
-    private static UMLEnumerationLiteralsListModel literalsListModel =
-        new UMLEnumerationLiteralsListModel();
+  private static UMLEnumerationLiteralsListModel literalsListModel =
+      new UMLEnumerationLiteralsListModel();
 
-    private static UMLClassOperationListModel operationListModel =
-        new UMLClassOperationListModel();
+  private static UMLClassOperationListModel operationListModel = new UMLClassOperationListModel();
 
-    public PropPanelDataType(String title, ImageIcon icon, Orientation orientation) {
-        super(title, icon, orientation);
+  public PropPanelDataType(String title, ImageIcon icon, Orientation orientation) {
+    super(title, icon, orientation);
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.stereotype"),
-                getStereotypeSelector());
-        addField(Translator.localize("label.namespace"),
-                getNamespaceSelector());
-        add(getModifiersPanel());
-        add(getNamespaceVisibilityPanel());
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.stereotype"), getStereotypeSelector());
+    addField(Translator.localize("label.namespace"), getNamespaceSelector());
+    add(getModifiersPanel());
+    add(getNamespaceVisibilityPanel());
 
-        addSeperator();
+    addSeperator();
 
-        addField(Translator.localize("label.client-dependencies"),
-                getClientDependencyScroll());
-        addField(Translator.localize("label.supplier-dependencies"),
-                getSupplierDependencyScroll());
-        addField(Translator.localize("label.generalizations"),
-                getGeneralizationScroll());
-        addField(Translator.localize("label.specializations"),
-                getSpecializationScroll());
+    addField(Translator.localize("label.client-dependencies"), getClientDependencyScroll());
+    addField(Translator.localize("label.supplier-dependencies"), getSupplierDependencyScroll());
+    addField(Translator.localize("label.generalizations"), getGeneralizationScroll());
+    addField(Translator.localize("label.specializations"), getSpecializationScroll());
 
-        addSeperator();
+    addSeperator();
 
-        addField(Translator.localize("label.operations"),
-                getOperationScroll());
+    addField(Translator.localize("label.operations"), getOperationScroll());
 
-        addAction(new ActionNavigateContainerElement());
-        addAction(new ActionAddDataType());
-        addEnumerationButtons();
-        addAction(new ActionAddQueryOperation());
-        addAction(new ActionNewStereotype());
-        addAction(new ActionDeleteSingleModelElement());
-    }
-    
-    /**
-     * Override this to add more buttons.
-     */
-    protected void addEnumerationButtons() {
-        addAction(new ActionAddEnumeration());
-    }
+    addAction(new ActionNavigateContainerElement());
+    addAction(new ActionAddDataType());
+    addEnumerationButtons();
+    addAction(new ActionAddQueryOperation());
+    addAction(new ActionNewStereotype());
+    addAction(new ActionDeleteSingleModelElement());
+  }
 
-    /**
-     * The constructor.
-     */
-    public PropPanelDataType() {
-        this("DataType", lookupIcon("DataType"),
-                ConfigLoader.getTabPropsOrientation());
-    }
+  /** Override this to add more buttons. */
+  protected void addEnumerationButtons() {
+    addAction(new ActionAddEnumeration());
+  }
 
-    private class ActionAddQueryOperation
-        extends AbstractActionNewModelElement {
+  /** The constructor. */
+  public PropPanelDataType() {
+    this("DataType", lookupIcon("DataType"), ConfigLoader.getTabPropsOrientation());
+  }
 
-        /**
-         * The constructor.
-         */
-        public ActionAddQueryOperation() {
-            super("button.new-operation");
-            putValue(Action.NAME, Translator.localize("button.new-operation"));
-        }
+  private class ActionAddQueryOperation extends AbstractActionNewModelElement {
 
-        /**
-         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-         */
-        public void actionPerformed(ActionEvent e) {
-            Object target = TargetManager.getInstance().getModelTarget();
-            if (Model.getFacade().isAClassifier(target)) {
-                Collection propertyChangeListeners =
-                    ProjectManager.getManager()
-                    	.getCurrentProject().findFigsForMember(target);
-                Object model =
-                    ProjectManager.getManager()
-                    	.getCurrentProject().getModel();
-                Object voidType =
-                    ProjectManager.getManager()
-                    	.getCurrentProject().findType("void");
-                Object newOper =
-                    Model.getCoreFactory()
-                    	.buildOperation(target, model, voidType,
-                    	        propertyChangeListeners);
-                // due to Well Defined rule [2.5.3.12/1]
-                Model.getCoreHelper().setQuery(newOper, true);
-                TargetManager.getInstance().setTarget(newOper);
-                super.actionPerformed(e);
-            }
-        }
+    /** The constructor. */
+    public ActionAddQueryOperation() {
+      super("button.new-operation");
+      putValue(Action.NAME, Translator.localize("button.new-operation"));
     }
 
     /**
-     * Returns the operationScroll.
-     *
-     * @return JScrollPane
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
-    public JScrollPane getOperationScroll() {
-        if (operationScroll == null) {
-            JList list = new UMLLinkedList(operationListModel);
-            operationScroll = new JScrollPane(list);
-        }
-        return operationScroll;
+    public void actionPerformed(ActionEvent e) {
+      Object target = TargetManager.getInstance().getModelTarget();
+      if (Model.getFacade().isAClassifier(target)) {
+        Collection propertyChangeListeners =
+            ProjectManager.getManager().getCurrentProject().findFigsForMember(target);
+        Object model = ProjectManager.getManager().getCurrentProject().getModel();
+        Object voidType = ProjectManager.getManager().getCurrentProject().findType("void");
+        Object newOper =
+            Model.getCoreFactory().buildOperation(target, model, voidType, propertyChangeListeners);
+        // due to Well Defined rule [2.5.3.12/1]
+        Model.getCoreHelper().setQuery(newOper, true);
+        TargetManager.getInstance().setTarget(newOper);
+        super.actionPerformed(e);
+      }
     }
+  }
+
+  /**
+   * Returns the operationScroll.
+   *
+   * @return JScrollPane
+   */
+  public JScrollPane getOperationScroll() {
+    if (operationScroll == null) {
+      JList list = new UMLLinkedList(operationListModel);
+      operationScroll = new JScrollPane(list);
+    }
+    return operationScroll;
+  }
 }

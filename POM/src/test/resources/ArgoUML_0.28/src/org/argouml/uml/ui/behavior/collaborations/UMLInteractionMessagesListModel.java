@@ -25,7 +25,6 @@
 package org.argouml.uml.ui.behavior.collaborations;
 
 import java.util.Iterator;
-
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
@@ -36,30 +35,27 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  */
 public class UMLInteractionMessagesListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLInteractionMessagesListModel.
-     */
-    public UMLInteractionMessagesListModel() {
-        super("message");
-    }
+  /** Constructor for UMLInteractionMessagesListModel. */
+  public UMLInteractionMessagesListModel() {
+    super("message");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        removeAllElements();
-        Iterator it = Model.getFacade().getMessages(getTarget()).iterator();
-        while (it.hasNext()) {
-            addElement(it.next());
-        }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    removeAllElements();
+    Iterator it = Model.getFacade().getMessages(getTarget()).iterator();
+    while (it.hasNext()) {
+      addElement(it.next());
     }
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object elem) {
-        return Model.getFacade().isAMessage(elem)
-            && Model.getFacade().getInteraction(elem) == getTarget();
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object elem) {
+    return Model.getFacade().isAMessage(elem)
+        && Model.getFacade().getInteraction(elem) == getTarget();
+  }
 }

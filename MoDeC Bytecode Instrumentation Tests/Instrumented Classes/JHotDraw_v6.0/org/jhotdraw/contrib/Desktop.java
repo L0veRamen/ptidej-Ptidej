@@ -14,26 +14,28 @@ package org.jhotdraw.contrib;
 import org.jhotdraw.framework.DrawingView;
 
 /**
- * @author  C.L.Gilbert <dnoyeb@users.sourceforge.net>
+ * @author C.L.Gilbert <dnoyeb@users.sourceforge.net>
  * @version <$CURRENT_VERSION$>
  */
 public interface Desktop {
-	public final static int PRIMARY = 0;
-	public final static int SECONDARY = 1;
-	public final static int TERTIARY = 2;
+  public static final int PRIMARY = 0;
+  public static final int SECONDARY = 1;
+  public static final int TERTIARY = 2;
 
-	/**
-	 * For those absent minded components that were not paying attention to the
-	 * listener events.
-	 */
-	public DrawingView getActiveDrawingView();
-	public void addToDesktop(DrawingView dv, int location);
-	public void removeFromDesktop(DrawingView dv, int location);
-	public void removeAllFromDesktop(int location);
-	public DrawingView[] getAllFromDesktop(int location);
+  /** For those absent minded components that were not paying attention to the listener events. */
+  public DrawingView getActiveDrawingView();
 
-	public void updateTitle(String newDrawingTitle);
+  public void addToDesktop(DrawingView dv, int location);
 
-	public void addDesktopListener(DesktopListener dpl);
-	public void removeDesktopListener(DesktopListener dpl);
+  public void removeFromDesktop(DrawingView dv, int location);
+
+  public void removeAllFromDesktop(int location);
+
+  public DrawingView[] getAllFromDesktop(int location);
+
+  public void updateTitle(String newDrawingTitle);
+
+  public void addDesktopListener(DesktopListener dpl);
+
+  public void removeDesktopListener(DesktopListener dpl);
 }

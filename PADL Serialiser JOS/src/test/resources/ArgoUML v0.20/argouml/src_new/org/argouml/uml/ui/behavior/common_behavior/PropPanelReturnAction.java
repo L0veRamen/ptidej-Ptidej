@@ -24,21 +24,15 @@
 
 package org.argouml.uml.ui.behavior.common_behavior;
 
-
 /**
  * The properties panel for a ReturnAction.
  *
- * TODO: this property panel needs refactoring to remove dependency on
- *       old gui components.
+ * <p>TODO: this property panel needs refactoring to remove dependency on old gui components.
  */
 public class PropPanelReturnAction extends PropPanelAction {
 
-    /**
-     * The constructor.
-     *
-     */
-    public PropPanelReturnAction() {
-        super("ReturnAction", lookupIcon("ReturnAction"));
-    }
-
+  /** The constructor. */
+  public PropPanelReturnAction() {
+    super("ReturnAction", lookupIcon("ReturnAction"));
+  }
 }

@@ -34,35 +34,34 @@ import org.argouml.uml.ProjectMemberModel;
 
 /**
  * The file persister for the UML model.
+ *
  * @author Bob Tarling
  */
-class OldModelMemberFilePersister extends ModelMemberFilePersister 
-    implements XmiExtensionParser {
+class OldModelMemberFilePersister extends ModelMemberFilePersister implements XmiExtensionParser {
 
-    /**
-     * Save the project model to XMI.
-     *
-     * @see org.argouml.persistence.MemberFilePersister#save(
-     *         org.argouml.kernel.ProjectMember, java.io.Writer,
-     *         java.lang.Integer)
-     */
-    public void save(ProjectMember member, Writer w, Integer indent)
-    	throws SaveException {
+  /**
+   * Save the project model to XMI.
+   *
+   * @see org.argouml.persistence.MemberFilePersister#save( org.argouml.kernel.ProjectMember,
+   *     java.io.Writer, java.lang.Integer)
+   */
+  public void save(ProjectMember member, Writer w, Integer indent) throws SaveException {
 
-        if (w == null) {
-            throw new IllegalArgumentException("No Writer specified!");
-        }
-
-        try {
-            ProjectMemberModel pmm = (ProjectMemberModel) member;
-            Object model = pmm.getModel();
-            XmiWriter xmiWriter = 
-                Model.getXmiWriter(model, w, 
-                        ArgoVersion.getVersion() + "(" 
-                        + UmlFilePersister.PERSISTENCE_VERSION + ")");
-            xmiWriter.write();
-        } catch (UmlException e) {
-            throw new SaveException(e);
-        }
+    if (w == null) {
+      throw new IllegalArgumentException("No Writer specified!");
     }
+
+    try {
+      ProjectMemberModel pmm = (ProjectMemberModel) member;
+      Object model = pmm.getModel();
+      XmiWriter xmiWriter =
+          Model.getXmiWriter(
+              model,
+              w,
+              ArgoVersion.getVersion() + "(" + UmlFilePersister.PERSISTENCE_VERSION + ")");
+      xmiWriter.write();
+    } catch (UmlException e) {
+      throw new SaveException(e);
+    }
+  }
 }

@@ -27,68 +27,63 @@ package org.argouml.model.uml;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
-
 import javax.xml.parsers.ParserConfigurationException;
-
 import org.argouml.model.UmlException;
 import org.argouml.model.XmiReader;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
- * A wrapper around the genuine XmiReader that provides public access with no
- * knowledge of actual UML implementation.
+ * A wrapper around the genuine XmiReader that provides public access with no knowledge of actual
+ * UML implementation.
  *
  * @author Bob Tarling
  */
 public class XmiReaderImpl implements XmiReader {
 
-    private NsumlXmiReader nsumlXmiReader;
+  private NsumlXmiReader nsumlXmiReader;
 
-    /**
-     * Constructor for XMIReader.
-     *
-     * @throws UmlException
-     *             when there is a problem
-     */
-    public XmiReaderImpl() throws UmlException {
-        try {
-            nsumlXmiReader = new NsumlXmiReader();
-        } catch (ParserConfigurationException e) {
-            throw new UmlException(e);
-        } catch (SAXException e) {
-            throw new UmlException(e);
-        }
+  /**
+   * Constructor for XMIReader.
+   *
+   * @throws UmlException when there is a problem
+   */
+  public XmiReaderImpl() throws UmlException {
+    try {
+      nsumlXmiReader = new NsumlXmiReader();
+    } catch (ParserConfigurationException e) {
+      throw new UmlException(e);
+    } catch (SAXException e) {
+      throw new UmlException(e);
     }
+  }
 
-    /**
-     * Parses a given inputsource to a model. Does not override the novosoft
-     * parse method since that does not have the right signature.
-     *
-     * @param pIs
-     *            the input source for parsing
-     * @return MModel the UML model
-     * @throws UmlException
-     *             if there is a problem
-     */
-    public Object parseToModel(InputSource pIs) throws UmlException {
-        try {
-            return nsumlXmiReader.parseToModel(pIs);
-        } catch (SAXException e) {
-            throw new UmlException(e);
-        } catch (IOException e) {
-            throw new UmlException(e);
-        }
+  /**
+   * Parses a given inputsource to a model. Does not override the novosoft parse method since that
+   * does not have the right signature.
+   *
+   * @param pIs the input source for parsing
+   * @return MModel the UML model
+   * @throws UmlException if there is a problem
+   */
+  public Object parseToModel(InputSource pIs) throws UmlException {
+    try {
+      return nsumlXmiReader.parseToModel(pIs);
+    } catch (SAXException e) {
+      throw new UmlException(e);
+    } catch (IOException e) {
+      throw new UmlException(e);
     }
+  }
 
-    public Collection parse(InputSource pIs) throws UmlException {
-        return null;
-    }
+  public Collection parse(InputSource pIs) throws UmlException {
+    return null;
+  }
 
-    /**
-     * @return the map
-     */
-    public Map getXMIUUIDToObjectMap() {
-        return nsumlXmiReader.getXMIUUIDToObjectMap();
-    }
+  /**
+   * @return the map
+   */
+  public Map getXMIUUIDToObjectMap() {
+    return nsumlXmiReader.getXMIUUIDToObjectMap();
+  }
 }

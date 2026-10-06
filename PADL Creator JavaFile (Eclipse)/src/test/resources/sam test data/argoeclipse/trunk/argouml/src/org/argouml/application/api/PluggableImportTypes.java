@@ -27,58 +27,53 @@ package org.argouml.application.api;
 import java.util.List;
 
 /**
- * These are common raw types that a specific import type can use to
- * build complex settings. If additional types are required then this
- * interface should be extended.
+ * These are common raw types that a specific import type can use to build complex settings. If
+ * additional types are required then this interface should be extended.
+ *
  * @author Bogdan Pistol
  */
 public interface PluggableImportTypes {
-    
+
+  /** A generic type that contains a message in a String */
+  interface Label {
     /**
-     * A generic type that contains a message in a String
+     * Returns the message contained in this type.
+     *
+     * @return the String message
      */
-    interface Label {
-        /**
-         * Returns the message contained in this type.
-         * @return the String message
-         */
-        String getLabel();
-    }
-    
+    String getLabel();
+  }
+
+  /**
+   * A generic type that has multiple options, from all these options the user can choose only one
+   * option (the selected option).
+   *
+   * <p>There can be a default pre-selected option.
+   */
+  interface UniqueSelection {
     /**
-     * A generic type that has multiple options, from all these options
-     * the user can choose only one option (the selected option).
-     * <p>
-     * There can be a default pre-selected option.
+     * Returns the available options from wich the user can pick one.
+     *
+     * @return a list with Strings that identinfies the options
      */
-    interface UniqueSelection {
-        /**
-         * Returns the available options from wich the user can pick one.
-         * @return a list with Strings that identinfies the options
-         */
-        List getOptions();
-        
-        /**
-         * This is the default selected option, if the user doesn't choose
-         * other option then this will be the selected option.
-         * 
-         * @return the 0 based index of the default option as is in the list
-         * returned by 
-         * {@link PluggableImportTypes.UniqueSelection#getOptions()} or -1
-         * if there is no default option
-         */
-        int getDefaultSelection();
-        
-        /**
-         * This is how the user can choose an option.
-         * 
-         * @param seletion the 0 based index of the default option as is in the
-         * list returned by 
-         * {@link PluggableImportTypes.UniqueSelection#getOptions()}
-         * @return true if was successful or false if the selection is out of
-         * bounds
-         */
-        boolean setSelection(int seletion);
-    }
-    
+    List getOptions();
+
+    /**
+     * This is the default selected option, if the user doesn't choose other option then this will
+     * be the selected option.
+     *
+     * @return the 0 based index of the default option as is in the list returned by {@link
+     *     PluggableImportTypes.UniqueSelection#getOptions()} or -1 if there is no default option
+     */
+    int getDefaultSelection();
+
+    /**
+     * This is how the user can choose an option.
+     *
+     * @param seletion the 0 based index of the default option as is in the list returned by {@link
+     *     PluggableImportTypes.UniqueSelection#getOptions()}
+     * @return true if was successful or false if the selection is out of bounds
+     */
+    boolean setSelection(int seletion);
+  }
 }

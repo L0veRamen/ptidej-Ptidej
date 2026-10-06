@@ -24,59 +24,50 @@
 
 package org.argouml.argoeclipse.internal.ui.actions;
 
-import org.eclipse.jface.resource.ImageDescriptor;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.i18n.Translator;
 import org.argouml.ui.targetmanager.TargetManager;
+import org.eclipse.jface.resource.ImageDescriptor;
 
-
-
-/**
- * Navigate back one target back in the history.
- */
+/** Navigate back one target back in the history. */
 public class NavigateTargetBackAction extends org.eclipse.jface.action.Action {
-    
-    private final static String ACTION_NAME = "navigate-back"; //$NON-NLS-1$
 
-    /**
-     * Constructor. The default style of the item will be AS_PUSH_BUTTON.
-     * ActionEvent is null.
-     */
-    public NavigateTargetBackAction() {
-        this( org.eclipse.jface.action.Action.AS_PUSH_BUTTON);
-    }
-    
-    /**
-     * Constructor.
-     * @param style the style as in org.eclipse.jface.action.Action 
-     */
-    public NavigateTargetBackAction(int style) {
-        super(ACTION_NAME, style);
+  private static final String ACTION_NAME = "navigate-back"; // $NON-NLS-1$
 
-        setImageDescriptor(ImageDescriptor.createFromFile(
-                ResourceLoaderWrapper.class, ResourceLoaderWrapper
-                        .getImageBinding("action." + ACTION_NAME))); //$NON-NLS-1$
-        setToolTipText(Translator.localize("action." + ACTION_NAME)); //$NON-NLS-1$
-        setEnabled(isEnabled());
+  /** Constructor. The default style of the item will be AS_PUSH_BUTTON. ActionEvent is null. */
+  public NavigateTargetBackAction() {
+    this(org.eclipse.jface.action.Action.AS_PUSH_BUTTON);
+  }
 
-//        setChecked(true/false);
+  /**
+   * Constructor.
+   *
+   * @param style the style as in org.eclipse.jface.action.Action
+   */
+  public NavigateTargetBackAction(int style) {
+    super(ACTION_NAME, style);
 
-    }
-       
-    /**
-     * Runs the command.
-     */
-    public void run() {         
-        super.run();
-        TargetManager.getInstance().navigateBackward();
-    }
+    setImageDescriptor(
+        ImageDescriptor.createFromFile(
+            ResourceLoaderWrapper.class,
+            ResourceLoaderWrapper.getImageBinding("action." + ACTION_NAME))); // $NON-NLS-1$
+    setToolTipText(Translator.localize("action." + ACTION_NAME)); // $NON-NLS-1$
+    setEnabled(isEnabled());
 
-    /**
-     * @see org.eclipse.jface.action.Action#isEnabled()
-     */
-    public boolean isEnabled() {
-        return TargetManager.getInstance().navigateBackPossible();
-    }
+    //        setChecked(true/false);
 
+  }
+
+  /** Runs the command. */
+  public void run() {
+    super.run();
+    TargetManager.getInstance().navigateBackward();
+  }
+
+  /**
+   * @see org.eclipse.jface.action.Action#isEnabled()
+   */
+  public boolean isEnabled() {
+    return TargetManager.getInstance().navigateBackPossible();
+  }
 }

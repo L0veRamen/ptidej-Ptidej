@@ -33,26 +33,23 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  */
 public class UMLTransitionGuardListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLStateMachineTopListModel.
-     */
-    public UMLTransitionGuardListModel() {
-        super("guard");
-    }
+  /** Constructor for UMLStateMachineTopListModel. */
+  public UMLTransitionGuardListModel() {
+    super("guard");
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        removeAllElements();
-        addElement(Model.getFacade().getGuard(getTarget()));
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    removeAllElements();
+    addElement(Model.getFacade().getGuard(getTarget()));
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ element) {
-        return element == Model.getFacade().getGuard(getTarget());
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ element) {
+    return element == Model.getFacade().getGuard(getTarget());
+  }
 }

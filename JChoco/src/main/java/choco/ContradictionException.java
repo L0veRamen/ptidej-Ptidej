@@ -15,39 +15,32 @@ package choco;
 
 import choco.prop.PropagationEngine;
 
-/**
- * An exception thrown when a contradiction achieved.
- */
+/** An exception thrown when a contradiction achieved. */
 public class ContradictionException extends Exception {
-	/**
-	 * An exception may have a local cause (the last variable
-	 * / constraint responsible for the failure)
-	 */
+  /**
+   * An exception may have a local cause (the last variable / constraint responsible for the
+   * failure)
+   */
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+  /** */
+  private static final long serialVersionUID = 1L;
 
-	/**
-	   * Constructs a new contradiction with the specified cause.
-	   *  @param cause the the last object (variable, constraint) responsible
-	   * for the failure of propagation
-	   */
+  /**
+   * Constructs a new contradiction with the specified cause.
+   *
+   * @param cause the the last object (variable, constraint) responsible for the failure of
+   *     propagation
+   */
+  public ContradictionException(final Entity cause) {
+    final PropagationEngine pe = cause.getProblem().getPropagationEngine();
+    pe.setContradictionCause(cause);
+    pe.flushEvents();
+  }
 
-	public ContradictionException(final Entity cause) {
-		final PropagationEngine pe = cause.getProblem().getPropagationEngine();
-		pe.setContradictionCause(cause);
-		pe.flushEvents();
-	}
-
-	/**
-	 * Contradiction without any identifiable cause
-	 */
-
-	public ContradictionException(final Problem p) {
-		final PropagationEngine pe = p.getPropagationEngine();
-		pe.setNoContradictionCause();
-		pe.flushEvents();
-	}
+  /** Contradiction without any identifiable cause */
+  public ContradictionException(final Problem p) {
+    final PropagationEngine pe = p.getPropagationEngine();
+    pe.setNoContradictionCause();
+    pe.flushEvents();
+  }
 }

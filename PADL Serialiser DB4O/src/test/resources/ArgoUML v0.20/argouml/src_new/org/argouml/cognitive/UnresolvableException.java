@@ -24,19 +24,14 @@
 
 package org.argouml.cognitive;
 
-/**
- * Thrown to indicate a failure to resolve a critic.
- */
-public class UnresolvableException extends Exception
-{
-    /**
-     * Creates a new UnresolvableException with message msg.
-     *
-     * @param	msg	A message describing what caused the exception.
-     */
-    public UnresolvableException(String msg)
-    {
-	super(msg);
-    }
+/** Thrown to indicate a failure to resolve a critic. */
+public class UnresolvableException extends Exception {
+  /**
+   * Creates a new UnresolvableException with message msg.
+   *
+   * @param msg A message describing what caused the exception.
+   */
+  public UnresolvableException(String msg) {
+    super(msg);
+  }
 }
-

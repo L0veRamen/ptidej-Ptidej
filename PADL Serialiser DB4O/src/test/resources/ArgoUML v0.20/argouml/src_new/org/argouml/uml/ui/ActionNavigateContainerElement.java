@@ -22,11 +22,9 @@
 // CALIFORNIA HAS NO OBLIGATIONS TO PROVIDE MAINTENANCE, SUPPORT,
 // UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
-
 package org.argouml.uml.ui;
 
 import org.argouml.model.Model;
-
 
 /**
  * Navigate to container of the element.
@@ -36,11 +34,10 @@ import org.argouml.model.Model;
  */
 public class ActionNavigateContainerElement extends AbstractActionNavigate {
 
-    /**
-     * @see org.argouml.uml.ui.AbstractActionNavigate#navigateTo(java.lang.Object)
-     */
-    protected Object navigateTo(Object source) {
-        return Model.getFacade().getModelElementContainer(source);
-    }
-
+  /**
+   * @see org.argouml.uml.ui.AbstractActionNavigate#navigateTo(java.lang.Object)
+   */
+  protected Object navigateTo(Object source) {
+    return Model.getFacade().getModelElementContainer(source);
+  }
 }

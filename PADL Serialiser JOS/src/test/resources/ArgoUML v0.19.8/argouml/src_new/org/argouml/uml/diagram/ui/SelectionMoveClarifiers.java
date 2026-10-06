@@ -26,39 +26,33 @@
 package org.argouml.uml.diagram.ui;
 
 import java.awt.Graphics;
-
 import org.tigris.gef.base.SelectionMove;
 import org.tigris.gef.presentation.Fig;
 
 /**
- *
- *
- *
  * @author jrobbins
  */
 public class SelectionMoveClarifiers extends SelectionMove {
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    /** Construct a new SelectionMoveClarifiers for the given Fig
-     *
-     * @param f the given Fig
-     */
-    public SelectionMoveClarifiers(Fig f) {
-        super(f);
-    }
+  /**
+   * Construct a new SelectionMoveClarifiers for the given Fig
+   *
+   * @param f the given Fig
+   */
+  public SelectionMoveClarifiers(Fig f) {
+    super(f);
+  }
 
-    /**
-     * Paint the handles at the four corners and midway along each edge of the
-     * bounding box.
-     *
-     * @see org.tigris.gef.base.Selection#paint(java.awt.Graphics)
-     */
-    public void paint(Graphics g) {
-        ((FigNodeModelElement) getContent()).paintClarifiers(g);
-        super.paint(g);
-    }
-
+  /**
+   * Paint the handles at the four corners and midway along each edge of the bounding box.
+   *
+   * @see org.tigris.gef.base.Selection#paint(java.awt.Graphics)
+   */
+  public void paint(Graphics g) {
+    ((FigNodeModelElement) getContent()).paintClarifiers(g);
+    super.paint(g);
+  }
 } /* end class SelectionMoveClarifiers */
-

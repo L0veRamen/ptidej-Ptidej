@@ -1,128 +1,123 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>net.ptidej</groupId>
-		<artifactId>all-ptidej</artifactId>
-		<version>1.0.0</version>
-	</parent>
+    <parent>
+        <groupId>net.ptidej</groupId>
+        <artifactId>all-ptidej</artifactId>
+        <version>1.0.0</version>
+    </parent>
 
-	<groupId>net.ptidej.demima</groupId>
-	<artifactId>demima-solver-java</artifactId>
-	<name>DeMIMA Solver 4</name>
+    <groupId>net.ptidej.demima</groupId>
+    <artifactId>demima-solver-java</artifactId>
+    <name>DeMIMA Solver 4</name>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<argLine>
-						--add-opens=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED
-						--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED
-						--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED
-						--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED
-						--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED
-						--add-opens=java.base/java.util=ALL-UNNAMED
-					</argLine>
-				</configuration>
-			</plugin>
-			<!-- Must generate the test-jar for dependent tests -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>
+                        --add-opens=java.base/java.util=ALL-UNNAMED
+                    </argLine>
+                </configuration>
+            </plugin>
+            <!-- Must generate the test-jar for dependent tests -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
-	<dependencies>
-		<!-- Main dependencies -->
-		<dependency>
-			<groupId>net.ptidej.jchoco</groupId>
-			<artifactId>jchoco-core</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+    <dependencies>
+        <!-- Main dependencies -->
+        <dependency>
+            <groupId>net.ptidej.jchoco</groupId>
+            <artifactId>jchoco-core</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
-		<dependency>
-			<groupId>net.ptidej.cpl</groupId>
-			<artifactId>cpl-core</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+        <dependency>
+            <groupId>net.ptidej.cpl</groupId>
+            <artifactId>cpl-core</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
-		<dependency>
-			<groupId>net.ptidej.padl</groupId>
-			<artifactId>padl-core</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+        <dependency>
+            <groupId>net.ptidej.padl</groupId>
+            <artifactId>padl-core</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
-		<dependency>
-			<groupId>net.ptidej.padl</groupId>
-			<artifactId>padl-design-motifs</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+        <dependency>
+            <groupId>net.ptidej.padl</groupId>
+            <artifactId>padl-design-motifs</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
-		<dependency>
-			<groupId>net.ptidej.demima</groupId>
-			<artifactId>demima-core</artifactId>
-			<version>1.0.0</version>
-		</dependency>
+        <dependency>
+            <groupId>net.ptidej.demima</groupId>
+            <artifactId>demima-core</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
-		<!-- Test dependencies -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>net.ptidej.padl</groupId>
-			<artifactId>padl-creator-classfile</artifactId>
-			<version>1.0.0</version>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>net.ptidej.padl</groupId>
+            <artifactId>padl-creator-classfile</artifactId>
+            <version>1.0.0</version>
+            <scope>test</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>net.ptidej.padl</groupId>
-			<artifactId>padl-analyses</artifactId>
-			<version>1.0.0</version>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>net.ptidej.padl</groupId>
+            <artifactId>padl-analyses</artifactId>
+            <version>1.0.0</version>
+            <scope>test</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>net.ptidej.demima</groupId>
-			<artifactId>demima-core</artifactId>
-			<version>1.0.0</version>
-			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>net.ptidej.demima</groupId>
+            <artifactId>demima-core</artifactId>
+            <version>1.0.0</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
 
-		<!--
-		DIRTY HACK (cf. https://wiki.ptidej.net/doku.php?id=dirty_hack)
-		These two last dependencies MUST COME LAST because they bring with them
-		aspectjtools, which itself bring with it an old version of SubMonitor,
-		which leads to
-			java.lang.NoSuchMethodError: 'org.eclipse.core.runtime.SubMonitor
-		org.eclipse.core.runtime.SubMonitor.split(int)' 
-		-->
-		<dependency>
-			<groupId>net.ptidej.padl</groupId>
-			<artifactId>padl-creator-javafile-eclipse</artifactId>
-			<version>1.0.0</version>
-			<scope>test</scope>
-		</dependency>
+        <!--
+        DIRTY HACK (cf. https://wiki.ptidej.net/doku.php?id=dirty_hack)
+        These two last dependencies MUST COME LAST because they bring with them
+        aspectjtools, which itself bring with it an old version of SubMonitor,
+        which leads to
+            java.lang.NoSuchMethodError: 'org.eclipse.core.runtime.SubMonitor
+        org.eclipse.core.runtime.SubMonitor.split(int)'
+        -->
+        <dependency>
+            <groupId>net.ptidej.padl</groupId>
+            <artifactId>padl-creator-javafile-eclipse</artifactId>
+            <version>1.0.0</version>
+            <scope>test</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>net.ptidej.padl</groupId>
-			<artifactId>padl-generator</artifactId>
-			<version>1.0.0</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>net.ptidej.padl</groupId>
+            <artifactId>padl-generator</artifactId>
+            <version>1.0.0</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>

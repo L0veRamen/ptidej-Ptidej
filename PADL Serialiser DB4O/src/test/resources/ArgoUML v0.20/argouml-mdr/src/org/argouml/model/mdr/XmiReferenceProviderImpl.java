@@ -25,32 +25,30 @@
 package org.argouml.model.mdr;
 
 import javax.jmi.reflect.RefObject;
-
 import org.argouml.model.Model;
 import org.argouml.model.UUIDManager;
 import org.netbeans.api.xmi.XMIReferenceProvider;
 
 /**
  * Custom reference provider for MDR XMI Writer.
- * 
- * Returns our internal ID to be used when writing the xmi.id field
- * 
+ *
+ * <p>Returns our internal ID to be used when writing the xmi.id field
+ *
  * @author Tom Morris
- * 
  */
 public class XmiReferenceProviderImpl implements XMIReferenceProvider {
-    
-    private final String systemId = null;
 
-    /**
-     * @see org.netbeans.api.xmi.XMIReferenceProvider#getReference(javax.jmi.reflect.RefObject)
-     */
-    public XMIReferenceProvider.XMIReference getReference(RefObject object) {
-        String uuid = Model.getFacade().getUUID(object);
+  private final String systemId = null;
 
-        if (uuid == null) {
-            uuid = UUIDManager.getInstance().getNewUUID();
-        }
-        return new XMIReferenceProvider.XMIReference(systemId, uuid);
+  /**
+   * @see org.netbeans.api.xmi.XMIReferenceProvider#getReference(javax.jmi.reflect.RefObject)
+   */
+  public XMIReferenceProvider.XMIReference getReference(RefObject object) {
+    String uuid = Model.getFacade().getUUID(object);
+
+    if (uuid == null) {
+      uuid = UUIDManager.getInstance().getNewUUID();
     }
+    return new XMIReferenceProvider.XMIReference(systemId, uuid);
+  }
 }

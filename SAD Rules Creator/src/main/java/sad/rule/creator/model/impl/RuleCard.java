@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -19,34 +19,33 @@ import sad.rule.creator.model.IVisitor;
  * @author Pierre Leduc
  */
 public class RuleCard extends Container implements IRuleCard {
-	public RuleCard(final String anID) {
-		super(anID);
-	}
+  public RuleCard(final String anID) {
+    super(anID);
+  }
 
-	public void accept(final IVisitor aVisitor) {
-		aVisitor.open(this);
+  public void accept(final IVisitor aVisitor) {
+    aVisitor.open(this);
 
-		final Iterator iterator = this.getIteratorOnConstituents();
-		while (iterator.hasNext()) {
-			((IConstituent) iterator.next()).accept(aVisitor);
-		}
+    final Iterator iterator = this.getIteratorOnConstituents();
+    while (iterator.hasNext()) {
+      ((IConstituent) iterator.next()).accept(aVisitor);
+    }
 
-		aVisitor.close(this);
-	}
+    aVisitor.close(this);
+  }
 
-	public String toString() {
-		final StringBuffer buffer = new StringBuffer();
-		//Util.addTabs(tab, buffer);
-		buffer.append("\n\n*****************************************\n");
-		buffer.append(this.getClass().getName());
-		buffer.append("\nName: ");
-		buffer.append(this.getID());
-		buffer.append("\n-------------------------------------\n");
-		buffer.append(super.toString());
+  public String toString() {
+    final StringBuffer buffer = new StringBuffer();
+    // Util.addTabs(tab, buffer);
+    buffer.append("\n\n*****************************************\n");
+    buffer.append(this.getClass().getName());
+    buffer.append("\nName: ");
+    buffer.append(this.getID());
+    buffer.append("\n-------------------------------------\n");
+    buffer.append(super.toString());
 
-		buffer.append("\n*****************************************");
+    buffer.append("\n*****************************************");
 
-		return buffer.toString();
-
-	}
+    return buffer.toString();
+  }
 }

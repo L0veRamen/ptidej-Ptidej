@@ -33,31 +33,26 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 2, 2003
  */
-public class UMLNamespaceOwnedElementListModel
-    extends UMLModelElementListModel2 {
+public class UMLNamespaceOwnedElementListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLNamespaceOwnedElementListModel.
-     */
-    public UMLNamespaceOwnedElementListModel() {
-        super("ownedElement");
+  /** Constructor for UMLNamespaceOwnedElementListModel. */
+  public UMLNamespaceOwnedElementListModel() {
+    super("ownedElement");
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (getTarget() != null) {
+      setAllElements(Model.getFacade().getOwnedElements(getTarget()));
     }
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (getTarget() != null) {
-            setAllElements(Model.getFacade().getOwnedElements(getTarget()));
-        }
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ element) {
-        return Model.getFacade().getOwnedElements(getTarget())
-        	.contains(element);
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ element) {
+    return Model.getFacade().getOwnedElements(getTarget()).contains(element);
+  }
 }

@@ -26,80 +26,67 @@ package org.argouml.cognitive.ui;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.argouml.cognitive.ToDoItem;
 import org.argouml.cognitive.Translator;
 
-/**
- * This class represents a "priority". Which is a classification for critics.
- *
- */
+/** This class represents a "priority". Which is a classification for critics. */
 public class PriorityNode {
 
-    private static final String HIGH = 
-        Translator.localize("misc.level.high");
+  private static final String HIGH = Translator.localize("misc.level.high");
 
-    private static final String MEDIUM = 
-        Translator.localize("misc.level.medium");
+  private static final String MEDIUM = Translator.localize("misc.level.medium");
 
-    private static final String LOW =
-        Translator.localize("misc.level.low");
+  private static final String LOW = Translator.localize("misc.level.low");
 
-    private static List<PriorityNode> priorities = null;
+  private static List<PriorityNode> priorities = null;
 
-    private String name;
+  private String name;
 
-    private int priority;
+  private int priority;
 
-    /**
-     * The constructor.
-     *
-     * @param n the name of this priority
-     * @param pri the priority number
-     */
-    public PriorityNode(String n, int pri) {
-	name = n;
-	priority = pri;
+  /**
+   * The constructor.
+   *
+   * @param n the name of this priority
+   * @param pri the priority number
+   */
+  public PriorityNode(String n, int pri) {
+    name = n;
+    priority = pri;
+  }
+
+  /**
+   * @return the list of all the priorities
+   */
+  public static List<PriorityNode> getPriorityList() {
+    if (priorities == null) {
+      priorities = new ArrayList<PriorityNode>();
+      priorities.add(new PriorityNode(HIGH, ToDoItem.HIGH_PRIORITY));
+      priorities.add(new PriorityNode(MEDIUM, ToDoItem.MED_PRIORITY));
+      priorities.add(new PriorityNode(LOW, ToDoItem.LOW_PRIORITY));
     }
+    return priorities;
+  }
 
+  /**
+   * @return the name
+   */
+  public String getName() {
+    return name;
+  }
 
-    /**
-     * @return the list of all the priorities
-     */
-    public static List<PriorityNode> getPriorityList() {
-        if (priorities == null) {
-            priorities = new ArrayList<PriorityNode>();
-            priorities.add(new PriorityNode(HIGH,
-                    ToDoItem.HIGH_PRIORITY));
-            priorities.add(new PriorityNode(MEDIUM,
-                    ToDoItem.MED_PRIORITY));
-            priorities.add(new PriorityNode(LOW,
-                    ToDoItem.LOW_PRIORITY));
-        }
-        return priorities;
-    }
+  /**
+   * @return the priority
+   */
+  public int getPriority() {
+    return priority;
+  }
 
-
-    /**
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @return the priority
-     */
-    public int getPriority() {
-        return priority;
-    }
-
-    /*
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-        return getName();
-    }
-
+  /*
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    return getName();
+  }
 }

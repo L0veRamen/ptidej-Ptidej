@@ -32,6 +32,4 @@ import java.util.EventListener;
  * @author Thierry Lach
  * @since 0.9.4
  */
-public interface ArgoEventListener extends EventListener {
-
-}
+public interface ArgoEventListener extends EventListener {}

@@ -29,29 +29,29 @@ import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLCheckBox2;
 
 /**
- *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 4, 2003
  */
 public class UMLAssociationEndOrderingCheckBox extends UMLCheckBox2 {
 
-    /**
-     * Constructor for UMLAssociationEndOrderingCheckBox.
-     */
-    public UMLAssociationEndOrderingCheckBox() {
-        super(Translator.localize("label.ordered"),
-                ActionSetAssociationEndOrdering.getInstance(), "ordering");
-    }
+  /** Constructor for UMLAssociationEndOrderingCheckBox. */
+  public UMLAssociationEndOrderingCheckBox() {
+    super(
+        Translator.localize("label.ordered"),
+        ActionSetAssociationEndOrdering.getInstance(),
+        "ordering");
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLCheckBox2#buildModel()
-     */
-    public void buildModel() {
-        if (getTarget() != null) {
-            Object associationEnd = /*(MAssociationEnd)*/ getTarget();
-            setSelected(
-                    Model.getOrderingKind().getOrdered().equals(
-                            Model.getFacade().getOrdering(associationEnd)));
-        }
+  /**
+   * @see org.argouml.uml.ui.UMLCheckBox2#buildModel()
+   */
+  public void buildModel() {
+    if (getTarget() != null) {
+      Object associationEnd = /*(MAssociationEnd)*/ getTarget();
+      setSelected(
+          Model.getOrderingKind()
+              .getOrdered()
+              .equals(Model.getFacade().getOrdering(associationEnd)));
     }
+  }
 }

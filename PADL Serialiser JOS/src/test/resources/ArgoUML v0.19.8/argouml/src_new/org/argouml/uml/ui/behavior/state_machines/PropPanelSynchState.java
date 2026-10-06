@@ -35,32 +35,20 @@ import org.argouml.util.ConfigLoader;
  */
 public class PropPanelSynchState extends PropPanelStateVertex {
 
-    private static UMLSynchStateBoundDocument boundDocument =
-            new UMLSynchStateBoundDocument();
+  private static UMLSynchStateBoundDocument boundDocument = new UMLSynchStateBoundDocument();
 
-    /**
-     * The constructor.
-     */
-    public PropPanelSynchState() {
-        super("Synch State", 
-            lookupIcon("SynchState"),
-            ConfigLoader.getTabPropsOrientation());
+  /** The constructor. */
+  public PropPanelSynchState() {
+    super("Synch State", lookupIcon("SynchState"), ConfigLoader.getTabPropsOrientation());
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.stereotype"),
-                getStereotypeSelector());
-        addField(Translator.localize("label.container"),
-                getContainerScroll());
-        addField(Translator.localize("label.bound"),
-                new UMLTextField2(boundDocument));
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.stereotype"), getStereotypeSelector());
+    addField(Translator.localize("label.container"), getContainerScroll());
+    addField(Translator.localize("label.bound"), new UMLTextField2(boundDocument));
 
-        addSeperator();
+    addSeperator();
 
-        addField(Translator.localize("label.incoming"),
-                getIncomingScroll());
-        addField(Translator.localize("label.outgoing"),
-                getOutgoingScroll());
-    }
-
+    addField(Translator.localize("label.incoming"), getIncomingScroll());
+    addField(Translator.localize("label.outgoing"), getOutgoingScroll());
+  }
 }

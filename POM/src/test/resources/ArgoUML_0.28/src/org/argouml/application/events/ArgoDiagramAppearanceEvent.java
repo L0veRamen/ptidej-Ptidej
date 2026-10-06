@@ -24,28 +24,28 @@
 
 package org.argouml.application.events;
 
-
 /**
- * ArgoDiagramAppearanceEvent is used to notify interested parties that the
- * module which is the event source has been changed.
+ * ArgoDiagramAppearanceEvent is used to notify interested parties that the module which is the
+ * event source has been changed.
+ *
  * @author Aleksandar
  */
 public class ArgoDiagramAppearanceEvent extends ArgoEvent {
 
-    /**
-     * @param eventType reported by this event.
-     * @param src object that caused the event.
-     */
-    public ArgoDiagramAppearanceEvent(int eventType, Object src) {
-        super(eventType, src);
-    }
+  /**
+   * @param eventType reported by this event.
+   * @param src object that caused the event.
+   */
+  public ArgoDiagramAppearanceEvent(int eventType, Object src) {
+    super(eventType, src);
+  }
 
-    /**
-     * Indicates the start of the 100-digit range for diagram appearance events.
-     *
-     * @return the first id reserved for events.
-     */
-    public int getEventStartRange() {
-        return ANY_DIAGRAM_APPEARANCE_EVENT;
-    }
+  /**
+   * Indicates the start of the 100-digit range for diagram appearance events.
+   *
+   * @return the first id reserved for events.
+   */
+  public int getEventStartRange() {
+    return ANY_DIAGRAM_APPEARANCE_EVENT;
+  }
 }

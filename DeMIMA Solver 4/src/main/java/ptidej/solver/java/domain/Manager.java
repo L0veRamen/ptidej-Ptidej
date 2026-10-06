@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -21,7 +21,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
-
 import padl.kernel.IAbstractLevelModel;
 import padl.kernel.IAbstractModel;
 import padl.util.Util;
@@ -35,246 +34,212 @@ import util.io.WriterOutputStream;
  * @since 2004/05/16
  */
 public class Manager {
-	private static final String NAME = "name";
-	private static final String IS_ABSTRACT = "isAbstract";
-	private static final String IS_GHOST = "isGhost";
-	private static final String IS_INTERFACE = "isInterface";
-	private static final String NUMBER_OF_ENTITIES = "NumberOfEntities";
+  private static final String NAME = "name";
+  private static final String IS_ABSTRACT = "isAbstract";
+  private static final String IS_GHOST = "isGhost";
+  private static final String IS_INTERFACE = "isInterface";
+  private static final String NUMBER_OF_ENTITIES = "NumberOfEntities";
 
-	public static List build(final IAbstractModel abstractModel) {
-		final IWalker generator = new GeneratorIncludingGhosts();
-		return Manager.build(abstractModel, generator);
-	}
+  public static List build(final IAbstractModel abstractModel) {
+    final IWalker generator = new GeneratorIncludingGhosts();
+    return Manager.build(abstractModel, generator);
+  }
 
-	public static List build(final IAbstractModel abstractModel,
-			final IWalker aGenerator) {
-		
-		abstractModel.walk(aGenerator);
-		final List listOfEntities = (List) aGenerator.getResult();
-		return listOfEntities;
-	}
+  public static List build(final IAbstractModel abstractModel, final IWalker aGenerator) {
 
-	private static Entity findEntity(final List listOfEntities,
-			final String anEntityName) {
+    abstractModel.walk(aGenerator);
+    final List listOfEntities = (List) aGenerator.getResult();
+    return listOfEntities;
+  }
 
-		final Iterator iterator = listOfEntities.iterator();
-		while (iterator.hasNext()) {
-			final Entity entity = (Entity) iterator.next();
-			if (entity.getName().equals(anEntityName)) {
-				return entity;
-			}
-		}
-		return null;
-	}
+  private static Entity findEntity(final List listOfEntities, final String anEntityName) {
 
-	public static List load(final Reader reader) {
-		final Properties properties = new Properties();
-		try {
-			properties.load(new ReaderInputStream(reader));
-		}
-		catch (final IOException ioe) {
-			ioe.printStackTrace(ProxyConsole.getInstance().errorOutput());
-		}
+    final Iterator iterator = listOfEntities.iterator();
+    while (iterator.hasNext()) {
+      final Entity entity = (Entity) iterator.next();
+      if (entity.getName().equals(anEntityName)) {
+        return entity;
+      }
+    }
+    return null;
+  }
 
-		final int numberOfEntities = Integer
-				.parseInt(properties.getProperty(Manager.NUMBER_OF_ENTITIES));
-		final List listOfEntities = new ArrayList(numberOfEntities);
-		final StringBuffer buffer = new StringBuffer();
+  public static List load(final Reader reader) {
+    final Properties properties = new Properties();
+    try {
+      properties.load(new ReaderInputStream(reader));
+    } catch (final IOException ioe) {
+      ioe.printStackTrace(ProxyConsole.getInstance().errorOutput());
+    }
 
-		// First, I create empty shells for the entities.
-		for (int i = 0; i < numberOfEntities; i++) {
-			buffer.setLength(0);
-			buffer.append(i);
-			buffer.append('.');
-			buffer.append(Manager.NAME);
-			final String name = buffer.toString();
+    final int numberOfEntities =
+        Integer.parseInt(properties.getProperty(Manager.NUMBER_OF_ENTITIES));
+    final List<Entity> listOfEntities = new ArrayList<>(numberOfEntities);
+    final StringBuffer buffer = new StringBuffer();
 
-			buffer.setLength(0);
-			buffer.append(i);
-			buffer.append('.');
-			buffer.append(Manager.IS_ABSTRACT);
-			final String isAbstract = buffer.toString();
+    // First, I create empty shells for the entities.
+    for (int i = 0; i < numberOfEntities; i++) {
+      buffer.setLength(0);
+      buffer.append(i);
+      buffer.append('.');
+      buffer.append(Manager.NAME);
+      final String name = buffer.toString();
 
-			buffer.setLength(0);
-			buffer.append(i);
-			buffer.append('.');
-			buffer.append(Manager.IS_GHOST);
-			final String isGhost = buffer.toString();
+      buffer.setLength(0);
+      buffer.append(i);
+      buffer.append('.');
+      buffer.append(Manager.IS_ABSTRACT);
+      final String isAbstract = buffer.toString();
 
-			buffer.setLength(0);
-			buffer.append(i);
-			buffer.append('.');
-			buffer.append(Manager.IS_INTERFACE);
-			final String isInterface = buffer.toString();
+      buffer.setLength(0);
+      buffer.append(i);
+      buffer.append('.');
+      buffer.append(Manager.IS_GHOST);
+      final String isGhost = buffer.toString();
 
-			listOfEntities.add(new Entity(properties.getProperty(name),
-					Boolean.getBoolean(isAbstract),
-					Boolean.getBoolean(isInterface),
-					Boolean.getBoolean(isGhost)));
-		}
+      buffer.setLength(0);
+      buffer.append(i);
+      buffer.append('.');
+      buffer.append(Manager.IS_INTERFACE);
+      final String isInterface = buffer.toString();
 
-		// Then, I fill up the blanks.
-		for (int i = 0; i < numberOfEntities; i++) {
-			final Field[] fields = Entity.class.getDeclaredFields();
-			for (int j = 0; j < fields.length; j++) {
-				final String fieldName = fields[j].getName();
-				final String fieldType = fields[j].getType().getName();
+      listOfEntities.add(
+          new Entity(
+              properties.getProperty(name),
+              Boolean.getBoolean(isAbstract),
+              Boolean.getBoolean(isInterface),
+              Boolean.getBoolean(isGhost)));
+    }
 
-				if (!fieldName.equals(Manager.NAME)
-						&& !fieldName.equals("methodNames")
-						&& fieldType.endsWith("Set")) {
+    // Then, I fill up the blanks.
+    for (int i = 0; i < numberOfEntities; i++) {
+      final Field[] fields = Entity.class.getDeclaredFields();
+      for (int j = 0; j < fields.length; j++) {
+        final String fieldName = fields[j].getName();
+        final String fieldType = fields[j].getType().getName();
 
-					buffer.setLength(0);
-					buffer.append(i);
-					buffer.append('.');
-					buffer.append(fieldName);
-					final String list = properties
-							.getProperty(buffer.toString());
-					final StringTokenizer tokenizer = new StringTokenizer(list,
-							"[,] ");
+        if (!fieldName.equals(Manager.NAME)
+            && !fieldName.equals("methodNames")
+            && fieldType.endsWith("Set")) {
 
-					try {
-						buffer.setLength(0);
-						buffer.append("add");
-						if (fieldName.startsWith("allReachable")) {
-							// Yann 2005/10/13: Conversion...
-							// I convert from a fieldName, i.e.,
-							// allReachableAggregatedEntities
-							// in the corresponding method name, i.e.,
-							// addAggregatedEntity
-							buffer.append(fieldName.substring(12));
-						}
-						else {
-							// Yann 2005/10/13: Conversion...
-							// I convert from a fieldName, i.e.,
-							// aggregatedEntities
-							// in the corresponding method name, i.e.,
-							// addAggregatedEntity
-							buffer.append(Util.capitalizeFirstLetter(
-									fieldName.toCharArray()));
-						}
-						buffer.replace(buffer.length() - 3, buffer.length(),
-								"y");
-						final Method setter = Entity.class.getMethod(
-								buffer.toString(),
-								new Class[] { Entity.class });
-						while (tokenizer.hasMoreTokens()) {
-							final String token = tokenizer.nextToken();
-							setter.invoke(listOfEntities.get(i),
-									new Object[] { Manager.findEntity(
-											listOfEntities, token) });
-						}
-					}
-					catch (final SecurityException se) {
-						se.printStackTrace(
-								ProxyConsole.getInstance().errorOutput());
-					}
-					catch (final IllegalArgumentException iae) {
-						iae.printStackTrace(
-								ProxyConsole.getInstance().errorOutput());
-					}
-					catch (final NoSuchMethodException nsme) {
-						nsme.printStackTrace(
-								ProxyConsole.getInstance().errorOutput());
-					}
-					catch (final IllegalAccessException iae) {
-						iae.printStackTrace(
-								ProxyConsole.getInstance().errorOutput());
-					}
-					catch (final InvocationTargetException ite) {
-						ite.printStackTrace(
-								ProxyConsole.getInstance().errorOutput());
-					}
-				}
-			}
-		}
+          buffer.setLength(0);
+          buffer.append(i);
+          buffer.append('.');
+          buffer.append(fieldName);
+          final String list = properties.getProperty(buffer.toString());
+          final StringTokenizer tokenizer = new StringTokenizer(list, "[,] ");
 
-		return listOfEntities;
-	}
+          try {
+            buffer.setLength(0);
+            buffer.append("add");
+            if (fieldName.startsWith("allReachable")) {
+              // Yann 2005/10/13: Conversion...
+              // I convert from a fieldName, i.e.,
+              // allReachableAggregatedEntities
+              // in the corresponding method name, i.e.,
+              // addAggregatedEntity
+              buffer.append(fieldName.substring(12));
+            } else {
+              // Yann 2005/10/13: Conversion...
+              // I convert from a fieldName, i.e.,
+              // aggregatedEntities
+              // in the corresponding method name, i.e.,
+              // addAggregatedEntity
+              buffer.append(Util.capitalizeFirstLetter(fieldName.toCharArray()));
+            }
+            buffer.replace(buffer.length() - 3, buffer.length(), "y");
+            final Method setter =
+                Entity.class.getMethod(buffer.toString(), new Class[] {Entity.class});
+            while (tokenizer.hasMoreTokens()) {
+              final String token = tokenizer.nextToken();
+              setter.invoke(
+                  listOfEntities.get(i), new Object[] {Manager.findEntity(listOfEntities, token)});
+            }
+          } catch (final SecurityException se) {
+            se.printStackTrace(ProxyConsole.getInstance().errorOutput());
+          } catch (final IllegalArgumentException iae) {
+            iae.printStackTrace(ProxyConsole.getInstance().errorOutput());
+          } catch (final NoSuchMethodException nsme) {
+            nsme.printStackTrace(ProxyConsole.getInstance().errorOutput());
+          } catch (final IllegalAccessException iae) {
+            iae.printStackTrace(ProxyConsole.getInstance().errorOutput());
+          } catch (final InvocationTargetException ite) {
+            ite.printStackTrace(ProxyConsole.getInstance().errorOutput());
+          }
+        }
+      }
+    }
 
-	public static void save(final IAbstractLevelModel abstractLevelModel,
-			final Writer writer) {
+    return listOfEntities;
+  }
 
-		final List listOfEntities = Manager.build(abstractLevelModel);
-		final int numberOfEntities = listOfEntities.size();
-		final Properties properties = new Properties();
-		properties.put(Manager.NUMBER_OF_ENTITIES,
-				Integer.toString(numberOfEntities));
+  public static void save(final IAbstractLevelModel abstractLevelModel, final Writer writer) {
 
-		final StringBuffer key = new StringBuffer();
-		final StringBuffer name = new StringBuffer();
-		final StringBuffer value = new StringBuffer();
-		for (int i = 0; i < numberOfEntities; i++) {
-			final Field[] fields = Entity.class.getDeclaredFields();
-			for (int j = 0; j < fields.length; j++) {
-				final String fieldName = fields[j].getName();
+    final List listOfEntities = Manager.build(abstractLevelModel);
+    final int numberOfEntities = listOfEntities.size();
+    final Properties properties = new Properties();
+    properties.put(Manager.NUMBER_OF_ENTITIES, Integer.toString(numberOfEntities));
 
-				key.setLength(0);
-				key.append(i);
-				key.append('.');
-				key.append(fieldName);
+    final StringBuffer key = new StringBuffer();
+    final StringBuffer name = new StringBuffer();
+    final StringBuffer value = new StringBuffer();
+    for (int i = 0; i < numberOfEntities; i++) {
+      final Field[] fields = Entity.class.getDeclaredFields();
+      for (int j = 0; j < fields.length; j++) {
+        final String fieldName = fields[j].getName();
 
-				Method getter = null;
-				try {
-					name.setLength(0);
-					name.append("get");
-					name.append(Util
-							.capitalizeFirstLetter(fieldName.toCharArray()));
+        key.setLength(0);
+        key.append(i);
+        key.append('.');
+        key.append(fieldName);
 
-					getter = Entity.class.getMethod(name.toString(),
-							new Class[0]);
+        Method getter = null;
+        try {
+          name.setLength(0);
+          name.append("get");
+          name.append(Util.capitalizeFirstLetter(fieldName.toCharArray()));
 
-				}
-				catch (final SecurityException e) {
-				}
-				catch (final NoSuchMethodException e) {
-				}
+          getter = Entity.class.getMethod(name.toString(), new Class[0]);
 
-				if (getter == null) {
-					try {
-						// Yann 2007/08/31: isAbstract & Co.
-						// I now manage the case of the boolean fields.
-						name.setLength(0);
-						name.append(fieldName);
+        } catch (final SecurityException e) {
+        } catch (final NoSuchMethodException e) {
+        }
 
-						getter = Entity.class.getMethod(name.toString(),
-								new Class[0]);
+        if (getter == null) {
+          try {
+            // Yann 2007/08/31: isAbstract & Co.
+            // I now manage the case of the boolean fields.
+            name.setLength(0);
+            name.append(fieldName);
 
-					}
-					catch (final SecurityException e) {
-					}
-					catch (final NoSuchMethodException e) {
-					}
-				}
+            getter = Entity.class.getMethod(name.toString(), new Class[0]);
 
-				if (getter != null) {
-					try {
-						value.setLength(0);
-						value.append(getter
-								.invoke(listOfEntities.get(i), new Object[0])
-								.toString());
-					}
-					catch (final IllegalArgumentException e) {
-						e.printStackTrace();
-					}
-					catch (final IllegalAccessException e) {
-						e.printStackTrace();
-					}
-					catch (final InvocationTargetException e) {
-						e.printStackTrace();
-					}
-				}
+          } catch (final SecurityException e) {
+          } catch (final NoSuchMethodException e) {
+          }
+        }
 
-				properties.put(key.toString(), value.toString());
-			}
-		}
+        if (getter != null) {
+          try {
+            value.setLength(0);
+            value.append(getter.invoke(listOfEntities.get(i), new Object[0]).toString());
+          } catch (final IllegalArgumentException e) {
+            e.printStackTrace();
+          } catch (final IllegalAccessException e) {
+            e.printStackTrace();
+          } catch (final InvocationTargetException e) {
+            e.printStackTrace();
+          }
+        }
 
-		try {
-			properties.store(new WriterOutputStream(writer),
-					"JPtidejSolver domain model");
-		}
-		catch (final IOException ioe) {
-			ioe.printStackTrace(ProxyConsole.getInstance().errorOutput());
-		}
-	}
+        properties.put(key.toString(), value.toString());
+      }
+    }
+
+    try {
+      properties.store(new WriterOutputStream(writer), "JPtidejSolver domain model");
+    } catch (final IOException ioe) {
+      ioe.printStackTrace(ProxyConsole.getInstance().errorOutput());
+    }
+  }
 }

@@ -27,7 +27,6 @@ package org.argouml.uml.ui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.LinkedList;
-
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
@@ -35,156 +34,140 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
-
 import org.argouml.i18n.Translator;
 import org.argouml.ui.ArgoDialog;
 
 /**
- * This dialog appears when selecting
- * <code>Generation -> Settings for Generate for Project...</code>
- * in the menu.<p>
+ * This dialog appears when selecting <code>Generation -> Settings for Generate for Project...
+ * </code> in the menu.
  *
- * Provides support for setting a "src_path" tagged value used in Java
- * round trip engineering.
+ * <p>Provides support for setting a "src_path" tagged value used in Java round trip engineering.
  */
 public class SourcePathDialog extends ArgoDialog implements ActionListener {
 
-    private SourcePathController srcPathCtrl = new SourcePathControllerImpl();
+  private SourcePathController srcPathCtrl = new SourcePathControllerImpl();
 
-    private SourcePathTableModel srcPathTableModel =
-        srcPathCtrl.getSourcePathSettings();
+  private SourcePathTableModel srcPathTableModel = srcPathCtrl.getSourcePathSettings();
 
-    private JTable srcPathTable;
+  private JTable srcPathTable;
 
-    private JButton delButton;
+  private JButton delButton;
 
-    private ListSelectionModel rowSM;
+  private ListSelectionModel rowSM;
 
-    /**
-     * The constructor.
-     *
-     */
-    public SourcePathDialog() {
-        super(
-            Translator.localize("action.generate-code-for-project"),
-            ArgoDialog.OK_CANCEL_OPTION,
-            true);
+  /** The constructor. */
+  public SourcePathDialog() {
+    super(
+        Translator.localize("action.generate-code-for-project"), ArgoDialog.OK_CANCEL_OPTION, true);
 
-        srcPathTable = new JTable();
-        srcPathTable.setModel(srcPathTableModel);
-        srcPathTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
-        // Hack: don't show first column, where the model element object is
-        // placed.
-        TableColumn elemCol = srcPathTable.getColumnModel().getColumn(0);
-        elemCol.setMinWidth(0);
-        elemCol.setMaxWidth(0);
+    srcPathTable = new JTable();
+    srcPathTable.setModel(srcPathTableModel);
+    srcPathTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+    // Hack: don't show first column, where the model element object is
+    // placed.
+    TableColumn elemCol = srcPathTable.getColumnModel().getColumn(0);
+    elemCol.setMinWidth(0);
+    elemCol.setMaxWidth(0);
 
-        delButton = new JButton(Translator.localize("button.delete"));
-        delButton.setEnabled(false);
-        addButton(delButton, 0);
+    delButton = new JButton(Translator.localize("button.delete"));
+    delButton.setEnabled(false);
+    addButton(delButton, 0);
 
-        rowSM = srcPathTable.getSelectionModel();
-        rowSM.addListSelectionListener(new SelectionListener());
-        delButton.addActionListener(this);
+    rowSM = srcPathTable.getSelectionModel();
+    rowSM.addListSelectionListener(new SelectionListener());
+    delButton.addActionListener(this);
 
-        setContent(new JScrollPane(srcPathTable));
+    setContent(new JScrollPane(srcPathTable));
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // event handlers
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+
+    // OK Button ------------------------------------------
+    if (e.getSource() == getOkButton()) {
+      buttonOkActionPerformed();
+    }
+    // Delete Button
+    if (e.getSource() == delButton) {
+      deleteSelectedSettings();
+    }
+  }
+
+  /** The OK button is pressed. */
+  private void buttonOkActionPerformed() {
+    srcPathCtrl.setSourcePath(srcPathTableModel);
+  }
+
+  /** Retrieve the selected rows indexes. */
+  private int[] getSelectedIndexes() {
+    int firstSelectedRow = rowSM.getMinSelectionIndex();
+    int lastSelectedRow = rowSM.getMaxSelectionIndex();
+    LinkedList selectedIndexesList = new LinkedList();
+    int numSelectedRows = 0;
+    for (int i = firstSelectedRow; i <= lastSelectedRow; i++) {
+      if (rowSM.isSelectedIndex(i)) {
+        numSelectedRows++;
+        selectedIndexesList.add(Integer.valueOf(i));
+      }
+    }
+    int[] indexes = new int[selectedIndexesList.size()];
+    java.util.Iterator it = selectedIndexesList.iterator();
+    for (int i = 0; i < indexes.length && it.hasNext(); i++) {
+      indexes[i] = ((Integer) it.next()).intValue();
+    }
+    return indexes;
+  }
+
+  /** Delete the source path settings of the selected table rows. */
+  private void deleteSelectedSettings() {
+    // find selected rows and make a list of the model elements
+    // that are selected
+    int[] selectedIndexes = getSelectedIndexes();
+
+    // confirm with the user that he wants to delete, presenting the
+    // list of settings to delete
+    StringBuffer msg = new StringBuffer();
+    msg.append(Translator.localize("dialog.source-path-del.question"));
+    for (int i = 0; i < selectedIndexes.length; i++) {
+      msg.append("\n");
+      msg.append(srcPathTableModel.getMEName(selectedIndexes[i]));
+      msg.append(" (");
+      msg.append(srcPathTableModel.getMEType(selectedIndexes[i]));
+      msg.append(")");
     }
 
-    ////////////////////////////////////////////////////////////////
-    // event handlers
-
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-
-        // OK Button ------------------------------------------
-        if (e.getSource() == getOkButton()) {
-            buttonOkActionPerformed();
-        }
-        // Delete Button
-        if (e.getSource() == delButton) {
-            deleteSelectedSettings();
-        }
-    }
-
-    /**
-     * The OK button is pressed.
-     */
-    private void buttonOkActionPerformed() {
-        srcPathCtrl.setSourcePath(srcPathTableModel);
-    }
-
-    /**
-     * Retrieve the selected rows indexes.
-     */
-    private int[] getSelectedIndexes() {
-        int firstSelectedRow = rowSM.getMinSelectionIndex();
-        int lastSelectedRow = rowSM.getMaxSelectionIndex();
-        LinkedList selectedIndexesList = new LinkedList();
-        int numSelectedRows = 0;
-        for (int i = firstSelectedRow; i <= lastSelectedRow; i++) {
-            if (rowSM.isSelectedIndex(i)) {
-                numSelectedRows++;
-                selectedIndexesList.add(Integer.valueOf(i));
-            }
-        }
-        int[] indexes = new int[selectedIndexesList.size()];
-        java.util.Iterator it = selectedIndexesList.iterator();
-        for (int i = 0; i < indexes.length && it.hasNext(); i++) {
-            indexes[i] = ((Integer) it.next()).intValue();
-        }
-        return indexes;
-    }
-
-    /**
-     * Delete the source path settings of the selected table rows.
-     */
-    private void deleteSelectedSettings() {
-        // find selected rows and make a list of the model elements
-        // that are selected
-        int[] selectedIndexes = getSelectedIndexes();
-
-        // confirm with the user that he wants to delete, presenting the
-        // list of settings to delete
-        StringBuffer msg = new StringBuffer();
-        msg.append(Translator.localize("dialog.source-path-del.question"));
-        for (int i = 0; i < selectedIndexes.length; i++) {
-            msg.append("\n");
-            msg.append(srcPathTableModel.getMEName(selectedIndexes[i]));
-            msg.append(" (");
-            msg.append(srcPathTableModel.getMEType(selectedIndexes[i]));
-            msg.append(")");
-        }
-
-        int res = JOptionPane.showConfirmDialog(this,
+    int res =
+        JOptionPane.showConfirmDialog(
+            this,
             msg.toString(),
             Translator.localize("dialog.title.source-path-del"),
             JOptionPane.OK_CANCEL_OPTION);
 
-        if (res == JOptionPane.OK_OPTION) {
-            // procede with the deletion in the model
-            int firstSel = rowSM.getMinSelectionIndex();
-            for (int i = 0; i < selectedIndexes.length && firstSel != -1; i++) {
-                srcPathCtrl.deleteSourcePath(srcPathTableModel
-                        .getModelElement(firstSel));
-                srcPathTableModel.removeRow(firstSel);
-                firstSel = rowSM.getMinSelectionIndex();
-            }
-            // disable the button since no row will be selected now
-            delButton.setEnabled(false);
-        }
+    if (res == JOptionPane.OK_OPTION) {
+      // procede with the deletion in the model
+      int firstSel = rowSM.getMinSelectionIndex();
+      for (int i = 0; i < selectedIndexes.length && firstSel != -1; i++) {
+        srcPathCtrl.deleteSourcePath(srcPathTableModel.getModelElement(firstSel));
+        srcPathTableModel.removeRow(firstSel);
+        firstSel = rowSM.getMinSelectionIndex();
+      }
+      // disable the button since no row will be selected now
+      delButton.setEnabled(false);
     }
+  }
 
-    /**
-     * Class that listens to selection events.
-     */
-    class SelectionListener implements ListSelectionListener {
-        public void valueChanged(javax.swing.event.ListSelectionEvent e) {
-            if (!delButton.isEnabled()) {
-                delButton.setEnabled(true);
-            }
-        }
+  /** Class that listens to selection events. */
+  class SelectionListener implements ListSelectionListener {
+    public void valueChanged(javax.swing.event.ListSelectionEvent e) {
+      if (!delButton.isEnabled()) {
+        delButton.setEnabled(true);
+      }
     }
+  }
 } /* end class SourcePathDialog */

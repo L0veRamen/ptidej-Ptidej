@@ -26,7 +26,6 @@ package org.argouml.uml.cognitive.critics;
 
 import java.util.Collection;
 import java.util.Iterator;
-
 import org.argouml.cognitive.Designer;
 import org.argouml.cognitive.ListSet;
 import org.argouml.cognitive.ToDoItem;
@@ -38,85 +37,79 @@ import org.argouml.uml.diagram.static_structure.ui.FigInterface;
 import org.tigris.gef.presentation.Fig;
 
 /**
- * A critic to detect when a interface in a deployment-diagram
- * is not inside a component.
+ * A critic to detect when a interface in a deployment-diagram is not inside a component.
  *
  * @author 5eichler@informatik.uni-hamburg.de
  */
 public class CrInterfaceWithoutComponent extends CrUML {
 
-    /**
-     * The constructor.
-     */
-    public CrInterfaceWithoutComponent() {
-        setupHeadAndDesc();
-	addSupportedDecision(UMLDecision.PATTERNS);
-    }
+  /** The constructor. */
+  public CrInterfaceWithoutComponent() {
+    setupHeadAndDesc();
+    addSupportedDecision(UMLDecision.PATTERNS);
+  }
 
-    /**
-     * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
-     * java.lang.Object, org.argouml.cognitive.Designer)
-     */
-    public boolean predicate2(Object dm, Designer dsgr) {
-	if (!(dm instanceof UMLDeploymentDiagram)) return NO_PROBLEM;
-	UMLDeploymentDiagram dd = (UMLDeploymentDiagram) dm;
-	ListSet offs = computeOffenders(dd);
-	if (offs == null) return NO_PROBLEM;
-	return PROBLEM_FOUND;
-    }
+  /**
+   * @see org.argouml.uml.cognitive.critics.CrUML#predicate2( java.lang.Object,
+   *     org.argouml.cognitive.Designer)
+   */
+  public boolean predicate2(Object dm, Designer dsgr) {
+    if (!(dm instanceof UMLDeploymentDiagram)) return NO_PROBLEM;
+    UMLDeploymentDiagram dd = (UMLDeploymentDiagram) dm;
+    ListSet offs = computeOffenders(dd);
+    if (offs == null) return NO_PROBLEM;
+    return PROBLEM_FOUND;
+  }
 
-    /**
-     * @see org.argouml.cognitive.critics.Critic#toDoItem(
-     * java.lang.Object, org.argouml.cognitive.Designer)
-     */
-    public ToDoItem toDoItem(Object dm, Designer dsgr) {
-	UMLDeploymentDiagram dd = (UMLDeploymentDiagram) dm;
-	ListSet offs = computeOffenders(dd);
-	return new UMLToDoItem(this, offs, dsgr);
-    }
+  /**
+   * @see org.argouml.cognitive.critics.Critic#toDoItem( java.lang.Object,
+   *     org.argouml.cognitive.Designer)
+   */
+  public ToDoItem toDoItem(Object dm, Designer dsgr) {
+    UMLDeploymentDiagram dd = (UMLDeploymentDiagram) dm;
+    ListSet offs = computeOffenders(dd);
+    return new UMLToDoItem(this, offs, dsgr);
+  }
 
-    /**
-     * @see org.argouml.cognitive.Poster#stillValid(
-     * org.argouml.cognitive.ToDoItem, org.argouml.cognitive.Designer)
-     */
-    public boolean stillValid(ToDoItem i, Designer dsgr) {
-	if (!isActive()) return false;
-	ListSet offs = i.getOffenders();
-	UMLDeploymentDiagram dd = (UMLDeploymentDiagram) offs.firstElement();
-	//if (!predicate(dm, dsgr)) return false;
-	ListSet newOffs = computeOffenders(dd);
-	boolean res = offs.equals(newOffs);
-	return res;
-    }
+  /**
+   * @see org.argouml.cognitive.Poster#stillValid( org.argouml.cognitive.ToDoItem,
+   *     org.argouml.cognitive.Designer)
+   */
+  public boolean stillValid(ToDoItem i, Designer dsgr) {
+    if (!isActive()) return false;
+    ListSet offs = i.getOffenders();
+    UMLDeploymentDiagram dd = (UMLDeploymentDiagram) offs.firstElement();
+    // if (!predicate(dm, dsgr)) return false;
+    ListSet newOffs = computeOffenders(dd);
+    boolean res = offs.equals(newOffs);
+    return res;
+  }
 
-    /**
-     * If there are interfaces that are not inside a component
-     * the returned vector-set is not null. Then in the vector-set
-     * are the UMLDeploymentDiagram and all FigInterfaces with no
-     * enclosing FigComponent
-     *
-     * @param dd the diagram to check
-     * @return the set of offenders
-     */
-    public ListSet computeOffenders(UMLDeploymentDiagram dd) {
-	Collection figs = dd.getLayer().getContents();
-	ListSet offs = null;
-        Iterator figIter = figs.iterator();
-	while (figIter.hasNext()) {
-	    Object obj = figIter.next();
-	    if (!(obj instanceof FigInterface)) continue;
-	    FigInterface fi = (FigInterface) obj;
-	    Fig enclosing = fi.getEnclosingFig();
-	    if (enclosing == null || (!(Model.getFacade()
-	            .isAComponent(enclosing.getOwner())))) {
-		if (offs == null) {
-		    offs = new ListSet();
-		    offs.addElement(dd);
-		}
-		offs.addElement(fi);
-	    }
-	}
-	return offs;
+  /**
+   * If there are interfaces that are not inside a component the returned vector-set is not null.
+   * Then in the vector-set are the UMLDeploymentDiagram and all FigInterfaces with no enclosing
+   * FigComponent
+   *
+   * @param dd the diagram to check
+   * @return the set of offenders
+   */
+  public ListSet computeOffenders(UMLDeploymentDiagram dd) {
+    Collection figs = dd.getLayer().getContents();
+    ListSet offs = null;
+    Iterator figIter = figs.iterator();
+    while (figIter.hasNext()) {
+      Object obj = figIter.next();
+      if (!(obj instanceof FigInterface)) continue;
+      FigInterface fi = (FigInterface) obj;
+      Fig enclosing = fi.getEnclosingFig();
+      if (enclosing == null || (!(Model.getFacade().isAComponent(enclosing.getOwner())))) {
+        if (offs == null) {
+          offs = new ListSet();
+          offs.addElement(dd);
+        }
+        offs.addElement(fi);
+      }
     }
-
+    return offs;
+  }
 } /* end class CrInterfaceWithoutComponent.java */

@@ -26,40 +26,34 @@ package org.argouml.notation.providers;
 
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
-
 import org.argouml.model.Model;
 import org.argouml.notation.NotationProvider;
 
 /**
- * This abstract class forms the basis of all Notation providers
- * for the text shown in the Fig that represents an Enumeration Literal.
- * Subclass this for all languages.
+ * This abstract class forms the basis of all Notation providers for the text shown in the Fig that
+ * represents an Enumeration Literal. Subclass this for all languages.
  *
  * @author Michiel
  */
 public abstract class EnumerationLiteralNotation extends NotationProvider {
 
-    /**
-     * The constructor.
-     *
-     * @param enumLiteral the UML element
-     */
-    public EnumerationLiteralNotation(Object enumLiteral) {
-        if (!Model.getFacade().isAEnumerationLiteral(enumLiteral)) {
-            throw new IllegalArgumentException(
-                    "This is not an Enumeration Literal.");
-        }
+  /**
+   * The constructor.
+   *
+   * @param enumLiteral the UML element
+   */
+  public EnumerationLiteralNotation(Object enumLiteral) {
+    if (!Model.getFacade().isAEnumerationLiteral(enumLiteral)) {
+      throw new IllegalArgumentException("This is not an Enumeration Literal.");
     }
+  }
 
-    @Override
-    public void initialiseListener(PropertyChangeListener listener, 
-            Object modelElement) {
-        addElementListener(listener, modelElement, 
-                new String[] {"remove", "stereotype"} );
-        Collection c = Model.getFacade().getStereotypes(modelElement);
-        for (Object st : c) {
-            addElementListener(listener, st, "name");
-        }
+  @Override
+  public void initialiseListener(PropertyChangeListener listener, Object modelElement) {
+    addElementListener(listener, modelElement, new String[] {"remove", "stereotype"});
+    Collection c = Model.getFacade().getStereotypes(modelElement);
+    for (Object st : c) {
+      addElementListener(listener, st, "name");
     }
-
+  }
 }

@@ -27,7 +27,6 @@ package org.argouml.uml.ui;
 import java.awt.event.ActionEvent;
 import java.util.Collection;
 import java.util.Iterator;
-
 import org.argouml.kernel.ProjectManager;
 import org.argouml.uml.diagram.static_structure.layout.ClassdiagramLayouter;
 import org.argouml.uml.diagram.static_structure.ui.UMLClassDiagram;
@@ -37,68 +36,59 @@ import org.tigris.gef.base.Globals;
 import org.tigris.gef.base.SelectionManager;
 import org.tigris.gef.presentation.Fig;
 
-/**
- * Action to automatically lay out a diagram.
- *
- */
+/** Action to automatically lay out a diagram. */
 public class ActionLayout extends UMLAction {
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    /**
-     * The constructor.
-     */
-    public ActionLayout() {
-        super("action.layout", true, NO_ICON);
+  /** The constructor. */
+  public ActionLayout() {
+    super("action.layout", true, NO_ICON);
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // main methods
+
+  /**
+   * Check whether we deal with a supported diagram type (currently only UMLClassDiagram).
+   * Incremental Layout is not implemented for any diagram type, so it is greyed out.
+   *
+   * @see org.argouml.ui.ProjectBrowser
+   */
+  public boolean shouldBeEnabled() {
+    return (super.shouldBeEnabled()
+        && (ProjectManager.getManager().getCurrentProject().getActiveDiagram()
+            instanceof UMLClassDiagram));
+  }
+
+  /**
+   * This action performs the layout and triggers a redraw of the editor pane.
+   *
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    ClassdiagramLayouter layouter =
+        new ClassdiagramLayouter(
+            (UMLDiagram) ProjectManager.getManager().getCurrentProject().getActiveDiagram());
+
+    Editor ce = Globals.curEditor();
+    SelectionManager sm = ce.getSelectionManager();
+
+    // Get all the figures from the diagram.
+    Collection nodes =
+        ((UMLClassDiagram) ProjectManager.getManager().getCurrentProject().getActiveDiagram())
+            .getLayer()
+            .getContents();
+    Iterator it = nodes.iterator();
+    while (it.hasNext()) {
+      sm.select((Fig) (it.next()));
+      // Select all the figures in the diagram.
     }
 
-    ////////////////////////////////////////////////////////////////
-    // main methods
-
-    /**
-     * Check whether we deal with a supported diagram type
-     * (currently only UMLClassDiagram).
-     * Incremental Layout is not implemented for any diagram type,
-     * so it is greyed out.
-     * @see org.argouml.ui.ProjectBrowser
-     */
-    public boolean shouldBeEnabled() {
-        return (super.shouldBeEnabled()
-            && (ProjectManager.getManager().getCurrentProject()
-                    .getActiveDiagram() instanceof UMLClassDiagram));
-    }
-
-    /**
-     * This action performs the layout and triggers a redraw
-     * of the editor pane.
-     *
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-        ClassdiagramLayouter layouter =
-            new ClassdiagramLayouter(
-				     (UMLDiagram) ProjectManager.getManager()
-				         .getCurrentProject()
-				             .getActiveDiagram());
-
-        Editor ce = Globals.curEditor();
-        SelectionManager sm = ce.getSelectionManager();
-
-        // Get all the figures from the diagram.
-        Collection nodes =
-            ((UMLClassDiagram) ProjectManager.getManager().getCurrentProject()
-	             .getActiveDiagram())
-	        .getLayer().getContents();
-        Iterator it = nodes.iterator();
-        while (it.hasNext()) {
-            sm.select((Fig) (it.next()));
-            // Select all the figures in the diagram.
-        }
-
-        // Notify the selection manager that selected figures will be moved now.
-        layouter.layout(); // Compute a new layout.
-        sm.endTrans(); // Finish the transition.
-        sm.deselectAll(); // Deselect all figures.
-    }
+    // Notify the selection manager that selected figures will be moved now.
+    layouter.layout(); // Compute a new layout.
+    sm.endTrans(); // Finish the transition.
+    sm.deselectAll(); // Deselect all figures.
+  }
 } /* end class ActionLayout */

@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -17,60 +17,55 @@ import padl.kernel.IMethod;
 import padl.micropattern.IMicroPatternDetection;
 
 public final class OverriderDetection extends AbstractMicroPatternDetection
-		implements IMicroPatternDetection {
+    implements IMicroPatternDetection {
 
-	public String getName() {
-		return "OverriderDetection";
-	}
+  public String getName() {
+    return "OverriderDetection";
+  }
 
-	/*
-	 *  26. Overrider. A class where each of its declared public methods
-	 *	overrides a non-abstract method inherited from its superclass. Such
-	 *	a class changes the behavior of its superclass while retaining its protocol.
-	 *	A typical Overrider class is the BufferedOutputStream
-	 *	class.
-	 */
+  /*
+   *  26. Overrider. A class where each of its declared public methods
+   *	overrides a non-abstract method inherited from its superclass. Such
+   *	a class changes the behavior of its superclass while retaining its protocol.
+   *	A typical Overrider class is the BufferedOutputStream
+   *	class.
+   */
 
-	public boolean detect(final IFirstClassEntity anEntity) {
-		// Must be a Class
-		if (anEntity instanceof IClass) {
+  public boolean detect(final IFirstClassEntity anEntity) {
+    // Must be a Class
+    if (anEntity instanceof IClass) {
 
-			final Iterator iterator = anEntity.getIteratorOnConstituents();
-			while (iterator.hasNext()) {
-				final Object anOtherEntity = iterator.next();
+      final Iterator iterator = anEntity.getIteratorOnConstituents();
+      while (iterator.hasNext()) {
+        final Object anOtherEntity = iterator.next();
 
-				if (anOtherEntity instanceof IMethod) {
-					if (((IMethod) anOtherEntity).isPublic()
-							&& !((IMethod) anOtherEntity)
-								.getDisplayID()
-								.startsWith("<init>")) {
+        if (anOtherEntity instanceof IMethod) {
+          if (((IMethod) anOtherEntity).isPublic()
+              && !((IMethod) anOtherEntity).getDisplayID().startsWith("<init>")) {
 
-						// All public method must override a non-abstract method of the superclass
-						final Iterator inheritedEntities =
-							anEntity.getIteratorOnInheritedEntities();
-						while (inheritedEntities.hasNext()) {
-							final IFirstClassEntity aSuperClass =
-								(IFirstClassEntity) inheritedEntities.next();
+            // All public method must override a non-abstract method of the superclass
+            final Iterator inheritedEntities = anEntity.getIteratorOnInheritedEntities();
+            while (inheritedEntities.hasNext()) {
+              final IFirstClassEntity aSuperClass = (IFirstClassEntity) inheritedEntities.next();
 
-							// Find the method in the superclass
-							final IMethod superClassMethod =
-								(IMethod) aSuperClass
-									.getConstituentFromID(((IMethod) anOtherEntity)
-										.getDisplayName() + "()");
+              // Find the method in the superclass
+              final IMethod superClassMethod =
+                  (IMethod)
+                      aSuperClass.getConstituentFromID(
+                          ((IMethod) anOtherEntity).getDisplayName() + "()");
 
-							// Must be declared in the superclass and abstract
-							if (superClassMethod == null
-									|| superClassMethod.isAbstract()) {
-								return false;
-							}
-						}
-					}
-				}
-			}
+              // Must be declared in the superclass and abstract
+              if (superClassMethod == null || superClassMethod.isAbstract()) {
+                return false;
+              }
+            }
+          }
+        }
+      }
 
-			this.addEntities(anEntity);
-			return true;
-		}
-		return false;
-	}
+      this.addEntities(anEntity);
+      return true;
+    }
+    return false;
+  }
 }

@@ -27,47 +27,39 @@ package org.argouml.application.api;
 import javax.swing.JPanel;
 
 /**
- * An interface which must be implemented as the UI for
- * tabs used on the settings panel.<p>
+ * An interface which must be implemented as the UI for tabs used on the settings panel.
  *
- * Tabs will only need to load data during {@link #handleSettingsTabRefresh}
- * and should only save data during {@link #handleSettingsTabSave}.
- * Changes can be made during editing of the tabs, but the tab must
- * be able to undo any change if requested
- * through {@link #handleSettingsTabCancel}.<p>
+ * <p>Tabs will only need to load data during {@link #handleSettingsTabRefresh} and should only save
+ * data during {@link #handleSettingsTabSave}. Changes can be made during editing of the tabs, but
+ * the tab must be able to undo any change if requested through {@link #handleSettingsTabCancel}.
+ *
+ * <p>
  *
  * @author Thierry Lach
  * @since 0.9.4
  */
 public interface SettingsTabPanel {
 
-    /**
-     * Save any fields changed.
-     */
-    void handleSettingsTabSave();
+  /** Save any fields changed. */
+  void handleSettingsTabSave();
 
-    /**
-     * Cancel any changes.
-     */
-    void handleSettingsTabCancel();
+  /** Cancel any changes. */
+  void handleSettingsTabCancel();
 
-    /**
-     * Load or reload field settings.
-     */
-    void handleSettingsTabRefresh();
+  /** Load or reload field settings. */
+  void handleSettingsTabRefresh();
 
-    /**
-     * Gets the unlocalized settings tab name.
-     *
-     * @return the unlocalized settings tab name
-     */
-    String getTabKey();
+  /**
+   * Gets the unlocalized settings tab name.
+   *
+   * @return the unlocalized settings tab name
+   */
+  String getTabKey();
 
-    /**
-     * Gets the JPanel which implements the tab.
-     *
-     * @return the JPanel which implements the tab
-     */
-    JPanel getTabPanel();
-
+  /**
+   * Gets the JPanel which implements the tab.
+   *
+   * @return the JPanel which implements the tab
+   */
+  JPanel getTabPanel();
 } /* End interface SettingsTabPanel */

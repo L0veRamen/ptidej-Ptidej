@@ -25,10 +25,8 @@
 package org.argouml.uml.diagram.ui;
 
 import java.awt.event.ItemEvent;
-
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-
 import org.argouml.ui.StylePanelFigNodeModelElement;
 import org.tigris.gef.util.Converter;
 
@@ -39,69 +37,56 @@ import org.tigris.gef.util.Converter;
  */
 public class StylePanelFigMessage extends StylePanelFigNodeModelElement {
 
+  private JLabel arrowLabel = new JLabel("Arrow: ");
 
-    private JLabel arrowLabel = new JLabel("Arrow: ");
+  private JComboBox arrowField = new JComboBox(Converter.convert(FigMessage.getArrowDirections()));
 
-    private JComboBox arrowField = new JComboBox(Converter
-            .convert(FigMessage.getArrowDirections()));
+  /** The constructor. */
+  public StylePanelFigMessage() {
+    super();
 
+    arrowField.addItemListener(this);
 
-    /**
-     * The constructor.
-     *
-     */
-    public StylePanelFigMessage() {
-        super();
+    arrowLabel.setLabelFor(arrowField);
+    add(arrowLabel);
+    add(arrowField);
 
-        arrowField.addItemListener(this);
+    arrowField.setSelectedIndex(0);
 
-        arrowLabel.setLabelFor(arrowField);
-        add(arrowLabel);
-        add(arrowField);
+    remove(getFillField());
+    remove(getFillLabel());
+  }
 
-        arrowField.setSelectedIndex(0);
+  ////////////////////////////////////////////////////////////////
+  // accessors
 
-        remove(getFillField());
-        remove(getFillLabel());
-    }
+  /**
+   * @see org.argouml.ui.TabTarget#refresh()
+   */
+  public void refresh() {
+    super.refresh();
+    int direction = ((FigMessage) getPanelTarget()).getArrow();
+    arrowField.setSelectedItem(FigMessage.getArrowDirections().elementAt(direction));
+  }
 
-    ////////////////////////////////////////////////////////////////
-    // accessors
+  /** Set the arrow direction for the target. */
+  public void setTargetArrow() {
+    String ad = (String) arrowField.getSelectedItem();
+    int arrowDirection = FigMessage.getArrowDirections().indexOf(ad);
+    if (getPanelTarget() == null || arrowDirection == -1) return;
+    ((FigMessage) getPanelTarget()).setArrow(arrowDirection);
+    getPanelTarget().endTrans();
+  }
 
-    /**
-     * @see org.argouml.ui.TabTarget#refresh()
-     */
-    public void refresh() {
-        super.refresh();
-        int direction = ((FigMessage) getPanelTarget()).getArrow();
-        arrowField.setSelectedItem(FigMessage.getArrowDirections()
-                .elementAt(direction));
-    }
+  ////////////////////////////////////////////////////////////////
+  // event handling
 
-    /**
-     * Set the arrow direction for the target.
-     */
-    public void setTargetArrow() {
-        String ad = (String) arrowField.getSelectedItem();
-        int arrowDirection = FigMessage.getArrowDirections().indexOf(ad);
-        if (getPanelTarget() == null || arrowDirection == -1) return;
-        ((FigMessage) getPanelTarget()).setArrow(arrowDirection);
-        getPanelTarget().endTrans();
-    }
-
-    ////////////////////////////////////////////////////////////////
-    // event handling
-
-    /**
-     * @see java.awt.event.ItemListener#itemStateChanged(java.awt.event.ItemEvent)
-     */
-    public void itemStateChanged(ItemEvent e) {
-        Object src = e.getSource();
-        if (src == arrowField)
-            setTargetArrow();
-        else
-            super.itemStateChanged(e);
-    }
-
+  /**
+   * @see java.awt.event.ItemListener#itemStateChanged(java.awt.event.ItemEvent)
+   */
+  public void itemStateChanged(ItemEvent e) {
+    Object src = e.getSource();
+    if (src == arrowField) setTargetArrow();
+    else super.itemStateChanged(e);
+  }
 } /* end class StylePanelFigMessage */
-

@@ -3,12 +3,12 @@
 
 <sdmetrics version="2.0" ruleexemption="taggedvalue" exemptiontag="value">
 
-<metric name="SubStrIllegal1" domain="class">
-<substring source="'206, 320'" separator="','" position="2"/>
-</metric>
+    <metric name="SubStrIllegal1" domain="class">
+        <substring source="'206, 320'" separator="','" position="2"/>
+    </metric>
 
-<metric name="SubStrIllegal2" domain="class">
-<substring source="'206, 320'" separator="','" position="-3"/>
-</metric>
+    <metric name="SubStrIllegal2" domain="class">
+        <substring source="'206, 320'" separator="','" position="-3"/>
+    </metric>
 
 </sdmetrics>

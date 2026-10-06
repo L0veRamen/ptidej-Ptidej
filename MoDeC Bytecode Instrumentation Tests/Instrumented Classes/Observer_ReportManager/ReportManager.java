@@ -1,13 +1,12 @@
-//package src.OBSERVER;
-//CONCRETE SUBJECT
+// package src.OBSERVER;
+// CONCRETE SUBJECT
+import com.sun.java.swing.plaf.windows.*;
 import java.awt.*;
 import java.awt.event.*;
-import javax.swing.*;
 import java.util.*;
-import com.sun.java.swing.plaf.windows.*;
+import javax.swing.*;
 
-public class ReportManager extends JFrame 
-  implements Observable {
+public class ReportManager extends JFrame implements Observable {
   public static final String newline = "\n";
   public static final String SET_OK = "OK";
   public static final String EXIT = "Exit";
@@ -32,9 +31,8 @@ public class ReportManager extends JFrame
 
     pSearchCriteria = new JPanel();
 
-    //Create Labels
-    JLabel lblDepartmentList =
-      new JLabel("Select a Department:");
+    // Create Labels
+    JLabel lblDepartmentList = new JLabel("Select a Department:");
 
     ButtonHandler vf = new ButtonHandler(this);
 
@@ -43,7 +41,7 @@ public class ReportManager extends JFrame
 
     JPanel buttonPanel = new JPanel();
 
-    //----------------------------------------------
+    // ----------------------------------------------
     GridBagLayout gridbag = new GridBagLayout();
     buttonPanel.setLayout(gridbag);
     GridBagConstraints gbc = new GridBagConstraints();
@@ -81,8 +79,7 @@ public class ReportManager extends JFrame
     contentPane.add(buttonPanel, BorderLayout.CENTER);
     try {
       UIManager.setLookAndFeel(new WindowsLookAndFeel());
-      SwingUtilities.updateComponentTreeUI(
-        ReportManager.this);
+      SwingUtilities.updateComponentTreeUI(ReportManager.this);
     } catch (Exception ex) {
       System.out.println(ex);
     }
@@ -91,6 +88,7 @@ public class ReportManager extends JFrame
     setSize(250, 200);
     setVisible(true);
   }
+
   private void initialize() throws Exception {
     // fill some test data here into the listbox.
     cmbDepartmentList.addItem("HardWare");
@@ -102,21 +100,24 @@ public class ReportManager extends JFrame
     // Add to the list of Observers
     observersList.addElement(obs);
   }
+
   public void unRegister(Observer obs) {
     // remove from the list of Observers
 
   }
+
   public void notifyObservers() {
     // Send notify to all Observers
     for (int i = 0; i < observersList.size(); i++) {
-      Observer observer =
-        (Observer) observersList.elementAt(i);
+      Observer observer = (Observer) observersList.elementAt(i);
       observer.refreshData(this);
     }
   }
+
   public String getDepartment() {
     return department;
   }
+
   public void setDepartment(String dept) {
     department = dept;
   }
@@ -130,21 +131,17 @@ public class ReportManager extends JFrame
         System.exit(1);
       }
       if (e.getActionCommand().equals(ReportManager.SET_OK)) {
-        String dept = (String)
-                      cmbDepartmentList.getSelectedItem();
-        //change in state
+        String dept = (String) cmbDepartmentList.getSelectedItem();
+        // change in state
         subject.setDepartment(dept);
         subject.notifyObservers();
       }
     }
 
-    public ButtonHandler() {
-    }
+    public ButtonHandler() {}
+
     public ButtonHandler(ReportManager manager) {
       subject = manager;
     }
-
   }
-
-}// end of class
-
+} // end of class

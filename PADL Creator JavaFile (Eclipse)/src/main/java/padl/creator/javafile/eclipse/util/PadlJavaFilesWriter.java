@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -15,23 +15,21 @@ import java.io.PrintWriter;
 import util.io.ProxyDisk;
 
 public class PadlJavaFilesWriter {
-	private static PrintWriter writer = null;
+  private static PrintWriter writer = null;
 
-	public static void setWriter(final String fileName) {
-		writer =
-			new PrintWriter(new BufferedWriter(ProxyDisk
-				.getInstance()
-				.fileTempOutput(fileName)));
-	}
-	public static void writeIn(String message) {
-		if (writer != null) {
-			writer.println(message);
-		}
+  public static void setWriter(final String fileName) {
+    writer = new PrintWriter(new BufferedWriter(ProxyDisk.getInstance().fileTempOutput(fileName)));
+  }
 
-	}
-	public static void close() {
-		if (writer != null) {
-			writer.close();
-		}
-	}
+  public static void writeIn(String message) {
+    if (writer != null) {
+      writer.println(message);
+    }
+  }
+
+  public static void close() {
+    if (writer != null) {
+      writer.close();
+    }
+  }
 }

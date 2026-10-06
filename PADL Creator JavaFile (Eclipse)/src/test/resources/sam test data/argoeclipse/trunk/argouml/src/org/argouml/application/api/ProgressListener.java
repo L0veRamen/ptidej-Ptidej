@@ -25,64 +25,66 @@
 package org.argouml.application.api;
 
 /**
- * This is a generic progress notifier. Can be used with any GUI progress bar
- * or any other progress GUI. It's this way to be independent of the GUI
- * implementation.
+ * This is a generic progress notifier. Can be used with any GUI progress bar or any other progress
+ * GUI. It's this way to be independent of the GUI implementation.
+ *
  * @author Bogdan Pistol
  */
 public interface ProgressListener {
-    
-    /**
-     * Informs the progress tool that the total progress was updated.
-     * 
-     * @param progress the amount of progress done so far, this is the hole
-     * progress until now, not just the subtask's progress or the
-     * main task's progress
-     */
-    void updateProgress(int progress);
-    
-    /**
-     * Updates the subtask that is in progress.
-     * @param action the name of the subtask
-     */
-    void updateSubTask(String action);
-    
-    /**
-     * Updates the major task that is going on.
-     * @param name the new task
-     */
-    void updateMainTask(String name);
-    
-    /**
-     * Determines if the user wants to cancel the current action.
-     * If this happens the current action should be stopped.
-     * <p>
-     * So in a long running action, you should query this periodicaly to see
-     * if the user still wants to continue or he canceled the action.
-     * @return true if the user canceled the action and false otherwise
-     */
-    boolean isCanceled();
-    
-    /**
-     * Determines the maximum amount of progress that can be reached.
-     * This should be set before the progress is updated.
-     * @param max the maximum progress value or -1 if the value is unknown
-     */
-    void setMaximumProgress(int max);
-    
-    /**
-     * This method notifies the GUI that the working thread determines that
-     * there are no actions that could be done for various reasons.
-     * The GUI should notify the user too.
-     */
-    void notifyNullAction();
-    
-    /**
-     * If something happens the user should be notified.
-     * @param title a title for the error/information/etc
-     * @param introduction a short message that will continue with the message
-     * @param message the actual message with all the details
-     */
-    void notifyMessage(String title, String introduction, String message);
-        
+
+  /**
+   * Informs the progress tool that the total progress was updated.
+   *
+   * @param progress the amount of progress done so far, this is the hole progress until now, not
+   *     just the subtask's progress or the main task's progress
+   */
+  void updateProgress(int progress);
+
+  /**
+   * Updates the subtask that is in progress.
+   *
+   * @param action the name of the subtask
+   */
+  void updateSubTask(String action);
+
+  /**
+   * Updates the major task that is going on.
+   *
+   * @param name the new task
+   */
+  void updateMainTask(String name);
+
+  /**
+   * Determines if the user wants to cancel the current action. If this happens the current action
+   * should be stopped.
+   *
+   * <p>So in a long running action, you should query this periodicaly to see if the user still
+   * wants to continue or he canceled the action.
+   *
+   * @return true if the user canceled the action and false otherwise
+   */
+  boolean isCanceled();
+
+  /**
+   * Determines the maximum amount of progress that can be reached. This should be set before the
+   * progress is updated.
+   *
+   * @param max the maximum progress value or -1 if the value is unknown
+   */
+  void setMaximumProgress(int max);
+
+  /**
+   * This method notifies the GUI that the working thread determines that there are no actions that
+   * could be done for various reasons. The GUI should notify the user too.
+   */
+  void notifyNullAction();
+
+  /**
+   * If something happens the user should be notified.
+   *
+   * @param title a title for the error/information/etc
+   * @param introduction a short message that will continue with the message
+   * @param message the actual message with all the details
+   */
+  void notifyMessage(String title, String introduction, String message);
 }

@@ -22,32 +22,32 @@
 // CALIFORNIA HAS NO OBLIGATIONS TO PROVIDE MAINTENANCE, SUPPORT,
 // UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
-
 package org.argouml.uml.diagram.ui;
 
 import org.tigris.gef.presentation.FigRect;
 
 /**
  * A FigRect that is always transparent
+ *
  * @author Bob Tarling
  */
 public class FigEmptyRect extends FigRect {
 
-    /**
-     * @param x x
-     * @param y y
-     * @param w width
-     * @param h height
-     */
-    public FigEmptyRect(int x, int y, int w, int h) {
-        super(x, y, w, h);
-        super.setFilled(false);
-    }
+  /**
+   * @param x x
+   * @param y y
+   * @param w width
+   * @param h height
+   */
+  public FigEmptyRect(int x, int y, int w, int h) {
+    super(x, y, w, h);
+    super.setFilled(false);
+  }
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#setFilled(boolean)
-     */
-    public void setFilled(boolean filled) {
-        // Do nothing, this rect will always be transparent
-    }
+  /**
+   * @see org.tigris.gef.presentation.Fig#setFilled(boolean)
+   */
+  public void setFilled(boolean filled) {
+    // Do nothing, this rect will always be transparent
+  }
 }

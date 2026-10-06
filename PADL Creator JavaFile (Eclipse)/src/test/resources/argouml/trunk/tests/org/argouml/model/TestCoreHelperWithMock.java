@@ -32,87 +32,82 @@ import junit.framework.TestCase;
  * @author Linus Tolke
  */
 public class TestCoreHelperWithMock extends TestCase {
-    /**
-     * The Mock ModelImplementation.
-     */
-    private MockModelImplementation mockMI;
+  /** The Mock ModelImplementation. */
+  private MockModelImplementation mockMI;
 
-    /**
-     * The ModelMemento that we got from the Model.
-     */
-    private ModelMemento memo;
+  /** The ModelMemento that we got from the Model. */
+  private ModelMemento memo;
 
-    /**
-     * Constructor.
-     *
-     * @param arg0 Name of the test case.
-     */
-    public TestCoreHelperWithMock(String arg0) {
-        super(arg0);
-    }
+  /**
+   * Constructor.
+   *
+   * @param arg0 Name of the test case.
+   */
+  public TestCoreHelperWithMock(String arg0) {
+    super(arg0);
+  }
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    public void setUp() {
-        System.setProperty("argouml.model.implementation",
-                "org.argouml.model.MockModelImplementation");
-        Model.getFacade(); // Load the model.
+  /**
+   * @see junit.framework.TestCase#setUp()
+   */
+  public void setUp() {
+    System.setProperty("argouml.model.implementation", "org.argouml.model.MockModelImplementation");
+    Model.getFacade(); // Load the model.
 
-        mockMI = MockModelImplementation.getLatest();
+    mockMI = MockModelImplementation.getLatest();
 
-        // Must be called after setImplementation.
-        mockMI.reset();
+    // Must be called after setImplementation.
+    mockMI.reset();
 
-        // Registering memento.
-        Model.setMementoCreationObserver(new MementoCreationObserver() {
-            /**
-             * @see org.argouml.model.MementoCreationObserver#mementoCreated(org.argouml.model.ModelMemento)
-             */
-            public void mementoCreated(ModelMemento memento) {
-                memo = memento;
-            }
+    // Registering memento.
+    Model.setMementoCreationObserver(
+        new MementoCreationObserver() {
+          /**
+           * @see
+           *     org.argouml.model.MementoCreationObserver#mementoCreated(org.argouml.model.ModelMemento)
+           */
+          public void mementoCreated(ModelMemento memento) {
+            memo = memento;
+          }
         });
-    }
+  }
 
-    /**
-     * @see junit.framework.TestCase#tearDown()
-     */
-    public void tearDown() {
-        mockMI.verify();
-    }
+  /**
+   * @see junit.framework.TestCase#tearDown()
+   */
+  public void tearDown() {
+    mockMI.verify();
+  }
 
-    /**
-     * Test {@link org.argouml.model.CoreHelper#setAbstract(Object, boolean)}.
-     */
-    public void testSetAbstract() {
-        final Object o = new Object();
+  /** Test {@link org.argouml.model.CoreHelper#setAbstract(Object, boolean)}. */
+  public void testSetAbstract() {
+    final Object o = new Object();
 
-        // Record for doing it.
-        mockMI.getFacade().isAbstract(o);
-        mockMI.getFacadeControl().setReturnValue(false);
-        mockMI.getCoreHelper().setAbstract(o, true);
-        mockMI.replay();
+    // Record for doing it.
+    mockMI.getFacade().isAbstract(o);
+    mockMI.getFacadeControl().setReturnValue(false);
+    mockMI.getCoreHelper().setAbstract(o, true);
+    mockMI.replay();
 
-        // Doing it.
-        Model.getCoreHelper().setAbstract(o, true);
+    // Doing it.
+    Model.getCoreHelper().setAbstract(o, true);
 
-        mockMI.verify();
+    mockMI.verify();
 
-        // Record for undoing it.
-        mockMI.reset();
-        mockMI.getCoreHelper().setAbstract(o, false);
-        mockMI.replay();
+    // Record for undoing it.
+    mockMI.reset();
+    mockMI.getCoreHelper().setAbstract(o, false);
+    mockMI.replay();
 
-        // Undoing it.
-        memo.undo();
+    // Undoing it.
+    memo.undo();
 
-        // Record for redoing it.
-        mockMI.reset();
-        mockMI.getCoreHelper().setAbstract(o, true);
-        mockMI.replay();
+    // Record for redoing it.
+    mockMI.reset();
+    mockMI.getCoreHelper().setAbstract(o, true);
+    mockMI.replay();
 
-        // Redoing it.
-        memo.redo();
-    }
+    // Redoing it.
+    memo.redo();
+  }
 }

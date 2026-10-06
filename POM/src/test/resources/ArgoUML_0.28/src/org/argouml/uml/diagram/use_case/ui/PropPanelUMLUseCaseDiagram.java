@@ -33,12 +33,8 @@ import org.argouml.uml.diagram.ui.PropPanelDiagram;
  */
 class PropPanelUMLUseCaseDiagram extends PropPanelDiagram {
 
-    /**
-     * Constructor for PropPanelUMLUseCaseDiagram.
-     */
-    public PropPanelUMLUseCaseDiagram() {
-        super(Translator.localize("label.usecase-diagram"),
-                lookupIcon("UseCaseDiagram"));
-    }
-
+  /** Constructor for PropPanelUMLUseCaseDiagram. */
+  public PropPanelUMLUseCaseDiagram() {
+    super(Translator.localize("label.usecase-diagram"), lookupIcon("UseCaseDiagram"));
+  }
 }

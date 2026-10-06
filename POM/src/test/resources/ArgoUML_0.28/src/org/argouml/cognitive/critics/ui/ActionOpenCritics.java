@@ -25,37 +25,26 @@
 package org.argouml.cognitive.critics.ui;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.Action;
-
 import org.argouml.i18n.Translator;
 import org.argouml.ui.UndoableAction;
 
-
-/**
- * Action to open the Browse Critics dialog.
- */
+/** Action to open the Browse Critics dialog. */
 public class ActionOpenCritics extends UndoableAction {
 
-    /**
-     * The constructor.
-     */
-    public ActionOpenCritics() {
-        super(Translator.localize("action.browse-critics"), null);
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize("action.browse-critics"));
-    }
+  /** The constructor. */
+  public ActionOpenCritics() {
+    super(Translator.localize("action.browse-critics"), null);
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize("action.browse-critics"));
+  }
 
-    /*
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-    	super.actionPerformed(ae);
-	CriticBrowserDialog dialog = 
-            new CriticBrowserDialog();
-	dialog.setVisible(true);
-    }
-
+  /*
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    super.actionPerformed(ae);
+    CriticBrowserDialog dialog = new CriticBrowserDialog();
+    dialog.setVisible(true);
+  }
 } /* end class ActionOpenCritics */
-

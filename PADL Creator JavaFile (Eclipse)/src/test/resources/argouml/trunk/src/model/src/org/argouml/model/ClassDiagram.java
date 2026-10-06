@@ -29,6 +29,4 @@ package org.argouml.model;
  *
  * @author Bob Tarling
  */
-public interface ClassDiagram extends DiDiagram {
-
-}
+public interface ClassDiagram extends DiDiagram {}

@@ -26,46 +26,41 @@ package org.argouml.uml.cognitive.critics;
 
 import java.util.Collection;
 import java.util.Iterator;
-
 import org.argouml.cognitive.Designer;
 import org.argouml.model.Model;
 import org.argouml.uml.cognitive.UMLDecision;
-/** 
+
+/**
  * A critic to detect when a classifier has too many attributes.
  *
  * @author mkl
  */
 public class CrTooManyAttr extends AbstractCrTooMany {
 
-    /**
-     * The constructor.
-     *
-     */
-    public CrTooManyAttr() {
-        setupHeadAndDesc();
-	addSupportedDecision(UMLDecision.STORAGE);
-	setThreshold(7);
-	addTrigger("structuralFeature");
-    }
+  /** The constructor. */
+  public CrTooManyAttr() {
+    setupHeadAndDesc();
+    addSupportedDecision(UMLDecision.STORAGE);
+    setThreshold(7);
+    addTrigger("structuralFeature");
+  }
 
-    /**
-     * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
-     * java.lang.Object, org.argouml.cognitive.Designer)
-     */
-    public boolean predicate2(Object dm, Designer dsgr) {
-	if (!(Model.getFacade().isAClassifier(dm))) return NO_PROBLEM;
-	Object cls = /*(MClassifier)*/ dm;
-	// TODO: consider inherited attributes?
-	int threshold = getThreshold();
-	Collection str = Model.getFacade().getFeatures(cls);
-	if (str == null) return NO_PROBLEM;
-	int n = 0;
-	for (Iterator iter = str.iterator(); iter.hasNext();) {
-	    if (Model.getFacade().isAStructuralFeature(iter.next()))
-		n++;
-	}
-	if (n <= threshold) return NO_PROBLEM;
-	return PROBLEM_FOUND;
+  /**
+   * @see org.argouml.uml.cognitive.critics.CrUML#predicate2( java.lang.Object,
+   *     org.argouml.cognitive.Designer)
+   */
+  public boolean predicate2(Object dm, Designer dsgr) {
+    if (!(Model.getFacade().isAClassifier(dm))) return NO_PROBLEM;
+    Object cls = /*(MClassifier)*/ dm;
+    // TODO: consider inherited attributes?
+    int threshold = getThreshold();
+    Collection str = Model.getFacade().getFeatures(cls);
+    if (str == null) return NO_PROBLEM;
+    int n = 0;
+    for (Iterator iter = str.iterator(); iter.hasNext(); ) {
+      if (Model.getFacade().isAStructuralFeature(iter.next())) n++;
     }
-
+    if (n <= threshold) return NO_PROBLEM;
+    return PROBLEM_FOUND;
+  }
 } /* end class CrTooManyAttr */

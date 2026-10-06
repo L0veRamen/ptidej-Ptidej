@@ -26,167 +26,161 @@ package org.argouml.uml.diagram.state.ui;
 
 import java.awt.Color;
 import java.awt.Point;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.Iterator;
 import org.tigris.gef.graph.GraphModel;
 import org.tigris.gef.presentation.FigCircle;
-//import org.tigris.gef.presentation.FigPoly;
+
+// import org.tigris.gef.presentation.FigPoly;
 
 /**
  * Class to display graphics for a UML Choice State in a diagram - the circle.
  *
- * TODO: This should really be renamed FigChoiceState.  It's the
- * last vestige the UML 1.3 name.
+ * <p>TODO: This should really be renamed FigChoiceState. It's the last vestige the UML 1.3 name.
  *
  * @author pepargouml
  */
 public class FigBranchState extends FigStateVertex {
 
-    ////////////////////////////////////////////////////////////////
-    // constants
+  ////////////////////////////////////////////////////////////////
+  // constants
 
-    private static final int X = 10;
-    private static final int Y = 10;
-    private static final int WIDTH = 24;
-    private static final int HEIGHT = 24;
+  private static final int X = 10;
 
-    ////////////////////////////////////////////////////////////////
-    // instance variables
+  private static final int Y = 10;
+  private static final int WIDTH = 24;
+  private static final int HEIGHT = 24;
 
-    private FigCircle head;
-    private FigCircle bp;
+  ////////////////////////////////////////////////////////////////
+  // instance variables
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  private FigCircle head;
 
-    /**
-     * Constructor.
-     */
-    public FigBranchState() {
-        setEditable(false);
-        bp = new FigCircle(X, Y, WIDTH, HEIGHT, Color.cyan, Color.cyan);
-        setBigPort(bp);
-        head = new FigCircle(X, Y, WIDTH, HEIGHT, Color.black, Color.white);
+  private FigCircle bp;
 
-        // add Figs to the FigNode in back-to-front order
-        addFig(getBigPort());
-        addFig(head);
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-        setBlinkPorts(false); //make port invisble unless mouse enters
-    }
+  /** Constructor. */
+  public FigBranchState() {
+    setEditable(false);
+    bp = new FigCircle(X, Y, WIDTH, HEIGHT, Color.cyan, Color.cyan);
+    setBigPort(bp);
+    head = new FigCircle(X, Y, WIDTH, HEIGHT, Color.black, Color.white);
 
-    /**
-     * Constructor.
-     *
-     * @param gm ignored
-     * @param node the owner
-     */
-    public FigBranchState(GraphModel gm, Object node) {
-        this();
-        setOwner(node);
-    }
+    // add Figs to the FigNode in back-to-front order
+    addFig(getBigPort());
+    addFig(head);
 
-    /**
-     * This makes dragging connected edges very smooth.
-     *
-     * @see org.tigris.gef.presentation.Fig#getClosestPoint(java.awt.Point)
-     */
-    public Point getClosestPoint(Point anotherPt) {
-        Point p = bp.connectionPoint(anotherPt);
-        return p;
-    }
+    setBlinkPorts(false); // make port invisble unless mouse enters
+  }
 
-    /**
-     * @see java.lang.Object#clone()
-     */
-    public Object clone() {
-        FigBranchState figClone = (FigBranchState) super.clone();
-        Iterator it = figClone.getFigs().iterator();
-        figClone.setBigPort((FigCircle) it.next());
-        figClone.head = (FigCircle) it.next();
-        return figClone;
-    }
+  /**
+   * Constructor.
+   *
+   * @param gm ignored
+   * @param node the owner
+   */
+  public FigBranchState(GraphModel gm, Object node) {
+    this();
+    setOwner(node);
+  }
 
-    ////////////////////////////////////////////////////////////////
-    // Fig accessors
+  /**
+   * This makes dragging connected edges very smooth.
+   *
+   * @see org.tigris.gef.presentation.Fig#getClosestPoint(java.awt.Point)
+   */
+  public Point getClosestPoint(Point anotherPt) {
+    Point p = bp.connectionPoint(anotherPt);
+    return p;
+  }
 
-    /**
-     * Choice states are fixed size.
-     *
-     * @see org.tigris.gef.presentation.Fig#isResizable()
-     */
-    public boolean isResizable() {
-        return false;
-    }
+  /**
+   * @see java.lang.Object#clone()
+   */
+  public Object clone() {
+    FigBranchState figClone = (FigBranchState) super.clone();
+    Iterator it = figClone.getFigs().iterator();
+    figClone.setBigPort((FigCircle) it.next());
+    figClone.head = (FigCircle) it.next();
+    return figClone;
+  }
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#setLineColor(java.awt.Color)
-     */
-    public void setLineColor(Color col) {
-        head.setLineColor(col);
-    }
+  ////////////////////////////////////////////////////////////////
+  // Fig accessors
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#getLineColor()
-     */
-    public Color getLineColor() {
-        return head.getLineColor();
-    }
+  /**
+   * Choice states are fixed size.
+   *
+   * @see org.tigris.gef.presentation.Fig#isResizable()
+   */
+  public boolean isResizable() {
+    return false;
+  }
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#setFillColor(java.awt.Color)
-     */
-    public void setFillColor(Color col) {
-        head.setFillColor(col);
-    }
+  /**
+   * @see org.tigris.gef.presentation.Fig#setLineColor(java.awt.Color)
+   */
+  public void setLineColor(Color col) {
+    head.setLineColor(col);
+  }
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#getFillColor()
-     */
-    public Color getFillColor() {
-        return head.getFillColor();
-    }
+  /**
+   * @see org.tigris.gef.presentation.Fig#getLineColor()
+   */
+  public Color getLineColor() {
+    return head.getLineColor();
+  }
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#setFilled(boolean)
-     */
-    public void setFilled(boolean f) {
-    }
+  /**
+   * @see org.tigris.gef.presentation.Fig#setFillColor(java.awt.Color)
+   */
+  public void setFillColor(Color col) {
+    head.setFillColor(col);
+  }
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#getFilled()
-     */
-    public boolean getFilled() {
-        return true;
-    }
+  /**
+   * @see org.tigris.gef.presentation.Fig#getFillColor()
+   */
+  public Color getFillColor() {
+    return head.getFillColor();
+  }
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#setLineWidth(int)
-     */
-    public void setLineWidth(int w) {
-        head.setLineWidth(w);
-    }
+  /**
+   * @see org.tigris.gef.presentation.Fig#setFilled(boolean)
+   */
+  public void setFilled(boolean f) {}
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#getLineWidth()
-     */
-    public int getLineWidth() {
-        return head.getLineWidth();
-    }
+  /**
+   * @see org.tigris.gef.presentation.Fig#getFilled()
+   */
+  public boolean getFilled() {
+    return true;
+  }
 
-    ////////////////////////////////////////////////////////////////
-    // Event handlers
+  /**
+   * @see org.tigris.gef.presentation.Fig#setLineWidth(int)
+   */
+  public void setLineWidth(int w) {
+    head.setLineWidth(w);
+  }
 
-    /**
-     * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
-     */
-    public void mouseClicked(MouseEvent me) {
-    }
+  /**
+   * @see org.tigris.gef.presentation.Fig#getLineWidth()
+   */
+  public int getLineWidth() {
+    return head.getLineWidth();
+  }
 
-    /**
-     * The UID.
-     */
-    static final long serialVersionUID = 6572261327347541373L;
+  ////////////////////////////////////////////////////////////////
+  // Event handlers
 
+  /**
+   * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
+   */
+  public void mouseClicked(MouseEvent me) {}
+
+  /** The UID. */
+  static final long serialVersionUID = 6572261327347541373L;
 } /* end class FigBranchState */

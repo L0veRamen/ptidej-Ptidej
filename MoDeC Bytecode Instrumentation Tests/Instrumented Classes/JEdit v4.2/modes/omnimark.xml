@@ -9,9 +9,10 @@
 <!-- 06/JUN/2004: add '.' (dot) in the noWordSep property    -->
 <MODE>
     <PROPS>
-        <PROPERTY NAME="indentNextLines" VALUE="\s*((PROCESS|MARKUP|EXTERNAL|DOCUMENT|DTD|ELEMENT|FIND|TRANSLATE)((-|\s).*|\s*)|(DO|ELSE|REPEAT|MATCH|CASE|USING|GROUP|DEFINE|MACRO)(\s+.*|\s*))" />
-        <PROPERTY NAME="lineComment" VALUE=";" />
-        <PROPERTY NAME="noWordSep" VALUE=".-_" />
+        <PROPERTY NAME="indentNextLines"
+                  VALUE="\s*((PROCESS|MARKUP|EXTERNAL|DOCUMENT|DTD|ELEMENT|FIND|TRANSLATE)((-|\s).*|\s*)|(DO|ELSE|REPEAT|MATCH|CASE|USING|GROUP|DEFINE|MACRO)(\s+.*|\s*))"/>
+        <PROPERTY NAME="lineComment" VALUE=";"/>
+        <PROPERTY NAME="noWordSep" VALUE=".-_"/>
     </PROPS>
     <RULES ESCAPE="%" IGNORE_CASE="TRUE" HIGHLIGHT_DIGITS="TRUE">
         <!-- Comments -->

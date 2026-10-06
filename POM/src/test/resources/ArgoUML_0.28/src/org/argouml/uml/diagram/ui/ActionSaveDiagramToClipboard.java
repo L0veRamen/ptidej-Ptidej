@@ -36,188 +36,176 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
-
 import javax.swing.AbstractAction;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.configuration.Configuration;
 import org.argouml.i18n.Translator;
 import org.argouml.uml.ui.SaveGraphicsManager;
-import org.tigris.gef.base.SaveGIFAction;
 import org.tigris.gef.base.Editor;
 import org.tigris.gef.base.Globals;
 import org.tigris.gef.base.Layer;
+import org.tigris.gef.base.SaveGIFAction;
 
 /**
- * This class copies a diagram to the system clipboard, this functionality will
- * only work with Java1.4, but it will compile with 1.3. It can be put into GEF
- * as it is rather generic.
+ * This class copies a diagram to the system clipboard, this functionality will only work with
+ * Java1.4, but it will compile with 1.3. It can be put into GEF as it is rather generic.
  *
- * @see <a href="http://java.sun.com/docs/books/tutorial/uiswing/misc/dnd.html">
- *      Swing Drag and Drop </a>
+ * @see <a href="http://java.sun.com/docs/books/tutorial/uiswing/misc/dnd.html">Swing Drag and Drop
+ *     </a>
  * @author alexb
  * @since argoUML version 0.15.2, Created on 19 October 2003, 08:36
  */
-public class ActionSaveDiagramToClipboard extends AbstractAction implements
-        ClipboardOwner {
+public class ActionSaveDiagramToClipboard extends AbstractAction implements ClipboardOwner {
 
-    /**
-     * The constructor.
-     */
-    public ActionSaveDiagramToClipboard() {
-        super(Translator.localize("menu.popup.copy-diagram-to-clip"),
-                ResourceLoaderWrapper.lookupIcon("action.copy"));
+  /** The constructor. */
+  public ActionSaveDiagramToClipboard() {
+    super(
+        Translator.localize("menu.popup.copy-diagram-to-clip"),
+        ResourceLoaderWrapper.lookupIcon("action.copy"));
+  }
+
+  /*
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent actionEvent) {
+
+    Image diagramGifImage = getImage();
+
+    if (diagramGifImage == null) {
+      return;
     }
 
-    /*
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent actionEvent) {
+    // copy the gif image to the clipboard
+    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+    clipboard.setContents(new ImageSelection(diagramGifImage), this);
+  }
 
-        Image diagramGifImage = getImage();
+  /**
+   * Get image from gef.
+   *
+   * @return An Image.
+   */
+  private Image getImage() {
 
-        if (diagramGifImage == null) {
-            return;
-        }
+    int scale = Configuration.getInteger(SaveGraphicsManager.KEY_GRAPHICS_RESOLUTION, 1);
 
-        // copy the gif image to the clipboard
-        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        clipboard.setContents(new ImageSelection(diagramGifImage), this);
+    Editor ce = Globals.curEditor();
+    Rectangle drawingArea = ce.getLayerManager().getActiveLayer().calcDrawingArea();
+
+    // avoid GEF calcDrawingArea bug when nothing in a diagram.
+    if (drawingArea.x < 0
+        || drawingArea.y < 0
+        || drawingArea.width <= 0
+        || drawingArea.height <= 0) {
+      return null;
     }
 
-    /**
-     * Get image from gef.
-     *
-     * @return An Image.
-     */
-    private Image getImage() {
-
-        int scale =
-            Configuration.getInteger(
-                SaveGraphicsManager.KEY_GRAPHICS_RESOLUTION, 1);
-
-        Editor ce = Globals.curEditor();
-        Rectangle drawingArea =
-            ce.getLayerManager().getActiveLayer()
-                .calcDrawingArea();
-
-        // avoid GEF calcDrawingArea bug when nothing in a diagram.
-        if (drawingArea.x < 0 || drawingArea.y < 0 || drawingArea.width <= 0
-                || drawingArea.height <= 0) {
-            return null;
-        }
-
-        boolean isGridHidden = ce.getGridHidden();
-        ce.setGridHidden(true); // hide grid, otherwise can't see anything
-        Image diagramGifImage =
-            ce.createImage(drawingArea.width * scale,
-                drawingArea.height * scale);
-        Graphics g = diagramGifImage.getGraphics();
-        if (g instanceof Graphics2D) {
-            ((Graphics2D) g).scale(scale, scale);
-        }
-
-        // background color.
-        g.setColor(new Color(SaveGIFAction.TRANSPARENT_BG_COLOR));
-        g.fillRect(0, 0, drawingArea.width * scale, drawingArea.height * scale);
-        g.translate(-drawingArea.x, -drawingArea.y);
-        ce.print(g);
-        ce.setGridHidden(isGridHidden);
-
-        return diagramGifImage;
+    boolean isGridHidden = ce.getGridHidden();
+    ce.setGridHidden(true); // hide grid, otherwise can't see anything
+    Image diagramGifImage = ce.createImage(drawingArea.width * scale, drawingArea.height * scale);
+    Graphics g = diagramGifImage.getGraphics();
+    if (g instanceof Graphics2D) {
+      ((Graphics2D) g).scale(scale, scale);
     }
 
-    /*
-     * @see java.awt.datatransfer.ClipboardOwner#lostOwnership(
-     *      java.awt.datatransfer.Clipboard, java.awt.datatransfer.Transferable)
-     */
-    public void lostOwnership(Clipboard clipboard, Transferable transferable) {
-        // do nothing
+    // background color.
+    g.setColor(new Color(SaveGIFAction.TRANSPARENT_BG_COLOR));
+    g.fillRect(0, 0, drawingArea.width * scale, drawingArea.height * scale);
+    g.translate(-drawingArea.x, -drawingArea.y);
+    ce.print(g);
+    ce.setGridHidden(isGridHidden);
+
+    return diagramGifImage;
+  }
+
+  /*
+   * @see java.awt.datatransfer.ClipboardOwner#lostOwnership(
+   *      java.awt.datatransfer.Clipboard, java.awt.datatransfer.Transferable)
+   */
+  public void lostOwnership(Clipboard clipboard, Transferable transferable) {
+    // do nothing
+  }
+
+  /*
+   * @see javax.swing.AbstractAction#isEnabled()
+   */
+  public boolean isEnabled() {
+    Editor ce = Globals.curEditor();
+    if (ce == null
+        || ce.getLayerManager() == null
+        || ce.getLayerManager().getActiveLayer() == null) {
+      return false;
     }
-
-    /*
-     * @see javax.swing.AbstractAction#isEnabled()
-     */
-    public boolean isEnabled() {
-        Editor ce = Globals.curEditor();
-        if (ce == null || ce.getLayerManager() == null
-                || ce.getLayerManager().getActiveLayer() == null) {
-            return false;
-        }
-        Layer layer = ce.getLayerManager().getActiveLayer();
-        if (layer == null) {
-            return false;
-        }
-        Rectangle drawingArea = layer.calcDrawingArea();
-
-        // avoid GEF calcDrawingArea bug when nothing in a diagram.
-        if (drawingArea.x < 0 || drawingArea.y < 0 || drawingArea.width <= 0
-                || drawingArea.height <= 0) {
-            return false;
-        }
-        return super.isEnabled();
+    Layer layer = ce.getLayerManager().getActiveLayer();
+    if (layer == null) {
+      return false;
     }
+    Rectangle drawingArea = layer.calcDrawingArea();
 
+    // avoid GEF calcDrawingArea bug when nothing in a diagram.
+    if (drawingArea.x < 0
+        || drawingArea.y < 0
+        || drawingArea.width <= 0
+        || drawingArea.height <= 0) {
+      return false;
+    }
+    return super.isEnabled();
+  }
 
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = 4916652432210626558L;
+  /** The UID. */
+  private static final long serialVersionUID = 4916652432210626558L;
 }
 
-/**
- * Encapsulates an awt Image for Data Transfer to/from the clipboard.
- */
+/** Encapsulates an awt Image for Data Transfer to/from the clipboard. */
 class ImageSelection implements Transferable {
 
-    private DataFlavor[] supportedFlavors = {
-        DataFlavor.imageFlavor,
-    };
+  private DataFlavor[] supportedFlavors = {
+    DataFlavor.imageFlavor,
+  };
 
-    // the diagram image data
-    private Image diagramImage;
+  // the diagram image data
+  private Image diagramImage;
 
-    /**
-     * Constructor.
-     *
-     * @param newDiagramImage The image.
-     */
-    public ImageSelection(Image newDiagramImage) {
+  /**
+   * Constructor.
+   *
+   * @param newDiagramImage The image.
+   */
+  public ImageSelection(Image newDiagramImage) {
 
-        diagramImage = newDiagramImage;
+    diagramImage = newDiagramImage;
+  }
+
+  /*
+   * @see java.awt.datatransfer.Transferable#getTransferDataFlavors()
+   */
+  public synchronized DataFlavor[] getTransferDataFlavors() {
+    return (supportedFlavors);
+  }
+
+  /*
+   * @see java.awt.datatransfer.Transferable#isDataFlavorSupported(
+   *         java.awt.datatransfer.DataFlavor)
+   */
+  public boolean isDataFlavorSupported(DataFlavor parFlavor) {
+
+    // hack in order to be able to compile in java1.3
+    return (parFlavor.getMimeType().equals(DataFlavor.imageFlavor.getMimeType())
+        && parFlavor
+            .getHumanPresentableName()
+            .equals(DataFlavor.imageFlavor.getHumanPresentableName()));
+  }
+
+  /*
+   * @see java.awt.datatransfer.Transferable#getTransferData(
+   *         java.awt.datatransfer.DataFlavor)
+   */
+  public synchronized Object getTransferData(DataFlavor parFlavor)
+      throws UnsupportedFlavorException {
+
+    if (isDataFlavorSupported(parFlavor)) {
+      return (diagramImage);
     }
-
-    /*
-     * @see java.awt.datatransfer.Transferable#getTransferDataFlavors()
-     */
-    public synchronized DataFlavor[] getTransferDataFlavors() {
-        return (supportedFlavors);
-    }
-
-    /*
-     * @see java.awt.datatransfer.Transferable#isDataFlavorSupported(
-     *         java.awt.datatransfer.DataFlavor)
-     */
-    public boolean isDataFlavorSupported(DataFlavor parFlavor) {
-
-        // hack in order to be able to compile in java1.3
-        return (parFlavor.getMimeType().equals(
-                DataFlavor.imageFlavor.getMimeType()) && parFlavor
-                .getHumanPresentableName().equals(
-                        DataFlavor.imageFlavor.getHumanPresentableName()));
-    }
-    
-    /*
-     * @see java.awt.datatransfer.Transferable#getTransferData(
-     *         java.awt.datatransfer.DataFlavor)
-     */
-    public synchronized Object getTransferData(DataFlavor parFlavor)
-        throws UnsupportedFlavorException {
-
-        if (isDataFlavorSupported(parFlavor)) {
-            return (diagramImage);
-        }
-        throw new UnsupportedFlavorException(DataFlavor.imageFlavor);
-
-    }
+    throw new UnsupportedFlavorException(DataFlavor.imageFlavor);
+  }
 }

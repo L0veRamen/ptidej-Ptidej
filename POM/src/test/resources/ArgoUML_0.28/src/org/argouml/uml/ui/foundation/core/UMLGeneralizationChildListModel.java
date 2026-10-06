@@ -27,32 +27,29 @@ package org.argouml.uml.ui.foundation.core;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
-/**
- */
+/** */
 public class UMLGeneralizationChildListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor.
-     */
-    public UMLGeneralizationChildListModel() {
-        super("child");
-    }
+  /** Constructor. */
+  public UMLGeneralizationChildListModel() {
+    super("child");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (getTarget() == null) {
-            return;
-        }
-        removeAllElements();
-        addElement(Model.getFacade().getSpecific(getTarget()));
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (getTarget() == null) {
+      return;
     }
+    removeAllElements();
+    addElement(Model.getFacade().getSpecific(getTarget()));
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object o) {
-        return (Model.getFacade().getSpecific(getTarget()) == o);
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object o) {
+    return (Model.getFacade().getSpecific(getTarget()) == o);
+  }
 }

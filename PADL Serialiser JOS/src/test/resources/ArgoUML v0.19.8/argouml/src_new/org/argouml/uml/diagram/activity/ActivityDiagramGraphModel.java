@@ -28,32 +28,32 @@ import org.argouml.model.Model;
 import org.argouml.uml.diagram.state.StateDiagramGraphModel;
 
 /**
- * The graphmodel for an activitydiagram. A graph model in argouml
- * implements rules for adding and removing elements.
+ * The graphmodel for an activitydiagram. A graph model in argouml implements rules for adding and
+ * removing elements.
  *
  * @since Jul 11, 2004
  * @author jaap.branderhorst@xs4all.nl
  */
 public class ActivityDiagramGraphModel extends StateDiagramGraphModel {
 
-    /**
-     * @see org.tigris.gef.graph.MutableGraphModel#canAddNode(java.lang.Object)
-     */
-    public boolean canAddNode(Object node) {
-        if (containsNode(node)) {
-            return false;
-        }
-        if (Model.getFacade().isAPartition(node)) {
-            return true;
-        } 
-        return super.canAddNode(node);
+  /**
+   * @see org.tigris.gef.graph.MutableGraphModel#canAddNode(java.lang.Object)
+   */
+  public boolean canAddNode(Object node) {
+    if (containsNode(node)) {
+      return false;
     }
+    if (Model.getFacade().isAPartition(node)) {
+      return true;
+    }
+    return super.canAddNode(node);
+  }
 
-    /**
-     * @see org.tigris.gef.graph.MutableGraphModel#canAddEdge(java.lang.Object)
-     */
-    public boolean canAddEdge(Object edge) {
-        boolean canAdd = super.canAddEdge(edge);
-        return canAdd;
-    }
+  /**
+   * @see org.tigris.gef.graph.MutableGraphModel#canAddEdge(java.lang.Object)
+   */
+  public boolean canAddEdge(Object edge) {
+    boolean canAdd = super.canAddEdge(edge);
+    return canAdd;
+  }
 }

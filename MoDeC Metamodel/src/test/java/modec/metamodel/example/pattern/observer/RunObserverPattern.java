@@ -1,6 +1,6 @@
 package modec.metamodel.example.pattern.observer;
 
-//[C] 2002 Sun Microsystems, Inc.---
+// [C] 2002 Sun Microsystems, Inc.---
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.GridLayout;
@@ -10,7 +10,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
-
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -44,8 +43,7 @@ class Task {
 
   private double timeRequired;
 
-  public Task() {
-  }
+  public Task() {}
 
   public Task(String newName, String newNotes, double newTimeRequired) {
     this.name = newName;
@@ -83,7 +81,7 @@ class Task {
 }
 
 class TaskChangeObservable {
-  private ArrayList observers = new ArrayList();
+  private ArrayList<TaskChangeObserver> observers = new ArrayList<>();
 
   public void addTaskChangeObserver(TaskChangeObserver observer) {
     if (!this.observers.contains(observer)) {
@@ -125,17 +123,12 @@ interface TaskChangeObserver {
   public void taskSelected(Task task);
 }
 
-class TaskEditorPanel extends JPanel implements ActionListener,
-    TaskChangeObserver {
-  /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+class TaskEditorPanel extends JPanel implements ActionListener, TaskChangeObserver {
+  /** */
+  private static final long serialVersionUID = 1L;
 
-private JPanel controlPanel, editPanel;
-
+  private JPanel controlPanel, editPanel;
   private JButton add, update, exit;
-
   private JTextField taskName, taskNotes, taskTime;
 
   private TaskChangeObservable notifier;
@@ -187,28 +180,24 @@ private JPanel controlPanel, editPanel;
         timeRequired = Double.parseDouble(this.taskTime.getText());
       } catch (NumberFormatException exc) {
       }
-      this.notifier.addTask(new Task(this.taskName.getText(), this.taskNotes.getText(),
-          timeRequired));
+      this.notifier.addTask(
+          new Task(this.taskName.getText(), this.taskNotes.getText(), timeRequired));
     } else if (source == this.update) {
       this.editTask.setName(this.taskName.getText());
       this.editTask.setNotes(this.taskNotes.getText());
       try {
-        this.editTask
-            .setTimeRequired(Double.parseDouble(this.taskTime.getText()));
+        this.editTask.setTimeRequired(Double.parseDouble(this.taskTime.getText()));
       } catch (NumberFormatException exc) {
       }
       this.notifier.updateTask(this.editTask);
     } else if (source == this.exit) {
       System.exit(0);
     }
-
   }
 
-  public void taskAdded(Task task) {
-  }
+  public void taskAdded(Task task) {}
 
-  public void taskChanged(Task task) {
-  }
+  public void taskChanged(Task task) {}
 
   public void taskSelected(Task task) {
     this.editTask = task;
@@ -219,11 +208,10 @@ private JPanel controlPanel, editPanel;
 }
 
 class TaskHistoryPanel extends JPanel implements TaskChangeObserver {
-  /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-private JTextArea displayRegion;
+  /** */
+  private static final long serialVersionUID = 1L;
+
+  private JTextArea displayRegion;
 
   public TaskHistoryPanel() {
     createGui();
@@ -249,14 +237,11 @@ private JTextArea displayRegion;
   }
 }
 
-class TaskSelectorPanel extends JPanel implements ActionListener,
-    TaskChangeObserver {
-  /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+class TaskSelectorPanel extends JPanel implements ActionListener, TaskChangeObserver {
+  /** */
+  private static final long serialVersionUID = 1L;
 
-private JComboBox selector = new JComboBox();
+  private JComboBox<Task> selector = new JComboBox<>();
 
   private TaskChangeObservable notifier;
 
@@ -266,7 +251,7 @@ private JComboBox selector = new JComboBox();
   }
 
   public void createGui() {
-    this.selector = new JComboBox();
+    this.selector = new JComboBox<>();
     this.selector.addActionListener(this);
     add(this.selector);
   }
@@ -283,11 +268,9 @@ private JComboBox selector = new JComboBox();
     this.selector.addItem(task);
   }
 
-  public void taskChanged(Task task) {
-  }
+  public void taskChanged(Task task) {}
 
-  public void taskSelected(Task task) {
-  }
+  public void taskSelected(Task task) {}
 }
 
 class ObserverGui {
@@ -317,4 +300,3 @@ class ObserverGui {
     }
   }
 }
-

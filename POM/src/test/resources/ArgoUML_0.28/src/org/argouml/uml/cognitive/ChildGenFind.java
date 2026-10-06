@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
-
 import org.argouml.kernel.Project;
 import org.argouml.model.Model;
 import org.tigris.gef.base.Diagram;
@@ -36,47 +35,48 @@ import org.tigris.gef.util.ChildGenerator;
 
 /**
  * Convenience class gives critics access to parts of the project.
- * 
- * It defines a gen() function that returns the "children" of any given part of
- * the UML model. It traverses a Project to Diagrams and Models, then uses
- * getModelElementContents to traverse the Models. <p>
- * 
- * @deprecated for 0.28 by tfmorris.  Use GEF-free variant 
- *      {@link ChildGenSearch}.
+ *
+ * <p>It defines a gen() function that returns the "children" of any given part of the UML model. It
+ * traverses a Project to Diagrams and Models, then uses getModelElementContents to traverse the
+ * Models.
+ *
+ * <p>
+ *
+ * @deprecated for 0.28 by tfmorris. Use GEF-free variant {@link ChildGenSearch}.
  * @stereotype singleton
  * @author jrobbins
- * @deprecated for 0.26 by tfmorris.  Use {@link org.argouml.ui.ChildGenSearch}.
+ * @deprecated for 0.26 by tfmorris. Use {@link org.argouml.ui.ChildGenSearch}.
  */
 @Deprecated
 public class ChildGenFind implements ChildGenerator {
-    private static final ChildGenFind SINGLETON = new ChildGenFind();
+  private static final ChildGenFind SINGLETON = new ChildGenFind();
 
-    /**
-     * Reply a Collection of the children of the given Object
-     *
-     * @see org.tigris.gef.util.ChildGenerator#gen(java.lang.Object)
-     */
-    public Enumeration gen(Object o) {
-        List res = new ArrayList();
-        if (o instanceof Project) {
-            Project p = (Project) o;
-            res.addAll(p.getUserDefinedModelList());
-            res.addAll(p.getDiagramList());
-        } else if (o instanceof Diagram) {
-            Diagram d = (Diagram) o;
-            res.addAll(d.getGraphModel().getNodes());
-            res.addAll(d.getGraphModel().getEdges());
-        } else if (Model.getFacade().isAModelElement(o)) {
-            res.addAll(Model.getFacade().getModelElementContents(o));
-        }
-        
-	return Collections.enumeration(res);
+  /**
+   * Reply a Collection of the children of the given Object
+   *
+   * @see org.tigris.gef.util.ChildGenerator#gen(java.lang.Object)
+   */
+  public Enumeration gen(Object o) {
+    List res = new ArrayList();
+    if (o instanceof Project) {
+      Project p = (Project) o;
+      res.addAll(p.getUserDefinedModelList());
+      res.addAll(p.getDiagramList());
+    } else if (o instanceof Diagram) {
+      Diagram d = (Diagram) o;
+      res.addAll(d.getGraphModel().getNodes());
+      res.addAll(d.getGraphModel().getEdges());
+    } else if (Model.getFacade().isAModelElement(o)) {
+      res.addAll(Model.getFacade().getModelElementContents(o));
     }
 
-    /**
-     * @return Returns the SINGLETON.
-     */
-    public static ChildGenFind getSingleton() {
-        return SINGLETON;
-    }
+    return Collections.enumeration(res);
+  }
+
+  /**
+   * @return Returns the SINGLETON.
+   */
+  public static ChildGenFind getSingleton() {
+    return SINGLETON;
+  }
 }

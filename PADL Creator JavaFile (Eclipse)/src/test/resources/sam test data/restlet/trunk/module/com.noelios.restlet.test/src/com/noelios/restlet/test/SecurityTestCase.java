@@ -22,30 +22,24 @@
 
 package com.noelios.restlet.test;
 
-import java.io.IOException;
-
-import junit.framework.TestCase;
-
 import com.noelios.restlet.util.SecurityUtils;
+import java.io.IOException;
+import junit.framework.TestCase;
 
 /**
  * Unit tests for the SecurityData related classes.
+ *
  * @author Jerome Louvel (contact@noelios.com)
  */
-public class SecurityTestCase extends TestCase
-{
-	/**
-	 * Tests the cookies parsing.
-	 */
-	public void testParsing() throws IOException
-	{
-		String authenticate1 = "Basic realm=\"Restlet tutorial\"";
-		String authorization1 = "Basic c2NvdHQ6dGlnZXI=";
+public class SecurityTestCase extends TestCase {
+  /** Tests the cookies parsing. */
+  public void testParsing() throws IOException {
+    String authenticate1 = "Basic realm=\"Restlet tutorial\"";
+    String authorization1 = "Basic c2NvdHQ6dGlnZXI=";
 
-		assertEquals(authorization1, SecurityUtils.format(SecurityUtils.parseResponse(null,
-				null, authorization1), null, null));
-		assertEquals(authenticate1, SecurityUtils.format(SecurityUtils
-				.parseRequest(authenticate1)));
-	}
-
+    assertEquals(
+        authorization1,
+        SecurityUtils.format(SecurityUtils.parseResponse(null, null, authorization1), null, null));
+    assertEquals(authenticate1, SecurityUtils.format(SecurityUtils.parseRequest(authenticate1)));
+  }
 }

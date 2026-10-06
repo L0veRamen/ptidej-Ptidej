@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xerces" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -57,75 +57,70 @@
 package org.apache.xerces.dom.events;
 
 import org.apache.xerces.dom.*;
-
 import org.apache.xerces.domx.events.*;
 import org.w3c.dom.*;
 
-public class MutationEventImpl 
-extends org.apache.xerces.dom.events.EventImpl 
-implements MutationEvent
-{
-    Node relatedNode=null;
-    String prevValue=null,newValue=null,attrName=null;
-    
-    // NON-DOM CONSTANTS: Storage efficiency, avoid risk of typos.
-    public static final String DOM_SUBTREE_MODIFIED = "DOMSubtreeModified";
-    public static final String DOM_NODE_INSERTED = "DOMNodeInserted";
-    public static final String DOM_NODE_REMOVED = "DOMNodeRemoved";
-    public static final String DOM_NODE_REMOVED_FROM_DOCUMENT = "DOMNodeRemovedFromDocument";
-    public static final String DOM_NODE_INSERTED_INTO_DOCUMENT = "DOMNodeInsertedIntoDocument";
-    public static final String DOM_ATTR_MODIFIED = "DOMAttrModified";
-    public static final String DOM_CHARACTER_DATA_MODIFIED = "DOMCharacterDataModified";
+public class MutationEventImpl extends org.apache.xerces.dom.events.EventImpl
+    implements MutationEvent {
+  Node relatedNode = null;
+  String prevValue = null, newValue = null, attrName = null;
 
-    /** @return the name of the Attr which
-        changed, for DOMAttrModified events. 
-        Undefined for others.
-        */
-    public String getAttrName()
-    {
-        return attrName;
-    }
+  // NON-DOM CONSTANTS: Storage efficiency, avoid risk of typos.
+  public static final String DOM_SUBTREE_MODIFIED = "DOMSubtreeModified";
+  public static final String DOM_NODE_INSERTED = "DOMNodeInserted";
+  public static final String DOM_NODE_REMOVED = "DOMNodeRemoved";
+  public static final String DOM_NODE_REMOVED_FROM_DOCUMENT = "DOMNodeRemovedFromDocument";
+  public static final String DOM_NODE_INSERTED_INTO_DOCUMENT = "DOMNodeInsertedIntoDocument";
+  public static final String DOM_ATTR_MODIFIED = "DOMAttrModified";
+  public static final String DOM_CHARACTER_DATA_MODIFIED = "DOMCharacterDataModified";
 
-    /** @return the new string value of the Attr for DOMAttrModified events, or
-        of the CharacterData node for DOMCharDataModifed events.
-        Undefined for others.
-        */
-    public String getNewValue()
-    {
-        return newValue;
-    }
+  /**
+   * @return the name of the Attr which changed, for DOMAttrModified events. Undefined for others.
+   */
+  public String getAttrName() {
+    return attrName;
+  }
 
-    /** @return the previous string value of the Attr for DOMAttrModified events, or
-        of the CharacterData node for DOMCharDataModifed events.
-        Undefined for others.
-        */
-    public String getPrevValue()
-    {
-        return prevValue;
-    }
+  /**
+   * @return the new string value of the Attr for DOMAttrModified events, or of the CharacterData
+   *     node for DOMCharDataModifed events. Undefined for others.
+   */
+  public String getNewValue() {
+    return newValue;
+  }
 
-    /** @return a Node related to this event, other than the target that the
-        node was dispatched to. For DOMNodeRemoved, it is the node which
-        was removed. 
-        No other uses are currently defined.
-        */
-    public Node getRelatedNode()
-    {
-        return relatedNode;
-    }
+  /**
+   * @return the previous string value of the Attr for DOMAttrModified events, or of the
+   *     CharacterData node for DOMCharDataModifed events. Undefined for others.
+   */
+  public String getPrevValue() {
+    return prevValue;
+  }
 
-    /** Initialize a mutation event, or overwrite the event's current
-        settings with new values of the parameters. 
-        */
-    public void initMutationEvent(String typeArg, boolean canBubbleArg, 
-        boolean cancelableArg, Node relatedNodeArg, String prevValueArg, 
-        String newValueArg, String attrNameArg)
-    {
-        relatedNode=relatedNodeArg;
-        prevValue=prevValueArg;
-        newValue=newValueArg;
-        attrName=attrNameArg;
-        super.initEvent(typeArg,canBubbleArg,cancelableArg);
-    }
+  /**
+   * @return a Node related to this event, other than the target that the node was dispatched to.
+   *     For DOMNodeRemoved, it is the node which was removed. No other uses are currently defined.
+   */
+  public Node getRelatedNode() {
+    return relatedNode;
+  }
 
+  /**
+   * Initialize a mutation event, or overwrite the event's current settings with new values of the
+   * parameters.
+   */
+  public void initMutationEvent(
+      String typeArg,
+      boolean canBubbleArg,
+      boolean cancelableArg,
+      Node relatedNodeArg,
+      String prevValueArg,
+      String newValueArg,
+      String attrNameArg) {
+    relatedNode = relatedNodeArg;
+    prevValue = prevValueArg;
+    newValue = newValueArg;
+    attrName = attrNameArg;
+    super.initEvent(typeArg, canBubbleArg, cancelableArg);
+  }
 }

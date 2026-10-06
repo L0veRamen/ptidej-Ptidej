@@ -25,34 +25,34 @@
 package org.argouml.uml.diagram.ui;
 
 import java.awt.Color;
-
 import org.tigris.gef.presentation.FigText;
 
 /**
- * A MultiLine FigText to provide consistency across Figs displaying multiple
- * lines of text.
- * By default -
+ * A MultiLine FigText to provide consistency across Figs displaying multiple lines of text. By
+ * default -
+ *
  * <ul>
- * <li>Text is black</li>
- * <li>The display area is transparent</li>
- * <li>Text is left justified</li>
- * <li>There is no line border</li>
+ *   <li>Text is black
+ *   <li>The display area is transparent
+ *   <li>Text is left justified
+ *   <li>There is no line border
+ *
  * @author Bob Tarling
  */
 public class FigMultiLineText extends FigText {
 
-    /**
-     * @see FigText(int, int, int, int, boolean)
-     */
-    public FigMultiLineText(int x, int y, int w, int h, boolean expandOnly) {
-        super(x, y, w, h, expandOnly);
-        setFont(FigNodeModelElement.getLabelFont());
-        setTextColor(Color.black);
-        setReturnAction(FigText.INSERT);
-        setLineSeparator("\n");
-        setTabAction(FigText.END_EDITING);
-        setJustification(FigText.JUSTIFY_LEFT);
-        setFilled(false);
-        setLineWidth(0);
-    }
+  /**
+   * @see FigText(int, int, int, int, boolean)
+   */
+  public FigMultiLineText(int x, int y, int w, int h, boolean expandOnly) {
+    super(x, y, w, h, expandOnly);
+    setFont(FigNodeModelElement.getLabelFont());
+    setTextColor(Color.black);
+    setReturnAction(FigText.INSERT);
+    setLineSeparator("\n");
+    setTabAction(FigText.END_EDITING);
+    setJustification(FigText.JUSTIFY_LEFT);
+    setFilled(false);
+    setLineWidth(0);
+  }
 }

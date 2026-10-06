@@ -1,17 +1,14 @@
 package net.intensicode.idea.syntax;
 
-/**
- * TODO: Describe this!
- */
-public interface RecognizedToken
-{
-    boolean isFoundAt( CharSequence aCharSequence, int aStartOffset );
+/** TODO: Describe this! */
+public interface RecognizedToken {
+  boolean isFoundAt(CharSequence aCharSequence, int aStartOffset);
 
-    boolean isFoundIn( CharSequence aCharSequence, int aStartOffset, int aEndOffset );
+  boolean isFoundIn(CharSequence aCharSequence, int aStartOffset, int aEndOffset);
 
-    int getTokenStart();
+  int getTokenStart();
 
-    int getTokenEnd();
+  int getTokenEnd();
 
-    String getTokenID();
+  String getTokenID();
 }

@@ -27,8 +27,6 @@ package org.argouml.uml.reveng.classfile;
 import antlr.*;
 import java.io.*;
 
-
-
 /**************************************
  * A simple lexer to scan a bytestream
  * Using a generated scanner results in
@@ -37,50 +35,44 @@ import java.io.*;
  **************************************/
 public class SimpleByteLexer implements ClassfileTokenTypes, TokenStream {
 
-    //////////////////////
-    // Instance variables.
+  //////////////////////
+  // Instance variables.
 
-    private InputStream input = null;
+  private InputStream input = null;
 
+  ///////////////
+  // Constructors
 
-    ///////////////
-    // Constructors
+  /**
+   * Create a new bytestream scanner. The constructor.
+   *
+   * @param in the given inputstream
+   */
+  public SimpleByteLexer(InputStream in) {
+    input = in;
+  }
 
-    /**
-     * Create a new bytestream scanner.
-     * The constructor.
-     *
-     * @param in the given inputstream
-     */
-    public SimpleByteLexer(InputStream in) {
-        input = in;
+  //////////
+  // Methods
+
+  /**
+   * Return the next byte as a token.
+   *
+   * @return The next byte as a token or a EOF token.
+   * @throws TokenStreamException if the next byte cannot be read
+   * @see antlr.TokenStream#nextToken()
+   */
+  public final Token nextToken() throws TokenStreamException {
+    int nextByte;
+
+    try {
+      nextByte = input.read();
+    } catch (IOException ie) {
+      throw new TokenStreamIOException(ie);
     }
 
+    // System.out.println("Generating token for: " + nextByte);
 
-    //////////
-    // Methods
-
-    /**
-     * Return the next byte as a token.
-     *
-     * @return The next byte as a token or a EOF token.
-     * @throws TokenStreamException if the next byte cannot be read
-     * @see antlr.TokenStream#nextToken()
-     */
-    public final Token nextToken() throws TokenStreamException {
-	int nextByte;
-
-	try {
-	    nextByte = input.read();
-	} catch (IOException ie) {
-	    throw new TokenStreamIOException(ie);
-	}
-
-	// System.out.println("Generating token for: " + nextByte);
-
-	return (nextByte == -1)
-	    ? new ByteToken( Token.EOF_TYPE)
-                : new ByteToken( BYTE, (byte) nextByte);
-    }
+    return (nextByte == -1) ? new ByteToken(Token.EOF_TYPE) : new ByteToken(BYTE, (byte) nextByte);
+  }
 }
-

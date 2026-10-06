@@ -25,34 +25,27 @@
 package org.argouml.uml.ui.model_management;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.AbstractActionRemoveElement;
 
 /**
  * Remove an import from a package.
- * 
+ *
  * @author Michiel
  */
-class ActionRemovePackageImport
-    extends AbstractActionRemoveElement {
-    
-    /**
-     * Constructor for ActionRemovePackageImport.
-     */
-    ActionRemovePackageImport() {
-        super(Translator.localize("menu.popup.remove"));
-    }
-    
-    /**
-     * @see
-     * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        Model.getModelManagementHelper()
-            .removeImportedElement(getTarget(), getObjectToRemove());
-    }
-    
+class ActionRemovePackageImport extends AbstractActionRemoveElement {
+
+  /** Constructor for ActionRemovePackageImport. */
+  ActionRemovePackageImport() {
+    super(Translator.localize("menu.popup.remove"));
+  }
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    Model.getModelManagementHelper().removeImportedElement(getTarget(), getObjectToRemove());
+  }
 }

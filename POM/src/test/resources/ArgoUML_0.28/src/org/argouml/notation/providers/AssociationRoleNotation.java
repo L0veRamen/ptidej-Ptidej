@@ -25,42 +25,36 @@
 package org.argouml.notation.providers;
 
 import java.beans.PropertyChangeListener;
-
 import org.argouml.model.Model;
 import org.argouml.notation.NotationProvider;
 
 /**
- * This abstract class forms the basis of all Notation providers
- * for the name of an association-role.
- * Subclass this for all languages.
- * 
+ * This abstract class forms the basis of all Notation providers for the name of an
+ * association-role. Subclass this for all languages.
+ *
  * @author michiel
  */
 public abstract class AssociationRoleNotation extends NotationProvider {
-    
-    /**
-     * The constructor.
-     *
-     * @param role the given associationRole
-     */
-    public AssociationRoleNotation(Object role) {
-        if (!Model.getFacade().isAAssociationRole(role)) {
-            throw new IllegalArgumentException(
-                    "This is not an AssociationRole.");
-        }
-    }
 
-    /*
-     * @see org.argouml.notation.providers.NotationProvider#initialiseListener(java.beans.PropertyChangeListener, java.lang.Object)
-     */
-    public void initialiseListener(PropertyChangeListener listener, 
-            Object modelElement) {
-        addElementListener(listener, modelElement, 
-            new String[] {"name", "base"});
-        Object assoc = Model.getFacade().getBase(modelElement);
-        if (assoc != null) {
-            addElementListener(listener, assoc, "name");
-        }
+  /**
+   * The constructor.
+   *
+   * @param role the given associationRole
+   */
+  public AssociationRoleNotation(Object role) {
+    if (!Model.getFacade().isAAssociationRole(role)) {
+      throw new IllegalArgumentException("This is not an AssociationRole.");
     }
+  }
 
+  /*
+   * @see org.argouml.notation.providers.NotationProvider#initialiseListener(java.beans.PropertyChangeListener, java.lang.Object)
+   */
+  public void initialiseListener(PropertyChangeListener listener, Object modelElement) {
+    addElementListener(listener, modelElement, new String[] {"name", "base"});
+    Object assoc = Model.getFacade().getBase(modelElement);
+    if (assoc != null) {
+      addElementListener(listener, assoc, "name");
+    }
+  }
 }

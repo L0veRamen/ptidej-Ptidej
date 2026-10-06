@@ -22,11 +22,9 @@
 // CALIFORNIA HAS NO OBLIGATIONS TO PROVIDE MAINTENANCE, SUPPORT,
 // UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
-
 package org.argouml.uml.diagram.ui;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.kernel.ProjectManager;
 import org.argouml.ui.ArgoDiagram;
 import org.argouml.ui.targetmanager.TargetManager;
@@ -34,52 +32,48 @@ import org.argouml.uml.ui.UMLAction;
 import org.tigris.gef.graph.MutableGraphModel;
 
 /**
-* ActionAddExistingNode enables pasting of an existing node into a Diagram.
-*
-* @author Eugenio Alvarez
-* Data Access Technologies.
-*/
+ * ActionAddExistingNode enables pasting of an existing node into a Diagram.
+ *
+ * @author Eugenio Alvarez Data Access Technologies.
+ */
 public class ActionAddExistingNode extends UMLAction {
 
-    ////////////////////////////////////////////////////////////////
-    // instance variables
-    
-    /**
-     * The UML object to be added to the diagram.
-     */
-    private Object object;
+  ////////////////////////////////////////////////////////////////
+  // instance variables
 
-    ////////////////////////////////////////////////////////////////
-    // constructor
+  /** The UML object to be added to the diagram. */
+  private Object object;
 
-    /**
-     * The Constructor.
-     *
-     * @param name the name of the action
-     * @param o the node object to be added
-     */
-    public ActionAddExistingNode(String name, Object o) {
-        super(name, false, NO_ICON);
-        object = o;
-    }
+  ////////////////////////////////////////////////////////////////
+  // constructor
 
-    /**
-     * @see org.argouml.uml.ui.UMLAction#shouldBeEnabled()
-     */
-    public boolean shouldBeEnabled() {
-        Object target = TargetManager.getInstance().getTarget();
-        ArgoDiagram dia = ProjectManager.getManager().
-            getCurrentProject().getActiveDiagram();
-        if (dia == null) return false;
-        MutableGraphModel gm = (MutableGraphModel) dia.getGraphModel();
-        return gm.canAddNode(target);
-    }
+  /**
+   * The Constructor.
+   *
+   * @param name the name of the action
+   * @param o the node object to be added
+   */
+  public ActionAddExistingNode(String name, Object o) {
+    super(name, false, NO_ICON);
+    object = o;
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-        AddExistingNodeCommand cmd = new AddExistingNodeCommand(object);
-        cmd.execute();
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLAction#shouldBeEnabled()
+   */
+  public boolean shouldBeEnabled() {
+    Object target = TargetManager.getInstance().getTarget();
+    ArgoDiagram dia = ProjectManager.getManager().getCurrentProject().getActiveDiagram();
+    if (dia == null) return false;
+    MutableGraphModel gm = (MutableGraphModel) dia.getGraphModel();
+    return gm.canAddNode(target);
+  }
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    AddExistingNodeCommand cmd = new AddExistingNodeCommand(object);
+    cmd.execute();
+  }
 } /* end class ActionAddExistingNode */

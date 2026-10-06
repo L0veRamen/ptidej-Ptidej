@@ -25,7 +25,6 @@
 package org.argouml.uml.diagram.state.ui;
 
 import java.util.Map;
-
 import org.apache.log4j.Logger;
 import org.argouml.model.Model;
 import org.argouml.uml.diagram.UmlDiagramRenderer;
@@ -39,9 +38,11 @@ import org.tigris.gef.presentation.FigEdge;
 import org.tigris.gef.presentation.FigNode;
 
 /**
- * This class defines a renderer object for UML Statechart Diagrams. In a
- * Statechart Diagram the following UML objects are displayed with the
- * following Figs: <p>
+ * This class defines a renderer object for UML Statechart Diagrams. In a Statechart Diagram the
+ * following UML objects are displayed with the following Figs:
+ *
+ * <p>
+ *
  * <pre>
  *  UML Object          ---  Fig
  *  ---------------------------------------
@@ -65,93 +66,78 @@ import org.tigris.gef.presentation.FigNode;
  * @author ics125b spring 1998
  */
 public class StateDiagramRenderer extends UmlDiagramRenderer {
-    /**
-     * Logger.
-     */
-    private static final Logger LOG =
-        Logger.getLogger(StateDiagramRenderer.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(StateDiagramRenderer.class);
 
-    /**
-     * Return a Fig that can be used to represent the given node.
-     *
-     * @see org.tigris.gef.graph.GraphNodeRenderer#getFigNodeFor(
-     * org.tigris.gef.graph.GraphModel, org.tigris.gef.base.Layer,
-     * java.lang.Object, java.util.Map)
-     */
-    public FigNode getFigNodeFor(GraphModel gm, Layer lay, Object node,
-                                 Map styleAttributes) {
-        if (Model.getFacade().isAActionState(node)) {
-            return new FigActionState(gm, node);
-        } else if (Model.getFacade().isAFinalState(node)) {
-            return new FigFinalState(gm, node);
-        } else if (Model.getFacade().isAStubState(node)) {
-            return new FigStubState(gm, node);
-        } else if (Model.getFacade().isASubmachineState(node)) {
-            return new FigSubmachineState(gm, node);
-        } else if (Model.getFacade().isACompositeState(node)) {
-            return new FigCompositeState(gm, node);
-        } else if (Model.getFacade().isASynchState(node)) {
-            return new FigSynchState(gm, node);
-        } else if (Model.getFacade().isAState(node)) {
-            return new FigSimpleState(gm, node);
-        } else if (Model.getFacade().isAComment(node)) {
-            return new FigComment(gm, node);
-        } else if (Model.getFacade().isAPseudostate(node)) {
-            Object pState = node;
-            Object kind = Model.getFacade().getKind(pState);
-            if (kind == null) {
-                return null;
-            }
-            if (kind.equals(Model.getPseudostateKind().getInitial())) {
-                return new FigInitialState(gm, node);
-            } else if (kind.equals(
-                    Model.getPseudostateKind().getBranch())) {
-                return new FigBranchState(gm, node);
-            } else if (kind.equals(
-                    Model.getPseudostateKind().getJunction())) {
-                return new FigJunctionState(gm, node);
-            } else if (kind.equals(
-                    Model.getPseudostateKind().getFork())) {
-                return new FigForkState(gm, node);
-            } else if (kind.equals(
-                    Model.getPseudostateKind().getJoin())) {
-                return new FigJoinState(gm, node);
-            } else if (kind.equals(
-                    Model.getPseudostateKind().getShallowHistory())) {
-                return new FigShallowHistoryState(gm, node);
-            } else if (kind.equals(
-                    Model.getPseudostateKind().getDeepHistory())) {
-                return new FigDeepHistoryState(gm, node);
-            } else {
-                LOG.warn("found a type not known");
-            }
-        }
-        LOG.debug("TODO: StateDiagramRenderer getFigNodeFor");
+  /**
+   * Return a Fig that can be used to represent the given node.
+   *
+   * @see org.tigris.gef.graph.GraphNodeRenderer#getFigNodeFor( org.tigris.gef.graph.GraphModel,
+   *     org.tigris.gef.base.Layer, java.lang.Object, java.util.Map)
+   */
+  public FigNode getFigNodeFor(GraphModel gm, Layer lay, Object node, Map styleAttributes) {
+    if (Model.getFacade().isAActionState(node)) {
+      return new FigActionState(gm, node);
+    } else if (Model.getFacade().isAFinalState(node)) {
+      return new FigFinalState(gm, node);
+    } else if (Model.getFacade().isAStubState(node)) {
+      return new FigStubState(gm, node);
+    } else if (Model.getFacade().isASubmachineState(node)) {
+      return new FigSubmachineState(gm, node);
+    } else if (Model.getFacade().isACompositeState(node)) {
+      return new FigCompositeState(gm, node);
+    } else if (Model.getFacade().isASynchState(node)) {
+      return new FigSynchState(gm, node);
+    } else if (Model.getFacade().isAState(node)) {
+      return new FigSimpleState(gm, node);
+    } else if (Model.getFacade().isAComment(node)) {
+      return new FigComment(gm, node);
+    } else if (Model.getFacade().isAPseudostate(node)) {
+      Object pState = node;
+      Object kind = Model.getFacade().getKind(pState);
+      if (kind == null) {
         return null;
+      }
+      if (kind.equals(Model.getPseudostateKind().getInitial())) {
+        return new FigInitialState(gm, node);
+      } else if (kind.equals(Model.getPseudostateKind().getBranch())) {
+        return new FigBranchState(gm, node);
+      } else if (kind.equals(Model.getPseudostateKind().getJunction())) {
+        return new FigJunctionState(gm, node);
+      } else if (kind.equals(Model.getPseudostateKind().getFork())) {
+        return new FigForkState(gm, node);
+      } else if (kind.equals(Model.getPseudostateKind().getJoin())) {
+        return new FigJoinState(gm, node);
+      } else if (kind.equals(Model.getPseudostateKind().getShallowHistory())) {
+        return new FigShallowHistoryState(gm, node);
+      } else if (kind.equals(Model.getPseudostateKind().getDeepHistory())) {
+        return new FigDeepHistoryState(gm, node);
+      } else {
+        LOG.warn("found a type not known");
+      }
+    }
+    LOG.debug("TODO: StateDiagramRenderer getFigNodeFor");
+    return null;
+  }
+
+  /**
+   * Return a Fig that can be used to represent the given edge.
+   *
+   * @see org.tigris.gef.graph.GraphEdgeRenderer#getFigEdgeFor( org.tigris.gef.graph.GraphModel,
+   *     org.tigris.gef.base.Layer, java.lang.Object, java.util.Map)
+   */
+  public FigEdge getFigEdgeFor(GraphModel gm, Layer lay, Object edge, Map styleAttributes) {
+    LOG.debug("making figedge for " + edge);
+    if (Model.getFacade().isATransition(edge)) {
+      FigTransition trFig = new FigTransition(edge, lay);
+      return trFig;
+    } else if (edge instanceof CommentEdge) {
+      return new FigEdgeNote(edge, lay);
     }
 
-    /**
-     * Return a Fig that can be used to represent the given edge.
-     *
-     * @see org.tigris.gef.graph.GraphEdgeRenderer#getFigEdgeFor(
-     * org.tigris.gef.graph.GraphModel, org.tigris.gef.base.Layer,
-     * java.lang.Object, java.util.Map)
-     */
-    public FigEdge getFigEdgeFor(GraphModel gm, Layer lay, Object edge,
-            Map styleAttributes) {
-        LOG.debug("making figedge for " + edge);
-        if (Model.getFacade().isATransition(edge)) {
-            FigTransition trFig = new FigTransition(edge, lay);
-            return trFig;
-        } else if (edge instanceof CommentEdge) {
-            return new FigEdgeNote(edge, lay);
-        }
+    LOG.debug("TODO: StateDiagramRenderer getFigEdgeFor");
+    return null;
+  }
 
-        LOG.debug("TODO: StateDiagramRenderer getFigEdgeFor");
-        return null;
-    }
-
-
-    static final long serialVersionUID = 8448809085349795886L;
-
+  static final long serialVersionUID = 8448809085349795886L;
 } /* end class StateDiagramRenderer */

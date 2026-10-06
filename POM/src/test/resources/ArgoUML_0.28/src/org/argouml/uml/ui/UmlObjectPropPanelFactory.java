@@ -29,47 +29,40 @@ import org.argouml.uml.ui.foundation.core.PropPanelElementResidence;
 import org.argouml.uml.ui.model_management.PropPanelElementImport;
 
 /**
- * This factory creates the right PropPanel
- * for a given UML Object that is not an "element", 
- * such as Expression and Multiplicity. <p>
- * 
- * The complete list of UML objects that are not Element:
- * ElementImport,
- * ElementResidence
- * Expression (9 types)
- * Multiplicity
- * MultiplicityRange
- * TemplateArgument
- * TemplateParameter
+ * This factory creates the right PropPanel for a given UML Object that is not an "element", such as
+ * Expression and Multiplicity.
+ *
+ * <p>The complete list of UML objects that are not Element: ElementImport, ElementResidence
+ * Expression (9 types) Multiplicity MultiplicityRange TemplateArgument TemplateParameter
  *
  * @author Michiel
  */
 class UmlObjectPropPanelFactory implements PropPanelFactory {
 
-    public PropPanel createPropPanel(Object object) {
-        if (Model.getFacade().isAExpression(object)) {
-            return getExpressionPropPanel(object);
-        }
-        if (Model.getFacade().isAMultiplicity(object)) {
-            return getMultiplicityPropPanel(object);
-        }
-        if (Model.getFacade().isAElementImport(object)) {
-            return new PropPanelElementImport();
-        }
-        if (Model.getFacade().isAElementResidence(object)) {
-            return new PropPanelElementResidence();
-        }
-//        if (Model.getFacade().isATemplateParameter(object)) {
-//            return new PropPanelTemplateParameter();
-//        }
-        return null;
+  public PropPanel createPropPanel(Object object) {
+    if (Model.getFacade().isAExpression(object)) {
+      return getExpressionPropPanel(object);
     }
+    if (Model.getFacade().isAMultiplicity(object)) {
+      return getMultiplicityPropPanel(object);
+    }
+    if (Model.getFacade().isAElementImport(object)) {
+      return new PropPanelElementImport();
+    }
+    if (Model.getFacade().isAElementResidence(object)) {
+      return new PropPanelElementResidence();
+    }
+    //        if (Model.getFacade().isATemplateParameter(object)) {
+    //            return new PropPanelTemplateParameter();
+    //        }
+    return null;
+  }
 
-    private PropPanel getExpressionPropPanel(Object object) {
-        return null;
-    }
+  private PropPanel getExpressionPropPanel(Object object) {
+    return null;
+  }
 
-    private PropPanel getMultiplicityPropPanel(Object object) {
-        return null;
-    }
+  private PropPanel getMultiplicityPropPanel(Object object) {
+    return null;
+  }
 }

@@ -31,7 +31,6 @@ import javax.management.NotificationBroadcasterSupport;
 import javax.management.NotificationEmitter;
 import javax.management.NotificationFilter;
 import javax.management.NotificationListener;
-
 import org.tigris.gef.presentation.FigRect;
 
 /**
@@ -39,56 +38,54 @@ import org.tigris.gef.presentation.FigRect;
  *
  * @author Michiel
  */
-public class ArgoFigRect extends FigRect  implements NotificationEmitter {
+public class ArgoFigRect extends FigRect implements NotificationEmitter {
 
-    private NotificationBroadcasterSupport notifier = 
-        new NotificationBroadcasterSupport();
-    
-    public ArgoFigRect(int x, int y, int w, int h) {
-        super(x, y, w, h);
-    }
+  private NotificationBroadcasterSupport notifier = new NotificationBroadcasterSupport();
 
-    /*
-     * @see org.tigris.gef.presentation.Fig#deleteFromModel()
-     */
-    @Override
-    public void deleteFromModel() {
-        super.deleteFromModel();
-        firePropChange("remove", null, null);
-        notifier.sendNotification(new Notification("remove", this, 0));
-    }
+  public ArgoFigRect(int x, int y, int w, int h) {
+    super(x, y, w, h);
+  }
 
-    /*
-     * @see javax.management.NotificationEmitter#removeNotificationListener(javax.management.NotificationListener, javax.management.NotificationFilter, java.lang.Object)
-     */
-    public void removeNotificationListener(NotificationListener listener,
-        NotificationFilter filter, Object handback) 
-        throws ListenerNotFoundException {
-        notifier.removeNotificationListener(listener, filter, handback);
-    }
+  /*
+   * @see org.tigris.gef.presentation.Fig#deleteFromModel()
+   */
+  @Override
+  public void deleteFromModel() {
+    super.deleteFromModel();
+    firePropChange("remove", null, null);
+    notifier.sendNotification(new Notification("remove", this, 0));
+  }
 
-    /*
-     * @see javax.management.NotificationBroadcaster#addNotificationListener(javax.management.NotificationListener, javax.management.NotificationFilter, java.lang.Object)
-     */
-    public void addNotificationListener(NotificationListener listener, 
-        NotificationFilter filter, Object handback) 
-        throws IllegalArgumentException {
-        notifier.addNotificationListener(listener, filter, handback);
-    }
+  /*
+   * @see javax.management.NotificationEmitter#removeNotificationListener(javax.management.NotificationListener, javax.management.NotificationFilter, java.lang.Object)
+   */
+  public void removeNotificationListener(
+      NotificationListener listener, NotificationFilter filter, Object handback)
+      throws ListenerNotFoundException {
+    notifier.removeNotificationListener(listener, filter, handback);
+  }
 
-    /*
-     * @see javax.management.NotificationBroadcaster#getNotificationInfo()
-     */
-    public MBeanNotificationInfo[] getNotificationInfo() {
-        return notifier.getNotificationInfo();
-    }
+  /*
+   * @see javax.management.NotificationBroadcaster#addNotificationListener(javax.management.NotificationListener, javax.management.NotificationFilter, java.lang.Object)
+   */
+  public void addNotificationListener(
+      NotificationListener listener, NotificationFilter filter, Object handback)
+      throws IllegalArgumentException {
+    notifier.addNotificationListener(listener, filter, handback);
+  }
 
-    /*
-     * @see javax.management.NotificationBroadcaster#removeNotificationListener(javax.management.NotificationListener)
-     */
-    public void removeNotificationListener(NotificationListener listener) 
-        throws ListenerNotFoundException {
-        notifier.removeNotificationListener(listener);
-    }
+  /*
+   * @see javax.management.NotificationBroadcaster#getNotificationInfo()
+   */
+  public MBeanNotificationInfo[] getNotificationInfo() {
+    return notifier.getNotificationInfo();
+  }
 
+  /*
+   * @see javax.management.NotificationBroadcaster#removeNotificationListener(javax.management.NotificationListener)
+   */
+  public void removeNotificationListener(NotificationListener listener)
+      throws ListenerNotFoundException {
+    notifier.removeNotificationListener(listener);
+  }
 }

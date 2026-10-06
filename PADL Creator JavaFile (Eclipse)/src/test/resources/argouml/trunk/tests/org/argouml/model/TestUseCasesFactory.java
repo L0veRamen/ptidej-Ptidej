@@ -26,90 +26,60 @@ package org.argouml.model;
 
 import junit.framework.TestCase;
 
-
-
-/**
- * Test the UseCasesFactory class.
- *
- */
+/** Test the UseCasesFactory class. */
 public class TestUseCasesFactory extends TestCase {
-    /**
-     * List of elements to test.
-     */
-    private static String[] allModelElements = {
-        "Actor",
-        "Extend",
-        "ExtensionPoint",
-        "Include",
-        "UseCase",
-        "UseCaseInstance",
+  /** List of elements to test. */
+  private static String[] allModelElements = {
+    "Actor", "Extend", "ExtensionPoint", "Include", "UseCase", "UseCaseInstance",
+  };
+
+  /**
+   * The constructor.
+   *
+   * @param n the name of the test
+   */
+  public TestUseCasesFactory(String n) {
+    super(n);
+  }
+
+  /** Test if the UseCasesFactory is really a singleton. */
+  public void testSingleton() {
+    Object o1 = Model.getUseCasesFactory();
+    Object o2 = Model.getUseCasesFactory();
+    assertTrue("Different singletons", o1 == o2);
+  }
+
+  /** Test creation. */
+  public void testCreates() {
+    String[] objs = {
+      "Actor", "Extend", "ExtensionPoint", "Include", "UseCase", "UseCaseInstance", null,
     };
 
-    /**
-     * The constructor.
-     *
-     * @param n the name of the test
-     */
-    public TestUseCasesFactory(String n) {
-        super(n);
-    }
+    CheckUMLModelHelper.createAndRelease(Model.getUseCasesFactory(), objs);
+  }
 
-    /**
-     * Test if the UseCasesFactory is really a singleton.
-     */
-    public void testSingleton() {
-	Object o1 = Model.getUseCasesFactory();
-	Object o2 = Model.getUseCasesFactory();
-	assertTrue("Different singletons", o1 == o2);
-    }
+  /** Test building extensions. */
+  public void testBuildExtend1() {
+    Object base = Model.getUseCasesFactory().createUseCase();
+    Object extension = Model.getUseCasesFactory().createUseCase();
+    Object point = Model.getUseCasesFactory().buildExtensionPoint(base);
+    Object extend = Model.getUseCasesFactory().buildExtend(base, extension, point);
+    assertTrue(
+        "extensionpoint not added to base", !Model.getFacade().getExtensionPoints(base).isEmpty());
+    assertTrue(
+        "extend not added to base",
+        !Model.getUseCasesHelper().getExtendingUseCases(base).isEmpty());
+    assertTrue("extend not added to extension", !Model.getFacade().getExtends(extension).isEmpty());
+    assertTrue(
+        "extend not added to correct extensionpoint",
+        (Model.getFacade().getExtensionPoints(extend).contains(point)
+            && Model.getFacade().getExtensionPoints(extend).size() == 1));
+  }
 
-    /**
-     * Test creation.
-     */
-    public void testCreates() {
-	String [] objs = {
-	    "Actor",
-	    "Extend",
-	    "ExtensionPoint",
-	    "Include",
-	    "UseCase",
-	    "UseCaseInstance",
-	    null,
-	};
-
-	CheckUMLModelHelper.createAndRelease(Model.getUseCasesFactory(),
-					     objs);
-    }
-
-    /**
-     * Test building extensions.
-     */
-    public void testBuildExtend1() {
-        Object base = Model.getUseCasesFactory().createUseCase();
-        Object extension = Model.getUseCasesFactory().createUseCase();
-        Object point = Model.getUseCasesFactory()
-            	.buildExtensionPoint(base);
-        Object extend = Model.getUseCasesFactory()
-            	.buildExtend(base, extension, point);
-        assertTrue("extensionpoint not added to base",
-		   !Model.getFacade().getExtensionPoints(base).isEmpty());
-        assertTrue("extend not added to base", 
-                !Model.getUseCasesHelper()
-                .getExtendingUseCases(base).isEmpty());
-        assertTrue("extend not added to extension",
-		   !Model.getFacade().getExtends(extension).isEmpty());
-        assertTrue("extend not added to correct extensionpoint",
-		   (Model.getFacade().getExtensionPoints(extend).contains(point)
-		 && Model.getFacade().getExtensionPoints(extend).size() == 1));
-    }
-
-
-
-    /**
-     * @return Returns the allModelElements.
-     */
-    static String[] getAllModelElements() {
-        return allModelElements;
-    }
+  /**
+   * @return Returns the allModelElements.
+   */
+  static String[] getAllModelElements() {
+    return allModelElements;
+  }
 }
-

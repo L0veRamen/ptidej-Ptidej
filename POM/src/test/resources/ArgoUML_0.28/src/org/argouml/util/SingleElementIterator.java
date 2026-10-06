@@ -28,40 +28,38 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * A simple iterator wrapper for a single object. Designed for for use where the
- * API requires an iterator, but we've only got a single object and don't want
- * the overhead of creating a collection just so that we can iterate over its
- * single element.
- * 
+ * A simple iterator wrapper for a single object. Designed for for use where the API requires an
+ * iterator, but we've only got a single object and don't want the overhead of creating a collection
+ * just so that we can iterate over its single element.
+ *
  * @param <T> type of object to be iterated over
  * @author Tom Morris <tfmorris@gmail.com>
  */
 public class SingleElementIterator<T> implements Iterator {
 
-    private boolean done = false;
-    private T target;
-    
-    public SingleElementIterator(T o) {
-        target = o;
-    }
-    
-    public boolean hasNext() {
-        if (!done) {
-            return true;
-        } 
-        return false;
-    }
+  private boolean done = false;
+  private T target;
 
-    public T next() {
-        if (!done) {
-            done = true;
-            return target;
-        }
-        throw new NoSuchElementException();
-    }
+  public SingleElementIterator(T o) {
+    target = o;
+  }
 
-    public void remove() {
-        throw new UnsupportedOperationException();
+  public boolean hasNext() {
+    if (!done) {
+      return true;
     }
+    return false;
+  }
 
+  public T next() {
+    if (!done) {
+      done = true;
+      return target;
+    }
+    throw new NoSuchElementException();
+  }
+
+  public void remove() {
+    throw new UnsupportedOperationException();
+  }
 }

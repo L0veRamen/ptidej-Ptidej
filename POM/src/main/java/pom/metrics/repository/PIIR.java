@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
 import padl.kernel.IAbstractModel;
 import padl.kernel.IClass;
 import padl.kernel.IFirstClassEntity;
@@ -26,69 +25,56 @@ import pom.metrics.IUnaryMetric;
 
 /**
  * PIIR - Number of Internal Inheritance Relationships
- * 
- * The following metric is related to packages, and is based
- * on the paper "Butterflies: A Visual Approach to Characterize Packages",
- * by Ducasse, Lanza and Ponisio.
- * 
+ *
+ * <p>The following metric is related to packages, and is based on the paper "Butterflies: A Visual
+ * Approach to Characterize Packages", by Ducasse, Lanza and Ponisio.
+ *
  * @author Karim DHAMBRI
- * @since  2005/??/?? 
- * 
+ * @since 2005/??/??
  * @author Duc-Loc Huynh
- * @since  2005/08/18
- * 
+ * @since 2005/08/18
  * @author Yann
- * 
- * Modifications made to fit the new architecture
+ *     <p>Modifications made to fit the new architecture
  */
-public class PIIR extends AbstractMetric implements IMetric, IUnaryMetric, IDependencyIndependentMetric {
-	//  Is this the best way to implement this metrics???
-	
-	protected double concretelyCompute(
-		final IAbstractModel anAbstractModel,
-		final IFirstClassEntity anEntity) {
+public class PIIR extends AbstractMetric
+    implements IMetric, IUnaryMetric, IDependencyIndependentMetric {
+  //  Is this the best way to implement this metrics???
 
-		final List entitiesOfAnalysedPackage = new ArrayList();
-		final String packageName =
-			super.classPrimitives.extractPackageName(anEntity);
-		final Iterator iterator =
-			anAbstractModel.getIteratorOnTopLevelEntities();
-		while (iterator.hasNext()) {
-			final IFirstClassEntity firstClassEntity =
-				(IFirstClassEntity) iterator.next();
+  protected double concretelyCompute(
+      final IAbstractModel anAbstractModel, final IFirstClassEntity anEntity) {
 
-			if (!(firstClassEntity instanceof IClass)
-					&& !(firstClassEntity instanceof IInterface)) {
-				continue;
-			}
-			if (super.classPrimitives
-				.extractPackageName(firstClassEntity)
-				.equals(packageName)) {
+    final List<IFirstClassEntity> entitiesOfAnalysedPackage = new ArrayList<>();
+    final String packageName = super.classPrimitives.extractPackageName(anEntity);
+    final Iterator iterator = anAbstractModel.getIteratorOnTopLevelEntities();
+    while (iterator.hasNext()) {
+      final IFirstClassEntity firstClassEntity = (IFirstClassEntity) iterator.next();
 
-				entitiesOfAnalysedPackage.add(firstClassEntity);
-			}
-		}
+      if (!(firstClassEntity instanceof IClass) && !(firstClassEntity instanceof IInterface)) {
+        continue;
+      }
+      if (super.classPrimitives.extractPackageName(firstClassEntity).equals(packageName)) {
 
-		final Set inheritedClasses = new HashSet();
-		for (int i = 0; i < entitiesOfAnalysedPackage.size(); i++) {
-			final Iterator parents =
-				((IFirstClassEntity) entitiesOfAnalysedPackage.get(i))
-					.getIteratorOnInheritedEntities();
-			while (parents.hasNext()) {
-				final IFirstClassEntity parent =
-					(IFirstClassEntity) parents.next();
-				if (super.classPrimitives.extractPackageName(parent).equals(
-					packageName))
+        entitiesOfAnalysedPackage.add(firstClassEntity);
+      }
+    }
 
-					inheritedClasses.add(parent.getID());
-			}
-		}
+    final Set<char[]> inheritedClasses = new HashSet<>();
+    for (int i = 0; i < entitiesOfAnalysedPackage.size(); i++) {
+      final Iterator parents =
+          ((IFirstClassEntity) entitiesOfAnalysedPackage.get(i)).getIteratorOnInheritedEntities();
+      while (parents.hasNext()) {
+        final IFirstClassEntity parent = (IFirstClassEntity) parents.next();
+        if (super.classPrimitives.extractPackageName(parent).equals(packageName))
+          inheritedClasses.add(parent.getID());
+      }
+    }
 
-		return inheritedClasses.size();
-	}
-	public String getDefinition() {
-		final String def =
-			"Number of inheritance relationships existing between entities in the package containing the entity.";
-		return def;
-	}
+    return inheritedClasses.size();
+  }
+
+  public String getDefinition() {
+    final String def =
+        "Number of inheritance relationships existing between entities in the package containing the entity.";
+    return def;
+  }
 }

@@ -29,66 +29,62 @@ import org.argouml.ui.targetmanager.TargetEvent;
 import org.argouml.ui.targetmanager.TargetManager;
 
 /**
- *
  * @author penyaskito
  */
 class UMLDefaultValueExpressionModel extends UMLExpressionModel {
-    
-    /**
-     * The constructor.
-     *
-     * @param propertyName the name of the property
-     */
-    public UMLDefaultValueExpressionModel(Object target) {
-        super(target, "default value");
+
+  /**
+   * The constructor.
+   *
+   * @param propertyName the name of the property
+   */
+  public UMLDefaultValueExpressionModel(Object target) {
+    super(target, "default value");
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLExpressionModel2#getExpression()
+   */
+  public Object getExpression() {
+    Object target = TargetManager.getInstance().getTarget();
+    if (target == null) {
+      return null;
     }
+    return Model.getFacade().getDefaultValue(target);
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLExpressionModel2#getExpression()
-     */
-    public Object getExpression() {
-        Object target = TargetManager.getInstance().getTarget();
-        if (target == null) {
-            return null;
-        }
-        return Model.getFacade().getDefaultValue(target);
+  /*
+   * @see org.argouml.uml.ui.UMLExpressionModel2#setExpression(java.lang.Object)
+   */
+  public void setExpression(Object expression) {
+    Object target = TargetManager.getInstance().getTarget();
+
+    if (target != null) {
+      Model.getCoreHelper().setDefaultValue(target, expression);
+    } else {
+      // TODO: Log error
     }
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLExpressionModel2#setExpression(java.lang.Object)
-     */
-    public void setExpression(Object expression) {
-        Object target = TargetManager.getInstance().getTarget();
+  /*
+   * @see org.argouml.uml.ui.UMLExpressionModel2#newExpression()
+   */
+  public Object newExpression() {
+    return Model.getDataTypesFactory().createExpression("", "");
+  }
 
-        if (target != null) {
-            Model.getCoreHelper().setDefaultValue(target, expression);
-        }
-        else {
-            // TODO: Log error
-        }
+  public void targetAdded(TargetEvent e) {
+    // TODO: Auto-generated method stub
 
-    }
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLExpressionModel2#newExpression()
-     */
-    public Object newExpression() {
-        return Model.getDataTypesFactory().createExpression("", "");
-    }
+  public void targetRemoved(TargetEvent e) {
+    // TODO: Auto-generated method stub
 
-    public void targetAdded(TargetEvent e) {
-        // TODO: Auto-generated method stub
-        
-    }
+  }
 
-    public void targetRemoved(TargetEvent e) {
-        // TODO: Auto-generated method stub
-        
-    }
+  public void targetSet(TargetEvent e) {
+    // TODO: Auto-generated method stub
 
-    public void targetSet(TargetEvent e) {
-        // TODO: Auto-generated method stub
-        
-    }
-
+  }
 }

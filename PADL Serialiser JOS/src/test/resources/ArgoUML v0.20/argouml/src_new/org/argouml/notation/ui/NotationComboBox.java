@@ -23,11 +23,10 @@
 // UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 package org.argouml.notation.ui;
+
 import java.awt.Dimension;
 import java.util.ListIterator;
-
 import javax.swing.JComboBox;
-
 import org.apache.log4j.Logger;
 import org.argouml.application.events.ArgoEventPump;
 import org.argouml.application.events.ArgoEventTypes;
@@ -37,102 +36,92 @@ import org.argouml.notation.Notation;
 import org.argouml.notation.NotationName;
 
 /**
- *   This class provides a self-updating notation combo box.
+ * This class provides a self-updating notation combo box.
  *
- *   @author Thierry Lach
- *   @since 0.9.4
+ * @author Thierry Lach
+ * @since 0.9.4
  */
-public class NotationComboBox
-    extends JComboBox
-    implements ArgoNotationEventListener {
+public class NotationComboBox extends JComboBox implements ArgoNotationEventListener {
 
-    /**
-     * Logger.
-     */
-    private static final Logger LOG = Logger.getLogger(NotationComboBox.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(NotationComboBox.class);
 
-    /**
-     * The instance.
-     */
-    private static NotationComboBox singleton;
+  /** The instance. */
+  private static NotationComboBox singleton;
 
-    /**
-     * @return the singleton
-     */
-    public static NotationComboBox getInstance() {
-        // Only instantiate when we need it.
-        if (singleton == null) {
-            singleton = new NotationComboBox();
-        }
-        return singleton;
+  /**
+   * @return the singleton
+   */
+  public static NotationComboBox getInstance() {
+    // Only instantiate when we need it.
+    if (singleton == null) {
+      singleton = new NotationComboBox();
     }
+    return singleton;
+  }
 
-    /**
-     * The constructor.
-     */
-    public NotationComboBox() {
-        super();
-        setEditable(false);
-        setMaximumRowCount(6);
+  /** The constructor. */
+  public NotationComboBox() {
+    super();
+    setEditable(false);
+    setMaximumRowCount(6);
 
-        Dimension d = getPreferredSize();
-        d.width = 200;
-        setMaximumSize(d);
+    Dimension d = getPreferredSize();
+    d.width = 200;
+    setMaximumSize(d);
 
-        ArgoEventPump.addListener(ArgoEventTypes.ANY_NOTATION_EVENT, this);
-        refresh();
+    ArgoEventPump.addListener(ArgoEventTypes.ANY_NOTATION_EVENT, this);
+    refresh();
+  }
+
+  /**
+   * @see
+   *     org.argouml.application.events.ArgoNotationEventListener#notationChanged(org.argouml.application.events.ArgoNotationEvent)
+   */
+  public void notationChanged(ArgoNotationEvent event) {}
+
+  /**
+   * @see
+   *     org.argouml.application.events.ArgoNotationEventListener#notationAdded(org.argouml.application.events.ArgoNotationEvent)
+   */
+  public void notationAdded(ArgoNotationEvent event) {
+    refresh();
+  }
+
+  /**
+   * @see
+   *     org.argouml.application.events.ArgoNotationEventListener#notationRemoved(org.argouml.application.events.ArgoNotationEvent)
+   */
+  public void notationRemoved(ArgoNotationEvent event) {}
+
+  /**
+   * @see
+   *     org.argouml.application.events.ArgoNotationEventListener#notationProviderAdded(org.argouml.application.events.ArgoNotationEvent)
+   */
+  public void notationProviderAdded(ArgoNotationEvent event) {}
+
+  /**
+   * @see
+   *     org.argouml.application.events.ArgoNotationEventListener#notationProviderRemoved(org.argouml.application.events.ArgoNotationEvent)
+   */
+  public void notationProviderRemoved(ArgoNotationEvent event) {}
+
+  /** Refresh the combobox contents. */
+  public void refresh() {
+    removeAllItems();
+    ListIterator iterator = Notation.getAvailableNotations().listIterator();
+    while (iterator.hasNext()) {
+      try {
+        NotationName nn = (NotationName) iterator.next();
+        addItem(nn);
+      } catch (Exception e) {
+        LOG.error("Unexpected exception", e);
+      }
     }
+    setVisible(true);
+    invalidate();
+  }
 
-    /**
-     * @see org.argouml.application.events.ArgoNotationEventListener#notationChanged(org.argouml.application.events.ArgoNotationEvent)
-     */
-    public void notationChanged(ArgoNotationEvent event) {
-    }
-    /**
-     * @see org.argouml.application.events.ArgoNotationEventListener#notationAdded(org.argouml.application.events.ArgoNotationEvent)
-     */
-    public void notationAdded(ArgoNotationEvent event) {
-        refresh();
-    }
-    /**
-     * @see org.argouml.application.events.ArgoNotationEventListener#notationRemoved(org.argouml.application.events.ArgoNotationEvent)
-     */
-    public void notationRemoved(ArgoNotationEvent event) {
-    }
-
-    /**
-     * @see org.argouml.application.events.ArgoNotationEventListener#notationProviderAdded(org.argouml.application.events.ArgoNotationEvent)
-     */
-    public void notationProviderAdded(ArgoNotationEvent event) {
-    }
-
-    /**
-     * @see org.argouml.application.events.ArgoNotationEventListener#notationProviderRemoved(org.argouml.application.events.ArgoNotationEvent)
-     */
-    public void notationProviderRemoved(ArgoNotationEvent event) {
-    }
-
-    /**
-     * Refresh the combobox contents.
-     */
-    public void refresh() {
-        removeAllItems();
-        ListIterator iterator =
-            Notation.getAvailableNotations().listIterator();
-        while (iterator.hasNext()) {
-            try {
-                NotationName nn = (NotationName) iterator.next();
-                addItem(nn);
-            } catch (Exception e) {
-                LOG.error("Unexpected exception", e);
-            }
-        }
-        setVisible(true);
-        invalidate();
-    }
-
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = 4059899784583789412L;
+  /** The UID. */
+  private static final long serialVersionUID = 4059899784583789412L;
 }

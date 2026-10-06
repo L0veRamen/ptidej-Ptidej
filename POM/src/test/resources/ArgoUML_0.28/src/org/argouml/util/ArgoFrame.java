@@ -25,73 +25,68 @@
 package org.argouml.util;
 
 import java.awt.Frame;
-
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-
 import org.apache.log4j.Logger;
 
 /**
  * Helper class to store/find a top level application frame.
- * 
- * This has been factored out of ProjectBrowser solely to allow easy
- * identification of things that want a ProjectBrowser because it is the top
- * level JFrame and those things that want to actually call a ProjectBrowser
- * method for some other purpose.
- * 
+ *
+ * <p>This has been factored out of ProjectBrowser solely to allow easy identification of things
+ * that want a ProjectBrowser because it is the top level JFrame and those things that want to
+ * actually call a ProjectBrowser method for some other purpose.
+ *
  * @author Tom Morris
- * 
  */
 public class ArgoFrame {
 
-    private static final Logger LOG = Logger.getLogger(ArgoFrame.class);
-    
-    private static JFrame topFrame;
-    
-    private ArgoFrame() {
-        // prohibit instantiation
-    }
-    
-    /**
-     * Get a top level frame which can be used as the parent for creating new
-     * dialogs. The name is temporarily the same as the old
-     * ProjectBrowser.getInstance() usage for compatibility. The implementation
-     * is just roughed out for experimentation.
-     * 
-     * @return a top level JFrame to use as parent for new dialogs
-     */
-    public static JFrame getInstance() {
-        if (topFrame == null) {
-            Frame rootFrame = JOptionPane.getRootFrame();
-            if ( rootFrame instanceof JFrame) {
-                topFrame = (JFrame) rootFrame;
+  private static final Logger LOG = Logger.getLogger(ArgoFrame.class);
+
+  private static JFrame topFrame;
+
+  private ArgoFrame() {
+    // prohibit instantiation
+  }
+
+  /**
+   * Get a top level frame which can be used as the parent for creating new dialogs. The name is
+   * temporarily the same as the old ProjectBrowser.getInstance() usage for compatibility. The
+   * implementation is just roughed out for experimentation.
+   *
+   * @return a top level JFrame to use as parent for new dialogs
+   */
+  public static JFrame getInstance() {
+    if (topFrame == null) {
+      Frame rootFrame = JOptionPane.getRootFrame();
+      if (rootFrame instanceof JFrame) {
+        topFrame = (JFrame) rootFrame;
+      } else {
+        Frame[] frames = Frame.getFrames();
+        for (int i = 0; i < frames.length; i++) {
+          if (frames[i] instanceof JFrame) {
+            if (topFrame != null) {
+              LOG.warn("Found multiple JFrames");
             } else {
-                Frame[] frames = Frame.getFrames();
-                for (int i = 0; i < frames.length; i++) {
-                    if (frames[i] instanceof JFrame) {
-                        if (topFrame != null) {
-                            LOG.warn("Found multiple JFrames");
-                        } else {
-                            topFrame = (JFrame) frames[i];
-                        }
-                    }
-                }
-                if (topFrame == null) {
-                    LOG.warn("Failed to find application JFrame");
-                }
+              topFrame = (JFrame) frames[i];
             }
-            ArgoDialog.setFrame(topFrame);
+          }
         }
-
-        return topFrame;
+        if (topFrame == null) {
+          LOG.warn("Failed to find application JFrame");
+        }
+      }
+      ArgoDialog.setFrame(topFrame);
     }
 
-    /**
-     * Set the JFrame to use as the main application frame.
-     * 
-     * @param frame the main application frame.
-     */
-    public static void setInstance(JFrame frame) {
-        topFrame = frame;
-    }
+    return topFrame;
+  }
+
+  /**
+   * Set the JFrame to use as the main application frame.
+   *
+   * @param frame the main application frame.
+   */
+  public static void setInstance(JFrame frame) {
+    topFrame = frame;
+  }
 }

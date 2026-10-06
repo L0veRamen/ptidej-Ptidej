@@ -26,9 +26,7 @@ package org.argouml.ui.cmd;
 
 import java.awt.event.ActionEvent;
 import java.text.MessageFormat;
-
 import javax.swing.JOptionPane;
-
 import org.argouml.application.api.CommandLineInterface;
 import org.argouml.application.api.Configuration;
 import org.argouml.i18n.Translator;
@@ -39,93 +37,78 @@ import org.argouml.uml.ui.ActionSaveProject;
 import org.argouml.uml.ui.ActionSaveProjectAs;
 import org.argouml.uml.ui.UMLAction;
 
-/**
- * Action to exit ArgoUML.
- * If the project is dirty, then ask the user if he wants to save first.
- */
-public class ActionExit extends UMLAction
-    implements CommandLineInterface {
+/** Action to exit ArgoUML. If the project is dirty, then ask the user if he wants to save first. */
+public class ActionExit extends UMLAction implements CommandLineInterface {
 
-    ////////////////////////////////////////////////////////////////
-    // static variables
+  ////////////////////////////////////////////////////////////////
+  // static variables
 
-    /**
-     * Remember if this form is already active, so that it does
-     * not popup twice.
-     */
-    private static boolean active = false;
+  /** Remember if this form is already active, so that it does not popup twice. */
+  private static boolean active = false;
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    /**
-     * The constructor.
-     */
-    public ActionExit() {
-	super ("action.exit", NO_ICON);
-	active = false;
+  /** The constructor. */
+  public ActionExit() {
+    super("action.exit", NO_ICON);
+    active = false;
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // main methods
+
+  /**
+   * See ProjectBrowser.askConfirmationAndSave() for a very similar procedure!
+   *
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    ProjectBrowser pb = ProjectBrowser.getInstance();
+    Project p = ProjectManager.getManager().getCurrentProject();
+
+    if (p != null && ProjectManager.getManager().needsSave() && !active) {
+      active = true;
+      String t =
+          MessageFormat.format(
+              Translator.localize("optionpane.exit-save-changes-to"), new Object[] {p.getName()});
+      int response = JOptionPane.showConfirmDialog(pb, t, t, JOptionPane.YES_NO_CANCEL_OPTION);
+
+      if (response == JOptionPane.CANCEL_OPTION || response == JOptionPane.CLOSED_OPTION) {
+        active = false;
+        return;
+      }
+      if (response == JOptionPane.YES_OPTION) {
+        boolean safe = false;
+
+        if (ActionSaveProject.getInstance().isEnabled()) {
+          safe = ProjectBrowser.getInstance().trySave(true);
+        }
+        if (!safe) {
+          safe = ActionSaveProjectAs.SINGLETON.trySave(false);
+        }
+        if (!safe) {
+          active = false;
+          return;
+        }
+      }
+      active = false;
     }
-
-    ////////////////////////////////////////////////////////////////
-    // main methods
-
-    /**
-     * See ProjectBrowser.askConfirmationAndSave() for a very similar procedure!
-     * 
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed (ActionEvent ae) {
-	ProjectBrowser pb = ProjectBrowser.getInstance();
-	Project p = ProjectManager.getManager().getCurrentProject();
-
-	if (p != null && ProjectManager.getManager().needsSave() && !active) {
-	    active = true;
-	    String t =
-		MessageFormat.format(Translator.localize(
-			"optionpane.exit-save-changes-to"),
-			new Object[] {p.getName()});
-	    int response =
-		JOptionPane.showConfirmDialog(pb, t, t,
-					      JOptionPane.YES_NO_CANCEL_OPTION);
-
-	    if (response == JOptionPane.CANCEL_OPTION
-            	|| response == JOptionPane.CLOSED_OPTION) {
-		active = false;
-		return;
-	    }
-	    if (response == JOptionPane.YES_OPTION) {
-		boolean safe = false;
-
-		if (ActionSaveProject.getInstance().isEnabled()) {
-		    safe = ProjectBrowser.getInstance().trySave (true);
-		}
-		if (!safe) {
-		    safe = ActionSaveProjectAs.SINGLETON.trySave (false);
-		}
-		if (!safe) {
-		    active = false;
-		    return;
-		}
-	    }
-	    active = false;
-	}
-	if (!active) {
-	    Configuration.save();
-	    doCommand(null);
-	}
+    if (!active) {
+      Configuration.save();
+      doCommand(null);
     }
+  }
 
-
-    /**
-     * Execute this action from the command line.
-     *
-     * @param argument is not used.
-     * @return true if it is OK.
-     *
-     * @see org.argouml.application.api.CommandLineInterface#doCommand(java.lang.String)
-     */
-    public boolean doCommand(String argument) {
-        System.exit (0);
-	return true;
-    }
+  /**
+   * Execute this action from the command line.
+   *
+   * @param argument is not used.
+   * @return true if it is OK.
+   * @see org.argouml.application.api.CommandLineInterface#doCommand(java.lang.String)
+   */
+  public boolean doCommand(String argument) {
+    System.exit(0);
+    return true;
+  }
 } /* end class ActionExit */

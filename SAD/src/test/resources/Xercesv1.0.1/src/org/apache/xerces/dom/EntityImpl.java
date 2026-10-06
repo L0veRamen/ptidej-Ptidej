@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xerces" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -60,185 +60,162 @@ package org.apache.xerces.dom;
 import org.w3c.dom.*;
 
 /**
- * Entity nodes hold the reference data for an XML Entity -- either
- * parsed or unparsed. The nodeName (inherited from Node) will contain
- * the name (if any) of the Entity. Its data will be contained in the
- * Entity's children, in exactly the structure which an
- * EntityReference to this name will present within the document's
- * body.
- * <P>
- * Note that this object models the actual entity, _not_ the entity
- * declaration or the entity reference.
- * <P>
- * An XML processor may choose to completely expand entities before
- * the structure model is passed to the DOM; in this case, there will
- * be no EntityReferences in the DOM tree.
- * <P>
- * Quoting the 10/01 DOM Proposal,
- * <BLOCKQUOTE>
- * "The DOM Level 1 does not support editing Entity nodes; if a user
- * wants to make changes to the contents of an Entity, every related
- * EntityReference node has to be replaced in the structure model by
- * a clone of the Entity's contents, and then the desired changes 
- * must be made to each of those clones instead. All the
- * descendants of an Entity node are readonly."
- * </BLOCKQUOTE>
- * I'm interpreting this as: It is the parser's responsibilty to call
- * the non-DOM operation setReadOnly(true,true) after it constructs
- * the Entity. Since the DOM explicitly decided not to deal with this,
- * _any_ answer will involve a non-DOM operation, and this is the
- * simplest solution.
+ * Entity nodes hold the reference data for an XML Entity -- either parsed or unparsed. The nodeName
+ * (inherited from Node) will contain the name (if any) of the Entity. Its data will be contained in
+ * the Entity's children, in exactly the structure which an EntityReference to this name will
+ * present within the document's body.
  *
+ * <p>Note that this object models the actual entity, _not_ the entity declaration or the entity
+ * reference.
+ *
+ * <p>An XML processor may choose to completely expand entities before the structure model is passed
+ * to the DOM; in this case, there will be no EntityReferences in the DOM tree.
+ *
+ * <p>Quoting the 10/01 DOM Proposal,
+ *
+ * <BLOCKQUOTE>
+ * "The DOM Level 1 does not support editing Entity nodes; if a user wants to make changes to the
+ * contents of an Entity, every related EntityReference node has to be replaced in the structure
+ * model by a clone of the Entity's contents, and then the desired changes must be made to each of
+ * those clones instead. All the descendants of an Entity node are readonly."
+ * </BLOCKQUOTE>
+ *
+ * I'm interpreting this as: It is the parser's responsibilty to call the non-DOM operation
+ * setReadOnly(true,true) after it constructs the Entity. Since the DOM explicitly decided not to
+ * deal with this, _any_ answer will involve a non-DOM operation, and this is the simplest solution.
  *
  * @version
- * @since  PR-DOM-Level-1-19980818.
+ * @since PR-DOM-Level-1-19980818.
  */
-public class EntityImpl 
-    extends NodeImpl 
-    implements Entity {
+public class EntityImpl extends NodeImpl implements Entity {
 
-    //
-    // Constants
-    //
+  //
+  // Constants
+  //
 
-    /** Serialization version. */
-    static final long serialVersionUID = -3575760943444303423L;
-    
-    //
-    // Data
-    //
+  /** Serialization version. */
+  static final long serialVersionUID = -3575760943444303423L;
 
-    /** Public identifier. */
-    protected String publicId;
+  //
+  // Data
+  //
 
-    /** System identifier. */
-    protected String systemId;
+  /** Public identifier. */
+  protected String publicId;
 
-    /** Notation name. */
-    protected String notationName;
+  /** System identifier. */
+  protected String systemId;
 
-    //
-    // Constructors
-    //
+  /** Notation name. */
+  protected String notationName;
 
-    /** Factory constructor. */
-    public EntityImpl(DocumentImpl ownerDoc, String name) {
-    	super(ownerDoc, name, null);
+  //
+  // Constructors
+  //
+
+  /** Factory constructor. */
+  public EntityImpl(DocumentImpl ownerDoc, String name) {
+    super(ownerDoc, name, null);
+  }
+
+  //
+  // Node methods
+  //
+
+  /**
+   * A short integer indicating what type of node this is. The named constants for this value are
+   * defined in the org.w3c.dom.Node interface.
+   */
+  public short getNodeType() {
+    return Node.ENTITY_NODE;
+  }
+
+  /** Returns the node value. */
+  public String getNodeValue() {
+    return null;
+  }
+
+  /**
+   * EntityReferences never have a nodeValue.
+   *
+   * @throws DOMException(NO_MODIFICATION_ALLOWED_ERR)
+   */
+  public void setNodeValue(String value) throws DOMException {
+    throw new DOMExceptionImpl(
+        DOMException.NO_MODIFICATION_ALLOWED_ERR, "NO_MODIFICATION_ALLOWED_ERR");
+  }
+
+  //
+  // Entity methods
+  //
+
+  /** The public identifier associated with the entity. If not specified, this will be null. */
+  public String getPublicId() {
+
+    if (syncData) {
+      synchronizeData();
     }
-    
-    //
-    // Node methods
-    //
+    return publicId;
+  } // getPublicId():String
 
-    /** 
-     * A short integer indicating what type of node this is. The named
-     * constants for this value are defined in the org.w3c.dom.Node interface.
-     */
-    public short getNodeType() {
-        return Node.ENTITY_NODE;
+  /** The system identifier associated with the entity. If not specified, this will be null. */
+  public String getSystemId() {
+
+    if (syncData) {
+      synchronizeData();
     }
+    return systemId;
+  } // getSystemId():String
 
-    /** Returns the node value. */
-    public String getNodeValue() {
-        return null;
+  /**
+   * Unparsed entities -- which contain non-XML data -- have a "notation name" which tells
+   * applications how to deal with them. Parsed entities, which <em>are</em> in XML format, don't
+   * need this and set it to null.
+   */
+  public String getNotationName() {
+
+    if (syncData) {
+      synchronizeData();
     }
+    return notationName;
+  } // getNotationName():String
 
-    /**
-     * EntityReferences never have a nodeValue.
-     * @throws DOMException(NO_MODIFICATION_ALLOWED_ERR)
-     */
-    public void setNodeValue(String value) throws DOMException {
-    	throw new DOMExceptionImpl(DOMException.NO_MODIFICATION_ALLOWED_ERR, 
-    	                           "NO_MODIFICATION_ALLOWED_ERR");
+  //
+  // Public methods
+  //
+
+  /**
+   * NON-DOM The public identifier associated with the entity. If not specified, this will be null.
+   */
+  public void setPublicId(String id) {
+
+    if (syncData) {
+      synchronizeData();
     }
+    publicId = id;
+  } // getPublicId(String)
 
-    //
-    // Entity methods
-    //
+  /**
+   * NON-DOM The system identifier associated with the entity. If not specified, this will be null.
+   */
+  public void setSystemId(String id) {
 
-    /** 
-     * The public identifier associated with the entity. If not specified,
-     * this will be null. 
-     */
-    public String getPublicId() {
-        
-        if (syncData) {
-            synchronizeData();
-        }
-        return publicId;
+    if (syncData) {
+      synchronizeData();
+    }
+    systemId = id;
+  } // setSystemId(String)
 
-    } // getPublicId():String
+  /**
+   * NON-DOM Unparsed entities -- which contain non-XML data -- have a "notation name" which tells
+   * applications how to deal with them. Parsed entities, which <em>are</em> in XML format, don't
+   * need this and set it to null.
+   */
+  public void setNotationName(String name) {
 
-    /** 
-     * The system identifier associated with the entity. If not specified,
-     * this will be null. 
-     */
-    public String getSystemId() {
-
-        if (syncData) {
-            synchronizeData();
-        }
-        return systemId;
-
-    } // getSystemId():String
-
-    /** 
-     * Unparsed entities -- which contain non-XML data -- have a
-     * "notation name" which tells applications how to deal with them.
-     * Parsed entities, which <em>are</em> in XML format, don't need this and
-     * set it to null.  
-     */
-    public String getNotationName() {
-
-        if (syncData) {
-            synchronizeData();
-        }
-        return notationName;
-
-    } // getNotationName():String
-
-    //
-    // Public methods
-    //
-
-    /**
-     * NON-DOM The public identifier associated with the entity. If not specified,
-     * this will be null. */
-    public void setPublicId(String id) {
-        
-        if (syncData) {
-            synchronizeData();
-        }
-    	publicId = id;
-
-    } // getPublicId(String)
-
-    /**
-     * NON-DOM The system identifier associated with the entity. If not
-     * specified, this will be null. 
-     */
-    public void setSystemId(String id) {
-
-        if (syncData) {
-            synchronizeData();
-        }
-    	systemId = id;
-
-    } // setSystemId(String)
-
-    /** 
-     * NON-DOM Unparsed entities -- which contain non-XML data -- have a
-     * "notation name" which tells applications how to deal with them.
-     * Parsed entities, which <em>are</em> in XML format, don't need this and
-     * set it to null.  
-     */
-    public void setNotationName(String name) {
-        
-        if (syncData) {
-            synchronizeData();
-        }
-    	notationName = name;
-
-    } // setNotationName(String)
-
+    if (syncData) {
+      synchronizeData();
+    }
+    notationName = name;
+  } // setNotationName(String)
 } // class EntityImpl

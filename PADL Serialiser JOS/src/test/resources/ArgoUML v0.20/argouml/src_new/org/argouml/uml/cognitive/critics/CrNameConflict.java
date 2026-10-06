@@ -26,7 +26,6 @@ package org.argouml.uml.cognitive.critics;
 
 import java.util.HashMap;
 import java.util.Iterator;
-
 import org.argouml.cognitive.Designer;
 import org.argouml.cognitive.ListSet;
 import org.argouml.cognitive.ToDoItem;
@@ -37,107 +36,100 @@ import org.argouml.uml.cognitive.UMLDecision;
 import org.argouml.uml.cognitive.UMLToDoItem;
 
 /**
- * Well-formedness rule [1] for MNamespace. See page 33 of UML 1.1
- * Semantics. OMG document ad/97-08-04.
+ * Well-formedness rule [1] for MNamespace. See page 33 of UML 1.1 Semantics. OMG document
+ * ad/97-08-04.
  */
 public class CrNameConflict extends CrUML {
 
-    /**
-     * The constructor.
-     */
-    public CrNameConflict() {
-        setupHeadAndDesc();
-        addSupportedDecision(UMLDecision.NAMING);
-        setKnowledgeTypes(Critic.KT_SYNTAX);
-        addTrigger("name");
-        addTrigger("feature_name");
-    }
+  /** The constructor. */
+  public CrNameConflict() {
+    setupHeadAndDesc();
+    addSupportedDecision(UMLDecision.NAMING);
+    setKnowledgeTypes(Critic.KT_SYNTAX);
+    addTrigger("name");
+    addTrigger("feature_name");
+  }
 
-    /**
-     * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
-     * java.lang.Object, org.argouml.cognitive.Designer)
-     */
-    public boolean predicate2(Object dm, Designer dsgr) {
-        return computeOffenders(dm).size() > 1;
-    }
+  /**
+   * @see org.argouml.uml.cognitive.critics.CrUML#predicate2( java.lang.Object,
+   *     org.argouml.cognitive.Designer)
+   */
+  public boolean predicate2(Object dm, Designer dsgr) {
+    return computeOffenders(dm).size() > 1;
+  }
 
-    /**
-     * @see org.argouml.cognitive.critics.Critic#toDoItem(
-     * java.lang.Object, org.argouml.cognitive.Designer)
-     */
-    public ToDoItem toDoItem(Object dm, Designer dsgr) {
-	ListSet offs = computeOffenders(dm);
-	return new UMLToDoItem(this, offs, dsgr);
-    }
+  /**
+   * @see org.argouml.cognitive.critics.Critic#toDoItem( java.lang.Object,
+   *     org.argouml.cognitive.Designer)
+   */
+  public ToDoItem toDoItem(Object dm, Designer dsgr) {
+    ListSet offs = computeOffenders(dm);
+    return new UMLToDoItem(this, offs, dsgr);
+  }
 
-    /**
-     * @param dm the object to check
-     * @return the set of offenders
-     */
-    protected ListSet computeOffenders(Object dm) {
-        ListSet offs = new ListSet();
-        if (Model.getFacade().isANamespace(dm)) {
-            Iterator it = Model.getFacade().getOwnedElements(dm).iterator();
-            HashMap names = new HashMap();
-            while (it.hasNext()) {
-                Object name1Object = it.next();
-                String name = Model.getFacade().getName(name1Object);
-		if (name == null)
-		    continue;
-		if ("".equals(name))
-		    continue;
-                if (names.containsKey(name)) {
-                    Object off = names.get(name);
-                    offs.addElement(off);
-                    offs.addElement(name1Object);
-                    break;
-                }
-                names.put(name, name1Object);
-            }
+  /**
+   * @param dm the object to check
+   * @return the set of offenders
+   */
+  protected ListSet computeOffenders(Object dm) {
+    ListSet offs = new ListSet();
+    if (Model.getFacade().isANamespace(dm)) {
+      Iterator it = Model.getFacade().getOwnedElements(dm).iterator();
+      HashMap names = new HashMap();
+      while (it.hasNext()) {
+        Object name1Object = it.next();
+        String name = Model.getFacade().getName(name1Object);
+        if (name == null) continue;
+        if ("".equals(name)) continue;
+        if (names.containsKey(name)) {
+          Object off = names.get(name);
+          offs.addElement(off);
+          offs.addElement(name1Object);
+          break;
         }
-        return offs;
+        names.put(name, name1Object);
+      }
     }
+    return offs;
+  }
 
+  /**
+   * @see org.argouml.cognitive.Poster#stillValid( org.argouml.cognitive.ToDoItem,
+   *     org.argouml.cognitive.Designer)
+   */
+  public boolean stillValid(ToDoItem i, Designer dsgr) {
+    if (!isActive()) return false;
+    ListSet offs = i.getOffenders();
 
-    /**
-     * @see org.argouml.cognitive.Poster#stillValid(
-     * org.argouml.cognitive.ToDoItem, org.argouml.cognitive.Designer)
-     */
-    public boolean stillValid(ToDoItem i, Designer dsgr) {
-	if (!isActive()) return false;
-	ListSet offs = i.getOffenders();
+    // first element is e.g. the class, but we need to have its namespace
+    // to recompute the offenders.
+    Object f = offs.firstElement();
+    Object ns = Model.getFacade().getNamespace(f);
+    if (!predicate(ns, dsgr)) return false;
+    ListSet newOffs = computeOffenders(ns);
+    boolean res = offs.equals(newOffs);
+    return res;
+  }
 
-        // first element is e.g. the class, but we need to have its namespace
-        // to recompute the offenders.
-	Object f = offs.firstElement();
-        Object ns = Model.getFacade().getNamespace(f);
-	if (!predicate(ns, dsgr)) return false;
-	ListSet newOffs = computeOffenders(ns);
-	boolean res = offs.equals(newOffs);
-	return res;
+  /**
+   * @see org.argouml.cognitive.critics.Critic#initWizard( org.argouml.cognitive.ui.Wizard)
+   */
+  public void initWizard(Wizard w) {
+    if (w instanceof WizMEName) {
+      ToDoItem item = (ToDoItem) w.getToDoItem();
+      Object me = item.getOffenders().firstElement();
+      String sug = Model.getFacade().getName(me);
+      String ins = "Change the name to something different.";
+      ((WizMEName) w).setInstructions(ins);
+      ((WizMEName) w).setSuggestion(sug);
+      ((WizMEName) w).setMustEdit(true);
     }
+  }
 
-    /**
-     * @see org.argouml.cognitive.critics.Critic#initWizard(
-     *         org.argouml.cognitive.ui.Wizard)
-     */
-    public void initWizard(Wizard w) {
-        if (w instanceof WizMEName) {
-            ToDoItem item = (ToDoItem) w.getToDoItem();
-            Object me = item.getOffenders().firstElement();
-            String sug = Model.getFacade().getName(me);
-            String ins = "Change the name to something different.";
-            ((WizMEName) w).setInstructions(ins);
-            ((WizMEName) w).setSuggestion(sug);
-            ((WizMEName) w).setMustEdit(true);
-        }
-    }
-
-    /**
-     * @see org.argouml.cognitive.critics.Critic#getWizardClass(org.argouml.cognitive.ToDoItem)
-     */
-    public Class getWizardClass(ToDoItem item) { return WizMEName.class; }
-
-
+  /**
+   * @see org.argouml.cognitive.critics.Critic#getWizardClass(org.argouml.cognitive.ToDoItem)
+   */
+  public Class getWizardClass(ToDoItem item) {
+    return WizMEName.class;
+  }
 } /* end class CrNameConflict.java */
-

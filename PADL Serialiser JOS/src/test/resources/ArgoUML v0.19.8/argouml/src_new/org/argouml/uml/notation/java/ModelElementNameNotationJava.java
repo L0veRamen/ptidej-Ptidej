@@ -25,7 +25,6 @@
 package org.argouml.uml.notation.java;
 
 import java.util.Stack;
-
 import org.argouml.language.java.generator.GeneratorJava;
 import org.argouml.model.Model;
 import org.argouml.ui.ProjectBrowser;
@@ -36,86 +35,82 @@ import org.argouml.uml.notation.ModelElementNameNotation;
  */
 public class ModelElementNameNotationJava extends ModelElementNameNotation {
 
-    /**
-     * The constructor.
-     */
-    public ModelElementNameNotationJava(Object name) {
-        super(name);
-    }
+  /** The constructor. */
+  public ModelElementNameNotationJava(Object name) {
+    super(name);
+  }
 
-    /**
-     * @see org.argouml.notation.NotationProvider4#parse(java.lang.String)
-     */
-    public String parse(String text) {
-        ProjectBrowser.getInstance().getStatusBar().showStatus(
-            "Parsing in Java not yet supported");
-        return toString();
-    }
+  /**
+   * @see org.argouml.notation.NotationProvider4#parse(java.lang.String)
+   */
+  public String parse(String text) {
+    ProjectBrowser.getInstance().getStatusBar().showStatus("Parsing in Java not yet supported");
+    return toString();
+  }
 
-    /**
-     * @see org.argouml.notation.NotationProvider4#getParsingHelp()
-     */
-    public String getParsingHelp() {
-        if (Model.getFacade().isAStateVertex(myModelElement)) {
-            return "parsing.help.fig-statename";
-        }
-        return "parsing.help.fig-nodemodelelement";
+  /**
+   * @see org.argouml.notation.NotationProvider4#getParsingHelp()
+   */
+  public String getParsingHelp() {
+    if (Model.getFacade().isAStateVertex(myModelElement)) {
+      return "parsing.help.fig-statename";
     }
+    return "parsing.help.fig-nodemodelelement";
+  }
 
-    /**
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-        String name;
-        name = Model.getFacade().getName(myModelElement);
-        if (name == null) name = "";
-        return generateVisibility() + generatePath() + name;
-    }
+  /**
+   * @see java.lang.Object#toString()
+   */
+  public String toString() {
+    String name;
+    name = Model.getFacade().getName(myModelElement);
+    if (name == null) name = "";
+    return generateVisibility() + generatePath() + name;
+  }
 
-    /**
-     * 
-     * @return a string which represents the path
-     */
-    protected String generatePath() {
-        String s = "";
-        Object o = this.getValue("pathVisible");
-        boolean b = (o == null) ? false : ((Boolean) o).booleanValue();
-        if (b) {
-            Object p = myModelElement;
-            Stack stack = new Stack();
-            Object ns = Model.getFacade().getNamespace(p);
-            while (ns != null && !Model.getFacade().isAModel(ns)) {
-                stack.push(Model.getFacade().getName(ns));
-                ns = Model.getFacade().getNamespace(ns);
-            }
-            while (!stack.isEmpty()) {
-                s += (String) stack.pop() + ".";
-            }
-            
-            if (s.length() > 0 && !s.endsWith(".")) {
-                s += ".";
-            }
-        }
-        return s;
+  /**
+   * @return a string which represents the path
+   */
+  protected String generatePath() {
+    String s = "";
+    Object o = this.getValue("pathVisible");
+    boolean b = (o == null) ? false : ((Boolean) o).booleanValue();
+    if (b) {
+      Object p = myModelElement;
+      Stack stack = new Stack();
+      Object ns = Model.getFacade().getNamespace(p);
+      while (ns != null && !Model.getFacade().isAModel(ns)) {
+        stack.push(Model.getFacade().getName(ns));
+        ns = Model.getFacade().getNamespace(ns);
+      }
+      while (!stack.isEmpty()) {
+        s += (String) stack.pop() + ".";
+      }
+
+      if (s.length() > 0 && !s.endsWith(".")) {
+        s += ".";
+      }
     }
-    
-    /**
-     * @return a string which represents the visibility
-     */
-    protected String generateVisibility() {
-        String s = "";
-        Boolean b = ((Boolean)this.getValue("visibilityVisible")); 
-        if (b != null && b.booleanValue()) {
-            Object v = Model.getFacade().getVisibility(myModelElement);
-            if (v == null) {
-                /* Initially, the visibility is not set in the model. 
-                 * Still, we want to show the default, i.e. public.*/
-                v = Model.getVisibilityKind().getPublic();
-            }
-            s = GeneratorJava.getInstance().generateVisibility(v);
-            if (s.length() > 0) s = s + " ";
-            /* This for when nothing is generated: omit the space. */
-        }
-        return s;
+    return s;
+  }
+
+  /**
+   * @return a string which represents the visibility
+   */
+  protected String generateVisibility() {
+    String s = "";
+    Boolean b = ((Boolean) this.getValue("visibilityVisible"));
+    if (b != null && b.booleanValue()) {
+      Object v = Model.getFacade().getVisibility(myModelElement);
+      if (v == null) {
+        /* Initially, the visibility is not set in the model.
+         * Still, we want to show the default, i.e. public.*/
+        v = Model.getVisibilityKind().getPublic();
+      }
+      s = GeneratorJava.getInstance().generateVisibility(v);
+      if (s.length() > 0) s = s + " ";
+      /* This for when nothing is generated: omit the space. */
     }
+    return s;
+  }
 }

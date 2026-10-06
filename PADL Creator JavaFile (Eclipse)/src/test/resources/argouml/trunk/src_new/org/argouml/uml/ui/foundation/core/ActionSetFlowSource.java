@@ -27,13 +27,12 @@ package org.argouml.uml.ui.foundation.core;
 
 import java.awt.event.ActionEvent;
 import java.util.Vector;
-
 import javax.swing.Action;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLComboBox2;
 import org.tigris.gef.undo.UndoableAction;
+
 /**
  * @since Oct 12, 2002
  * @author jaap.branderhorst@xs4all.nl
@@ -41,50 +40,44 @@ import org.tigris.gef.undo.UndoableAction;
  */
 public class ActionSetFlowSource extends UndoableAction {
 
-    private static final ActionSetFlowSource SINGLETON =
-        new ActionSetFlowSource();
+  private static final ActionSetFlowSource SINGLETON = new ActionSetFlowSource();
 
-    /**
-     * Constructor for ActionSetElementOwnershipSpecification.
-     */
-    protected ActionSetFlowSource() {
-        super(Translator.localize("Set"), null);
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize("Set"));
-    }
+  /** Constructor for ActionSetElementOwnershipSpecification. */
+  protected ActionSetFlowSource() {
+    super(Translator.localize("Set"), null);
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize("Set"));
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        if (e.getSource() instanceof UMLComboBox2) {
-            UMLComboBox2 source = (UMLComboBox2) e.getSource();
-            Object target = source.getTarget();
-            if (Model.getFacade().isAFlow(target)) {
-                Object flow = /*(MFlow)*/ target;
-                Object old = null;
-                if (!Model.getFacade().getSources(flow).isEmpty()) {
-                    old = /*(MModelElement)*/
-                        Model.getFacade().getSources(flow).toArray()[0];
-                }
-                if (old != source.getSelectedItem()) {
-                    if (source.getSelectedItem() != null) {
-                        Vector sources = new Vector();
-                        sources.add(source.getSelectedItem());
-                        Model.getCoreHelper().setSources(flow, sources);
-                    }
-                }
-            }
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    if (e.getSource() instanceof UMLComboBox2) {
+      UMLComboBox2 source = (UMLComboBox2) e.getSource();
+      Object target = source.getTarget();
+      if (Model.getFacade().isAFlow(target)) {
+        Object flow = /*(MFlow)*/ target;
+        Object old = null;
+        if (!Model.getFacade().getSources(flow).isEmpty()) {
+          old = /*(MModelElement)*/ Model.getFacade().getSources(flow).toArray()[0];
         }
+        if (old != source.getSelectedItem()) {
+          if (source.getSelectedItem() != null) {
+            Vector sources = new Vector();
+            sources.add(source.getSelectedItem());
+            Model.getCoreHelper().setSources(flow, sources);
+          }
+        }
+      }
     }
+  }
 
-    /**
-     * @return Returns the SINGLETON.
-     */
-    public static ActionSetFlowSource getInstance() {
-        return SINGLETON;
-    }
-
+  /**
+   * @return Returns the SINGLETON.
+   */
+  public static ActionSetFlowSource getInstance() {
+    return SINGLETON;
+  }
 }

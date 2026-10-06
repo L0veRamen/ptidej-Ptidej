@@ -27,7 +27,8 @@ package org.argouml.argoeclipse.internal.ui.importwizard;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
-
+import org.argouml.argoeclipse.internal.core.imports.ImportSources;
+import org.argouml.argoeclipse.internal.core.util.ResourcePathTranslator;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.window.Window;
@@ -42,121 +43,116 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.dialogs.ResourceListSelectionDialog;
 
-import org.argouml.argoeclipse.internal.core.imports.ImportSources;
-import org.argouml.argoeclipse.internal.core.util.ResourcePathTranslator;
-
 /**
  * This class is responsible with the workspace behavior of the ImportWizard.
+ *
  * @author Bogdan Pistol
  */
-public class ImportSourcesPageWorkspace extends ImportSourcesPage {    
+public class ImportSourcesPageWorkspace extends ImportSourcesPage {
 
-    /**
-     * Constructor
-     */
-    public ImportSourcesPageWorkspace() {
-        setDescription(ImportWizardMessages.importWorkspaceDescription);        
-    }
-    
-    /*
-     * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
-     */
-    public void createControl(Composite parent) {
-        Composite workArea = createWorkArea(parent);
-        Button browser = new Button(workArea, SWT.PUSH);
-        browser.setText(ImportWizardMessages.browseButton);
-        browser.setLayoutData(new GridData(SWT.RIGHT, SWT.NONE, false, false));
-        browser.addSelectionListener(new SelectionAdapter() {
-            
-            public void widgetSelected(SelectionEvent e) {                
-                handleBrowser();
-                validate();
-            }
-            
+  /** Constructor */
+  public ImportSourcesPageWorkspace() {
+    setDescription(ImportWizardMessages.importWorkspaceDescription);
+  }
+
+  /*
+   * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
+   */
+  public void createControl(Composite parent) {
+    Composite workArea = createWorkArea(parent);
+    Button browser = new Button(workArea, SWT.PUSH);
+    browser.setText(ImportWizardMessages.browseButton);
+    browser.setLayoutData(new GridData(SWT.RIGHT, SWT.NONE, false, false));
+    browser.addSelectionListener(
+        new SelectionAdapter() {
+
+          public void widgetSelected(SelectionEvent e) {
+            handleBrowser();
+            validate();
+          }
         });
-    }
-    
-    private void handleBrowser() {
-        ResourceListSelectionDialog dialog = new ResourceListSelectionDialog(
-                getShell(), ResourcesPlugin.getWorkspace().getRoot(),
-                IResource.FILE | IResource.FOLDER | IResource.PROJECT);        
-        if (dialog.open() == Window.OK) {
-            Object[] result = dialog.getResult();
-            if (result.length == 1) {
-                setPath(((IResource) result[0]).getFullPath().toOSString());
-            }
-        }
-    }
+  }
 
-    /*
-     * @see org.argouml.argoeclipse.internal.ui.util.importwizard.ImportSourcesPage#createClassPathAddRemoveButtons(org.eclipse.swt.widgets.Composite)
-     */
-    protected void createClassPathAddRemoveButtons(Composite parent) {
-        GridLayout buttonsLayout = new GridLayout();
-        buttonsLayout.numColumns = 2;
-        buttonsLayout.makeColumnsEqualWidth = true;
-        parent.setLayout(buttonsLayout);
-        Button addPath = new Button(parent, SWT.PUSH);
-        addPath.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
-        addPath.setText(ImportWizardMessages.addPathButton);
-        addPath.addSelectionListener(new SelectionAdapter() {
+  private void handleBrowser() {
+    ResourceListSelectionDialog dialog =
+        new ResourceListSelectionDialog(
+            getShell(),
+            ResourcesPlugin.getWorkspace().getRoot(),
+            IResource.FILE | IResource.FOLDER | IResource.PROJECT);
+    if (dialog.open() == Window.OK) {
+      Object[] result = dialog.getResult();
+      if (result.length == 1) {
+        setPath(((IResource) result[0]).getFullPath().toOSString());
+      }
+    }
+  }
 
-            public void widgetSelected(SelectionEvent e) {
-                super.widgetSelected(e);
-                handleAddPath();
-            }
-            
+  /*
+   * @see org.argouml.argoeclipse.internal.ui.util.importwizard.ImportSourcesPage#createClassPathAddRemoveButtons(org.eclipse.swt.widgets.Composite)
+   */
+  protected void createClassPathAddRemoveButtons(Composite parent) {
+    GridLayout buttonsLayout = new GridLayout();
+    buttonsLayout.numColumns = 2;
+    buttonsLayout.makeColumnsEqualWidth = true;
+    parent.setLayout(buttonsLayout);
+    Button addPath = new Button(parent, SWT.PUSH);
+    addPath.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
+    addPath.setText(ImportWizardMessages.addPathButton);
+    addPath.addSelectionListener(
+        new SelectionAdapter() {
+
+          public void widgetSelected(SelectionEvent e) {
+            super.widgetSelected(e);
+            handleAddPath();
+          }
         });
-        Button remove = new Button(parent, SWT.PUSH);
-        remove.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
-        configureClassPathRemoveButton(remove);        
-    }   
-    
-    private void handleAddPath() {
-        ResourceListSelectionDialog dialog = new ResourceListSelectionDialog(
-                getShell(), ResourcesPlugin.getWorkspace().getRoot(),
-                IResource.FILE | IResource.FOLDER | IResource.PROJECT);
-        if (dialog.open() == Window.OK) {
-            Object[] result = dialog.getResult();
-            if (result.length == 1) {
-                addClassPath(((IResource) result[0]).getFullPath()
-                        .toOSString());
-            }
-        }
-    }
-    
-    /*
-     * @see org.argouml.argoeclipse.internal.ui.util.importwizard.ImportSourcesPage#fillClassPathList(org.eclipse.swt.widgets.Table)
-     */
-    protected void fillClassPathList(Table classpathTable) {
-        ListIterator it = 
-            ImportSources.getInstance().getImportClasspath().listIterator();
-        while (it.hasNext()) {
-            String path = (String) it.next();
-            String workspacePath = 
-                ResourcePathTranslator.getWorkspacePath(path);
-            if (workspacePath == null) {
-                // TODO: Do we just want to skip classpath items which don't
-                // map into the workspace? - tfm
-                new TableItem(classpathTable, SWT.NONE).setText(path);
-            } else {
-                new TableItem(classpathTable, SWT.NONE).setText(workspacePath);
-            }
-        }
-    }
+    Button remove = new Button(parent, SWT.PUSH);
+    remove.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
+    configureClassPathRemoveButton(remove);
+  }
 
-    /*
-     * Converts workspace paths into filesystem paths.
-     * 
-     * @see org.argouml.argoeclipse.internal.ui.util.importwizard.ImportSourcesPage#getClassPath(org.eclipse.swt.widgets.Table)
-     */
-    protected List getClassPath(Table classpathTable) {
-        List list = new ArrayList();        
-        for (int i = 0; i < classpathTable.getItemCount(); i++) {
-            list.add(ResourcePathTranslator.getFilesystemPath(
-                    classpathTable.getItem(i).getText()));
-        }
-        return list;
+  private void handleAddPath() {
+    ResourceListSelectionDialog dialog =
+        new ResourceListSelectionDialog(
+            getShell(),
+            ResourcesPlugin.getWorkspace().getRoot(),
+            IResource.FILE | IResource.FOLDER | IResource.PROJECT);
+    if (dialog.open() == Window.OK) {
+      Object[] result = dialog.getResult();
+      if (result.length == 1) {
+        addClassPath(((IResource) result[0]).getFullPath().toOSString());
+      }
     }
-    
+  }
+
+  /*
+   * @see org.argouml.argoeclipse.internal.ui.util.importwizard.ImportSourcesPage#fillClassPathList(org.eclipse.swt.widgets.Table)
+   */
+  protected void fillClassPathList(Table classpathTable) {
+    ListIterator it = ImportSources.getInstance().getImportClasspath().listIterator();
+    while (it.hasNext()) {
+      String path = (String) it.next();
+      String workspacePath = ResourcePathTranslator.getWorkspacePath(path);
+      if (workspacePath == null) {
+        // TODO: Do we just want to skip classpath items which don't
+        // map into the workspace? - tfm
+        new TableItem(classpathTable, SWT.NONE).setText(path);
+      } else {
+        new TableItem(classpathTable, SWT.NONE).setText(workspacePath);
+      }
+    }
+  }
+
+  /*
+   * Converts workspace paths into filesystem paths.
+   *
+   * @see org.argouml.argoeclipse.internal.ui.util.importwizard.ImportSourcesPage#getClassPath(org.eclipse.swt.widgets.Table)
+   */
+  protected List getClassPath(Table classpathTable) {
+    List list = new ArrayList();
+    for (int i = 0; i < classpathTable.getItemCount(); i++) {
+      list.add(ResourcePathTranslator.getFilesystemPath(classpathTable.getItem(i).getText()));
+    }
+    return list;
+  }
 }

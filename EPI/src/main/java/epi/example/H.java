@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -12,19 +12,20 @@ package epi.example;
 
 /**
  * @author Yann-Gaël Guéhéneuc
- * @since  2005/04/08
+ * @since 2005/04/08
  */
 public class H {
-	public static void main(final String[] args) {
-		final D d = new D();
-		final E e = new E();
-		final F f = new F();
+  public static void main(final String[] args) {
+    final D d = new D();
+    final E e = new E();
+    final F f = new F();
 
-		System.out.println(d);
-		System.out.println(e);
-		System.out.println(f);
-	}
-	public G getG() {
-		return null;
-	}
+    System.out.println(d);
+    System.out.println(e);
+    System.out.println(f);
+  }
+
+  public G getG() {
+    return null;
+  }
 }

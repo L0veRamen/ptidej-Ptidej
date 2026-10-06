@@ -29,7 +29,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
 import org.argouml.i18n.Translator;
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
@@ -40,55 +39,54 @@ import org.argouml.uml.diagram.state.ui.UMLStateDiagram;
 import org.argouml.uml.diagram.ui.UMLDiagram;
 
 /**
- * Rule for Package->Diagram.
- * Shows the diagrams as children of their namespace.
+ * Rule for Package->Diagram. Shows the diagrams as children of their namespace.
  *
  * @author jaap.branderhorst@xs4all.nl
  * @since Dec 30, 2002
  */
 public class GoNamespaceToDiagram extends AbstractPerspectiveRule {
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
-     */
-    public String getRuleName() {
-        return Translator.localize("misc.package.diagram");
-    }
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
+   */
+  public String getRuleName() {
+    return Translator.localize("misc.package.diagram");
+  }
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
-     */
-    public Collection getChildren(Object namespace) {
-        if (Model.getFacade().isANamespace(namespace)) {
-            List returnList = new ArrayList();
-            Project proj = ProjectManager.getManager().getCurrentProject();
-            Iterator it = proj.getDiagrams().iterator();
-            while (it.hasNext()) {
-                UMLDiagram diagram = (UMLDiagram) it.next();
-                // Sequence diagrams are not shown as children of the
-                // collaboration that they show but as children of the
-                // classifier/operation the collaboration represents.
-                // Statediagrams and activitydiagrams are shown as children
-                // of the statemachine or activitygraph they belong to.
-                if (diagram instanceof UMLStateDiagram
-                        || diagram instanceof UMLActivityDiagram
-                        || diagram instanceof UMLSequenceDiagram) {
-                    continue;
-                }
-                if (diagram.getNamespace() == namespace) {
-                    returnList.add(diagram);
-                }
-            }
-            return returnList;
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
+   */
+  public Collection getChildren(Object namespace) {
+    if (Model.getFacade().isANamespace(namespace)) {
+      List returnList = new ArrayList();
+      Project proj = ProjectManager.getManager().getCurrentProject();
+      Iterator it = proj.getDiagrams().iterator();
+      while (it.hasNext()) {
+        UMLDiagram diagram = (UMLDiagram) it.next();
+        // Sequence diagrams are not shown as children of the
+        // collaboration that they show but as children of the
+        // classifier/operation the collaboration represents.
+        // Statediagrams and activitydiagrams are shown as children
+        // of the statemachine or activitygraph they belong to.
+        if (diagram instanceof UMLStateDiagram
+            || diagram instanceof UMLActivityDiagram
+            || diagram instanceof UMLSequenceDiagram) {
+          continue;
         }
-        return null;
+        if (diagram.getNamespace() == namespace) {
+          returnList.add(diagram);
+        }
+      }
+      return returnList;
     }
+    return null;
+  }
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
-     */
-    public Set getDependencies(Object parent) {
-        // TODO: What?
-	return null;
-    }
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
+   */
+  public Set getDependencies(Object parent) {
+    // TODO: What?
+    return null;
+  }
 }

@@ -25,7 +25,6 @@
 package org.argouml.uml.diagram.ui;
 
 import java.awt.Rectangle;
-
 import org.apache.log4j.Logger;
 import org.argouml.ui.ProjectBrowser;
 import org.argouml.uml.diagram.ArgoDiagram;
@@ -38,99 +37,85 @@ import org.tigris.gef.graph.MutableGraphModel;
 import org.tigris.gef.presentation.FigEdge;
 
 /**
- * Mode to manage interaction while user is drawing the pseudo-edge that will
- * become an Association Class. The only difference from a basic edge is that
- * the completion action is extended to draw the extra associated node and edge
- * that are part of this composite figure.
- * 
+ * Mode to manage interaction while user is drawing the pseudo-edge that will become an Association
+ * Class. The only difference from a basic edge is that the completion action is extended to draw
+ * the extra associated node and edge that are part of this composite figure.
+ *
  * @author Bob Tarling
  */
 public class ModeCreateAssociationClass extends ModeCreatePolyEdge {
 
-    private static final long serialVersionUID = -8656139458297932182L;
-    
-    private static final Logger LOG =
-        Logger.getLogger(ModeCreateAssociationClass.class);
+  private static final long serialVersionUID = -8656139458297932182L;
 
-    private static final int DISTANCE = 80;
-    
-    @Override
-    protected void endAttached(FigEdge fe) {
-        Layer lay = editor.getLayerManager().getActiveLayer();
-        FigAssociationClass thisFig =
-            (FigAssociationClass) lay.presentationFor(getNewEdge());
-        buildParts(editor, thisFig, lay);
+  private static final Logger LOG = Logger.getLogger(ModeCreateAssociationClass.class);
+
+  private static final int DISTANCE = 80;
+
+  @Override
+  protected void endAttached(FigEdge fe) {
+    Layer lay = editor.getLayerManager().getActiveLayer();
+    FigAssociationClass thisFig = (FigAssociationClass) lay.presentationFor(getNewEdge());
+    buildParts(editor, thisFig, lay);
+  }
+
+  /**
+   * Build the complex representation of an AssociationClass in the active layer of the current
+   * editor. This is a convenience function which is used when the pseudo-edge is added to a diagram
+   * via drag-and-drop or by using the "Add to Diagram" menu item.
+   *
+   * @param editor the GEF editor
+   * @param element the model element
+   */
+  public static void buildInActiveLayer(Editor editor, Object element) {
+    Layer layer = editor.getLayerManager().getActiveLayer();
+    FigAssociationClass thisFig = (FigAssociationClass) layer.presentationFor(element);
+    if (thisFig != null) {
+      buildParts(editor, thisFig, layer);
     }
+  }
 
-    /**
-     * Build the complex representation of an AssociationClass in the active
-     * layer of the current editor. This is a convenience function which is used
-     * when the pseudo-edge is added to a diagram via drag-and-drop or by using
-     * the "Add to Diagram" menu item.
-     * 
-     * @param editor
-     *            the GEF editor
-     * @param element
-     *            the model element
-     */
-    public static void buildInActiveLayer(Editor editor, Object element) {
-        Layer layer = editor.getLayerManager().getActiveLayer();
-        FigAssociationClass thisFig =
-            (FigAssociationClass) layer.presentationFor(element);
-        if (thisFig != null) {
-            buildParts(editor, thisFig, layer);
-        }
+  private static void buildParts(Editor editor, FigAssociationClass thisFig, Layer lay) {
+
+    thisFig.removePathItem(thisFig.getMiddleGroup());
+
+    MutableGraphModel mutableGraphModel = (MutableGraphModel) editor.getGraphModel();
+    mutableGraphModel.addNode(thisFig.getOwner());
+
+    // TODO: This can't depend on ProjectBrowser.  It needs to get
+    // the current drawing area from the Diagram subsystem or GEF
+    Rectangle drawingArea = ProjectBrowser.getInstance().getEditorPane().getBounds();
+    // Perhaps something like the following would workd.  If not, then
+    // traverse up the component hierarchy to a MultEditorPane
+    //        Rectangle drawingArea =
+    //            Globals.curEditor().getJComponent().getVisibleRect();
+
+    thisFig.makeEdgePort();
+    FigEdgePort tee = thisFig.getEdgePort();
+    thisFig.calcBounds();
+
+    int x = tee.getX();
+    int y = tee.getY();
+
+    DiagramSettings settings =
+        ((ArgoDiagram) ((LayerPerspective) lay).getDiagram()).getDiagramSettings();
+
+    LOG.info("Creating Class box for association class");
+    FigClassAssociationClass figNode =
+        new FigClassAssociationClass(thisFig.getOwner(), new Rectangle(x, y, 0, 0), settings);
+    y = y - DISTANCE;
+    if (y < 0) {
+      y = tee.getY() + figNode.getHeight() + DISTANCE;
     }
-    
-    private static void buildParts(Editor editor, FigAssociationClass thisFig,
-            Layer lay) {
-        
-        thisFig.removePathItem(thisFig.getMiddleGroup());
-
-        MutableGraphModel mutableGraphModel =
-            (MutableGraphModel) editor.getGraphModel();
-        mutableGraphModel.addNode(thisFig.getOwner());
-
-        // TODO: This can't depend on ProjectBrowser.  It needs to get
-        // the current drawing area from the Diagram subsystem or GEF
-        Rectangle drawingArea =
-            ProjectBrowser.getInstance()
-                .getEditorPane().getBounds();
-        // Perhaps something like the following would workd.  If not, then 
-        // traverse up the component hierarchy to a MultEditorPane
-//        Rectangle drawingArea = 
-//            Globals.curEditor().getJComponent().getVisibleRect();
-        
-        thisFig.makeEdgePort();
-        FigEdgePort tee = thisFig.getEdgePort();
-        thisFig.calcBounds();
-
-        int x = tee.getX();
-        int y = tee.getY();
-
-        DiagramSettings settings = ((ArgoDiagram) ((LayerPerspective) lay)
-                .getDiagram()).getDiagramSettings();
-        
-        LOG.info("Creating Class box for association class");
-        FigClassAssociationClass figNode =
-            new FigClassAssociationClass(thisFig.getOwner(), 
-            		new Rectangle(x, y, 0, 0),
-            		settings);
-        y = y - DISTANCE;
-        if (y < 0) {
-            y = tee.getY() + figNode.getHeight() + DISTANCE;
-        }
-        if (x + figNode.getWidth() > drawingArea.getWidth()) {
-            x = tee.getX() - DISTANCE;
-        }
-        figNode.setLocation(x, y);
-        lay.add(figNode);
-
-        FigEdgeAssociationClass dashedEdge =
-            new FigEdgeAssociationClass(figNode, thisFig, settings);
-        lay.add(dashedEdge);
-
-        dashedEdge.damage();
-        figNode.damage();
+    if (x + figNode.getWidth() > drawingArea.getWidth()) {
+      x = tee.getX() - DISTANCE;
     }
+    figNode.setLocation(x, y);
+    lay.add(figNode);
+
+    FigEdgeAssociationClass dashedEdge = new FigEdgeAssociationClass(figNode, thisFig, settings);
+    lay.add(dashedEdge);
+
+    dashedEdge.damage();
+    figNode.damage();
+  }
 }

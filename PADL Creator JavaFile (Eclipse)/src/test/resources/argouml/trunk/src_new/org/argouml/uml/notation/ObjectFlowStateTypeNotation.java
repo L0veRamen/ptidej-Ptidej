@@ -27,24 +27,21 @@ package org.argouml.uml.notation;
 import org.argouml.model.Model;
 
 /**
- * This abstract class forms the basis of all Notation providers
- * for the Classifier type name text shown in an ObjectFlowState. 
- * Subclass this for all languages.
- * 
+ * This abstract class forms the basis of all Notation providers for the Classifier type name text
+ * shown in an ObjectFlowState. Subclass this for all languages.
+ *
  * @author Michiel
  */
 public abstract class ObjectFlowStateTypeNotation extends NotationProvider {
 
-    /**
-     * The constructor.
-     * 
-     * @param objectflowstate
-     */
-    public ObjectFlowStateTypeNotation(Object objectflowstate) {
-        if (!Model.getFacade().isAObjectFlowState(objectflowstate)) {
-            throw new IllegalArgumentException(
-                    "This is not a ObjectFlowState.");
-        }
+  /**
+   * The constructor.
+   *
+   * @param objectflowstate
+   */
+  public ObjectFlowStateTypeNotation(Object objectflowstate) {
+    if (!Model.getFacade().isAObjectFlowState(objectflowstate)) {
+      throw new IllegalArgumentException("This is not a ObjectFlowState.");
     }
-
+  }
 }

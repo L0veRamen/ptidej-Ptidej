@@ -25,64 +25,58 @@
 package org.argouml.uml.diagram.ui;
 
 import java.util.Collection;
-
 import org.argouml.model.Model;
 import org.argouml.notation.NotationProviderFactory2;
 import org.argouml.ui.targetmanager.TargetManager;
 
 /**
- * The Fig for the compartment of an Enumeration 
- * that shows a list of enumerationliterals.
- * 
+ * The Fig for the compartment of an Enumeration that shows a list of enumerationliterals.
+ *
  * @author Tom Morris
  */
 public class FigEnumLiteralsCompartment extends FigFeaturesCompartment {
-    /**
-     * Serial version for initial implementation.
-     */
-    private static final long serialVersionUID = 829674049363538379L;
+  /** Serial version for initial implementation. */
+  private static final long serialVersionUID = 829674049363538379L;
 
-    /**
-     * The constructor.
-     *
-     * @param x x
-     * @param y y
-     * @param w width
-     * @param h height
-     */
-    public FigEnumLiteralsCompartment(int x, int y, int w, int h) {
-        super(x, y, w, h);
-    }
+  /**
+   * The constructor.
+   *
+   * @param x x
+   * @param y y
+   * @param w width
+   * @param h height
+   */
+  public FigEnumLiteralsCompartment(int x, int y, int w, int h) {
+    super(x, y, w, h);
+  }
 
-    /**
-     * @see org.argouml.uml.diagram.ui.FigFeaturesCompartment#getUmlCollection()
-     */
-    protected Collection getUmlCollection() {
-        Object enumeration = getGroup().getOwner();
-        return Model.getFacade().getEnumerationLiterals(enumeration);
-    }
+  /**
+   * @see org.argouml.uml.diagram.ui.FigFeaturesCompartment#getUmlCollection()
+   */
+  protected Collection getUmlCollection() {
+    Object enumeration = getGroup().getOwner();
+    return Model.getFacade().getEnumerationLiterals(enumeration);
+  }
 
-    /**
-     * @see org.argouml.uml.diagram.ui.FigFeaturesCompartment#getNotationType()
-     */
-    protected int getNotationType() {
-        /* TODO: Make a dedicated notation that supports 
-         * parsing "name1;name2" and maybe other notation... */
-        return NotationProviderFactory2.TYPE_NAME;
-    }
+  /**
+   * @see org.argouml.uml.diagram.ui.FigFeaturesCompartment#getNotationType()
+   */
+  protected int getNotationType() {
+    /* TODO: Make a dedicated notation that supports
+     * parsing "name1;name2" and maybe other notation... */
+    return NotationProviderFactory2.TYPE_NAME;
+  }
 
-    /**
-     * Despite its name it creates an EnumerationLiteral, not a feature. It
-     * needs this name because that's what FigNodeModelElement and
-     * FigClassifierBox expect. - tfm
-     *      
-     * @see org.argouml.uml.diagram.ui.FigFeaturesCompartment#createFeature()
-     */
-    public void createFeature() {
-        Object enumeration = getGroup().getOwner();
-        Object literal = Model.getCoreFactory().buildEnumerationLiteral(
-                "",  enumeration);
-        populate();
-        TargetManager.getInstance().setTarget(literal);
-    }
+  /**
+   * Despite its name it creates an EnumerationLiteral, not a feature. It needs this name because
+   * that's what FigNodeModelElement and FigClassifierBox expect. - tfm
+   *
+   * @see org.argouml.uml.diagram.ui.FigFeaturesCompartment#createFeature()
+   */
+  public void createFeature() {
+    Object enumeration = getGroup().getOwner();
+    Object literal = Model.getCoreFactory().buildEnumerationLiteral("", enumeration);
+    populate();
+    TargetManager.getInstance().setTarget(literal);
+  }
 }

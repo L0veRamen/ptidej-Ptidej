@@ -27,14 +27,12 @@ package org.argouml.ui;
 import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.Collection;
-
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
 import org.argouml.application.api.Argo;
 import org.argouml.application.api.GUISettingsTabInterface;
 import org.argouml.configuration.Configuration;
@@ -47,200 +45,190 @@ import org.tigris.swidgets.LabelledLayout;
  * Settings panel for handling ArgoUML environment related settings.
  *
  * @author Thierry Lach
- * @since  0.9.4
+ * @since 0.9.4
  */
-class SettingsTabEnvironment extends JPanel
-    implements GUISettingsTabInterface {
+class SettingsTabEnvironment extends JPanel implements GUISettingsTabInterface {
 
-    private JTextField fieldArgoExtDir;
-    private JTextField fieldJavaHome;
-    private JTextField fieldUserHome;
-    private JTextField fieldUserDir;
-    private JTextField fieldStartupDir;
-    private JComboBox fieldGraphicsFormat;
-    private JComboBox fieldGraphicsResolution;
-    private Collection<GResolution> theResolutions;
+  private JTextField fieldArgoExtDir;
+  private JTextField fieldJavaHome;
+  private JTextField fieldUserHome;
+  private JTextField fieldUserDir;
+  private JTextField fieldStartupDir;
+  private JComboBox fieldGraphicsFormat;
+  private JComboBox fieldGraphicsResolution;
+  private Collection<GResolution> theResolutions;
 
-    /**
-     * The constructor.
-     */
-    SettingsTabEnvironment() {
-        super();
-        setLayout(new BorderLayout());
-        int labelGap = 10;
-        int componentGap = 5;
-        JPanel top = new JPanel(new LabelledLayout(labelGap, componentGap));
+  /** The constructor. */
+  SettingsTabEnvironment() {
+    super();
+    setLayout(new BorderLayout());
+    int labelGap = 10;
+    int componentGap = 5;
+    JPanel top = new JPanel(new LabelledLayout(labelGap, componentGap));
 
-        JLabel label =
-            new JLabel(Translator.localize("label.default.graphics-format"));
-        fieldGraphicsFormat = new JComboBox();
-        label.setLabelFor(fieldGraphicsFormat);
-        top.add(label);
-        top.add(fieldGraphicsFormat);
+    JLabel label = new JLabel(Translator.localize("label.default.graphics-format"));
+    fieldGraphicsFormat = new JComboBox();
+    label.setLabelFor(fieldGraphicsFormat);
+    top.add(label);
+    top.add(fieldGraphicsFormat);
 
-        label =
-            new JLabel(
-                    Translator.localize("label.default.graphics-resolution"));
-        theResolutions = new ArrayList<GResolution>();
-        theResolutions.add(new GResolution(1, "combobox.item.resolution-1"));
-        theResolutions.add(new GResolution(2, "combobox.item.resolution-2"));
-        theResolutions.add(new GResolution(4, "combobox.item.resolution-4"));
-        fieldGraphicsResolution = new JComboBox(); //filled in later
-        label.setLabelFor(fieldGraphicsResolution);
-        top.add(label);
-        top.add(fieldGraphicsResolution);
+    label = new JLabel(Translator.localize("label.default.graphics-resolution"));
+    theResolutions = new ArrayList<GResolution>();
+    theResolutions.add(new GResolution(1, "combobox.item.resolution-1"));
+    theResolutions.add(new GResolution(2, "combobox.item.resolution-2"));
+    theResolutions.add(new GResolution(4, "combobox.item.resolution-4"));
+    fieldGraphicsResolution = new JComboBox(); // filled in later
+    label.setLabelFor(fieldGraphicsResolution);
+    top.add(label);
+    top.add(fieldGraphicsResolution);
 
- 	// This string is NOT to be translated! See issue 2381.
-	label = new JLabel("${argo.ext.dir}");
-	JTextField j2 = new JTextField();
-        fieldArgoExtDir = j2;
-	fieldArgoExtDir.setEnabled(false);
-        label.setLabelFor(fieldArgoExtDir);
-        top.add(label);
-        top.add(fieldArgoExtDir);
+    // This string is NOT to be translated! See issue 2381.
+    label = new JLabel("${argo.ext.dir}");
+    JTextField j2 = new JTextField();
+    fieldArgoExtDir = j2;
+    fieldArgoExtDir.setEnabled(false);
+    label.setLabelFor(fieldArgoExtDir);
+    top.add(label);
+    top.add(fieldArgoExtDir);
 
-  	// This string is NOT to be translated! See issue 2381.
-	label = new JLabel("${java.home}");
-	JTextField j3 = new JTextField();
-        fieldJavaHome = j3;
-	fieldJavaHome.setEnabled(false);
-        label.setLabelFor(fieldJavaHome);
-        top.add(label);
-        top.add(fieldJavaHome);
+    // This string is NOT to be translated! See issue 2381.
+    label = new JLabel("${java.home}");
+    JTextField j3 = new JTextField();
+    fieldJavaHome = j3;
+    fieldJavaHome.setEnabled(false);
+    label.setLabelFor(fieldJavaHome);
+    top.add(label);
+    top.add(fieldJavaHome);
 
-  	// This string is NOT to be translated! See issue 2381.
-	label = new JLabel("${user.home}");
-	JTextField j4 = new JTextField();
-        fieldUserHome = j4;
-	fieldUserHome.setEnabled(false);
-        label.setLabelFor(fieldUserHome);
-        top.add(label);
-        top.add(fieldUserHome);
+    // This string is NOT to be translated! See issue 2381.
+    label = new JLabel("${user.home}");
+    JTextField j4 = new JTextField();
+    fieldUserHome = j4;
+    fieldUserHome.setEnabled(false);
+    label.setLabelFor(fieldUserHome);
+    top.add(label);
+    top.add(fieldUserHome);
 
-	// This string is NOT to be translated! See issue 2381.
-	label = new JLabel("${user.dir}");
-	JTextField j5 = new JTextField();
-        fieldUserDir = j5;
-	fieldUserDir.setEnabled(false);
-        label.setLabelFor(fieldUserDir);
-        top.add(label);
-        top.add(fieldUserDir);
+    // This string is NOT to be translated! See issue 2381.
+    label = new JLabel("${user.dir}");
+    JTextField j5 = new JTextField();
+    fieldUserDir = j5;
+    fieldUserDir.setEnabled(false);
+    label.setLabelFor(fieldUserDir);
+    top.add(label);
+    top.add(fieldUserDir);
 
-  	label = new JLabel(Translator.localize("label.startup-directory"));
-  	JTextField j6 = new JTextField();
-        fieldStartupDir = j6;
-	fieldStartupDir.setEnabled(false);
-        label.setLabelFor(fieldStartupDir);
-        top.add(label);
-        top.add(fieldStartupDir);
+    label = new JLabel(Translator.localize("label.startup-directory"));
+    JTextField j6 = new JTextField();
+    fieldStartupDir = j6;
+    fieldStartupDir.setEnabled(false);
+    label.setLabelFor(fieldStartupDir);
+    top.add(label);
+    top.add(fieldStartupDir);
 
-        top.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-	add(top, BorderLayout.NORTH);
-	
-	JPanel bottom = new JPanel();
-	bottom.add(new JLabel(
-	    Translator.localize("label.graphics-export-resolution.warning")));
-	add(bottom, BorderLayout.SOUTH);
+    top.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+    add(top, BorderLayout.NORTH);
+
+    JPanel bottom = new JPanel();
+    bottom.add(new JLabel(Translator.localize("label.graphics-export-resolution.warning")));
+    add(bottom, BorderLayout.SOUTH);
+  }
+
+  /*
+   * @see GUISettingsTabInterface#handleSettingsTabRefresh()
+   */
+  public void handleSettingsTabRefresh() {
+    fieldArgoExtDir.setText(System.getProperty("argo.ext.dir"));
+    fieldJavaHome.setText(System.getProperty("java.home"));
+    fieldUserHome.setText(System.getProperty("user.home"));
+    fieldUserDir.setText(
+        Configuration.getString(Argo.KEY_STARTUP_DIR, System.getProperty("user.dir")));
+    fieldStartupDir.setText(Argo.getDirectory());
+
+    fieldGraphicsFormat.removeAllItems();
+    Collection c = SaveGraphicsManager.getInstance().getSettingsList();
+    fieldGraphicsFormat.setModel(new DefaultComboBoxModel(c.toArray()));
+
+    fieldGraphicsResolution.removeAllItems();
+    fieldGraphicsResolution.setModel(new DefaultComboBoxModel(theResolutions.toArray()));
+    int defaultResolution =
+        Configuration.getInteger(SaveGraphicsManager.KEY_GRAPHICS_RESOLUTION, 1);
+    for (GResolution gr : theResolutions) {
+      if (defaultResolution == gr.getResolution()) {
+        fieldGraphicsResolution.setSelectedItem(gr);
+        break;
+      }
     }
+  }
 
-    /*
-     * @see GUISettingsTabInterface#handleSettingsTabRefresh()
-     */
-    public void handleSettingsTabRefresh() {
-        fieldArgoExtDir.setText(System.getProperty("argo.ext.dir"));
-        fieldJavaHome.setText(System.getProperty("java.home"));
-        fieldUserHome.setText(System.getProperty("user.home"));
-        fieldUserDir.setText(Configuration.getString(Argo.KEY_STARTUP_DIR,
-		System.getProperty("user.dir")));
-        fieldStartupDir.setText(Argo.getDirectory());
+  /*
+   * @see GUISettingsTabInterface#handleSettingsTabSave()
+   */
+  public void handleSettingsTabSave() {
+    Configuration.setString(Argo.KEY_STARTUP_DIR, fieldUserDir.getText());
 
-        fieldGraphicsFormat.removeAllItems();
-        Collection c = SaveGraphicsManager.getInstance().getSettingsList();
-        fieldGraphicsFormat.setModel(new DefaultComboBoxModel(c.toArray()));
+    GResolution r = (GResolution) fieldGraphicsResolution.getSelectedItem();
+    Configuration.setInteger(SaveGraphicsManager.KEY_GRAPHICS_RESOLUTION, r.getResolution());
 
-        fieldGraphicsResolution.removeAllItems();
-        fieldGraphicsResolution.setModel(new DefaultComboBoxModel(
-                theResolutions.toArray()));
-        int defaultResolution =
-            Configuration.getInteger(
-                SaveGraphicsManager.KEY_GRAPHICS_RESOLUTION, 1);
-        for (GResolution gr : theResolutions) {
-            if (defaultResolution == gr.getResolution()) {
-                fieldGraphicsResolution.setSelectedItem(gr);
-                break;
-            }
-        }
-    }
+    SaveGraphicsManager.getInstance()
+        .setDefaultFilter((SuffixFilter) fieldGraphicsFormat.getSelectedItem());
+  }
 
-    /*
-     * @see GUISettingsTabInterface#handleSettingsTabSave()
-     */
-    public void handleSettingsTabSave() {
-        Configuration.setString(Argo.KEY_STARTUP_DIR, fieldUserDir.getText());
+  /*
+   * @see GUISettingsTabInterface#handleSettingsTabCancel()
+   */
+  public void handleSettingsTabCancel() {
+    handleSettingsTabRefresh();
+  }
 
-        GResolution r = (GResolution) fieldGraphicsResolution.getSelectedItem();
-        Configuration.setInteger(SaveGraphicsManager.KEY_GRAPHICS_RESOLUTION,
-                r.getResolution());
+  /*
+   * @see org.argouml.ui.GUISettingsTabInterface#handleResetToDefault()
+   */
+  public void handleResetToDefault() {
+    // Do nothing - these buttons are not shown.
+  }
 
-        SaveGraphicsManager.getInstance().setDefaultFilter(
-                (SuffixFilter) fieldGraphicsFormat.getSelectedItem());
-    }
+  /*
+   * @see GUISettingsTabInterface#getTabKey()
+   */
+  public String getTabKey() {
+    return "tab.environment";
+  }
 
-    /*
-     * @see GUISettingsTabInterface#handleSettingsTabCancel()
-     */
-    public void handleSettingsTabCancel() {
-	handleSettingsTabRefresh();
-    }
+  /*
+   * @see GUISettingsTabInterface#getTabPanel()
+   */
+  public JPanel getTabPanel() {
+    return this;
+  }
 
-    /*
-     * @see org.argouml.ui.GUISettingsTabInterface#handleResetToDefault()
-     */
-    public void handleResetToDefault() {
-        // Do nothing - these buttons are not shown.
-    }
-
-    /*
-     * @see GUISettingsTabInterface#getTabKey()
-     */
-    public String getTabKey() { return "tab.environment"; }
-
-    /*
-     * @see GUISettingsTabInterface#getTabPanel()
-     */
-    public JPanel getTabPanel() { return this; }
-
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = 543442930918741133L;
+  /** The UID. */
+  private static final long serialVersionUID = 543442930918741133L;
 }
-
 
 class GResolution {
-    private int resolution;
-    private String label;
+  private int resolution;
+  private String label;
 
-    /**
-     * Constructor.
-     *
-     * @param r
-     * @param name
-     */
-    GResolution(int r, String name) {
-        resolution = r;
-        label = Translator.localize(name);
-    }
+  /**
+   * Constructor.
+   *
+   * @param r
+   * @param name
+   */
+  GResolution(int r, String name) {
+    resolution = r;
+    label = Translator.localize(name);
+  }
 
-    int getResolution() {
-        return resolution;
-    }
+  int getResolution() {
+    return resolution;
+  }
 
-    /*
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-        return label;
-    }
+  /*
+   * @see java.lang.Object#toString()
+   */
+  public String toString() {
+    return label;
+  }
 }
-

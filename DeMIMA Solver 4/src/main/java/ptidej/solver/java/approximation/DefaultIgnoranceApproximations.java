@@ -4,33 +4,34 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
 package ptidej.solver.java.approximation;
 
 /**
- * @author	Yann-Gaël Guéhéneuc
- * @since	2006/08/16
+ * @author Yann-Gaël Guéhéneuc
+ * @since 2006/08/16
  */
 public class DefaultIgnoranceApproximations implements IApproximations {
-	private static final String[] APPROXIMATIONS = {
-			"ptidej.solver.java.constraint.repository.IgnoranceConstraint",
-			"ptidej.solver.java.constraint.repository.NotEqualConstraint" };
+  private static final String[] APPROXIMATIONS = {
+    "ptidej.solver.java.constraint.repository.IgnoranceConstraint",
+    "ptidej.solver.java.constraint.repository.NotEqualConstraint"
+  };
 
-	private static DefaultIgnoranceApproximations UniqueInstance;
-	public static DefaultIgnoranceApproximations getDefaultApproximations() {
-		if (DefaultIgnoranceApproximations.UniqueInstance == null) {
-			DefaultIgnoranceApproximations.UniqueInstance =
-				new DefaultIgnoranceApproximations();
-		}
-		return DefaultIgnoranceApproximations.UniqueInstance;
-	}
+  private static DefaultIgnoranceApproximations UniqueInstance;
 
-	private DefaultIgnoranceApproximations() {
-	}
-	public String[] getApproximations() {
-		return DefaultIgnoranceApproximations.APPROXIMATIONS;
-	}
+  public static DefaultIgnoranceApproximations getDefaultApproximations() {
+    if (DefaultIgnoranceApproximations.UniqueInstance == null) {
+      DefaultIgnoranceApproximations.UniqueInstance = new DefaultIgnoranceApproximations();
+    }
+    return DefaultIgnoranceApproximations.UniqueInstance;
+  }
+
+  private DefaultIgnoranceApproximations() {}
+
+  public String[] getApproximations() {
+    return DefaultIgnoranceApproximations.APPROXIMATIONS;
+  }
 }

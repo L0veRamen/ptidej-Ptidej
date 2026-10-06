@@ -11,15 +11,12 @@
 package org.jhotdraw.contrib.html;
 
 /**
- *
- * @author  Eduardo Francos - InContext
+ * @author Eduardo Francos - InContext
  * @created 4 mai 2002
  * @version <$CURRENT_VERSION$>
  */
 public class ResourceManagerNotSetException extends Exception {
 
-	/**
-	 * Constructor for the ResourceManagerNotSetException object
-	 */
-	public ResourceManagerNotSetException() { }
+  /** Constructor for the ResourceManagerNotSetException object */
+  public ResourceManagerNotSetException() {}
 }

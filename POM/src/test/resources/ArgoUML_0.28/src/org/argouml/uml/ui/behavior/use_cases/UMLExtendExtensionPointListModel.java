@@ -25,7 +25,6 @@
 package org.argouml.uml.ui.behavior.use_cases;
 
 import java.util.List;
-
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementOrderedListModel2;
 
@@ -33,72 +32,68 @@ import org.argouml.uml.ui.UMLModelElementOrderedListModel2;
  * @since Oct 6, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class UMLExtendExtensionPointListModel
-    extends UMLModelElementOrderedListModel2 {
+public class UMLExtendExtensionPointListModel extends UMLModelElementOrderedListModel2 {
 
-    /**
-     * Constructor for UMLExtendExtensionPointListModel.
-     */
-    public UMLExtendExtensionPointListModel() {
-        super("extensionPoint");
+  /** Constructor for UMLExtendExtensionPointListModel. */
+  public UMLExtendExtensionPointListModel() {
+    super("extensionPoint");
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    setAllElements(Model.getFacade().getExtensionPoints(getTarget()));
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object o) {
+    return Model.getFacade().isAExtensionPoint(o)
+        && Model.getFacade().getExtensionPoints(getTarget()).contains(o);
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementOrderedListModel2#moveDown(int)
+   */
+  protected void moveDown(int index1) {
+    int index2 = index1 + 1;
+    Object extend = getTarget();
+    /* In case of an Extend, we are sure an ordered List is returned! */
+    List c = (List) Model.getFacade().getExtensionPoints(extend);
+    Object mem1 = c.get(index1);
+    Model.getUseCasesHelper().removeExtensionPoint(extend, mem1);
+    Model.getUseCasesHelper().addExtensionPoint(extend, index2, mem1);
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementOrderedListModel2#moveToBottom(int)
+   */
+  @Override
+  protected void moveToBottom(int index) {
+    Object extend = getTarget();
+    /* In case of an Extend, we are sure an ordered List is returned! */
+    List c = (List) Model.getFacade().getExtensionPoints(extend);
+    if (index < c.size() - 1) {
+      Object mem1 = c.get(index);
+      Model.getUseCasesHelper().removeExtensionPoint(extend, mem1);
+      Model.getUseCasesHelper().addExtensionPoint(extend, c.size(), mem1);
     }
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        setAllElements(Model.getFacade().getExtensionPoints(getTarget()));
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementOrderedListModel2#moveToTop(int)
+   */
+  @Override
+  protected void moveToTop(int index) {
+    Object extend = getTarget();
+    /* In case of an Extend, we are sure an ordered List is returned! */
+    List c = (List) Model.getFacade().getExtensionPoints(extend);
+    if (index > 0) {
+      Object mem1 = c.get(index);
+      Model.getUseCasesHelper().removeExtensionPoint(extend, mem1);
+      Model.getUseCasesHelper().addExtensionPoint(extend, 0, mem1);
     }
-
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object o) {
-        return Model.getFacade().isAExtensionPoint(o)
-            && Model.getFacade().getExtensionPoints(getTarget()).contains(o);
-    }
-
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementOrderedListModel2#moveDown(int)
-     */
-    protected void moveDown(int index1) {
-        int index2 = index1 + 1;
-        Object extend = getTarget();
-        /* In case of an Extend, we are sure an ordered List is returned! */
-        List c = (List) Model.getFacade().getExtensionPoints(extend);
-        Object mem1 = c.get(index1);
-        Model.getUseCasesHelper().removeExtensionPoint(extend, mem1);
-        Model.getUseCasesHelper().addExtensionPoint(extend, index2, mem1);
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementOrderedListModel2#moveToBottom(int)
-     */
-    @Override
-    protected void moveToBottom(int index) {
-        Object extend = getTarget();
-        /* In case of an Extend, we are sure an ordered List is returned! */
-        List c = (List) Model.getFacade().getExtensionPoints(extend);
-        if (index < c.size() - 1) {
-            Object mem1 = c.get(index);
-            Model.getUseCasesHelper().removeExtensionPoint(extend, mem1);
-            Model.getUseCasesHelper().addExtensionPoint(extend, c.size(), mem1);
-        }
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementOrderedListModel2#moveToTop(int)
-     */
-    @Override
-    protected void moveToTop(int index) {
-        Object extend = getTarget();
-        /* In case of an Extend, we are sure an ordered List is returned! */
-        List c = (List) Model.getFacade().getExtensionPoints(extend);
-        if (index > 0) {
-            Object mem1 = c.get(index);
-            Model.getUseCasesHelper().removeExtensionPoint(extend, mem1);
-            Model.getUseCasesHelper().addExtensionPoint(extend, 0, mem1);
-        }
-    }
-
+  }
 }

@@ -29,133 +29,114 @@ import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.VetoableChangeListener;
-
 import org.argouml.kernel.DelayedVChangeListener;
 import org.argouml.ui.targetmanager.TargetManager;
 import org.tigris.gef.presentation.Fig;
 import org.tigris.gef.presentation.FigNode;
 import org.tigris.gef.presentation.FigPoly;
 
-
 /**
- * Class to display a connection linking the class and the
- * association in a Association Class
- * It must be used only from a FigAssociationClass
+ * Class to display a connection linking the class and the association in a Association Class It
+ * must be used only from a FigAssociationClass
  *
  * @author pepargouml
  */
-public class FigEdgeAssociationClass
-        extends FigEdgeModelElement
-        implements VetoableChangeListener,
+public class FigEdgeAssociationClass extends FigEdgeModelElement
+    implements VetoableChangeListener,
         DelayedVChangeListener,
         MouseListener,
         KeyListener,
         PropertyChangeListener {
 
-    /**
-     * The FigAssociationClass that is associated to.
-     */
-    private FigAssociationClass mainFig;
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  /** The FigAssociationClass that is associated to. */
+  private FigAssociationClass mainFig;
 
-    /**
-     * The constructor.
-     */
-    public FigEdgeAssociationClass() {
-        setBetweenNearestPoints(true);
-        ((FigPoly) getFig()).setRectilinear(false);
-        setDashed(true);
+  ////////////////////////////////////////////////////////////////
+  // constructors
+
+  /** The constructor. */
+  public FigEdgeAssociationClass() {
+    setBetweenNearestPoints(true);
+    ((FigPoly) getFig()).setRectilinear(false);
+    setDashed(true);
+  }
+
+  /**
+   * The constructor for the AssociationClass fig.
+   *
+   * @param fromFig the fig where we started
+   * @param toFig the fig where we ended
+   * @param ownerFig the owner fig
+   */
+  public FigEdgeAssociationClass(Fig fromFig, Fig toFig, FigAssociationClass ownerFig) {
+    this();
+    if (toFig == null || fromFig == null) {
+      throw new IllegalStateException(
+          "No destfig or sourcefig while " + "creating FigEdgeAssociationClass");
     }
+    mainFig = ownerFig;
+    setDestFigNode((FigNode) toFig);
+    setDestPortFig(toFig);
+    setSourcePortFig(fromFig);
+    setSourceFigNode((FigNode) fromFig);
+    computeRoute();
+  }
 
-    /**
-     * The constructor for the AssociationClass fig.
-     *
-     * @param fromFig the fig where we started
-     * @param toFig the fig where we ended
-     * @param ownerFig the owner fig
-     */
-    public FigEdgeAssociationClass(Fig fromFig, Fig toFig,
-                                   FigAssociationClass ownerFig) {
-        this();
-        if (toFig == null || fromFig == null) {
-            throw new IllegalStateException("No destfig or sourcefig while "
-                    + "creating FigEdgeAssociationClass");
-        }
-        mainFig = ownerFig;
-        setDestFigNode((FigNode) toFig);
-        setDestPortFig(toFig);
-        setSourcePortFig(fromFig);
-        setSourceFigNode((FigNode) fromFig);
-        computeRoute();
+  ////////////////////////////////////////////////////////////////
+  // accessors
+
+  /**
+   * @see org.tigris.gef.presentation.FigEdge#setFig(org.tigris.gef.presentation.Fig)
+   */
+  public void setFig(Fig f) {
+    super.setFig(f);
+    getFig().setDashed(true);
+  }
+
+  /**
+   * @see org.argouml.uml.diagram.ui.FigEdgeModelElement#canEdit(org.tigris.gef.presentation.Fig)
+   */
+  protected boolean canEdit(Fig f) {
+    return false;
+  }
+
+  /**
+   * @see
+   *     org.argouml.uml.diagram.ui.FigEdgeModelElement#modelChanged(java.beans.PropertyChangeEvent)
+   */
+  protected void modelChanged(PropertyChangeEvent e) {}
+
+  /**
+   * @return the main fig
+   */
+  public FigAssociationClass getMainFig() {
+    return mainFig;
+  }
+
+  /**
+   * @param f the main fig
+   */
+  public void setMainFig(FigAssociationClass f) {
+    mainFig = f;
+  }
+
+  /** It not only damages itself but also its associated FigAssociationClass */
+  public void damage() {
+    if (mainFig != null) {
+      mainFig.figDamaged();
     }
-    
-    ////////////////////////////////////////////////////////////////
-    // accessors
+    super.damage();
+  }
 
-    /**
-     * @see org.tigris.gef.presentation.FigEdge#setFig(org.tigris.gef.presentation.Fig)
-     */
-    public void setFig(Fig f) {
-        super.setFig(f);
-        getFig().setDashed(true);
-    }
+  /** It not only removes itself but also its associated FigAssociationClass */
+  public void removeFromDiagram() {
+    super.removeFromDiagram();
+    if (mainFig != null) mainFig.removeFromDiagram();
+  }
 
-    /**
-     * @see org.argouml.uml.diagram.ui.FigEdgeModelElement#canEdit(org.tigris.gef.presentation.Fig)
-     */
-    protected boolean canEdit(Fig f) {
-        return false;
-    }
-
-    /**
-     * @see org.argouml.uml.diagram.ui.FigEdgeModelElement#modelChanged(java.beans.PropertyChangeEvent)
-     */
-    protected void modelChanged(PropertyChangeEvent e) {
-    }
-
-    /**
-     * @return the main fig
-     */
-    public FigAssociationClass getMainFig() {
-        return mainFig;
-    }
-
-    /**
-     * @param f the main fig
-     */
-    public void setMainFig(FigAssociationClass f) {
-        mainFig = f;
-    }
-
-    /**
-     * It not only damages itself but also its
-     * associated FigAssociationClass
-     */
-    public void damage() {
-        if (mainFig != null) {
-            mainFig.figDamaged();
-        }
-        super.damage();
-    }
-
-    /**
-     * It not only removes itself but also its
-     * associated FigAssociationClass
-     */
-    public void removeFromDiagram() {
-        super.removeFromDiagram();
-        if (mainFig != null)
-            mainFig.removeFromDiagram();
-    }
-
-    /**
-     * It is used to remove itself without removing its
-     * associated FigAssociationClass.
-     */
-    public void removeThisFromDiagram() {
-        super.removeFromDiagram();
-        TargetManager.getInstance().removeHistoryElement(this);
-    }
-
+  /** It is used to remove itself without removing its associated FigAssociationClass. */
+  public void removeThisFromDiagram() {
+    super.removeFromDiagram();
+    TargetManager.getInstance().removeHistoryElement(this);
+  }
 } /* end class FigEdgeAssociationClass */

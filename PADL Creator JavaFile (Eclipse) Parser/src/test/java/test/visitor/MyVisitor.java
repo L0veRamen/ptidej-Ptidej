@@ -10,45 +10,42 @@
  ******************************************************************************/
 package test.visitor;
 
+import client.WrapperClientWithLog;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Type;
 
-import client.WrapperClientWithLog;
-
 /*
  * A simple test visitor
  */
 public class MyVisitor extends ASTVisitor {
-	private final WrapperClientWithLog javaProject;
+  private final WrapperClientWithLog javaProject;
 
-	public MyVisitor(final WrapperClientWithLog javaProject) {
-		this.javaProject = javaProject;
-	}
+  public MyVisitor(final WrapperClientWithLog javaProject) {
+    this.javaProject = javaProject;
+  }
 
-	private void cannotSolve(final ASTNode node) {
-		// this.javaProject.log("Cannot solve "+node);
-	}
+  private void cannotSolve(final ASTNode node) {
+    // this.javaProject.log("Cannot solve "+node);
+  }
 
-	@Override
-	public boolean visit(final MethodDeclaration node) {
-		final Type type = node.getReturnType2();
-		if (type != null) {
-			final ITypeBinding typeBinding = type.resolveBinding();
+  @Override
+  public boolean visit(final MethodDeclaration node) {
+    final Type type = node.getReturnType2();
+    if (type != null) {
+      final ITypeBinding typeBinding = type.resolveBinding();
 
-			if (typeBinding != null) {
-				this.javaProject.log(typeBinding.getQualifiedName());
-			}
-			else {
-				this.cannotSolve(type);
-			}
-		}
-		else {
-			this.cannotSolve(node);
-		}
+      if (typeBinding != null) {
+        this.javaProject.log(typeBinding.getQualifiedName());
+      } else {
+        this.cannotSolve(type);
+      }
+    } else {
+      this.cannotSolve(node);
+    }
 
-		return super.visit(node);
-	}
+    return super.visit(node);
+  }
 }

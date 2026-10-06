@@ -25,98 +25,93 @@
 package org.argouml.uml.diagram.ui;
 
 import java.awt.Point;
-
 import org.tigris.gef.base.PathConv;
 import org.tigris.gef.presentation.Fig;
 
 /**
- * Used to place labels as specific positions along a FigEdge. For example, a
- * label can be placed in the middle of a FigEdge by using 50%. This version
- * changes the behavior as it tries to avoid that the itemFig cuts through the
- * pathFig.
- * 
+ * Used to place labels as specific positions along a FigEdge. For example, a label can be placed in
+ * the middle of a FigEdge by using 50%. This version changes the behavior as it tries to avoid that
+ * the itemFig cuts through the pathFig.
+ *
  * @author abonner@ics.uci.edu
  */
-
 public class PathConvPercent2 extends PathConv {
 
-    private Fig itemFig;
+  private Fig itemFig;
 
-    private int percent = 0;
+  private int percent = 0;
 
-    private int offset = 0;
+  private int offset = 0;
 
-    public PathConvPercent2(Fig theFig, Fig itemFig, int newPercent,
-            int newOffset) {
-        super(theFig);
-        this.itemFig = itemFig;
-        setPercentOffset(newPercent, newOffset);
+  public PathConvPercent2(Fig theFig, Fig itemFig, int newPercent, int newOffset) {
+    super(theFig);
+    this.itemFig = itemFig;
+    setPercentOffset(newPercent, newOffset);
+  }
+
+  public void stuffPoint(Point res) {
+    int figLength = _pathFigure.getPerimeterLength();
+    if (figLength < 10) {
+      res.setLocation(_pathFigure.getCenter());
+      return;
     }
+    int pointToGet = (figLength * percent) / 100;
 
-    public void stuffPoint(Point res) {
-        int figLength = _pathFigure.getPerimeterLength();
-        if (figLength < 10) {
-            res.setLocation(_pathFigure.getCenter());
-            return;
-        }
-        int pointToGet = (figLength * percent) / 100;
+    _pathFigure.stuffPointAlongPerimeter(pointToGet, res);
 
-        _pathFigure.stuffPointAlongPerimeter(pointToGet, res);
+    applyOffsetAmount(
+        _pathFigure.pointAlongPerimeter(pointToGet + 5),
+        _pathFigure.pointAlongPerimeter(pointToGet - 5),
+        offset,
+        res);
+  }
 
-        applyOffsetAmount(_pathFigure.pointAlongPerimeter(pointToGet + 5),
-                _pathFigure.pointAlongPerimeter(pointToGet - 5), offset, res);
+  public void setPercentOffset(int newPercent, int newOffset) {
+    percent = newPercent;
+    offset = newOffset;
+  }
+
+  public void setClosestPoint(Point newPoint) {}
+
+  protected void applyOffsetAmount(Point p1, Point p2, int offset, Point res) {
+    // slope of the line we're finding the normal to
+    // is slope, and the normal is the negative reciprocal
+    // slope is (p1.y - p2.y) / (p1.x - p2.x)
+    // so recip is - (p1.x - p2.x) / (p1.y - p2.y)
+    int recipnumerator = (p1.x - p2.x) * -1;
+    int recipdenominator = (p1.y - p2.y);
+
+    if (recipdenominator == 0 && recipnumerator == 0) return;
+
+    // find the point offset on the line that gives a
+    // correct offset
+
+    double len = Math.sqrt(recipnumerator * recipnumerator + recipdenominator * recipdenominator);
+    int dx = (int) ((recipdenominator * offset) / len);
+    int dy = (int) ((recipnumerator * offset) / len);
+
+    res.x += Math.abs(dx);
+    res.y -= Math.abs(dy);
+
+    int width = itemFig.getWidth() / 2;
+
+    if (recipnumerator != 0) {
+      double slope = (double) recipdenominator / (double) recipnumerator;
+
+      double factor = tanh(slope);
+      res.x += (Math.abs(factor) * width);
+    } else {
+      res.x += width;
     }
+  }
 
-    public void setPercentOffset(int newPercent, int newOffset) {
-        percent = newPercent;
-        offset = newOffset;
-    }
-
-    public void setClosestPoint(Point newPoint) {
-    }
-
-    protected void applyOffsetAmount(Point p1, Point p2, int offset, Point res) {
-        // slope of the line we're finding the normal to
-        // is slope, and the normal is the negative reciprocal
-        // slope is (p1.y - p2.y) / (p1.x - p2.x)
-        // so recip is - (p1.x - p2.x) / (p1.y - p2.y)
-        int recipnumerator = (p1.x - p2.x) * -1;
-        int recipdenominator = (p1.y - p2.y);
-
-        if (recipdenominator == 0 && recipnumerator == 0)
-            return;
-
-
-        // find the point offset on the line that gives a
-        // correct offset
-
-        double len = Math.sqrt(recipnumerator * recipnumerator
-                + recipdenominator * recipdenominator);
-        int dx = (int) ((recipdenominator * offset) / len);
-        int dy = (int) ((recipnumerator * offset) / len);
-
-        res.x += Math.abs(dx);
-        res.y -= Math.abs(dy);
-
-        int width = itemFig.getWidth() / 2;
-
-        if (recipnumerator != 0) {
-            double slope = (double) recipdenominator / (double) recipnumerator;
-
-            double factor = tanh(slope);
-            res.x += (Math.abs(factor) * width);
-        } else {
-            res.x += width;
-        }
-    }
-
-    /**
-     * Calculate the tangens hyperbolicus.
-     *
-     * @param x
-     * @return tangens hyberbolicus
-     */
-    private double tanh(double x) {
-        return ((Math.exp(x)-Math.exp(-x))/2)/((Math.exp(x)+Math.exp(-x))/2);
-    }
+  /**
+   * Calculate the tangens hyperbolicus.
+   *
+   * @param x
+   * @return tangens hyberbolicus
+   */
+  private double tanh(double x) {
+    return ((Math.exp(x) - Math.exp(-x)) / 2) / ((Math.exp(x) + Math.exp(-x)) / 2);
+  }
 }

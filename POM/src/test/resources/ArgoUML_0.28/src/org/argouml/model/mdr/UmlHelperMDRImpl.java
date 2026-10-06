@@ -26,7 +26,6 @@ package org.argouml.model.mdr;
 
 import java.util.Collection;
 import java.util.Iterator;
-
 import org.argouml.model.UmlHelper;
 import org.omg.uml.behavioralelements.collaborations.Message;
 import org.omg.uml.behavioralelements.statemachines.Transition;
@@ -35,84 +34,79 @@ import org.omg.uml.foundation.core.Relationship;
 
 /**
  * Helper class for UML metamodel.
- * 
+ *
  * @since ARGO0.11.2
  * @author Thierry Lach
  */
 class UmlHelperMDRImpl implements UmlHelper {
 
-    /**
-     * The model implementation.
-     */
-    private MDRModelImplementation modelImpl;
+  /** The model implementation. */
+  private MDRModelImplementation modelImpl;
 
-    /**
-     * Don't allow instantiation.
-     * 
-     * @param implementation
-     *            To get other helpers and factories.
-     */
-    UmlHelperMDRImpl(MDRModelImplementation implementation) {
-        modelImpl = implementation;
+  /**
+   * Don't allow instantiation.
+   *
+   * @param implementation To get other helpers and factories.
+   */
+  UmlHelperMDRImpl(MDRModelImplementation implementation) {
+    modelImpl = implementation;
+  }
+
+  public void addListenersToModel(Object model) {
+    // Nothing to do - we get all events automatically
+  }
+
+  /*
+   * @see org.argouml.model.UmlHelper#deleteCollection(java.util.Collection)
+   */
+  public void deleteCollection(Collection col) {
+    Iterator it = col.iterator();
+    while (it.hasNext()) {
+      modelImpl.getUmlFactory().delete(it.next());
     }
+  }
 
-    public void addListenersToModel(Object model) {
-        // Nothing to do - we get all events automatically
+  /*
+   * @see org.argouml.model.UmlHelper#getSource(java.lang.Object)
+   */
+  public Object getSource(Object relationship) {
+    if (relationship instanceof Message) {
+      Message message = (Message) relationship;
+      return message.getSender();
     }
-
-    /*
-     * @see org.argouml.model.UmlHelper#deleteCollection(java.util.Collection)
-     */
-    public void deleteCollection(Collection col) {
-        Iterator it = col.iterator();
-        while (it.hasNext()) {
-            modelImpl.getUmlFactory().delete(it.next());
-        }
+    if (relationship instanceof Relationship) {
+      // handles all children of relationship including extend and
+      // include which are not members of core
+      return modelImpl.getCoreHelper().getSource(relationship);
     }
-
-    /*
-     * @see org.argouml.model.UmlHelper#getSource(java.lang.Object)
-     */
-    public Object getSource(Object relationship) {
-        if (relationship instanceof Message) {
-            Message message = (Message) relationship;
-            return message.getSender();
-        }
-        if (relationship instanceof Relationship) {
-            // handles all children of relationship including extend and
-            // include which are not members of core
-            return modelImpl.getCoreHelper().getSource(relationship);
-        }
-        if (relationship instanceof Transition) {
-            return modelImpl.getStateMachinesHelper().getSource(relationship);
-        }
-        if (relationship instanceof AssociationEnd) {
-            return modelImpl.getCoreHelper().getSource(relationship);
-        }
-        throw new IllegalArgumentException();
+    if (relationship instanceof Transition) {
+      return modelImpl.getStateMachinesHelper().getSource(relationship);
     }
-
-    /*
-     * @see org.argouml.model.UmlHelper#getDestination(java.lang.Object)
-     */
-    public Object getDestination(Object relationship) {
-        if (relationship instanceof Message) {
-            Message message = (Message) relationship;
-            return message.getSender();
-        }
-        if (relationship instanceof Relationship) {
-            // handles all children of relationship including extend and
-            // include which are not members of core
-            return modelImpl.getCoreHelper().getDestination(relationship);
-        }
-        if (relationship instanceof Transition) {
-            return modelImpl.getStateMachinesHelper().
-                    getDestination(relationship);
-        }
-        if (relationship instanceof AssociationEnd) {
-            return modelImpl.getCoreHelper().getDestination(relationship);
-        }
-        throw new IllegalArgumentException();
+    if (relationship instanceof AssociationEnd) {
+      return modelImpl.getCoreHelper().getSource(relationship);
     }
+    throw new IllegalArgumentException();
+  }
 
+  /*
+   * @see org.argouml.model.UmlHelper#getDestination(java.lang.Object)
+   */
+  public Object getDestination(Object relationship) {
+    if (relationship instanceof Message) {
+      Message message = (Message) relationship;
+      return message.getSender();
+    }
+    if (relationship instanceof Relationship) {
+      // handles all children of relationship including extend and
+      // include which are not members of core
+      return modelImpl.getCoreHelper().getDestination(relationship);
+    }
+    if (relationship instanceof Transition) {
+      return modelImpl.getStateMachinesHelper().getDestination(relationship);
+    }
+    if (relationship instanceof AssociationEnd) {
+      return modelImpl.getCoreHelper().getDestination(relationship);
+    }
+    throw new IllegalArgumentException();
+  }
 }

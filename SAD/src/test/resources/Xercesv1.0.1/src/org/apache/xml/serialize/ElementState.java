@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xerces" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -55,59 +55,37 @@
  * <http://www.apache.org/>.
  */
 
-
 package org.apache.xml.serialize;
-
 
 /**
  * Holds the state of the currently serialized element.
- *
  *
  * @version
  * @author <a href="mailto:arkin@openxml.org">Assaf Arkin</a>
  * @see BaseSerializer
  */
-class ElementState
-{
+class ElementState {
 
+  /** The element's tag name. */
+  String tagName;
 
-    /**
-     * The element's tag name.
-     */
-    String tagName;
+  /** True if element is space preserving. */
+  boolean preserveSpace;
 
+  /**
+   * True if element is empty. Turns false immediately after serializing the first contents of the
+   * element.
+   */
+  boolean empty;
 
-    /**
-     * True if element is space preserving.
-     */
-    boolean preserveSpace;
+  /** True if the last serialized node was an element node. */
+  boolean afterElement;
 
+  /** True if textual content of current element should be serialized as CDATA section. */
+  boolean cdata;
 
-    /**
-     * True if element is empty. Turns false immediately
-     * after serializing the first contents of the element.
-     */
-    boolean empty;
-
-
-    /**
-     * True if the last serialized node was an element node.
-     */
-    boolean afterElement;
-
-
-    /**
-     * True if textual content of current element should be
-     * serialized as CDATA section.
-     */
-    boolean cdata;
-
-
-    /**
-     * True if textual content of current element should be
-     * serialized as raw characters (unescaped).
-     */
-    boolean unescaped;
-
-
+  /**
+   * True if textual content of current element should be serialized as raw characters (unescaped).
+   */
+  boolean unescaped;
 }

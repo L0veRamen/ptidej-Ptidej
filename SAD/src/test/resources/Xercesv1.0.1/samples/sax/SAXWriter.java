@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xerces" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -55,345 +55,322 @@
  * <http://www.apache.org/>.
  */
 
-package sax;                    
-                    
+package sax;
+
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-
-import sax.helpers.AttributeListImpl;
-
 import org.xml.sax.AttributeList;
 import org.xml.sax.HandlerBase;
 import org.xml.sax.Parser;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.ParserFactory;
+import sax.helpers.AttributeListImpl;
 
 /**
- * A sample SAX writer. This sample program illustrates how to
- * register a SAX DocumentHandler and receive the callbacks in
- * order to print a document that is parsed.
+ * A sample SAX writer. This sample program illustrates how to register a SAX DocumentHandler and
+ * receive the callbacks in order to print a document that is parsed.
  *
  * @version
  */
-public class SAXWriter 
-    extends HandlerBase {
+public class SAXWriter extends HandlerBase {
 
-    //
-    // Constants
-    //
+  //
+  // Constants
+  //
 
-    /** Default parser name. */
-    private static final String 
-        DEFAULT_PARSER_NAME = "org.apache.xerces.parsers.SAXParser";
+  /** Default parser name. */
+  private static final String DEFAULT_PARSER_NAME = "org.apache.xerces.parsers.SAXParser";
 
-    //
-    // Data
-    //
+  //
+  // Data
+  //
 
-    /** Print writer. */
-    protected PrintWriter out;
+  /** Print writer. */
+  protected PrintWriter out;
 
-    /** Canonical output. */
-    protected boolean canonical;
+  /** Canonical output. */
+  protected boolean canonical;
 
-    //
-    // Constructors
-    //
+  //
+  // Constructors
+  //
 
-    /** Default constructor. */
-    public SAXWriter(boolean canonical) throws UnsupportedEncodingException {
-        this(null, canonical);
+  /** Default constructor. */
+  public SAXWriter(boolean canonical) throws UnsupportedEncodingException {
+    this(null, canonical);
+  }
+
+  protected SAXWriter(String encoding, boolean canonical) throws UnsupportedEncodingException {
+
+    if (encoding == null) {
+      encoding = "UTF8";
     }
 
-    protected SAXWriter(String encoding, boolean canonical) throws UnsupportedEncodingException {
+    out = new PrintWriter(new OutputStreamWriter(System.out, encoding));
+    this.canonical = canonical;
+  } // <init>(String,boolean)
 
-        if (encoding == null) {
-            encoding = "UTF8";
-        }
+  //
+  // Public static methods
+  //
 
-        out = new PrintWriter(new OutputStreamWriter(System.out, encoding));
-        this.canonical = canonical;
+  /** Prints the output from the SAX callbacks. */
+  public static void print(String parserName, String uri, boolean canonical) {
 
-    } // <init>(String,boolean)
+    try {
+      HandlerBase handler = new SAXWriter(canonical);
 
-    //
-    // Public static methods
-    //
+      Parser parser = ParserFactory.makeParser(parserName);
+      parser.setDocumentHandler(handler);
+      parser.setErrorHandler(handler);
+      parser.parse(uri);
+    } catch (Exception e) {
+      e.printStackTrace(System.err);
+    }
+  } // print(String,String,boolean)
 
-    /** Prints the output from the SAX callbacks. */
-    public static void print(String parserName, String uri, boolean canonical) {
+  //
+  // DocumentHandler methods
+  //
 
-        try {
-            HandlerBase handler = new SAXWriter(canonical);
+  /** Processing instruction. */
+  public void processingInstruction(String target, String data) {
 
-            Parser parser = ParserFactory.makeParser(parserName);
-            parser.setDocumentHandler(handler);
-            parser.setErrorHandler(handler);
-            parser.parse(uri);
-        }
-        catch (Exception e) {
-            e.printStackTrace(System.err);
-        }
+    out.print("<?");
+    out.print(target);
+    if (data != null && data.length() > 0) {
+      out.print(' ');
+      out.print(data);
+    }
+    out.print("?>");
+  } // processingInstruction(String,String)
 
-    } // print(String,String,boolean)
+  /** Start document. */
+  public void startDocument() {
 
-    //
-    // DocumentHandler methods
-    //
+    if (!canonical) {
+      out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+    }
+  } // startDocument()
 
-    /** Processing instruction. */
-    public void processingInstruction(String target, String data) {
+  /** Start element. */
+  public void startElement(String name, AttributeList attrs) {
 
-        out.print("<?");
-        out.print(target);
-        if (data != null && data.length() > 0) {
-            out.print(' ');
-            out.print(data);
-        }
-        out.print("?>");
+    out.print('<');
+    out.print(name);
+    if (attrs != null) {
+      attrs = sortAttributes(attrs);
+      int len = attrs.getLength();
+      for (int i = 0; i < len; i++) {
+        out.print(' ');
+        out.print(attrs.getName(i));
+        out.print("=\"");
+        out.print(normalize(attrs.getValue(i)));
+        out.print('"');
+      }
+    }
+    out.print('>');
+  } // startElement(String,AttributeList)
 
-    } // processingInstruction(String,String)
+  /** Characters. */
+  public void characters(char ch[], int start, int length) {
 
-    /** Start document. */
-    public void startDocument() {
+    out.print(normalize(new String(ch, start, length)));
+  } // characters(char[],int,int);
 
-        if (!canonical) {
-            out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-        }
+  /** Ignorable whitespace. */
+  public void ignorableWhitespace(char ch[], int start, int length) {
 
-    } // startDocument()
+    characters(ch, start, length);
+  } // ignorableWhitespace(char[],int,int);
 
-    /** Start element. */
-    public void startElement(String name, AttributeList attrs) {
+  /** End element. */
+  public void endElement(String name) {
 
-        out.print('<');
-        out.print(name);
-        if (attrs != null) {
-            attrs = sortAttributes(attrs);
-            int len = attrs.getLength();
-            for (int i = 0; i < len; i++) {
-                out.print(' ');
-                out.print(attrs.getName(i));
-                out.print("=\"");
-                out.print(normalize(attrs.getValue(i)));
-                out.print('"');
+    out.print("</");
+    out.print(name);
+    out.print('>');
+  } // endElement(String)
+
+  /** End document. */
+  public void endDocument() {
+
+    out.flush();
+  } // endDocument()
+
+  //
+  // ErrorHandler methods
+  //
+
+  /** Warning. */
+  public void warning(SAXParseException ex) {
+    System.err.println("[Warning] " + getLocationString(ex) + ": " + ex.getMessage());
+  }
+
+  /** Error. */
+  public void error(SAXParseException ex) {
+    System.err.println("[Error] " + getLocationString(ex) + ": " + ex.getMessage());
+  }
+
+  /** Fatal error. */
+  public void fatalError(SAXParseException ex) throws SAXException {
+    System.err.println("[Fatal Error] " + getLocationString(ex) + ": " + ex.getMessage());
+    throw ex;
+  }
+
+  /** Returns a string of the location. */
+  private String getLocationString(SAXParseException ex) {
+    StringBuffer str = new StringBuffer();
+
+    String systemId = ex.getSystemId();
+    if (systemId != null) {
+      int index = systemId.lastIndexOf('/');
+      if (index != -1) systemId = systemId.substring(index + 1);
+      str.append(systemId);
+    }
+    str.append(':');
+    str.append(ex.getLineNumber());
+    str.append(':');
+    str.append(ex.getColumnNumber());
+
+    return str.toString();
+  } // getLocationString(SAXParseException):String
+
+  //
+  // Protected static methods
+  //
+
+  /** Normalizes the given string. */
+  protected String normalize(String s) {
+    StringBuffer str = new StringBuffer();
+
+    int len = (s != null) ? s.length() : 0;
+    for (int i = 0; i < len; i++) {
+      char ch = s.charAt(i);
+      switch (ch) {
+        case '<':
+          {
+            str.append("&lt;");
+            break;
+          }
+        case '>':
+          {
+            str.append("&gt;");
+            break;
+          }
+        case '&':
+          {
+            str.append("&amp;");
+            break;
+          }
+        case '"':
+          {
+            str.append("&quot;");
+            break;
+          }
+        case '\r':
+        case '\n':
+          {
+            if (canonical) {
+              str.append("&#");
+              str.append(Integer.toString(ch));
+              str.append(';');
+              break;
             }
-        }
-        out.print('>');
-
-    } // startElement(String,AttributeList)
-
-    /** Characters. */
-    public void characters(char ch[], int start, int length) {
-
-        out.print(normalize(new String(ch, start, length)));
-
-    } // characters(char[],int,int);
-
-    /** Ignorable whitespace. */
-    public void ignorableWhitespace(char ch[], int start, int length) {
-
-        characters(ch, start, length);
-
-    } // ignorableWhitespace(char[],int,int);
-
-    /** End element. */
-    public void endElement(String name) {
-
-        out.print("</");
-        out.print(name);
-        out.print('>');
-
-    } // endElement(String)
-
-    /** End document. */
-    public void endDocument() {
-
-        out.flush();
-
-    } // endDocument()
-
-    //
-    // ErrorHandler methods
-    //
-
-    /** Warning. */
-    public void warning(SAXParseException ex) {
-        System.err.println("[Warning] "+
-                           getLocationString(ex)+": "+
-                           ex.getMessage());
+            // else, default append char
+          }
+        default:
+          {
+            str.append(ch);
+          }
+      }
     }
 
-    /** Error. */
-    public void error(SAXParseException ex) {
-        System.err.println("[Error] "+
-                           getLocationString(ex)+": "+
-                           ex.getMessage());
+    return str.toString();
+  } // normalize(String):String
+
+  /** Returns a sorted list of attributes. */
+  protected AttributeList sortAttributes(AttributeList attrs) {
+
+    AttributeListImpl attributes = new AttributeListImpl();
+    int len = (attrs != null) ? attrs.getLength() : 0;
+    for (int i = 0; i < len; i++) {
+      String name = attrs.getName(i);
+      int count = attributes.getLength();
+      int j = 0;
+      while (j < count) {
+        if (name.compareTo(attributes.getName(j)) < 0) {
+          break;
+        }
+        j++;
+      }
+      attributes.insertAttributeAt(j, name, attrs.getType(i), attrs.getValue(i));
     }
 
-    /** Fatal error. */
-    public void fatalError(SAXParseException ex) throws SAXException {
-        System.err.println("[Fatal Error] "+
-                           getLocationString(ex)+": "+
-                           ex.getMessage());
-        throw ex;
+    return attributes;
+  } // sortAttributes(AttributeList):AttributeList
+
+  //
+  // Main
+  //
+
+  /** Main program entry point. */
+  public static void main(String argv[]) {
+
+    // is there anything to do?
+    if (argv.length == 0) {
+      printUsage();
+      System.exit(1);
     }
 
-    /** Returns a string of the location. */
-    private String getLocationString(SAXParseException ex) {
-        StringBuffer str = new StringBuffer();
+    // vars
+    String parserName = DEFAULT_PARSER_NAME;
+    boolean canonical = false;
 
-        String systemId = ex.getSystemId();
-        if (systemId != null) {
-            int index = systemId.lastIndexOf('/');
-            if (index != -1) 
-                systemId = systemId.substring(index + 1);
-            str.append(systemId);
-        }
-        str.append(':');
-        str.append(ex.getLineNumber());
-        str.append(':');
-        str.append(ex.getColumnNumber());
+    // check parameters
+    for (int i = 0; i < argv.length; i++) {
+      String arg = argv[i];
 
-        return str.toString();
-
-    } // getLocationString(SAXParseException):String
-
-    //
-    // Protected static methods
-    //
-
-    /** Normalizes the given string. */
-    protected String normalize(String s) {
-        StringBuffer str = new StringBuffer();
-
-        int len = (s != null) ? s.length() : 0;
-        for (int i = 0; i < len; i++) {
-            char ch = s.charAt(i);
-            switch (ch) {
-                case '<': {
-                    str.append("&lt;");
-                    break;
-                }
-                case '>': {
-                    str.append("&gt;");
-                    break;
-                }
-                case '&': {
-                    str.append("&amp;");
-                    break;
-                }
-                case '"': {
-                    str.append("&quot;");
-                    break;
-                }
-                case '\r':
-                case '\n': {
-                    if (canonical) {
-                        str.append("&#");
-                        str.append(Integer.toString(ch));
-                        str.append(';');
-                        break;
-                    }
-                    // else, default append char
-                }
-                default: {
-                    str.append(ch);
-                }
-            }
-        }
-
-        return str.toString();
-
-    } // normalize(String):String
-
-    /** Returns a sorted list of attributes. */
-    protected AttributeList sortAttributes(AttributeList attrs) {
-
-        AttributeListImpl attributes = new AttributeListImpl();
-        int len = (attrs != null) ? attrs.getLength() : 0;
-        for (int i = 0; i < len; i++) {
-            String name = attrs.getName(i);
-            int count = attributes.getLength();
-            int j = 0;
-            while (j < count) {
-                if (name.compareTo(attributes.getName(j)) < 0) {
-                    break;
-                }
-                j++;
-            }
-            attributes.insertAttributeAt(j, name, attrs.getType(i), 
-                                         attrs.getValue(i));
-        }
-
-        return attributes;
-
-    } // sortAttributes(AttributeList):AttributeList
-
-    //
-    // Main
-    //
-
-    /** Main program entry point. */
-    public static void main(String argv[]) {
-
-        // is there anything to do?
-        if (argv.length == 0) {
-            printUsage();
+      // options
+      if (arg.startsWith("-")) {
+        if (arg.equals("-p")) {
+          if (i == argv.length - 1) {
+            System.err.println("error: missing parser name");
             System.exit(1);
+          }
+          parserName = argv[++i];
+          continue;
         }
 
-        // vars
-        String  parserName = DEFAULT_PARSER_NAME;
-        boolean canonical  = false;
-
-        // check parameters
-        for (int i = 0; i < argv.length; i++) {
-            String arg = argv[i];
-
-            // options
-            if (arg.startsWith("-")) {
-                if (arg.equals("-p")) {
-                    if (i == argv.length - 1) {
-                        System.err.println("error: missing parser name");
-                        System.exit(1);
-                    }
-                    parserName = argv[++i];
-                    continue;
-                }
-
-                if (arg.equals("-c")) {
-                    canonical = true;
-                    continue;
-                }
-
-                if (arg.equals("-h")) {
-                    printUsage();
-                    System.exit(1);
-                }
-            }
-
-            // print uri
-            System.err.println(arg+':');
-            print(parserName, arg, canonical);
-            System.out.println();
+        if (arg.equals("-c")) {
+          canonical = true;
+          continue;
         }
 
-    } // main(String[])
+        if (arg.equals("-h")) {
+          printUsage();
+          System.exit(1);
+        }
+      }
 
-    /** Prints the usage. */
-    private static void printUsage() {
+      // print uri
+      System.err.println(arg + ':');
+      print(parserName, arg, canonical);
+      System.out.println();
+    }
+  } // main(String[])
 
-        System.err.println("usage: java sax.SAXWriter (options) uri ...");
-        System.err.println();
-        System.err.println("options:");
-        System.err.println("  -p name  Specify SAX parser by name.");
-        System.err.println("           Default parser: "+DEFAULT_PARSER_NAME);
-        System.err.println("  -c       Canonical XML output.");
-        System.err.println("  -h       This help screen.");
+  /** Prints the usage. */
+  private static void printUsage() {
 
-    } // printUsage()
-
+    System.err.println("usage: java sax.SAXWriter (options) uri ...");
+    System.err.println();
+    System.err.println("options:");
+    System.err.println("  -p name  Specify SAX parser by name.");
+    System.err.println("           Default parser: " + DEFAULT_PARSER_NAME);
+    System.err.println("  -c       Canonical XML output.");
+    System.err.println("  -h       This help screen.");
+  } // printUsage()
 } // class SAXWriter

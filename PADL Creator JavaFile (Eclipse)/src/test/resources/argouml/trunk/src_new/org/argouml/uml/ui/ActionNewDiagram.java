@@ -25,9 +25,7 @@
 package org.argouml.uml.ui;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.Action;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.i18n.Translator;
 import org.argouml.kernel.Project;
@@ -40,80 +38,69 @@ import org.tigris.gef.undo.UndoableAction;
 
 /**
  * Abstract action to trigger creation of a new diagram.
- * 
+ *
  * @author michiel
  */
 abstract class ActionNewDiagram extends UndoableAction {
 
-    /**
-     * The constructor.
-     */
-    public ActionNewDiagram(String name) {
-        super(Translator.localize(name),
-                ResourceLoaderWrapper.lookupIcon(name));
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize(name));
-    }
+  /** The constructor. */
+  public ActionNewDiagram(String name) {
+    super(Translator.localize(name), ResourceLoaderWrapper.lookupIcon(name));
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize(name));
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(
-     * java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        Project p = ProjectManager.getManager().getCurrentProject();
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed( java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    Project p = ProjectManager.getManager().getCurrentProject();
 
-        super.actionPerformed(e);
-        UMLDiagram diagram = createDiagram();
-        p.addMember(diagram);
-        //TODO: make the explorer listen to project member property
-        //changes...  to eliminate coupling on gui.
-        ExplorerEventAdaptor.getInstance().modelElementAdded(
-                diagram.getNamespace());
-        TargetManager.getInstance().setTarget(diagram);
-    }
-    
-    /**
-     * @return the new diagram
-     */
-    protected abstract UMLDiagram createDiagram();
-    
-    /**
-     * Utility function to create a collaboration.
-     * 
-     * @return a new collaboration
-     */
-    protected static Object createCollaboration() {
-        Project p = ProjectManager.getManager().getCurrentProject();
-        Object target = TargetManager.getInstance().getModelTarget();
-        Object collaboration = null;
-        Object namespace = p.getRoot(); // the root model
-        if (Model.getFacade().isAOperation(target)) {
-            Object ns = Model.getFacade().getNamespace(
-                    Model.getFacade().getOwner(target));
-            collaboration =
-                Model.getCollaborationsFactory().buildCollaboration(ns, target);
-        } else if (Model.getFacade().isAClassifier(target)) {
-            Object ns = Model.getFacade().getNamespace(target);
-            collaboration =
-                Model.getCollaborationsFactory().buildCollaboration(ns, target);
-        } else {
-            collaboration =
-                Model.getCollaborationsFactory().createCollaboration();
-            if (Model.getFacade().isANamespace(target)) {
-                namespace = target;
-            } else {
-                if (Model.getFacade().isAModelElement(target)) {
-                    Object ns = Model.getFacade().getNamespace(target);
-                    if (Model.getFacade().isANamespace(ns)) {
-                        namespace = ns;
-                    }
-                }
-            }
-            Model.getCoreHelper().setNamespace(collaboration, namespace);
-            Model.getCoreHelper().setName(collaboration, 
-                    "unattachedCollaboration");
+    super.actionPerformed(e);
+    UMLDiagram diagram = createDiagram();
+    p.addMember(diagram);
+    // TODO: make the explorer listen to project member property
+    // changes...  to eliminate coupling on gui.
+    ExplorerEventAdaptor.getInstance().modelElementAdded(diagram.getNamespace());
+    TargetManager.getInstance().setTarget(diagram);
+  }
+
+  /**
+   * @return the new diagram
+   */
+  protected abstract UMLDiagram createDiagram();
+
+  /**
+   * Utility function to create a collaboration.
+   *
+   * @return a new collaboration
+   */
+  protected static Object createCollaboration() {
+    Project p = ProjectManager.getManager().getCurrentProject();
+    Object target = TargetManager.getInstance().getModelTarget();
+    Object collaboration = null;
+    Object namespace = p.getRoot(); // the root model
+    if (Model.getFacade().isAOperation(target)) {
+      Object ns = Model.getFacade().getNamespace(Model.getFacade().getOwner(target));
+      collaboration = Model.getCollaborationsFactory().buildCollaboration(ns, target);
+    } else if (Model.getFacade().isAClassifier(target)) {
+      Object ns = Model.getFacade().getNamespace(target);
+      collaboration = Model.getCollaborationsFactory().buildCollaboration(ns, target);
+    } else {
+      collaboration = Model.getCollaborationsFactory().createCollaboration();
+      if (Model.getFacade().isANamespace(target)) {
+        namespace = target;
+      } else {
+        if (Model.getFacade().isAModelElement(target)) {
+          Object ns = Model.getFacade().getNamespace(target);
+          if (Model.getFacade().isANamespace(ns)) {
+            namespace = ns;
+          }
         }
-        return collaboration;
+      }
+      Model.getCoreHelper().setNamespace(collaboration, namespace);
+      Model.getCoreHelper().setName(collaboration, "unattachedCollaboration");
     }
+    return collaboration;
+  }
 }

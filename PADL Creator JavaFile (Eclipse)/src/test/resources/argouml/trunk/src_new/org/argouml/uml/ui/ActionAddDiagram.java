@@ -25,9 +25,7 @@
 package org.argouml.uml.ui;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.Action;
-
 import org.apache.log4j.Logger;
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.i18n.Translator;
@@ -40,104 +38,98 @@ import org.argouml.uml.diagram.ui.UMLDiagram;
 import org.tigris.gef.undo.UndoableAction;
 
 /**
- * Abstract class that is the parent of all actions adding diagrams to ArgoUML.
- * The children of this class should implement createDiagram to do any specific
- * actions for creating a diagram and isValidNamespace that checks if some
- * namespace is valid to add the diagram to.
+ * Abstract class that is the parent of all actions adding diagrams to ArgoUML. The children of this
+ * class should implement createDiagram to do any specific actions for creating a diagram and
+ * isValidNamespace that checks if some namespace is valid to add the diagram to.
  *
  * @author jaap.branderhorst@xs4all.nl
  */
 public abstract class ActionAddDiagram extends UndoableAction {
-    /**
-     * Logger.
-     */
-    private static final Logger LOG =
-        Logger.getLogger(ActionAddDiagram.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(ActionAddDiagram.class);
 
-    /**
-     * Constructor for ActionAddDiagram.
-     *
-     * @param s the name for this action
-     */
-    public ActionAddDiagram(String s) {
-        super(Translator.localize(s),
-                ResourceLoaderWrapper.lookupIcon(s));
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize(s));
+  /**
+   * Constructor for ActionAddDiagram.
+   *
+   * @param s the name for this action
+   */
+  public ActionAddDiagram(String s) {
+    super(Translator.localize(s), ResourceLoaderWrapper.lookupIcon(s));
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize(s));
+  }
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    Project p = ProjectManager.getManager().getCurrentProject();
+    Object ns = findNamespace();
+
+    if (ns != null && isValidNamespace(ns)) {
+      super.actionPerformed(e);
+      UMLDiagram diagram = createDiagram(ns);
+      p.addMember(diagram);
+      // TODO: make the explorer listen to project member property
+      // changes...  to eliminate coupling on gui.
+      ExplorerEventAdaptor.getInstance().modelElementAdded(ns);
+      TargetManager.getInstance().setTarget(diagram);
+    } else {
+      LOG.error("No valid namespace found");
+      throw new IllegalStateException("No valid namespace found");
     }
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-    	super.actionPerformed(e);
-        Project p = ProjectManager.getManager().getCurrentProject();
-        Object ns = findNamespace();
-
-        if (ns != null && isValidNamespace(ns)) {
-            super.actionPerformed(e);
-            UMLDiagram diagram = createDiagram(ns);
-            p.addMember(diagram);
-            //TODO: make the explorer listen to project member property
-            //changes...  to eliminate coupling on gui.
-            ExplorerEventAdaptor.getInstance().modelElementAdded(ns);
-            TargetManager.getInstance().setTarget(diagram);
-        } else {
-            LOG.error("No valid namespace found");
-            throw new IllegalStateException("No valid namespace found");
-        }
+  /**
+   * Find the right namespace for the diagram.
+   *
+   * @return the namespace or null
+   */
+  private Object findNamespace() {
+    Project p = ProjectManager.getManager().getCurrentProject();
+    Object target = TargetManager.getInstance().getModelTarget();
+    Object ns = null;
+    if (target == null || !Model.getFacade().isAModelElement(target)) {
+      target = p.getRoot();
     }
-
-    /**
-     * Find the right namespace for the diagram.
-     *
-     * @return the namespace or null
-     */
-    private Object findNamespace() {
-        Project p = ProjectManager.getManager().getCurrentProject();
-        Object target = TargetManager.getInstance().getModelTarget();
-        Object ns = null;
-        if (target == null || !Model.getFacade().isAModelElement(target)) {
-            target = p.getRoot();
+    if (Model.getFacade().isANamespace(target)) {
+      ns = target;
+    } else {
+      Object owner = null;
+      if (Model.getFacade().isAOperation(target)) {
+        owner = Model.getFacade().getOwner(target);
+        if (owner != null && Model.getFacade().isANamespace(owner)) {
+          ns = owner;
         }
-        if (Model.getFacade().isANamespace(target)) {
-            ns = target;
-        } else {
-            Object owner = null;
-            if (Model.getFacade().isAOperation(target)) {
-                owner = Model.getFacade().getOwner(target);
-                if (owner != null && Model.getFacade().isANamespace(owner)) {
-                    ns = owner;
-                }
-            }
-            if (ns == null && Model.getFacade().isAModelElement(target)) {
-                owner = Model.getFacade().getNamespace(target);
-                if (owner != null && Model.getFacade().isANamespace(owner)) {
-                    ns = owner;
-                }
-            }
+      }
+      if (ns == null && Model.getFacade().isAModelElement(target)) {
+        owner = Model.getFacade().getNamespace(target);
+        if (owner != null && Model.getFacade().isANamespace(owner)) {
+          ns = owner;
         }
-        if (ns == null) {
-            ns = p.getRoot();
-        }
-        return ns;
+      }
     }
+    if (ns == null) {
+      ns = p.getRoot();
+    }
+    return ns;
+  }
 
-    /**
-     * Test if the given namespace is a valid namespace to add the diagram to.
-     *
-     * @param ns the namespace to check
-     * @return Returns <code>true</code> if valid.
-     */
-    public abstract boolean isValidNamespace(Object ns);
+  /**
+   * Test if the given namespace is a valid namespace to add the diagram to.
+   *
+   * @param ns the namespace to check
+   * @return Returns <code>true</code> if valid.
+   */
+  public abstract boolean isValidNamespace(Object ns);
 
-    /**
-     * Creates the diagram. Classes derived from this class should implement any
-     * specific behaviour to create the diagram.
-     *
-     * @param ns The namespace the UMLDiagram should get.
-     * @return UMLDiagram
-     */
-    public abstract UMLDiagram createDiagram(Object ns);
+  /**
+   * Creates the diagram. Classes derived from this class should implement any specific behaviour to
+   * create the diagram.
+   *
+   * @param ns The namespace the UMLDiagram should get.
+   * @return UMLDiagram
+   */
+  public abstract UMLDiagram createDiagram(Object ns);
 }

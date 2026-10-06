@@ -27,160 +27,158 @@ package org.argouml.uml.ui;
 import java.awt.event.ActionEvent;
 import java.util.Collection;
 import java.util.List;
-import java.util.Vector;
-
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JOptionPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.kernel.UmlModelMutator;
 import org.argouml.util.ArgoFrame;
 import org.tigris.gef.undo.UndoableAction;
 
 /**
- * Abstract action that is the parent to all add actions that add the
- * modelelements via the UMLAddDialog.
- * 
+ * Abstract action that is the parent to all add actions that add the modelelements via the
+ * UMLAddDialog.
+ *
  * @since Oct 2, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
 @UmlModelMutator
 public abstract class AbstractActionAddModelElement2 extends UndoableAction {
 
-    private Object target;
-    private boolean multiSelect = true;
-    private boolean exclusive = true;
+  private Object target;
+  private boolean multiSelect = true;
+  private boolean exclusive = true;
 
-    /**
-     * Construct an action to add a model element to some list.
-     */
-    protected AbstractActionAddModelElement2() {
-        super(Translator.localize("menu.popup.add-modelelement"), null);
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize("menu.popup.add-modelelement"));
+  /** Construct an action to add a model element to some list. */
+  protected AbstractActionAddModelElement2() {
+    super(Translator.localize("menu.popup.add-modelelement"), null);
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize("menu.popup.add-modelelement"));
+  }
+
+  /**
+   * Construct a named action to add a model element to some list.
+   *
+   * @param name name for action
+   */
+  public AbstractActionAddModelElement2(String name) {
+    super(name);
+  }
+
+  /**
+   * Construct an action to add a model element to some list with the given name and icon.
+   *
+   * @param name name for action
+   * @param icon icon for action
+   */
+  public AbstractActionAddModelElement2(String name, Icon icon) {
+    super(name, icon);
+  }
+
+  /*
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    UMLAddDialog dialog =
+        new UMLAddDialog(
+            getChoices(), getSelected(), getDialogTitle(), isMultiSelect(), isExclusive());
+    int result = dialog.showDialog(ArgoFrame.getInstance());
+    if (result == JOptionPane.OK_OPTION) {
+      doIt(dialog.getSelected());
     }
+  }
 
-    /**
-     * Construct a named action to add a model element to some list.
-     * @param name name for action
-     */
-    public AbstractActionAddModelElement2(String name) {
-        super(name);
-    }
+  /**
+   * Returns the choices the user has in the UMLAddDialog. The choices are depicted on the left side
+   * of the UMLAddDialog (sorry Arabic users) and can be moved via the buttons on the dialog to the
+   * right side. On the right side are the selected modelelements.
+   *
+   * @return List of choices
+   */
+  protected abstract List getChoices();
 
-    /**
-     * Construct an action to add a model element to some list with the
-     * given name and icon.
-     * @param name name for action
-     * @param icon icon for action
-     */
-    public AbstractActionAddModelElement2(String name, Icon icon) {
-        super(name, icon);
-    }
-    
+  /**
+   * The modelelements already selected BEFORE the dialog is shown.
+   *
+   * @return List of model elements
+   */
+  protected abstract List getSelected();
 
-    /*
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        UMLAddDialog dialog =
-            new UMLAddDialog(getChoices(), getSelected(), getDialogTitle(),
-                             isMultiSelect(),
-                             isExclusive());
-        int result = dialog.showDialog(ArgoFrame.getInstance());
-        if (result == JOptionPane.OK_OPTION) {
-            doIt(dialog.getSelected());
-        }
-    }
-    
-    /**
-     * Returns the choices the user has in the UMLAddDialog. The choices are
-     * depicted on the left side of the UMLAddDialog (sorry Arabic users) and
-     * can be moved via the buttons on the dialog to the right side. On the
-     * right side are the selected modelelements.
-     * @return List of choices
-     */
-    protected abstract List getChoices();
+  /**
+   * The action that has to be done by ArgoUml after the user clicks ok in the UMLAddDialog.
+   *
+   * @param selected The choices the user has selected in the UMLAddDialog
+   */
+  protected abstract void doIt(Collection selected);
 
-    
-    /**
-     * The modelelements already selected BEFORE the dialog is shown.
-     * @return List of model elements
-     */
-    protected abstract List getSelected();
+  /*
+   * @see javax.swing.Action#isEnabled()
+   */
+  @Override
+  public boolean isEnabled() {
+    return !getChoices().isEmpty();
+  }
 
-    /**
-     * The action that has to be done by ArgoUml after the user clicks ok in the
-     * UMLAddDialog.
-     * @param selected The choices the user has selected in the UMLAddDialog
-     */
-    protected abstract void doIt(Collection selected);
+  /**
+   * Returns the UML model target.
+   *
+   * @return UML ModelElement
+   */
+  protected Object getTarget() {
+    return target;
+  }
 
-    /*
-     * @see javax.swing.Action#isEnabled()
-     */
-    @Override
-    public boolean isEnabled() {
-        return !getChoices().isEmpty();
-    }
-    
-    
-    /**
-     * Returns the UML model target.
-     * @return UML ModelElement
-     */
-    protected Object getTarget() {
-        return target;
-    }
+  /**
+   * Sets the UML model target.
+   *
+   * @param theTarget The target to set
+   */
+  public void setTarget(Object theTarget) {
+    target = theTarget;
+  }
 
-    /**
-     * Sets the UML model target.
-     * @param theTarget The target to set
-     */
-    public void setTarget(Object theTarget) {
-        target = theTarget;
-    }
+  /**
+   * Returns the title of the dialog.
+   *
+   * @return String
+   */
+  protected abstract String getDialogTitle();
 
-    /**
-     * Returns the title of the dialog.
-     * @return String
-     */
-    protected abstract String getDialogTitle();
+  /**
+   * Returns the exclusive.
+   *
+   * @return boolean
+   */
+  public boolean isExclusive() {
+    return exclusive;
+  }
 
-    /**
-     * Returns the exclusive.
-     * @return boolean
-     */
-    public boolean isExclusive() {
-        return exclusive;
-    }
+  /**
+   * Returns the multiSelect.
+   *
+   * @return boolean
+   */
+  public boolean isMultiSelect() {
+    return multiSelect;
+  }
 
-    /**
-     * Returns the multiSelect.
-     * @return boolean
-     */
-    public boolean isMultiSelect() {
-        return multiSelect;
-    }
+  /**
+   * Sets the exclusive.
+   *
+   * @param theExclusive The exclusive to set
+   */
+  public void setExclusive(boolean theExclusive) {
+    exclusive = theExclusive;
+  }
 
-    /**
-     * Sets the exclusive.
-     * @param theExclusive The exclusive to set
-     */
-    public void setExclusive(boolean theExclusive) {
-        exclusive = theExclusive;
-    }
-
-    /**
-     * Sets the multiSelect.
-     * @param theMultiSelect The multiSelect to set
-     */
-    public void setMultiSelect(boolean theMultiSelect) {
-        multiSelect = theMultiSelect;
-    }
-
+  /**
+   * Sets the multiSelect.
+   *
+   * @param theMultiSelect The multiSelect to set
+   */
+  public void setMultiSelect(boolean theMultiSelect) {
+    multiSelect = theMultiSelect;
+  }
 }

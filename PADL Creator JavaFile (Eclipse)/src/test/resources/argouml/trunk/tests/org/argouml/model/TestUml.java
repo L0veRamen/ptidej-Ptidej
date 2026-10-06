@@ -29,39 +29,35 @@ import junit.framework.TestCase;
 /**
  * @author Thierry
  */
-public class TestUml extends TestCase
-{
+public class TestUml extends TestCase {
 
-    /**
-     * Constructor for Uml.
-     *
-     * @param arg0 is the name of the test case.
-     */
-    public TestUml(String arg0)
-    {
-        super(arg0);
-    }
+  /**
+   * Constructor for Uml.
+   *
+   * @param arg0 is the name of the test case.
+   */
+  public TestUml(String arg0) {
+    super(arg0);
+  }
 
-
-    /**
-     * TODO: Rewrite this test using reflection against Uml class.
-     * 
-     * This code has been commented out since September 2003
-     */
-    public void testUmlClassList() {
-//        for (Iterator i = Uml.getUmlClassList().iterator(); i.hasNext();) {
-//            UmlModelEntity type = (UmlModelEntity) i.next();
-//            String typeName = type.getClass().getName().toUpperCase();
-//            String expected = type.getName().toUpperCase();
-//            // System.out.println(type.getClass().getName().toUpperCase());
-//            // System.out.println("ORG.ARGOUML.MODEL.UML.UML$TYPE"
-//            // + key.toString().toUpperCase());
-//            assertEquals(
-//                "Not the correct class",
-//                type.getClass().getName().toUpperCase(),
-//                "ORG.ARGOUML.MODEL.UML.UML$TYPE"
-//                    + type.getName().toUpperCase());
-//        }
-    }
-
+  /**
+   * TODO: Rewrite this test using reflection against Uml class.
+   *
+   * <p>This code has been commented out since September 2003
+   */
+  public void testUmlClassList() {
+    //        for (Iterator i = Uml.getUmlClassList().iterator(); i.hasNext();) {
+    //            UmlModelEntity type = (UmlModelEntity) i.next();
+    //            String typeName = type.getClass().getName().toUpperCase();
+    //            String expected = type.getName().toUpperCase();
+    //            // System.out.println(type.getClass().getName().toUpperCase());
+    //            // System.out.println("ORG.ARGOUML.MODEL.UML.UML$TYPE"
+    //            // + key.toString().toUpperCase());
+    //            assertEquals(
+    //                "Not the correct class",
+    //                type.getClass().getName().toUpperCase(),
+    //                "ORG.ARGOUML.MODEL.UML.UML$TYPE"
+    //                    + type.getName().toUpperCase());
+    //        }
+  }
 }

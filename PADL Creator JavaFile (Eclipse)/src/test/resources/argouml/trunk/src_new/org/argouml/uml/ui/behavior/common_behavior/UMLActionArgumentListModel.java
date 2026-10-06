@@ -26,59 +26,49 @@ package org.argouml.uml.ui.behavior.common_behavior;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementOrderedListModel2;
 
-/**
- * Model for action's actual argument list.
- */
-public class UMLActionArgumentListModel 
-    extends UMLModelElementOrderedListModel2 {
+/** Model for action's actual argument list. */
+public class UMLActionArgumentListModel extends UMLModelElementOrderedListModel2 {
 
-    /**
-     * Constructor.
-     */
-    public UMLActionArgumentListModel() {
-        super("actualArgument");
+  /** Constructor. */
+  public UMLActionArgumentListModel() {
+    super("actualArgument");
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (getTarget() != null) {
+      setAllElements(Model.getFacade().getActualArguments(getTarget()));
     }
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (getTarget() != null) {
-            setAllElements(Model.getFacade().getActualArguments(getTarget()));
-        }
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(java.lang.Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().isAArgument(element);
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(java.lang.Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().isAArgument(element);
-    }
+  /** The UID. */
+  private static final long serialVersionUID = -3265997785192090331L;
 
-
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -3265997785192090331L;
-
-
-    protected void moveDown(int index1) {
-        int index2 = index1 + 1;
-        Object clss = getTarget();
-        List c = new ArrayList(Model.getFacade().getActualArguments(clss));
-        Object mem1 = c.get(index1);
-        Object mem2 = c.get(index2);
-        List cc = new ArrayList(c);
-        cc.remove(mem1);
-        cc.remove(mem2);
-        Model.getCommonBehaviorHelper().setActualArguments(clss, cc);
-        c.set(index1, mem2);
-        c.set(index2, mem1);
-        Model.getCommonBehaviorHelper().setActualArguments(clss, c);
-        buildModelList();
-    }
+  protected void moveDown(int index1) {
+    int index2 = index1 + 1;
+    Object clss = getTarget();
+    List c = new ArrayList(Model.getFacade().getActualArguments(clss));
+    Object mem1 = c.get(index1);
+    Object mem2 = c.get(index2);
+    List cc = new ArrayList(c);
+    cc.remove(mem1);
+    cc.remove(mem2);
+    Model.getCommonBehaviorHelper().setActualArguments(clss, cc);
+    c.set(index1, mem2);
+    c.set(index2, mem1);
+    Model.getCommonBehaviorHelper().setActualArguments(clss, c);
+    buildModelList();
+  }
 }

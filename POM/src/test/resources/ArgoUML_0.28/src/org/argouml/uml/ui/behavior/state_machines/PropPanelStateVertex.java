@@ -28,7 +28,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-
 import org.argouml.uml.ui.ActionNavigateContainerElement;
 import org.argouml.uml.ui.UMLLinkedList;
 import org.argouml.uml.ui.foundation.core.PropPanelModelElement;
@@ -41,60 +40,54 @@ import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
  */
 public abstract class PropPanelStateVertex extends PropPanelModelElement {
 
-    private JScrollPane incomingScroll;
+  private JScrollPane incomingScroll;
 
-    private JScrollPane outgoingScroll;
+  private JScrollPane outgoingScroll;
 
-    private JPanel containerScroll;
+  private JPanel containerScroll;
 
-    
-    /**
-     * Constructor for PropPanelStateVertex.
-     *
-     * @param name the name of the tabpanel shown at the top
-     * @param icon the icon of the tabpanel shown at the top
-     */
-    public PropPanelStateVertex(String name, ImageIcon icon) {
-        super(name, icon);
-        JList incomingList = new UMLLinkedList(
-                new UMLStateVertexIncomingListModel());
-        incomingScroll = new JScrollPane(incomingList);
-        JList outgoingList = new UMLLinkedList(
-                new UMLStateVertexOutgoingListModel());
-        outgoingScroll = new JScrollPane(outgoingList);
+  /**
+   * Constructor for PropPanelStateVertex.
+   *
+   * @param name the name of the tabpanel shown at the top
+   * @param icon the icon of the tabpanel shown at the top
+   */
+  public PropPanelStateVertex(String name, ImageIcon icon) {
+    super(name, icon);
+    JList incomingList = new UMLLinkedList(new UMLStateVertexIncomingListModel());
+    incomingScroll = new JScrollPane(incomingList);
+    JList outgoingList = new UMLLinkedList(new UMLStateVertexOutgoingListModel());
+    outgoingScroll = new JScrollPane(outgoingList);
 
-        containerScroll = 
-            getSingleRowScroll(new UMLStateVertexContainerListModel());
+    containerScroll = getSingleRowScroll(new UMLStateVertexContainerListModel());
 
-        addAction(new ActionNavigateContainerElement());
-        addExtraButtons();
-        addAction(new ActionNewStereotype());
-        addAction(getDeleteAction());
-    }
+    addAction(new ActionNavigateContainerElement());
+    addExtraButtons();
+    addAction(new ActionNewStereotype());
+    addAction(getDeleteAction());
+  }
 
-    /** Overrule this to add extra buttons. */
-    protected void addExtraButtons() { }
+  /** Overrule this to add extra buttons. */
+  protected void addExtraButtons() {}
 
-    /**
-     * @return Returns the incomingScroll.
-     */
-    protected JScrollPane getIncomingScroll() {
-        return incomingScroll;
-    }
+  /**
+   * @return Returns the incomingScroll.
+   */
+  protected JScrollPane getIncomingScroll() {
+    return incomingScroll;
+  }
 
-    /**
-     * @return Returns the outgoingScroll.
-     */
-    protected JScrollPane getOutgoingScroll() {
-        return outgoingScroll;
-    }
+  /**
+   * @return Returns the outgoingScroll.
+   */
+  protected JScrollPane getOutgoingScroll() {
+    return outgoingScroll;
+  }
 
-    /**
-     * @return Returns the containerScroll.
-     */
-    protected JPanel getContainerScroll() {
-        return containerScroll;
-    }
-
+  /**
+   * @return Returns the containerScroll.
+   */
+  protected JPanel getContainerScroll() {
+    return containerScroll;
+  }
 }
-

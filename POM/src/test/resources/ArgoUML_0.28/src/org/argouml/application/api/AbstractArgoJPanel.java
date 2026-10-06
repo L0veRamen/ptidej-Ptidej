@@ -27,13 +27,11 @@ package org.argouml.application.api;
 import java.awt.BorderLayout;
 import java.awt.Point;
 import java.awt.Rectangle;
-
 import javax.swing.Icon;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
-
 import org.apache.log4j.Logger;
 import org.argouml.i18n.Translator;
 import org.argouml.util.ArgoFrame;
@@ -41,204 +39,189 @@ import org.tigris.swidgets.Orientable;
 import org.tigris.swidgets.Orientation;
 
 /**
- * A subclass of JPanel that can act as a tab in the DetailsPane or
- * MultiEditorPane. Added functionality:<p>
+ * A subclass of JPanel that can act as a tab in the DetailsPane or MultiEditorPane. Added
+ * functionality:
  *
- * Spawning: When the tab is double-clicked, this JPanel will generate a
- * separate window of the same size and with the same contents. This is almost
- * like "tearing off" a tab.<p>
+ * <p>Spawning: When the tab is double-clicked, this JPanel will generate a separate window of the
+ * same size and with the same contents. This is almost like "tearing off" a tab.
  *
- * TODO: Spawning of windows disabled in spawn()<p>
+ * <p>TODO: Spawning of windows disabled in spawn()
  *
- * Title: This JPanel keeps track of its own title.<p>
- * 
- * Icon: This JPanel keeps track of its own icon; i.e. an arrow pointing to
- * the panel that it gives details of.<p>
+ * <p>Title: This JPanel keeps track of its own title.
  *
- * Orientation: This JPanel is Orientable.<p>
+ * <p>Icon: This JPanel keeps track of its own icon; i.e. an arrow pointing to the panel that it
+ * gives details of.
  *
- * Cloning: This JPanel may be cloned.<p>
+ * <p>Orientation: This JPanel is Orientable.
  *
- * This class used to be named TabSpawnable.
- * Renamed since it is not a Tab, but a Panel, and being spawnable is
- * not any more its main purpose.
+ * <p>Cloning: This JPanel may be cloned.
+ *
+ * <p>This class used to be named TabSpawnable. Renamed since it is not a Tab, but a Panel, and
+ * being spawnable is not any more its main purpose.
  */
-public abstract class AbstractArgoJPanel extends JPanel
-    implements Cloneable, Orientable {
-    /**
-     * Logger.
-     */
-    private static final Logger LOG =
-            Logger.getLogger(AbstractArgoJPanel.class);
+public abstract class AbstractArgoJPanel extends JPanel implements Cloneable, Orientable {
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(AbstractArgoJPanel.class);
 
-    private static final int OVERLAPP = 30;
+  private static final int OVERLAPP = 30;
 
-    private String title = "untitled";
-    
-    private Icon icon = null;
+  private String title = "untitled";
 
-    /**
-     * if true, remove tab from parent JTabbedPane.
-     */
-    private boolean tear = false;
+  private Icon icon = null;
 
-    private Orientation orientation;
+  /** if true, remove tab from parent JTabbedPane. */
+  private boolean tear = false;
 
-    /**
-     * @return the orientation
-     */
-    public Orientation getOrientation() {
-        return orientation;
+  private Orientation orientation;
+
+  /**
+   * @return the orientation
+   */
+  public Orientation getOrientation() {
+    return orientation;
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // constructor
+
+  /** The constructor. */
+  public AbstractArgoJPanel() {
+    this(Translator.localize("tab.untitled"), false);
+  }
+
+  /**
+   * The constructor.
+   *
+   * @param title The name as a localized string.
+   */
+  // TODO: Review all callers to make sure that they localize the title
+  public AbstractArgoJPanel(String title) {
+    this(title, false);
+  }
+
+  /**
+   * The constructor.
+   *
+   * @param title The name (a localized string).
+   * @param t if true, remove tab from parent JTabbedPane
+   */
+  // TODO: Review all callers to make sure that they localize the title
+  // In process by Harold Braun 20070912
+  public AbstractArgoJPanel(String title, boolean t) {
+    setTitle(title);
+    tear = t;
+  }
+
+  /**
+   * This is not a real clone since it doesn't copy anything from the object it is cloning. The
+   * {@link #spawn} method copies the title and in some cases also the Target.
+   *
+   * @return the new object or null if not possible.
+   */
+  public Object clone() {
+    try {
+      return this.getClass().getDeclaredConstructor().newInstance();
+    } catch (Exception ex) {
+      LOG.error("exception in clone()", ex);
     }
-    ////////////////////////////////////////////////////////////////
-    // constructor
+    return null;
+  }
 
-    /**
-     * The constructor.
-     *
-     */
-    public AbstractArgoJPanel() {
-        this(Translator.localize("tab.untitled"), false);
-    }
+  /*
+   * @see org.tigris.swidgets.Orientable#setOrientation(Orientation)
+   */
+  public void setOrientation(Orientation o) {
+    this.orientation = o;
+  }
 
-    /**
-     * The constructor.
-     *
-     * @param title The name as a localized string.
-     */
-    // TODO: Review all callers to make sure that they localize the title
-    public AbstractArgoJPanel(String title) {
-        this(title, false);
-    }
+  ////////////////////////////////////////////////////////////////
+  // accessors
 
-    /**
-     * The constructor.
-     *
-     * @param title The name (a localized string).
-     * @param t if true, remove tab from parent JTabbedPane
-     */
-    // TODO: Review all callers to make sure that they localize the title
-    // In process by Harold Braun 20070912
-    public AbstractArgoJPanel(String title, boolean t) {
-        setTitle(title);
-        tear = t;
-    }
+  /**
+   * @return The title of the panel, a localized string.
+   */
+  public String getTitle() {
+    return title;
+  }
 
-    /**
-     * This is not a real clone since it doesn't copy anything from the object
-     * it is cloning. The {@link #spawn} method copies the title and in
-     * some cases also the Target.
-     *
-     * @return the new object or null if not possible.
-     */
-    public Object clone() {
-        try {
-            return this.getClass().getDeclaredConstructor().newInstance();
-        } catch (Exception ex) {
-            LOG.error("exception in clone()", ex);
-        }
-        return null;
-    }
+  /**
+   * @param t The title, a localized string.
+   */
+  public void setTitle(String t) {
+    title = t;
+  }
 
-    /*
-     * @see org.tigris.swidgets.Orientable#setOrientation(Orientation)
-     */
-    public void setOrientation(Orientation o) {
-        this.orientation = o;
-    }
+  /**
+   * @return the icon to be shown for this panel
+   */
+  public Icon getIcon() {
+    return icon;
+  }
 
-    ////////////////////////////////////////////////////////////////
-    // accessors
+  /**
+   * @param theIcon this icon will be shown in front of the title
+   */
+  public void setIcon(Icon theIcon) {
+    this.icon = theIcon;
+  }
 
-    /**
-     * @return The title of the panel, a localized string.
-     */
-    public String getTitle() {
-        return title;
-    }
+  ////////////////////////////////////////////////////////////////
+  // actions
 
-    /**
-     * @param t The title, a localized string.
-     */
-    public void setTitle(String t) {
-        title = t;
-    }
+  /**
+   * This should take its inspiration from {@link org.tigris.gef.base.CmdSpawn}.
+   *
+   * <p>The spawned/cloned tab will be a JFrame. Currently this feature is disabled for ArgoUML,
+   * except for the find dialog. Code should behave though as if spawning might work at a later
+   * stage.
+   *
+   * @return a copy of the frame or null if not clone-able.
+   */
+  public AbstractArgoJPanel spawn() {
 
-    /**
-     * @return the icon to be shown for this panel
-     */
-    public Icon getIcon() {
-        return icon;
-    }
-
-    /**
-     * @param theIcon this icon will be shown in front of the title
-     */
-    public void setIcon(Icon theIcon) {
-        this.icon = theIcon;
-    }
-
-    ////////////////////////////////////////////////////////////////
-    // actions
-
-    /**
-     * This should take its inspiration from
-     * {@link org.tigris.gef.base.CmdSpawn}.<p>
-     *
-     * The spawned/cloned tab will be a JFrame. Currently this feature is
-     * disabled for ArgoUML, except for the find dialog.
-     * Code should behave though as if spawning might work at a
-     * later stage.
-     *
-     * @return a copy of the frame or null if not clone-able.
-     */
-    public AbstractArgoJPanel spawn() {
-
-        JDialog f = new JDialog(ArgoFrame.getInstance());
-        f.getContentPane().setLayout(new BorderLayout());
-        // TODO: Once we have fixed all subclasses the title will
-        // always be localized so this localization can be removed.
-        f.setTitle(Translator.localize(title));
-        AbstractArgoJPanel newPanel = (AbstractArgoJPanel) clone();
-        if (newPanel == null) {
-	    return null; //failed to clone
-	}
-
-//        if (newPanel instanceof TabToDo) {
-//            TabToDo me = (TabToDo) this;
-//            TabToDo it = (TabToDo) newPanel;
-//            it.setTarget(me.getTarget());
-//        } else if (newPanel instanceof TabModelTarget) {
-//            TabModelTarget me = (TabModelTarget) this;
-//            TabModelTarget it = (TabModelTarget) newPanel;
-//            it.setTarget(me.getTarget());
-//        } else if (newPanel instanceof TabDiagram) {
-//            TabDiagram me = (TabDiagram) this;
-//            TabDiagram it = (TabDiagram) newPanel;
-//            it.setTarget(me.getTarget());
-//        }
-
-        // TODO: Once we have fixed all subclasses the title will
-        // always be localized so this localization can be removed.
-        newPanel.setTitle(Translator.localize(title));
-
-        f.getContentPane().add(newPanel, BorderLayout.CENTER);
-        Rectangle bounds = getBounds();
-        bounds.height += OVERLAPP * 2;
-        f.setBounds(bounds);
-
-        Point loc = new Point(0, 0);
-        SwingUtilities.convertPointToScreen(loc, this);
-        loc.y -= OVERLAPP;
-        f.setLocation(loc);
-        f.setVisible(true);
-
-        if (tear && (getParent() instanceof JTabbedPane)) {
-	    ((JTabbedPane) getParent()).remove(this);
-	}
-
-        return newPanel;
-
+    JDialog f = new JDialog(ArgoFrame.getInstance());
+    f.getContentPane().setLayout(new BorderLayout());
+    // TODO: Once we have fixed all subclasses the title will
+    // always be localized so this localization can be removed.
+    f.setTitle(Translator.localize(title));
+    AbstractArgoJPanel newPanel = (AbstractArgoJPanel) clone();
+    if (newPanel == null) {
+      return null; // failed to clone
     }
 
+    //        if (newPanel instanceof TabToDo) {
+    //            TabToDo me = (TabToDo) this;
+    //            TabToDo it = (TabToDo) newPanel;
+    //            it.setTarget(me.getTarget());
+    //        } else if (newPanel instanceof TabModelTarget) {
+    //            TabModelTarget me = (TabModelTarget) this;
+    //            TabModelTarget it = (TabModelTarget) newPanel;
+    //            it.setTarget(me.getTarget());
+    //        } else if (newPanel instanceof TabDiagram) {
+    //            TabDiagram me = (TabDiagram) this;
+    //            TabDiagram it = (TabDiagram) newPanel;
+    //            it.setTarget(me.getTarget());
+    //        }
+
+    // TODO: Once we have fixed all subclasses the title will
+    // always be localized so this localization can be removed.
+    newPanel.setTitle(Translator.localize(title));
+
+    f.getContentPane().add(newPanel, BorderLayout.CENTER);
+    Rectangle bounds = getBounds();
+    bounds.height += OVERLAPP * 2;
+    f.setBounds(bounds);
+
+    Point loc = new Point(0, 0);
+    SwingUtilities.convertPointToScreen(loc, this);
+    loc.y -= OVERLAPP;
+    f.setLocation(loc);
+    f.setVisible(true);
+
+    if (tear && (getParent() instanceof JTabbedPane)) {
+      ((JTabbedPane) getParent()).remove(this);
+    }
+
+    return newPanel;
+  }
 }

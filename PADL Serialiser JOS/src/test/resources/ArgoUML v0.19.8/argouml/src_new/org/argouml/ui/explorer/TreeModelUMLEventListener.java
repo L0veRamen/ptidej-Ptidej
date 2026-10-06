@@ -27,28 +27,26 @@ package org.argouml.ui.explorer;
 /**
  * An interface to decouple Explorer event adaptors from interested models.
  *
- * @author  alexb
+ * @author alexb
  * @since 0.15.2
  */
 public interface TreeModelUMLEventListener {
 
-    /**
-     * @param node the modelelement that is changed
-     */
-    public void modelElementChanged(Object node);
+  /**
+   * @param node the modelelement that is changed
+   */
+  public void modelElementChanged(Object node);
 
-    /**
-     * @param node the modelelement that is added
-     */
-    public void modelElementAdded(Object node);
+  /**
+   * @param node the modelelement that is added
+   */
+  public void modelElementAdded(Object node);
 
-    /**
-     * @param node the modelelement that is removed
-     */
-    public void modelElementRemoved(Object node);
+  /**
+   * @param node the modelelement that is removed
+   */
+  public void modelElementRemoved(Object node);
 
-    /**
-     * the structure of the model is changed
-     */
-    public void structureChanged();
+  /** the structure of the model is changed */
+  public void structureChanged();
 }

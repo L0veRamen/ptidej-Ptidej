@@ -29,64 +29,57 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 
 /**
- * Rule for ModelElement -> Contained Lost Elements. <p>
+ * Rule for ModelElement -> Contained Lost Elements.
  *
- * The Contained elements are all the elements which,
- * if the owner is deleted, will be deleted, too.
- * Lost: the context is not set, i.e. a statemachine that is
- * not attached properly.
+ * <p>The Contained elements are all the elements which, if the owner is deleted, will be deleted,
+ * too. Lost: the context is not set, i.e. a statemachine that is not attached properly.
  *
  * @author michiel
  */
-public class GoModelElementToContainedLostElements
-    extends AbstractPerspectiveRule {
+public class GoModelElementToContainedLostElements extends AbstractPerspectiveRule {
 
-    /**
-     * @see org.argouml.ui.explorer.rules.AbstractPerspectiveRule#getRuleName()
-     */
-    public String getRuleName() {
-        return Translator.localize(
-                "misc.model-element.contained-lost-elements");
-    }
+  /**
+   * @see org.argouml.ui.explorer.rules.AbstractPerspectiveRule#getRuleName()
+   */
+  public String getRuleName() {
+    return Translator.localize("misc.model-element.contained-lost-elements");
+  }
 
-    /**
-     * @see org.argouml.ui.explorer.rules.AbstractPerspectiveRule#getChildren(java.lang.Object)
-     */
-    public Collection getChildren(Object parent) {
-        Collection ret = new ArrayList();
-        if (Model.getFacade().isANamespace(parent)) {
-            Collection col =
-                Model.getModelManagementHelper().getAllModelElementsOfKind(
-                        parent,
-                        Model.getMetaTypes().getStateMachine());
-            Iterator it = col.iterator();
-            while (it.hasNext()) {
-                Object machine = it.next();
-                if (Model.getFacade().getNamespace(machine) == parent) {
-                    Object context = Model.getFacade().getContext(machine);
-                    if (context == null) {
-                        ret.add(machine);
-                    }
-                }
-            }
+  /**
+   * @see org.argouml.ui.explorer.rules.AbstractPerspectiveRule#getChildren(java.lang.Object)
+   */
+  public Collection getChildren(Object parent) {
+    Collection ret = new ArrayList();
+    if (Model.getFacade().isANamespace(parent)) {
+      Collection col =
+          Model.getModelManagementHelper()
+              .getAllModelElementsOfKind(parent, Model.getMetaTypes().getStateMachine());
+      Iterator it = col.iterator();
+      while (it.hasNext()) {
+        Object machine = it.next();
+        if (Model.getFacade().getNamespace(machine) == parent) {
+          Object context = Model.getFacade().getContext(machine);
+          if (context == null) {
+            ret.add(machine);
+          }
         }
-        return ret;
+      }
     }
+    return ret;
+  }
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
-     */
-    public Set getDependencies(Object parent) {
-        Set set = new HashSet();
-        if (Model.getFacade().isANamespace(parent)) {
-            set.add(parent);
-        }
-        return set;
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
+   */
+  public Set getDependencies(Object parent) {
+    Set set = new HashSet();
+    if (Model.getFacade().isANamespace(parent)) {
+      set.add(parent);
     }
-
+    return set;
+  }
 }

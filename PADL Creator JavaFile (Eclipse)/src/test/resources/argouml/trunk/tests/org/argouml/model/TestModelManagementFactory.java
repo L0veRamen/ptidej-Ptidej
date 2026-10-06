@@ -26,60 +26,46 @@ package org.argouml.model;
 
 import junit.framework.TestCase;
 
-/**
- * Test the ModelManagementFactory class.
- *
- */
+/** Test the ModelManagementFactory class. */
 public class TestModelManagementFactory extends TestCase {
-    /**
-     * The model elements to test.
-     */
-    private static String[] allModelElements = {
-	"ElementImport", "Model", "Package", "Subsystem",
+  /** The model elements to test. */
+  private static String[] allModelElements = {
+    "ElementImport", "Model", "Package", "Subsystem",
+  };
+
+  /**
+   * The constructor.
+   *
+   * @param n the name
+   */
+  public TestModelManagementFactory(String n) {
+    super(n);
+  }
+
+  /** Test if this class is really a singleton. */
+  public void testSingleton() {
+
+    Object o1 = Model.getModelManagementFactory();
+
+    Object o2 = Model.getModelManagementFactory();
+
+    assertTrue("Different singletons", o1 == o2);
+  }
+
+  /** Test creation. */
+  public void testCreates() {
+
+    String[] objs = {
+      "ElementImport", "Model", "Package", "Subsystem", null,
     };
 
-    /**
-     * The constructor.
-     *
-     * @param n the name
-     */
-    public TestModelManagementFactory(String n) {
-	super(n);
-    }
+    CheckUMLModelHelper.createAndRelease(Model.getModelManagementFactory(), objs);
+  }
 
-    /**
-     * Test if this class is really a singleton.
-     */
-    public void testSingleton() {
-
-	Object o1 = Model.getModelManagementFactory();
-
-	Object o2 = Model.getModelManagementFactory();
-
-	assertTrue("Different singletons", o1 == o2);
-
-    }
-
-    /**
-     * Test creation.
-     */
-    public void testCreates() {
-
-	String[] objs = {
-	    "ElementImport", "Model", "Package", "Subsystem",
-	    null,
-	};
-
-	CheckUMLModelHelper.createAndRelease(
-		     Model.getModelManagementFactory(),
-		     objs);
-
-    }
-
-    /**
-     * @return Returns the allModelElements.
-     */
-    protected static String[] getAllModelElements() {
-        return allModelElements;
-    }
+  /**
+   * @return Returns the allModelElements.
+   */
+  protected static String[] getAllModelElements() {
+    return allModelElements;
+  }
 }

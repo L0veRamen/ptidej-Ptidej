@@ -27,9 +27,7 @@ package org.argouml.uml.ui;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.Collection;
-
 import javax.swing.JComboBox;
-
 import org.apache.log4j.Logger;
 import org.argouml.language.ui.LanguageComboBox;
 import org.argouml.model.Model;
@@ -42,164 +40,148 @@ import org.tigris.gef.presentation.FigEdge;
 import org.tigris.gef.presentation.FigNode;
 
 /**
- * Details panel tabbed panel for displaying a source code representation of
- * a UML model element in a particular Notation.
+ * Details panel tabbed panel for displaying a source code representation of a UML model element in
+ * a particular Notation.
  */
-public class TabSrc
-    extends TabText
-    implements ItemListener {
+public class TabSrc extends TabText implements ItemListener {
 
-    private static final long serialVersionUID = -4958164807996827484L;
+  private static final long serialVersionUID = -4958164807996827484L;
 
-    private static final Logger LOG = Logger.getLogger(TabSrc.class);
+  private static final Logger LOG = Logger.getLogger(TabSrc.class);
 
-    private Language langName = null;
-    private String fileName = null;
-    private SourceUnit[] files = null;
+  private Language langName = null;
+  private String fileName = null;
+  private SourceUnit[] files = null;
 
-    private LanguageComboBox cbLang = new LanguageComboBox();
-    private JComboBox cbFiles = new JComboBox();
+  private LanguageComboBox cbLang = new LanguageComboBox();
+  private JComboBox cbFiles = new JComboBox();
 
-    ////////////////////////////////////////////////////////////////
-    // constructor
+  ////////////////////////////////////////////////////////////////
+  // constructor
 
-    /**
-     * Create a tab that contains a toolbar.
-     * Then add a notation selector onto it.
-     */
-    public TabSrc() {
-        super("tab.source", true);
-        langName = (Language) cbLang.getSelectedItem();
-        fileName = null;
-        getToolbar().add(cbLang);
-        getToolbar().addSeparator();
-        cbLang.addItemListener(this);
-        getToolbar().add(cbFiles);
-        getToolbar().addSeparator();
-        cbFiles.addItemListener(this);
-    }
+  /** Create a tab that contains a toolbar. Then add a notation selector onto it. */
+  public TabSrc() {
+    super("tab.source", true);
+    langName = (Language) cbLang.getSelectedItem();
+    fileName = null;
+    getToolbar().add(cbLang);
+    getToolbar().addSeparator();
+    cbLang.addItemListener(this);
+    getToolbar().add(cbFiles);
+    getToolbar().addSeparator();
+    cbFiles.addItemListener(this);
+  }
 
-    /**
-     * @see java.lang.Object#finalize()
-     */
-    protected void finalize() {
-        cbLang.removeItemListener(this);
-    }
+  /**
+   * @see java.lang.Object#finalize()
+   */
+  protected void finalize() {
+    cbLang.removeItemListener(this);
+  }
 
-    ////////////////////////////////////////////////////////////////
-    // accessors
+  ////////////////////////////////////////////////////////////////
+  // accessors
 
-    /**
-     * Populate files[] and cbFiles, using the specified element.
-     */
-    private void generateSource(Object elem) {
-	LOG.debug("TabSrc.genText(): getting src for "
-		  + Model.getFacade().getName(elem));
-	Collection code =
-	    GeneratorHelper.generate(langName, elem, false);
-	cbFiles.removeAllItems();
-	if (!code.isEmpty()) {
-	    files = new SourceUnit[code.size()];
-	    files = (SourceUnit[]) code.toArray(files);
-	    for (int i = 0; i < files.length; i++) {
-		String title = files[i].getName();
-		if (files[i].getBasePath().length() > 0) {
-		    title += " ( " + files[i].getFullName() + ")";
-		}
-		cbFiles.addItem(title);
-	    }
-	}
-    }
-
-    /**
-     * @see org.argouml.ui.TabText#genText(java.lang.Object)
-     */
-    protected String genText(Object modelObject) {
-        if (files == null) {
-	    generateSource(modelObject);
+  /** Populate files[] and cbFiles, using the specified element. */
+  private void generateSource(Object elem) {
+    LOG.debug("TabSrc.genText(): getting src for " + Model.getFacade().getName(elem));
+    Collection code = GeneratorHelper.generate(langName, elem, false);
+    cbFiles.removeAllItems();
+    if (!code.isEmpty()) {
+      files = new SourceUnit[code.size()];
+      files = (SourceUnit[]) code.toArray(files);
+      for (int i = 0; i < files.length; i++) {
+        String title = files[i].getName();
+        if (files[i].getBasePath().length() > 0) {
+          title += " ( " + files[i].getFullName() + ")";
         }
-        if (files != null && files.length > cbFiles.getSelectedIndex())
-            return files[cbFiles.getSelectedIndex()].getContent();
-        return null;
+        cbFiles.addItem(title);
+      }
+    }
+  }
+
+  /**
+   * @see org.argouml.ui.TabText#genText(java.lang.Object)
+   */
+  protected String genText(Object modelObject) {
+    if (files == null) {
+      generateSource(modelObject);
+    }
+    if (files != null && files.length > cbFiles.getSelectedIndex())
+      return files[cbFiles.getSelectedIndex()].getContent();
+    return null;
+  }
+
+  /**
+   * @see org.argouml.ui.TabText#parseText(java.lang.String)
+   */
+  protected void parseText(String s) {
+    LOG.debug("TabSrc   setting src for " + Model.getFacade().getName(getTarget()));
+    Object modelObject = getTarget();
+    if (getTarget() instanceof FigNode) modelObject = ((FigNode) getTarget()).getOwner();
+    if (getTarget() instanceof FigEdge) modelObject = ((FigEdge) getTarget()).getOwner();
+    if (modelObject == null) return;
+    /* TODO: Implement this! */
+    // Parser.ParseAndUpdate(modelObject, s);
+  }
+
+  /**
+   * Sets the target of this tab.
+   *
+   * @see org.argouml.ui.TabTarget#setTarget(java.lang.Object)
+   */
+  public void setTarget(Object t) {
+    Object modelTarget = (t instanceof Fig) ? ((Fig) t).getOwner() : t;
+    setShouldBeEnabled(Model.getFacade().isAClassifier(modelTarget));
+    cbFiles.removeAllItems();
+    files = null;
+    super.setTarget(t);
+  }
+
+  /**
+   * Determines if the current tab should be enabled with the given target. Returns true if the
+   * given target is either a modelelement or is a fig with as owner a modelelement.
+   *
+   * @see org.argouml.ui.TabTarget#shouldBeEnabled(java.lang.Object)
+   */
+  public boolean shouldBeEnabled(Object target) {
+    target = (target instanceof Fig) ? ((Fig) target).getOwner() : target;
+
+    setShouldBeEnabled(false);
+    if (Model.getFacade().isAClassifier(target)) {
+      setShouldBeEnabled(true);
     }
 
-    /**
-     * @see org.argouml.ui.TabText#parseText(java.lang.String)
-     */
-    protected void parseText(String s) {
-        LOG.debug("TabSrc   setting src for " 
-                + Model.getFacade().getName(getTarget()));
-        Object modelObject = getTarget();
-        if (getTarget() instanceof FigNode)
-            modelObject = ((FigNode) getTarget()).getOwner();
-        if (getTarget() instanceof FigEdge)
-            modelObject = ((FigEdge) getTarget()).getOwner();
-        if (modelObject == null)
-            return;
-        /* TODO: Implement this! */
-        //Parser.ParseAndUpdate(modelObject, s);
-    }
+    return shouldBeEnabled();
+  }
 
-    /**
-     * Sets the target of this tab.
-     *
-     * @see org.argouml.ui.TabTarget#setTarget(java.lang.Object)
-     */
-    public void setTarget(Object t) {
-        Object modelTarget = (t instanceof Fig) ? ((Fig) t).getOwner() : t;
-        setShouldBeEnabled(Model.getFacade().isAClassifier(modelTarget));
-	cbFiles.removeAllItems();
-	files = null;
-        super.setTarget(t);
-    }
-
-    /**
-     * Determines if the current tab should be enabled with the given target.
-     * Returns true if the given target is either
-     * a modelelement or is a fig with as owner a modelelement.
-     *
-     * @see org.argouml.ui.TabTarget#shouldBeEnabled(java.lang.Object)
-     */
-    public boolean shouldBeEnabled(Object target) {
-        target = (target instanceof Fig) ? ((Fig) target).getOwner() : target;
-
-        setShouldBeEnabled(false);
-        if (Model.getFacade().isAClassifier(target)) {
-            setShouldBeEnabled(true);
+  /**
+   * @see java.awt.event.ItemListener#itemStateChanged(java.awt.event.ItemEvent)
+   */
+  public void itemStateChanged(ItemEvent event) {
+    if (event.getSource() == cbLang) {
+      if (event.getStateChange() == ItemEvent.SELECTED) {
+        Language newLang = (Language) cbLang.getSelectedItem();
+        if (!newLang.equals(langName)) {
+          langName = newLang;
+          refresh();
         }
-
-        return shouldBeEnabled();
-    }
-
-    /**
-     * @see java.awt.event.ItemListener#itemStateChanged(java.awt.event.ItemEvent)
-     */
-    public void itemStateChanged(ItemEvent event) {
-        if (event.getSource() == cbLang) {
-            if (event.getStateChange() == ItemEvent.SELECTED) {
-		Language newLang = (Language) cbLang.getSelectedItem();
-		if (!newLang.equals(langName)) {
-		    langName = newLang;
-		    refresh();
-		}
-            }
-        } else if (event.getSource() == cbFiles) {
-            if (event.getStateChange() == ItemEvent.SELECTED) {
-		String newFile = (String) cbFiles.getSelectedItem();
-		if (!newFile.equals(fileName)) {
-		    fileName = newFile;
-		    super.setTarget(getTarget());
-		}
-            }
+      }
+    } else if (event.getSource() == cbFiles) {
+      if (event.getStateChange() == ItemEvent.SELECTED) {
+        String newFile = (String) cbFiles.getSelectedItem();
+        if (!newFile.equals(fileName)) {
+          fileName = newFile;
+          super.setTarget(getTarget());
         }
+      }
     }
+  }
 
-    /**
-     * @see org.argouml.ui.TabTarget#refresh()
-     */
-    public void refresh() {
-        setTarget(getTarget());
-    }
-
-
+  /**
+   * @see org.argouml.ui.TabTarget#refresh()
+   */
+  public void refresh() {
+    setTarget(getTarget());
+  }
 } /* end class TabSrc */

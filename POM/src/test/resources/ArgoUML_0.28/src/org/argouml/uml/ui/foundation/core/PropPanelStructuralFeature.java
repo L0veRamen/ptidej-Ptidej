@@ -26,7 +26,6 @@ package org.argouml.uml.ui.foundation.core;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
-
 import org.argouml.i18n.Translator;
 import org.argouml.uml.ui.UMLCheckBox2;
 import org.argouml.uml.ui.UMLComboBox2;
@@ -39,80 +38,77 @@ import org.argouml.uml.ui.UMLRadioButtonPanel;
  */
 public class PropPanelStructuralFeature extends PropPanelFeature {
 
-    private JPanel multiplicityComboBox;
-    private UMLComboBox2 typeComboBox;
-    private UMLRadioButtonPanel changeabilityRadioButtonPanel;
-    private UMLCheckBox2 targetScopeCheckBox;
+  private JPanel multiplicityComboBox;
+  private UMLComboBox2 typeComboBox;
+  private UMLRadioButtonPanel changeabilityRadioButtonPanel;
+  private UMLCheckBox2 targetScopeCheckBox;
 
-    private static UMLStructuralFeatureTypeComboBoxModel typeComboBoxModel;
+  private static UMLStructuralFeatureTypeComboBoxModel typeComboBoxModel;
 
-    /**
-     * Constructor for PropPanelStructuralFeature.
-     * @param name the name of the panel, to be shown at the top
-     * @param icon the icon for the property panel
-     */
-    protected PropPanelStructuralFeature(String name, ImageIcon icon) {
-        super(name, icon);
+  /**
+   * Constructor for PropPanelStructuralFeature.
+   *
+   * @param name the name of the panel, to be shown at the top
+   * @param icon the icon for the property panel
+   */
+  protected PropPanelStructuralFeature(String name, ImageIcon icon) {
+    super(name, icon);
+  }
+
+  /**
+   * Returns the multiplicityComboBox.
+   *
+   * @return UMLMultiplicityComboBox2
+   */
+  public JPanel getMultiplicityComboBox() {
+    if (multiplicityComboBox == null) {
+      multiplicityComboBox = new UMLMultiplicityPanel();
     }
+    return multiplicityComboBox;
+  }
 
-    /**
-     * Returns the multiplicityComboBox.
-     * @return UMLMultiplicityComboBox2
-     */
-    public JPanel getMultiplicityComboBox() {
-	if (multiplicityComboBox == null) {
-	    multiplicityComboBox =
-		new UMLMultiplicityPanel();
-	}
-	return multiplicityComboBox;
+  /**
+   * Returns the typeComboBox.
+   *
+   * @return UMLComboBox2
+   */
+  public UMLComboBox2 getTypeComboBox() {
+    if (typeComboBox == null) {
+      if (typeComboBoxModel == null) {
+        typeComboBoxModel = new UMLStructuralFeatureTypeComboBoxModel();
+      }
+      typeComboBox =
+          new UMLComboBox2(typeComboBoxModel, ActionSetStructuralFeatureType.getInstance());
     }
+    return typeComboBox;
+  }
 
-    /**
-     * Returns the typeComboBox.
-     * @return UMLComboBox2
-     */
-    public UMLComboBox2 getTypeComboBox() {
-        if (typeComboBox == null) {
-	    if (typeComboBoxModel == null) {
-		typeComboBoxModel =
-		    new UMLStructuralFeatureTypeComboBoxModel();
-	    }
-            typeComboBox =
-		new UMLComboBox2(
-				 typeComboBoxModel,
-				 ActionSetStructuralFeatureType.getInstance());
-	}
-	return typeComboBox;
+  /**
+   * Returns the changeabilityRadioButtonPanel.
+   *
+   * @return UMLRadioButtonPanel
+   */
+  public UMLRadioButtonPanel getChangeabilityRadioButtonPanel() {
+    if (changeabilityRadioButtonPanel == null) {
+      changeabilityRadioButtonPanel =
+          new UMLStructuralFeatureChangeabilityRadioButtonPanel(
+              Translator.localize("label.changeability"), true);
     }
+    return changeabilityRadioButtonPanel;
+  }
 
-    /**
-     * Returns the changeabilityRadioButtonPanel.
-     * @return UMLRadioButtonPanel
-     */
-    public UMLRadioButtonPanel getChangeabilityRadioButtonPanel() {
-        if (changeabilityRadioButtonPanel == null) {
-            changeabilityRadioButtonPanel =
-                new UMLStructuralFeatureChangeabilityRadioButtonPanel(
-                        Translator.localize("label.changeability"),
-                        true);
-        }
-	return changeabilityRadioButtonPanel;
+  /**
+   * Returns the targetScopeCheckBox.
+   *
+   * @return UMLCheckBox2
+   * @deprecated for 0.27.2 by tfmorris. StructuralFeatures no longer have a targetScope in UML 2.x.
+   *     No replacement. This appears unused, so it can be scheduled for a speedy removal.
+   */
+  @Deprecated
+  public UMLCheckBox2 getTargetScopeCheckBox() {
+    if (targetScopeCheckBox == null) {
+      targetScopeCheckBox = new UMLStructuralFeatureTargetScopeCheckBox();
     }
-
-    /**
-     * Returns the targetScopeCheckBox.
-     * 
-     * @return UMLCheckBox2
-     * @deprecated for 0.27.2 by tfmorris. StructuralFeatures no longer have a
-     *             targetScope in UML 2.x. No replacement. This appears unused,
-     *             so it can be scheduled for a speedy removal.
-     */
-    @Deprecated
-    public UMLCheckBox2 getTargetScopeCheckBox() {
-        if (targetScopeCheckBox == null) {
-	    targetScopeCheckBox = new UMLStructuralFeatureTargetScopeCheckBox();
-        }
-        return targetScopeCheckBox;
-    }
-
+    return targetScopeCheckBox;
+  }
 }

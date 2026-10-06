@@ -25,78 +25,64 @@
 package org.argouml.persistence;
 
 import java.io.File;
-
 import junit.framework.TestCase;
-
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.Model;
 
 /**
- * Testclass for the XMIReader. Placeholder for all saving/loading tests
- * concerning XMIReader (like the dreaded ClassCastException issues).
+ * Testclass for the XMIReader. Placeholder for all saving/loading tests concerning XMIReader (like
+ * the dreaded ClassCastException issues).
  *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 17, 2003
  */
 public class TestXmiFilePersister extends TestCase {
 
-    /**
-     * Constructor for TestXMIReader.
-     * @param arg0 is the name of the test case.
-     */
-    public TestXmiFilePersister(String arg0) {
-        super(arg0);
+  /**
+   * Constructor for TestXMIReader.
+   *
+   * @param arg0 is the name of the test case.
+   */
+  public TestXmiFilePersister(String arg0) {
+    super(arg0);
+  }
+
+  /** This is a regression test for issue 1504. Test basic serialization to XMI file. */
+  public void testSave() {
+
+    try {
+      Project p = ProjectManager.getManager().makeEmptyProject();
+      Object clazz = Model.getCoreFactory().buildClass(p.getModel());
+      Object model = ProjectManager.getManager().getCurrentProject().getModel();
+      Object voidType = ProjectManager.getManager().getCurrentProject().findType("void");
+      Object oper = Model.getCoreFactory().buildOperation(clazz, model, voidType);
+      Model.getCoreHelper().setType(Model.getFacade().getParameter(oper, 0), p.findType("String"));
+      File file = new File("test.xmi");
+      XmiFilePersister persister = new XmiFilePersister();
+      p.preSave();
+      persister.save(p, file);
+      p.postSave();
+    } catch (Exception e) {
+      fail("Save resulted in an exception");
     }
+  }
 
-    /**
-     * This is a regression test for issue 1504.
-     * Test basic serialization to XMI file.
-     */
-    public void testSave() {
+  /** This is a regression test for issue 1504. Test loading from minimal XMI file. */
+  public void testLoadProject() {
 
-        try {
-            Project p = ProjectManager.getManager().makeEmptyProject();
-            Object clazz = Model.getCoreFactory().buildClass(p.getModel());
-            Object model =
-                ProjectManager.getManager()
-                	.getCurrentProject().getModel();
-            Object voidType =
-                ProjectManager.getManager()
-                	.getCurrentProject().findType("void");
-            Object oper =
-                Model.getCoreFactory().buildOperation(clazz, model, voidType);
-            Model.getCoreHelper().setType(
-                    Model.getFacade().getParameter(oper, 0),
-                    p.findType("String"));
-            File file = new File("test.xmi");
-            XmiFilePersister persister = new XmiFilePersister();
-            p.preSave();
-            persister.save(p, file);
-            p.postSave();
-        } catch (Exception e) {
-            fail("Save resulted in an exception");
-        }
+    try {
+      File file = new File("test.xmi");
+
+      XmiFilePersister persister = new XmiFilePersister();
+
+      ProjectManager.getManager().makeEmptyProject();
+
+      persister.doLoad(file);
+    } catch (OpenException e) {
+      fail("Load resulted in an exception");
+    } catch (InterruptedException e) {
+      fail("Load resulted in an exception");
     }
-
-    /**
-     * This is a regression test for issue 1504.
-     * Test loading from minimal XMI file.
-     */
-    public void testLoadProject() {
-
-        try {
-            File file = new File("test.xmi");
-
-            XmiFilePersister persister = new XmiFilePersister();
-
-            ProjectManager.getManager().makeEmptyProject();
-
-            persister.doLoad(file);
-        } catch (OpenException e) {
-            fail("Load resulted in an exception");
-        } catch (InterruptedException e) {
-            fail("Load resulted in an exception");
-        }
-    }
+  }
 }

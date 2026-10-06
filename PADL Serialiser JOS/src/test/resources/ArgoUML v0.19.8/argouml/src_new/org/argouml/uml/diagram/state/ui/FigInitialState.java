@@ -29,7 +29,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.Iterator;
-
 import org.argouml.model.Model;
 import org.argouml.uml.diagram.activity.ui.SelectionActionState;
 import org.tigris.gef.base.Selection;
@@ -43,175 +42,165 @@ import org.tigris.gef.presentation.FigCircle;
  */
 public class FigInitialState extends FigStateVertex {
 
-    ////////////////////////////////////////////////////////////////
-    // constants
+  ////////////////////////////////////////////////////////////////
+  // constants
 
-    private static final int X = 10;
-    private static final int Y = 10;
-    private static final int WIDTH = 16;
-    private static final int HEIGHT = 16;
+  private static final int X = 10;
 
-    ////////////////////////////////////////////////////////////////
-    // instance variables
+  private static final int Y = 10;
+  private static final int WIDTH = 16;
+  private static final int HEIGHT = 16;
 
-    private FigCircle head;
+  ////////////////////////////////////////////////////////////////
+  // instance variables
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  private FigCircle head;
 
-    /**
-     * Main constructor
-     */
-    public FigInitialState() {
-        FigCircle bigPort =
-            new FigCircle(X, Y, WIDTH, HEIGHT, Color.cyan, Color.cyan);
-        head = new FigCircle(X, Y, WIDTH, HEIGHT, Color.black, Color.black);
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-        // add Figs to the FigNode in back-to-front order
-        addFig(bigPort);
-        addFig(head);
+  /** Main constructor */
+  public FigInitialState() {
+    FigCircle bigPort = new FigCircle(X, Y, WIDTH, HEIGHT, Color.cyan, Color.cyan);
+    head = new FigCircle(X, Y, WIDTH, HEIGHT, Color.black, Color.black);
 
-        setBigPort(bigPort);
+    // add Figs to the FigNode in back-to-front order
+    addFig(bigPort);
+    addFig(head);
 
-        setBlinkPorts(false); //make port invisble unless mouse enters
+    setBigPort(bigPort);
+
+    setBlinkPorts(false); // make port invisble unless mouse enters
+  }
+
+  /**
+   * Constructor which hooks the Fig into an existing UML element
+   *
+   * @param gm ignored
+   * @param node the UML element
+   */
+  public FigInitialState(GraphModel gm, Object node) {
+    this();
+    setOwner(node);
+  }
+
+  /**
+   * @see java.lang.Object#clone()
+   */
+  public Object clone() {
+    FigInitialState figClone = (FigInitialState) super.clone();
+    Iterator it = figClone.getFigs().iterator();
+    setBigPort((FigCircle) it.next());
+    figClone.head = (FigCircle) it.next();
+    return figClone;
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // Fig accessors
+
+  /**
+   * @see org.tigris.gef.presentation.Fig#makeSelection()
+   */
+  public Selection makeSelection() {
+    Object pstate = null;
+    Selection sel = null;
+    if (getOwner() != null) {
+      pstate = getOwner();
+      if (pstate == null) return sel;
+      if (Model.getFacade()
+          .isAActivityGraph(
+              Model.getFacade().getStateMachine(Model.getFacade().getContainer(pstate)))) {
+        sel = new SelectionActionState(this);
+        ((SelectionActionState) sel).setIncomingButtonEnabled(false);
+        Collection outs = Model.getFacade().getOutgoings(getOwner());
+        ((SelectionActionState) sel).setOutgoingButtonEnabled(outs == null || outs.size() == 0);
+      } else {
+        sel = new SelectionState(this);
+        ((SelectionState) sel).setIncomingButtonEnabled(false);
+        Collection outs = Model.getFacade().getOutgoings(getOwner());
+        ((SelectionState) sel).setOutgoingButtonEnabled(outs == null || outs.size() == 0);
+      }
     }
+    return sel;
+  }
 
-    /**
-     * Constructor which hooks the Fig into an existing UML element
-     *
-     * @param gm ignored
-     * @param node the UML element
-     */
-    public FigInitialState(GraphModel gm, Object node) {
-        this();
-        setOwner(node);
-    }
+  /**
+   * Initial states are fixed size.
+   *
+   * @see org.tigris.gef.presentation.Fig#isResizable()
+   */
+  public boolean isResizable() {
+    return false;
+  }
 
-    /**
-     * @see java.lang.Object#clone()
-     */
-    public Object clone() {
-        FigInitialState figClone = (FigInitialState) super.clone();
-        Iterator it = figClone.getFigs().iterator();
-        setBigPort((FigCircle) it.next());
-        figClone.head = (FigCircle) it.next();
-        return figClone;
-    }
+  /**
+   * @see org.tigris.gef.presentation.Fig#setLineColor(java.awt.Color)
+   */
+  public void setLineColor(Color col) {
+    head.setLineColor(col);
+  }
 
-    ////////////////////////////////////////////////////////////////
-    // Fig accessors
+  /**
+   * @see org.tigris.gef.presentation.Fig#getLineColor()
+   */
+  public Color getLineColor() {
+    return head.getLineColor();
+  }
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#makeSelection()
-     */
-    public Selection makeSelection() {
-        Object pstate = null;
-        Selection sel = null;
-        if (getOwner() != null) {
-            pstate = getOwner();
-            if (pstate == null)
-                return sel;
-            if (Model.getFacade().isAActivityGraph(
-                    Model.getFacade().getStateMachine(
-                            Model.getFacade().getContainer(pstate)))) {
-                sel = new SelectionActionState(this);
-                ((SelectionActionState) sel).setIncomingButtonEnabled(false);
-                Collection outs = Model.getFacade().getOutgoings(getOwner());
-                ((SelectionActionState) sel)
-                        .setOutgoingButtonEnabled(outs == null
-                                || outs.size() == 0);
-            } else {
-                sel = new SelectionState(this);
-                ((SelectionState) sel).setIncomingButtonEnabled(false);
-                Collection outs = Model.getFacade().getOutgoings(getOwner());
-                ((SelectionState) sel).setOutgoingButtonEnabled(outs == null
-                        || outs.size() == 0);
-            }
-        }
-        return sel;
-    }
+  /**
+   * @see org.tigris.gef.presentation.Fig#setFillColor(java.awt.Color)
+   */
+  public void setFillColor(Color col) {
+    head.setFillColor(col);
+  }
 
-    /**
-     * Initial states are fixed size.
-     *
-     * @see org.tigris.gef.presentation.Fig#isResizable()
-     */
-    public boolean isResizable() {
-        return false;
-    }
+  /**
+   * @see org.tigris.gef.presentation.Fig#getFillColor()
+   */
+  public Color getFillColor() {
+    return head.getFillColor();
+  }
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#setLineColor(java.awt.Color)
-     */
-    public void setLineColor(Color col) {
-        head.setLineColor(col);
-    }
+  /**
+   * @see org.tigris.gef.presentation.Fig#setFilled(boolean)
+   */
+  public void setFilled(boolean f) {}
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#getLineColor()
-     */
-    public Color getLineColor() {
-        return head.getLineColor();
-    }
+  /**
+   * @see org.tigris.gef.presentation.Fig#getFilled()
+   */
+  public boolean getFilled() {
+    return true;
+  }
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#setFillColor(java.awt.Color)
-     */
-    public void setFillColor(Color col) {
-        head.setFillColor(col);
-    }
+  /**
+   * @see org.tigris.gef.presentation.Fig#setLineWidth(int)
+   */
+  public void setLineWidth(int w) {
+    head.setLineWidth(w);
+  }
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#getFillColor()
-     */
-    public Color getFillColor() {
-        return head.getFillColor();
-    }
+  /**
+   * @see org.tigris.gef.presentation.Fig#getLineWidth()
+   */
+  public int getLineWidth() {
+    return head.getLineWidth();
+  }
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#setFilled(boolean)
-     */
-    public void setFilled(boolean f) {
-    }
+  ////////////////////////////////////////////////////////////////
+  // Event handlers
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#getFilled()
-     */
-    public boolean getFilled() {
-        return true;
-    }
+  /**
+   * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
+   */
+  public void mouseClicked(MouseEvent me) {}
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#setLineWidth(int)
-     */
-    public void setLineWidth(int w) {
-        head.setLineWidth(w);
-    }
+  /**
+   * Block keypresses. There is nothing to enter on the diagram.
+   *
+   * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
+   */
+  public void keyPressed(KeyEvent ke) {}
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#getLineWidth()
-     */
-    public int getLineWidth() {
-        return head.getLineWidth();
-    }
-
-    ////////////////////////////////////////////////////////////////
-    // Event handlers
-
-    /**
-     * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
-     */
-    public void mouseClicked(MouseEvent me) {
-    }
-
-    /**
-     * Block keypresses. There is nothing to enter on the diagram.
-     *
-     * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
-     */
-    public void keyPressed(KeyEvent ke) {
-    }
-
-    static final long serialVersionUID = 6572261327347541373L;
-
+  static final long serialVersionUID = 6572261327347541373L;
 } /* end class FigInitialState */

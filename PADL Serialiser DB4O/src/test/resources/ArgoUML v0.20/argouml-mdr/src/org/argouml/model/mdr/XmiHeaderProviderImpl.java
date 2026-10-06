@@ -25,50 +25,47 @@ package org.argouml.model.mdr;
 
 import java.io.IOException;
 import java.io.Writer;
-
 import org.apache.log4j.Logger;
 import org.netbeans.lib.jmi.xmi.WriterBase;
 import org.netbeans.lib.jmi.xmi.XMIHeaderProvider;
 
-/**
- * Write a header for the XMI file which contains information about
- * version, etc.
- */
+/** Write a header for the XMI file which contains information about version, etc. */
 public class XmiHeaderProviderImpl implements XMIHeaderProvider {
 
-    // TODO: we need a version string which is accessible from here
-    //private static final String ARGO_VERSION = ArgoVersion.getVersion();
-    private static final String ARGO_VERSION = "0.20.x";
-        
-    
-    private static final String UML_VERSION = "1.4";
-    private static final Logger LOG = Logger
-            .getLogger(XmiHeaderProviderImpl.class);
+  // TODO: we need a version string which is accessible from here
+  // private static final String ARGO_VERSION = ArgoVersion.getVersion();
+  private static final String ARGO_VERSION = "0.20.x";
 
-    public XmiHeaderProviderImpl() {
-        super();
+  private static final String UML_VERSION = "1.4";
+  private static final Logger LOG = Logger.getLogger(XmiHeaderProviderImpl.class);
+
+  public XmiHeaderProviderImpl() {
+    super();
+  }
+
+  public void writeHeader(Writer ps) {
+    String header =
+        "  <XMI.header>\n"
+            + "    <XMI.documentation>\n"
+            + "      <XMI.exporter>ArgoUML"
+            + " (using "
+            + WriterBase.EXPORTER_NAME
+            + " version "
+            + WriterBase.EXPORTER_VERSION
+            + ")</XMI.exporter>\n"
+            + "      <XMI.exporterVersion>"
+            + ARGO_VERSION
+            + "</XMI.exporterVersion>\n"
+            + "    </XMI.documentation>\n"
+            + "    <XMI.metamodel xmi.name=\"UML\" xmi.version=\""
+            + UML_VERSION
+            + "\"/>"
+            + "  </XMI.header>\n";
+
+    try {
+      ps.write(header);
+    } catch (IOException e) {
+      LOG.error("Exception while writing XMI header + ", e);
     }
-
-    public void writeHeader (Writer ps) {
-        String header =
-          "  <XMI.header>\n"
-        + "    <XMI.documentation>\n"
-        + "      <XMI.exporter>ArgoUML"
-                + " (using "  + WriterBase.EXPORTER_NAME 
-                + " version " + WriterBase.EXPORTER_VERSION 
-                + ")</XMI.exporter>\n"
-        + "      <XMI.exporterVersion>" + ARGO_VERSION
-                + "</XMI.exporterVersion>\n"
-        + "    </XMI.documentation>\n"
-        + "    <XMI.metamodel xmi.name=\"UML\" xmi.version=\""
-                + UML_VERSION + "\"/>"
-        + "  </XMI.header>\n";
-        
-        try {
-            ps.write(header);
-        } catch (IOException e) {
-            LOG.error("Exception while writing XMI header + ", e);
-        }
-    }
-
+  }
 }

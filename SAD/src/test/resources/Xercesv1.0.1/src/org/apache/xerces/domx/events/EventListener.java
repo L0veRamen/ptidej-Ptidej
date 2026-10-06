@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xerces" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -56,24 +56,25 @@
  */
 
 /**
- * The <code>EventListener</code> interface is the primary method for handling 
- * events.  Users implement the <code>EventListener</code> interface and 
- * register their listener  on an <code>EventTarget</code> using the 
- * <code>AddEventListener</code> method.  The  users should also remove their 
- * <code>EventListener</code> from its  <code>EventTarget</code> after they 
- * have completed using the listener. 
+ * The <code>EventListener</code> interface is the primary method for handling events. Users
+ * implement the <code>EventListener</code> interface and register their listener on an <code>
+ * EventTarget</code> using the <code>AddEventListener</code> method. The users should also remove
+ * their <code>EventListener</code> from its <code>EventTarget</code> after they have completed
+ * using the listener.
+ *
  * @since DOM Level 2
  */
 package org.apache.xerces.domx.events;
 
 public interface EventListener {
   /**
-   * This method is called whenever an event occurs of the type for which the 
-   * <code> EventListener</code> interface was registered. 
-   * @param evt The <code>Event</code> contains contextual information about 
-   *   the event.  It also contains the <code>preventDefault</code>, 
-   *   <code>preventBubble</code>, and <code> preventCapture</code> methods 
-   *   which are used in determining the event's flow and  default action.
+   * This method is called whenever an event occurs of the type for which the <code> EventListener
+   * </code> interface was registered.
+   *
+   * @param evt The <code>Event</code> contains contextual information about the event. It also
+   *     contains the <code>preventDefault</code>, <code>preventBubble</code>, and <code>
+   *      preventCapture</code> methods which are used in determining the event's flow and default
+   *     action.
    */
-  public void               handleEvent(Event evt);  
+  public void handleEvent(Event evt);
 }

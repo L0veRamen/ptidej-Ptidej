@@ -28,33 +28,28 @@ import org.argouml.cognitive.Designer;
 import org.argouml.uml.cognitive.UMLDecision;
 
 /**
- * A critic to suggest using the facade stereotype. <p>
+ * A critic to suggest using the facade stereotype.
  *
- * TODO: at the moment only a dummy implementation
-*/
+ * <p>TODO: at the moment only a dummy implementation
+ */
 public class CrConsiderFacade extends CrUML {
 
-    /**
-     * The constructor.
-     */
-    public CrConsiderFacade() {
-        setupHeadAndDesc();
-	addSupportedDecision(UMLDecision.MODULARITY);
-	addTrigger("ownedElement");
-    }
+  /** The constructor. */
+  public CrConsiderFacade() {
+    setupHeadAndDesc();
+    addSupportedDecision(UMLDecision.MODULARITY);
+    addTrigger("ownedElement");
+  }
 
-    /**
-     * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
-     * java.lang.Object, org.argouml.cognitive.Designer)
-     */
-    public boolean predicate2(Object dm, Designer dsgr) {
-	/* TODO: Add implementation. */
-	return NO_PROBLEM;
-    }
+  /**
+   * @see org.argouml.uml.cognitive.critics.CrUML#predicate2( java.lang.Object,
+   *     org.argouml.cognitive.Designer)
+   */
+  public boolean predicate2(Object dm, Designer dsgr) {
+    /* TODO: Add implementation. */
+    return NO_PROBLEM;
+  }
 
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -5513915374319458662L;
+  /** The UID. */
+  private static final long serialVersionUID = -5513915374319458662L;
 } /* end class CrEmptyPackage */
-

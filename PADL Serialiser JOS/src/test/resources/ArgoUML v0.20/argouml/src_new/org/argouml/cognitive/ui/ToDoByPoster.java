@@ -27,144 +27,132 @@ package org.argouml.cognitive.ui;
 import java.util.Enumeration;
 import java.util.Vector;
 import org.apache.log4j.Logger;
-
-
 import org.argouml.cognitive.Designer;
+import org.argouml.cognitive.ListSet;
 import org.argouml.cognitive.Poster;
 import org.argouml.cognitive.ToDoItem;
 import org.argouml.cognitive.ToDoList;
 import org.argouml.cognitive.ToDoListEvent;
 import org.argouml.cognitive.ToDoListListener;
-import org.argouml.cognitive.ListSet;
 
-/**
- * Represents a perspective for ToDo items: grouping by poster type.
- *
- */
-public class ToDoByPoster extends ToDoPerspective
-    implements ToDoListListener {
-    private static final Logger LOG =
-        Logger.getLogger(ToDoByPoster.class);
+/** Represents a perspective for ToDo items: grouping by poster type. */
+public class ToDoByPoster extends ToDoPerspective implements ToDoListListener {
+  private static final Logger LOG = Logger.getLogger(ToDoByPoster.class);
 
-    /**
-     * The constructor.
-     *
-     */
-    public ToDoByPoster() {
-	super("combobox.todo-perspective-poster");
-	addSubTreeModel(new GoListToPosterToItem());
+  /** The constructor. */
+  public ToDoByPoster() {
+    super("combobox.todo-perspective-poster");
+    addSubTreeModel(new GoListToPosterToItem());
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // ToDoListListener implementation
+
+  /**
+   * @see
+   *     org.argouml.cognitive.ToDoListListener#toDoItemsChanged(org.argouml.cognitive.ToDoListEvent)
+   */
+  public void toDoItemsChanged(ToDoListEvent tde) {
+    LOG.debug("toDoItemsChanged");
+    Vector items = tde.getToDoItems();
+    int nItems = items.size();
+    Object[] path = new Object[2];
+    path[0] = Designer.theDesigner().getToDoList();
+
+    ListSet posters = Designer.theDesigner().getToDoList().getPosters();
+    Enumeration elems = posters.elements();
+    while (elems.hasMoreElements()) {
+      Poster p = (Poster) elems.nextElement();
+      path[1] = p;
+      int nMatchingItems = 0;
+      for (int i = 0; i < nItems; i++) {
+        ToDoItem item = (ToDoItem) items.elementAt(i);
+        Poster post = item.getPoster();
+        if (post != p) continue;
+        nMatchingItems++;
+      }
+      if (nMatchingItems == 0) continue;
+      int[] childIndices = new int[nMatchingItems];
+      Object[] children = new Object[nMatchingItems];
+      nMatchingItems = 0;
+      for (int i = 0; i < nItems; i++) {
+        ToDoItem item = (ToDoItem) items.elementAt(i);
+        Poster post = item.getPoster();
+        if (post != p) continue;
+        childIndices[nMatchingItems] = getIndexOfChild(p, item);
+        children[nMatchingItems] = item;
+        nMatchingItems++;
+      }
+      fireTreeNodesChanged(this, path, childIndices, children);
     }
+  }
 
-    ////////////////////////////////////////////////////////////////
-    // ToDoListListener implementation
+  /**
+   * @see org.argouml.cognitive.ToDoListListener#toDoItemsAdded(org.argouml.cognitive.ToDoListEvent)
+   */
+  public void toDoItemsAdded(ToDoListEvent tde) {
+    LOG.debug("toDoItemAdded");
+    Vector items = tde.getToDoItems();
+    int nItems = items.size();
+    Object[] path = new Object[2];
+    path[0] = Designer.theDesigner().getToDoList();
 
-    /**
-     * @see org.argouml.cognitive.ToDoListListener#toDoItemsChanged(org.argouml.cognitive.ToDoListEvent)
-     */
-    public void toDoItemsChanged(ToDoListEvent tde) {
-	LOG.debug("toDoItemsChanged");
-	Vector items = tde.getToDoItems();
-	int nItems = items.size();
-	Object[] path = new Object[2];
-	path[0] = Designer.theDesigner().getToDoList();
-
-	ListSet posters = Designer.theDesigner().getToDoList().getPosters();
-	Enumeration elems = posters.elements();
-	while (elems.hasMoreElements()) {
-	    Poster p = (Poster) elems.nextElement();
-	    path[1] = p;
-	    int nMatchingItems = 0;
-	    for (int i = 0; i < nItems; i++) {
-		ToDoItem item = (ToDoItem) items.elementAt(i);
-		Poster post = item.getPoster();
-		if (post != p) continue;
-		nMatchingItems++;
-	    }
-	    if (nMatchingItems == 0) continue;
-	    int[] childIndices = new int[nMatchingItems];
-	    Object[] children = new Object[nMatchingItems];
-	    nMatchingItems = 0;
-	    for (int i = 0; i < nItems; i++) {
-		ToDoItem item = (ToDoItem) items.elementAt(i);
-		Poster post = item.getPoster();
-		if (post != p) continue;
-		childIndices[nMatchingItems] = getIndexOfChild(p, item);
-		children[nMatchingItems] = item;
-		nMatchingItems++;
-	    }
-	    fireTreeNodesChanged(this, path, childIndices, children);
-	}
+    ListSet posters = Designer.theDesigner().getToDoList().getPosters();
+    Enumeration elems = posters.elements();
+    while (elems.hasMoreElements()) {
+      Poster p = (Poster) elems.nextElement();
+      path[1] = p;
+      int nMatchingItems = 0;
+      for (int i = 0; i < nItems; i++) {
+        ToDoItem item = (ToDoItem) items.elementAt(i);
+        Poster post = item.getPoster();
+        if (post != p) continue;
+        nMatchingItems++;
+      }
+      if (nMatchingItems == 0) continue;
+      int[] childIndices = new int[nMatchingItems];
+      Object[] children = new Object[nMatchingItems];
+      nMatchingItems = 0;
+      for (int i = 0; i < nItems; i++) {
+        ToDoItem item = (ToDoItem) items.elementAt(i);
+        Poster post = item.getPoster();
+        if (post != p) continue;
+        childIndices[nMatchingItems] = getIndexOfChild(p, item);
+        children[nMatchingItems] = item;
+        nMatchingItems++;
+      }
+      fireTreeNodesInserted(this, path, childIndices, children);
     }
+  }
 
-    /**
-     * @see org.argouml.cognitive.ToDoListListener#toDoItemsAdded(org.argouml.cognitive.ToDoListEvent)
-     */
-    public void toDoItemsAdded(ToDoListEvent tde) {
-	LOG.debug("toDoItemAdded");
-	Vector items = tde.getToDoItems();
-	int nItems = items.size();
-	Object[] path = new Object[2];
-	path[0] = Designer.theDesigner().getToDoList();
+  /**
+   * @see
+   *     org.argouml.cognitive.ToDoListListener#toDoItemsRemoved(org.argouml.cognitive.ToDoListEvent)
+   */
+  public void toDoItemsRemoved(ToDoListEvent tde) {
+    LOG.debug("toDoItemRemoved");
+    ToDoList list = Designer.theDesigner().getToDoList(); // source?
+    Object[] path = new Object[2];
+    path[0] = Designer.theDesigner().getToDoList();
 
-	ListSet posters = Designer.theDesigner().getToDoList().getPosters();
-	Enumeration elems = posters.elements();
-	while (elems.hasMoreElements()) {
-	    Poster p = (Poster) elems.nextElement();
-	    path[1] = p;
-	    int nMatchingItems = 0;
-	    for (int i = 0; i < nItems; i++) {
-		ToDoItem item = (ToDoItem) items.elementAt(i);
-		Poster post = item.getPoster();
-		if (post != p) continue;
-		nMatchingItems++;
-	    }
-	    if (nMatchingItems == 0) continue;
-	    int[] childIndices = new int[nMatchingItems];
-	    Object[] children = new Object[nMatchingItems];
-	    nMatchingItems = 0;
-	    for (int i = 0; i < nItems; i++) {
-		ToDoItem item = (ToDoItem) items.elementAt(i);
-		Poster post = item.getPoster();
-		if (post != p) continue;
-		childIndices[nMatchingItems] = getIndexOfChild(p, item);
-		children[nMatchingItems] = item;
-		nMatchingItems++;
-	    }
-	    fireTreeNodesInserted(this, path, childIndices, children);
-	}
+    Enumeration elems = list.getPosters().elements();
+    while (elems.hasMoreElements()) {
+      Poster p = (Poster) elems.nextElement();
+      //       boolean anyInPoster = false;
+      //       for (int i = 0; i < nItems; i++) {
+      // 	ToDoItem item = (ToDoItem) items.elementAt(i);
+      // 	Poster post = item.getPoster();
+      // 	if (post == p) anyInPoster = true;
+      //       }
+      //       if (!anyInPoster) continue;
+      path[1] = p;
+      fireTreeStructureChanged(path);
     }
+  }
 
-    /**
-     * @see org.argouml.cognitive.ToDoListListener#toDoItemsRemoved(org.argouml.cognitive.ToDoListEvent)
-     */
-    public void toDoItemsRemoved(ToDoListEvent tde) {
-	LOG.debug("toDoItemRemoved");
-	ToDoList list = Designer.theDesigner().getToDoList(); //source?
-	Object[] path = new Object[2];
-	path[0] = Designer.theDesigner().getToDoList();
-
-
-	Enumeration elems = list.getPosters().elements();
-	while (elems.hasMoreElements()) {
-	    Poster p = (Poster) elems.nextElement();
-	    //       boolean anyInPoster = false;
-	    //       for (int i = 0; i < nItems; i++) {
-	    // 	ToDoItem item = (ToDoItem) items.elementAt(i);
-	    // 	Poster post = item.getPoster();
-	    // 	if (post == p) anyInPoster = true;
-	    //       }
-	    //       if (!anyInPoster) continue;
-	    path[1] = p;
-	    fireTreeStructureChanged(path);
-	}
-    }
-
-    /**
-     * @see org.argouml.cognitive.ToDoListListener#toDoListChanged(org.argouml.cognitive.ToDoListEvent)
-     */
-    public void toDoListChanged(ToDoListEvent tde) { }
-
-
+  /**
+   * @see
+   *     org.argouml.cognitive.ToDoListListener#toDoListChanged(org.argouml.cognitive.ToDoListEvent)
+   */
+  public void toDoListChanged(ToDoListEvent tde) {}
 } /* end class ToDoByPoster */
-
-

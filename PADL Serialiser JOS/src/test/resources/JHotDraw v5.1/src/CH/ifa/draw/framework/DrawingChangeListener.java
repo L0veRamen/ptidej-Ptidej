@@ -7,18 +7,12 @@ package CH.ifa.draw.framework;
 
 import java.util.EventListener;
 
-/**
- * Listener interested in Drawing changes.
- */
+/** Listener interested in Drawing changes. */
 public interface DrawingChangeListener extends EventListener {
 
-	/**
-	 *  Sent when an area is invalid
-	 */
-	public void drawingInvalidated(DrawingChangeEvent e);
+  /** Sent when an area is invalid */
+  public void drawingInvalidated(DrawingChangeEvent e);
 
-	/**
-	 *  Sent when the drawing wants to be refreshed
-	 */
-	public void drawingRequestUpdate(DrawingChangeEvent e);
+  /** Sent when the drawing wants to be refreshed */
+  public void drawingRequestUpdate(DrawingChangeEvent e);
 }

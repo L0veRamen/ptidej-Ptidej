@@ -34,26 +34,20 @@ import org.argouml.i18n.Translator;
  */
 public class PropPanelFlow extends PropPanelRelationship {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = 2967789232647658450L;
+  /** The serial version. */
+  private static final long serialVersionUID = 2967789232647658450L;
 
-    /**
-     * Construct a property panel for Flow elements.
-     */
-    public PropPanelFlow() {
-        super("label.flow", lookupIcon("Flow"));
-        initialize();
-    }
+  /** Construct a property panel for Flow elements. */
+  public PropPanelFlow() {
+    super("label.flow", lookupIcon("Flow"));
+    initialize();
+  }
 
-    private void initialize() {
-        addField(Translator.localize("label.name"), getNameTextField());
-        addField(Translator.localize("label.namespace"),
-                getNamespaceSelector());
-        addField(Translator.localize("label.constraints"),
-                getConstraintScroll());
+  private void initialize() {
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.namespace"), getNamespaceSelector());
+    addField(Translator.localize("label.constraints"), getConstraintScroll());
 
-        addSeparator();
-    }
+    addSeparator();
+  }
 }

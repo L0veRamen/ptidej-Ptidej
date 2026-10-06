@@ -36,10 +36,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
-
 import org.argouml.application.api.Configuration;
 import org.argouml.application.api.ConfigurationKey;
 import org.argouml.util.FileFilters;
@@ -53,285 +51,261 @@ import org.tigris.gef.base.CmdSaveSVG;
 import org.tigris.gef.base.Editor;
 import org.tigris.gef.persistence.PostscriptWriter;
 
-
 /**
- * This class has some similar functions like PersistenceManager. <p>
- * 
- * It centralizes all knowledge about the different graphical formats. 
- * This class is the only one that is supposed to know 
- * the complete list of supported graphics formats.
- * 
+ * This class has some similar functions like PersistenceManager.
+ *
+ * <p>It centralizes all knowledge about the different graphical formats. This class is the only one
+ * that is supposed to know the complete list of supported graphics formats.
+ *
  * @author mvw@tigris.org
  */
 public class SaveGraphicsManager {
-    
-    /**
-     * The configuration key for the preferred graphics format.
-     */
-    public static final ConfigurationKey KEY_DEFAULT_GRAPHICS_FILTER =
-        Configuration.makeKey("graphics", "default", "filter");
 
-    /**
-     * The configuration key for the "save graphics" file location.
-     */
-    public static final ConfigurationKey KEY_SAVE_GRAPHICS_PATH =
-        Configuration.makeKey("graphics", "save", "path");
+  /** The configuration key for the preferred graphics format. */
+  public static final ConfigurationKey KEY_DEFAULT_GRAPHICS_FILTER =
+      Configuration.makeKey("graphics", "default", "filter");
 
-    /**
-     * The configuration key for the "save all graphics" file location.
-     */
-    public static final ConfigurationKey KEY_SAVEALL_GRAPHICS_PATH =
-        Configuration.makeKey("graphics", "save-all", "path");
-    
-    /**
-     * The configuration key for the export graphics resolution.
-     */
-    public static final ConfigurationKey KEY_GRAPHICS_RESOLUTION =
-        Configuration.makeKey("graphics", "export", "resolution");
-    
-    /**
-     * the default file format
-     */
-    private SuffixFilter defaultFilter;
-    
-    /**
-     * the list of other file formats 
-     */
-    private List otherFilters = new ArrayList();
-    
-    /**
-     * The singleton instance.
-     */
-    private static SaveGraphicsManager INSTANCE;
-    
-    /**
-     * The constructor.
-     */
-    private SaveGraphicsManager() {
-        defaultFilter = FileFilters.PNG_FILTER;
-        otherFilters.add(FileFilters.GIF_FILTER);
-        otherFilters.add(FileFilters.SVG_FILTER);
-        otherFilters.add(FileFilters.PS_FILTER);
-        otherFilters.add(FileFilters.EPS_FILTER);
-        setDefaultFilterBySuffix(Configuration.getString(
-                KEY_DEFAULT_GRAPHICS_FILTER,
-                defaultFilter.getSuffix()));
+  /** The configuration key for the "save graphics" file location. */
+  public static final ConfigurationKey KEY_SAVE_GRAPHICS_PATH =
+      Configuration.makeKey("graphics", "save", "path");
+
+  /** The configuration key for the "save all graphics" file location. */
+  public static final ConfigurationKey KEY_SAVEALL_GRAPHICS_PATH =
+      Configuration.makeKey("graphics", "save-all", "path");
+
+  /** The configuration key for the export graphics resolution. */
+  public static final ConfigurationKey KEY_GRAPHICS_RESOLUTION =
+      Configuration.makeKey("graphics", "export", "resolution");
+
+  /** the default file format */
+  private SuffixFilter defaultFilter;
+
+  /** the list of other file formats */
+  private List otherFilters = new ArrayList();
+
+  /** The singleton instance. */
+  private static SaveGraphicsManager INSTANCE;
+
+  /** The constructor. */
+  private SaveGraphicsManager() {
+    defaultFilter = FileFilters.PNG_FILTER;
+    otherFilters.add(FileFilters.GIF_FILTER);
+    otherFilters.add(FileFilters.SVG_FILTER);
+    otherFilters.add(FileFilters.PS_FILTER);
+    otherFilters.add(FileFilters.EPS_FILTER);
+    setDefaultFilterBySuffix(
+        Configuration.getString(KEY_DEFAULT_GRAPHICS_FILTER, defaultFilter.getSuffix()));
+  }
+
+  /**
+   * @param suffix the extension of the new default file-format
+   */
+  public void setDefaultFilterBySuffix(String suffix) {
+    Iterator i = otherFilters.iterator();
+    while (i.hasNext()) {
+      SuffixFilter sf = (SuffixFilter) i.next();
+      if (sf.getSuffix().equalsIgnoreCase(suffix)) {
+        setDefaultFilter(sf);
+        break;
+      }
+    }
+  }
+
+  /**
+   * @param f the new default file-format
+   */
+  public void setDefaultFilter(SuffixFilter f) {
+    otherFilters.remove(f);
+    if (!otherFilters.contains(defaultFilter)) {
+      otherFilters.add(defaultFilter);
+    }
+    defaultFilter = f;
+    Configuration.setString(KEY_DEFAULT_GRAPHICS_FILTER, f.getSuffix());
+
+    Collections.sort(
+        otherFilters,
+        new Comparator() {
+          public int compare(Object arg0, Object arg1) {
+            return ((SuffixFilter) arg0)
+                .getSuffix()
+                .compareToIgnoreCase(((SuffixFilter) arg1).getSuffix());
+          }
+        });
+  }
+
+  /**
+   * @return returns the singleton
+   */
+  public static SaveGraphicsManager getInstance() {
+    if (INSTANCE == null) {
+      INSTANCE = new SaveGraphicsManager();
+    }
+    return INSTANCE;
+  }
+
+  /**
+   * This function allows to add new filters. This can be done e.g. by modules.
+   *
+   * <p>
+   *
+   * @param f the filter
+   */
+  public void register(SuffixFilter f) {
+    otherFilters.add(f);
+  }
+
+  /**
+   * @param chooser the filechooser of which the filters will be set
+   */
+  public void setFileChooserFilters(JFileChooser chooser, String defaultName) {
+    chooser.addChoosableFileFilter(defaultFilter);
+    Iterator iter = otherFilters.iterator();
+    while (iter.hasNext()) {
+      chooser.addChoosableFileFilter((SuffixFilter) iter.next());
+    }
+    chooser.setFileFilter(defaultFilter);
+    String fileName = defaultName + "." + defaultFilter.getSuffix();
+    chooser.setSelectedFile(new File(fileName));
+    chooser.addPropertyChangeListener(
+        JFileChooser.FILE_FILTER_CHANGED_PROPERTY,
+        new FileFilterChangedListener(chooser, defaultName));
+  }
+
+  /**
+   * This class listens to changes in the selected filefilter. If the user changes the filefilter
+   * (e.g. he changes from *.gif to *.png), then the filename field got emptied before I introduced
+   * this class. Now, a new filename is made up, based on the diagram name + the new extension
+   * (suffix).
+   *
+   * @author mvw@tigris.org
+   */
+  class FileFilterChangedListener implements PropertyChangeListener {
+    JFileChooser chooser;
+    String defaultName;
+
+    public FileFilterChangedListener(JFileChooser c, String name) {
+      chooser = c;
+      defaultName = name;
     }
 
     /**
-     * @param suffix the extension of the new default file-format
+     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
-    public void setDefaultFilterBySuffix(String suffix) {
-        Iterator i = otherFilters.iterator();
-        while (i.hasNext()) {
-            SuffixFilter sf = (SuffixFilter) i.next();
-            if (sf.getSuffix().equalsIgnoreCase(suffix)) {
-                setDefaultFilter(sf);
-                break;
-            }
-        }
-    }
-    
-    /**
-     * @param f the new default file-format
-     */
-    public void setDefaultFilter(SuffixFilter f) {
-        otherFilters.remove(f);
-        if (!otherFilters.contains(defaultFilter)) {
-            otherFilters.add(defaultFilter);
-        }
-        defaultFilter = f;
-        Configuration.setString(
-                KEY_DEFAULT_GRAPHICS_FILTER,
-                f.getSuffix());
-        
-        Collections.sort(otherFilters, new Comparator() {
-            public int compare(Object arg0, Object arg1) {
-                return ((SuffixFilter)arg0).getSuffix().compareToIgnoreCase(
-                        ((SuffixFilter)arg1).getSuffix());
-            }}); 
-    }
-    
-    /**
-     * @return returns the singleton
-     */
-    public static SaveGraphicsManager getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE  = new SaveGraphicsManager();
-        }
-        return INSTANCE;
+    public void propertyChange(PropertyChangeEvent evt) {
+      SuffixFilter filter = (SuffixFilter) evt.getNewValue();
+      String fileName = defaultName + "." + filter.getSuffix();
+      /* The next line does not work: */
+      // chooser.setSelectedFile(new File(fileName));
+      /* So, let's do it the hard way: */
+      SwingUtilities.invokeLater(new Anonymous1(fileName));
     }
 
-    /**
-     * This function allows to add new filters. This can be done e.g.
-     * by modules.<p>
-     *
-     * @param f the filter
-     */
-    public void register(SuffixFilter f) {
-        otherFilters.add(f);
-    }
+    class Anonymous1 implements Runnable {
+      private String fileName;
 
-    /**
-     * @param chooser the filechooser of which the filters will be set
-     */
-    public void setFileChooserFilters(JFileChooser chooser, String defaultName) {
-        chooser.addChoosableFileFilter(defaultFilter);
-        Iterator iter = otherFilters.iterator();
-        while (iter.hasNext()) {
-            chooser.addChoosableFileFilter((SuffixFilter) iter.next());
-        }
-        chooser.setFileFilter(defaultFilter);
-        String fileName = defaultName + "." + defaultFilter.getSuffix();
+      Anonymous1(String fn) {
+        fileName = fn;
+      }
+
+      public void run() {
         chooser.setSelectedFile(new File(fileName));
-        chooser.addPropertyChangeListener(
-                JFileChooser.FILE_FILTER_CHANGED_PROPERTY, 
-                new FileFilterChangedListener(chooser, defaultName));
+      }
     }
-    
-    /**
-     * This class listens to changes in the selected filefilter.
-     * If the user changes the filefilter 
-     * (e.g. he changes from *.gif to *.png),
-     * then the filename field got emptied before I introduced this class.
-     * Now, a new filename is made up, based on 
-     * the diagram name + the new extension (suffix).
-     *  
-     * @author mvw@tigris.org
-     */
-    class FileFilterChangedListener implements PropertyChangeListener {
-        JFileChooser chooser;
-        String defaultName;
-        public FileFilterChangedListener(JFileChooser c, String name) {
-            chooser = c;
-            defaultName = name;
-        }
+  }
 
-        /**
-         * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
-         */
-        public void propertyChange(PropertyChangeEvent evt) {
-            SuffixFilter filter = (SuffixFilter) evt.getNewValue();
-            String fileName = defaultName + "." + filter.getSuffix();
-            /* The next line does not work: */
-            // chooser.setSelectedFile(new File(fileName));
-            /* So, let's do it the hard way: */
-            SwingUtilities.invokeLater(new Anonymous1(fileName));
-        }
-        
-        class Anonymous1 implements Runnable {
-            private String fileName;
-            Anonymous1(String fn){
-                fileName = fn;
-            }
-            public void run() {
-                chooser.setSelectedFile(new File(fileName));
-            }
-        }
+  /**
+   * @param name the filename
+   * @return the filter
+   */
+  public SuffixFilter getFilterFromFileName(String name) {
+    if (name.toLowerCase().endsWith("." + defaultFilter.getSuffix())) {
+      return defaultFilter;
     }
-    
-    /**
-     * @param name the filename
-     * @return the filter
-     */
-    public SuffixFilter getFilterFromFileName(String name) {
-        if (name.toLowerCase()
-            .endsWith("." + defaultFilter.getSuffix())) {
-            return defaultFilter;
-        }
-        Iterator iter = otherFilters.iterator();
-        while (iter.hasNext()) {
-            SuffixFilter filter = (SuffixFilter) iter.next();
-            if (name.toLowerCase().endsWith("." + filter.getSuffix())) {
-                return filter;
-            }
-        }
-        return null;
+    Iterator iter = otherFilters.iterator();
+    while (iter.hasNext()) {
+      SuffixFilter filter = (SuffixFilter) iter.next();
+      if (name.toLowerCase().endsWith("." + filter.getSuffix())) {
+        return filter;
+      }
     }
-    
-    /**
-     * @return the extension of the default filter
-     *         (just the text, not the ".")
-     */
-    public String getDefaultSuffix() {
-        return defaultFilter.getSuffix();
+    return null;
+  }
+
+  /**
+   * @return the extension of the default filter (just the text, not the ".")
+   */
+  public String getDefaultSuffix() {
+    return defaultFilter.getSuffix();
+  }
+
+  /**
+   * @param in the input file or path name which may or may not have a recognised extension
+   * @return the amended file or pathname, guaranteed to have a recognised extension
+   */
+  public String fixExtension(String in) {
+    if (getFilterFromFileName(in) == null) {
+      in += "." + getDefaultSuffix();
     }
-    
-    /**
-     * @param in the input file or path name which may or may not
-     *           have a recognised extension
-     * @return the amended file or pathname, guaranteed to have
-     *         a recognised extension
-     */
-    public String fixExtension(String in) {
-        if (getFilterFromFileName(in) == null) {
-            in += "." + getDefaultSuffix();
-        }
-        return in;
+    return in;
+  }
+
+  /**
+   * @param suffix the suffix (extension) of the filename, which corresponds to the graphics format
+   *     to be used
+   * @return the command that will do the save
+   */
+  public CmdSaveGraphics getSaveCommandBySuffix(String suffix) {
+    CmdSaveGraphics cmd = null;
+    if (FileFilters.PS_FILTER.getSuffix().equals(suffix)) {
+      cmd = new CmdSavePS();
+    } else if (FileFilters.EPS_FILTER.getSuffix().equals(suffix)) {
+      cmd = new ActionSaveGraphicsCmdSaveEPS();
+    } else if (FileFilters.PNG_FILTER.getSuffix().equals(suffix)) {
+      cmd = new CmdSavePNG();
+    } else if (FileFilters.GIF_FILTER.getSuffix().equals(suffix)) {
+      cmd = new CmdSaveGIF();
+    } else if (FileFilters.SVG_FILTER.getSuffix().equals(suffix)) {
+      cmd = new CmdSaveSVG();
     }
-    
-    /**
-     * @param suffix the suffix (extension) of the filename, 
-     *               which corresponds to the graphics format to be used
-     * @return the command that will do the save
-     */
-    public CmdSaveGraphics getSaveCommandBySuffix(String suffix) {
-        CmdSaveGraphics cmd = null;
-        if (FileFilters.PS_FILTER.getSuffix().equals(suffix)) {
-            cmd = new CmdSavePS();
-        } else if (FileFilters.EPS_FILTER.getSuffix().equals(suffix)) {
-            cmd = new ActionSaveGraphicsCmdSaveEPS();
-        } else if (FileFilters.PNG_FILTER.getSuffix().equals(suffix)) {
-            cmd = new CmdSavePNG();
-        } else if (FileFilters.GIF_FILTER.getSuffix().equals(suffix)) {
-            cmd = new CmdSaveGIF();
-        } else if (FileFilters.SVG_FILTER.getSuffix().equals(suffix)) {
-            cmd = new CmdSaveSVG();
-        } 
-        return cmd;
+    return cmd;
+  }
+
+  /**
+   * @return the complete collection of SuffixFilters, the first one is the default one
+   */
+  public Collection getSettingsList() {
+    Collection c = new ArrayList();
+    c.add(defaultFilter);
+    Iterator iter = otherFilters.iterator();
+    while (iter.hasNext()) {
+      c.add(((SuffixFilter) iter.next()));
     }
-    
-    /**
-     * @return the complete collection of SuffixFilters, 
-     *         the first one is the default one 
-     */
-    public Collection getSettingsList() {
-        Collection c = new ArrayList();
-        c.add(defaultFilter);
-        Iterator iter = otherFilters.iterator();
-        while (iter.hasNext()) {
-            c.add(((SuffixFilter) iter.next()));
-        }
-        return c;
-    }
+    return c;
+  }
 }
 
 /**
- * Class to adjust {@link org.tigris.gef.base.CmdSaveEPS} for our purpuses.<p>
+ * Class to adjust {@link org.tigris.gef.base.CmdSaveEPS} for our purpuses.
  *
- * While doing this refactoring (February 2004) it is unclear to me (Linus
- * Tolke) why this modification in the {@link org.tigris.gef.base.CmdSaveEPS}
- * behavior is needed. Is it a bug in GEF? Is it an added feature?
- * The old comment was: override gef default to cope with scaling.
+ * <p>While doing this refactoring (February 2004) it is unclear to me (Linus Tolke) why this
+ * modification in the {@link org.tigris.gef.base.CmdSaveEPS} behavior is needed. Is it a bug in
+ * GEF? Is it an added feature? The old comment was: override gef default to cope with scaling.
  */
 class ActionSaveGraphicsCmdSaveEPS extends CmdSaveEPS {
-    protected void saveGraphics(OutputStream s, Editor ce,
-                                Rectangle drawingArea)
-        throws IOException {
+  protected void saveGraphics(OutputStream s, Editor ce, Rectangle drawingArea) throws IOException {
 
-        double scale = ce.getScale();
-        int x = (int) (drawingArea.x * scale);
-        int y = (int) (drawingArea.y * scale);
-        int h = (int) (drawingArea.height * scale);
-        int w = (int) (drawingArea.width * scale);
-        drawingArea = new Rectangle(x, y, w, h);
+    double scale = ce.getScale();
+    int x = (int) (drawingArea.x * scale);
+    int y = (int) (drawingArea.y * scale);
+    int h = (int) (drawingArea.height * scale);
+    int w = (int) (drawingArea.width * scale);
+    drawingArea = new Rectangle(x, y, w, h);
 
-        PostscriptWriter ps = new PostscriptWriter(s, drawingArea);
+    PostscriptWriter ps = new PostscriptWriter(s, drawingArea);
 
-        ps.scale(scale, scale);
+    ps.scale(scale, scale);
 
-        ce.print(ps);
-        ps.dispose();
-    }
+    ce.print(ps);
+    ps.dispose();
+  }
 }
-

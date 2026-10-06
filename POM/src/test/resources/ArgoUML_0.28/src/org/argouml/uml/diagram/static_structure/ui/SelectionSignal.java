@@ -27,25 +27,23 @@ package org.argouml.uml.diagram.static_structure.ui;
 import org.argouml.model.Model;
 import org.tigris.gef.presentation.Fig;
 
-/**
- * The buttons on selection for a Signal.
- */
+/** The buttons on selection for a Signal. */
 class SelectionSignal extends SelectionGeneralizableElement {
 
-    /**
-     * Construct a new SelectionClass for the given Fig.
-     *
-     * @param f The given Fig.
-     */
-    public SelectionSignal(Fig f) { 
-        super(f);
-    }
+  /**
+   * Construct a new SelectionClass for the given Fig.
+   *
+   * @param f The given Fig.
+   */
+  public SelectionSignal(Fig f) {
+    super(f);
+  }
 
-    protected Object getNewNode(int index) {
-        return Model.getCommonBehaviorFactory().createSignal();
-    }
+  protected Object getNewNode(int index) {
+    return Model.getCommonBehaviorFactory().createSignal();
+  }
 
-    protected Object getNewNodeType(int index) {
-        return Model.getMetaTypes().getSignal();
-    }
+  protected Object getNewNodeType(int index) {
+    return Model.getMetaTypes().getSignal();
+  }
 }

@@ -32,85 +32,82 @@ import java.util.Stack;
 /**
  * This code piece represents an anonymous class.
  *
- * JavaRE - Code generation and reverse engineering for UML and Java
+ * <p>JavaRE - Code generation and reverse engineering for UML and Java
+ *
  * @author Marcus Andersson andersson@users.sourceforge.net
  */
 public class AnonymousClassCodePiece extends NamedCodePiece {
-    /** The code piece this class represents. */
-    private CodePiece classDef;
+  /** The code piece this class represents. */
+  private CodePiece classDef;
 
-    /** The sequence number of this anonymous class. */
-    private int number;
+  /** The sequence number of this anonymous class. */
+  private int number;
 
-    /**
-       Constructor.
+  /**
+   * Constructor.
+   *
+   * @param def The code piece to represent.
+   * @param seqNumber The sequence number of this anonymous class.
+   */
+  public AnonymousClassCodePiece(CodePiece def, int seqNumber) {
+    classDef = def;
+    number = seqNumber;
+  }
 
-       @param def The code piece to represent.
-       @param seqNumber The sequence number of this anonymous class.
-    */
-    public AnonymousClassCodePiece(CodePiece def,
-                                   int seqNumber) {
-	classDef = def;
-	number = seqNumber;
+  /**
+   * @return the string representation for this piece of code.
+   */
+  public StringBuffer getText() {
+    return classDef.getText();
+  }
+
+  /**
+   * @return the start position.
+   */
+  public int getStartPosition() {
+    return classDef.getStartPosition();
+  }
+
+  /**
+   * @return the end position.
+   */
+  public int getEndPosition() {
+    return classDef.getEndPosition();
+  }
+
+  /**
+   * @return the start line
+   */
+  public int getStartLine() {
+    return classDef.getStartLine();
+  }
+
+  /**
+   * @return the end line
+   */
+  public int getEndLine() {
+    return classDef.getEndLine();
+  }
+
+  /**
+   * @see org.argouml.language.java.generator.NamedCodePiece#write( java.io.BufferedReader,
+   *     java.io.BufferedWriter, java.util.Stack)
+   *     <p>Write the code this piece represents to file. This will add a new level to the tree
+   *     stacks.
+   */
+  public void write(BufferedReader reader, BufferedWriter writer, Stack parseStateStack)
+      throws IOException {
+    ParseState parseState = (ParseState) parseStateStack.peek();
+    Object mClass = /*(MClass)*/ parseState.newClassifier((Integer.valueOf(number)).toString());
+
+    if (mClass != null) {
+      parseStateStack.push(new ParseState(mClass));
+      writer.write(classDef.getText().toString());
+      // dispose code piece in reader
+      ffCodePiece(reader, null);
+    } else {
+      // not in model, so write the original code
+      ffCodePiece(reader, writer);
     }
-
-    /**
-     * @return the string representation for this piece of code.
-     */
-    public StringBuffer getText() {
-	return classDef.getText();
-    }
-
-    /**
-     * @return the start position.
-     */
-    public int getStartPosition() {
-	return classDef.getStartPosition();
-    }
-
-    /**
-     * @return the end position.
-     */
-    public int getEndPosition() {
-	return classDef.getEndPosition();
-    }
-
-    /**
-     * @return the start line
-     */
-    public int getStartLine() {
-	return classDef.getStartLine();
-    }
-
-    /**
-     * @return the end line
-     */
-    public int getEndLine() {
-	return classDef.getEndLine();
-    }
-
-    /**
-     * @see org.argouml.language.java.generator.NamedCodePiece#write(
-     *         java.io.BufferedReader, java.io.BufferedWriter, java.util.Stack)
-     *
-     * Write the code this piece represents to file. This will add a
-     * new level to the tree stacks.
-     */
-    public void write(BufferedReader reader,
-                      BufferedWriter writer,
-                      Stack parseStateStack) throws IOException {
-        ParseState parseState = (ParseState) parseStateStack.peek();
-        Object mClass = /*(MClass)*/
-            parseState.newClassifier((Integer.valueOf(number)).toString());
-
-        if (mClass != null) {
-            parseStateStack.push(new ParseState(mClass));
-            writer.write(classDef.getText().toString());
-            // dispose code piece in reader
-            ffCodePiece(reader, null);
-        } else {
-            // not in model, so write the original code
-            ffCodePiece(reader, writer);
-        }
-    }
+  }
 }

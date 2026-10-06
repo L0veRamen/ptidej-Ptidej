@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -14,21 +14,18 @@ import caffeine.Caffeine;
 
 /**
  * @version 0.1
- * @author	Yann-Gaël Guéhéneuc
+ * @author Yann-Gaël Guéhéneuc
  */
 public final class CaffeineLauncher {
-	public static void main(final String[] args) {
-		Caffeine
-			.getUniqueInstance()
-			.start(
-				"../Caffeine/Rules/AllDynamicEvents.pl",
-				"../Caffeine/cfparse.jar;../Caffeine/javassist.jar;../Caffeine/bin;../Caffeine Examples/bin",
-				"caffeine.example.simple.SimpleExample",
-				new String[] { "caffeine.example.simple.*" },
-				new String[][] { new String[] {
-					"caffeine.example.simple.HelloWorld",
-					"java.lang.String",
-					"greetings" }
-		});
-	}
+  public static void main(final String[] args) {
+    Caffeine.getUniqueInstance()
+        .start(
+            "../Caffeine/Rules/AllDynamicEvents.pl",
+            "../Caffeine/cfparse.jar;../Caffeine/javassist.jar;../Caffeine/bin;../Caffeine Examples/bin",
+            "caffeine.example.simple.SimpleExample",
+            new String[] {"caffeine.example.simple.*"},
+            new String[][] {
+              new String[] {"caffeine.example.simple.HelloWorld", "java.lang.String", "greetings"}
+            });
+  }
 }

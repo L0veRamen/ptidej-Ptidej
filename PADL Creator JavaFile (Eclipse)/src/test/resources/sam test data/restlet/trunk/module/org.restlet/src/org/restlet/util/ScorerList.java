@@ -25,7 +25,6 @@ package org.restlet.util;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
 import org.restlet.Restlet;
 import org.restlet.Router;
 import org.restlet.Scorer;
@@ -33,216 +32,204 @@ import org.restlet.data.Request;
 import org.restlet.data.Response;
 
 /**
- * Modifiable list of scorers with some helper methods. Note that this class implements the java.util.List
- * interface using the Scorer interface as the template type. This allows you to use an instance of this class
- * as any other java.util.List, in particular all the helper methods in java.util.Collections.<br/>
- * <br/>
- * Note that structural changes to this list are synchronized. 
+ * Modifiable list of scorers with some helper methods. Note that this class implements the
+ * java.util.List interface using the Scorer interface as the template type. This allows you to use
+ * an instance of this class as any other java.util.List, in particular all the helper methods in
+ * java.util.Collections.<br>
+ * <br>
+ * Note that structural changes to this list are synchronized.
+ *
  * @author Jerome Louvel (contact@noelios.com)
  * @see java.util.Collections
  * @see java.util.List
  */
-public class ScorerList extends WrapperList<Scorer>
-{
-	/** The parent router. */
-	private Router router;
+public class ScorerList extends WrapperList<Scorer> {
+  /** The parent router. */
+  private Router router;
 
-	/** The index of the last scorer used in the round robin mode. */
-	private int lastIndex;
+  /** The index of the last scorer used in the round robin mode. */
+  private int lastIndex;
 
-	/**
-	 * Constructor.
-	 * @param router The parent router.
-	 */
-	public ScorerList(Router router)
-	{
-		this(router, null);
-	}
+  /**
+   * Constructor.
+   *
+   * @param router The parent router.
+   */
+  public ScorerList(Router router) {
+    this(router, null);
+  }
 
-	/**
-	 * Constructor.
-	 * @param router The parent router.
-	 * @param initialCapacity The initial list capacity.
-	 */
-	public ScorerList(Router router, int initialCapacity)
-	{
-		this(router, new ArrayList<Scorer>(initialCapacity));
-	}
+  /**
+   * Constructor.
+   *
+   * @param router The parent router.
+   * @param initialCapacity The initial list capacity.
+   */
+  public ScorerList(Router router, int initialCapacity) {
+    this(router, new ArrayList<Scorer>(initialCapacity));
+  }
 
-	/**
-	 * Constructor.
-	 * @param delegate The delegate list.
-	 */
-	public ScorerList(Router router, List<Scorer> delegate)
-	{
-		super(delegate);
-		this.router = router;
-		this.lastIndex = -1;
-	}
+  /**
+   * Constructor.
+   *
+   * @param delegate The delegate list.
+   */
+  public ScorerList(Router router, List<Scorer> delegate) {
+    super(delegate);
+    this.router = router;
+    this.lastIndex = -1;
+  }
 
-	/**
-	 * Creates then adds a scorer at the end of the list.
-	 * Adds a target option based on an URI pattern at the end of the list of options. 
-	 * @param uriPattern The URI pattern used to map calls (see {@link java.util.regex.Pattern} for the syntax).
-	 * @param target The target Restlet to attach.
-	 * @see java.util.regex.Pattern
-	 * @return True (as per the general contract of the Collection.add method).
-	 */
-	public boolean add(String uriPattern, Restlet target)
-	{
-		return add(Factory.getInstance().createScorer(this.router, uriPattern, target));
-	}
+  /**
+   * Creates then adds a scorer at the end of the list. Adds a target option based on an URI pattern
+   * at the end of the list of options.
+   *
+   * @param uriPattern The URI pattern used to map calls (see {@link java.util.regex.Pattern} for
+   *     the syntax).
+   * @param target The target Restlet to attach.
+   * @see java.util.regex.Pattern
+   * @return True (as per the general contract of the Collection.add method).
+   */
+  public boolean add(String uriPattern, Restlet target) {
+    return add(Factory.getInstance().createScorer(this.router, uriPattern, target));
+  }
 
-	/**
-	 * Creates then adds a scorer based on an URI pattern at a specific position.
-	 * @param uriPattern The URI pattern used to map calls (see {@link java.util.regex.Pattern} for the syntax).
-	 * @param target The target Restlet to attach.
-	 * @param index The insertion position in the list of attachments.
-	 * @see java.util.regex.Pattern
-	 */
-	public void add(String uriPattern, Restlet target, int index)
-	{
-		add(index, Factory.getInstance().createScorer(this.router, uriPattern, target));
-	}
+  /**
+   * Creates then adds a scorer based on an URI pattern at a specific position.
+   *
+   * @param uriPattern The URI pattern used to map calls (see {@link java.util.regex.Pattern} for
+   *     the syntax).
+   * @param target The target Restlet to attach.
+   * @param index The insertion position in the list of attachments.
+   * @see java.util.regex.Pattern
+   */
+  public void add(String uriPattern, Restlet target, int index) {
+    add(index, Factory.getInstance().createScorer(this.router, uriPattern, target));
+  }
 
-	/**
-	 * Returns the best scorer match for a given call.
-	 * @param request The request to score.
-	 * @param response The response to score.
-	 * @param requiredScore The minimum score required to have a match. 
-	 * @return The best scorer match or null.
-	 */
-	public synchronized Scorer getBest(Request request, Response response,
-			float requiredScore)
-	{
-		Scorer result = null;
-		float bestScore = 0F;
-		float score;
-		for (Scorer current : this)
-		{
-			score = current.score(request, response);
+  /**
+   * Returns the best scorer match for a given call.
+   *
+   * @param request The request to score.
+   * @param response The response to score.
+   * @param requiredScore The minimum score required to have a match.
+   * @return The best scorer match or null.
+   */
+  public synchronized Scorer getBest(Request request, Response response, float requiredScore) {
+    Scorer result = null;
+    float bestScore = 0F;
+    float score;
+    for (Scorer current : this) {
+      score = current.score(request, response);
 
-			if ((score > bestScore) && (score >= requiredScore))
-			{
-				bestScore = score;
-				result = current;
-			}
-		}
+      if ((score > bestScore) && (score >= requiredScore)) {
+        bestScore = score;
+        result = current;
+      }
+    }
 
-		return result;
-	}
+    return result;
+  }
 
-	/**
-	 * Returns the first scorer match for a given call.
-	 * @param request The request to score.
-	 * @param response The response to score.
-	 * @param requiredScore The minimum score required to have a match. 
-	 * @return The first scorer match or null.
-	 */
-	public synchronized Scorer getFirst(Request request, Response response,
-			float requiredScore)
-	{
-		for (Scorer current : this)
-		{
-			if (current.score(request, response) >= requiredScore) return current;
-		}
+  /**
+   * Returns the first scorer match for a given call.
+   *
+   * @param request The request to score.
+   * @param response The response to score.
+   * @param requiredScore The minimum score required to have a match.
+   * @return The first scorer match or null.
+   */
+  public synchronized Scorer getFirst(Request request, Response response, float requiredScore) {
+    for (Scorer current : this) {
+      if (current.score(request, response) >= requiredScore) return current;
+    }
 
-		// No match found
-		return null;
-	}
+    // No match found
+    return null;
+  }
 
-	/**
-	 * Returns the last scorer match for a given call.
-	 * @param request The request to score.
-	 * @param response The response to score.
-	 * @param requiredScore The minimum score required to have a match. 
-	 * @return The last scorer match or null.
-	 */
-	public synchronized Scorer getLast(Request request, Response response,
-			float requiredScore)
-	{
-		for (int j = (size() - 1); (j >= 0); j--)
-		{
-			if (get(j).score(request, response) >= requiredScore) return get(j);
-		}
+  /**
+   * Returns the last scorer match for a given call.
+   *
+   * @param request The request to score.
+   * @param response The response to score.
+   * @param requiredScore The minimum score required to have a match.
+   * @return The last scorer match or null.
+   */
+  public synchronized Scorer getLast(Request request, Response response, float requiredScore) {
+    for (int j = (size() - 1); (j >= 0); j--) {
+      if (get(j).score(request, response) >= requiredScore) return get(j);
+    }
 
-		// No match found
-		return null;
-	}
+    // No match found
+    return null;
+  }
 
-	/**
-	 * Returns a next scorer match in a round robin mode for a given call.
-	 * @param request The request to score.
-	 * @param response The response to score.
-	 * @param requiredScore The minimum score required to have a match. 
-	 * @return A next scorer or null.
-	 */
-	public synchronized Scorer getNext(Request request, Response response,
-			float requiredScore)
-	{
-		for (int initialIndex = lastIndex++; initialIndex != lastIndex; lastIndex++)
-		{
-			if (lastIndex == size())
-			{
-				lastIndex = 0;
-			}
+  /**
+   * Returns a next scorer match in a round robin mode for a given call.
+   *
+   * @param request The request to score.
+   * @param response The response to score.
+   * @param requiredScore The minimum score required to have a match.
+   * @return A next scorer or null.
+   */
+  public synchronized Scorer getNext(Request request, Response response, float requiredScore) {
+    for (int initialIndex = lastIndex++; initialIndex != lastIndex; lastIndex++) {
+      if (lastIndex == size()) {
+        lastIndex = 0;
+      }
 
-			if (get(lastIndex).score(request, response) >= requiredScore)
-				return get(lastIndex);
-		}
+      if (get(lastIndex).score(request, response) >= requiredScore) return get(lastIndex);
+    }
 
-		// No match found
-		return null;
-	}
+    // No match found
+    return null;
+  }
 
-	/**
-	 * Returns a random scorer match for a given call.
-	 * @param request The request to score.
-	 * @param response The response to score.
-	 * @param requiredScore The minimum score required to have a match. 
-	 * @return A random scorer or null.
-	 */
-	public synchronized Scorer getRandom(Request request, Response response,
-			float requiredScore)
-	{
-		int j = new Random().nextInt(size());
-		if (get(j).score(request, response) >= requiredScore) return get(j);
+  /**
+   * Returns a random scorer match for a given call.
+   *
+   * @param request The request to score.
+   * @param response The response to score.
+   * @param requiredScore The minimum score required to have a match.
+   * @return A random scorer or null.
+   */
+  public synchronized Scorer getRandom(Request request, Response response, float requiredScore) {
+    int j = new Random().nextInt(size());
+    if (get(j).score(request, response) >= requiredScore) return get(j);
 
-		for (int initialIndex = j++; initialIndex != j; j++)
-		{
-			if (j == size())
-			{
-				j = 0;
-			}
+    for (int initialIndex = j++; initialIndex != j; j++) {
+      if (j == size()) {
+        j = 0;
+      }
 
-			if (get(j).score(request, response) >= requiredScore) return get(j);
-		}
+      if (get(j).score(request, response) >= requiredScore) return get(j);
+    }
 
-		// No match found
-		return null;
-	}
+    // No match found
+    return null;
+  }
 
-	/**
-	 * Removes all scorers routing to a given target.
-	 * @param target The target Restlet to detach.
-	 */
-	public void removeAll(Restlet target)
-	{
-		for (int i = size() - 1; i >= 0; i--)
-		{
-			if (get(i).getNext() == target) remove(i);
-		}
-	}
+  /**
+   * Removes all scorers routing to a given target.
+   *
+   * @param target The target Restlet to detach.
+   */
+  public void removeAll(Restlet target) {
+    for (int i = size() - 1; i >= 0; i--) {
+      if (get(i).getNext() == target) remove(i);
+    }
+  }
 
-	/**
-	 * Returns a view of the portion of this list between the specified fromIndex, 
-	 * inclusive, and toIndex, exclusive.
-	 * @param fromIndex The start position.
-	 * @param toIndex The end position (exclusive).
-	 * @return The sub-list.
-	 */
-	public synchronized ScorerList subList(int fromIndex, int toIndex)
-	{
-		return new ScorerList(this.router, getDelegate().subList(fromIndex, toIndex));
-	}
+  /**
+   * Returns a view of the portion of this list between the specified fromIndex, inclusive, and
+   * toIndex, exclusive.
+   *
+   * @param fromIndex The start position.
+   * @param toIndex The end position (exclusive).
+   * @return The sub-list.
+   */
+  public synchronized ScorerList subList(int fromIndex, int toIndex) {
+    return new ScorerList(this.router, getDelegate().subList(fromIndex, toIndex));
+  }
 }

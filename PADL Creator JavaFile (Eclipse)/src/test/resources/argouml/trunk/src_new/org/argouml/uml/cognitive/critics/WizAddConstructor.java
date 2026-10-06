@@ -26,9 +26,7 @@ package org.argouml.uml.cognitive.critics;
 
 import java.util.Collection;
 import java.util.Iterator;
-
 import javax.swing.JPanel;
-
 import org.apache.log4j.Logger;
 import org.argouml.cognitive.ui.WizStepTextField;
 import org.argouml.i18n.Translator;
@@ -42,126 +40,104 @@ import org.argouml.uml.ProfileException;
 /**
  * A wizard to add a constructor to a classifier.
  *
- * @author  d00mst (copied from WizAddOperation by mkl)
+ * @author d00mst (copied from WizAddOperation by mkl)
  * @since February 7, 2004, 12:35 AM
  */
 public class WizAddConstructor extends UMLWizard {
-    /**
-     * Logger.
-     */
-    private static final Logger LOG =
-        Logger.getLogger(WizAddConstructor.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(WizAddConstructor.class);
 
-    private WizStepTextField step1;
-    private String label = Translator.localize("label.name");
-    private String instructions = 
-        Translator.localize("critics.WizAddConstructor-ins");
+  private WizStepTextField step1;
+  private String label = Translator.localize("label.name");
+  private String instructions = Translator.localize("critics.WizAddConstructor-ins");
 
-    /**
-     * Creates a new instance of WizAddConstructor.
-     */
-    public WizAddConstructor() {
-        super();
-    }
+  /** Creates a new instance of WizAddConstructor. */
+  public WizAddConstructor() {
+    super();
+  }
 
-    /**
-     * @see org.argouml.cognitive.ui.Wizard#doAction(int)
-     */
-    public void doAction(int oldStep) {
-	Object oper;
-	Collection savedTargets;
+  /**
+   * @see org.argouml.cognitive.ui.Wizard#doAction(int)
+   */
+  public void doAction(int oldStep) {
+    Object oper;
+    Collection savedTargets;
 
-	switch (oldStep) {
-	case 1:
-	    String newName = getSuggestion();
-	    if (step1 != null) {
-	        newName = step1.getText();
-	    }
-	    Object me = getModelElement();
-	    savedTargets = TargetManager.getInstance().getTargets();
-	    Object model =
-	        ProjectManager.getManager().getCurrentProject()
-	        	.getModel();
-	    Object voidType =
-	        ProjectManager.getManager().getCurrentProject()
-	        	.findType("void");
-	    oper =
-	        Model.getCoreFactory().buildOperation(me, model,
-	                voidType, newName);
-	    Model.getCoreHelper()
-	        .addStereotype(oper, getCreateStereotype(oper));
-	    TargetManager.getInstance().setTargets(savedTargets);
-	}
-    }
-
-    /**
-     * Finds the create stereotype for an object. It is assumed to be
-     * available from the java profile.
-     *
-     * @param obj is the object the stereotype should be applicable to.
-     * @return a suitable stereotype, or null.
-     */
-    private Object getCreateStereotype(Object obj) {
-        Iterator iter = null;
-        try {
-            Project project = ProjectManager.getManager().getCurrentProject();
-            Profile profile = project.getProfile();
-            Object profileModel = profile.getProfileModel();
-            iter = Model.getFacade().getOwnedElements(profileModel).iterator();
-        } catch (ProfileException e) {
-            // TODO: How are we going to handle exceptions here?
-            // I suspect the profile should be part of the project
-            // and not a singleton.
-            LOG.error("Failed to get profile", e);
+    switch (oldStep) {
+      case 1:
+        String newName = getSuggestion();
+        if (step1 != null) {
+          newName = step1.getText();
         }
-        while (iter.hasNext()) {
-            Object stereo = iter.next();
-            if (!Model.getFacade().isAStereotype(stereo)
-        	|| !"create".equals(Model.getFacade().getName(stereo))) {
-                continue;
-            }
+        Object me = getModelElement();
+        savedTargets = TargetManager.getInstance().getTargets();
+        Object model = ProjectManager.getManager().getCurrentProject().getModel();
+        Object voidType = ProjectManager.getManager().getCurrentProject().findType("void");
+        oper = Model.getCoreFactory().buildOperation(me, model, voidType, newName);
+        Model.getCoreHelper().addStereotype(oper, getCreateStereotype(oper));
+        TargetManager.getInstance().setTargets(savedTargets);
+    }
+  }
 
-            if (Model.getExtensionMechanismsHelper()
-        	    .isValidStereoType(obj, stereo)) {
-        	return Model.getModelManagementHelper()
-        	    .getCorrespondingElement(stereo,
-        				     Model.getFacade().getModel(obj));
-            }
+  /**
+   * Finds the create stereotype for an object. It is assumed to be available from the java profile.
+   *
+   * @param obj is the object the stereotype should be applicable to.
+   * @return a suitable stereotype, or null.
+   */
+  private Object getCreateStereotype(Object obj) {
+    Iterator iter = null;
+    try {
+      Project project = ProjectManager.getManager().getCurrentProject();
+      Profile profile = project.getProfile();
+      Object profileModel = profile.getProfileModel();
+      iter = Model.getFacade().getOwnedElements(profileModel).iterator();
+    } catch (ProfileException e) {
+      // TODO: How are we going to handle exceptions here?
+      // I suspect the profile should be part of the project
+      // and not a singleton.
+      LOG.error("Failed to get profile", e);
+    }
+    while (iter.hasNext()) {
+      Object stereo = iter.next();
+      if (!Model.getFacade().isAStereotype(stereo)
+          || !"create".equals(Model.getFacade().getName(stereo))) {
+        continue;
+      }
+
+      if (Model.getExtensionMechanismsHelper().isValidStereoType(obj, stereo)) {
+        return Model.getModelManagementHelper()
+            .getCorrespondingElement(stereo, Model.getFacade().getModel(obj));
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * @param s set a new instruction string
+   */
+  public void setInstructions(String s) {
+    instructions = s;
+  }
+
+  /**
+   * Create a new panel for the given step.
+   *
+   * @param newStep The step.
+   * @return The panel.
+   */
+  public JPanel makePanel(int newStep) {
+    switch (newStep) {
+      case 1:
+        if (step1 == null) {
+          step1 = new WizStepTextField(this, instructions, label, offerSuggestion());
         }
-
-        return null;
+        return step1;
     }
+    return null;
+  }
 
-    /**
-     * @param s set a new instruction string
-     */
-    public void setInstructions(String s) {
-	instructions = s;
-    }
-
-
-    /**
-     * Create a new panel for the given step.
-     *
-     * @param newStep The step.
-     * @return The panel.
-     */
-    public JPanel makePanel(int newStep) {
-        switch (newStep) {
-	case 1:
-	    if (step1 == null) {
-		step1 =
-		    new WizStepTextField(this, instructions,
-		            		 label, offerSuggestion());
-	    }
-	    return step1;
-        }
-        return null;
-    }
-
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -4661562206721689576L;
+  /** The UID. */
+  private static final long serialVersionUID = -4661562206721689576L;
 }
-

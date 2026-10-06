@@ -25,7 +25,6 @@
 package org.argouml.uml.ui.foundation.core;
 
 import java.beans.PropertyChangeEvent;
-
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.AddAssociationEvent;
 import org.argouml.model.Model;
@@ -39,60 +38,56 @@ import org.argouml.uml.ui.UMLComboBoxModel2;
  * @author jaap.branderhorst@xs4all.nl, alexb
  */
 public class UMLModelElementNamespaceComboBoxModel extends UMLComboBoxModel2 {
-    /**
-     * Constructor for UMLModelElementNamespaceComboBoxModel.
-     */
-    public UMLModelElementNamespaceComboBoxModel() {
-        super("namespace", true);
-        Model.getPump().addClassModelEventListener(this,
-                Model.getMetaTypes().getNamespace(), "ownedElement");
-    }
+  /** Constructor for UMLModelElementNamespaceComboBoxModel. */
+  public UMLModelElementNamespaceComboBoxModel() {
+    super("namespace", true);
+    Model.getPump()
+        .addClassModelEventListener(this, Model.getMetaTypes().getNamespace(), "ownedElement");
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object o) {
-        return Model.getFacade().isANamespace(o)
-        && Model.getCoreHelper().isValidNamespace(
-                /*(MModelElement)*/ getTarget(), /*(MNamespace)*/ o);
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object o) {
+    return Model.getFacade().isANamespace(o)
+        && Model.getCoreHelper()
+            .isValidNamespace(/*(MModelElement)*/ getTarget(), /*(MNamespace)*/ o);
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        Object model =
-            ProjectManager.getManager().getCurrentProject().getRoot();
-        setElements(Model.getCoreHelper().getAllPossibleNamespaces(
-                /*(MModelElement)*/ getTarget(), model));
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    Object model = ProjectManager.getManager().getCurrentProject().getRoot();
+    setElements(
+        Model.getCoreHelper().getAllPossibleNamespaces(/*(MModelElement)*/ getTarget(), model));
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
+   */
+  protected Object getSelectedModelElement() {
+    if (getTarget() != null) {
+      return Model.getFacade().getNamespace(getTarget());
+    }
+    return null;
+  }
+
+  /**
+   * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+   */
+  public void propertyChange(PropertyChangeEvent evt) {
+    /*
+     * Although we've registered for notification of ownedElement changes, a
+     * added/removed association doesn't necessarily mean that this is no
+     * longer available as a legal namespace.
+     *
+     * Rebuild the list from scratch to be sure it's correct.
      */
-    protected Object getSelectedModelElement() {
-        if (getTarget() != null) {
-            return Model.getFacade().getNamespace(getTarget());
-        }
-        return null;
+    if (evt instanceof RemoveAssociationEvent || evt instanceof AddAssociationEvent) {
+      buildModelList();
+    } else {
+      super.propertyChange(evt);
     }
-    
-    /**
-    * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
-    */
-    public void propertyChange(PropertyChangeEvent evt) {
-        /*
-         * Although we've registered for notification of ownedElement changes, a
-         * added/removed association doesn't necessarily mean that this is no
-         * longer available as a legal namespace.
-         * 
-         * Rebuild the list from scratch to be sure it's correct.
-         */
-        if (evt instanceof RemoveAssociationEvent 
-                || evt instanceof AddAssociationEvent) {
-            buildModelList();
-        } else {
-            super.propertyChange(evt);
-        }
-    }
+  }
 }

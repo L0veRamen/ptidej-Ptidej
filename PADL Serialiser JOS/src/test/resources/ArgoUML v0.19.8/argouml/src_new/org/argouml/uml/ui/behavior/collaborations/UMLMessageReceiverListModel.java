@@ -34,26 +34,23 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  */
 public class UMLMessageReceiverListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLMessageReceiverListModel.
-     */
-    public UMLMessageReceiverListModel() {
-        super("receiver");
-    }
+  /** Constructor for UMLMessageReceiverListModel. */
+  public UMLMessageReceiverListModel() {
+    super("receiver");
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        removeAllElements();
-        addElement(Model.getFacade().getReceiver(getTarget()));
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    removeAllElements();
+    addElement(Model.getFacade().getReceiver(getTarget()));
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ element) {
-        return Model.getFacade().getReceiver(getTarget()) == element;
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ element) {
+    return Model.getFacade().getReceiver(getTarget()) == element;
+  }
 }

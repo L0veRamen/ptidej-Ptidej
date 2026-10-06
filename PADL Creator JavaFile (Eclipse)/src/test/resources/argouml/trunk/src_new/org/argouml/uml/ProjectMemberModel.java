@@ -33,61 +33,61 @@ import org.argouml.model.Model;
  */
 public class ProjectMemberModel extends AbstractProjectMember {
 
-    private static final String MEMBER_TYPE = "xmi";
-    private static final String FILE_EXT = "." + MEMBER_TYPE;
+  private static final String MEMBER_TYPE = "xmi";
+  private static final String FILE_EXT = "." + MEMBER_TYPE;
 
-    private Object model;
+  private Object model;
 
-    /**
-     * The constructor.
-     *
-     * @param m the model
-     * @param p the project
-     */
-    public ProjectMemberModel(Object m, Project p) {
+  /**
+   * The constructor.
+   *
+   * @param m the model
+   * @param p the project
+   */
+  public ProjectMemberModel(Object m, Project p) {
 
-        super(p.getBaseName() + FILE_EXT, p);
+    super(p.getBaseName() + FILE_EXT, p);
 
-        if (!Model.getFacade().isAModel(m))
-            throw new IllegalArgumentException();
+    if (!Model.getFacade().isAModel(m)) throw new IllegalArgumentException();
 
-        setModel(m);
-    }
+    setModel(m);
+  }
 
-    /**
-     * @return the model
-     */
-    public Object getModel() {
-        return model;
-    }
+  /**
+   * @return the model
+   */
+  public Object getModel() {
+    return model;
+  }
 
-    /**
-     * @param m the model
-     */
-    protected void setModel(Object m) {
-        model = /*(MModel)*/m;
-    }
+  /**
+   * @param m the model
+   */
+  protected void setModel(Object m) {
+    model = /*(MModel)*/ m;
+  }
 
-    /**
-     * @see org.argouml.kernel.AbstractProjectMember#getType()
-     */
-    public String getType() {
-        return MEMBER_TYPE;
-    }
-    /**
-     * @see org.argouml.kernel.AbstractProjectMember#getZipFileExtension()
-     */
-    public String getZipFileExtension() {
-        return FILE_EXT;
-    }
-    
-    /**
-     * There is not yet any repair task for the UML model but this is open to
-     * implement as and when any problems areas are discovered.
-     * @see org.argouml.kernel.ProjectMember#repair()
-     */
-    public String repair() {
-        return "";
-    }
+  /**
+   * @see org.argouml.kernel.AbstractProjectMember#getType()
+   */
+  public String getType() {
+    return MEMBER_TYPE;
+  }
 
+  /**
+   * @see org.argouml.kernel.AbstractProjectMember#getZipFileExtension()
+   */
+  public String getZipFileExtension() {
+    return FILE_EXT;
+  }
+
+  /**
+   * There is not yet any repair task for the UML model but this is open to implement as and when
+   * any problems areas are discovered.
+   *
+   * @see org.argouml.kernel.ProjectMember#repair()
+   */
+  public String repair() {
+    return "";
+  }
 } /* end class ProjectMemberModel */

@@ -24,9 +24,7 @@
 
 package org.argouml.uml.ui.behavior.common_behavior;
 
-
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.uml.ui.AbstractActionAddModelElement;
 import org.argouml.uml.ui.ActionDeleteSingleModelElement;
@@ -36,43 +34,28 @@ import org.argouml.uml.ui.foundation.core.PropPanelModelElement;
 import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
 import org.argouml.util.ConfigLoader;
 
-/**
- * The properties panel of a Signal.
- *
- */
+/** The properties panel of a Signal. */
 public class PropPanelSignal extends PropPanelModelElement {
 
-    /**
-     * The constructor.
-     *
-     */
-    public PropPanelSignal() {
-        super("Signal", lookupIcon("SignalSending"),
-                ConfigLoader.getTabPropsOrientation());
+  /** The constructor. */
+  public PropPanelSignal() {
+    super("Signal", lookupIcon("SignalSending"), ConfigLoader.getTabPropsOrientation());
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.stereotype"),
-                getStereotypeSelector());
-        addField(Translator.localize("label.namespace"),
-                getNamespaceSelector());
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.stereotype"), getStereotypeSelector());
+    addField(Translator.localize("label.namespace"), getNamespaceSelector());
 
-        addSeperator();
+    addSeperator();
 
-        AbstractActionAddModelElement action =
-            new ActionAddContextSignal();
-        JScrollPane operationScroll = new JScrollPane(
-                new UMLMutableLinkedList(
-                        new UMLSignalContextListModel(),
-                        action, null, null, true));
-        addField(Translator.localize("label.contexts"),
-                operationScroll);
+    AbstractActionAddModelElement action = new ActionAddContextSignal();
+    JScrollPane operationScroll =
+        new JScrollPane(
+            new UMLMutableLinkedList(new UMLSignalContextListModel(), action, null, null, true));
+    addField(Translator.localize("label.contexts"), operationScroll);
 
-        addAction(new ActionNavigateNamespace());
-        addAction(new ActionNewSignal());
-        addAction(new ActionNewStereotype());
-        addAction(new ActionDeleteSingleModelElement());
-    }
-
-
+    addAction(new ActionNavigateNamespace());
+    addAction(new ActionNewSignal());
+    addAction(new ActionNewStereotype());
+    addAction(new ActionDeleteSingleModelElement());
+  }
 } /* end class PropPanelSignal */

@@ -33,35 +33,30 @@ import org.argouml.uml.notation.TransitionNotation;
  */
 public class TransitionNotationJava extends TransitionNotation {
 
-    /**
-     * The constructor.
-     */
-    public TransitionNotationJava(Object transition) {
-        super(transition);
-    }
+  /** The constructor. */
+  public TransitionNotationJava(Object transition) {
+    super(transition);
+  }
 
-    /**
-     * @see org.argouml.notation.NotationProvider4#parse(java.lang.String)
-     */
-    public String parse(String text) {
-        ProjectBrowser.getInstance().getStatusBar().showStatus(
-                "Parsing in Java not yet supported");
-        return toString();
-    }
+  /**
+   * @see org.argouml.notation.NotationProvider4#parse(java.lang.String)
+   */
+  public String parse(String text) {
+    ProjectBrowser.getInstance().getStatusBar().showStatus("Parsing in Java not yet supported");
+    return toString();
+  }
 
-    /**
-     * @see org.argouml.notation.NotationProvider4#getParsingHelp()
-     */
-    public String getParsingHelp() {
-        return "Parsing in Java not yet supported";
-    }
+  /**
+   * @see org.argouml.notation.NotationProvider4#getParsingHelp()
+   */
+  public String getParsingHelp() {
+    return "Parsing in Java not yet supported";
+  }
 
-    /**
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-        return GeneratorJava.getInstance().generateTransition(myTransition);
-    }
-
-
+  /**
+   * @see java.lang.Object#toString()
+   */
+  public String toString() {
+    return GeneratorJava.getInstance().generateTransition(myTransition);
+  }
 }

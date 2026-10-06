@@ -25,79 +25,74 @@
 package org.argouml.uml.ui.foundation.core;
 
 import java.util.List;
-
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementOrderedListModel2;
 
 /**
- *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 26, 2003
  */
-public class UMLClassifierFeatureListModel
-    extends UMLModelElementOrderedListModel2 {
+public class UMLClassifierFeatureListModel extends UMLModelElementOrderedListModel2 {
 
-    /**
-     * Constructor for UMLClassifierFeatureListModel.
-     */
-    public UMLClassifierFeatureListModel() {
-        super("feature");
-    }
+  /** Constructor for UMLClassifierFeatureListModel. */
+  public UMLClassifierFeatureListModel() {
+    super("feature");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (getTarget() != null) {
-            setAllElements(Model.getFacade().getFeatures(getTarget()));
-        }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (getTarget() != null) {
+      setAllElements(Model.getFacade().getFeatures(getTarget()));
     }
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().getFeatures(getTarget()).contains(element);
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().getFeatures(getTarget()).contains(element);
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementOrderedListModel2#moveDown(int)
-     */
-    protected void moveDown(int index) {
-        Object clss = getTarget();
-        List c = Model.getFacade().getFeatures(clss);
-        if (index < c.size() - 1) {
-            Object mem = c.get(index);
-            Model.getCoreHelper().removeFeature(clss, mem);
-            Model.getCoreHelper().addFeature(clss, index + 1, mem);
-        }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementOrderedListModel2#moveDown(int)
+   */
+  protected void moveDown(int index) {
+    Object clss = getTarget();
+    List c = Model.getFacade().getFeatures(clss);
+    if (index < c.size() - 1) {
+      Object mem = c.get(index);
+      Model.getCoreHelper().removeFeature(clss, mem);
+      Model.getCoreHelper().addFeature(clss, index + 1, mem);
     }
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementOrderedListModel2#moveToBottom(int)
-     */
-    @Override
-    protected void moveToBottom(int index) {
-        Object clss = getTarget();
-        List c = Model.getFacade().getFeatures(clss);
-        if (index < c.size() - 1) {
-            Object mem = c.get(index);
-            Model.getCoreHelper().removeFeature(clss, mem);
-            Model.getCoreHelper().addFeature(clss, c.size(), mem);
-        }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementOrderedListModel2#moveToBottom(int)
+   */
+  @Override
+  protected void moveToBottom(int index) {
+    Object clss = getTarget();
+    List c = Model.getFacade().getFeatures(clss);
+    if (index < c.size() - 1) {
+      Object mem = c.get(index);
+      Model.getCoreHelper().removeFeature(clss, mem);
+      Model.getCoreHelper().addFeature(clss, c.size(), mem);
     }
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementOrderedListModel2#moveToTop(int)
-     */
-    @Override
-    protected void moveToTop(int index) {
-        Object clss = getTarget();
-        List c = Model.getFacade().getFeatures(clss);
-        if (index > 0) {
-            Object mem = c.get(index);
-            Model.getCoreHelper().removeFeature(clss, mem);
-            Model.getCoreHelper().addFeature(clss, 0, mem);
-        }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementOrderedListModel2#moveToTop(int)
+   */
+  @Override
+  protected void moveToTop(int index) {
+    Object clss = getTarget();
+    List c = Model.getFacade().getFeatures(clss);
+    if (index > 0) {
+      Object mem = c.get(index);
+      Model.getCoreHelper().removeFeature(clss, mem);
+      Model.getCoreHelper().addFeature(clss, 0, mem);
     }
+  }
 }

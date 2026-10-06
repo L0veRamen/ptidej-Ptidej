@@ -24,6 +24,9 @@
 
 package org.argouml.argoeclipse.internal.ui.preferences;
 
+import org.argouml.application.api.Argo;
+import org.argouml.argoeclipse.internal.ui.Activator;
+import org.argouml.i18n.Translator;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FileFieldEditor;
@@ -31,81 +34,69 @@ import org.eclipse.jface.preference.PathEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-import org.argouml.application.api.Argo;
-import org.argouml.argoeclipse.internal.ui.Activator;
-import org.argouml.i18n.Translator;
-
 /**
- * This class represents a preference page that
- * is contributed to the Preferences dialog. By 
- * subclassing <samp>FieldEditorPreferencePage</samp>, we
- * can use the field support built into JFace that allows
- * us to create a page that is small and knows how to 
- * save, restore and apply itself.
- * <p>
- * This page is used to modify preferences only. They
- * are stored in the preference store that belongs to
- * the main plug-in class. That way, preferences can
- * be accessed directly via the preference store.
+ * This class represents a preference page that is contributed to the Preferences dialog. By
+ * subclassing <samp>FieldEditorPreferencePage</samp>, we can use the field support built into JFace
+ * that allows us to create a page that is small and knows how to save, restore and apply itself.
+ *
+ * <p>This page is used to modify preferences only. They are stored in the preference store that
+ * belongs to the main plug-in class. That way, preferences can be accessed directly via the
+ * preference store.
  */
+public class PreferencePage0 extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
-public class PreferencePage0
-	extends FieldEditorPreferencePage
-	implements IWorkbenchPreferencePage {
+  /** Construct a preference page. */
+  public PreferencePage0() {
+    super(GRID);
+    setPreferenceStore(Activator.getDefault().getPreferenceStore());
+    setDescription("ArgoEclipse general preferences");
+  }
 
-    /**
-     * Construct a preference page.
-     */
-    public PreferencePage0() {
-        super(GRID);
-        setPreferenceStore(Activator.getDefault().getPreferenceStore());
-        setDescription("ArgoEclipse general preferences");
-    }
-
-    /**
-     * Creates the field editors. Field editors are abstractions of
-     * the common GUI blocks needed to manipulate various types
-     * of preferences. Each field editor knows how to save and
-     * restore itself.
-     */
-    public void createFieldEditors() {
-        this.
+  /**
+   * Creates the field editors. Field editors are abstractions of the common GUI blocks needed to
+   * manipulate various types of preferences. Each field editor knows how to save and restore
+   * itself.
+   */
+  public void createFieldEditors() {
+    this.
 
         // Preferences (General) tab settings
         addField(
-                new BooleanFieldEditor(
-                        PreferenceConstants.P_DEFER_INIT,
-                        "&Defer initialization of ArgoEclipse",
-                        getFieldEditorParent()));
-        addField(
-                new BooleanFieldEditor(
-                        Argo.KEY_SPLASH.getKey(),
-                        Translator.localize("label.splash"), //$NON-NLS-1$
-                        getFieldEditorParent()));
+        new BooleanFieldEditor(
+            PreferenceConstants.P_DEFER_INIT,
+            "&Defer initialization of ArgoEclipse",
+            getFieldEditorParent()));
+    addField(
+        new BooleanFieldEditor(
+            Argo.KEY_SPLASH.getKey(),
+            Translator.localize("label.splash"), // $NON-NLS-1$
+            getFieldEditorParent()));
 
-        // Preload classes is not implemented for plugin
-        // Reload last project is implemented by Eclipse logic
+    // Preload classes is not implemented for plugin
+    // Reload last project is implemented by Eclipse logic
 
-        addField(
-                new BooleanFieldEditor(
-                        Argo.KEY_XMI_STRIP_DIAGRAMS.getKey(),
-                        Translator.localize("label.strip-diagrams"), //$NON-NLS-1$
-                        getFieldEditorParent()));
-        
+    addField(
+        new BooleanFieldEditor(
+            Argo.KEY_XMI_STRIP_DIAGRAMS.getKey(),
+            Translator.localize("label.strip-diagrams"), // $NON-NLS-1$
+            getFieldEditorParent()));
 
-        addField(new FileFieldEditor(PreferenceConstants.P_PROFILE, 
-                Translator.localize("label.default-profile"),  //$NON-NLS-1$
-                getFieldEditorParent()));
-        
-        addField(new PathEditor(PreferenceConstants.P_SEARCH_PATH, 
-                "&Model search list:", "Model directory", 
-                getFieldEditorParent()));
-    }
+    addField(
+        new FileFieldEditor(
+            PreferenceConstants.P_PROFILE,
+            Translator.localize("label.default-profile"), // $NON-NLS-1$
+            getFieldEditorParent()));
 
-    /**
-     * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
-     */
-    public void init(IWorkbench workbench) {
-    }
+    addField(
+        new PathEditor(
+            PreferenceConstants.P_SEARCH_PATH,
+            "&Model search list:",
+            "Model directory",
+            getFieldEditorParent()));
+  }
 
+  /**
+   * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
+   */
+  public void init(IWorkbench workbench) {}
 }

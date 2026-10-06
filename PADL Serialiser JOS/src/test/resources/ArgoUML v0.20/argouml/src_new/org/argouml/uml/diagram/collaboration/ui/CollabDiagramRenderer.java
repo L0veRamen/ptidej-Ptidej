@@ -26,7 +26,6 @@
 package org.argouml.uml.diagram.collaboration.ui;
 
 import java.util.Map;
-
 import org.apache.log4j.Logger;
 import org.argouml.model.Model;
 import org.argouml.uml.diagram.UmlDiagramRenderer;
@@ -42,9 +41,10 @@ import org.tigris.gef.presentation.FigEdge;
 import org.tigris.gef.presentation.FigNode;
 
 /**
- * This class defines a renderer object for UML Collaboration Diagrams.
- * In a collaboration Diagram the following UML objects are displayed with the
- * following Figs:<p>
+ * This class defines a renderer object for UML Collaboration Diagrams. In a collaboration Diagram
+ * the following UML objects are displayed with the following Figs:
+ *
+ * <p>
  *
  * <pre>
  *   UML Object       ---  Fig
@@ -54,75 +54,65 @@ import org.tigris.gef.presentation.FigNode;
  *   MComment         ---  FigComment
  * </pre>
  *
- * Provides {@link #getFigNodeFor} to implement the
- * {@link org.tigris.gef.graph.GraphNodeRenderer} interface and
- * {@link #getFigEdgeFor} to implement the
- * {@link org.tigris.gef.graph.GraphEdgeRenderer} interface.<p>
+ * Provides {@link #getFigNodeFor} to implement the {@link org.tigris.gef.graph.GraphNodeRenderer}
+ * interface and {@link #getFigEdgeFor} to implement the {@link
+ * org.tigris.gef.graph.GraphEdgeRenderer} interface.
  *
- * <em>Note</em>. Should be implemented as a singleton - we don't really
- * need a separate instance for each use case diagram.<p>
+ * <p><em>Note</em>. Should be implemented as a singleton - we don't really need a separate instance
+ * for each use case diagram.
  *
+ * <p>
  *
  * @author agauthie
  */
 public class CollabDiagramRenderer extends UmlDiagramRenderer {
-    /**
-     * Logger.
-     */
-    private static final Logger LOG =
-	Logger.getLogger(CollabDiagramRenderer.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(CollabDiagramRenderer.class);
 
-    /**
-     * Return a Fig that can be used to represent the given node.
-     *
-     * @see org.tigris.gef.graph.GraphNodeRenderer#getFigNodeFor(
-     *         org.tigris.gef.graph.GraphModel, org.tigris.gef.base.Layer,
-     *         java.lang.Object, java.util.Map)
-     */
-    public FigNode getFigNodeFor(GraphModel gm, Layer lay,
-				 Object node, Map styleAttributes) {
-	if (Model.getFacade().isAClassifierRole(node)) {
-	    return new FigClassifierRole(gm, lay, node);
-	}
-	if (Model.getFacade().isAMessage(node)) {
-	    return new FigMessage(gm, lay, node);
-	}
-	if (Model.getFacade().isAComment(node)) {
-            return new FigComment(gm, node);
-        }
-	LOG.debug("TODO: CollabDiagramRenderer getFigNodeFor");
-	return null;
+  /**
+   * Return a Fig that can be used to represent the given node.
+   *
+   * @see org.tigris.gef.graph.GraphNodeRenderer#getFigNodeFor( org.tigris.gef.graph.GraphModel,
+   *     org.tigris.gef.base.Layer, java.lang.Object, java.util.Map)
+   */
+  public FigNode getFigNodeFor(GraphModel gm, Layer lay, Object node, Map styleAttributes) {
+    if (Model.getFacade().isAClassifierRole(node)) {
+      return new FigClassifierRole(gm, lay, node);
+    }
+    if (Model.getFacade().isAMessage(node)) {
+      return new FigMessage(gm, lay, node);
+    }
+    if (Model.getFacade().isAComment(node)) {
+      return new FigComment(gm, node);
+    }
+    LOG.debug("TODO: CollabDiagramRenderer getFigNodeFor");
+    return null;
+  }
+
+  /**
+   * Return a Fig that can be used to represent the given edge, Generally the same code as for the
+   * ClassDiagram, since its very related to it.
+   *
+   * @see org.tigris.gef.graph.GraphEdgeRenderer#getFigEdgeFor( org.tigris.gef.graph.GraphModel,
+   *     org.tigris.gef.base.Layer, java.lang.Object, java.util.Map)
+   */
+  public FigEdge getFigEdgeFor(GraphModel gm, Layer lay, Object edge, Map styleAttributes) {
+    if (Model.getFacade().isAAssociationRole(edge)) {
+      FigAssociationRole asrFig = new FigAssociationRole(edge, lay);
+      return asrFig;
+    } else if (Model.getFacade().isAGeneralization(edge)) {
+      FigGeneralization genFig = new FigGeneralization(edge, lay);
+      return genFig;
+    }
+    if (Model.getFacade().isADependency(edge)) {
+      FigDependency depFig = new FigDependency(edge, lay);
+      return depFig;
+    }
+    if (edge instanceof CommentEdge) {
+      return new FigEdgeNote(edge, lay);
     }
 
-    /**
-     * Return a Fig that can be used to represent the given edge,
-     * Generally the same code as for the ClassDiagram, since its
-     * very related to it.
-     *
-     * @see org.tigris.gef.graph.GraphEdgeRenderer#getFigEdgeFor(
-     * org.tigris.gef.graph.GraphModel,
-     * org.tigris.gef.base.Layer, java.lang.Object, java.util.Map)
-     */
-    public FigEdge getFigEdgeFor(GraphModel gm, Layer lay,
-				 Object edge, Map styleAttributes) {
-	if (Model.getFacade().isAAssociationRole(edge)) {
-	    FigAssociationRole asrFig = new FigAssociationRole(edge, lay);
-	    return asrFig;
-	} else
-	    if (Model.getFacade().isAGeneralization(edge)) {
-		FigGeneralization genFig = new FigGeneralization(edge, lay);
-		return genFig;
-	    }
-	if (Model.getFacade().isADependency(edge)) {
-	    FigDependency depFig = new FigDependency(edge , lay);
-	    return depFig;
-	}
-	if (edge instanceof CommentEdge) {
-            return new FigEdgeNote(edge, lay);
-        }
-
-	LOG.debug("TODO: CollabDiagramRenderer getFigEdgeFor");
-	return null;
-    }
-
+    LOG.debug("TODO: CollabDiagramRenderer getFigEdgeFor");
+    return null;
+  }
 } /* end class CollabDiagramRenderer */

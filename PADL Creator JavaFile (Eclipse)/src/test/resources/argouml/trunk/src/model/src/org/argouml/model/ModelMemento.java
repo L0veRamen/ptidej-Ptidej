@@ -31,19 +31,12 @@ package org.argouml.model;
  */
 public abstract class ModelMemento {
 
-    /**
-     * The method to undo this memento.
-     */
-    public abstract void undo();
+  /** The method to undo this memento. */
+  public abstract void undo();
 
-    /**
-     * The method to redo this memento once undone.
-     */
-    public abstract void redo();
-    /**
-     * Dispose of any resources used by this memento before it is
-     * destryed.
-     */
-    public void dispose() {
-    }
+  /** The method to redo this memento once undone. */
+  public abstract void redo();
+
+  /** Dispose of any resources used by this memento before it is destryed. */
+  public void dispose() {}
 }

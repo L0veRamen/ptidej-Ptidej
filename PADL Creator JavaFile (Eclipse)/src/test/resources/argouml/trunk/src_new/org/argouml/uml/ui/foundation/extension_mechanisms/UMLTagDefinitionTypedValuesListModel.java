@@ -27,7 +27,6 @@ package org.argouml.uml.ui.foundation.extension_mechanisms;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
@@ -37,43 +36,35 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  * @author tfmorris
  * @since 12 Jan 2005
  */
-class UMLTagDefinitionTypedValuesListModel
-    extends UMLModelElementListModel2 {
+class UMLTagDefinitionTypedValuesListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLTagDefinitionTypeValueListModel.
-     */
-    public UMLTagDefinitionTypedValuesListModel() {
-        super("typedValue");
+  /** Constructor for UMLTagDefinitionTypeValueListModel. */
+  public UMLTagDefinitionTypedValuesListModel() {
+    super("typedValue");
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (getTarget() != null) {
+      Collection typedValues = Model.getFacade().getTypedValues(getTarget());
+      Collection taggedValues = new HashSet();
+      for (Iterator i = typedValues.iterator(); i.hasNext(); ) {
+        taggedValues.add(Model.getFacade().getModelElementContainer(i.next()));
+      }
+      setAllElements(taggedValues);
     }
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (getTarget() != null) {
-            Collection typedValues = Model.getFacade().getTypedValues(
-                    getTarget());
-            Collection taggedValues = new HashSet();
-            for (Iterator i = typedValues.iterator(); i.hasNext();) {
-                taggedValues.add(Model.getFacade().getModelElementContainer(
-                        i.next()));
-            }
-            setAllElements(taggedValues);
-        }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    Iterator i = Model.getFacade().getTypedValues(getTarget()).iterator();
+    while (i.hasNext()) {
+      if (element.equals(Model.getFacade().getModelElementContainer(i.next()))) return true;
     }
-
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        Iterator i = Model.getFacade().getTypedValues(getTarget()).iterator();
-        while (i.hasNext()) {
-            if (element.equals(Model.getFacade().getModelElementContainer(
-                    i.next())))
-                return true;
-        }
-        return false;
-    }
-
+    return false;
+  }
 }

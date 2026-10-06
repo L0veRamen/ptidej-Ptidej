@@ -25,38 +25,37 @@
 package org.argouml.uml;
 
 /**
- * An exception to be thrown during failure of a opening
- * and reading some storage medium.
+ * An exception to be thrown during failure of a opening and reading some storage medium.
+ *
  * @author Bob Tarling
  */
 public class ProfileException extends Exception {
 
-    /**
-     * The constructor.
-     *
-     * @param message the message to show
-     */
-    public ProfileException(String message) {
-        super(message);
-    }
+  /**
+   * The constructor.
+   *
+   * @param message the message to show
+   */
+  public ProfileException(String message) {
+    super(message);
+  }
 
-    /**
-     * The constructor.
-     *
-     * @param message the message to show
-     * @param theCause the cause for the exception
-     */
-    public ProfileException(String message, Throwable theCause) {
-        super(message, theCause);
-    }
+  /**
+   * The constructor.
+   *
+   * @param message the message to show
+   * @param theCause the cause for the exception
+   */
+  public ProfileException(String message, Throwable theCause) {
+    super(message, theCause);
+  }
 
-    /**
-     * The constructor.
-     *
-     * @param theCause the cause for the exception
-     */
-    public ProfileException(Throwable theCause) {
-        super(theCause);
-    }
+  /**
+   * The constructor.
+   *
+   * @param theCause the cause for the exception
+   */
+  public ProfileException(Throwable theCause) {
+    super(theCause);
+  }
 }
-

@@ -29,104 +29,93 @@ import java.beans.PropertyChangeListener;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
-
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
-
 import org.argouml.uml.diagram.ui.UMLDiagram;
 
 /**
  * Ensures that explorer tree nodes have a default ordering.
  *
- * @author  alexb
+ * @author alexb
  * @since 0.15.2, Created on 27 September 2003, 17:40
  */
-public class ExplorerTreeNode extends DefaultMutableTreeNode implements
-        PropertyChangeListener {
+public class ExplorerTreeNode extends DefaultMutableTreeNode implements PropertyChangeListener {
 
-    private static final long serialVersionUID = -6766504350537675845L;
-    private ExplorerTreeModel model;
-    private boolean expanded;
-    private boolean pending;
-    private Set modifySet = Collections.EMPTY_SET;
+  private static final long serialVersionUID = -6766504350537675845L;
+  private ExplorerTreeModel model;
+  private boolean expanded;
+  private boolean pending;
+  private Set modifySet = Collections.EMPTY_SET;
 
-    /**
-     * Creates a new instance of ExplorerTreeNode.
-     *
-     * @param userObj the object in the tree
-     * @param m the tree model
-     */
-    public ExplorerTreeNode(Object userObj, ExplorerTreeModel m) {
-        super(userObj);
-        this.model = m;
-        if (userObj instanceof UMLDiagram)
-            ((UMLDiagram) userObj).addPropertyChangeListener(this);
+  /**
+   * Creates a new instance of ExplorerTreeNode.
+   *
+   * @param userObj the object in the tree
+   * @param m the tree model
+   */
+  public ExplorerTreeNode(Object userObj, ExplorerTreeModel m) {
+    super(userObj);
+    this.model = m;
+    if (userObj instanceof UMLDiagram) ((UMLDiagram) userObj).addPropertyChangeListener(this);
+  }
+
+  /**
+   * @see javax.swing.tree.TreeNode#isLeaf()
+   */
+  public boolean isLeaf() {
+    if (!expanded) {
+      model.updateChildren(new TreePath(model.getPathToRoot(this)));
+      expanded = true;
     }
+    return super.isLeaf();
+  }
 
-    /**
-     * @see javax.swing.tree.TreeNode#isLeaf()
-     */
-    public boolean isLeaf() {
-	if (!expanded) {
-	    model.updateChildren(new TreePath(model.getPathToRoot(this)));
-	    expanded = true;
-	}
-	return super.isLeaf();
+  boolean getPending() {
+    return pending;
+  }
+
+  void setPending(boolean value) {
+    pending = value;
+  }
+
+  /**
+   * @param set the given set
+   */
+  public void setModifySet(Set set) {
+    if (set == null || set.size() == 0) modifySet = Collections.EMPTY_SET;
+    else modifySet = set;
+  }
+
+  /**
+   * @param node the modified node in the tree
+   */
+  public void nodeModified(Object node) {
+    if (modifySet.contains(node)) model.getNodeUpdater().schedule(this);
+    if (node == getUserObject()) model.nodeChanged(this);
+  }
+
+  /** cleans up for gc. */
+  public void remove() {
+    this.userObject = null;
+
+    if (children != null) {
+      Iterator childrenIt = children.iterator();
+      while (childrenIt.hasNext()) {
+        ((ExplorerTreeNode) childrenIt.next()).remove();
+      }
+
+      children.clear();
+      children = null;
     }
+  }
 
-    boolean getPending() {
-	return pending;
+  /**
+   * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+   */
+  public void propertyChange(PropertyChangeEvent evt) {
+    // Name of the UMLDiagram represented by this node has changed.
+    if (evt.getSource() instanceof UMLDiagram && "name".equals(evt.getPropertyName())) {
+      model.nodeChanged(this);
     }
-
-    void setPending(boolean value) {
-	pending = value;
-    }
-
-    /**
-     * @param set the given set
-     */
-    public void setModifySet(Set set) {
-	if (set == null || set.size() == 0)
-	    modifySet = Collections.EMPTY_SET;
-	else
-	    modifySet = set;
-    }
-
-    /**
-     * @param node the modified node in the tree
-     */
-    public void nodeModified(Object node) {
-	if (modifySet.contains(node))
-	    model.getNodeUpdater().schedule(this);
-	if (node == getUserObject())
-	    model.nodeChanged(this);
-    }
-
-    /**
-     * cleans up for gc.
-     */
-    public void remove() {
-	this.userObject = null;
-
-	if (children != null) {
-	    Iterator childrenIt = children.iterator();
-	    while (childrenIt.hasNext()) {
-		((ExplorerTreeNode) childrenIt.next()).remove();
-	    }
-
-	    children.clear();
-	    children = null;
-	}
-    }
-    
-    /**
-     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
-     */
-    public void propertyChange(PropertyChangeEvent evt) {
-        // Name of the UMLDiagram represented by this node has changed.
-        if (evt.getSource() instanceof UMLDiagram
-                && "name".equals(evt.getPropertyName())) {
-            model.nodeChanged(this);
-        }
-    }
+  }
 }

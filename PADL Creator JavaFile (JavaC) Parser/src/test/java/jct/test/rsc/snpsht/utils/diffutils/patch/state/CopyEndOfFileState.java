@@ -1,12 +1,12 @@
 /*
  * (c) Copyright 2008 and following years, Julien Tanteri, University of
  * Montreal.
- * 
+ *
  * Use and copying of this software and preparation of derivative works based
  * upon this software are permitted. Any copy of this software or of any
  * derivative work must include the above copyright notice of the author, this
  * paragraph and the one after it.
- * 
+ *
  * This software is made available AS IS, and THE AUTHOR DISCLAIMS ALL
  * WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND NOT
@@ -14,13 +14,12 @@
  * RESULTING FROM THE SOFTWARE OR ITS USE IS EXPRESSLY DISCLAIMED, WHETHER
  * ARISING IN CONTRACT, TORT (INCLUDING NEGLIGENCE) OR STRICT LIABILITY, EVEN IF
  * THE AUTHOR IS ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
- * 
+ *
  * All Rights Reserved.
  */
 package jct.test.rsc.snpsht.utils.diffutils.patch.state;
 
 import java.io.IOException;
-
 import jct.test.rsc.snpsht.utils.diffutils.patch.context.IContextFileReader;
 import jct.test.rsc.snpsht.utils.diffutils.patch.context.IContextFileWriter;
 import jct.test.rsc.snpsht.utils.diffutils.patch.unified.UniPatch;
@@ -28,26 +27,26 @@ import jct.test.rsc.snpsht.utils.diffutils.state.IFSMEndState;
 
 public class CopyEndOfFileState extends AbstractPatchFSMState implements IFSMEndState {
 
-	public CopyEndOfFileState(UniPatch fsm) {
-		super(fsm);
-	}
+  public CopyEndOfFileState(UniPatch fsm) {
+    super(fsm);
+  }
 
-	@Override
-	public void process() throws IOException {
-		String line;
-		IContextFileReader oldRevision = getContext().getOldRevisionContext();
-		IContextFileWriter newRevision = getContext().getNewRevisionContext();
+  @Override
+  public void process() throws IOException {
+    String line;
+    IContextFileReader oldRevision = getContext().getOldRevisionContext();
+    IContextFileWriter newRevision = getContext().getNewRevisionContext();
 
-		// While not EOF and header start range not reached
-		while ((line = oldRevision.readLine()) != null) {
+    // While not EOF and header start range not reached
+    while ((line = oldRevision.readLine()) != null) {
 
-			// Copy unchanged lines
-			newRevision.writeLine(line);
+      // Copy unchanged lines
+      newRevision.writeLine(line);
 
-			System.out.println(line + " - " + oldRevision.getLineNumber()
-					+ " - " + newRevision.getLineNumber());
-		}
+      System.out.println(
+          line + " - " + oldRevision.getLineNumber() + " - " + newRevision.getLineNumber());
+    }
 
-		System.out.println(oldRevision.isEOFReached());
-	}
+    System.out.println(oldRevision.isEOFReached());
+  }
 }

@@ -30,19 +30,18 @@ import org.argouml.model.ScopeKind;
 
 /**
  * The implementation of the ScopeKind for EUML2.
- * 
+ *
  * @author Tom Morris
- * @deprecated This is no longer used in UML 2.  We return literal placeholder
- * values for any code that still uses this.
+ * @deprecated This is no longer used in UML 2. We return literal placeholder values for any code
+ *     that still uses this.
  */
 class ScopeKindEUMLImpl implements ScopeKind {
 
-    public Object getClassifier() {
-        return "classifier";
-    }
+  public Object getClassifier() {
+    return "classifier";
+  }
 
-    public Object getInstance() {
-        return "instance";
-    }
-
+  public Object getInstance() {
+    return "instance";
+  }
 }

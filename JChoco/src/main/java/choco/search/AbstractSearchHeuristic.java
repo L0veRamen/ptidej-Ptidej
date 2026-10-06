@@ -17,21 +17,18 @@ import choco.branch.IntBranching;
  * An abstract class for all heuristics (variable, value, branching heuristics) related to search
  */
 public class AbstractSearchHeuristic {
-	/**
-	 * the branching object owning the variable heuristic
-	 */
-	protected AbstractIntBranching branching;
+  /** the branching object owning the variable heuristic */
+  protected AbstractIntBranching branching;
 
-	/**
-	 * the problem to which the heuristic is related
-	 */
-	protected Problem problem;
+  /** the problem to which the heuristic is related */
+  protected Problem problem;
 
-	/**
-	 * each IVarSelector is associated to a branching strategy
-	 * @return the associated branching strategy
-	 */
-	public IntBranching getBranching() {
-		return this.branching;
-	}
+  /**
+   * each IVarSelector is associated to a branching strategy
+   *
+   * @return the associated branching strategy
+   */
+  public IntBranching getBranching() {
+    return this.branching;
+  }
 }

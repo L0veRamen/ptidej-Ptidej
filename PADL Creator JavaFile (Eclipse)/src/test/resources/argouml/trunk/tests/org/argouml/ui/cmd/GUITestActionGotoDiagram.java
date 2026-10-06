@@ -25,51 +25,45 @@
 package org.argouml.ui.cmd;
 
 import java.io.File;
-
 import junit.framework.TestCase;
-
 import org.argouml.util.CheckMain;
 
-/**
- * Tests the change of diagram from the command line.
- */
+/** Tests the change of diagram from the command line. */
 public class GUITestActionGotoDiagram extends TestCase {
-    private static final String OUTPUT_FILE1 = "test-out1.gif";
-    private static final String OUTPUT_FILE2 = "test-out2.gif";
+  private static final String OUTPUT_FILE1 = "test-out1.gif";
+  private static final String OUTPUT_FILE2 = "test-out2.gif";
 
-    /**
-     * Constructor for GUITestActionGotoDiagram.
-     * @param name The name of the test case.
-     */
-    public GUITestActionGotoDiagram(String name) {
-        super(name);
-    }
+  /**
+   * Constructor for GUITestActionGotoDiagram.
+   *
+   * @param name The name of the test case.
+   */
+  public GUITestActionGotoDiagram(String name) {
+    super(name);
+  }
 
-    /**
-     * Test dumping a named diagram from a project with contents.
-     */
-    public void testProjectWithContents() {
-        File file =
-	    CheckMain.getTestModel("testmodels/GUITestPropertyPanels.zargo");
+  /** Test dumping a named diagram from a project with contents. */
+  public void testProjectWithContents() {
+    File file = CheckMain.getTestModel("testmodels/GUITestPropertyPanels.zargo");
 
-        CheckMain.callMain(new String[] {
-            "-nosplash",
-            "-command",
-            "org.argouml.uml.ui.ActionOpenProject=" + file.toString(),
-            "-command",
-            "org.argouml.uml.ui.ActionSaveGraphics=" + OUTPUT_FILE1,
-            "-command",
-            "org.argouml.ui.cmd.ActionGotoDiagram=Deployment Diagram 1",
-            "-command",
-            "org.argouml.uml.ui.ActionSaveGraphics=" + OUTPUT_FILE2,
+    CheckMain.callMain(
+        new String[] {
+          "-nosplash",
+          "-command",
+          "org.argouml.uml.ui.ActionOpenProject=" + file.toString(),
+          "-command",
+          "org.argouml.uml.ui.ActionSaveGraphics=" + OUTPUT_FILE1,
+          "-command",
+          "org.argouml.ui.cmd.ActionGotoDiagram=Deployment Diagram 1",
+          "-command",
+          "org.argouml.uml.ui.ActionSaveGraphics=" + OUTPUT_FILE2,
         });
-        assertTrue(new File(OUTPUT_FILE1).exists());
-        assertTrue(new File(OUTPUT_FILE2).exists());
+    assertTrue(new File(OUTPUT_FILE1).exists());
+    assertTrue(new File(OUTPUT_FILE2).exists());
 
-        // TODO: We could check that the contents of the files differ.
+    // TODO: We could check that the contents of the files differ.
 
-        new File(OUTPUT_FILE1).delete();
-        new File(OUTPUT_FILE2).delete();
-    }
+    new File(OUTPUT_FILE1).delete();
+    new File(OUTPUT_FILE2).delete();
+  }
 }
-

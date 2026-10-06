@@ -25,34 +25,26 @@
 package org.argouml.ui.cmd;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.Action;
-
 import org.argouml.cognitive.ui.DesignIssuesDialog;
 import org.argouml.i18n.Translator;
 import org.tigris.gef.undo.UndoableAction;
 
-
-
 class ActionOpenDecisions extends UndoableAction {
 
-    /**
-     * The constructor.
-     */
-    public ActionOpenDecisions() {
-        super(Translator.localize("action.design-issues"), null);
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize("action.design-issues"));
-    }
+  /** The constructor. */
+  public ActionOpenDecisions() {
+    super(Translator.localize("action.design-issues"), null);
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize("action.design-issues"));
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-    	super.actionPerformed(ae);
-	DesignIssuesDialog d = new DesignIssuesDialog();
-	d.setVisible(true);
-    }
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    super.actionPerformed(ae);
+    DesignIssuesDialog d = new DesignIssuesDialog();
+    d.setVisible(true);
+  }
 } /* end class ActionOpenDecisions */
-

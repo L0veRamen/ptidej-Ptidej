@@ -25,78 +25,71 @@
 package org.argouml.core.propertypanels.ui;
 
 import java.util.List;
-
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementOrderedListModel2;
 
+/** Model for ActionSequence's list of Actions. */
+class UMLActionSequenceActionListModel extends UMLModelElementOrderedListModel2 {
 
-/**
- * Model for ActionSequence's list of Actions.
- */
-class UMLActionSequenceActionListModel
-    extends UMLModelElementOrderedListModel2 {
+  /** Constructor. */
+  public UMLActionSequenceActionListModel() {
+    super("action");
+  }
 
-    /**
-     * Constructor.
-     */
-    public UMLActionSequenceActionListModel() {
-        super("action");
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (getTarget() != null) {
+      setAllElements(Model.getFacade().getActions(getTarget()));
     }
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (getTarget() != null) {
-            setAllElements(Model.getFacade().getActions(getTarget()));
-        }
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(java.lang.Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().isAAction(element);
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(java.lang.Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().isAAction(element);
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementOrderedListModel2#moveDown(int)
+   */
+  protected void moveDown(int index) {
+    Object target = getTarget();
+    List c = Model.getFacade().getActions(target);
+    if (index < c.size() - 1) {
+      Object item = c.get(index);
+      Model.getCommonBehaviorHelper().removeAction(target, item);
+      Model.getCommonBehaviorHelper().addAction(target, index + 1, item);
     }
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementOrderedListModel2#moveDown(int)
-     */
-    protected void moveDown(int index) {
-        Object target = getTarget();
-        List c = Model.getFacade().getActions(target);
-        if (index < c.size() - 1) {
-            Object item = c.get(index);
-            Model.getCommonBehaviorHelper().removeAction(target, item);
-            Model.getCommonBehaviorHelper().addAction(target, index + 1, item);
-        }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementOrderedListModel2#moveToBottom(int)
+   */
+  @Override
+  protected void moveToBottom(int index) {
+    Object target = getTarget();
+    List c = Model.getFacade().getActions(target);
+    if (index < c.size() - 1) {
+      Object item = c.get(index);
+      Model.getCommonBehaviorHelper().removeAction(target, item);
+      Model.getCommonBehaviorHelper().addAction(target, c.size(), item);
     }
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementOrderedListModel2#moveToBottom(int)
-     */
-    @Override
-    protected void moveToBottom(int index) {
-        Object target = getTarget();
-        List c = Model.getFacade().getActions(target);
-        if (index < c.size() - 1) {
-            Object item = c.get(index);
-            Model.getCommonBehaviorHelper().removeAction(target, item);
-            Model.getCommonBehaviorHelper().addAction(target, c.size(), item);
-        }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementOrderedListModel2#moveToTop(int)
+   */
+  @Override
+  protected void moveToTop(int index) {
+    Object target = getTarget();
+    List c = Model.getFacade().getActions(target);
+    if (index > 0) {
+      Object item = c.get(index);
+      Model.getCommonBehaviorHelper().removeAction(target, item);
+      Model.getCommonBehaviorHelper().addAction(target, 0, item);
     }
-
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementOrderedListModel2#moveToTop(int)
-     */
-    @Override
-    protected void moveToTop(int index) {
-        Object target = getTarget();
-        List c = Model.getFacade().getActions(target);
-        if (index > 0) {
-            Object item = c.get(index);
-            Model.getCommonBehaviorHelper().removeAction(target, item);
-            Model.getCommonBehaviorHelper().addAction(target, 0, item);
-        }
-    }
+  }
 }

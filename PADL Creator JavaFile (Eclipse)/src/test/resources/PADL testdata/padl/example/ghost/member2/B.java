@@ -1,5 +1,3 @@
 package padl.example.ghost.member2;
 
-public class B {
-
-}
+public class B {}

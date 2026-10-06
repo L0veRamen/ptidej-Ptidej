@@ -24,34 +24,26 @@
 
 package org.argouml.uml.ui;
 
-import org.argouml.uml.diagram.DiagramFactory;
 import org.argouml.uml.diagram.ArgoDiagram;
+import org.argouml.uml.diagram.DiagramFactory;
 
-/**
- * Action to trigger creation of new collaboration diagram.
- */
+/** Action to trigger creation of new collaboration diagram. */
 public class ActionCollaborationDiagram extends ActionNewDiagram {
 
-    /**
-     * Constructor.
-     */
-    public ActionCollaborationDiagram() {
-        super("action.collaboration-diagram");
-    }
+  /** Constructor. */
+  public ActionCollaborationDiagram() {
+    super("action.collaboration-diagram");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.ActionNewDiagram#createDiagram()
-     */
-    public ArgoDiagram createDiagram(Object namespace) {
-        return DiagramFactory.getInstance().createDiagram(
-                DiagramFactory.DiagramType.Collaboration,
-                createCollaboration(namespace),
-                null);
-    }
+  /*
+   * @see org.argouml.uml.ui.ActionNewDiagram#createDiagram()
+   */
+  public ArgoDiagram createDiagram(Object namespace) {
+    return DiagramFactory.getInstance()
+        .createDiagram(
+            DiagramFactory.DiagramType.Collaboration, createCollaboration(namespace), null);
+  }
 
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -1089352213298998155L;
-
+  /** The UID. */
+  private static final long serialVersionUID = -1089352213298998155L;
 }

@@ -30,21 +30,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This is a utility class useful in conjunction with 
- * {@link org.eclipse.uml2.common.edit.command.ChangeCommand ChangeCommand}
- * 
+ * This is a utility class useful in conjunction with {@link
+ * org.eclipse.uml2.common.edit.command.ChangeCommand ChangeCommand}
+ *
  * @author Bogdan Pistol
  */
 public abstract class RunnableClass implements Runnable {
-    
-    /**
-     * A list of parameters useful for extraction/insertion of parameters
-     * into a Runnable instance.
-     */
-    private List<Object> params = new ArrayList<Object>();
 
-    public List<Object> getParams() {
-        return params;
-    }
+  /**
+   * A list of parameters useful for extraction/insertion of parameters into a Runnable instance.
+   */
+  private List<Object> params = new ArrayList<Object>();
 
+  public List<Object> getParams() {
+    return params;
+  }
 }

@@ -27,284 +27,257 @@ package org.argouml.cognitive;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
-
-
-import org.argouml.cognitive.critics.Critic;
-
 import org.apache.log4j.Logger;
+import org.argouml.cognitive.critics.Critic;
 
 // TODO: Maybe the exception strings should be internationalized
 
 /**
- * This class is responsible for identifying one critic that has been resolved
- * by the user in one specific context.
+ * This class is responsible for identifying one critic that has been resolved by the user in one
+ * specific context.
  *
- * @author	Michael Stockman
+ * @author Michael Stockman
  */
 public class ResolvedCritic {
-    /**
-     * The logger.
-     */
-    private static final Logger LOG = Logger.getLogger(ResolvedCritic.class);
+  /** The logger. */
+  private static final Logger LOG = Logger.getLogger(ResolvedCritic.class);
 
-    /**
-     * The name of the critic.
-     */
-    private String critic;
+  /** The name of the critic. */
+  private String critic;
 
-    /**
-     * The IDs of the objects that define the context of the critic.
-     */
-    private List offenders;
+  /** The IDs of the objects that define the context of the critic. */
+  private List offenders;
 
-    /**
-     * Creates a new ResolvedCritic using the name of the Critic and the
-     * Vector of objects that triggered the Critic given as parameters.
-     *
-     * @param	cr	The name of the Critic that has been resolved
-     * @param	offs	The Vector of related objects.
-     */
-    public ResolvedCritic(String cr, Vector offs) {
-	critic = cr;
-	if (offs != null && offs.size() > 0) {
-	    offenders = new Vector(offs);
-	} else {
-	    offenders = null;
-	}
+  /**
+   * Creates a new ResolvedCritic using the name of the Critic and the Vector of objects that
+   * triggered the Critic given as parameters.
+   *
+   * @param cr The name of the Critic that has been resolved
+   * @param offs The Vector of related objects.
+   */
+  public ResolvedCritic(String cr, Vector offs) {
+    critic = cr;
+    if (offs != null && offs.size() > 0) {
+      offenders = new Vector(offs);
+    } else {
+      offenders = null;
+    }
+  }
+
+  /**
+   * Same as {@link #ResolvedCritic(Critic,ListSet,boolean)}.
+   *
+   * @param c The Critic that has been resolved.
+   * @param offs The set of objects that triggered the Critic.
+   * @throws UnresolvableException If some of the objects does not have a ItemUID and does not
+   *     accept a new one.
+   */
+  public ResolvedCritic(Critic c, ListSet offs) throws UnresolvableException {
+
+    this(c, offs, true);
+  }
+
+  /**
+   * Creates a new ResolvedCritic from the given information.
+   *
+   * @param c The Critic that has been resolved.
+   * @param offs The set of objects that triggered the Critic.
+   * @param canCreate If it should try to assign new ItemUIDs to objects that doesn't have.
+   * @throws UnresolvableException If some of the objects does not have a ItemUID and does not
+   *     accept a new one.
+   */
+  public ResolvedCritic(Critic c, ListSet offs, boolean canCreate) throws UnresolvableException {
+    if (c == null) {
+      throw new NullPointerException();
     }
 
-    /**
-     * Same as {@link #ResolvedCritic(Critic,ListSet,boolean)}.
-     *
-     * @param c The Critic that has been resolved.
-     * @param offs The set of objects that triggered the Critic.
-     * @throws	UnresolvableException	If some of the objects does
-     *			not have a ItemUID and does not accept a new
-     *			one.
-     */
-    public ResolvedCritic(Critic c, ListSet offs)
-    	throws UnresolvableException {
+    // LOG.debug("Adding resolution for: " + c.getClass() + " " + canCreate);
 
-	this(c, offs, true);
+    try {
+      if (offs != null && offs.size() > 0) {
+        offenders = new Vector(offs.size());
+        importOffenders(offs, canCreate);
+      } else {
+        offenders = null;
+      }
+    } catch (UnresolvableException ure) {
+      try {
+        getCriticString(c);
+      } catch (UnresolvableException ure2) {
+        throw new UnresolvableException(ure2.getMessage() + "\n" + ure.getMessage());
+      }
+      throw ure;
     }
 
-    /**
-     * Creates a new ResolvedCritic from the given information.
-     *
-     * @param	c	The Critic that has been resolved.
-     * @param	offs	The set of objects that triggered the Critic.
-     * @param	canCreate	If it should try to assign new
-     *				ItemUIDs to objects that doesn't have.
-     * @throws	UnresolvableException	If some of the objects does
-     *			not have a ItemUID and does not accept a new
-     *			one.
-     */
-    public ResolvedCritic(Critic c, ListSet offs, boolean canCreate)
-	throws UnresolvableException {
-	if (c == null) {
-	    throw new NullPointerException();
-	}
+    critic = getCriticString(c);
+  }
 
-	//LOG.debug("Adding resolution for: " + c.getClass() + " " + canCreate);
+  /*
+   * @see java.lang.Object#hashCode()
+   *
+   * This is a rather bad hash solution but with the {@link #equals(Object)}
+   * defined as below, it is not possible to do better.
+   */
+  public int hashCode() {
+    if (critic == null) {
+      return 0;
+    }
+    return critic.hashCode();
+  }
 
-	try {
-	    if (offs != null && offs.size() > 0) {
-		offenders = new Vector(offs.size());
-		importOffenders(offs, canCreate);
-	    } else {
-	        offenders = null;
-	    }
-	} catch (UnresolvableException ure) {
-	    try {
-		getCriticString(c);
-	    } catch (UnresolvableException ure2) {
-		throw new UnresolvableException(ure2.getMessage() + "\n"
-						+ ure.getMessage());
-	    }
-	    throw ure;
-	}
+  /**
+   * equals returns true if and only if obj also is a ResolvedCritic, has the same critic name, and
+   * has all related objects that this object has. Note that it is not required that this object has
+   * all related objects that that object has.
+   *
+   * <p>Formally that is inconsistent with {@link Object#equals(Object) equals as specified in
+   * java.lang.Object}, but it was probably practical somehow.
+   *
+   * <p>The param obj is the Object to compare to. Returns true if equal according to the
+   * description, false otherwise.
+   *
+   * <p>{@inheritDoc}
+   */
+  public boolean equals(Object obj) {
+    ResolvedCritic rc;
+    int i, j;
 
-	critic = getCriticString(c);
+    if (obj == null || !(obj instanceof ResolvedCritic)) {
+      return false;
     }
 
-    /*
-     * @see java.lang.Object#hashCode()
-     *
-     * This is a rather bad hash solution but with the {@link #equals(Object)}
-     * defined as below, it is not possible to do better.
-     */
-    public int hashCode() {
-        if (critic == null) {
-            return 0;
+    rc = (ResolvedCritic) obj;
+
+    if (critic == null) {
+      if (rc.critic != null) {
+        return false;
+      }
+    } else if (!critic.equals(rc.critic)) {
+      return false;
+    }
+
+    if (offenders == null) {
+      return true;
+    }
+
+    if (rc.offenders == null) {
+      return false;
+    }
+
+    for (i = 0; i < offenders.size(); i++) {
+      if (offenders.get(i) == null) {
+        continue;
+      }
+
+      for (j = 0; j < rc.offenders.size(); j++) {
+        if (offenders.get(i).equals(rc.offenders.get(j))) {
+          break;
         }
-        return critic.hashCode();
+      }
+
+      if (j >= rc.offenders.size()) {
+        return false;
+      }
     }
 
-    /**
-     * equals returns true if and only if obj also is a ResolvedCritic,
-     * has the same critic name, and has all related objects that this
-     * object has. Note that it is not required that this object has all
-     * related objects that that object has.<p>
-     *
-     * Formally that is inconsistent with {@link Object#equals(Object)
-     * equals as specified in java.lang.Object},
-     * but it was probably practical somehow.<p>
-     *
-     * The param obj is the Object to compare to.
-     * Returns true if equal according to the description, false
-     * otherwise.
-     *
-     * {@inheritDoc}
-     */
-    public boolean equals(Object obj) {
-	ResolvedCritic rc;
-	int i, j;
+    return true;
+  }
 
-	if (obj == null || !(obj instanceof ResolvedCritic)) {
-	    return false;
-	}
-
-	rc = (ResolvedCritic) obj;
-
-	if (critic == null) {
-	    if (rc.critic != null) {
-	        return false;
-	    }
-	} else if (!critic.equals(rc.critic)) {
-	    return false;
-	}
-
-	if (offenders == null) {
-	    return true;
-	}
-
-	if (rc.offenders == null) {
-	    return false;
-	}
-
-	for (i = 0; i < offenders.size(); i++) {
-	    if (offenders.get(i) == null) {
-	        continue;
-	    }
-
-	    for (j = 0; j < rc.offenders.size(); j++) {
-	        if (offenders.get(i).equals(rc.offenders.get(j))) {
-	            break;
-	        }
-	    }
-
-	    if (j >= rc.offenders.size()) {
-	        return false;
-	    }
-	}
-
-	return true;
+  /**
+   * Obtains a String that identifies the type of Critic.
+   *
+   * @param c A Critic.
+   * @throws UnresolvableException Not implemented.
+   * @return A identifying name of the critic.
+   */
+  protected String getCriticString(Critic c) throws UnresolvableException {
+    // TODO: Should throw if the string is not good?
+    if (c == null) {
+      throw (new UnresolvableException("Critic is null"));
     }
+    String s = c.getClass().toString();
+    return s;
+  }
 
-    /**
-     * Obtains a String that identifies the type of Critic.
-     *
-     * @param	c	A Critic.
-     * @throws	UnresolvableException	Not implemented.
-     * @return	A identifying name of the critic.
-     */
-    protected String getCriticString(Critic c) throws UnresolvableException {
-        // TODO: Should throw if the string is not good?
-        if (c == null) {
-            throw (new UnresolvableException("Critic is null"));
+  /**
+   * Imports the set of related objects in set to this object. If an object does not have an
+   * ItemUID, canCreate determines if one will be provided. If some object does not have an ItemUID
+   * and canCreate is false och the object does not accept and ItemUID, then UnresolvableException
+   * is thrown.
+   *
+   * @param set The set of related objects to import.
+   * @param canCreate If ItemUIDs are allowed to be created.
+   * @throws UnresolvableException if not all objects can be imported.
+   */
+  protected void importOffenders(ListSet set, boolean canCreate) throws UnresolvableException {
+
+    Enumeration elems = set.elements();
+    String fail = null;
+
+    while (elems.hasMoreElements()) {
+      Object obj = elems.nextElement();
+      String id = ItemUID.getIDOfObject(obj, canCreate);
+      if (id == null) {
+        if (!canCreate) {
+          throw new UnresolvableException(
+              "ItemUID missing or " + "unable to " + "create for class: " + obj.getClass());
         }
-        String s = c.getClass().toString();
-	return s;
+
+        if (fail == null) {
+          fail = obj.getClass().toString();
+        } else {
+          fail = fail + ", " + obj.getClass().toString();
+        }
+
+        LOG.warn("Offender " + obj.getClass() + " unresolvable");
+
+        // Use this for fast fail instead.
+        // Sacrificed for complete fail. d00mst
+        // throw new UnresolvableException(
+        //	"Unable to create ItemUID for class: "
+        //	+ obj.getClass());
+      } else {
+        offenders.add(id);
+      }
     }
 
-    /**
-     * Imports the set of related objects in set to this object. If an
-     * object does not have an ItemUID, canCreate determines if one will
-     * be provided. If some object does not have an ItemUID and canCreate
-     * is false och the object does not accept and ItemUID, then
-     * UnresolvableException is thrown.
-     *
-     * @param	set	The set of related objects to import.
-     * @param	canCreate	If ItemUIDs are allowed to be created.
-     * @throws	UnresolvableException if not all objects can be
-     *		imported.
-     */
-    protected void importOffenders(ListSet set, boolean canCreate)
-	throws UnresolvableException {
+    if (fail != null) {
+      throw new UnresolvableException("Unable to create ItemUID for " + "some class(es): " + fail);
+    }
+  }
 
-	Enumeration elems = set.elements();
-	String fail = null;
+  /**
+   * Gets the content of critic.
+   *
+   * @return The critic this instance resolves.
+   */
+  public String getCritic() {
+    return critic;
+  }
 
-	while (elems.hasMoreElements()) {
-	    Object obj = elems.nextElement();
-	    String id = ItemUID.getIDOfObject(obj, canCreate);
-	    if (id == null) {
-		if (!canCreate) {
-		    throw new UnresolvableException("ItemUID missing or "
-						    + "unable to "
-						    + "create for class: "
-						    + obj.getClass());
-		}
+  /**
+   * Gets the list of related objects, offenders.
+   *
+   * @return The list of offenders of the critic this instance resolved.
+   */
+  public List getOffenderList() {
+    return offenders;
+  }
 
-		if (fail == null) {
-		    fail = obj.getClass().toString();
-		} else {
-		    fail = fail + ", " + obj.getClass().toString();
-		}
+  /*
+   * @see java.lang.Object#toString()
+   */
+  public String toString() {
+    StringBuffer sb = new StringBuffer("ResolvedCritic: " + critic + " : ");
+    int i;
 
-		LOG.warn("Offender " + obj.getClass() + " unresolvable");
-
-		// Use this for fast fail instead.
-		// Sacrificed for complete fail. d00mst
-		//throw new UnresolvableException(
-		//	"Unable to create ItemUID for class: "
-		//	+ obj.getClass());
-	    } else {
-	        offenders.add(id);
-	    }
-	}
-
-	if (fail != null) {
-	    throw new UnresolvableException("Unable to create ItemUID for "
-					    + "some class(es): "
-					    + fail);
-	}
+    for (i = 0; i < offenders.size(); i++) {
+      if (i > 0) {
+        sb.append(", ");
+      }
+      sb.append(offenders.get(i));
     }
 
-    /**
-     * Gets the content of critic.
-     *
-     * @return The critic this instance resolves.
-     */
-    public String getCritic() {
-	return critic;
-    }
-
-    /**
-     * Gets the list of related objects, offenders.
-     *
-     * @return The list of offenders of the critic this instance resolved.
-     */
-    public List getOffenderList() {
-	return offenders;
-    }
-
-    /*
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-	StringBuffer sb =
-	    new StringBuffer("ResolvedCritic: " + critic + " : ");
-	int i;
-
-	for (i = 0; i < offenders.size(); i++) {
-	    if (i > 0) {
-	        sb.append(", ");
-	    }
-	    sb.append(offenders.get(i));
-	}
-
-	return sb.toString();
-    }
+    return sb.toString();
+  }
 }
-

@@ -26,7 +26,6 @@ package org.argouml.uml.ui.behavior.use_cases;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementOrderedListModel2;
 
@@ -34,45 +33,42 @@ import org.argouml.uml.ui.UMLModelElementOrderedListModel2;
  * @since Oct 7, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class UMLUseCaseExtensionPointListModel
-    extends UMLModelElementOrderedListModel2 {
+public class UMLUseCaseExtensionPointListModel extends UMLModelElementOrderedListModel2 {
 
-    /**
-     * Constructor for UMLUseCaseExtensionPointListModel.
-     */
-    public UMLUseCaseExtensionPointListModel() {
-        super("extensionPoint");
-    }
+  /** Constructor for UMLUseCaseExtensionPointListModel. */
+  public UMLUseCaseExtensionPointListModel() {
+    super("extensionPoint");
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        setAllElements(Model.getFacade().getExtensionPoints(getTarget()));
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    setAllElements(Model.getFacade().getExtensionPoints(getTarget()));
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ o) {
-        return Model.getFacade().getExtensionPoints(getTarget()).contains(o);
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ o) {
+    return Model.getFacade().getExtensionPoints(getTarget()).contains(o);
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementOrderedListModel2#swap(int, int)
-     */
-    public void swap(int index1, int index2) {
-        Object usecase = getTarget();
-        List c = new ArrayList(Model.getFacade().getExtensionPoints(usecase));
-        Object mem1 = c.get(index1);
-        Object mem2 = c.get(index2);
-        List cc = new ArrayList(c);
-        cc.remove(mem1);
-        cc.remove(mem2);
-        Model.getUseCasesHelper().setExtensionPoints(usecase, cc);
-        c.set(index1, mem2);
-        c.set(index2, mem1);
-        Model.getUseCasesHelper().setExtensionPoints(usecase, c);
-        buildModelList();
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementOrderedListModel2#swap(int, int)
+   */
+  public void swap(int index1, int index2) {
+    Object usecase = getTarget();
+    List c = new ArrayList(Model.getFacade().getExtensionPoints(usecase));
+    Object mem1 = c.get(index1);
+    Object mem2 = c.get(index2);
+    List cc = new ArrayList(c);
+    cc.remove(mem1);
+    cc.remove(mem2);
+    Model.getUseCasesHelper().setExtensionPoints(usecase, cc);
+    c.set(index1, mem2);
+    c.set(index2, mem1);
+    Model.getUseCasesHelper().setExtensionPoints(usecase, c);
+    buildModelList();
+  }
 }

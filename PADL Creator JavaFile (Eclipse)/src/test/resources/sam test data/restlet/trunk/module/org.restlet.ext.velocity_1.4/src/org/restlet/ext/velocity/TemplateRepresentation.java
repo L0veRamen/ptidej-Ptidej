@@ -28,7 +28,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Map;
-
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -38,114 +37,109 @@ import org.restlet.util.MapModel;
 
 /**
  * FreeMarker template representation. Useful for dynamic string-based representations.
+ *
  * @see <a href="http://freemarker.org/">FreeMarker home page</a>
  * @author Jerome Louvel (contact@noelios.com)
  */
-public class TemplateRepresentation extends OutputRepresentation
-{
-	/** The template's name. */
-	private String templateName;
+public class TemplateRepresentation extends OutputRepresentation {
+  /** The template's name. */
+  private String templateName;
 
-	/** The Velocity engine. */
-	private VelocityEngine engine;
+  /** The Velocity engine. */
+  private VelocityEngine engine;
 
-	/** The template's data model. */
-	private Map<String, Object> dataModel;
+  /** The template's data model. */
+  private Map<String, Object> dataModel;
 
-	/**
-	 * Constructor.
-	 * @param templateName The FreeMarker template's name. The full path is resolved by the configuration.
-	 * @param mediaType The representation's media type.
-	 */
-	public TemplateRepresentation(String templateName, MediaType mediaType)
-	{
-		this(templateName, new MapModel(), mediaType);
-	}
+  /**
+   * Constructor.
+   *
+   * @param templateName The FreeMarker template's name. The full path is resolved by the
+   *     configuration.
+   * @param mediaType The representation's media type.
+   */
+  public TemplateRepresentation(String templateName, MediaType mediaType) {
+    this(templateName, new MapModel(), mediaType);
+  }
 
-	/**
-	 * Constructor.
-	 * @param templateName The FreeMarker template's name. The full path is resolved by the configuration.
-	 * @param dataModel The FreeMarker template's data model.
-	 * @param mediaType The representation's media type.
-	 */
-	public TemplateRepresentation(String templateName, Map<String, Object> dataModel,
-			MediaType mediaType)
-	{
-		super(mediaType);
-		this.engine = new VelocityEngine();
-		this.dataModel = dataModel;
-		this.templateName = templateName;
-	}
+  /**
+   * Constructor.
+   *
+   * @param templateName The FreeMarker template's name. The full path is resolved by the
+   *     configuration.
+   * @param dataModel The FreeMarker template's data model.
+   * @param mediaType The representation's media type.
+   */
+  public TemplateRepresentation(
+      String templateName, Map<String, Object> dataModel, MediaType mediaType) {
+    super(mediaType);
+    this.engine = new VelocityEngine();
+    this.dataModel = dataModel;
+    this.templateName = templateName;
+  }
 
-	/**
-	 * Returns the Velocity engine.
-	 * @return The Velocity engine.
-	 */
-	public VelocityEngine getEngine()
-	{
-		return this.engine;
-	}
+  /**
+   * Returns the Velocity engine.
+   *
+   * @return The Velocity engine.
+   */
+  public VelocityEngine getEngine() {
+    return this.engine;
+  }
 
-	/**
-	 * Returns the template's data model.
-	 * @return The template's data model.
-	 */
-	public Map<String, Object> getDataModel()
-	{
-		return this.dataModel;
-	}
+  /**
+   * Returns the template's data model.
+   *
+   * @return The template's data model.
+   */
+  public Map<String, Object> getDataModel() {
+    return this.dataModel;
+  }
 
-	/**
-	 * Sets the template's data model.
-	 * @param dataModel The template's data model.
-	 * @return The template's data model.
-	 */
-	public Map<String, Object> setDataModel(Map<String, Object> dataModel)
-	{
-		this.dataModel = dataModel;
-		return dataModel;
-	}
+  /**
+   * Sets the template's data model.
+   *
+   * @param dataModel The template's data model.
+   * @return The template's data model.
+   */
+  public Map<String, Object> setDataModel(Map<String, Object> dataModel) {
+    this.dataModel = dataModel;
+    return dataModel;
+  }
 
-	/**
-	 * Writes the datum as a stream of bytes.
-	 * @param outputStream The stream to use when writing.
-	 */
-	public void write(OutputStream outputStream) throws IOException
-	{
-		Writer tmplWriter = null;
+  /**
+   * Writes the datum as a stream of bytes.
+   *
+   * @param outputStream The stream to use when writing.
+   */
+  public void write(OutputStream outputStream) throws IOException {
+    Writer tmplWriter = null;
 
-		try
-		{
-			// Initialize the log system
-			getEngine().setProperty("runtime.log.logsystem", new JdkLogSystem());
+    try {
+      // Initialize the log system
+      getEngine().setProperty("runtime.log.logsystem", new JdkLogSystem());
 
-			// Initialize the engine
-			getEngine().init();
+      // Initialize the engine
+      getEngine().init();
 
-			// Create the context
-			VelocityContext context = new VelocityContext(getDataModel());
+      // Create the context
+      VelocityContext context = new VelocityContext(getDataModel());
 
-			// Load the template
-			Template template = engine.getTemplate(templateName);
-			if (getCharacterSet() != null)
-			{
-				tmplWriter = new BufferedWriter(new OutputStreamWriter(outputStream,
-						getCharacterSet().getName()));
-			}
-			else
-			{
-				tmplWriter = new BufferedWriter(new OutputStreamWriter(outputStream, template
-						.getEncoding()));
-			}
+      // Load the template
+      Template template = engine.getTemplate(templateName);
+      if (getCharacterSet() != null) {
+        tmplWriter =
+            new BufferedWriter(new OutputStreamWriter(outputStream, getCharacterSet().getName()));
+      } else {
+        tmplWriter =
+            new BufferedWriter(new OutputStreamWriter(outputStream, template.getEncoding()));
+      }
 
-			// Process the template
-			template.merge(context, tmplWriter);
-			tmplWriter.flush();
-		}
-		catch (Exception e)
-		{
-			throw new IOException("Template processing error. " + e.getMessage());
-		}
-	}
-
+      // Process the template
+      template.merge(context, tmplWriter);
+      tmplWriter.flush();
+    } catch (Exception e) {
+      throw new IOException("Template processing error. " + e.getMessage());
+    }
+  }
 }

@@ -26,111 +26,104 @@ package org.argouml.cognitive.critics;
 
 import java.io.Serializable;
 import java.util.Date;
-
 import org.apache.log4j.Logger;
 
 /**
- * A Critic can be disabled for a certain amount of time by giving it
- * the snooze command.  Whereas most ControlMech's activate or deactivate
- * Critic's based on evidence of the Designer's state of mind, this
- * command allows the Designer to disable Critic's without stating any
- * reason.  However, after a period of time, the critic may become
- * active again.  We think this will often be convienent because
- * Designer's have a lot of tacit knowledge about their own state of
- * mind that is not worth making explicit.
+ * A Critic can be disabled for a certain amount of time by giving it the snooze command. Whereas
+ * most ControlMech's activate or deactivate Critic's based on evidence of the Designer's state of
+ * mind, this command allows the Designer to disable Critic's without stating any reason. However,
+ * after a period of time, the critic may become active again. We think this will often be
+ * convienent because Designer's have a lot of tacit knowledge about their own state of mind that is
+ * not worth making explicit.
  *
  * @author Jason Robbins
  */
 public class SnoozeOrder implements Serializable {
-    /** logger */
-    private static final Logger LOG = Logger.getLogger(SnoozeOrder.class);
+  /** logger */
+  private static final Logger LOG = Logger.getLogger(SnoozeOrder.class);
 
-    ////////////////////////////////////////////////////////////////
-    // constants
-    /** The initial sleeping time. */
-    private final long initialIntervalMS = 1000 * 60 * 10; /* ten minutes */
+  ////////////////////////////////////////////////////////////////
+  // constants
+  /** The initial sleeping time. */
+  private final long initialIntervalMS = 1000 * 60 * 10; /* ten minutes */
 
-    ////////////////////////////////////////////////////////////////
-    // instance variables
+  ////////////////////////////////////////////////////////////////
+  // instance variables
 
-    /** Critic should sleep until this time. */
-    private Date snoozeUntil;
-    /** Ifthe designer snoozees the critics again before this time, then
-     * go to sleep for even longer. */
-    private Date snoozeAgain;
-    /** The sleeping time, including the effects of repeated snoozeing. */
-    private long interval;
+  /** Critic should sleep until this time. */
+  private Date snoozeUntil;
 
-    private Date now = new Date();
-    private Date getNow() {
-	now.setTime(System.currentTimeMillis());
-	return now;
+  /**
+   * Ifthe designer snoozees the critics again before this time, then go to sleep for even longer.
+   */
+  private Date snoozeAgain;
+
+  /** The sleeping time, including the effects of repeated snoozeing. */
+  private long interval;
+
+  private Date now = new Date();
+
+  private Date getNow() {
+    now.setTime(System.currentTimeMillis());
+    return now;
+  }
+
+  /** The constructor. */
+  public SnoozeOrder() {
+    /* in the past, 0 milliseconds after January 1, 1970, 00:00:00 GMT. */
+    snoozeUntil = new Date(0);
+    snoozeAgain = new Date(0);
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // accessors
+
+  /**
+   * @return true if snoozed
+   */
+  public boolean getSnoozed() {
+    return snoozeUntil.after(getNow());
+  }
+
+  /**
+   * @param h if true, then snooze, else unsnooze
+   */
+  public void setSnoozed(boolean h) {
+    if (h) {
+      snooze();
+    } else {
+      unsnooze();
     }
+  }
 
-    /**
-     * The constructor.
-     *
-     */
-    public SnoozeOrder() {
-	/* in the past, 0 milliseconds after January 1, 1970, 00:00:00 GMT. */
-	snoozeUntil =  new Date(0);
-	snoozeAgain =  new Date(0);
+  ////////////////////////////////////////////////////////////////
+  // criticism control
+
+  /** Snooze the critic. */
+  public void snooze() {
+    if (snoozeAgain.after(getNow())) {
+      interval = nextInterval(interval);
+    } else {
+      interval = initialIntervalMS;
     }
+    long n = (getNow()).getTime();
+    snoozeUntil.setTime(n + interval);
+    snoozeAgain.setTime(n + interval + initialIntervalMS);
+    LOG.info("Setting snooze order to: " + snoozeUntil.toString());
+  }
 
-    ////////////////////////////////////////////////////////////////
-    // accessors
+  /** Unsnooze the critic. */
+  public void unsnooze() {
+    /* in the past, 0 milliseconds after January 1, 1970, 00:00:00 GMT. */
+    snoozeUntil = new Date(0);
+  }
 
-    /**
-     * @return true if snoozed
-     */
-    public boolean getSnoozed() {
-	return snoozeUntil.after(getNow());
-    }
-
-    /**
-     * @param h if true, then snooze, else unsnooze
-     */
-    public void setSnoozed(boolean h) {
-	if (h) {
-	    snooze();
-	} else {
-	    unsnooze();
-	}
-    }
-
-    ////////////////////////////////////////////////////////////////
-    // criticism control
-
-    /**
-     * Snooze the critic.
-     */
-    public void snooze() {
-	if (snoozeAgain.after(getNow())) {
-	    interval = nextInterval(interval);
-	} else {
-	    interval = initialIntervalMS;
-	}
-	long n = (getNow()).getTime();
-	snoozeUntil.setTime(n + interval);
-	snoozeAgain.setTime(n + interval + initialIntervalMS);
-	LOG.info("Setting snooze order to: " + snoozeUntil.toString());
-    }
-
-    /**
-     * Unsnooze the critic.
-     */
-    public void unsnooze() {
-	/* in the past, 0 milliseconds after January 1, 1970, 00:00:00 GMT. */
-	snoozeUntil =  new Date(0);
-    }
-
-    /**
-     * @param last the previous interval
-     * @return the next longer interval
-     */
-    protected long nextInterval(long last) {
-	/* by default, double the snooze interval each time */
-	return last * 2;
-    }
-
+  /**
+   * @param last the previous interval
+   * @return the next longer interval
+   */
+  protected long nextInterval(long last) {
+    /* by default, double the snooze interval each time */
+    return last * 2;
+  }
 } /* end class SnoozeOrder */

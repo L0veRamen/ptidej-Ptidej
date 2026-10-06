@@ -29,28 +29,25 @@ import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLCheckBox2;
 
 /**
- *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 4, 2003
  */
 public class UMLAssociationEndNavigableCheckBox extends UMLCheckBox2 {
 
-    /**
-     * Constructor for UMLAssociationEndNavigableCheckBox.
-     */
-    public UMLAssociationEndNavigableCheckBox() {
-        super(Translator.localize("label.navigable"),
-                ActionSetAssociationEndNavigable.getInstance(), "isNavigable");
+  /** Constructor for UMLAssociationEndNavigableCheckBox. */
+  public UMLAssociationEndNavigableCheckBox() {
+    super(
+        Translator.localize("label.navigable"),
+        ActionSetAssociationEndNavigable.getInstance(),
+        "isNavigable");
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLCheckBox2#buildModel()
+   */
+  public void buildModel() {
+    if (getTarget() != null) {
+      setSelected(Model.getFacade().isNavigable(getTarget()));
     }
-
-    /*
-     * @see org.argouml.uml.ui.UMLCheckBox2#buildModel()
-     */
-    public void buildModel() {
-        if (getTarget() != null) {
-            setSelected(Model.getFacade().isNavigable(getTarget()));
-        }
-
-    }
-
+  }
 }

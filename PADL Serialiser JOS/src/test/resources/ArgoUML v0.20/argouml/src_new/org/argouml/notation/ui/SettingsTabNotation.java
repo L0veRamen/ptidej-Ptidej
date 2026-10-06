@@ -29,11 +29,9 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
 import org.argouml.application.ArgoVersion;
 import org.argouml.application.api.Configuration;
 import org.argouml.application.api.ConfigurationKey;
@@ -45,178 +43,174 @@ import org.argouml.ui.ShadowComboBox;
  * Settings tab panel for handling Notation settings.
  *
  * @author Thierry Lach
- * @since  0.9.4
+ * @since 0.9.4
  */
 public class SettingsTabNotation extends SettingsTabHelper {
 
-    private JCheckBox allowNotations;
-    private JCheckBox useGuillemots;
-    private JCheckBox showVisibility;
-    private JCheckBox showMultiplicity;
-    private JCheckBox showInitialValue;
-    private JCheckBox showProperties;
-    private JCheckBox showStereotypes;
-    private JCheckBox showTypes;
-    private ShadowComboBox defaultShadowWidth;
+  private JCheckBox allowNotations;
+  private JCheckBox useGuillemots;
+  private JCheckBox showVisibility;
+  private JCheckBox showMultiplicity;
+  private JCheckBox showInitialValue;
+  private JCheckBox showProperties;
+  private JCheckBox showStereotypes;
+  private JCheckBox showTypes;
+  private ShadowComboBox defaultShadowWidth;
 
-    /**
-     * The constructor.
+  /** The constructor. */
+  public SettingsTabNotation() {
+    super();
+    setLayout(new BorderLayout());
+    JPanel top = new JPanel();
+
+    top.setLayout(new GridBagLayout());
+
+    GridBagConstraints constraints = new GridBagConstraints();
+    constraints.anchor = GridBagConstraints.WEST;
+    constraints.fill = GridBagConstraints.HORIZONTAL;
+    constraints.gridy = 0;
+    constraints.gridx = 0;
+    constraints.gridwidth = 1;
+    constraints.gridheight = 1;
+    constraints.weightx = 1.0;
+    constraints.insets = new Insets(0, 30, 0, 4);
+
+    constraints.gridy = GridBagConstraints.RELATIVE;
+    allowNotations = createCheckBox("label.uml-notation-only");
+    top.add(allowNotations, constraints);
+
+    useGuillemots = createCheckBox("label.use-guillemots");
+    top.add(useGuillemots, constraints);
+
+    // 2002-07-31
+    // Jaap Branderhorst
+    // from here made visibility etc. configurable
+
+    showVisibility = createCheckBox("label.show-visibility");
+    top.add(showVisibility, constraints);
+
+    showMultiplicity = createCheckBox("label.show-multiplicity");
+    top.add(showMultiplicity, constraints);
+
+    showInitialValue = createCheckBox("label.show-initialvalue");
+    top.add(showInitialValue, constraints);
+
+    showProperties = createCheckBox("label.show-properties");
+    top.add(showProperties, constraints);
+
+    showTypes = createCheckBox("label.show-types");
+    top.add(showTypes, constraints);
+
+    showStereotypes = createCheckBox("label.show-stereotypes");
+    top.add(showStereotypes, constraints);
+
+    constraints.insets = new Insets(5, 30, 0, 4);
+    JPanel defaultShadowWidthPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+    JLabel defaultShadowWidthLabel = createLabel("label.default-shadow-width");
+    defaultShadowWidth = new ShadowComboBox();
+    defaultShadowWidthLabel.setLabelFor(defaultShadowWidth);
+    defaultShadowWidthPanel.add(defaultShadowWidthLabel);
+    defaultShadowWidthPanel.add(defaultShadowWidth);
+    top.add(defaultShadowWidthPanel, constraints);
+
+    add(top, BorderLayout.NORTH);
+  }
+
+  /**
+   * @see org.argouml.application.api.SettingsTabPanel#handleSettingsTabRefresh()
+   */
+  public void handleSettingsTabRefresh() {
+    useGuillemots.setSelected(Notation.getUseGuillemots());
+    allowNotations.setSelected(getBoolean(Notation.KEY_UML_NOTATION_ONLY));
+    showVisibility.setSelected(getBoolean(Notation.KEY_SHOW_VISIBILITY));
+    showInitialValue.setSelected(getBoolean(Notation.KEY_SHOW_INITIAL_VALUE));
+    showProperties.setSelected(getBoolean(Notation.KEY_SHOW_PROPERTIES));
+    /*
+     * The next one defaults to TRUE, to stay compatible with older
+     * ArgoUML versions that did not have this setting:
      */
-    public SettingsTabNotation() {
-        super();
-        setLayout(new BorderLayout());
-        JPanel top = new JPanel();
+    showTypes.setSelected(Configuration.getBoolean(Notation.KEY_SHOW_TYPES, true));
+    showMultiplicity.setSelected(getBoolean(Notation.KEY_SHOW_MULTIPLICITY));
+    showStereotypes.setSelected(getBoolean(Notation.KEY_SHOW_STEREOTYPES));
+    defaultShadowWidth.setSelectedIndex(
+        Configuration.getInteger(Notation.KEY_DEFAULT_SHADOW_WIDTH, 1));
+  }
 
-        top.setLayout(new GridBagLayout());
+  /**
+   * Get a boolean from the configuration.
+   *
+   * @param key a notation key.
+   * @return a boolean
+   */
+  private static boolean getBoolean(ConfigurationKey key) {
+    return Configuration.getBoolean(key, false);
+  }
 
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.anchor = GridBagConstraints.WEST;
-        constraints.fill = GridBagConstraints.HORIZONTAL;
-        constraints.gridy = 0;
-        constraints.gridx = 0;
-        constraints.gridwidth = 1;
-        constraints.gridheight = 1;
-        constraints.weightx = 1.0;
-        constraints.insets = new Insets(0, 30, 0, 4);
+  /**
+   * @see org.argouml.application.api.SettingsTabPanel#handleSettingsTabSave()
+   */
+  public void handleSettingsTabSave() {
+    Notation.setUseGuillemots(useGuillemots.isSelected());
+    Configuration.setBoolean(Notation.KEY_UML_NOTATION_ONLY, allowNotations.isSelected());
+    Configuration.setBoolean(Notation.KEY_SHOW_VISIBILITY, showVisibility.isSelected());
+    Configuration.setBoolean(Notation.KEY_SHOW_MULTIPLICITY, showMultiplicity.isSelected());
+    Configuration.setBoolean(Notation.KEY_SHOW_PROPERTIES, showProperties.isSelected());
+    Configuration.setBoolean(Notation.KEY_SHOW_TYPES, showTypes.isSelected());
+    Configuration.setBoolean(Notation.KEY_SHOW_INITIAL_VALUE, showInitialValue.isSelected());
+    Configuration.setBoolean(Notation.KEY_SHOW_STEREOTYPES, showStereotypes.isSelected());
+    Configuration.setInteger(
+        Notation.KEY_DEFAULT_SHADOW_WIDTH, defaultShadowWidth.getSelectedIndex());
+  }
 
-        constraints.gridy = GridBagConstraints.RELATIVE;
-        allowNotations = createCheckBox("label.uml-notation-only");
-        top.add(allowNotations, constraints);
+  /**
+   * @see org.argouml.application.api.SettingsTabPanel#handleSettingsTabCancel()
+   */
+  public void handleSettingsTabCancel() {
+    handleSettingsTabRefresh();
+  }
 
-        useGuillemots = createCheckBox("label.use-guillemots");
-        top.add(useGuillemots, constraints);
+  /**
+   * @see org.argouml.application.api.ArgoModule#getModuleName()
+   */
+  public String getModuleName() {
+    return "SettingsTabNotation";
+  }
 
-        // 2002-07-31
-        // Jaap Branderhorst
-        // from here made visibility etc. configurable
+  /**
+   * @see org.argouml.application.api.ArgoModule#getModuleDescription()
+   */
+  public String getModuleDescription() {
+    return "Settings Tab for Notation";
+  }
 
-        showVisibility = createCheckBox("label.show-visibility");
-        top.add(showVisibility, constraints);
+  /**
+   * @see org.argouml.application.api.ArgoModule#getModuleAuthor()
+   */
+  public String getModuleAuthor() {
+    return "ArgoUML Core";
+  }
 
-        showMultiplicity = createCheckBox("label.show-multiplicity");
-        top.add(showMultiplicity, constraints);
+  /**
+   * @see org.argouml.application.api.ArgoModule#getModuleVersion()
+   */
+  public String getModuleVersion() {
+    return ArgoVersion.getVersion();
+  }
 
-        showInitialValue = createCheckBox("label.show-initialvalue");
-        top.add(showInitialValue, constraints);
+  /**
+   * @see org.argouml.application.api.ArgoModule#getModuleKey()
+   */
+  public String getModuleKey() {
+    return "module.settings.notation";
+  }
 
-        showProperties = createCheckBox("label.show-properties");
-        top.add(showProperties, constraints);
+  /**
+   * @see org.argouml.application.api.SettingsTabPanel#getTabKey()
+   */
+  public String getTabKey() {
+    return "tab.notation";
+  }
 
-        showTypes = createCheckBox("label.show-types");
-        top.add(showTypes, constraints);
-
-        showStereotypes = createCheckBox("label.show-stereotypes");
-        top.add(showStereotypes, constraints);
-
-        constraints.insets = new Insets(5, 30, 0, 4);
-        JPanel defaultShadowWidthPanel =
-            new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
-        JLabel defaultShadowWidthLabel =
-            createLabel("label.default-shadow-width");
-        defaultShadowWidth = new ShadowComboBox();
-        defaultShadowWidthLabel.setLabelFor(defaultShadowWidth);
-        defaultShadowWidthPanel.add(defaultShadowWidthLabel);
-        defaultShadowWidthPanel.add(defaultShadowWidth);
-        top.add(defaultShadowWidthPanel, constraints);
-
-        add(top, BorderLayout.NORTH);
-    }
-
-    /**
-     * @see org.argouml.application.api.SettingsTabPanel#handleSettingsTabRefresh()
-     */
-    public void handleSettingsTabRefresh() {
-        useGuillemots.setSelected(Notation.getUseGuillemots());
-        allowNotations.setSelected(getBoolean(Notation.KEY_UML_NOTATION_ONLY));
-        showVisibility.setSelected(getBoolean(Notation.KEY_SHOW_VISIBILITY));
-        showInitialValue.setSelected(
-            getBoolean(Notation.KEY_SHOW_INITIAL_VALUE));
-        showProperties.setSelected(getBoolean(Notation.KEY_SHOW_PROPERTIES));
-        /*
-         * The next one defaults to TRUE, to stay compatible with older
-         * ArgoUML versions that did not have this setting:
-         */
-        showTypes.setSelected(Configuration.getBoolean(
-                Notation.KEY_SHOW_TYPES, true));
-        showMultiplicity.setSelected(
-            getBoolean(Notation.KEY_SHOW_MULTIPLICITY));
-        showStereotypes.setSelected(getBoolean(Notation.KEY_SHOW_STEREOTYPES));
-        defaultShadowWidth.setSelectedIndex(
-                Configuration.getInteger(Notation.KEY_DEFAULT_SHADOW_WIDTH, 1));
-    }
-
-    /**
-     * Get a boolean from the configuration.
-     *
-     * @param key a notation key.
-     * @return a boolean
-     */
-    private static boolean getBoolean(ConfigurationKey key) {
-        return Configuration.getBoolean(key, false);
-    }
-
-    /**
-     * @see org.argouml.application.api.SettingsTabPanel#handleSettingsTabSave()
-     */
-    public void handleSettingsTabSave() {
-        Notation.setUseGuillemots(useGuillemots.isSelected());
-        Configuration.setBoolean(Notation.KEY_UML_NOTATION_ONLY,
-                 allowNotations.isSelected());
-        Configuration.setBoolean(Notation.KEY_SHOW_VISIBILITY,
-                 showVisibility.isSelected());
-        Configuration.setBoolean(Notation.KEY_SHOW_MULTIPLICITY,
-                 showMultiplicity.isSelected());
-        Configuration.setBoolean(Notation.KEY_SHOW_PROPERTIES,
-                 showProperties.isSelected());
-        Configuration.setBoolean(Notation.KEY_SHOW_TYPES,
-                showTypes.isSelected());
-        Configuration.setBoolean(Notation.KEY_SHOW_INITIAL_VALUE,
-                 showInitialValue.isSelected());
-        Configuration.setBoolean(Notation.KEY_SHOW_STEREOTYPES,
-                 showStereotypes.isSelected());
-        Configuration.setInteger(Notation.KEY_DEFAULT_SHADOW_WIDTH,
-                defaultShadowWidth.getSelectedIndex());
-    }
-
-    /**
-     * @see org.argouml.application.api.SettingsTabPanel#handleSettingsTabCancel()
-     */
-    public void handleSettingsTabCancel() {
-        handleSettingsTabRefresh();
-    }
-
-    /**
-     * @see org.argouml.application.api.ArgoModule#getModuleName()
-     */
-    public String getModuleName() { return "SettingsTabNotation"; }
-
-    /**
-     * @see org.argouml.application.api.ArgoModule#getModuleDescription()
-     */
-    public String getModuleDescription() { return "Settings Tab for Notation"; }
-
-    /**
-     * @see org.argouml.application.api.ArgoModule#getModuleAuthor()
-     */
-    public String getModuleAuthor() { return "ArgoUML Core"; }
-
-    /**
-     * @see org.argouml.application.api.ArgoModule#getModuleVersion()
-     */
-    public String getModuleVersion() { return ArgoVersion.getVersion(); }
-
-    /**
-     * @see org.argouml.application.api.ArgoModule#getModuleKey()
-     */
-    public String getModuleKey() { return "module.settings.notation"; }
-
-    /**
-     * @see org.argouml.application.api.SettingsTabPanel#getTabKey()
-     */
-    public String getTabKey() { return "tab.notation"; }
-
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = 3206897060245290104L;
+  /** The UID. */
+  private static final long serialVersionUID = 3206897060245290104L;
 }

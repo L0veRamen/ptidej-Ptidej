@@ -30,115 +30,108 @@ import org.argouml.model.Model;
 import org.argouml.model.UUIDManager;
 import org.argouml.uml.diagram.use_case.ui.UseCaseDiagramRenderer;
 
-
 /**
- * An object tagged as being the owner of a FigEdgeNote. Has knowledge
- * about the source and destination of the FigEdgeNote. <p>
+ * An object tagged as being the owner of a FigEdgeNote. Has knowledge about the source and
+ * destination of the FigEdgeNote.
  *
- * The source and destination are ModelElements.
- * At least one of them is a Comment - but they may be both Comments.
+ * <p>The source and destination are ModelElements. At least one of them is a Comment - but they may
+ * be both Comments.
  *
  * @since Jul 17, 2004
  * @author jaap.branderhorst@xs4all.nl
  */
 public class CommentEdge {
-    private Object source;
-    private Object dest;
-    private Object uuid;
+  private Object source;
+  private Object dest;
+  private Object uuid;
 
-    private static final Logger LOG =
-        Logger.getLogger(UseCaseDiagramRenderer.class);
+  private static final Logger LOG = Logger.getLogger(UseCaseDiagramRenderer.class);
 
-    CommentEdge() {
-        uuid = UUIDManager.getInstance().getNewUUID();
-    }
-    
-    /**
-     * Constructor.
-     *
-     * @param source the source
-     * @param dest the destination
-     */
-    public CommentEdge(Object source, Object dest) {
-        if (!(Model.getFacade().isAModelElement(source))) {
-            throw new IllegalArgumentException(
-                    "The source of the CommentEdge must be a model element");
-        }
-        if (!(Model.getFacade().isAModelElement(dest))) {
-            throw new IllegalArgumentException(
-                    "The destination of the CommentEdge " +
-                    "must be a model element");
-        }
-        this.source = source;
-        this.dest = dest;
-        uuid = UUIDManager.getInstance().getNewUUID();
-    }
+  CommentEdge() {
+    uuid = UUIDManager.getInstance().getNewUUID();
+  }
 
-    /**
-     * The source of this CommentEdge.
-     *
-     * @return the source
-     */
-    public Object getSource() {
-        return source;
+  /**
+   * Constructor.
+   *
+   * @param source the source
+   * @param dest the destination
+   */
+  public CommentEdge(Object source, Object dest) {
+    if (!(Model.getFacade().isAModelElement(source))) {
+      throw new IllegalArgumentException("The source of the CommentEdge must be a model element");
     }
+    if (!(Model.getFacade().isAModelElement(dest))) {
+      throw new IllegalArgumentException(
+          "The destination of the CommentEdge " + "must be a model element");
+    }
+    this.source = source;
+    this.dest = dest;
+    uuid = UUIDManager.getInstance().getNewUUID();
+  }
 
-    /**
-     * The destination of this CommentEdge.
-     *
-     * @return the destination
-     */
-    public Object getDestination() {
-        return dest;
-    }
+  /**
+   * The source of this CommentEdge.
+   *
+   * @return the source
+   */
+  public Object getSource() {
+    return source;
+  }
 
-    /**
-     * @return the uuid
-     */
-    public Object getUUID() {
-        return uuid;
-    }
+  /**
+   * The destination of this CommentEdge.
+   *
+   * @return the destination
+   */
+  public Object getDestination() {
+    return dest;
+  }
 
+  /**
+   * @return the uuid
+   */
+  public Object getUUID() {
+    return uuid;
+  }
 
-    /**
-     * @param destination The destination to set.
-     */
-    public void setDestination(Object destination) {
-        if (!(Model.getFacade().isAModelElement(destination))) {
-            throw new IllegalArgumentException(
-                    "The source of the CommentEdge must be a model element");
-        }
-        dest = destination;
+  /**
+   * @param destination The destination to set.
+   */
+  public void setDestination(Object destination) {
+    if (!(Model.getFacade().isAModelElement(destination))) {
+      throw new IllegalArgumentException("The source of the CommentEdge must be a model element");
     }
-    
-    /**
-     * @param source The source to set.
-     */
-    public void setSource(Object source) {
-        if (!(Model.getFacade().isAModelElement(source))) {
-            throw new IllegalArgumentException(
-                    "The destination of the CommentEdge must be a model element");
-        }
-        this.source = source;
-    }
+    dest = destination;
+  }
 
-    /**
-     * Commit suicide. Adapt the UML model.
-     */
-    public void delete() {
-        if (Model.getFacade().isAComment(source)) {
-            Model.getCoreHelper().removeAnnotatedElement(source, dest);
-        } else {
-            // not save to presume the destination is the comment
-            if (Model.getFacade().isAComment(dest))
-                Model.getCoreHelper().removeAnnotatedElement(dest, source);
-        }
+  /**
+   * @param source The source to set.
+   */
+  public void setSource(Object source) {
+    if (!(Model.getFacade().isAModelElement(source))) {
+      throw new IllegalArgumentException(
+          "The destination of the CommentEdge must be a model element");
     }
-    /**
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-        // This is the tooltip of a comment link
-        return Translator.localize("misc.tooltip.commentlink");
+    this.source = source;
+  }
+
+  /** Commit suicide. Adapt the UML model. */
+  public void delete() {
+    if (Model.getFacade().isAComment(source)) {
+      Model.getCoreHelper().removeAnnotatedElement(source, dest);
+    } else {
+      // not save to presume the destination is the comment
+      if (Model.getFacade().isAComment(dest))
+        Model.getCoreHelper().removeAnnotatedElement(dest, source);
     }
+  }
+
+  /**
+   * @see java.lang.Object#toString()
+   */
+  public String toString() {
+    // This is the tooltip of a comment link
+    return Translator.localize("misc.tooltip.commentlink");
+  }
 }

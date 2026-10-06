@@ -7,25 +7,22 @@ package CH.ifa.draw.applet;
 
 import java.applet.Applet;
 
-
 class SleeperThread extends Thread {
 
-	Applet  fApplet;
+  Applet fApplet;
 
-	SleeperThread(Applet applet) {
-		fApplet = applet;
-	}
+  SleeperThread(Applet applet) {
+    fApplet = applet;
+  }
 
-	public void run() {
-		try {
-			for (;;) {
-				fApplet.showStatus("loading icons...");
-				sleep(50);
-			}
-		} catch (InterruptedException e) {
-			return;
-		}
-	}
-
+  public void run() {
+    try {
+      for (; ; ) {
+        fApplet.showStatus("loading icons...");
+        sleep(50);
+      }
+    } catch (InterruptedException e) {
+      return;
+    }
+  }
 }
-

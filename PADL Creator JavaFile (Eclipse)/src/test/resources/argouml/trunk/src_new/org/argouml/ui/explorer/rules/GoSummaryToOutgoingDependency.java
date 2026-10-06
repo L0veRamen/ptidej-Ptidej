@@ -30,60 +30,57 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 
 /**
- * Rule for Summary->OutgoingDependency.
- * This class is a Go Rule for the "Class - centric" Navigation perspective.
+ * Rule for Summary->OutgoingDependency. This class is a Go Rule for the "Class - centric"
+ * Navigation perspective.
  *
- * @author  alexb, d00mst
+ * @author alexb, d00mst
  * @since argo 0.13.4, Created on 21 March 2003, 23:18
  */
 public class GoSummaryToOutgoingDependency extends AbstractPerspectiveRule {
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
-     */
-    public String getRuleName() {
-        return Translator.localize ("misc.summary.outgoing-dependency");
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
+   */
+  public String getRuleName() {
+    return Translator.localize("misc.summary.outgoing-dependency");
+  }
+
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren( java.lang.Object)
+   */
+  public Collection getChildren(Object parent) {
+    if (parent instanceof OutgoingDependencyNode) {
+      List list = new ArrayList();
+      Iterator it =
+          Model.getFacade()
+              .getClientDependencies(((OutgoingDependencyNode) parent).getParent())
+              .iterator();
+
+      while (it.hasNext()) {
+        Object next = it.next();
+        if (!Model.getFacade().isAAbstraction(next)) {
+          list.add(next);
+        }
+      }
+
+      return list;
     }
+    return null;
+  }
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(
-     *         java.lang.Object)
-     */
-    public Collection getChildren(Object parent) {
-	if (parent instanceof OutgoingDependencyNode) {
-	    List list = new ArrayList();
-	    Iterator it =
-		Model.getFacade().getClientDependencies(
-			((OutgoingDependencyNode) parent).getParent())
-		    .iterator();
-
-	    while (it.hasNext()) {
-		Object next = it.next();
-		if (!Model.getFacade().isAAbstraction(next)) {
-                    list.add(next);
-                }
-	    }
-
-	    return list;
-	}
-	return null;
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies( java.lang.Object)
+   */
+  public Set getDependencies(Object parent) {
+    if (parent instanceof OutgoingDependencyNode) {
+      Set set = new HashSet();
+      set.add(((OutgoingDependencyNode) parent).getParent());
+      return set;
     }
-
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(
-     *         java.lang.Object)
-     */
-    public Set getDependencies(Object parent) {
-        if (parent instanceof OutgoingDependencyNode) {
-	    Set set = new HashSet();
-	    set.add(((OutgoingDependencyNode) parent).getParent());
-	    return set;
-	}
-	return null;
-    }
+    return null;
+  }
 }

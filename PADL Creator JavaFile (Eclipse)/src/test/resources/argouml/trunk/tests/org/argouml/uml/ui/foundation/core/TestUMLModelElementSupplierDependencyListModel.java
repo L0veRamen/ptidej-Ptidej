@@ -34,92 +34,81 @@ import org.argouml.uml.ui.AbstractUMLModelElementListModel2Test;
 public class TestUMLModelElementSupplierDependencyListModel
     extends AbstractUMLModelElementListModel2Test {
 
-    /**
-     * The number of elements used in the tests.
-     */
-    private static final int NO_OF_ELEMENTS = 10;
+  /** The number of elements used in the tests. */
+  private static final int NO_OF_ELEMENTS = 10;
 
-    /**
-     * The object that the dependency is going from. A class.
-     */
-    private Object from;
+  /** The object that the dependency is going from. A class. */
+  private Object from;
 
-    /**
-     * The object that the dependency is going to. A class.
-     */
-    private Object to;
+  /** The object that the dependency is going to. A class. */
+  private Object to;
 
-    /**
-     * The namespace of the elements.
-     */
-    private Object namespace;
+  /** The namespace of the elements. */
+  private Object namespace;
 
-    /**
-     * Constructor for TestUMLModelElementSupplierDependencyListModel.
-     *
-     * @param arg0 is the name of the test case.
-     */
-    public TestUMLModelElementSupplierDependencyListModel(String arg0) {
-        super(arg0);
+  /**
+   * Constructor for TestUMLModelElementSupplierDependencyListModel.
+   *
+   * @param arg0 is the name of the test case.
+   */
+  public TestUMLModelElementSupplierDependencyListModel(String arg0) {
+    super(arg0);
+  }
+
+  /**
+   * @see junit.framework.TestCase#setUp()
+   */
+  public void setUp() throws Exception {
+    super.setUp();
+
+    namespace = Model.getModelManagementFactory().createPackage();
+    from = Model.getCoreFactory().buildClass("from", namespace);
+    to = Model.getCoreFactory().buildClass("to", namespace);
+  }
+
+  /**
+   * @see junit.framework.TestCase#tearDown()
+   */
+  public void tearDown() throws Exception {
+    Model.getUmlFactory().delete(from);
+    Model.getUmlFactory().delete(to);
+    Model.getUmlFactory().delete(namespace);
+
+    super.tearDown();
+  }
+
+  /**
+   * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#buildElement()
+   */
+  protected void buildElement() {
+    setElem(Model.getCoreFactory().createClass());
+  }
+
+  /**
+   * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#buildModel()
+   */
+  protected void buildModel() {
+    setModel(new UMLModelElementSupplierDependencyListModel());
+  }
+
+  /**
+   * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#fillModel()
+   */
+  protected Object[] fillModel() {
+    Object[] ext = new Object[NO_OF_ELEMENTS];
+    for (int i = 0; i < NO_OF_ELEMENTS; i++) {
+      ext[i] = Model.getCoreFactory().buildDependency(from, to);
+      Model.getCoreHelper().addSupplierDependency(getElem(), ext[i]);
     }
+    return ext;
+  }
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    public void setUp() throws Exception {
-        super.setUp();
-
-        namespace = Model.getModelManagementFactory().createPackage();
-        from = Model.getCoreFactory().buildClass("from", namespace);
-        to = Model.getCoreFactory().buildClass("to", namespace);
+  /**
+   * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#removeHalfModel(Object[])
+   */
+  protected void removeHalfModel(Object[] elements) {
+    for (int i = 0; i < NO_OF_ELEMENTS / 2; i++) {
+      Model.getCoreHelper().removeSupplierDependency(getElem(), elements[i]);
     }
-
-    /**
-     * @see junit.framework.TestCase#tearDown()
-     */
-    public void tearDown() throws Exception {
-        Model.getUmlFactory().delete(from);
-        Model.getUmlFactory().delete(to);
-        Model.getUmlFactory().delete(namespace);
-
-        super.tearDown();
-    }
-
-    /**
-     * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#buildElement()
-     */
-    protected void buildElement() {
-        setElem(Model.getCoreFactory().createClass());
-    }
-
-    /**
-     * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#buildModel()
-     */
-    protected void buildModel() {
-        setModel(new UMLModelElementSupplierDependencyListModel());
-    }
-
-    /**
-     * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#fillModel()
-     */
-    protected Object[] fillModel() {
-        Object[] ext = new Object[NO_OF_ELEMENTS];
-        for (int i = 0; i < NO_OF_ELEMENTS; i++) {
-            ext[i] = Model.getCoreFactory().buildDependency(from, to);
-            Model.getCoreHelper().addSupplierDependency(getElem(), ext[i]);
-        }
-        return ext;
-    }
-
-    /**
-     * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#removeHalfModel(Object[])
-     */
-    protected void removeHalfModel(Object[] elements) {
-        for (int i = 0; i < NO_OF_ELEMENTS / 2; i++) {
-            Model.getCoreHelper().removeSupplierDependency(
-                    getElem(),
-                    elements[i]);
-        }
-    }
-
+  }
 }

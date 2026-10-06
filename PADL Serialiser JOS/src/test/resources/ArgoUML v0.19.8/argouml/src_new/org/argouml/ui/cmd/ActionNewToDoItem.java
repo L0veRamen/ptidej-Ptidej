@@ -25,33 +25,23 @@
 package org.argouml.ui.cmd;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.cognitive.ui.AddToDoItemDialog;
 import org.argouml.uml.ui.UMLAction;
 import org.argouml.uml.ui.UMLListCellRenderer2;
 
-
-
-/**
- * The action to create a new todo item.
- *
- */
+/** The action to create a new todo item. */
 public class ActionNewToDoItem extends UMLAction {
 
-    /**
-     * The constructor.
-     */
-    public ActionNewToDoItem() {
-        super("action.new-todo-item", HAS_ICON);
-    }
+  /** The constructor. */
+  public ActionNewToDoItem() {
+    super("action.new-todo-item", HAS_ICON);
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-        AddToDoItemDialog dialog = new AddToDoItemDialog(
-                new UMLListCellRenderer2(true));
-        dialog.setVisible(true);
-    }
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    AddToDoItemDialog dialog = new AddToDoItemDialog(new UMLListCellRenderer2(true));
+    dialog.setVisible(true);
+  }
 } /* end class ActionNewToDoItem */
-

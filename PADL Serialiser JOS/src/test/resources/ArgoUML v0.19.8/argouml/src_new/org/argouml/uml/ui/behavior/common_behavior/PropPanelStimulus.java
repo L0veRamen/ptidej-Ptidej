@@ -26,7 +26,6 @@ package org.argouml.uml.ui.behavior.common_behavior;
 
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.ActionDeleteSingleModelElement;
@@ -41,142 +40,128 @@ import org.argouml.util.ConfigLoader;
 /**
  * The properties panel for a Stimulus.
  *
- * TODO: this property panel needs refactoring to remove dependency on
- *       old gui components.
+ * <p>TODO: this property panel needs refactoring to remove dependency on old gui components.
  *
  * @author agauthie
  */
 public class PropPanelStimulus extends PropPanelModelElement {
 
-    /**
-     * The constructor.
-     *
-     */
-    public PropPanelStimulus() {
-        super("Stimulus Properties", lookupIcon("Stimulus"),
-                ConfigLoader.getTabPropsOrientation());
+  /** The constructor. */
+  public PropPanelStimulus() {
+    super("Stimulus Properties", lookupIcon("Stimulus"), ConfigLoader.getTabPropsOrientation());
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField("Action:", new UMLStimulusActionTextField(this,
-                new UMLStimulusActionTextProperty("name")));
-        addField(Translator.localize("label.stereotype"),
-                getStereotypeSelector());
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(
+        "Action:", new UMLStimulusActionTextField(this, new UMLStimulusActionTextProperty("name")));
+    addField(Translator.localize("label.stereotype"), getStereotypeSelector());
 
-        JList senderList = new UMLLinkedList(new UMLStimulusSenderListModel());
-	senderList.setVisibleRowCount(1);
-	JScrollPane senderScroll = new JScrollPane(senderList);
-	addField(Translator.localize("label.sender"), senderScroll);
+    JList senderList = new UMLLinkedList(new UMLStimulusSenderListModel());
+    senderList.setVisibleRowCount(1);
+    JScrollPane senderScroll = new JScrollPane(senderList);
+    addField(Translator.localize("label.sender"), senderScroll);
 
-        JList receiverList =
-	    new UMLLinkedList(new UMLStimulusReceiverListModel());
-	receiverList.setVisibleRowCount(1);
-	JScrollPane receiverScroll = new JScrollPane(receiverList);
-	addField(Translator.localize("label.receiver"),
-            receiverScroll);
+    JList receiverList = new UMLLinkedList(new UMLStimulusReceiverListModel());
+    receiverList.setVisibleRowCount(1);
+    JScrollPane receiverScroll = new JScrollPane(receiverList);
+    addField(Translator.localize("label.receiver"), receiverScroll);
 
-        addField(Translator.localize("label.namespace"),
-                getNamespaceSelector());
+    addField(Translator.localize("label.namespace"), getNamespaceSelector());
 
-        addAction(new ActionNavigateNamespace());
-        addAction(new ActionNewStereotype());
-        addAction(new ActionDeleteSingleModelElement());
+    addAction(new ActionNavigateNamespace());
+    addAction(new ActionNewStereotype());
+    addAction(new ActionDeleteSingleModelElement());
+  }
+
+  /**
+   * @return the sender of this stimulus
+   */
+  public Object getSender() {
+    Object sender = null;
+    Object target = getTarget();
+    if (Model.getFacade().isAStimulus(target)) {
+      sender = Model.getFacade().getSender(target);
     }
+    return sender;
+  }
 
-    /**
-     * @return the sender of this stimulus
-     */
-    public Object getSender() {
-        Object sender = null;
-        Object target = getTarget();
-        if (Model.getFacade().isAStimulus(target)) {
-            sender =  Model.getFacade().getSender(target);
+  /**
+   * @param element the sender of this stimulus
+   */
+  public void setSender(Object /*MInstance*/ element) {
+    Object target = getTarget();
+    if (Model.getFacade().isAStimulus(target)) {
+      Model.getCollaborationsHelper().setSender(target, element);
+    }
+  }
+
+  /**
+   * @return the receiver of this stimulus
+   */
+  public Object getReceiver() {
+    Object receiver = null;
+    Object target = getTarget();
+    if (Model.getFacade().isAStimulus(target)) {
+      receiver = Model.getFacade().getReceiver(target);
+    }
+    return receiver;
+  }
+
+  /**
+   * @param element the receiver of this stimulus
+   */
+  public void setReceiver(Object /*MInstance*/ element) {
+    Object target = getTarget();
+    if (Model.getFacade().isAStimulus(target)) {
+      Model.getCommonBehaviorHelper().setReceiver(target, element);
+    }
+  }
+
+  /**
+   * @param modelelement the given modelelement
+   * @return true if it is acceptable, i.e. it is an association
+   */
+  public boolean isAcceptibleAssociation(Object /*MModelElement*/ modelelement) {
+    return Model.getFacade().isAAssociation(modelelement);
+  }
+
+  /**
+   * @return the association of the link of the stimulus
+   */
+  public Object getAssociation() {
+    Object association = null;
+    Object target = getTarget();
+    if (Model.getFacade().isAStimulus(target)) {
+      Object link = Model.getFacade().getCommunicationLink(target);
+      if (link != null) {
+        association = Model.getFacade().getAssociation(link);
+      }
+    }
+    return association;
+  }
+
+  /**
+   * @param element the association of the link of the stimulus
+   */
+  public void setAssociation(Object /*MAssociation*/ element) {
+    Object target = getTarget();
+    if (Model.getFacade().isAStimulus(target)) {
+      Object stimulus = /*(MStimulus)*/ target;
+      Object link = Model.getFacade().getCommunicationLink(stimulus);
+      if (link == null) {
+        link = Model.getCommonBehaviorFactory().createLink();
+        // ((MStimulus)stimulus).getFactory().createLink();
+        if (link != null) {
+          Model.getCommonBehaviorHelper().addStimulus(link, stimulus);
+          Model.getCommonBehaviorHelper().setCommunicationLink(stimulus, link);
         }
-        return sender;
+      }
+      Object oldAssoc = Model.getFacade().getAssociation(link);
+      if (oldAssoc != element) {
+        Model.getCoreHelper().setAssociation(link, element);
+        //
+        //  TODO: more needs to go here
+        //
+      }
     }
-
-    /**
-     * @param element the sender of this stimulus
-     */
-    public void setSender(Object/*MInstance*/ element) {
-        Object target = getTarget();
-        if (Model.getFacade().isAStimulus(target)) {
-            Model.getCollaborationsHelper().setSender(target, element);
-        }
-    }
-
-
-    /**
-     * @return the receiver of this stimulus
-     */
-    public Object getReceiver() {
-        Object receiver = null;
-        Object target = getTarget();
-        if (Model.getFacade().isAStimulus(target)) {
-            receiver =  Model.getFacade().getReceiver(target);
-        }
-        return receiver;
-    }
-
-    /**
-     * @param element the receiver of this stimulus
-     */
-    public void setReceiver(Object/*MInstance*/ element) {
-        Object target = getTarget();
-        if (Model.getFacade().isAStimulus(target)) {
-            Model.getCommonBehaviorHelper().setReceiver(target, element);
-        }
-    }
-
-    /**
-     * @param modelelement the given modelelement
-     * @return true if it is acceptable, i.e. it is an association
-     */
-    public boolean isAcceptibleAssociation(
-            Object/*MModelElement*/ modelelement) {
-        return Model.getFacade().isAAssociation(modelelement);
-    }
-
-    /**
-     * @return the association of the link of the stimulus
-     */
-    public Object getAssociation() {
-        Object association = null;
-        Object target = getTarget();
-        if (Model.getFacade().isAStimulus(target)) {
-            Object link = Model.getFacade().getCommunicationLink(target);
-            if (link != null) {
-                association = Model.getFacade().getAssociation(link);
-            }
-        }
-        return association;
-    }
-
-    /**
-     * @param element the association of the link of the stimulus
-     */
-    public void setAssociation(Object/*MAssociation*/ element) {
-        Object target = getTarget();
-        if (Model.getFacade().isAStimulus(target)) {
-            Object stimulus = /*(MStimulus)*/ target;
-            Object link = Model.getFacade().getCommunicationLink(stimulus);
-            if (link == null) {
-                link = Model.getCommonBehaviorFactory().createLink();
-                //((MStimulus)stimulus).getFactory().createLink();
-                if (link != null) {
-                    Model.getCommonBehaviorHelper().addStimulus(link, stimulus);
-                    Model.getCommonBehaviorHelper().setCommunicationLink(
-                            stimulus,
-                            link);
-                }
-            }
-            Object oldAssoc = Model.getFacade().getAssociation(link);
-            if (oldAssoc != element) {
-                Model.getCoreHelper().setAssociation(link, element);
-                //
-                //  TODO: more needs to go here
-                //
-            }
-        }
-    }
+  }
 }

@@ -26,37 +26,31 @@ package org.argouml.uml.cognitive.critics;
 
 import java.util.Collections;
 import java.util.List;
-
 import org.argouml.application.api.AbstractArgoJPanel;
 import org.argouml.application.api.GUISettingsTabInterface;
 import org.argouml.application.api.InitSubsystem;
-import org.argouml.profile.ProfileFacade;
 
 /**
- * Registers critics for use in ArgoUML.  This class is called at
- * system startup time. If you add a new critic, you need to add a
- * line here.
+ * Registers critics for use in ArgoUML. This class is called at system startup time. If you add a
+ * new critic, you need to add a line here.
  *
  * @author jrobbins
  * @see org.argouml.cognitive.Agency
  */
 public class InitCognitiveCritics implements InitSubsystem {
 
-    /**
-     * static initializer, register all appropriate critics.
-     */
-    public void init() {
-    }
+  /** static initializer, register all appropriate critics. */
+  public void init() {}
 
-    public List<GUISettingsTabInterface> getProjectSettingsTabs() {
-        return Collections.emptyList();
-    }
+  public List<GUISettingsTabInterface> getProjectSettingsTabs() {
+    return Collections.emptyList();
+  }
 
-    public List<GUISettingsTabInterface> getSettingsTabs() {
-        return Collections.emptyList();
-    }
+  public List<GUISettingsTabInterface> getSettingsTabs() {
+    return Collections.emptyList();
+  }
 
-    public List<AbstractArgoJPanel> getDetailsTabs() {
-        return Collections.emptyList();
-    }
+  public List<AbstractArgoJPanel> getDetailsTabs() {
+    return Collections.emptyList();
+  }
 }

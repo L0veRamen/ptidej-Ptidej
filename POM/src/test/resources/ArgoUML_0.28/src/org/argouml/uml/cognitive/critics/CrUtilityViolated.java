@@ -29,81 +29,75 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
 import org.argouml.cognitive.Designer;
 import org.argouml.model.Model;
 import org.argouml.uml.cognitive.UMLDecision;
 
 /**
- * A critic to detect when a class can never have instances (of
- * itself of any subclasses). This is done by checking that there
- * are no instance operations or attributes in the class itself
- * or in any of the realized interfaces or inherited classes.
+ * A critic to detect when a class can never have instances (of itself of any subclasses). This is
+ * done by checking that there are no instance operations or attributes in the class itself or in
+ * any of the realized interfaces or inherited classes.
  *
  * @author jrobbins
  */
 public class CrUtilityViolated extends CrUML {
 
-    /**
-     * The constructor.
-     */
-    public CrUtilityViolated() {
-        setupHeadAndDesc();
-        addSupportedDecision(UMLDecision.STORAGE);
-        addSupportedDecision(UMLDecision.STEREOTYPES);
-        addSupportedDecision(UMLDecision.CLASS_SELECTION);
-        addTrigger("stereotype");
-        addTrigger("behavioralFeature");
+  /** The constructor. */
+  public CrUtilityViolated() {
+    setupHeadAndDesc();
+    addSupportedDecision(UMLDecision.STORAGE);
+    addSupportedDecision(UMLDecision.STEREOTYPES);
+    addSupportedDecision(UMLDecision.CLASS_SELECTION);
+    addTrigger("stereotype");
+    addTrigger("behavioralFeature");
+  }
+
+  /*
+   * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
+   *      java.lang.Object, org.argouml.cognitive.Designer)
+   */
+  @Override
+  public boolean predicate2(Object dm, Designer dsgr) {
+    // we could check for base class of the stereotype but the
+    // condition normally covers it all.
+    if (!(Model.getFacade().isAClassifier(dm))) {
+      return NO_PROBLEM;
+    }
+    if (!(Model.getFacade().isUtility(dm))) {
+      return NO_PROBLEM;
     }
 
-    /*
-     * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
-     *      java.lang.Object, org.argouml.cognitive.Designer)
-     */
-    @Override
-    public boolean predicate2(Object dm, Designer dsgr) {
-        // we could check for base class of the stereotype but the
-	// condition normally covers it all.
-        if (!(Model.getFacade().isAClassifier(dm))) {
-            return NO_PROBLEM;
+    Collection classesToCheck = new ArrayList();
+    classesToCheck.addAll(Model.getCoreHelper().getSupertypes(dm));
+    classesToCheck.addAll(Model.getCoreHelper().getAllRealizedInterfaces(dm));
+    classesToCheck.add(dm);
+    Iterator it = classesToCheck.iterator();
+    while (it.hasNext()) {
+      Object o = it.next();
+      if (!Model.getFacade().isAInterface(o)) {
+        Iterator it2 = Model.getFacade().getAttributes(o).iterator();
+        while (it2.hasNext()) {
+          if (!Model.getFacade().isStatic(it2.next())) {
+            return PROBLEM_FOUND;
+          }
         }
-	if (!(Model.getFacade().isUtility(dm))) {
-	    return NO_PROBLEM;
-	}
-
-	Collection classesToCheck = new ArrayList();
-	classesToCheck.addAll(Model.getCoreHelper().getSupertypes(dm));
-	classesToCheck.addAll(
-	    Model.getCoreHelper().getAllRealizedInterfaces(dm));
-	classesToCheck.add(dm);
-	Iterator it = classesToCheck.iterator();
-	while (it.hasNext()) {
-	    Object o = it.next();
-	    if (!Model.getFacade().isAInterface(o)) {
-		Iterator it2 = Model.getFacade().getAttributes(o).iterator();
-		while (it2.hasNext()) {
-		    if (!Model.getFacade().isStatic(it2.next())) {
-			return PROBLEM_FOUND;
-		    }
-		}
-	    }
-	    Iterator it2 = Model.getFacade().getOperations(o).iterator();
-	    while (it2.hasNext()) {
-		if (!Model.getFacade().isStatic(it2.next())) {
-		    return PROBLEM_FOUND;
-		}
-	    }
-	}
-        return NO_PROBLEM;
+      }
+      Iterator it2 = Model.getFacade().getOperations(o).iterator();
+      while (it2.hasNext()) {
+        if (!Model.getFacade().isStatic(it2.next())) {
+          return PROBLEM_FOUND;
+        }
+      }
     }
+    return NO_PROBLEM;
+  }
 
-    /*
-     * @see org.argouml.uml.cognitive.critics.CrUML#getCriticizedDesignMaterials()
-     */
-    public Set<Object> getCriticizedDesignMaterials() {
-        Set<Object> ret = new HashSet<Object>();
-        ret.add(Model.getMetaTypes().getClassifier());
-        return ret;
-    }
-    
+  /*
+   * @see org.argouml.uml.cognitive.critics.CrUML#getCriticizedDesignMaterials()
+   */
+  public Set<Object> getCriticizedDesignMaterials() {
+    Set<Object> ret = new HashSet<Object>();
+    ret.add(Model.getMetaTypes().getClassifier());
+    return ret;
+  }
 }

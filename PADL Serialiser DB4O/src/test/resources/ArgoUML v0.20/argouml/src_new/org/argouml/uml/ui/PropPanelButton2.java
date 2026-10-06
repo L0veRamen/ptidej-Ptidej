@@ -34,12 +34,13 @@ import javax.swing.JButton;
  */
 public final class PropPanelButton2 extends JButton {
 
-    /**
-     * Constructor for PropPanelButton2.
-     * @param a the action
-     */
-    public PropPanelButton2(Action a) {
-        super(a);
-        setText(""); // just the icon and possibly a tooltip
-    }
+  /**
+   * Constructor for PropPanelButton2.
+   *
+   * @param a the action
+   */
+  public PropPanelButton2(Action a) {
+    super(a);
+    setText(""); // just the icon and possibly a tooltip
+  }
 }

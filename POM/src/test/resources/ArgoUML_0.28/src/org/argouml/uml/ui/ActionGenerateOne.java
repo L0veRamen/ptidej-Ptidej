@@ -28,9 +28,7 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import javax.swing.Action;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.ui.targetmanager.TargetManager;
@@ -39,66 +37,59 @@ import org.tigris.gef.presentation.Fig;
 import org.tigris.gef.undo.UndoableAction;
 
 /**
- * Action to trigger generation of source
- * for all selected classes and interfaces.
+ * Action to trigger generation of source for all selected classes and interfaces.
  *
  * @stereotype singleton
  */
 public class ActionGenerateOne extends UndoableAction {
 
-    /**
-     * The constructor.
-     */
-    public ActionGenerateOne() {
-        super(Translator.localize("action.generate-selected-classes"), null);
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize("action.generate-selected-classes"));
-    }
+  /** The constructor. */
+  public ActionGenerateOne() {
+    super(Translator.localize("action.generate-selected-classes"), null);
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize("action.generate-selected-classes"));
+  }
 
-    /*
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    @Override
-    public void actionPerformed(ActionEvent ae) {
-    	super.actionPerformed(ae);
-        List classes = getCandidates();
-        // There is no need to test if classes is empty because
-        // the shouldBeEnabled mechanism blanks out the possibility to
-        // choose this alternative in this case.
-        ClassGenerationDialog cgd = new ClassGenerationDialog(classes);
-        cgd.setVisible(true);
-    }
+  /*
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
+  public void actionPerformed(ActionEvent ae) {
+    super.actionPerformed(ae);
+    List classes = getCandidates();
+    // There is no need to test if classes is empty because
+    // the shouldBeEnabled mechanism blanks out the possibility to
+    // choose this alternative in this case.
+    ClassGenerationDialog cgd = new ClassGenerationDialog(classes);
+    cgd.setVisible(true);
+  }
 
-    /**
-     * @return true if the action is enabled and there is at least a 
-     * candidate class
-     * @see org.tigris.gef.undo.UndoableAction#isEnabled()
-     */
-    @Override
-    public boolean isEnabled() {
-        // TODO: this seems to be called at startup only so no check so far
-        return true;
-        //List classes = getCandidates();
-        //return classes.size() > 0;
-    }
+  /**
+   * @return true if the action is enabled and there is at least a candidate class
+   * @see org.tigris.gef.undo.UndoableAction#isEnabled()
+   */
+  @Override
+  public boolean isEnabled() {
+    // TODO: this seems to be called at startup only so no check so far
+    return true;
+    // List classes = getCandidates();
+    // return classes.size() > 0;
+  }
 
-    /**
-     * @return the candidates for generation
-     */
-    private List getCandidates() {
-        List classes = new ArrayList();
-        Collection targets = TargetManager.getInstance().getTargets();
-        for (Object target : targets) {
-            if (target instanceof Fig) {
-                target = ((Fig) target).getOwner();
-            }
-            if (Model.getFacade().isAClass(target)
-                || Model.getFacade().isAInterface(target)) {
-                classes.add(target);
-            }
-        }
-        return classes;
+  /**
+   * @return the candidates for generation
+   */
+  private List getCandidates() {
+    List classes = new ArrayList();
+    Collection targets = TargetManager.getInstance().getTargets();
+    for (Object target : targets) {
+      if (target instanceof Fig) {
+        target = ((Fig) target).getOwner();
+      }
+      if (Model.getFacade().isAClass(target) || Model.getFacade().isAInterface(target)) {
+        classes.add(target);
+      }
     }
-
+    return classes;
+  }
 }

@@ -25,36 +25,33 @@
 package org.argouml.uml.diagram.ui;
 
 import java.awt.Graphics;
-
 import org.tigris.gef.base.SelectionReshape;
 import org.tigris.gef.presentation.Fig;
 
 /**
- *
- *
- *
  * @author jrobbins
  */
 public class SelectionEdgeClarifiers extends SelectionReshape {
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    /** Construct a new SelectionEdgeClarifiers for the given Fig
-     *
-     * @param f the given fig
-     */
-    public SelectionEdgeClarifiers(Fig f) { super(f); }
+  /**
+   * Construct a new SelectionEdgeClarifiers for the given Fig
+   *
+   * @param f the given fig
+   */
+  public SelectionEdgeClarifiers(Fig f) {
+    super(f);
+  }
 
-    /** Paint the handles at the four corners and midway along each edge
-     * of the bounding box.
-     *
-     * @see org.tigris.gef.base.Selection#paint(java.awt.Graphics)
-     */
-    public void paint(Graphics g) {
-	((FigEdgeModelElement) getContent()).paintClarifiers(g);
-	super.paint(g);
-    }
-
+  /**
+   * Paint the handles at the four corners and midway along each edge of the bounding box.
+   *
+   * @see org.tigris.gef.base.Selection#paint(java.awt.Graphics)
+   */
+  public void paint(Graphics g) {
+    ((FigEdgeModelElement) getContent()).paintClarifiers(g);
+    super.paint(g);
+  }
 } /* end class SelectionEdgeClarifiers */
-

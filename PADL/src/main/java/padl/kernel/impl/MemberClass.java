@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -20,22 +20,22 @@ import padl.path.IConstants;
 // Yann 2013/07/17: Accesses!
 // Must be public for subclasses in other projects
 public class MemberClass extends Class implements IMemberClass {
-	private static final long serialVersionUID = 561945038924822504L;
+  private static final long serialVersionUID = 561945038924822504L;
 
-	public MemberClass(final char[] anID, final char[] aName) {
-		super(anID, aName);
-	}
+  public MemberClass(final char[] anID, final char[] aName) {
+    super(anID, aName);
+  }
 
-	protected char getPathSymbol() {
-		return IConstants.MEMBER_ENTITY_SYMBOL;
-	}
+  protected char getPathSymbol() {
+    return IConstants.MEMBER_ENTITY_SYMBOL;
+  }
 
-	public String toString() {
-		final StringBuffer codeEq = new StringBuffer();
-		codeEq.append(super.toString());
-		codeEq.append(" member class ");
-		codeEq.append(this.getName());
-		codeEq.append(';');
-		return codeEq.toString();
-	}
+  public String toString() {
+    final StringBuffer codeEq = new StringBuffer();
+    codeEq.append(super.toString());
+    codeEq.append(" member class ");
+    codeEq.append(this.getName());
+    codeEq.append(';');
+    return codeEq.toString();
+  }
 }

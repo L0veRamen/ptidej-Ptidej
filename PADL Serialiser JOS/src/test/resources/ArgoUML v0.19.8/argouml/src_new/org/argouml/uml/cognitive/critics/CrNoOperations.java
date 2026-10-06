@@ -25,9 +25,7 @@
 package org.argouml.uml.cognitive.critics;
 
 import java.util.Iterator;
-
 import javax.swing.Icon;
-
 import org.argouml.cognitive.Designer;
 import org.argouml.cognitive.ToDoItem;
 import org.argouml.cognitive.critics.Critic;
@@ -35,105 +33,93 @@ import org.argouml.cognitive.ui.Wizard;
 import org.argouml.model.Model;
 import org.argouml.uml.cognitive.UMLDecision;
 
-/**
- * A critic to detect when a class or interface or its base class doesn't
- * have any operations.
- */
+/** A critic to detect when a class or interface or its base class doesn't have any operations. */
 public class CrNoOperations extends CrUML {
 
-    /**
-     * The constructor.
-     */
-    public CrNoOperations() {
-	setupHeadAndDesc();
-	addSupportedDecision(UMLDecision.BEHAVIOR);
-	setKnowledgeTypes(Critic.KT_COMPLETENESS);
-	addTrigger("behavioralFeature");
+  /** The constructor. */
+  public CrNoOperations() {
+    setupHeadAndDesc();
+    addSupportedDecision(UMLDecision.BEHAVIOR);
+    setKnowledgeTypes(Critic.KT_COMPLETENESS);
+    addTrigger("behavioralFeature");
+  }
+
+  /**
+   * @see org.argouml.uml.cognitive.critics.CrUML#predicate2( java.lang.Object,
+   *     org.argouml.cognitive.Designer)
+   */
+  public boolean predicate2(Object dm, Designer dsgr) {
+    if (!(Model.getFacade().isAClass(dm) || Model.getFacade().isAInterface(dm))) return NO_PROBLEM;
+
+    if (!(Model.getFacade().isPrimaryObject(dm))) return NO_PROBLEM;
+
+    // if the object does not have a name,
+    // than no problem
+    if ((Model.getFacade().getName(dm) == null) || ("".equals(Model.getFacade().getName(dm))))
+      return NO_PROBLEM;
+
+    // types can probably contain operations, but we should not nag at them
+    // not having any.
+    if (Model.getFacade().isType(dm)) return NO_PROBLEM;
+
+    // utility is a namespace collection - also not strictly
+    // required to have operations.
+    if (Model.getFacade().isUtility(dm)) return NO_PROBLEM;
+
+    // TODO: different critic or special message for classes
+    // that inherit all ops but define none of their own.
+
+    if (findInstanceOperationInInherited(dm, 0)) return NO_PROBLEM;
+
+    return PROBLEM_FOUND;
+  }
+
+  /**
+   * @see org.argouml.cognitive.Poster#getClarifier()
+   */
+  public Icon getClarifier() {
+    return ClOperationCompartment.getTheInstance();
+  }
+
+  private boolean findInstanceOperationInInherited(Object dm, int depth) {
+    Iterator ops = Model.getFacade().getOperations(dm).iterator();
+
+    while (ops.hasNext()) {
+      if (Model.getFacade().isInstanceScope(ops.next())) return true;
     }
 
-    /**
-     * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
-     * java.lang.Object, org.argouml.cognitive.Designer)
-     */
-    public boolean predicate2(Object dm, Designer dsgr) {
-	if (!(Model.getFacade().isAClass(dm)
-            || Model.getFacade().isAInterface(dm))) return NO_PROBLEM;
+    if (depth > 50) return false;
 
-	if (!(Model.getFacade().isPrimaryObject(dm))) return NO_PROBLEM;
+    Iterator iter = Model.getFacade().getGeneralizations(dm).iterator();
 
-        // if the object does not have a name,
-        // than no problem
-        if ((Model.getFacade().getName(dm) == null)
-                || ("".equals(Model.getFacade().getName(dm))))
-            return NO_PROBLEM;
+    while (iter.hasNext()) {
+      Object parent = Model.getFacade().getParent(iter.next());
 
- 	// types can probably contain operations, but we should not nag at them
-	// not having any.
-	if (Model.getFacade().isType(dm)) return NO_PROBLEM;
+      if (parent == dm) continue;
 
-	// utility is a namespace collection - also not strictly
-	// required to have operations.
-	if (Model.getFacade().isUtility(dm)) return NO_PROBLEM;
-
-	//TODO: different critic or special message for classes
-	//that inherit all ops but define none of their own.
-
-	if (findInstanceOperationInInherited(dm, 0))
-	    return NO_PROBLEM;
-
-	return PROBLEM_FOUND;
+      if (Model.getFacade().isAClassifier(parent))
+        if (findInstanceOperationInInherited(parent, depth + 1)) return true;
     }
 
-    /**
-     * @see org.argouml.cognitive.Poster#getClarifier()
-     */
-    public Icon getClarifier() {
-	return ClOperationCompartment.getTheInstance();
+    return false;
+  }
+
+  /**
+   * @see org.argouml.cognitive.critics.Critic#initWizard( org.argouml.cognitive.ui.Wizard)
+   */
+  public void initWizard(Wizard w) {
+    if (w instanceof WizAddOperation) {
+      String ins = "Set the name of the new operation.";
+      String sug = "newOperation";
+      ((WizAddOperation) w).setInstructions(ins);
+      ((WizAddOperation) w).setSuggestion(sug);
     }
+  }
 
-    private boolean findInstanceOperationInInherited(Object dm, int depth) {
-	Iterator ops = Model.getFacade().getOperations(dm).iterator();
-
-	while (ops.hasNext()) {
-	    if (Model.getFacade().isInstanceScope(ops.next()))
-		return true;
-	}
-
-	if (depth > 50)
-	    return false;
-
-	Iterator iter = Model.getFacade().getGeneralizations(dm).iterator();
-
-	while (iter.hasNext()) {
-	    Object parent = Model.getFacade().getParent(iter.next());
-
-	    if (parent == dm)
-		continue;
-
-	    if (Model.getFacade().isAClassifier(parent))
-		if (findInstanceOperationInInherited(parent, depth + 1))
-		    return true;
-	}
-
-	return false;
-    }
-
-    /**
-     * @see org.argouml.cognitive.critics.Critic#initWizard(
-     *         org.argouml.cognitive.ui.Wizard)
-     */
-    public void initWizard(Wizard w) {
-	if (w instanceof WizAddOperation) {
-	    String ins = "Set the name of the new operation.";
-	    String sug = "newOperation";
-	    ((WizAddOperation) w).setInstructions(ins);
-	    ((WizAddOperation) w).setSuggestion(sug);
-	}
-    }
-
-    /**
-     * @see org.argouml.cognitive.critics.Critic#getWizardClass(org.argouml.cognitive.ToDoItem)
-     */
-    public Class getWizardClass(ToDoItem item) { return WizAddOperation.class; }
+  /**
+   * @see org.argouml.cognitive.critics.Critic#getWizardClass(org.argouml.cognitive.ToDoItem)
+   */
+  public Class getWizardClass(ToDoItem item) {
+    return WizAddOperation.class;
+  }
 } /* end class CrNoOperations */
-

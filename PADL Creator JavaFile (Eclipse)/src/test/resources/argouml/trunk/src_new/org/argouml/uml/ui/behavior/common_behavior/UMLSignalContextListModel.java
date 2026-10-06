@@ -34,29 +34,25 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  */
 public class UMLSignalContextListModel extends UMLModelElementListModel2 {
 
-    /**
-     * The constructor.
-     */
-    public UMLSignalContextListModel() {
-        super("context");
-    }
+  /** The constructor. */
+  public UMLSignalContextListModel() {
+    super("context");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (getTarget() != null) {
-            setAllElements(Model.getFacade().getContexts(getTarget()));
-        }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (getTarget() != null) {
+      setAllElements(Model.getFacade().getContexts(getTarget()));
     }
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(java.lang.Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().isABehavioralFeature(element)
-                && Model.getFacade().getContexts(getTarget()).contains(
-                        element);
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(java.lang.Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().isABehavioralFeature(element)
+        && Model.getFacade().getContexts(getTarget()).contains(element);
+  }
 }

@@ -25,43 +25,42 @@
 package org.argouml.sequence2.diagram;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.model.Model;
 import org.tigris.gef.undo.UndoableAction;
 
 /**
  * Action to set the operation of an action.
- * 
+ *
  * @author Thomas Neustupny (thn@tigris.org)
  */
 public class ActionSetOperation extends UndoableAction {
 
-    private Object action;
-    private Object operation;
-	
-    /**
-     * The constructor.
-     * 
-     * @param ac The action
-     * @param op The operation
-     * @param label The menu item label for the operation
-     */
-    public ActionSetOperation(Object ac, Object op, String label) {
-        super(label, null);
-        //super(Model.getFacade().getName(op), null);
-        action = ac;
-        operation = op;
-    }
+  private Object action;
+  private Object operation;
 
-    /*
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        //TODO: What can we do with other kind of actions?
-        if (Model.getFacade().isACallAction(action)) {
-            Model.getCommonBehaviorHelper().setOperation(action, operation);
-        }
-        super.actionPerformed(e);
+  /**
+   * The constructor.
+   *
+   * @param ac The action
+   * @param op The operation
+   * @param label The menu item label for the operation
+   */
+  public ActionSetOperation(Object ac, Object op, String label) {
+    super(label, null);
+    // super(Model.getFacade().getName(op), null);
+    action = ac;
+    operation = op;
+  }
+
+  /*
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
+  public void actionPerformed(ActionEvent e) {
+    // TODO: What can we do with other kind of actions?
+    if (Model.getFacade().isACallAction(action)) {
+      Model.getCommonBehaviorHelper().setOperation(action, operation);
     }
+    super.actionPerformed(e);
+  }
 }

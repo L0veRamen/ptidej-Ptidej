@@ -28,7 +28,6 @@ import java.awt.event.ActionEvent;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
-
 import org.argouml.i18n.Translator;
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.Model;
@@ -41,118 +40,108 @@ import org.tigris.gef.graph.MutableGraphModel;
 import org.tigris.gef.presentation.Fig;
 
 /**
- * An action that makes all edges on the selected node visible/not visible
- * on the diagram.
+ * An action that makes all edges on the selected node visible/not visible on the diagram.
  *
  * @author David Manura
  * @since 0.13.5
  */
 public class ActionEdgesDisplay extends UMLAction {
 
-    ////////////////////////////////////////////////////////////////
-    // static variables
+  ////////////////////////////////////////////////////////////////
+  // static variables
 
-    // compartments
-    private static UMLAction showEdges = new ActionEdgesDisplay(true,
-                Translator.localize("menu.popup.add.all-relations"));
-    private static UMLAction hideEdges = new ActionEdgesDisplay(false,
-                Translator.localize("menu.popup.remove.all-relations"));
+  // compartments
+  private static UMLAction showEdges =
+      new ActionEdgesDisplay(true, Translator.localize("menu.popup.add.all-relations"));
 
-    private boolean show;
+  private static UMLAction hideEdges =
+      new ActionEdgesDisplay(false, Translator.localize("menu.popup.remove.all-relations"));
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  private boolean show;
 
-    /**
-     * The constructor.
-     *
-     * @param showEdge to show or not to show
-     * @param desc the name
-     */
-    protected ActionEdgesDisplay(boolean showEdge, String desc) {
-        super(desc, true, NO_ICON);
-        show = showEdge;
-    }
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
+  /**
+   * The constructor.
+   *
+   * @param showEdge to show or not to show
+   * @param desc the name
+   */
+  protected ActionEdgesDisplay(boolean showEdge, String desc) {
+    super(desc, true, NO_ICON);
+    show = showEdge;
+  }
 
-    ////////////////////////////////////////////////////////////////
-    // main methods
+  ////////////////////////////////////////////////////////////////
+  // main methods
 
-    /**
-     * TODO: Support commentEdges.
-     * TODO: Support associations to self.
-     * 
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-        ArgoDiagram d = ProjectManager.getManager()
-                .getCurrentProject().getActiveDiagram();
-        Editor ce = Globals.curEditor();
-        MutableGraphModel mgm = (MutableGraphModel) ce.getGraphModel();
+  /**
+   * TODO: Support commentEdges. TODO: Support associations to self.
+   *
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    ArgoDiagram d = ProjectManager.getManager().getCurrentProject().getActiveDiagram();
+    Editor ce = Globals.curEditor();
+    MutableGraphModel mgm = (MutableGraphModel) ce.getGraphModel();
 
-        Enumeration e = ce.getSelectionManager().selections().elements();
-        while (e.hasMoreElements()) {
-            Selection sel = (Selection) e.nextElement();
-            Object owner = sel.getContent().getOwner();
+    Enumeration e = ce.getSelectionManager().selections().elements();
+    while (e.hasMoreElements()) {
+      Selection sel = (Selection) e.nextElement();
+      Object owner = sel.getContent().getOwner();
 
-            if (show) { // add
-                mgm.addNodeRelatedEdges(owner);
-//                Collection c = Model.getFacade().getComments(owner);
-//                Iterator i = c.iterator();
-//                while (i.hasNext()) {
-//                    Object annotatedElement = i.next();
-//                    Fig f = d.presentationFor(annotatedElement);
-//                    // and now what? How do I add it to the diagram?
-//                }
-            } else { // remove
-                List edges = mgm.getInEdges(owner);
-                edges.addAll(mgm.getOutEdges(owner));
-                Iterator e2 = edges.iterator();
-                while (e2.hasNext()) {
-                    Object edge = e2.next();
-                    if (Model.getFacade().isAAssociationEnd(edge)) {
-                        edge = Model.getFacade().getAssociation(edge);
-                    }
-                    Fig fig = d.presentationFor(edge);
-                    if (fig != null)
-                        fig.removeFromDiagram();
-                }
-                //The next does not yet work for comment edges:
-//                Collection c = Model.getFacade().getComments(owner);
-//                Iterator i = c.iterator();
-//                while (i.hasNext()) {
-//                    Object annotatedElement = i.next();
-//                    Fig f = d.presentationFor(annotatedElement);
-//                    if (f != null) f.removeFromDiagram();
-//                }
-            }
+      if (show) { // add
+        mgm.addNodeRelatedEdges(owner);
+        //                Collection c = Model.getFacade().getComments(owner);
+        //                Iterator i = c.iterator();
+        //                while (i.hasNext()) {
+        //                    Object annotatedElement = i.next();
+        //                    Fig f = d.presentationFor(annotatedElement);
+        //                    // and now what? How do I add it to the diagram?
+        //                }
+      } else { // remove
+        List edges = mgm.getInEdges(owner);
+        edges.addAll(mgm.getOutEdges(owner));
+        Iterator e2 = edges.iterator();
+        while (e2.hasNext()) {
+          Object edge = e2.next();
+          if (Model.getFacade().isAAssociationEnd(edge)) {
+            edge = Model.getFacade().getAssociation(edge);
+          }
+          Fig fig = d.presentationFor(edge);
+          if (fig != null) fig.removeFromDiagram();
         }
+        // The next does not yet work for comment edges:
+        //                Collection c = Model.getFacade().getComments(owner);
+        //                Iterator i = c.iterator();
+        //                while (i.hasNext()) {
+        //                    Object annotatedElement = i.next();
+        //                    Fig f = d.presentationFor(annotatedElement);
+        //                    if (f != null) f.removeFromDiagram();
+        //                }
+      }
     }
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLAction#shouldBeEnabled()
-     */
-    public boolean shouldBeEnabled() {
-        return true;
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLAction#shouldBeEnabled()
+   */
+  public boolean shouldBeEnabled() {
+    return true;
+  }
 
+  /**
+   * @return Returns the showEdges.
+   */
+  public static UMLAction getShowEdges() {
+    return showEdges;
+  }
 
-    /**
-     * @return Returns the showEdges.
-     */
-    public static UMLAction getShowEdges() {
-        return showEdges;
-    }
-
-
-    /**
-     * @return Returns the hideEdges.
-     */
-    public static UMLAction getHideEdges() {
-        return hideEdges;
-    }
-
+  /**
+   * @return Returns the hideEdges.
+   */
+  public static UMLAction getHideEdges() {
+    return hideEdges;
+  }
 } /* end class ActionEdgesDisplay */
-
-
-

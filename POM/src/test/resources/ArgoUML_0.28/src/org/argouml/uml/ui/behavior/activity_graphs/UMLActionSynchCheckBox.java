@@ -30,26 +30,22 @@ import org.argouml.uml.ui.UMLCheckBox2;
 
 /**
  * Set the isSynch attribute for a ObjectFlowState.
- * 
+ *
  * @author Tom Morris
  */
 public class UMLActionSynchCheckBox extends UMLCheckBox2 {
 
-    /**
-     * Constructor for UMLAssociationEndNavigableCheckBox.
-     */
-    public UMLActionSynchCheckBox() {
-        super(Translator.localize("checkbox.synch-lc"),
-                ActionSetSynch.getInstance(), "isSynch");
-    }
+  /** Constructor for UMLAssociationEndNavigableCheckBox. */
+  public UMLActionSynchCheckBox() {
+    super(Translator.localize("checkbox.synch-lc"), ActionSetSynch.getInstance(), "isSynch");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLCheckBox2#buildModel()
-     */
-    public void buildModel() {
-        if (getTarget() != null) {
-            setSelected(Model.getFacade().isSynch(getTarget()));
-        }
+  /*
+   * @see org.argouml.uml.ui.UMLCheckBox2#buildModel()
+   */
+  public void buildModel() {
+    if (getTarget() != null) {
+      setSelected(Model.getFacade().isSynch(getTarget()));
     }
-
+  }
 }

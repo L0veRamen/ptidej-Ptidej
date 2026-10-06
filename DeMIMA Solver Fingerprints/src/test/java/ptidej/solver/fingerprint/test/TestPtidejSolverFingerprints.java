@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -13,8 +13,6 @@ package ptidej.solver.fingerprint.test;
 import junit.framework.TestSuite;
 import ptidej.solver.fingerprint.test.comparison.CompositeComposite2ComparisonTest;
 import ptidej.solver.fingerprint.test.comparison.CompositeJUnitTest;
-import ptidej.solver.fingerprint.test.comparison.CompositeLexiTest;
-import ptidej.solver.fingerprint.test.comparison.CompositeQuickUMLTest;
 import ptidej.solver.fingerprint.test.complex.CompositeComposite1Test;
 import ptidej.solver.fingerprint.test.complex.CompositeComposite2Test;
 import ptidej.solver.fingerprint.test.simple.Composition1Test;
@@ -23,22 +21,22 @@ import ptidej.solver.fingerprint.test.simple.Composition3Test;
 import ptidej.solver.fingerprint.test.simple.Composition4Test;
 
 public final class TestPtidejSolverFingerprints extends TestSuite {
-	public static TestSuite suite() {
-		final TestPtidejSolverFingerprints suite = new TestPtidejSolverFingerprints();
-		suite.setName(TestPtidejSolverFingerprints.class.getName());
+  public static TestSuite suite() {
+    final TestPtidejSolverFingerprints suite = new TestPtidejSolverFingerprints();
+    suite.setName(TestPtidejSolverFingerprints.class.getName());
 
-		suite.addTestSuite(CompositeComposite2ComparisonTest.class);
-		suite.addTestSuite(CompositeJUnitTest.class);
-		// Tests taking a long time, also missing class files
-		//	suite.addTestSuite(CompositeLexiTest.class);
-		//	suite.addTestSuite(CompositeQuickUMLTest.class);
-		suite.addTestSuite(CompositeComposite1Test.class);
-		suite.addTestSuite(CompositeComposite2Test.class);
-		suite.addTestSuite(Composition1Test.class);
-		suite.addTestSuite(Composition2Test.class);
-		suite.addTestSuite(Composition3Test.class);
-		suite.addTestSuite(Composition4Test.class);
+    suite.addTestSuite(CompositeComposite2ComparisonTest.class);
+    suite.addTestSuite(CompositeJUnitTest.class);
+    // Tests taking a long time, also missing class files
+    //	suite.addTestSuite(CompositeLexiTest.class);
+    //	suite.addTestSuite(CompositeQuickUMLTest.class);
+    suite.addTestSuite(CompositeComposite1Test.class);
+    suite.addTestSuite(CompositeComposite2Test.class);
+    suite.addTestSuite(Composition1Test.class);
+    suite.addTestSuite(Composition2Test.class);
+    suite.addTestSuite(Composition3Test.class);
+    suite.addTestSuite(Composition4Test.class);
 
-		return suite;
-	}
+    return suite;
+  }
 }

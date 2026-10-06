@@ -23,105 +23,93 @@
 // UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 package org.argouml.uml.ui;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import javax.swing.JTextArea;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-
 import org.apache.log4j.Logger;
 import org.argouml.i18n.Translator;
 import org.argouml.ui.LookAndFeelMgr;
 
-/**
- * This text field shows the body of a UML expression.
- *
- */
+/** This text field shows the body of a UML expression. */
 public class UMLExpressionBodyField extends JTextArea
-    implements DocumentListener, UMLUserInterfaceComponent, 
-    PropertyChangeListener {
+    implements DocumentListener, UMLUserInterfaceComponent, PropertyChangeListener {
 
-    /**
-     * Logger.
-     */
-    private static final Logger LOG =
-        Logger.getLogger(UMLExpressionBodyField.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(UMLExpressionBodyField.class);
 
-    private UMLExpressionModel2 model;
-    private boolean notifyModel;
+  private UMLExpressionModel2 model;
+  private boolean notifyModel;
 
-    /**
-     * The constructor.
-     *
-     * @param m Expression model, should be shared between
-     * Language and Body fields
-     * @param n Only one of Language and Body fields should
-     * forward events to model
-     */
-    public UMLExpressionBodyField(UMLExpressionModel2 m,
-				  boolean n) {
-        model = m;
-        notifyModel = n;
-        getDocument().addDocumentListener(this);
-        setToolTipText(Translator.localize("label.body.tooltip"));
-        setFont(LookAndFeelMgr.getInstance().getStandardFont());
+  /**
+   * The constructor.
+   *
+   * @param m Expression model, should be shared between Language and Body fields
+   * @param n Only one of Language and Body fields should forward events to model
+   */
+  public UMLExpressionBodyField(UMLExpressionModel2 m, boolean n) {
+    model = m;
+    notifyModel = n;
+    getDocument().addDocumentListener(this);
+    setToolTipText(Translator.localize("label.body.tooltip"));
+    setFont(LookAndFeelMgr.getInstance().getStandardFont());
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLUserInterfaceComponent#targetChanged()
+   */
+  public void targetChanged() {
+    LOG.debug("UMLExpressionBodyField: targetChanged");
+    if (notifyModel) {
+      model.targetChanged();
     }
+    update();
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLUserInterfaceComponent#targetChanged()
-     */
-    public void targetChanged() {
-	LOG.debug("UMLExpressionBodyField: targetChanged");
-	if (notifyModel) {
-	    model.targetChanged();
-	}
-        update();
+  /**
+   * @see org.argouml.uml.ui.UMLUserInterfaceComponent#targetReasserted()
+   */
+  public void targetReasserted() {}
+
+  /* TODO: This does not work - no event arrives. */
+  public void propertyChange(PropertyChangeEvent event) {
+    LOG.debug("UMLExpressionBodyField: propertySet" + event);
+    update();
+  }
+
+  private void update() {
+    String oldText = getText();
+    String newText = model.getBody();
+    LOG.debug("UMLExpressionBodyField: update: " + oldText + " " + newText);
+
+    if (oldText == null || newText == null || !oldText.equals(newText)) {
+      if (oldText != newText) {
+        LOG.debug("setNewText!!");
+        setText(newText);
+      }
     }
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLUserInterfaceComponent#targetReasserted()
-     */
-    public void targetReasserted() {
-    }
+  /**
+   * @see javax.swing.event.DocumentListener#changedUpdate(javax.swing.event.DocumentEvent)
+   */
+  public void changedUpdate(final DocumentEvent p1) {
+    model.setBody(getText());
+  }
 
-    /* TODO: This does not work - no event arrives. */
-    public void propertyChange(PropertyChangeEvent event) {
-        LOG.debug("UMLExpressionBodyField: propertySet" + event);
-        update();
-    }
+  /**
+   * @see javax.swing.event.DocumentListener#removeUpdate(javax.swing.event.DocumentEvent)
+   */
+  public void removeUpdate(final DocumentEvent p1) {
+    model.setBody(getText());
+  }
 
-    private void update() {
-        String oldText = getText();
-        String newText = model.getBody();
-        LOG.debug("UMLExpressionBodyField: update: " + oldText + " " + newText);
-
-        if (oldText == null || newText == null || !oldText.equals(newText)) {
-            if (oldText != newText) {
-                LOG.debug("setNewText!!");
-                setText(newText);
-            }
-        }
-    }
-
-    /**
-     * @see javax.swing.event.DocumentListener#changedUpdate(javax.swing.event.DocumentEvent)
-     */
-    public void changedUpdate(final DocumentEvent p1) {
-        model.setBody(getText());
-    }
-
-    /**
-     * @see javax.swing.event.DocumentListener#removeUpdate(javax.swing.event.DocumentEvent)
-     */
-    public void removeUpdate(final DocumentEvent p1) {
-        model.setBody(getText());
-    }
-
-    /**
-     * @see javax.swing.event.DocumentListener#insertUpdate(javax.swing.event.DocumentEvent)
-     */
-    public void insertUpdate(final DocumentEvent p1) {
-        model.setBody(getText());
-    }
+  /**
+   * @see javax.swing.event.DocumentListener#insertUpdate(javax.swing.event.DocumentEvent)
+   */
+  public void insertUpdate(final DocumentEvent p1) {
+    model.setBody(getText());
+  }
 }

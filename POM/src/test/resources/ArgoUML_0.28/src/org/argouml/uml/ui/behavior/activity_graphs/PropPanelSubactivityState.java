@@ -27,17 +27,14 @@ package org.argouml.uml.ui.behavior.activity_graphs;
 import org.argouml.uml.ui.behavior.state_machines.PropPanelSubmachineState;
 
 /**
-* The properties panel for the SubactivityState.
-*
-* @author mvw
-*
-*/
+ * The properties panel for the SubactivityState.
+ *
+ * @author mvw
+ */
 public class PropPanelSubactivityState extends PropPanelSubmachineState {
 
- /**
-  * Constructor
-  */
-    public PropPanelSubactivityState() {
-        super("label.subactivity-state", lookupIcon("SubactivityState"));
-    }
+  /** Constructor */
+  public PropPanelSubactivityState() {
+    super("label.subactivity-state", lookupIcon("SubactivityState"));
+  }
 }

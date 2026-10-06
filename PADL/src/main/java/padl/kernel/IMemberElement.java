@@ -5,9 +5,9 @@ package padl.kernel;
  * @since 2026/06/24
  */
 public interface IMemberElement extends IElement {
-	void attachTo(final IElement anElement);
+  void attachTo(final IElement anElement);
 
-	void detach();
+  void detach();
 
-	IElement getAttachedElement();
+  IElement getAttachedElement();
 }

@@ -22,45 +22,37 @@
 // CALIFORNIA HAS NO OBLIGATIONS TO PROVIDE MAINTENANCE, SUPPORT,
 // UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
-
 package org.argouml.uml.ui.behavior.activity_graphs;
 
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
-
 /**
- *
  * @author mkl
- *
  */
 public class UMLPartitionContentsListModel extends UMLModelElementListModel2 {
 
+  /** */
+  public UMLPartitionContentsListModel() {
+    super("contents");
+    // TODO: Auto-generated constructor stub
+  }
 
-    /**
-     *
-     */
-    public UMLPartitionContentsListModel() {
-        super("contents");
-        // TODO: Auto-generated constructor stub
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    removeAllElements();
+    addElement(Model.getFacade().getContents(getTarget()));
+    // TODO: Auto-generated method stub
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        removeAllElements();
-        addElement(Model.getFacade().getContents(getTarget()));
-        // TODO: Auto-generated method stub
+  }
 
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(java.lang.Object)
-     */
-    protected boolean isValidElement(Object element) {
-        // TODO: Auto-generated method stub
-        return false;
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(java.lang.Object)
+   */
+  protected boolean isValidElement(Object element) {
+    // TODO: Auto-generated method stub
+    return false;
+  }
 }

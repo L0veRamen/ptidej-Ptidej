@@ -25,7 +25,6 @@
 package org.argouml.uml.ui.behavior.common_behavior;
 
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.AbstractActionAddModelElement;
@@ -35,52 +34,37 @@ import org.argouml.uml.ui.UMLMutableLinkedList;
 import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
 import org.argouml.util.ConfigLoader;
 
-
-/**
- * The properties panel of an Object.
- */
+/** The properties panel of an Object. */
 public class PropPanelObject extends PropPanelInstance {
 
-    /**
-     * Constructor.
-     */
-    public PropPanelObject() {
-	super("Object", lookupIcon("Object"),
-            ConfigLoader.getTabPropsOrientation());
+  /** Constructor. */
+  public PropPanelObject() {
+    super("Object", lookupIcon("Object"), ConfigLoader.getTabPropsOrientation());
 
-	addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.name"), getNameTextField());
 
-	addField(Translator.localize("label.stereotype"),
-	    getStereotypeSelector());
+    addField(Translator.localize("label.stereotype"), getStereotypeSelector());
 
-	addField(Translator.localize("label.namespace"),
-		     getNamespaceSelector());
+    addField(Translator.localize("label.namespace"), getNamespaceSelector());
 
-        addSeperator();
+    addSeperator();
 
-	addField(Translator.localize("label.stimili-sent"),
-            getStimuliSenderScroll());
+    addField(Translator.localize("label.stimili-sent"), getStimuliSenderScroll());
 
-	addField(Translator.localize("label.stimili-received"),
-            getStimuliReceiverScroll());
+    addField(Translator.localize("label.stimili-received"), getStimuliReceiverScroll());
 
-	addSeperator();
+    addSeperator();
 
-	AbstractActionAddModelElement action =
-	    new ActionAddInstanceClassifier(Model.getMetaTypes().getClassifier());
-	JScrollPane classifierScroll =
-	    new JScrollPane(
-	            new UMLMutableLinkedList(
-	                    new UMLInstanceClassifierListModel(),
-	                    action, null, null, true));
-	addField(Translator.localize("label.classifiers"),
-            classifierScroll);
+    AbstractActionAddModelElement action =
+        new ActionAddInstanceClassifier(Model.getMetaTypes().getClassifier());
+    JScrollPane classifierScroll =
+        new JScrollPane(
+            new UMLMutableLinkedList(
+                new UMLInstanceClassifierListModel(), action, null, null, true));
+    addField(Translator.localize("label.classifiers"), classifierScroll);
 
-
-	addAction(new ActionNavigateNamespace());
-	addAction(new ActionNewStereotype());
-	addAction(new ActionDeleteSingleModelElement());
-
-    }
-
+    addAction(new ActionNavigateNamespace());
+    addAction(new ActionNewStereotype());
+    addAction(new ActionDeleteSingleModelElement());
+  }
 }

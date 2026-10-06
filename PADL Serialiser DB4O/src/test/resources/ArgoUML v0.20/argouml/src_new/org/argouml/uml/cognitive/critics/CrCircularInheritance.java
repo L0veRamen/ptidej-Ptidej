@@ -32,46 +32,39 @@ import org.argouml.model.Model;
 import org.argouml.uml.cognitive.UMLDecision;
 
 /**
- * Well-formedness rule [2] for MGeneralizableElement. See page 31 of UML 1.1
- * Semantics. OMG document ad/97-08-04.
+ * Well-formedness rule [2] for MGeneralizableElement. See page 31 of UML 1.1 Semantics. OMG
+ * document ad/97-08-04.
  *
  * @author jrobbins
  */
 public class CrCircularInheritance extends CrUML {
-    /**
-     * Logger.
-     */
-    private static final Logger LOG =
-	Logger.getLogger(CrCircularInheritance.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(CrCircularInheritance.class);
 
-    /**
-     * The constructor.
-     */
-    public CrCircularInheritance() {
-        setupHeadAndDesc();
-	setPriority(ToDoItem.HIGH_PRIORITY);
-	addSupportedDecision(UMLDecision.INHERITANCE);
-	setKnowledgeTypes(Critic.KT_SYNTAX);
-	addTrigger("generalization");
-	// no need for trigger on "specialization"
+  /** The constructor. */
+  public CrCircularInheritance() {
+    setupHeadAndDesc();
+    setPriority(ToDoItem.HIGH_PRIORITY);
+    addSupportedDecision(UMLDecision.INHERITANCE);
+    setKnowledgeTypes(Critic.KT_SYNTAX);
+    addTrigger("generalization");
+    // no need for trigger on "specialization"
+  }
+
+  /**
+   * @see org.argouml.uml.cognitive.critics.CrUML#predicate2( java.lang.Object,
+   *     org.argouml.cognitive.Designer)
+   */
+  public boolean predicate2(Object dm, Designer dsgr) {
+    boolean problem = NO_PROBLEM;
+    if (Model.getFacade().isAGeneralizableElement(dm)) {
+      try {
+        Model.getCoreHelper().getChildren(dm);
+      } catch (IllegalStateException ex) {
+        problem = PROBLEM_FOUND;
+        LOG.info("problem found for: " + this);
+      }
     }
-
-    /**
-     * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
-     * java.lang.Object, org.argouml.cognitive.Designer)
-     */
-    public boolean predicate2(Object dm, Designer dsgr) {
-	boolean problem = NO_PROBLEM;
-	if (Model.getFacade().isAGeneralizableElement(dm)) {
-	    try {
-		Model.getCoreHelper().getChildren(dm);
-	    } catch (IllegalStateException ex) {
-		problem = PROBLEM_FOUND;
-                LOG.info("problem found for: " + this);
-	    }
-	}
-	return problem;
-    }
-
+    return problem;
+  }
 } /* end class CrCircularInheritance.java */
-

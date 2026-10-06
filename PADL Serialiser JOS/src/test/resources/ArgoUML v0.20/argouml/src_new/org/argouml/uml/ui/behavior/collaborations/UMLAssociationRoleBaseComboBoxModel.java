@@ -33,40 +33,38 @@ import org.argouml.uml.ui.UMLComboBoxModel2;
  */
 public class UMLAssociationRoleBaseComboBoxModel extends UMLComboBoxModel2 {
 
-    /**
-     * Constructor for UMLAssociationRoleBaseComboBoxModel.
-     */
-    public UMLAssociationRoleBaseComboBoxModel() {
-        super("base", true);
-        Model.getPump().addClassModelEventListener(this,
-                Model.getMetaTypes().getNamespace(), "ownedElement");
-    }
+  /** Constructor for UMLAssociationRoleBaseComboBoxModel. */
+  public UMLAssociationRoleBaseComboBoxModel() {
+    super("base", true);
+    Model.getPump()
+        .addClassModelEventListener(this, Model.getMetaTypes().getNamespace(), "ownedElement");
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        removeAllElements();
-        setElements(Model.getCollaborationsHelper().getAllPossibleBases(
-                /*(MAssociationRole)*/ getTarget()));
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    removeAllElements();
+    setElements(
+        Model.getCollaborationsHelper().getAllPossibleBases(/*(MAssociationRole)*/ getTarget()));
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
-     */
-    protected Object getSelectedModelElement() {
-        if (getTarget() != null) {
-            return Model.getFacade().getBase(getTarget());
-        }
-        return null;
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
+   */
+  protected Object getSelectedModelElement() {
+    if (getTarget() != null) {
+      return Model.getFacade().getBase(getTarget());
     }
+    return null;
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return Model.getCollaborationsHelper().getAllPossibleBases(
-                /*(MAssociationRole)*/ getTarget()).contains(element);
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getCollaborationsHelper()
+        .getAllPossibleBases(/*(MAssociationRole)*/ getTarget())
+        .contains(element);
+  }
 }

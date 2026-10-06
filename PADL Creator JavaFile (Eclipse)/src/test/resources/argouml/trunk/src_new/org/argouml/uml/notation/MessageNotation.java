@@ -27,23 +27,21 @@ package org.argouml.uml.notation;
 import org.argouml.model.Model;
 
 /**
- * This abstract class forms the basis of all Notation providers
- * for the text shown in the Fig that represents the Message.
- * Subclass this for all languages.
- * 
+ * This abstract class forms the basis of all Notation providers for the text shown in the Fig that
+ * represents the Message. Subclass this for all languages.
+ *
  * @author michiel
  */
 public abstract class MessageNotation extends NotationProvider {
-    
-    /**
-     * The constructor.
-     *
-     * @param message the UML element
-     */
-    public MessageNotation(Object message) {
-        if (!Model.getFacade().isAMessage(message)) {
-            throw new IllegalArgumentException("This is not an Message.");
-        }
-    }
 
+  /**
+   * The constructor.
+   *
+   * @param message the UML element
+   */
+  public MessageNotation(Object message) {
+    if (!Model.getFacade().isAMessage(message)) {
+      throw new IllegalArgumentException("This is not an Message.");
+    }
+  }
 }

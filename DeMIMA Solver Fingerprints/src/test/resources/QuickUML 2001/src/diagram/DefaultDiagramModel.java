@@ -1,25 +1,19 @@
 /**
+ * Java Diagram Package; An extremely flexible and fast multipurpose diagram component for Swing.
+ * Copyright (C) 2001 Eric Crahen <crahen@cse.buffalo.edu>
  *
-    Java Diagram Package; An extremely flexible and fast multipurpose diagram 
-    component for Swing.
-    Copyright (C) 2001  Eric Crahen <crahen@cse.buffalo.edu>
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
+ * <p>This program is free software; you can redistribute it and/or modify it under the terms of the
+ * GNU General Public License as published by the Free Software Foundation; either version 2 of the
+ * License, or (at your option) any later version.
+ *
+ * <p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * <p>You should have received a copy of the GNU General Public License along with this program; if
+ * not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307 USA
  */
-
 package diagram;
 
 import java.io.Serializable;
@@ -30,32 +24,23 @@ import java.util.List;
 
 /**
  * @class DefaultDiagramModel
- *
  * @author Eric Crahen
  * @date 08-20-2001
  * @version 1.0
- *
- * The DefaultDiagramModel implements a working DiagramModel that is
- * capable of storing and removing various Figures, but not associating
- * data with those Figures. 
- *
- * Serialization of the default model is accoomplished by through a simple
- * format. A table of all Figures that are a part of this model is written, 
- * followed by a table of extra information for each Figure. This allows 
- * shared objects (such as Link endpoints and some compound Figures) to be 
- * handled correctly (no duplicates are created just because a Figure is
- * references several times). 
- *
- * Derivatives of this class should  override the writeExternal(Figure, ...) 
- * and readExternal(Figure, ...) methods to customize what extra 
- * information is store for each Figure.
- *
- *
- * TODO: Update the externalization methods to handle links to Figures not
- * members of the Model.
+ *     <p>The DefaultDiagramModel implements a working DiagramModel that is capable of storing and
+ *     removing various Figures, but not associating data with those Figures.
+ *     <p>Serialization of the default model is accoomplished by through a simple format. A table of
+ *     all Figures that are a part of this model is written, followed by a table of extra
+ *     information for each Figure. This allows shared objects (such as Link endpoints and some
+ *     compound Figures) to be handled correctly (no duplicates are created just because a Figure is
+ *     references several times).
+ *     <p>Derivatives of this class should override the writeExternal(Figure, ...) and
+ *     readExternal(Figure, ...) methods to customize what extra information is store for each
+ *     Figure.
+ *     <p>TODO: Update the externalization methods to handle links to Figures not members of the
+ *     Model.
  */
-public class DefaultDiagramModel extends AbstractDiagramModel 
-  implements Serializable {
+public class DefaultDiagramModel extends AbstractDiagramModel implements Serializable {
 
   private static FigureComparator comparator = new FigureComparator();
 
@@ -63,57 +48,43 @@ public class DefaultDiagramModel extends AbstractDiagramModel
   private HashMap valueMap = new HashMap();
 
   /**
-   *
    * @param Figure
    */
   public void add(Figure fig) {
 
-    if(!figures.contains(fig)) {
+    if (!figures.contains(fig)) {
 
       figures.add(fig);
       fireFigureAdded(fig);
-   
     }
-
   }
-  
 
   /**
-   *
    * @param Figure
    */
   public void remove(Figure fig) {
 
-    if(figures.contains(fig)) {
+    if (figures.contains(fig)) {
 
       figures.remove(fig);
       fireFigureRemoved(fig);
-
     }
-
   }
 
-  /**
-   * Remove all figures from the model
-   */
+  /** Remove all figures from the model */
   public void clear() {
 
-    while(!figures.isEmpty())
-      fireFigureRemoved((Figure)figures.remove(figures.size()-1));
+    while (!figures.isEmpty()) fireFigureRemoved((Figure) figures.remove(figures.size() - 1));
 
     valueMap.clear();
-
   }
 
-  /**
-   * Get the number of Figures in this model
-   */
+  /** Get the number of Figures in this model */
   public int size() {
     return figures.size();
   }
 
   /**
-   *
    * @return Iterator
    */
   public Iterator iterator() {
@@ -121,9 +92,9 @@ public class DefaultDiagramModel extends AbstractDiagramModel
   }
 
   /**
-   * Associate a value with a Figure 
+   * Associate a value with a Figure
    *
-   * @param Figure 
+   * @param Figure
    * @param Object
    */
   public void setValue(Figure figure, Object value) {
@@ -131,9 +102,9 @@ public class DefaultDiagramModel extends AbstractDiagramModel
   }
 
   /**
-   * Get value associated with a Figure 
+   * Get value associated with a Figure
    *
-   * @param Figure 
+   * @param Figure
    * @return Object
    */
   public Object getValue(Figure figure) {
@@ -142,11 +113,9 @@ public class DefaultDiagramModel extends AbstractDiagramModel
 
   /**
    * @class RepeatingIterator
-   * 
-   * Iterator implementation that will walk over the elements of some
-   * List. Once the end of the list is reached, and has been tested once
-   * with hasNext() returning false the Iterator is reset. It can then 
-   * walk over the set of Objects in the List once again.
+   *     <p>Iterator implementation that will walk over the elements of some List. Once the end of
+   *     the list is reached, and has been tested once with hasNext() returning false the Iterator
+   *     is reset. It can then walk over the set of Objects in the List once again.
    */
   protected class RepeatingIterator implements Iterator {
 
@@ -160,15 +129,13 @@ public class DefaultDiagramModel extends AbstractDiagramModel
 
     public boolean hasNext() {
 
-      if(++index == list.size()) {
+      if (++index == list.size()) {
 
         index = -1;
         return false;
-
       }
 
       return true;
-
     }
 
     public Object next() {
@@ -176,47 +143,37 @@ public class DefaultDiagramModel extends AbstractDiagramModel
     }
 
     public void remove() {}
-
   }
 
   /**
-   * Get all selected items. The items returned will be pruned by
-   * the arrays element class if any. Passing a Figure[] array would return
-   * all Figure classes & subclasses in the selection model.
+   * Get all selected items. The items returned will be pruned by the arrays element class if any.
+   * Passing a Figure[] array would return all Figure classes & subclasses in the selection model.
    *
    * @param Object[] - avoid allocating a new array
-   *
    * @return Object[]
    */
   public Object[] toArray(Object[] a) {
 
     Class itemClass = (a == null) ? Object.class : a.getClass().getComponentType();
-    if(itemClass == Object.class)
-      return figures.toArray(a);
+    if (itemClass == Object.class) return figures.toArray(a);
 
     // New array needed, pick a decent element class
     int len = figures.size();
-    if(a.length < len) 
-      a = (Object[])java.lang.reflect.Array.newInstance(itemClass, len);
-    
+    if (a.length < len) a = (Object[]) java.lang.reflect.Array.newInstance(itemClass, len);
+
     // Copy by class
     int n = 0;
-    for(int i=0; i < len; i++) {
-      
+    for (int i = 0; i < len; i++) {
+
       Object o = figures.get(i);
       Class c = o.getClass();
-      
-      if(c == itemClass || itemClass.isAssignableFrom(c))
-        a[n++] = o;
 
+      if (c == itemClass || itemClass.isAssignableFrom(c)) a[n++] = o;
     }
-    
+
     // Null terminate
-    if(n < a.length) 
-      java.util.Arrays.fill(a, n, a.length, null);
-    
+    if (n < a.length) java.util.Arrays.fill(a, n, a.length, null);
+
     return a;
-
   }
-
 }

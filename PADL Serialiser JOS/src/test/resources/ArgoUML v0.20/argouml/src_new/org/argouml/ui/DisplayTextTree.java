@@ -27,194 +27,177 @@ package org.argouml.ui;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
-
 import javax.swing.JTree;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
-
 import org.apache.log4j.Logger;
 import org.argouml.cognitive.ToDoItem;
 import org.argouml.cognitive.ToDoList;
 import org.argouml.uml.ui.UMLTreeCellRenderer;
 
 /**
- * This is the JTree that is the GUI component view of the UML model
- * navigation (the explorer) and the todo list.
+ * This is the JTree that is the GUI component view of the UML model navigation (the explorer) and
+ * the todo list.
  */
 public class DisplayTextTree extends JTree {
-    /**
-     * Logger.
-     */
-    private static final Logger LOG = Logger.getLogger(DisplayTextTree.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(DisplayTextTree.class);
 
-    /**
-     * A Map helping the tree maintain a consistent expanded paths state.
-     *
-     *<pre>
-     * keys = the current TreeModel of this Tree
-     * values = Vector of currently expanded paths.
-     *</pre>
-     */
-    private Hashtable expandedPathsInModel;
+  /**
+   * A Map helping the tree maintain a consistent expanded paths state.
+   *
+   * <pre>
+   * keys = the current TreeModel of this Tree
+   * values = Vector of currently expanded paths.
+   * </pre>
+   */
+  private Hashtable expandedPathsInModel;
 
-    private boolean reexpanding;
+  private boolean reexpanding;
 
-    /**
-     * Sets the label renderer, line style angled, enable tooltips,
-     * sets row height to 18 pixels.
-     */
-    public DisplayTextTree() {
+  /** Sets the label renderer, line style angled, enable tooltips, sets row height to 18 pixels. */
+  public DisplayTextTree() {
 
-        super();
+    super();
 
-        setCellRenderer(new UMLTreeCellRenderer());
-        putClientProperty("JTree.lineStyle", "Angled");
-        setRootVisible(false);
-        setShowsRootHandles(true);
-        setToolTipText("Tree"); // Enables tooltips for tree. Won't be shown.
+    setCellRenderer(new UMLTreeCellRenderer());
+    putClientProperty("JTree.lineStyle", "Angled");
+    setRootVisible(false);
+    setShowsRootHandles(true);
+    setToolTipText("Tree"); // Enables tooltips for tree. Won't be shown.
 
-        this.setRowHeight(18);
+    this.setRowHeight(18);
 
-        expandedPathsInModel = new Hashtable();
-        reexpanding = false;
+    expandedPathsInModel = new Hashtable();
+    reexpanding = false;
+  }
+
+  // ------------ methods that override JTree methods ---------
+
+  /**
+   * Override the default JTree implementation to display the appropriate text for any object that
+   * will be displayed in the todo list.
+   *
+   * <p>TODO: Since this is only used for the Todo list, it should not be located here, which is a
+   * common class for both trees, the explorer and the todo list.
+   *
+   * @param value the given object
+   * @param selected ignored
+   * @param expanded ignored
+   * @param leaf ignored
+   * @param row ignored
+   * @param hasFocus ignored
+   * @return the value converted to text.
+   * @see javax.swing.JTree#convertValueToText(java.lang.Object, boolean, boolean, boolean, int,
+   *     boolean)
+   */
+  public String convertValueToText(
+      Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
+
+    if (value instanceof ToDoItem) {
+      return ((ToDoItem) value).getHeadline();
+    }
+    if (value instanceof ToDoList) {
+      return "ToDoList";
+    }
+    if (value != null) {
+      return value.toString();
+    }
+    return "-";
+  }
+
+  /**
+   * Tree MModel Expansion notification.
+   *
+   * <p>
+   *
+   * @param path a Tree node insertion event
+   */
+  public void fireTreeExpanded(TreePath path) {
+
+    super.fireTreeExpanded(path);
+
+    LOG.debug("fireTreeExpanded");
+    if (reexpanding) {
+      return;
+    }
+    if (path == null || expandedPathsInModel == null) {
+      return;
+    }
+    Vector expanded = getExpandedPaths();
+    expanded.removeElement(path);
+    expanded.addElement(path);
+  }
+
+  /**
+   * @see javax.swing.JTree#fireTreeCollapsed(javax.swing.tree.TreePath)
+   */
+  public void fireTreeCollapsed(TreePath path) {
+
+    super.fireTreeCollapsed(path);
+
+    LOG.debug("fireTreeCollapsed");
+    if (path == null || expandedPathsInModel == null) {
+      return;
+    }
+    Vector expanded = getExpandedPaths();
+    expanded.removeElement(path);
+  }
+
+  /**
+   * @see javax.swing.JTree#setModel(javax.swing.tree.TreeModel)
+   */
+  public void setModel(TreeModel newModel) {
+
+    LOG.debug("setModel");
+    Object r = newModel.getRoot();
+    if (r != null) {
+      super.setModel(newModel);
+    }
+    reexpand();
+  }
+
+  // ------------- other methods ------------------
+
+  /**
+   * Called in reexpand().
+   *
+   * @return a Vector containing all expanded paths
+   */
+  protected Vector getExpandedPaths() {
+
+    LOG.debug("getExpandedPaths");
+    TreeModel tm = getModel();
+    Vector res = (Vector) expandedPathsInModel.get(tm);
+    if (res == null) {
+      res = new Vector();
+      expandedPathsInModel.put(tm, res);
+    }
+    return res;
+  }
+
+  /**
+   * We re-expand the ones that were open before to maintain the same viewable tree.
+   *
+   * <p>called by doForceUpdate(), setModel()
+   */
+  private void reexpand() {
+
+    LOG.debug("reexpand");
+    if (expandedPathsInModel == null) {
+      return;
     }
 
-    // ------------ methods that override JTree methods ---------
+    reexpanding = true;
 
-    /**
-     * Override the default JTree implementation to display the
-     * appropriate text for any object that will be displayed in
-     * the todo list.
-     *
-     * TODO: Since this is only used for the Todo list,
-     * it should not be located here, which is a common class
-     * for both trees, the explorer and the todo list.
-     *
-     * @param value the given object
-     * @param selected ignored
-     * @param expanded ignored
-     * @param leaf ignored
-     * @param row ignored
-     * @param hasFocus ignored
-     *
-     * @return the value converted to text.
-     *
-     * @see javax.swing.JTree#convertValueToText(java.lang.Object,
-     * boolean, boolean, boolean, int, boolean)
-     */
-    public String convertValueToText(
-        Object value,
-        boolean selected,
-        boolean expanded,
-        boolean leaf,
-        int row,
-        boolean hasFocus) {
-
-	if (value instanceof ToDoItem) {
-            return ((ToDoItem) value).getHeadline();
-        }
-        if (value instanceof ToDoList) {
-            return "ToDoList";
-        }
-        if (value != null) {
-            return value.toString();
-        }
-        return "-";
+    Enumeration pathsEnum = getExpandedPaths().elements();
+    while (pathsEnum.hasMoreElements()) {
+      TreePath path = (TreePath) pathsEnum.nextElement();
+      expandPath(path);
     }
+    reexpanding = false;
+  }
 
-    /**
-     * Tree MModel Expansion notification.<p>
-     *
-     * @param path a Tree node insertion event
-     */
-    public void fireTreeExpanded(TreePath path) {
-
-        super.fireTreeExpanded(path);
-
-        LOG.debug("fireTreeExpanded");
-        if (reexpanding) {
-            return;
-        }
-        if (path == null || expandedPathsInModel == null) {
-            return;
-        }
-        Vector expanded = getExpandedPaths();
-        expanded.removeElement(path);
-        expanded.addElement(path);
-    }
-
-    /**
-     * @see javax.swing.JTree#fireTreeCollapsed(javax.swing.tree.TreePath)
-     */
-    public void fireTreeCollapsed(TreePath path) {
-
-        super.fireTreeCollapsed(path);
-
-        LOG.debug("fireTreeCollapsed");
-        if (path == null || expandedPathsInModel == null) {
-            return;
-        }
-        Vector expanded = getExpandedPaths();
-        expanded.removeElement(path);
-    }
-
-    /**
-     * @see javax.swing.JTree#setModel(javax.swing.tree.TreeModel)
-     */
-    public void setModel(TreeModel newModel) {
-
-        LOG.debug("setModel");
-        Object r = newModel.getRoot();
-        if (r != null) {
-            super.setModel(newModel);
-        }
-        reexpand();
-    }
-
-    // ------------- other methods ------------------
-
-    /**
-     * Called in reexpand().
-     *
-     * @return a Vector containing all expanded paths
-     */
-    protected Vector getExpandedPaths() {
-
-        LOG.debug("getExpandedPaths");
-        TreeModel tm = getModel();
-        Vector res = (Vector) expandedPathsInModel.get(tm);
-        if (res == null) {
-            res = new Vector();
-            expandedPathsInModel.put(tm, res);
-        }
-        return res;
-    }
-
-    /**
-     * We re-expand the ones
-     * that were open before to maintain the same viewable tree.
-     *
-     * called by doForceUpdate(), setModel()
-     */
-    private void reexpand() {
-
-        LOG.debug("reexpand");
-        if (expandedPathsInModel == null) {
-            return;
-        }
-
-        reexpanding = true;
-
-        Enumeration pathsEnum = getExpandedPaths().elements();
-        while (pathsEnum.hasMoreElements()) {
-            TreePath path = (TreePath) pathsEnum.nextElement();
-            expandPath(path);
-        }
-        reexpanding = false;
-    }
-
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = 949560309817566838L;
+  /** The UID. */
+  private static final long serialVersionUID = 949560309817566838L;
 }

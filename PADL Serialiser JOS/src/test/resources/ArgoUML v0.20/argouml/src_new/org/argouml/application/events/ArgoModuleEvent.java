@@ -23,29 +23,31 @@
 // UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 package org.argouml.application.events;
+
 import org.argouml.application.api.ArgoModule;
 
 /**
- * ArgoModuleEvent is used to notify interested parties
- * that the module which is the event source
+ * ArgoModuleEvent is used to notify interested parties that the module which is the event source
  * has been posted, selected, or canceled.
  */
 public class ArgoModuleEvent extends ArgoEvent {
 
-    /**
-     * Instantiates a specific module event.
-     *
-     * @param eventType that occurred
-     * @param src the module that caused it to happen
-     */
-    public ArgoModuleEvent(int eventType, ArgoModule src) {
-        super(eventType, src);
-    }
+  /**
+   * Instantiates a specific module event.
+   *
+   * @param eventType that occurred
+   * @param src the module that caused it to happen
+   */
+  public ArgoModuleEvent(int eventType, ArgoModule src) {
+    super(eventType, src);
+  }
 
-    /**
-     * Indicates the start of the range for events.
-     *
-     * @return the first id reserved for module events.
-     */
-    public int getEventStartRange() { return ANY_MODULE_EVENT; }
+  /**
+   * Indicates the start of the range for events.
+   *
+   * @return the first id reserved for module events.
+   */
+  public int getEventStartRange() {
+    return ANY_MODULE_EVENT;
+  }
 }

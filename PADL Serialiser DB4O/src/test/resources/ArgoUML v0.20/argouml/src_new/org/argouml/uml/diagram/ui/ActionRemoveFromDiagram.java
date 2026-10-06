@@ -26,10 +26,8 @@ package org.argouml.uml.diagram.ui;
 
 import java.awt.event.ActionEvent;
 import java.util.Vector;
-
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.i18n.Translator;
 import org.argouml.uml.diagram.static_structure.ui.CommentEdge;
@@ -39,40 +37,35 @@ import org.tigris.gef.graph.MutableGraphSupport;
 import org.tigris.gef.presentation.Connecter;
 import org.tigris.gef.presentation.Fig;
 
-
-/**
- * Removes an modelelement from the diagram, but not from the model.
- */
+/** Removes an modelelement from the diagram, but not from the model. */
 public class ActionRemoveFromDiagram extends AbstractAction {
 
-    public ActionRemoveFromDiagram(String name) {
-        super(name, ResourceLoaderWrapper.lookupIcon("RemoveFromDiagram"));
-        String localMnemonic =
-    	    Translator.localize("action.remove-from-diagram.mnemonic");
-        if (localMnemonic != null && localMnemonic.length() == 1) {
-            putValue(Action.MNEMONIC_KEY,
-		     new Integer(localMnemonic.charAt(0)));
-        }
+  public ActionRemoveFromDiagram(String name) {
+    super(name, ResourceLoaderWrapper.lookupIcon("RemoveFromDiagram"));
+    String localMnemonic = Translator.localize("action.remove-from-diagram.mnemonic");
+    if (localMnemonic != null && localMnemonic.length() == 1) {
+      putValue(Action.MNEMONIC_KEY, new Integer(localMnemonic.charAt(0)));
     }
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-        int size = 0;
-        Editor ce = Globals.curEditor();
-        MutableGraphSupport graph = (MutableGraphSupport) ce.getGraphModel();
-        Vector figs = ce.getSelectionManager().getFigs();
-        size = figs.size();
-        for (int i = 0; i < size; i++) {
-            Fig f = (Fig) figs.elementAt(i);
-            if (!(f.getOwner() instanceof CommentEdge)) {
-                if (f instanceof Connecter) {
-                    f.removeFromDiagram();
-                } else {
-                    graph.removeFig(f);
-                }
-            }
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    int size = 0;
+    Editor ce = Globals.curEditor();
+    MutableGraphSupport graph = (MutableGraphSupport) ce.getGraphModel();
+    Vector figs = ce.getSelectionManager().getFigs();
+    size = figs.size();
+    for (int i = 0; i < size; i++) {
+      Fig f = (Fig) figs.elementAt(i);
+      if (!(f.getOwner() instanceof CommentEdge)) {
+        if (f instanceof Connecter) {
+          f.removeFromDiagram();
+        } else {
+          graph.removeFig(f);
         }
+      }
     }
+  }
 }

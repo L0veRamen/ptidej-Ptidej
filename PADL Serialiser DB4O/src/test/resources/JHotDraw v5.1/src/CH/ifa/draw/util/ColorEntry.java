@@ -7,14 +7,12 @@ package CH.ifa.draw.util;
 
 import java.awt.Color;
 
-
 class ColorEntry {
-	public String 	fName;
-	public Color 	fColor;
+  public String fName;
+  public Color fColor;
 
-	ColorEntry(String name, Color color) {
-	    fColor = color;
-	    fName = name;
-	}
+  ColorEntry(String name, Color color) {
+    fColor = color;
+    fName = name;
+  }
 }
-

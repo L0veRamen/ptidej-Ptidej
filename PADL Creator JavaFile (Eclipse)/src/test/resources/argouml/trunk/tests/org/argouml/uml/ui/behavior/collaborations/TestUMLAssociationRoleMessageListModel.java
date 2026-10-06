@@ -32,53 +32,49 @@ import org.argouml.uml.ui.AbstractUMLModelElementListModel2Test;
  * @since Oct 27, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class TestUMLAssociationRoleMessageListModel
-    extends AbstractUMLModelElementListModel2Test {
+public class TestUMLAssociationRoleMessageListModel extends AbstractUMLModelElementListModel2Test {
 
-    /**
-     * Constructor for TestUMLAssociationRoleMessageListModel.
-     *
-     * @param arg0 is the name of the test case.
-     */
-    public TestUMLAssociationRoleMessageListModel(String arg0) {
-        super(arg0);
+  /**
+   * Constructor for TestUMLAssociationRoleMessageListModel.
+   *
+   * @param arg0 is the name of the test case.
+   */
+  public TestUMLAssociationRoleMessageListModel(String arg0) {
+    super(arg0);
+  }
+
+  /**
+   * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#buildElement()
+   */
+  protected void buildElement() {
+    setElem(Model.getCollaborationsFactory().createAssociationRole());
+  }
+
+  /**
+   * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#buildModel()
+   */
+  protected void buildModel() {
+    setModel(new UMLAssociationRoleMessageListModel());
+  }
+
+  /**
+   * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#fillModel()
+   */
+  protected Object[] fillModel() {
+    Object[] messages = new Object[10];
+    for (int i = 0; i < messages.length; i++) {
+      messages[i] = Model.getCollaborationsFactory().createMessage();
+      Model.getCollaborationsHelper().addMessage(getElem(), messages[i]);
     }
+    return messages;
+  }
 
-    /**
-     * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#buildElement()
-     */
-    protected void buildElement() {
-        setElem(Model.getCollaborationsFactory().createAssociationRole());
+  /**
+   * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#removeHalfModel(Object[])
+   */
+  protected void removeHalfModel(Object[] elements) {
+    for (int i = 0; i < 5; i++) {
+      Model.getCollaborationsHelper().removeMessage(getElem(), elements[i]);
     }
-
-    /**
-     * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#buildModel()
-     */
-    protected void buildModel() {
-        setModel(new UMLAssociationRoleMessageListModel());
-    }
-
-    /**
-     * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#fillModel()
-     */
-    protected Object[] fillModel() {
-        Object[] messages = new Object[10];
-        for (int i = 0; i < messages.length; i++) {
-            messages[i] = Model.getCollaborationsFactory().createMessage();
-            Model.getCollaborationsHelper().addMessage(getElem(), messages[i]);
-        }
-        return messages;
-    }
-
-    /**
-     * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#removeHalfModel(Object[])
-     */
-    protected void removeHalfModel(Object[] elements) {
-        for (int i = 0; i < 5; i++) {
-            Model.getCollaborationsHelper().removeMessage(
-                    getElem(),
-                    elements[i]);
-        }
-    }
-
+  }
 }

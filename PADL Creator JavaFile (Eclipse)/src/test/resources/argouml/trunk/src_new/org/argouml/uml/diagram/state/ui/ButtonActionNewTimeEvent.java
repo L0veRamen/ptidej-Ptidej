@@ -28,20 +28,20 @@ import org.argouml.model.Model;
 
 /**
  * This is an Action to be used for Buttons to create a Time-Event.
- * 
+ *
  * @author Michiel
  */
 public class ButtonActionNewTimeEvent extends ButtonActionNewEvent {
 
-    protected Object createEvent(Object ns) {
-        return Model.getStateMachinesFactory().buildTimeEvent(ns);
-    }
-    
-    protected String getKeyName() {
-        return "button.new-timeevent";
-    }
-    
-    protected String getIconName() {
-        return "TimeEvent";
-    }
+  protected Object createEvent(Object ns) {
+    return Model.getStateMachinesFactory().buildTimeEvent(ns);
+  }
+
+  protected String getKeyName() {
+    return "button.new-timeevent";
+  }
+
+  protected String getIconName() {
+    return "TimeEvent";
+  }
 }

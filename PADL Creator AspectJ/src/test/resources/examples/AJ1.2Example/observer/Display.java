@@ -11,13 +11,13 @@ about the software, its performance or its conformity to any specification.
 */
 
 package observer;
+
+import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Frame;
 import java.awt.Panel;
-import java.awt.Container;
-import java.awt.Component;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.BorderLayout;
 
 /*
  * Display is the container class that holds all the views of the
@@ -27,20 +27,23 @@ import java.awt.BorderLayout;
 
 class Display extends Panel {
 
-    protected Frame frame = new Frame("Subject/Observer Demo");
+  protected Frame frame = new Frame("Subject/Observer Demo");
 
-    Display() {
-        frame.addWindowListener(new WindowAdapter() {
-                public void windowClosing(WindowEvent e) {System.exit(0);}
-            });
+  Display() {
+    frame.addWindowListener(
+        new WindowAdapter() {
+          public void windowClosing(WindowEvent e) {
+            System.exit(0);
+          }
+        });
 
-        frame.add(this, BorderLayout.CENTER);
-        frame.pack();
-        frame.setVisible(true);
-    }
+    frame.add(this, BorderLayout.CENTER);
+    frame.pack();
+    frame.setVisible(true);
+  }
 
-    void addToFrame(Component c) {
-        add(c);
-        frame.pack();
-    }
+  void addToFrame(Component c) {
+    add(c);
+    frame.pack();
+  }
 }

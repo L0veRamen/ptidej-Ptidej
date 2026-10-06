@@ -24,110 +24,108 @@
 
 package org.argouml.uml.reveng.java;
 
+import java.io.*;
 import org.apache.log4j.Logger;
 import org.argouml.kernel.*;
 import org.argouml.uml.reveng.*;
 import org.argouml.util.FileFilters;
 import org.argouml.util.SuffixFilter;
 
-import java.io.*;
-
 /**
- * This is the main class for Java reverse engineering. It's based
- * on the Antlr Java example.
+ * This is the main class for Java reverse engineering. It's based on the Antlr Java example.
  *
  * @author Andreas Rueckert <a_rueckert@gmx.net>
  */
 public class JavaImport extends FileImportSupport {
 
-    /** logger */
-    private static final Logger LOG = Logger.getLogger(JavaImport.class);
+  /** logger */
+  private static final Logger LOG = Logger.getLogger(JavaImport.class);
 
-    /**
-     * This method parses 1 Java file.
-     * Throws a Parser exception.
-     *
-     * @see org.argouml.application.api.PluggableImport#parseFile(
-     * org.argouml.kernel.Project, java.lang.Object,
-     * org.argouml.uml.reveng.DiagramInterface, org.argouml.uml.reveng.Import)
-     */
-    public void parseFile(Project p, Object o, DiagramInterface diagram,
-			  Import theImport)
-	throws Exception {
-	if (o instanceof File) {
-	    File f = (File) o;
-	    // Create a scanner that reads from the input stream passed to us
-	    String encoding = theImport.getInputSourceEncoding();
-	    FileInputStream in = new FileInputStream(f);
-	    JavaLexer lexer =
-		new JavaLexer(
-		    new BufferedReader(new InputStreamReader(in, encoding)));
-	    // We use a special Argo token, that stores the preceding
-	    // whitespaces.
-	    lexer.setTokenObjectClass("org.argouml.uml.reveng.java.ArgoToken");
+  /**
+   * This method parses 1 Java file. Throws a Parser exception.
+   *
+   * @see org.argouml.application.api.PluggableImport#parseFile( org.argouml.kernel.Project,
+   *     java.lang.Object, org.argouml.uml.reveng.DiagramInterface, org.argouml.uml.reveng.Import)
+   */
+  public void parseFile(Project p, Object o, DiagramInterface diagram, Import theImport)
+      throws Exception {
+    if (o instanceof File) {
+      File f = (File) o;
+      // Create a scanner that reads from the input stream passed to us
+      String encoding = theImport.getInputSourceEncoding();
+      FileInputStream in = new FileInputStream(f);
+      JavaLexer lexer = new JavaLexer(new BufferedReader(new InputStreamReader(in, encoding)));
+      // We use a special Argo token, that stores the preceding
+      // whitespaces.
+      lexer.setTokenObjectClass("org.argouml.uml.reveng.java.ArgoToken");
 
-	    // Create a parser that reads from the scanner
-	    JavaRecognizer parser = new JavaRecognizer(lexer);
+      // Create a parser that reads from the scanner
+      JavaRecognizer parser = new JavaRecognizer(lexer);
 
-	    // Create a modeller for the parser
-	    Modeller modeller = new Modeller(p.getModel(),
-					     diagram, theImport,
-					     getAttribute().isSelected(),
-					     getDatatype().isSelected(),
-					     f.getName());
+      // Create a modeller for the parser
+      Modeller modeller =
+          new Modeller(
+              p.getModel(),
+              diagram,
+              theImport,
+              getAttribute().isSelected(),
+              getDatatype().isSelected(),
+              f.getName());
 
-	    // Print the name of the current file, so we can associate
-	    // exceptions to the file.
-	    LOG.info("Parsing " + f.getAbsolutePath());
+      // Print the name of the current file, so we can associate
+      // exceptions to the file.
+      LOG.info("Parsing " + f.getAbsolutePath());
 
-            modeller.setAttribute("level", theImport.getAttribute("level"));
+      modeller.setAttribute("level", theImport.getAttribute("level"));
 
-            try {
-		// start parsing at the compilationUnit rule
-		parser.compilationUnit(modeller, lexer);
-            } catch (Exception e) {
-                LOG.error(e.getClass().getName()
-			  + " Exception in file: "
-			  + f.getCanonicalPath() + " "
-			  + f.getName());
-                throw e;
-            }
-	    in.close();
-	}
+      try {
+        // start parsing at the compilationUnit rule
+        parser.compilationUnit(modeller, lexer);
+      } catch (Exception e) {
+        LOG.error(
+            e.getClass().getName()
+                + " Exception in file: "
+                + f.getCanonicalPath()
+                + " "
+                + f.getName());
+        throw e;
+      }
+      in.close();
     }
+  }
 
-    /**
-     * Provides an array of suffix filters for the module.
-     * @return SuffixFilter[] files with these suffixes will be processed.
-     */
-    public SuffixFilter[] getSuffixFilters() {
-	SuffixFilter[] result = {FileFilters.JAVA_FILE_FILTER};
-	return result;
-    }
+  /**
+   * Provides an array of suffix filters for the module.
+   *
+   * @return SuffixFilter[] files with these suffixes will be processed.
+   */
+  public SuffixFilter[] getSuffixFilters() {
+    SuffixFilter[] result = {FileFilters.JAVA_FILE_FILTER};
+    return result;
+  }
 
-    /**
-     * Display name of the module.
-     *
-     * @see org.argouml.application.api.ArgoModule#getModuleName()
-     */
-    public String getModuleName() {
-	return "Java";
-    }
+  /**
+   * Display name of the module.
+   *
+   * @see org.argouml.application.api.ArgoModule#getModuleName()
+   */
+  public String getModuleName() {
+    return "Java";
+  }
 
-    /**
-     * Textual description of the module.
-     *
-     * @see org.argouml.application.api.ArgoModule#getModuleDescription()
-     */
-    public String getModuleDescription() {
-	return "Java import from files";
-    }
+  /**
+   * Textual description of the module.
+   *
+   * @see org.argouml.application.api.ArgoModule#getModuleDescription()
+   */
+  public String getModuleDescription() {
+    return "Java import from files";
+  }
 
-    /**
-     * @see org.argouml.application.api.ArgoModule#getModuleKey()
-     */
-    public String getModuleKey() {
-	return "module.import.java-files";
-    }
-
+  /**
+   * @see org.argouml.application.api.ArgoModule#getModuleKey()
+   */
+  public String getModuleKey() {
+    return "module.import.java-files";
+  }
 }

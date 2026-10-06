@@ -25,12 +25,8 @@
 package org.argouml.core.propertypanels.xml;
 
 import java.util.Collections;
-import java.util.Dictionary;
-import java.util.Enumeration;
-import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.apache.log4j.Logger;
 
 /**
@@ -38,47 +34,37 @@ import org.apache.log4j.Logger;
  *
  * @author penyaskito
  */
-public class XMLPropertyPanelsData  {
-    
-    /**
-     * Logger.
-     */
-    private static final Logger LOG = 
-        Logger.getLogger(XMLPropertyPanelsData.class);
-        
-    /**
-     * The info of the properties in the XML.
-     */
-    private List<XMLPropertyPanelsDataRecord> properties;
-    
-    /**
-     * The info of the panels in the XML.
-     */
-    private XMLPropertyPanelsDataRecord panel;
+public class XMLPropertyPanelsData {
 
-    
-    public XMLPropertyPanelsData() {
-        properties = new LinkedList<XMLPropertyPanelsDataRecord>();
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(XMLPropertyPanelsData.class);
+
+  /** The info of the properties in the XML. */
+  private List<XMLPropertyPanelsDataRecord> properties;
+
+  /** The info of the panels in the XML. */
+  private XMLPropertyPanelsDataRecord panel;
+
+  public XMLPropertyPanelsData() {
+    properties = new LinkedList<XMLPropertyPanelsDataRecord>();
+  }
+
+  public void addProperty(XMLPropertyPanelsDataRecord record) {
+    properties.add(record);
+  }
+
+  public void addPanel(XMLPropertyPanelsDataRecord record) {
+    if (panel != null) {
+      LOG.error("You tried to add a panel " + "when a previous one exist.");
     }
-    
-    public void addProperty(XMLPropertyPanelsDataRecord record) {
-        properties.add(record);
-    }
-    
-    public void addPanel(XMLPropertyPanelsDataRecord record) {
-        if (panel != null) {
-            LOG.error("You tried to add a panel "
-            		+ "when a previous one exist.");            
-        }
-        panel = record;
-    }
-    
-    public String getTitle() {
-        return panel.getName();
-    }    
-    
-    public List<XMLPropertyPanelsDataRecord> getProperties () {
-        return Collections.unmodifiableList(properties);
-    }
+    panel = record;
+  }
+
+  public String getTitle() {
+    return panel.getName();
+  }
+
+  public List<XMLPropertyPanelsDataRecord> getProperties() {
+    return Collections.unmodifiableList(properties);
+  }
 }
-

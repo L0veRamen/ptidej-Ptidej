@@ -4,18 +4,17 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
 package modec.test.builder.example;
 
-//package src.BUILDER;
+// package src.BUILDER;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.Calendar;
-
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -77,17 +76,22 @@ class EmpSrchBuilder extends UIBuilder {
     cal.setTime(new java.util.Date());
 
     this.txtUserName.setText("Enter UserName Here");
-    this.txtRenewal.setText((cal.get(Calendar.MONTH) + 1) + "/" +
-                       cal.get(Calendar.DATE) + "/" +
-                       cal.get(Calendar.YEAR));
+    this.txtRenewal.setText(
+        (cal.get(Calendar.MONTH) + 1)
+            + "/"
+            + cal.get(Calendar.DATE)
+            + "/"
+            + cal.get(Calendar.YEAR));
   }
 
   public String getSQL() {
-    return ("Select * from Employer where Username='" +
-            this.txtUserName.getText() + "'" + " and City='" +
-            this.txtCity.getText() + "' and DateRenewal='" +
-            this.txtRenewal.getText() + "'");
-
+    return ("Select * from Employer where Username='"
+        + this.txtUserName.getText()
+        + "'"
+        + " and City='"
+        + this.txtCity.getText()
+        + "' and DateRenewal='"
+        + this.txtRenewal.getText()
+        + "'");
   }
-
 }

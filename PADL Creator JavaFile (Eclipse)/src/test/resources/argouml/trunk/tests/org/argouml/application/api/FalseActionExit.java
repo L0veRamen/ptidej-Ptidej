@@ -26,44 +26,40 @@ package org.argouml.application.api;
 
 import org.argouml.ui.cmd.ActionExit;
 
-/**
- * Help to test ActionExit since we don't want to really do exit in the
- * test case.
- */
+/** Help to test ActionExit since we don't want to really do exit in the test case. */
 public class FalseActionExit extends ActionExit {
-    private boolean isExited = false;
-    private String argument = null;
-    private static FalseActionExit lastInvoked = null;
+  private boolean isExited = false;
+  private String argument = null;
+  private static FalseActionExit lastInvoked = null;
 
-    /**
-     * @see org.argouml.application.api.CommandLineInterface#doCommand(java.lang.String)
-     */
-    public boolean doCommand(String args) {
-        lastInvoked = this;
-        argument = args;
-        isExited = true;
-        return true;
-    }
+  /**
+   * @see org.argouml.application.api.CommandLineInterface#doCommand(java.lang.String)
+   */
+  public boolean doCommand(String args) {
+    lastInvoked = this;
+    argument = args;
+    isExited = true;
+    return true;
+  }
 
-    /**
-     * @return returns the argument
-     */
-    public String getArgument() {
-        return argument;
-    }
+  /**
+   * @return returns the argument
+   */
+  public String getArgument() {
+    return argument;
+  }
 
-    /**
-     * @return returns true if exited
-     */
-    public boolean isExited() {
-        return isExited;
-    }
+  /**
+   * @return returns true if exited
+   */
+  public boolean isExited() {
+    return isExited;
+  }
 
-    /**
-     * @return returns the last invoked instance of this class
-     */
-    public static FalseActionExit getLast() {
-        return lastInvoked;
-    }
+  /**
+   * @return returns the last invoked instance of this class
+   */
+  public static FalseActionExit getLast() {
+    return lastInvoked;
+  }
 }
-

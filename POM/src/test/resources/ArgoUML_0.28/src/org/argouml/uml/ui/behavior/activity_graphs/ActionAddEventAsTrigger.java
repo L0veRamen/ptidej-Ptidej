@@ -27,74 +27,61 @@ package org.argouml.uml.ui.behavior.activity_graphs;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.AbstractActionAddModelElement2;
 
 /**
- * Provide a dialog which helps the user to select one event out of an existing
- * list, which will be used as the trigger of the transition.
- * 
+ * Provide a dialog which helps the user to select one event out of an existing list, which will be
+ * used as the trigger of the transition.
+ *
  * @author MarkusK
- * 
  */
 public class ActionAddEventAsTrigger extends AbstractActionAddModelElement2 {
 
-    /**
-     * The one and only instance of this class.
-     */
-    public static final ActionAddEventAsTrigger SINGLETON =
-        new ActionAddEventAsTrigger();
+  /** The one and only instance of this class. */
+  public static final ActionAddEventAsTrigger SINGLETON = new ActionAddEventAsTrigger();
 
-    /**
-     * Constructor for ActionAddClassifierRoleBase.
-     */
-    protected ActionAddEventAsTrigger() {
-        super();
-        setMultiSelect(false);
+  /** Constructor for ActionAddClassifierRoleBase. */
+  protected ActionAddEventAsTrigger() {
+    super();
+    setMultiSelect(false);
+  }
+
+  protected List getChoices() {
+    List vec = new ArrayList();
+    // TODO: the namespace of created events is currently the model.
+    // I think this is wrong, they should be
+    // in the namespace of the activitygraph!
+    //        vec.addAll(Model.getModelManagementHelper().getAllModelElementsOfKind(
+    //                Model.getFacade().getNamespace(getTarget()),
+    //                Model.getMetaTypes().getEvent()));
+    vec.addAll(
+        Model.getModelManagementHelper()
+            .getAllModelElementsOfKind(
+                Model.getFacade().getModel(getTarget()), Model.getMetaTypes().getEvent()));
+
+    return vec;
+  }
+
+  protected List getSelected() {
+    List vec = new ArrayList();
+    Object trigger = Model.getFacade().getTrigger(getTarget());
+    if (trigger != null) vec.add(trigger);
+    return vec;
+  }
+
+  protected String getDialogTitle() {
+    return Translator.localize("dialog.title.add-events");
+  }
+
+  @Override
+  protected void doIt(Collection selected) {
+    Object trans = getTarget();
+    if (selected == null || selected.size() == 0) {
+      Model.getStateMachinesHelper().setEventAsTrigger(trans, null);
+    } else {
+      Model.getStateMachinesHelper().setEventAsTrigger(trans, selected.iterator().next());
     }
-
-
-    protected List getChoices() {
-        List vec = new ArrayList();
-        // TODO: the namespace of created events is currently the model. 
-        // I think this is wrong, they should be
-        // in the namespace of the activitygraph!
-//        vec.addAll(Model.getModelManagementHelper().getAllModelElementsOfKind(
-//                Model.getFacade().getNamespace(getTarget()),
-//                Model.getMetaTypes().getEvent()));
-        vec.addAll(Model.getModelManagementHelper().getAllModelElementsOfKind(
-                Model.getFacade().getModel(getTarget()),
-                Model.getMetaTypes().getEvent()));
-
-        return vec;
-    }
-
-
-    protected List getSelected() {
-        List vec = new ArrayList();
-        Object trigger = Model.getFacade().getTrigger(getTarget());
-        if (trigger != null)
-            vec.add(trigger);
-        return vec;
-    }
-
-
-    protected String getDialogTitle() {
-        return Translator.localize("dialog.title.add-events");
-    }
-
-
-    @Override
-    protected void doIt(Collection selected) {
-        Object trans = getTarget();
-        if (selected == null || selected.size() == 0) {
-            Model.getStateMachinesHelper().setEventAsTrigger(trans, null);
-        } else {
-            Model.getStateMachinesHelper().setEventAsTrigger(trans,
-                    selected.iterator().next());
-        }
-    }
-
+  }
 }

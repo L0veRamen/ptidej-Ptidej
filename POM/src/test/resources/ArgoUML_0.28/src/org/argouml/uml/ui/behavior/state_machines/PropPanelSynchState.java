@@ -33,26 +33,20 @@ import org.argouml.uml.ui.UMLTextField2;
  */
 public class PropPanelSynchState extends PropPanelStateVertex {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = -6671890304679263593L;
+  /** The serial version. */
+  private static final long serialVersionUID = -6671890304679263593L;
 
-    /**
-     * Construct a property panel for a Synch State.
-     */
-    public PropPanelSynchState() {
-        super("label.synch-state", lookupIcon("SynchState"));
+  /** Construct a property panel for a Synch State. */
+  public PropPanelSynchState() {
+    super("label.synch-state", lookupIcon("SynchState"));
 
-        addField("label.name", getNameTextField());
-        addField("label.container", getContainerScroll());
-        addField("label.bound",
-                new UMLTextField2(new UMLSynchStateBoundDocument()));
+    addField("label.name", getNameTextField());
+    addField("label.container", getContainerScroll());
+    addField("label.bound", new UMLTextField2(new UMLSynchStateBoundDocument()));
 
-        addSeparator();
+    addSeparator();
 
-        addField("label.incoming", getIncomingScroll());
-        addField("label.outgoing", getOutgoingScroll());
-    }
-
+    addField("label.incoming", getIncomingScroll());
+    addField("label.outgoing", getOutgoingScroll());
+  }
 }

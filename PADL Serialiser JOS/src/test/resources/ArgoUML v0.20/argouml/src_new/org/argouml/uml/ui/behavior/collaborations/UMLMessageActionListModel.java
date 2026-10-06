@@ -34,28 +34,23 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  */
 public class UMLMessageActionListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLMessageActionListModel.
-     */
-    public UMLMessageActionListModel() {
-        super("action");
-    }
+  /** Constructor for UMLMessageActionListModel. */
+  public UMLMessageActionListModel() {
+    super("action");
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        removeAllElements();
-        addElement(Model.getFacade().getAction(getTarget()));
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    removeAllElements();
+    addElement(Model.getFacade().getAction(getTarget()));
+  }
 
-
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ elem) {
-        return Model.getFacade().isAAction(elem)
-            && Model.getFacade().getAction(getTarget()) == elem;
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ elem) {
+    return Model.getFacade().isAAction(elem) && Model.getFacade().getAction(getTarget()) == elem;
+  }
 }

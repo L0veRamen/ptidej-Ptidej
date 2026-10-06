@@ -28,7 +28,6 @@ package org.argouml.uml.ui.foundation.core;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.Model;
@@ -38,52 +37,48 @@ import org.argouml.uml.ui.UMLComboBoxModel2;
  * @since Nov 3, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class UMLGeneralizationPowertypeComboBoxModel
-    extends UMLComboBoxModel2 {
+public class UMLGeneralizationPowertypeComboBoxModel extends UMLComboBoxModel2 {
 
-    /**
-     * Constructor for UMLGeneralizationPowertypeComboBoxModel.
-     */
-    public UMLGeneralizationPowertypeComboBoxModel() {
-        super("powertype", true);
-        Model.getPump().addClassModelEventListener(this,
-                Model.getMetaTypes().getNamespace(), "ownedElement");
+  /** Constructor for UMLGeneralizationPowertypeComboBoxModel. */
+  public UMLGeneralizationPowertypeComboBoxModel() {
+    super("powertype", true);
+    Model.getPump()
+        .addClassModelEventListener(this, Model.getMetaTypes().getNamespace(), "ownedElement");
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
+   */
+  protected Object getSelectedModelElement() {
+    if (getTarget() != null) {
+      return Model.getFacade().getPowertype(getTarget());
     }
+    return null;
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
-     */
-    protected Object getSelectedModelElement() {
-        if (getTarget() != null) {
-            return Model.getFacade().getPowertype(getTarget());
-        }
-        return null;
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    Set elements = new HashSet();
+    Project p = ProjectManager.getManager().getCurrentProject();
+    Iterator it = p.getUserDefinedModels().iterator();
+    while (it.hasNext()) {
+      Object model = /*(MModel)*/ it.next();
+      elements.addAll(
+          Model.getModelManagementHelper()
+              .getAllModelElementsOfKind(model, Model.getMetaTypes().getClassifier()));
     }
+    elements.addAll(
+        Model.getModelManagementHelper()
+            .getAllModelElementsOfKind(p.getDefaultModel(), Model.getMetaTypes().getClassifier()));
+    setElements(elements);
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        Set elements = new HashSet();
-        Project p = ProjectManager.getManager().getCurrentProject();
-        Iterator it = p.getUserDefinedModels().iterator();
-        while (it.hasNext()) {
-	    Object model = /*(MModel)*/ it.next();
-	    elements.addAll(Model.getModelManagementHelper()
-                .getAllModelElementsOfKind(model,
-                        Model.getMetaTypes().getClassifier()));
-        }
-        elements.addAll(Model.getModelManagementHelper()
-                .getAllModelElementsOfKind(p.getDefaultModel(),
-                        Model.getMetaTypes().getClassifier()));
-        setElements(elements);
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().isAClassifier(element);
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().isAClassifier(element);
+  }
 }

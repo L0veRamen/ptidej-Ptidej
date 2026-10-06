@@ -25,30 +25,24 @@
 package org.argouml.ui.cmd;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.AbstractAction;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.i18n.Translator;
 
-/**
- * Page setup for printing.
- */
+/** Page setup for printing. */
 class ActionPageSetup extends AbstractAction {
 
-    /**
-     * Constructor.
-     */
-    public ActionPageSetup() {
-        super(Translator.localize("action.page-setup"),
-                ResourceLoaderWrapper.lookupIcon("action.page-setup"));
-    }
+  /** Constructor. */
+  public ActionPageSetup() {
+    super(
+        Translator.localize("action.page-setup"),
+        ResourceLoaderWrapper.lookupIcon("action.page-setup"));
+  }
 
-    /*
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-        PrintManager.getInstance().showPageSetupDialog();
-    }
+  /*
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    PrintManager.getInstance().showPageSetupDialog();
+  }
 } /* end class ActionPageSetup */
-

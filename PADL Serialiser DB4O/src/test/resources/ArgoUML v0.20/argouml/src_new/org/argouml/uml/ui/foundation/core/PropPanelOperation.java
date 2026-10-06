@@ -25,13 +25,11 @@
 package org.argouml.uml.ui.foundation.core;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
@@ -44,178 +42,153 @@ import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
 import org.argouml.util.ConfigLoader;
 import org.tigris.swidgets.GridLayout2;
 
-/**
- * A property panel for operations.
- */
+/** A property panel for operations. */
 public class PropPanelOperation extends PropPanelFeature {
 
-    ////////////////////////////////////////////////////////////////
-    // contructors
-    /**
-     * The constructor.
-     */
-    public PropPanelOperation() {
-        super("Operation", lookupIcon("Operation"), ConfigLoader
-                .getTabPropsOrientation());
+  ////////////////////////////////////////////////////////////////
+  // contructors
+  /** The constructor. */
+  public PropPanelOperation() {
+    super("Operation", lookupIcon("Operation"), ConfigLoader.getTabPropsOrientation());
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
+    addField(Translator.localize("label.name"), getNameTextField());
 
-        addField(Translator.localize("label.stereotype"),
-                getStereotypeSelector());
+    addField(Translator.localize("label.stereotype"), getStereotypeSelector());
 
-        addField(Translator.localize("label.owner"),
-                getOwnerScroll());
+    addField(Translator.localize("label.owner"), getOwnerScroll());
 
-        add(getVisibilityPanel());
+    add(getVisibilityPanel());
 
-        JPanel modifiersPanel = new JPanel(new GridLayout2(0, 3,
-                GridLayout2.ROWCOLPREFERRED));
-        modifiersPanel.setBorder(new TitledBorder(Translator.localize(
-                "label.modifiers")));
-        modifiersPanel.add(new UMLGeneralizableElementAbstractCheckBox());
-        modifiersPanel.add(new UMLGeneralizableElementLeafCheckBox());
-        modifiersPanel.add(new UMLGeneralizableElementRootCheckBox());
-        modifiersPanel.add(new UMLBehavioralFeatureQueryCheckBox());
-        modifiersPanel.add(new UMLFeatureOwnerScopeCheckBox());
-        add(modifiersPanel);
+    JPanel modifiersPanel = new JPanel(new GridLayout2(0, 3, GridLayout2.ROWCOLPREFERRED));
+    modifiersPanel.setBorder(new TitledBorder(Translator.localize("label.modifiers")));
+    modifiersPanel.add(new UMLGeneralizableElementAbstractCheckBox());
+    modifiersPanel.add(new UMLGeneralizableElementLeafCheckBox());
+    modifiersPanel.add(new UMLGeneralizableElementRootCheckBox());
+    modifiersPanel.add(new UMLBehavioralFeatureQueryCheckBox());
+    modifiersPanel.add(new UMLFeatureOwnerScopeCheckBox());
+    add(modifiersPanel);
 
-        addSeperator();
+    addSeperator();
 
-        add(new UMLOperationConcurrencyRadioButtonPanel(
-                Translator.localize("label.concurrency"), true));
+    add(
+        new UMLOperationConcurrencyRadioButtonPanel(
+            Translator.localize("label.concurrency"), true));
 
-        addField(Translator.localize("label.parameters"),
-                new JScrollPane(new UMLLinkedList(
-                new UMLClassifierParameterListModel())));
+    addField(
+        Translator.localize("label.parameters"),
+        new JScrollPane(new UMLLinkedList(new UMLClassifierParameterListModel())));
 
-        addSeperator();
+    addSeperator();
 
-        addField(Translator.localize("label.raisedsignals"),
-               new JScrollPane(new UMLLinkedList(
-               new UMLOperationRaisedSignalsListModel())));
+    addField(
+        Translator.localize("label.raisedsignals"),
+        new JScrollPane(new UMLLinkedList(new UMLOperationRaisedSignalsListModel())));
 
-        addField(Translator.localize("label.methods"),
-               new JScrollPane(new UMLLinkedList(
-               new UMLOperationMethodsListModel())));
+    addField(
+        Translator.localize("label.methods"),
+        new JScrollPane(new UMLLinkedList(new UMLOperationMethodsListModel())));
 
-        addAction(new ActionNavigateOwner());
-        addAction(TargetManager.getInstance().getAddOperationAction());
-        addAction(new ActionNewParameter());
-        addAction(new ActionNewRaisedSignal());
-        addAction(new ActionNewMethod());
-        addAction(new ActionAddDataType());
-        addAction(new ActionAddEnumeration());
-        addAction(new ActionNewStereotype());
-        addAction(new ActionDeleteSingleModelElement());
+    addAction(new ActionNavigateOwner());
+    addAction(TargetManager.getInstance().getAddOperationAction());
+    addAction(new ActionNewParameter());
+    addAction(new ActionNewRaisedSignal());
+    addAction(new ActionNewMethod());
+    addAction(new ActionAddDataType());
+    addAction(new ActionAddEnumeration());
+    addAction(new ActionNewStereotype());
+    addAction(new ActionDeleteSingleModelElement());
+  }
+
+  /**
+   * @param index add a raised signal
+   */
+  public void addRaisedSignal(Integer index) {
+    Object target = getTarget();
+    if (Model.getFacade().isAOperation(target)) {
+      Object oper = /* (MOperation) */ target;
+      Object newSignal = Model.getCommonBehaviorFactory().createSignal();
+      // ((MOperation)oper).getFactory().createSignal();
+
+      Model.getCoreHelper()
+          .addOwnedElement(
+              Model.getFacade().getNamespace(Model.getFacade().getOwner(oper)), newSignal);
+      Model.getCoreHelper().addRaisedSignal(oper, newSignal);
+      TargetManager.getInstance().setTarget(newSignal);
+    }
+  }
+
+  /**
+   * @param index add a raised signal
+   */
+  public void addMethod(Integer index) {
+    Object target = getTarget();
+    if (Model.getFacade().isAOperation(target)) {
+      Object oper = /* (MOperation) */ target;
+      String name = Model.getFacade().getName(oper);
+      Object newMethod = Model.getCoreFactory().buildMethod(name);
+      Model.getCoreHelper().addMethod(oper, newMethod);
+      Model.getCoreHelper().addFeature(Model.getFacade().getOwner(oper), newMethod);
+      TargetManager.getInstance().setTarget(newMethod);
+    }
+  }
+
+  private class ActionNewRaisedSignal extends AbstractActionNewModelElement {
+
+    /** The constructor. */
+    public ActionNewRaisedSignal() {
+      super("button.new-raised-signal");
+      putValue(Action.NAME, Translator.localize("button.new-raised-signal"));
+      Icon icon = ResourceLoaderWrapper.lookupIcon("SignalSending");
+      putValue(Action.SMALL_ICON, icon);
     }
 
     /**
-     * @param index add a raised signal
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
-    public void addRaisedSignal(Integer index) {
-        Object target = getTarget();
-        if (Model.getFacade().isAOperation(target)) {
-            Object oper = /* (MOperation) */target;
-            Object newSignal = Model.getCommonBehaviorFactory()
-                    .createSignal();
-                    //((MOperation)oper).getFactory().createSignal();
+    public void actionPerformed(ActionEvent e) {
+      Object target = TargetManager.getInstance().getModelTarget();
+      if (Model.getFacade().isAOperation(target)) {
+        addRaisedSignal(new Integer(1));
+        super.actionPerformed(e);
+      }
+    }
+  }
 
-            Model.getCoreHelper().addOwnedElement(
-                    Model.getFacade().getNamespace(
-                            Model.getFacade().getOwner(oper)),
-                    newSignal);
-            Model.getCoreHelper().addRaisedSignal(oper, newSignal);
-            TargetManager.getInstance().setTarget(newSignal);
-        }
+  private class ActionNewMethod extends AbstractActionNewModelElement {
+
+    /** The constructor. */
+    public ActionNewMethod() {
+      super("button.new-method");
+      putValue(Action.NAME, Translator.localize("button.new-method"));
+      Icon icon = ResourceLoaderWrapper.lookupIcon("Method");
+      putValue(Action.SMALL_ICON, icon);
     }
 
     /**
-     * @param index add a raised signal
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
-    public void addMethod(Integer index) {
-        Object target = getTarget();
-        if (Model.getFacade().isAOperation(target)) {
-            Object oper = /* (MOperation) */target;
-            String name = Model.getFacade().getName(oper);
-            Object newMethod = Model.getCoreFactory().buildMethod(name);
-            Model.getCoreHelper().addMethod(oper, newMethod);
-            Model.getCoreHelper().addFeature(Model.getFacade().getOwner(oper),
-                newMethod);
-            TargetManager.getInstance().setTarget(newMethod);
-        }
+    public void actionPerformed(ActionEvent e) {
+      Object target = TargetManager.getInstance().getModelTarget();
+      if (Model.getFacade().isAOperation(target)) {
+        addMethod(new Integer(1));
+        super.actionPerformed(e);
+      }
     }
+  }
 
-
-    private class ActionNewRaisedSignal extends AbstractActionNewModelElement {
-
-        /**
-         * The constructor.
-         */
-        public ActionNewRaisedSignal() {
-            super("button.new-raised-signal");
-            putValue(Action.NAME,
-                    Translator.localize("button.new-raised-signal"));
-            Icon icon = ResourceLoaderWrapper.lookupIcon("SignalSending");
-            putValue(Action.SMALL_ICON, icon);
-        }
-
-        /**
-         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-         */
-        public void actionPerformed(ActionEvent e) {
-            Object target = TargetManager.getInstance().getModelTarget();
-            if (Model.getFacade().isAOperation(target)) {
-                addRaisedSignal(new Integer(1));
-                super.actionPerformed(e);
-            }
-        }
+  /**
+   * Appropriate namespace is the namespace of our class, not the class itself.
+   *
+   * @see org.argouml.uml.ui.PropPanel#getDisplayNamespace()
+   */
+  protected Object getDisplayNamespace() {
+    Object namespace = null;
+    Object target = getTarget();
+    if (Model.getFacade().isAAttribute(target)) {
+      if (Model.getFacade().getOwner(target) != null) {
+        namespace = Model.getFacade().getNamespace(Model.getFacade().getOwner(target));
+      }
     }
-
-
-    private class ActionNewMethod extends AbstractActionNewModelElement {
-
-        /**
-         * The constructor.
-         */
-        public ActionNewMethod() {
-            super("button.new-method");
-            putValue(Action.NAME,
-                    Translator.localize("button.new-method"));
-            Icon icon = ResourceLoaderWrapper.lookupIcon("Method");
-            putValue(Action.SMALL_ICON, icon);
-        }
-
-        /**
-         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-         */
-        public void actionPerformed(ActionEvent e) {
-            Object target = TargetManager.getInstance().getModelTarget();
-            if (Model.getFacade().isAOperation(target)) {
-                addMethod(new Integer(1));
-                super.actionPerformed(e);
-            }
-        }
-    }
-
-
-    /**
-     * Appropriate namespace is the namespace of our class,
-     * not the class itself.
-     *
-     * @see org.argouml.uml.ui.PropPanel#getDisplayNamespace()
-     */
-    protected Object getDisplayNamespace() {
-        Object namespace = null;
-        Object target = getTarget();
-        if (Model.getFacade().isAAttribute(target)) {
-            if (Model.getFacade().getOwner(target) != null) {
-                namespace =
-                    Model.getFacade().getNamespace(
-                            Model.getFacade().getOwner(target));
-            }
-        }
-        return namespace;
-    }
-
+    return namespace;
+  }
 } /* end class PropPanelOperation */

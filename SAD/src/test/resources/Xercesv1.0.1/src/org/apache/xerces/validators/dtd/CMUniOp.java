@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xerces" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -61,80 +61,68 @@ import org.apache.xerces.framework.XMLContentSpecNode;
 import org.apache.xerces.utils.ImplementationMessages;
 
 /**
- *
  * @version
  */
-public class CMUniOp extends CMNode
-{
-    // -------------------------------------------------------------------
-    //  Constructors
-    // -------------------------------------------------------------------
-    public CMUniOp(int type, CMNode childNode) throws CMException
-    {
-        super(type);
+public class CMUniOp extends CMNode {
+  // -------------------------------------------------------------------
+  //  Constructors
+  // -------------------------------------------------------------------
+  public CMUniOp(int type, CMNode childNode) throws CMException {
+    super(type);
 
-        // Insure that its one of the types we require
-        if ((type() != XMLContentSpecNode.CONTENTSPECNODE_ZERO_OR_ONE)
-        &&  (type() != XMLContentSpecNode.CONTENTSPECNODE_ZERO_OR_MORE)
-        &&  (type() != XMLContentSpecNode.CONTENTSPECNODE_ONE_OR_MORE))
-        {
-            throw new CMException(ImplementationMessages.VAL_UST);
-        }
-
-        // Store the node and init any data that needs it
-        fChild = childNode;
+    // Insure that its one of the types we require
+    if ((type() != XMLContentSpecNode.CONTENTSPECNODE_ZERO_OR_ONE)
+        && (type() != XMLContentSpecNode.CONTENTSPECNODE_ZERO_OR_MORE)
+        && (type() != XMLContentSpecNode.CONTENTSPECNODE_ONE_OR_MORE)) {
+      throw new CMException(ImplementationMessages.VAL_UST);
     }
 
+    // Store the node and init any data that needs it
+    fChild = childNode;
+  }
 
-    // -------------------------------------------------------------------
-    //  Package, final methods
-    // -------------------------------------------------------------------
-    final CMNode getChild()
-    {
-        return fChild;
-    }
+  // -------------------------------------------------------------------
+  //  Package, final methods
+  // -------------------------------------------------------------------
+  final CMNode getChild() {
+    return fChild;
+  }
 
-
-    // -------------------------------------------------------------------
-    //  Package, inherited methods
-    // -------------------------------------------------------------------
-    boolean isNullable() throws CMException
-    {
-        //
-        //  For debugging purposes, make sure we got rid of all non '*'
-        //  repetitions. Otherwise, '*' style nodes are always nullable.
-        //
-        if ((type() == XMLContentSpecNode.CONTENTSPECNODE_ZERO_OR_ONE)
-        ||  (type() == XMLContentSpecNode.CONTENTSPECNODE_ONE_OR_MORE))
-        {
-            throw new CMException(ImplementationMessages.VAL_UST);
-        }
-        return true;
-    }
-
-
-    // -------------------------------------------------------------------
-    //  Protected, inherited methods
-    // -------------------------------------------------------------------
-    protected void calcFirstPos(CMStateSet toSet) throws CMException
-    {
-        // Its just based on our child node's first pos
-        toSet.setTo(fChild.firstPos());
-    }
-
-    protected void calcLastPos(CMStateSet toSet) throws CMException
-    {
-        // Its just based on our child node's last pos
-        toSet.setTo(fChild.lastPos());
-    }
-
-
-    // -------------------------------------------------------------------
-    //  Private data members
+  // -------------------------------------------------------------------
+  //  Package, inherited methods
+  // -------------------------------------------------------------------
+  boolean isNullable() throws CMException {
     //
-    //  fChild
-    //      This is the reference to the one child that we have for this
-    //      unary operation.
-    // -------------------------------------------------------------------
-    private CMNode  fChild;
-};
+    //  For debugging purposes, make sure we got rid of all non '*'
+    //  repetitions. Otherwise, '*' style nodes are always nullable.
+    //
+    if ((type() == XMLContentSpecNode.CONTENTSPECNODE_ZERO_OR_ONE)
+        || (type() == XMLContentSpecNode.CONTENTSPECNODE_ONE_OR_MORE)) {
+      throw new CMException(ImplementationMessages.VAL_UST);
+    }
+    return true;
+  }
+
+  // -------------------------------------------------------------------
+  //  Protected, inherited methods
+  // -------------------------------------------------------------------
+  protected void calcFirstPos(CMStateSet toSet) throws CMException {
+    // Its just based on our child node's first pos
+    toSet.setTo(fChild.firstPos());
+  }
+
+  protected void calcLastPos(CMStateSet toSet) throws CMException {
+    // Its just based on our child node's last pos
+    toSet.setTo(fChild.lastPos());
+  }
+
+  // -------------------------------------------------------------------
+  //  Private data members
+  //
+  //  fChild
+  //      This is the reference to the one child that we have for this
+  //      unary operation.
+  // -------------------------------------------------------------------
+  private CMNode fChild;
+}
+;

@@ -28,23 +28,21 @@ import org.argouml.model.Model;
 
 /**
  * List model to hold use cases of an includes bases.
- * 
+ *
  * @author MarkusK
  */
 public class UMLIncludeBaseListModel extends UMLIncludeListModel {
 
-    /**
-     * Constructor for UMLIncludeBaseListModel.
-     */
-    public UMLIncludeBaseListModel() {
-        super("base");
-    }
+  /** Constructor for UMLIncludeBaseListModel. */
+  public UMLIncludeBaseListModel() {
+    super("base");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        super.buildModelList();
-        addElement(Model.getFacade().getBase(getTarget()));
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    super.buildModelList();
+    addElement(Model.getFacade().getBase(getTarget()));
+  }
 }

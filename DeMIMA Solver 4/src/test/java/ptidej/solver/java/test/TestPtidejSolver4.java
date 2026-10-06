@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -26,28 +26,28 @@ import ptidej.solver.java.test.simple.StrictInheritanceTest;
 import ptidej.solver.java.test.simple.UseTest;
 
 /**
- * @author Yann-Gaël Guéhéneuc 
+ * @author Yann-Gaël Guéhéneuc
  * @since 2004/09/19
  */
 public final class TestPtidejSolver4 extends TestSuite {
-	public static TestSuite suite() {
-		final TestPtidejSolver4 suite = new TestPtidejSolver4();
-		suite.setName(TestPtidejSolver4.class.getName());
+  public static TestSuite suite() {
+    final TestPtidejSolver4 suite = new TestPtidejSolver4();
+    suite.setName(TestPtidejSolver4.class.getName());
 
-		suite.addTestSuite(ManagerTest.class);
-		suite.addTestSuite(CompositionAndInheritanceTest.class);
-		suite.addTestSuite(Composite1FromClassFilesTest.class);
-		suite.addTestSuite(Composite1FromJavaFilesUsingEclipseTest.class);
-		suite.addTestSuite(Composite1FromJavaFilesUsingJavaCTest.class);
-		suite.addTestSuite(CompositionTest.class);
-		suite.addTestSuite(CreationTest.class);
-		suite.addTestSuite(GoodInheritanceTest.class);
-		suite.addTestSuite(IgnoranceTest.class);
-		suite.addTestSuite(InheritanceTest.class);
-		suite.addTestSuite(InheritancePathTest.class);
-		suite.addTestSuite(StrictInheritanceTest.class);
-		suite.addTestSuite(UseTest.class);
+    suite.addTestSuite(ManagerTest.class);
+    suite.addTestSuite(CompositionAndInheritanceTest.class);
+    suite.addTestSuite(Composite1FromClassFilesTest.class);
+    suite.addTestSuite(Composite1FromJavaFilesUsingEclipseTest.class);
+    suite.addTestSuite(Composite1FromJavaFilesUsingJavaCTest.class);
+    suite.addTestSuite(CompositionTest.class);
+    suite.addTestSuite(CreationTest.class);
+    suite.addTestSuite(GoodInheritanceTest.class);
+    suite.addTestSuite(IgnoranceTest.class);
+    suite.addTestSuite(InheritanceTest.class);
+    suite.addTestSuite(InheritancePathTest.class);
+    suite.addTestSuite(StrictInheritanceTest.class);
+    suite.addTestSuite(UseTest.class);
 
-		return suite;
-	}
+    return suite;
+  }
 }

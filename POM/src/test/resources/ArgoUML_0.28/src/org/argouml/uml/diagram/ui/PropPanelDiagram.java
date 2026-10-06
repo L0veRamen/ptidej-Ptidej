@@ -31,12 +31,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
-
 import org.argouml.i18n.Translator;
 import org.argouml.ui.UndoableAction;
 import org.argouml.ui.targetmanager.TargetManager;
@@ -51,180 +49,168 @@ import org.argouml.uml.ui.UMLComboBoxNavigator;
 import org.argouml.uml.ui.UMLSearchableComboBox;
 import org.argouml.uml.util.PathComparator;
 
-/**
- * This class represents the properties panel for a Diagram.
- *
- */
+/** This class represents the properties panel for a Diagram. */
 public class PropPanelDiagram extends PropPanel {
 
-    private JComboBox homeModelSelector;
-    private UMLDiagramHomeModelComboBoxModel homeModelComboBoxModel =
-        new UMLDiagramHomeModelComboBoxModel();
+  private JComboBox homeModelSelector;
+  private UMLDiagramHomeModelComboBoxModel homeModelComboBoxModel =
+      new UMLDiagramHomeModelComboBoxModel();
 
-    /**
-     * Construct a property panel with a given name and icon.
-     * 
-     * @param diagramName the diagram name to use as the title of the panel
-     * @param icon an icon to display on the panel
-     */
-    protected PropPanelDiagram(String diagramName, ImageIcon icon) {
-        super(diagramName, icon);
+  /**
+   * Construct a property panel with a given name and icon.
+   *
+   * @param diagramName the diagram name to use as the title of the panel
+   * @param icon an icon to display on the panel
+   */
+  protected PropPanelDiagram(String diagramName, ImageIcon icon) {
+    super(diagramName, icon);
 
-        JTextField field = new JTextField();
-        // TODO: This should probably only update the project when the user
-        // presses Return or focus is lost
-        field.getDocument().addDocumentListener(new DiagramNameDocument(field));
-        addField("label.name", field);
+    JTextField field = new JTextField();
+    // TODO: This should probably only update the project when the user
+    // presses Return or focus is lost
+    field.getDocument().addDocumentListener(new DiagramNameDocument(field));
+    addField("label.name", field);
 
-        addField("label.home-model", getHomeModelSelector());
+    addField("label.home-model", getHomeModelSelector());
 
-        addAction(new ActionNavigateUpFromDiagram());
-        addAction(ActionDeleteModelElements.getTargetFollower());
+    addAction(new ActionNavigateUpFromDiagram());
+    addAction(ActionDeleteModelElements.getTargetFollower());
+  }
+
+  /** Default constructor if there is no child of this class that can show the diagram. */
+  public PropPanelDiagram() {
+    this("Diagram", null);
+  }
+
+  /**
+   * Returns the home-model selector. This is a component which allows the user to select a single
+   * item as the home-model, i.e. the "owner" of the diagram.
+   *
+   * @return a component for selecting the home-model
+   */
+  protected JComponent getHomeModelSelector() {
+    if (homeModelSelector == null) {
+      homeModelSelector =
+          new UMLSearchableComboBox(homeModelComboBoxModel, new ActionSetDiagramHomeModel(), true);
     }
-
-    /**
-     * Default constructor if there is no child of this class that can show the
-     * diagram.
-     */
-    public PropPanelDiagram() {
-        this("Diagram", null);
-    }
-
-    /**
-     * Returns the home-model selector. This is a component which allows the
-     * user to select a single item as the home-model, 
-     * i.e. the "owner" of the diagram.
-     *
-     * @return a component for selecting the home-model
-     */
-    protected JComponent getHomeModelSelector() {
-        if (homeModelSelector == null) {
-            homeModelSelector = new UMLSearchableComboBox(
-                    homeModelComboBoxModel,
-                    new ActionSetDiagramHomeModel(), true);
-        }
-        return new UMLComboBoxNavigator(
-                Translator.localize("label.namespace.navigate.tooltip"),
-                homeModelSelector);
-    }
-
+    return new UMLComboBoxNavigator(
+        Translator.localize("label.namespace.navigate.tooltip"), homeModelSelector);
+  }
 }
 
 class UMLDiagramHomeModelComboBoxModel extends UMLComboBoxModel2 {
 
-    public UMLDiagramHomeModelComboBoxModel() {
-        super(ArgoDiagram.NAMESPACE_KEY, false);
-    }
+  public UMLDiagramHomeModelComboBoxModel() {
+    super(ArgoDiagram.NAMESPACE_KEY, false);
+  }
 
-    @Override
-    protected void buildModelList() {
-        Object target = getTarget();
-        List list = new ArrayList();
-        if (target instanceof Relocatable) {
-            Relocatable diagram = (Relocatable) target;
-            for (Object obj : diagram.getRelocationCandidates(
-                    getModelManagementFactory().getRootModel())) {
-                if (diagram.isRelocationAllowed(obj)) {
-                    list.add(obj);
-                }
-            }
+  @Override
+  protected void buildModelList() {
+    Object target = getTarget();
+    List list = new ArrayList();
+    if (target instanceof Relocatable) {
+      Relocatable diagram = (Relocatable) target;
+      for (Object obj :
+          diagram.getRelocationCandidates(getModelManagementFactory().getRootModel())) {
+        if (diagram.isRelocationAllowed(obj)) {
+          list.add(obj);
         }
-        /* This should not be needed if the above is correct, 
-         * but let's be sure: */
-        list.add(getSelectedModelElement());
-        Collections.sort(list, new PathComparator());
-        setElements(list);
+      }
     }
-    
-    @Override
-    protected void buildMinimalModelList() {
-        Collection list = new ArrayList(1);
-        list.add(getSelectedModelElement());
-        setElements(list);
-        setModelInvalid();
-    }
-    
-    @Override
-    protected boolean isLazy() {
-        return true;
-    }
+    /* This should not be needed if the above is correct,
+     * but let's be sure: */
+    list.add(getSelectedModelElement());
+    Collections.sort(list, new PathComparator());
+    setElements(list);
+  }
 
-    @Override
-    protected Object getSelectedModelElement() {
-        Object t = getTarget();
-        if (t instanceof ArgoDiagram) {
-            return ((ArgoDiagram) t).getOwner();
-        }
-        return null;
-    }
+  @Override
+  protected void buildMinimalModelList() {
+    Collection list = new ArrayList(1);
+    list.add(getSelectedModelElement());
+    setElements(list);
+    setModelInvalid();
+  }
 
-    @Override
-    protected boolean isValidElement(Object element) {
-        Object t = getTarget();
-        if (t instanceof Relocatable) {
-            return ((Relocatable) t).isRelocationAllowed(element);
-        }
-        return false;
+  @Override
+  protected boolean isLazy() {
+    return true;
+  }
+
+  @Override
+  protected Object getSelectedModelElement() {
+    Object t = getTarget();
+    if (t instanceof ArgoDiagram) {
+      return ((ArgoDiagram) t).getOwner();
     }
+    return null;
+  }
+
+  @Override
+  protected boolean isValidElement(Object element) {
+    Object t = getTarget();
+    if (t instanceof Relocatable) {
+      return ((Relocatable) t).isRelocationAllowed(element);
+    }
+    return false;
+  }
 }
 
 class ActionSetDiagramHomeModel extends UndoableAction {
-    protected ActionSetDiagramHomeModel() {
-        super();
-    }
+  protected ActionSetDiagramHomeModel() {
+    super();
+  }
 
-    public void actionPerformed(ActionEvent e) {
-        Object source = e.getSource();
-        if (source instanceof UMLComboBox2) {
-            UMLComboBox2 box = (UMLComboBox2) source;
-            Object diagram = box.getTarget();
-            Object homeModel = box.getSelectedItem();
-            if (diagram instanceof Relocatable) {
-                Relocatable d = (Relocatable) diagram;
-                if (d.isRelocationAllowed(homeModel)) {
-                    d.relocate(homeModel);
-                }
-            }
+  public void actionPerformed(ActionEvent e) {
+    Object source = e.getSource();
+    if (source instanceof UMLComboBox2) {
+      UMLComboBox2 box = (UMLComboBox2) source;
+      Object diagram = box.getTarget();
+      Object homeModel = box.getSelectedItem();
+      if (diagram instanceof Relocatable) {
+        Relocatable d = (Relocatable) diagram;
+        if (d.isRelocationAllowed(homeModel)) {
+          d.relocate(homeModel);
         }
+      }
     }
+  }
 }
 
 class ActionNavigateUpFromDiagram extends AbstractActionNavigate {
 
-    /**
-     * The constructor.
-     */
-    public ActionNavigateUpFromDiagram() {
-        super("button.go-up", true);
-    }
+  /** The constructor. */
+  public ActionNavigateUpFromDiagram() {
+    super("button.go-up", true);
+  }
 
-    /*
-     * @see org.argouml.uml.ui.AbstractActionNavigate#navigateTo(java.lang.Object)
-     */
-    protected Object navigateTo(Object source) {
-        if (source instanceof ArgoDiagram) {
-            return ((ArgoDiagram) source).getNamespace();
-        }
-        return null;
+  /*
+   * @see org.argouml.uml.ui.AbstractActionNavigate#navigateTo(java.lang.Object)
+   */
+  protected Object navigateTo(Object source) {
+    if (source instanceof ArgoDiagram) {
+      return ((ArgoDiagram) source).getNamespace();
     }
-    
-    /*
-     * @see javax.swing.Action#isEnabled()
-     */
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
+    return null;
+  }
 
-    /*
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        Object target = TargetManager.getInstance().getTarget();
-        Object destination = navigateTo(target);
-        if (destination != null) {
-            TargetManager.getInstance().setTarget(destination);
-        }
+  /*
+   * @see javax.swing.Action#isEnabled()
+   */
+  @Override
+  public boolean isEnabled() {
+    return true;
+  }
+
+  /*
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
+  public void actionPerformed(ActionEvent e) {
+    Object target = TargetManager.getInstance().getTarget();
+    Object destination = navigateTo(target);
+    if (destination != null) {
+      TargetManager.getInstance().setTarget(destination);
     }
+  }
 }

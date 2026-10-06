@@ -29,41 +29,38 @@ import org.restlet.data.Response;
 
 /**
  * Default call dispatcher.
+ *
  * @author Jerome Louvel (contact@noelios.com)
  */
-public abstract class DefaultDispatcher extends Dispatcher
-{
-	/**
-	 * Handles a call.
-	 * @param request The request to handle.
-	 * @param response The response to update.
-	 */
-	public void handle(Request request, Response response)
-	{
-		Protocol protocol = request.getProtocol();
-		if (protocol == null)
-		{
-			// Attempt to guess the protocol to use
-			// from the target reference scheme
-			protocol = request.getResourceRef().getSchemeProtocol();
-		}
+public abstract class DefaultDispatcher extends Dispatcher {
+  /**
+   * Handles a call.
+   *
+   * @param request The request to handle.
+   * @param response The response to update.
+   */
+  public void handle(Request request, Response response) {
+    Protocol protocol = request.getProtocol();
+    if (protocol == null) {
+      // Attempt to guess the protocol to use
+      // from the target reference scheme
+      protocol = request.getResourceRef().getSchemeProtocol();
+    }
 
-		if (protocol == null)
-		{
-			throw new UnsupportedOperationException(
-					"Unable to determine the protocol to use for this call.");
-		}
-		else
-		{
-			handle(protocol, request, response);
-		}
-	}
+    if (protocol == null) {
+      throw new UnsupportedOperationException(
+          "Unable to determine the protocol to use for this call.");
+    } else {
+      handle(protocol, request, response);
+    }
+  }
 
-	/**
-	 * Handles a call.
-	 * @param protocol The protocol to use for the handling.
-	 * @param request The request to handle.
-	 * @param response The response to update.
-	 */
-	public abstract void handle(Protocol protocol, Request request, Response response);
+  /**
+   * Handles a call.
+   *
+   * @param protocol The protocol to use for the handling.
+   * @param request The request to handle.
+   * @param response The response to update.
+   */
+  public abstract void handle(Protocol protocol, Request request, Response response);
 }

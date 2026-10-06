@@ -25,84 +25,73 @@
 package org.argouml.uml.diagram.use_case.ui;
 
 import java.awt.event.ItemEvent;
-
 import javax.swing.JCheckBox;
-
-import org.argouml.ui.StylePanelFigNodeModelElement;
 import org.argouml.i18n.Translator;
+import org.argouml.ui.StylePanelFigNodeModelElement;
 
 /**
- * A class to provide a style panel for use cases.<p>
+ * A class to provide a style panel for use cases.
  *
- * This adds a check box to control the display of he extension point
- * compartment.
+ * <p>This adds a check box to control the display of he extension point compartment.
  *
  * @author Jeremy Bennett
  */
 public class StylePanelFigUseCase extends StylePanelFigNodeModelElement {
 
-    /**
-     * The check box for toggling the visibility of extension points.
-     */
-    private JCheckBox epCheckBox = 
-        new JCheckBox(Translator.localize("checkbox.extension-points"));
+  /** The check box for toggling the visibility of extension points. */
+  private JCheckBox epCheckBox = new JCheckBox(Translator.localize("checkbox.extension-points"));
 
-    /**
-     * Flag to indicate that a refresh is going on.
-     */
-    private boolean refreshTransaction = false;
+  /** Flag to indicate that a refresh is going on. */
+  private boolean refreshTransaction = false;
 
-    /**
-     * Build a style panel. Just layout the relevant boxes.
-     */
-    public StylePanelFigUseCase() {
-        // Invoke the parent constructor first
-        super();
+  /** Build a style panel. Just layout the relevant boxes. */
+  public StylePanelFigUseCase() {
+    // Invoke the parent constructor first
+    super();
 
-        addToDisplayPane(epCheckBox);
-        // By default we don't show the attribute check box. Mark this object
-        // as a listener for the check box.
-        epCheckBox.setSelected(false);
-        epCheckBox.addItemListener(this);
-    }
+    addToDisplayPane(epCheckBox);
+    // By default we don't show the attribute check box. Mark this object
+    // as a listener for the check box.
+    epCheckBox.setSelected(false);
+    epCheckBox.addItemListener(this);
+  }
 
-    /**
-     * Refresh the display. This means setting the check box from the target use
-     * case fig.
-     *
-     * @see org.argouml.ui.TabTarget#refresh()
-     */
-    public void refresh() {
+  /**
+   * Refresh the display. This means setting the check box from the target use case fig.
+   *
+   * @see org.argouml.ui.TabTarget#refresh()
+   */
+  public void refresh() {
 
-        refreshTransaction = true;
+    refreshTransaction = true;
 
-        // Invoke the parent refresh first
+    // Invoke the parent refresh first
 
-        super.refresh();
+    super.refresh();
 
+    FigUseCase target = (FigUseCase) getTarget();
+
+    epCheckBox.setSelected(target.isExtensionPointVisible());
+
+    refreshTransaction = false;
+  }
+
+  /**
+   * Something has changed, check if its the check box.
+   *
+   * <p>
+   *
+   * @param e The event that triggered us.
+   * @see java.awt.event.ItemListener#itemStateChanged(java.awt.event.ItemEvent)
+   */
+  public void itemStateChanged(ItemEvent e) {
+    if (!refreshTransaction) {
+      if (e.getSource() == epCheckBox) {
         FigUseCase target = (FigUseCase) getTarget();
-
-        epCheckBox.setSelected(target.isExtensionPointVisible());
-
-        refreshTransaction = false;
+        target.setExtensionPointVisible(epCheckBox.isSelected());
+      } else {
+        super.itemStateChanged(e);
+      }
     }
-
-    /**
-     * Something has changed, check if its the check box.<p>
-     *
-     * @param e The event that triggered us.
-     *
-     * @see java.awt.event.ItemListener#itemStateChanged(java.awt.event.ItemEvent)
-     */
-    public void itemStateChanged(ItemEvent e) {
-        if (!refreshTransaction) {
-            if (e.getSource() == epCheckBox) {
-                FigUseCase target = (FigUseCase) getTarget();
-                target.setExtensionPointVisible(epCheckBox.isSelected());
-            } else {
-                super.itemStateChanged(e);
-            }
-        }
-    }
-
+  }
 } /* end class StylePanelFigUseCase */

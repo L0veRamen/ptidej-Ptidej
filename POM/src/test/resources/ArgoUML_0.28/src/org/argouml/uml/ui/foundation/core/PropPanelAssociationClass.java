@@ -26,122 +26,99 @@ package org.argouml.uml.ui.foundation.core;
 
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.uml.ui.ActionNavigateNamespace;
 import org.argouml.uml.ui.UMLLinkedList;
 import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
 
 /**
- * The properties panel for an AssociationClass.
- * It is basically a PropPanelClass but with the proper Association Ends
- * for an Association Class.
- *
+ * The properties panel for an AssociationClass. It is basically a PropPanelClass but with the
+ * proper Association Ends for an Association Class.
  *
  * @author pepargouml
  */
 public class PropPanelAssociationClass extends PropPanelClassifier {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = -7620821534700927917L;
+  /** The serial version. */
+  private static final long serialVersionUID = -7620821534700927917L;
 
-    private JScrollPane attributeScroll;
+  private JScrollPane attributeScroll;
 
-    private JScrollPane operationScroll;
+  private JScrollPane operationScroll;
 
-    private JScrollPane assocEndScroll;
+  private JScrollPane assocEndScroll;
 
-    private static UMLClassAttributeListModel attributeListModel =
-            new UMLClassAttributeListModel();
+  private static UMLClassAttributeListModel attributeListModel = new UMLClassAttributeListModel();
 
-    private static UMLClassOperationListModel operationListModel =
-            new UMLClassOperationListModel();
+  private static UMLClassOperationListModel operationListModel = new UMLClassOperationListModel();
 
-    /**
-     * Construct a property panel for AssociationClass elements.
-     */
-    public PropPanelAssociationClass() {
-        super("label.association-class", lookupIcon("AssociationClass"));
+  /** Construct a property panel for AssociationClass elements. */
+  public PropPanelAssociationClass() {
+    super("label.association-class", lookupIcon("AssociationClass"));
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.namespace"),
-                getNamespaceSelector());
-        getModifiersPanel().add(new UMLClassActiveCheckBox());
-        add(getModifiersPanel());
-        add(getVisibilityPanel());
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.namespace"), getNamespaceSelector());
+    getModifiersPanel().add(new UMLClassActiveCheckBox());
+    add(getModifiersPanel());
+    add(getVisibilityPanel());
 
-        addSeparator();
+    addSeparator();
 
-        addField(Translator.localize("label.client-dependencies"),
-                getClientDependencyScroll());
-        addField(Translator.localize("label.supplier-dependencies"),
-                getSupplierDependencyScroll());
-        addField(Translator.localize("label.generalizations"),
-                getGeneralizationScroll());
-        addField(Translator.localize("label.specializations"),
-                getSpecializationScroll());
+    addField(Translator.localize("label.client-dependencies"), getClientDependencyScroll());
+    addField(Translator.localize("label.supplier-dependencies"), getSupplierDependencyScroll());
+    addField(Translator.localize("label.generalizations"), getGeneralizationScroll());
+    addField(Translator.localize("label.specializations"), getSpecializationScroll());
 
-        JList assocEndList = new UMLLinkedList(
-                new UMLAssociationConnectionListModel());
-        assocEndScroll = new JScrollPane(assocEndList);
-        addField(Translator.localize("label.connections"),
-                assocEndScroll);
+    JList assocEndList = new UMLLinkedList(new UMLAssociationConnectionListModel());
+    assocEndScroll = new JScrollPane(assocEndList);
+    addField(Translator.localize("label.connections"), assocEndScroll);
 
-        addSeparator();
+    addSeparator();
 
-        addField(Translator.localize("label.attributes"),
-                getAttributeScroll());
+    addField(Translator.localize("label.attributes"), getAttributeScroll());
 
-        JList connections = new UMLLinkedList(
-                new UMLClassifierAssociationEndListModel());
-        JScrollPane connectionsScroll = new JScrollPane(connections);
-        addField(Translator.localize("label.association-ends"),
-                connectionsScroll);
+    JList connections = new UMLLinkedList(new UMLClassifierAssociationEndListModel());
+    JScrollPane connectionsScroll = new JScrollPane(connections);
+    addField(Translator.localize("label.association-ends"), connectionsScroll);
 
-        addField(Translator.localize("label.operations"),
-                getOperationScroll());
-        addField(Translator.localize("label.owned-elements"),
-                getOwnedElementsScroll());
+    addField(Translator.localize("label.operations"), getOperationScroll());
+    addField(Translator.localize("label.owned-elements"), getOwnedElementsScroll());
 
-        addAction(new ActionNavigateNamespace());
-        addAction(new ActionAddAttribute());
-        addAction(new ActionAddOperation());
-        addAction(getActionNewReception());
-        addAction(new ActionNewInnerClass());
-        addAction(new ActionNewClass());
-        addAction(new ActionNewStereotype());
-        addAction(getDeleteAction());
+    addAction(new ActionNavigateNamespace());
+    addAction(new ActionAddAttribute());
+    addAction(new ActionAddOperation());
+    addAction(getActionNewReception());
+    addAction(new ActionNewInnerClass());
+    addAction(new ActionNewClass());
+    addAction(new ActionNewStereotype());
+    addAction(getDeleteAction());
+  }
+
+  /**
+   * Returns the operationScroll.
+   *
+   * @return JScrollPane
+   */
+  @Override
+  public JScrollPane getOperationScroll() {
+    if (operationScroll == null) {
+      JList list = new UMLLinkedList(operationListModel);
+      operationScroll = new JScrollPane(list);
     }
+    return operationScroll;
+  }
 
-    /**
-     * Returns the operationScroll.
-     *
-     * @return JScrollPane
-     */
-    @Override
-    public JScrollPane getOperationScroll() {
-        if (operationScroll == null) {
-            JList list = new UMLLinkedList(operationListModel);
-            operationScroll = new JScrollPane(list);
-        }
-        return operationScroll;
+  /**
+   * Returns the attributeScroll.
+   *
+   * @return JScrollPane
+   */
+  @Override
+  public JScrollPane getAttributeScroll() {
+    if (attributeScroll == null) {
+      JList list = new UMLLinkedList(attributeListModel);
+      attributeScroll = new JScrollPane(list);
     }
-
-    /**
-     * Returns the attributeScroll.
-     *
-     * @return JScrollPane
-     */
-    @Override
-    public JScrollPane getAttributeScroll() {
-        if (attributeScroll == null) {
-            JList list = new UMLLinkedList(attributeListModel);
-            attributeScroll = new JScrollPane(list);
-        }
-        return attributeScroll;
-    }
-
+    return attributeScroll;
+  }
 }

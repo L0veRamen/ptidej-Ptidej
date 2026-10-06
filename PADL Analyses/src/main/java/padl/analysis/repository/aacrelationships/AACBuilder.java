@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -48,165 +48,156 @@ import util.io.ProxyConsole;
 
 /**
  * @author Yann-Gaël Guéhéneuc
- * @since  2005/08/04
+ * @since 2005/08/04
  */
 public final class AACBuilder implements IWalker {
-	private IAbstractModel abstractModel;
-	private final List messageCache;
+  private IAbstractModel abstractModel;
+  private final List<String> messageCache;
 
-	public AACBuilder() {
-		this.messageCache = new ArrayList();
-	}
-	public void close(final IAbstractModel anAbstractLevelModel) {
-	}
-	public void close(final IClass aClass) {
-		this.close((IFirstClassEntity) aClass);
-	}
-	public void close(final IConstructor aConstructor) {
-	}
-	public void close(final IDelegatingMethod aDelegatingMethod) {
-	}
-	public void close(final IDesignMotifModel aPatternModel) {
-	}
-	private void close(final IFirstClassEntity anEntity) {
-		// Yann 2005/10/12: Iterator!
-		// I have now an iterator able to iterate over a
-		// specified type of constituent of a list.
-		final Iterator iterator =
-			anEntity.getIteratorOnConstituents(IOperation.class);
-		while (iterator.hasNext()) {
-			RelationshipAnalyzer.recognizeRelationships(
-				this.abstractModel,
-				anEntity,
-				(IOperation) iterator.next());
-		}
+  public AACBuilder() {
+    this.messageCache = new ArrayList<>();
+  }
 
-		ContainerRelationshipAnalyzer.recognizeContainerAggregations(
-			anEntity,
-			this.abstractModel);
-	}
-	public void close(final IGetter aGetter) {
-	}
-	public void close(final IGhost aGhost) {
-		this.close((IFirstClassEntity) aGhost);
-	}
-	public void close(final IInterface anInterface) {
-		this.close((IFirstClassEntity) anInterface);
-	}
-	public void close(final IMemberClass aMemberClass) {
-		this.close((IFirstClassEntity) aMemberClass);
-	}
-	public void close(final IMemberGhost aMemberGhost) {
-		this.close((IFirstClassEntity) aMemberGhost);
-	}
-	public void close(final IMemberInterface aMemberInterface) {
-		this.close((IFirstClassEntity) aMemberInterface);
-	}
-	public void close(final IMethod aMethod) {
-	}
-	public void close(final IPackage aPackage) {
-	}
-	public void close(final IPackageDefault aPackage) {
-	}
+  public void close(final IAbstractModel anAbstractLevelModel) {}
 
-	public void close(final IPackageGhost aPackageGhost) {
+  public void close(final IClass aClass) {
+    this.close((IFirstClassEntity) aClass);
+  }
 
-	}
+  public void close(final IConstructor aConstructor) {}
 
-	public void close(final ISetter aSetter) {
-	}
-	public String getName() {
-		return "AAC Builder";
-	}
-	public Object getResult() {
-		return this.abstractModel;
-	}
-	public void open(final IAbstractModel anAbstractModel) {
-		this.abstractModel = anAbstractModel;
-	}
-	public void open(final IClass aClass) {
-	}
-	public void open(final IConstructor aConstructor) {
-	}
-	public void open(final IDelegatingMethod aDelegatingMethod) {
-	}
-	public void open(final IDesignMotifModel aPatternModel) {
-	}
-	public void open(final IGetter aGetter) {
-	}
-	public void open(final IGhost aGhost) {
-	}
-	public void open(final IInterface anInterface) {
-	}
-	public void open(final IMemberClass aMemberClass) {
-	}
-	public void open(final IMemberGhost aMemberGhost) {
-	}
-	public void open(final IMemberInterface aMemberInterface) {
-	}
-	public void open(final IMethod aMethod) {
-	}
-	public void open(final IPackage aPackage) {
-	}
-	public void open(final IPackageDefault aPackage) {
-	}
+  public void close(final IDelegatingMethod aDelegatingMethod) {}
 
-	public void open(final IPackageGhost aPackageGhost) {
+  public void close(final IDesignMotifModel aPatternModel) {}
 
-	}
+  private void close(final IFirstClassEntity anEntity) {
+    // Yann 2005/10/12: Iterator!
+    // I have now an iterator able to iterate over a
+    // specified type of constituent of a list.
+    final Iterator iterator = anEntity.getIteratorOnConstituents(IOperation.class);
+    while (iterator.hasNext()) {
+      RelationshipAnalyzer.recognizeRelationships(
+          this.abstractModel, anEntity, (IOperation) iterator.next());
+    }
 
-	public void open(final ISetter aSetter) {
-	}
-	public void reset() {
-	}
-	public final void unknownConstituentHandler(
-		final String aCalledMethodName,
-		final IConstituent aConstituent) {
+    ContainerRelationshipAnalyzer.recognizeContainerAggregations(anEntity, this.abstractModel);
+  }
 
-		// Yann 2014/06/18: Don't repeat yourself!
-		// I now store the message and only print new message...
-		final String key = aCalledMethodName;
-		if (!this.messageCache.contains(key)) {
-			this.messageCache.add(key);
+  public void close(final IGetter aGetter) {}
 
-			ProxyConsole
-				.getInstance()
-				.debugOutput()
-				.print(this.getClass().getName());
-			ProxyConsole
-				.getInstance()
-				.debugOutput()
-				.print(" does not know what to do for \"");
-			ProxyConsole.getInstance().debugOutput().print(aCalledMethodName);
-			ProxyConsole.getInstance().debugOutput().print("\" (");
-			ProxyConsole
-				.getInstance()
-				.debugOutput()
-				.print(aConstituent.getDisplayID());
-			ProxyConsole.getInstance().debugOutput().println(')');
-		}
-	}
-	public void visit(final IAggregation anAggregation) {
-	}
-	public void visit(final IAssociation anAssociation) {
-	}
-	public void visit(final IComposition aComposition) {
-	}
-	public void visit(final IContainerAggregation aContainerAggregation) {
-	}
-	public void visit(final IContainerComposition aContainerComposition) {
-	}
-	public void visit(final ICreation aCreation) {
-	}
-	public void visit(final IField aField) {
-	}
-	public void visit(final IMethodInvocation aMethodInvocation) {
-	}
-	public void visit(final IParameter aParameter) {
-	}
-	public void visit(final IPrimitiveEntity aPrimitiveEntity) {
-		// Do nothing for uninteresting primitive types.
-	}
-	public void visit(final IUseRelationship aUse) {
-	}
+  public void close(final IGhost aGhost) {
+    this.close((IFirstClassEntity) aGhost);
+  }
+
+  public void close(final IInterface anInterface) {
+    this.close((IFirstClassEntity) anInterface);
+  }
+
+  public void close(final IMemberClass aMemberClass) {
+    this.close((IFirstClassEntity) aMemberClass);
+  }
+
+  public void close(final IMemberGhost aMemberGhost) {
+    this.close((IFirstClassEntity) aMemberGhost);
+  }
+
+  public void close(final IMemberInterface aMemberInterface) {
+    this.close((IFirstClassEntity) aMemberInterface);
+  }
+
+  public void close(final IMethod aMethod) {}
+
+  public void close(final IPackage aPackage) {}
+
+  public void close(final IPackageDefault aPackage) {}
+
+  public void close(final IPackageGhost aPackageGhost) {}
+
+  public void close(final ISetter aSetter) {}
+
+  public String getName() {
+    return "AAC Builder";
+  }
+
+  public Object getResult() {
+    return this.abstractModel;
+  }
+
+  public void open(final IAbstractModel anAbstractModel) {
+    this.abstractModel = anAbstractModel;
+  }
+
+  public void open(final IClass aClass) {}
+
+  public void open(final IConstructor aConstructor) {}
+
+  public void open(final IDelegatingMethod aDelegatingMethod) {}
+
+  public void open(final IDesignMotifModel aPatternModel) {}
+
+  public void open(final IGetter aGetter) {}
+
+  public void open(final IGhost aGhost) {}
+
+  public void open(final IInterface anInterface) {}
+
+  public void open(final IMemberClass aMemberClass) {}
+
+  public void open(final IMemberGhost aMemberGhost) {}
+
+  public void open(final IMemberInterface aMemberInterface) {}
+
+  public void open(final IMethod aMethod) {}
+
+  public void open(final IPackage aPackage) {}
+
+  public void open(final IPackageDefault aPackage) {}
+
+  public void open(final IPackageGhost aPackageGhost) {}
+
+  public void open(final ISetter aSetter) {}
+
+  public void reset() {}
+
+  public final void unknownConstituentHandler(
+      final String aCalledMethodName, final IConstituent aConstituent) {
+
+    // Yann 2014/06/18: Don't repeat yourself!
+    // I now store the message and only print new message...
+    final String key = aCalledMethodName;
+    if (!this.messageCache.contains(key)) {
+      this.messageCache.add(key);
+
+      ProxyConsole.getInstance().debugOutput().print(this.getClass().getName());
+      ProxyConsole.getInstance().debugOutput().print(" does not know what to do for \"");
+      ProxyConsole.getInstance().debugOutput().print(aCalledMethodName);
+      ProxyConsole.getInstance().debugOutput().print("\" (");
+      ProxyConsole.getInstance().debugOutput().print(aConstituent.getDisplayID());
+      ProxyConsole.getInstance().debugOutput().println(')');
+    }
+  }
+
+  public void visit(final IAggregation anAggregation) {}
+
+  public void visit(final IAssociation anAssociation) {}
+
+  public void visit(final IComposition aComposition) {}
+
+  public void visit(final IContainerAggregation aContainerAggregation) {}
+
+  public void visit(final IContainerComposition aContainerComposition) {}
+
+  public void visit(final ICreation aCreation) {}
+
+  public void visit(final IField aField) {}
+
+  public void visit(final IMethodInvocation aMethodInvocation) {}
+
+  public void visit(final IParameter aParameter) {}
+
+  public void visit(final IPrimitiveEntity aPrimitiveEntity) {
+    // Do nothing for uninteresting primitive types.
+  }
+
+  public void visit(final IUseRelationship aUse) {}
 }

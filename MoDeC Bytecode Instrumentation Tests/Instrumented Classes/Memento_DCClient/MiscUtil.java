@@ -1,9 +1,7 @@
-//package src.MEMENTO;
+// package src.MEMENTO;
 import java.util.*;
 
-
 public class MiscUtil {
-
 
   public static boolean hasDuplicates(Vector v) {
     int i = 0;
@@ -12,13 +10,10 @@ public class MiscUtil {
 
     for (i = 0; i < v.size() - 1; i++) {
       for (j = (i + 1); j < v.size(); j++) {
-        if (v.elementAt(i).toString().equalsIgnoreCase(
-              v.elementAt(j).toString())) {
+        if (v.elementAt(i).toString().equalsIgnoreCase(v.elementAt(j).toString())) {
           duplicates = true;
         }
-
       }
-
     }
 
     return duplicates;
@@ -34,16 +29,13 @@ public class MiscUtil {
     for (i = 0; i < s.size(); i++) {
       duplicates = false;
       for (j = (i + 1); j < s.size(); j++) {
-        if (s.elementAt(i).toString().equalsIgnoreCase(
-              s.elementAt(j).toString())) {
+        if (s.elementAt(i).toString().equalsIgnoreCase(s.elementAt(j).toString())) {
           duplicates = true;
         }
-
       }
       if (duplicates == false) {
         v.addElement(s.elementAt(i).toString().trim());
       }
-
     }
 
     return v;
@@ -75,12 +67,10 @@ public class MiscUtil {
         if (str1.equalsIgnoreCase(str2)) {
           duplicates = true;
         }
-
       }
       if (duplicates == false) {
         v.addElement(s.elementAt(i).toString().trim());
       }
-
     }
 
     return v;
@@ -96,8 +86,7 @@ public class MiscUtil {
     boolean identical = true;
 
     for (i = 0; i < vectorSize; i++) {
-      if (!(a.elementAt(i).toString().equalsIgnoreCase(
-              b.elementAt(i).toString()))) {
+      if (!(a.elementAt(i).toString().equalsIgnoreCase(b.elementAt(i).toString()))) {
         identical = false;
       }
     }
@@ -112,12 +101,10 @@ public class MiscUtil {
     boolean present = true;
     Vector v = new Vector();
 
-
     for (i = 0; i < a.size(); i++) {
       present = false;
       for (j = 0; j < b.size(); j++) {
-        if (a.elementAt(i).toString().equalsIgnoreCase(
-              b.elementAt(j).toString())) {
+        if (a.elementAt(i).toString().equalsIgnoreCase(b.elementAt(j).toString())) {
           present = true;
         }
       }
@@ -128,7 +115,4 @@ public class MiscUtil {
 
     return v;
   }
-
-
-}// end of class
-
+} // end of class

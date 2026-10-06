@@ -27,51 +27,43 @@ package org.argouml.uml.ui.foundation.core;
 import org.argouml.uml.ui.ActionNavigateNamespace;
 import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
 
-/**
- * The properties panel for a Class.
- */
+/** The properties panel for a Class. */
 public class PropPanelClass extends PropPanelClassifier {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = -8288739384387629966L;
+  /** The serial version. */
+  private static final long serialVersionUID = -8288739384387629966L;
 
-    /**
-     * Construct a property panel for UML Class elements.
-     */
-    public PropPanelClass() {
-        super("label.class", lookupIcon("Class"));
+  /** Construct a property panel for UML Class elements. */
+  public PropPanelClass() {
+    super("label.class", lookupIcon("Class"));
 
-        addField("label.name", getNameTextField());
-        addField("label.namespace", getNamespaceSelector());
-        getModifiersPanel().add(new UMLClassActiveCheckBox());
-        add(getModifiersPanel());
-        add(getVisibilityPanel());
+    addField("label.name", getNameTextField());
+    addField("label.namespace", getNamespaceSelector());
+    getModifiersPanel().add(new UMLClassActiveCheckBox());
+    add(getModifiersPanel());
+    add(getVisibilityPanel());
 
-        addSeparator();
-        addField("label.client-dependencies", getClientDependencyScroll());
-        addField("label.supplier-dependencies", getSupplierDependencyScroll());
-        addField("label.generalizations", getGeneralizationScroll());
-        addField("label.specializations", getSpecializationScroll());
+    addSeparator();
+    addField("label.client-dependencies", getClientDependencyScroll());
+    addField("label.supplier-dependencies", getSupplierDependencyScroll());
+    addField("label.generalizations", getGeneralizationScroll());
+    addField("label.specializations", getSpecializationScroll());
 
-        addSeparator();
-        addField("label.attributes", getAttributeScroll());
-        addField("label.association-ends", getAssociationEndScroll());
-        addField("label.operations", getOperationScroll());
-        addField("label.owned-elements", getOwnedElementsScroll());
-//        addField("label.template-parameters", getTemplateParameterScroll());
-        
-        addAction(new ActionNavigateNamespace());
-        addAction(new ActionAddAttribute());
-        addAction(new ActionAddOperation());
-        addAction(getActionNewReception());
-        addAction(new ActionNewInnerClass());
-        addAction(new ActionNewClass());
-        addAction(new ActionNewStereotype());
-//        addAction(new ActionAddTemplateParameter());
-        addAction(getDeleteAction());
-        
-    }
+    addSeparator();
+    addField("label.attributes", getAttributeScroll());
+    addField("label.association-ends", getAssociationEndScroll());
+    addField("label.operations", getOperationScroll());
+    addField("label.owned-elements", getOwnedElementsScroll());
+    //        addField("label.template-parameters", getTemplateParameterScroll());
 
+    addAction(new ActionNavigateNamespace());
+    addAction(new ActionAddAttribute());
+    addAction(new ActionAddOperation());
+    addAction(getActionNewReception());
+    addAction(new ActionNewInnerClass());
+    addAction(new ActionNewClass());
+    addAction(new ActionNewStereotype());
+    //        addAction(new ActionAddTemplateParameter());
+    addAction(getDeleteAction());
+  }
 }

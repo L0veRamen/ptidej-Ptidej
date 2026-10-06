@@ -28,23 +28,21 @@ import org.argouml.model.Model;
 
 public class TestCrTooManyTransitions extends AbstractTestCrTooMany {
 
-    Object dm2;
+  Object dm2;
 
-    public TestCrTooManyTransitions(String arg0) {
-        super(arg0);
-        // TODO Auto-generated constructor stub
-    }
+  public TestCrTooManyTransitions(String arg0) {
+    super(arg0);
+    // TODO Auto-generated constructor stub
+  }
 
-    protected void setUp() throws Exception {
-        super.setUp();
-        cr = new CrTooManyTransitions();
-        dm = Model.getStateMachinesFactory().createCompositeState();
-    }
+  protected void setUp() throws Exception {
+    super.setUp();
+    cr = new CrTooManyTransitions();
+    dm = Model.getStateMachinesFactory().createCompositeState();
+  }
 
-    protected void createNewModelElement() {
-        dm2 = Model.getStateMachinesFactory().createCompositeState();
-        Model.getStateMachinesFactory().buildTransition(dm, dm2);
-
-    }
-
+  protected void createNewModelElement() {
+    dm2 = Model.getStateMachinesFactory().createCompositeState();
+    Model.getStateMachinesFactory().buildTransition(dm, dm2);
+  }
 }

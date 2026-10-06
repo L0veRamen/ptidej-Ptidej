@@ -22,13 +22,10 @@
 // CALIFORNIA HAS NO OBLIGATIONS TO PROVIDE MAINTENANCE, SUPPORT,
 // UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
-
 package org.argouml.uml.ui;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.Action;
-
 import org.apache.log4j.Logger;
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.i18n.Translator;
@@ -38,59 +35,54 @@ import org.argouml.uml.reveng.ImporterManager;
 import org.argouml.util.ArgoFrame;
 import org.tigris.gef.undo.UndoableAction;
 
-
-/** Action to trigger importing from sources.
+/**
+ * Action to trigger importing from sources.
+ *
  * @stereotype singleton
  */
 public class ActionImportFromSources extends UndoableAction {
 
-    /**
-     * Logger.
-     */
-    private static final Logger LOG =
-        Logger.getLogger(ActionImportFromSources.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(ActionImportFromSources.class);
 
-    /**
-     * The singleton.
-     */
-    private static final ActionImportFromSources SINGLETON =
-        new ActionImportFromSources();
+  /** The singleton. */
+  private static final ActionImportFromSources SINGLETON = new ActionImportFromSources();
 
-    /**
-     *  The constructor.
-     */
-    protected ActionImportFromSources() {
-        // this is never downlighted...
-        super(Translator.localize("action.import-sources"),
-                ResourceLoaderWrapper.lookupIcon("action.import-sources"));
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize("action.import-sources"));
+  /** The constructor. */
+  protected ActionImportFromSources() {
+    // this is never downlighted...
+    super(
+        Translator.localize("action.import-sources"),
+        ResourceLoaderWrapper.lookupIcon("action.import-sources"));
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize("action.import-sources"));
+  }
+
+  /*
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent event) {
+    super.actionPerformed(event);
+    if (ImporterManager.getInstance().hasImporters()) {
+      new Import(ArgoFrame.getInstance());
+    } else {
+      LOG.info("Import sources dialog not shown: no importers!");
+      ExceptionDialog ed =
+          new ExceptionDialog(
+              ArgoFrame.getInstance(),
+              Translator.localize("dialog.title.problem"),
+              Translator.localize("dialog.import.no-importers.intro"),
+              Translator.localize("dialog.import.no-importers.message"));
+      ed.setModal(true);
+      ed.setVisible(true);
     }
+  }
 
-    /*
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent event) {
-    	super.actionPerformed(event);
-    	if (ImporterManager.getInstance().hasImporters()) {
-            new Import(ArgoFrame.getInstance());
-    	} else {
-    	    LOG.info("Import sources dialog not shown: no importers!");
-            ExceptionDialog ed = new ExceptionDialog(ArgoFrame.getInstance(),
-                Translator.localize("dialog.title.problem"),
-                Translator.localize("dialog.import.no-importers.intro"),
-                Translator.localize("dialog.import.no-importers.message"));
-            ed.setModal(true);
-            ed.setVisible(true);
-    	}
-    }
-
-    /**
-     * @return Returns the SINGLETON.
-     */
-    public static ActionImportFromSources getInstance() {
-        return SINGLETON;
-    }
+  /**
+   * @return Returns the SINGLETON.
+   */
+  public static ActionImportFromSources getInstance() {
+    return SINGLETON;
+  }
 }
 /* end class ActionImportFromSources */

@@ -4,24 +4,24 @@
 
 <MODE>
     <PROPS>
-        <PROPERTY NAME="commentStart" VALUE="/*" />
-        <PROPERTY NAME="commentEnd" VALUE="*/" />
-        <PROPERTY NAME="lineComment" VALUE="//" />
-        <PROPERTY NAME="wordBreakChars" VALUE=",+-=&lt;&gt;/?^&amp;*" />
+        <PROPERTY NAME="commentStart" VALUE="/*"/>
+        <PROPERTY NAME="commentEnd" VALUE="*/"/>
+        <PROPERTY NAME="lineComment" VALUE="//"/>
+        <PROPERTY NAME="wordBreakChars" VALUE=",+-=&lt;&gt;/?^&amp;*"/>
 
         <!-- Auto indent -->
-        <PROPERTY NAME="indentOpenBrackets" VALUE="{" />
-        <PROPERTY NAME="indentCloseBrackets" VALUE="}" />
+        <PROPERTY NAME="indentOpenBrackets" VALUE="{"/>
+        <PROPERTY NAME="indentCloseBrackets" VALUE="}"/>
         <PROPERTY NAME="indentNextLine"
-            VALUE="\s*(((if|while)\s*\(|else\s*|else\s+if\s*\(|for\s*\(.*\))[^{;]*)" />
+                  VALUE="\s*(((if|while)\s*\(|else\s*|else\s+if\s*\(|for\s*\(.*\))[^{;]*)"/>
         <!-- set this to 'true' if you want to use GNU coding style -->
-        <PROPERTY NAME="doubleBracketIndent" VALUE="false" />
-        <PROPERTY NAME="lineUpClosingBracket" VALUE="true" />
+        <PROPERTY NAME="doubleBracketIndent" VALUE="false"/>
+        <PROPERTY NAME="lineUpClosingBracket" VALUE="true"/>
     </PROPS>
     <RULES ESCAPE="\"
-        IGNORE_CASE="FALSE"
-        HIGHLIGHT_DIGITS="TRUE"
-        DIGIT_RE="(0x[[:xdigit:]]+[lL]?|[[:digit:]]+(e[[:digit:]]*)?[lLdDfF]?)">
+           IGNORE_CASE="FALSE"
+           HIGHLIGHT_DIGITS="TRUE"
+           DIGIT_RE="(0x[[:xdigit:]]+[lL]?|[[:digit:]]+(e[[:digit:]]*)?[lLdDfF]?)">
 
         <!-- Doxygen comment, Javadoc style -->
         <SPAN TYPE="COMMENT3" DELEGATE="doxygen::DOXYGEN">
@@ -74,8 +74,9 @@
         <SEQ TYPE="OPERATOR">}</SEQ>
         <SEQ TYPE="OPERATOR">{</SEQ>
         <MARK_PREVIOUS AT_WHITESPACE_END="TRUE"
-            EXCLUDE_MATCH="TRUE"
-            TYPE="LABEL">:</MARK_PREVIOUS>
+                       EXCLUDE_MATCH="TRUE"
+                       TYPE="LABEL">:
+        </MARK_PREVIOUS>
 
         <!-- Function calls -->
         <MARK_PREVIOUS TYPE="FUNCTION" EXCLUDE_MATCH="TRUE">(</MARK_PREVIOUS>
@@ -127,8 +128,8 @@
     </RULES>
 
     <RULES SET="CPP" DEFAULT="KEYWORD2" IGNORE_CASE="FALSE"
-        HIGHLIGHT_DIGITS="TRUE"
-        DIGIT_RE="(0x[[:xdigit:]]+[lL]?|[[:digit:]]+(e[[:digit:]]*)?[lLdDfF]?)">
+           HIGHLIGHT_DIGITS="TRUE"
+           DIGIT_RE="(0x[[:xdigit:]]+[lL]?|[[:digit:]]+(e[[:digit:]]*)?[lLdDfF]?)">
         <!-- C style comment -->
         <SPAN TYPE="COMMENT1">
             <BEGIN>/*</BEGIN>
@@ -165,6 +166,6 @@
         </KEYWORDS>
     </RULES>
 
-    <RULES SET="INCLUDE" DEFAULT="KEYWORD2" />
+    <RULES SET="INCLUDE" DEFAULT="KEYWORD2"/>
 
 </MODE>

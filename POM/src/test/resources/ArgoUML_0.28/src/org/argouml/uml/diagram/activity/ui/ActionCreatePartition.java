@@ -28,27 +28,23 @@ import org.argouml.model.Model;
 import org.argouml.ui.CmdCreateNode;
 import org.tigris.gef.base.Mode;
 
-/**
- * The Action to create a Partition on the diagram.
- */
+/** The Action to create a Partition on the diagram. */
 public class ActionCreatePartition extends CmdCreateNode {
 
-    private Object machine;
+  private Object machine;
 
-    /**
-     * Constructor
-     *
-     * @param activityGraph the UML element that contains the Partition
-     */
-    public ActionCreatePartition(Object activityGraph) {
-        super(Model.getMetaTypes().getPartition(),
-      	  "button.new-partition");
-        machine = activityGraph;
-    }
+  /**
+   * Constructor
+   *
+   * @param activityGraph the UML element that contains the Partition
+   */
+  public ActionCreatePartition(Object activityGraph) {
+    super(Model.getMetaTypes().getPartition(), "button.new-partition");
+    machine = activityGraph;
+  }
 
-    @Override
-    protected Mode createMode(String instructions) {
-        return new ModePlacePartition(this, instructions, machine);
-    }
-
+  @Override
+  protected Mode createMode(String instructions) {
+    return new ModePlacePartition(this, instructions, machine);
+  }
 }

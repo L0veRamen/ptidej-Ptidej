@@ -1,71 +1,57 @@
 import java.io.*;
 import java.util.*;
 
-public class TestDistances
-{
+public class TestDistances {
 
-	public static void main(String args[])
-		throws IOException
-	{
+  public static void main(String args[]) throws IOException {
 
-		Vector lesDistances = lireRemplir("distances.txt");
-		lesDistances.add(new Distance("Quebec", "Montreal", 270));
+    Vector lesDistances = lireRemplir("distances.txt");
+    lesDistances.add(new Distance("Quebec", "Montreal", 270));
 
-		afficherVecteur(lesDistances);
+    afficherVecteur(lesDistances);
+  }
 
+  public static Vector lireRemplir(String nomFichier) throws IOException {
+    FileReader fr = null; // initialiser pour Java
+    boolean existeFichier = true; // e ajuster apres
+    Vector mesDistances = new Vector();
 
-	}
+    // essayer de LOCALISER le fichier e partir de son nom
+    try {
+      fr = new FileReader(nomFichier);
+    }
+    // intercepter l'erreur si le fichier n'existe pas
+    catch (java.io.FileNotFoundException erreur) {
+      System.out.println("Probleme d'ouvrir le fichier " + nomFichier);
+      existeFichier = false; // ajuster
+    }
 
-	public static Vector lireRemplir(String nomFichier)
-		throws IOException
-	{
-		FileReader fr = null; // initialiser pour Java
-		boolean existeFichier = true ; // e ajuster apres
-		Vector mesDistances = new Vector();
+    if (existeFichier) {
+      BufferedReader entree = new BufferedReader(fr);
+      boolean finFichier = false;
+      String uneLigne = entree.readLine();
 
-		// essayer de LOCALISER le fichier e partir de son nom
-		try {
-			fr = new FileReader (nomFichier) ;
-		}
-		// intercepter l'erreur si le fichier n'existe pas
-		catch ( java.io.FileNotFoundException erreur) {
-			System.out.println("Probleme d'ouvrir le fichier " + nomFichier);
-			existeFichier = false ; // ajuster
-		}
+      while (!finFichier && uneLigne != null) {
 
-		if (existeFichier)
-		{
-			BufferedReader entree = new BufferedReader(fr);
-			boolean finFichier = false ;
-			String uneLigne = entree.readLine();
+        int indice1 = uneLigne.indexOf(";");
+        int indice2 = uneLigne.indexOf(";", indice1 + 1);
 
-			while ( !finFichier && uneLigne != null)
-			{
+        String depart = uneLigne.substring(0, indice1);
+        String arrivee = uneLigne.substring(indice1 + 1, indice2);
+        int km = Integer.parseInt(uneLigne.substring(indice2 + 1));
 
-				int indice1 = uneLigne.indexOf(";");
-				int indice2 =  uneLigne.indexOf(";", indice1+1);
+        Distance temp = new Distance(depart, arrivee, km);
+        mesDistances.add(temp);
 
-				String depart = uneLigne.substring(0, indice1);
-				String arrivee = uneLigne.substring(indice1+1, indice2);
-				int km = Integer.parseInt(uneLigne.substring(indice2+1));
+        uneLigne = entree.readLine();
+      }
+      entree.close();
+    }
 
-				Distance temp = new Distance(depart, arrivee, km);
-				mesDistances.add(temp);
+    return mesDistances;
+  }
 
-				uneLigne = entree.readLine();
-			}
-			entree.close();
-	 	}
-
-	 	return mesDistances;
-	}
-
-	public static void afficherVecteur(Vector vect)
-	{
-		for(int i=0;  i < vect.size(); i++)
-			System.out.println(vect.get(i));
-	}
-
-
-
+  public static void afficherVecteur(Vector vect) {
+    for (int i = 0; i < vect.size(); i++) System.out.println(vect.get(i));
+  }
 }

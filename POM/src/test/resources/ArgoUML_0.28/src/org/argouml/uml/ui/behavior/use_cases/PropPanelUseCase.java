@@ -26,7 +26,6 @@ package org.argouml.uml.ui.behavior.use_cases;
 
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-
 import org.argouml.uml.ui.ActionNavigateNamespace;
 import org.argouml.uml.ui.UMLLinkedList;
 import org.argouml.uml.ui.UMLMutableLinkedList;
@@ -36,77 +35,66 @@ import org.argouml.uml.ui.foundation.core.PropPanelClassifier;
 import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
 
 /**
- * Builds the property panel for a use case.<p>
+ * Builds the property panel for a use case.
  *
- * This is a type of Classifier, and like other Classifiers can have
- * attributes and operations (some processes use these to define
- * requirements).<p>
+ * <p>This is a type of Classifier, and like other Classifiers can have attributes and operations
+ * (some processes use these to define requirements).
  *
- * <em>Note</em>. ArgoUML does not currently support separate
- * compartments on the display for this.<p>
+ * <p><em>Note</em>. ArgoUML does not currently support separate compartments on the display for
+ * this.
+ *
+ * <p>
  */
 public class PropPanelUseCase extends PropPanelClassifier {
 
-    /**
-     * Construct a property panel for a UseCase.
-     */
-    public PropPanelUseCase() {
-        super("label.usecase", lookupIcon("UseCase"));
+  /** Construct a property panel for a UseCase. */
+  public PropPanelUseCase() {
+    super("label.usecase", lookupIcon("UseCase"));
 
-        addField("label.name", getNameTextField());
-        addField("label.namespace", getNamespaceSelector());
+    addField("label.name", getNameTextField());
+    addField("label.namespace", getNamespaceSelector());
 
-        add(getModifiersPanel());
-        
-        addField("label.client-dependencies", getClientDependencyScroll());
-        addField("label.supplier-dependencies", getSupplierDependencyScroll());
-        
-	addSeparator();
+    add(getModifiersPanel());
 
-	addField("label.generalizations", getGeneralizationScroll());
-        addField("label.specializations", getSpecializationScroll());
+    addField("label.client-dependencies", getClientDependencyScroll());
+    addField("label.supplier-dependencies", getSupplierDependencyScroll());
 
-	JList extendsList = new UMLLinkedList(new UMLUseCaseExtendListModel());
-	addField("label.extends",
-		 new JScrollPane(extendsList));
+    addSeparator();
 
-	JList includesList =
-            new UMLLinkedList(
-                    new UMLUseCaseIncludeListModel());
-	addField("label.includes",
-		 new JScrollPane(includesList));
+    addField("label.generalizations", getGeneralizationScroll());
+    addField("label.specializations", getSpecializationScroll());
 
-        addSeparator();
-        
-        addField("label.attributes",
-                getAttributeScroll());
+    JList extendsList = new UMLLinkedList(new UMLUseCaseExtendListModel());
+    addField("label.extends", new JScrollPane(extendsList));
 
-        addField("label.association-ends",
-                getAssociationEndScroll());
+    JList includesList = new UMLLinkedList(new UMLUseCaseIncludeListModel());
+    addField("label.includes", new JScrollPane(includesList));
 
-        addField("label.operations",
-                getOperationScroll());
+    addSeparator();
 
-	JList extensionPoints =
-	    new UMLMutableLinkedList(
-	            new UMLUseCaseExtensionPointListModel(), null,
-	            ActionNewUseCaseExtensionPoint.SINGLETON);
-        addField("label.extension-points",
-            new JScrollPane(extensionPoints));
+    addField("label.attributes", getAttributeScroll());
 
+    addField("label.association-ends", getAssociationEndScroll());
 
-        addAction(new ActionNavigateNamespace());
-        addAction(new ActionNewUseCase());
-        addAction(new ActionNewExtensionPoint());
-        addAction(new ActionAddAttribute());
-        addAction(new ActionAddOperation());
-        addAction(getActionNewReception());
-        addAction(new ActionNewStereotype());
-        addAction(getDeleteAction());
-    }
+    addField("label.operations", getOperationScroll());
 
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = 8352300400553000518L;
+    JList extensionPoints =
+        new UMLMutableLinkedList(
+            new UMLUseCaseExtensionPointListModel(),
+            null,
+            ActionNewUseCaseExtensionPoint.SINGLETON);
+    addField("label.extension-points", new JScrollPane(extensionPoints));
+
+    addAction(new ActionNavigateNamespace());
+    addAction(new ActionNewUseCase());
+    addAction(new ActionNewExtensionPoint());
+    addAction(new ActionAddAttribute());
+    addAction(new ActionAddOperation());
+    addAction(getActionNewReception());
+    addAction(new ActionNewStereotype());
+    addAction(getDeleteAction());
+  }
+
+  /** The UID. */
+  private static final long serialVersionUID = 8352300400553000518L;
 }

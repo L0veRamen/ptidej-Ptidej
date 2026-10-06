@@ -1,25 +1,19 @@
 /**
+ * Java Diagram Package; An extremely flexible and fast multipurpose diagram component for Swing.
+ * Copyright (C) 2001 Eric Crahen <crahen@cse.buffalo.edu>
  *
-    Java Diagram Package; An extremely flexible and fast multipurpose diagram 
-    component for Swing.
-    Copyright (C) 2001  Eric Crahen <crahen@cse.buffalo.edu>
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
+ * <p>This program is free software; you can redistribute it and/or modify it under the terms of the
+ * GNU General Public License as published by the Free Software Foundation; either version 2 of the
+ * License, or (at your option) any later version.
+ *
+ * <p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * <p>You should have received a copy of the GNU General Public License along with this program; if
+ * not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307 USA
  */
-
 package util;
 
 import java.util.Iterator;
@@ -27,14 +21,12 @@ import java.util.NoSuchElementException;
 
 /**
  * @class FilteredIterator
- *
  * @date 08-20-2001
  * @author Eric Crahen
  * @version 1.0
- *
- * This is a simle wrapper for any Iterator. It will filter the results
- * reachable through this Iterator by skipping any values that are not
- * comparable (ie filter.compareTo(nextValue) != 0) to the given filter.
+ *     <p>This is a simle wrapper for any Iterator. It will filter the results reachable through
+ *     this Iterator by skipping any values that are not comparable (ie filter.compareTo(nextValue)
+ *     != 0) to the given filter.
  */
 public class FilteredIterator extends WrappedIterator {
 
@@ -72,30 +64,24 @@ public class FilteredIterator extends WrappedIterator {
 
     super(iter, readOnly);
     this.filter = filter;
-    
   }
 
   /**
-   * Returns true if the iteration has more elements that are
-   * Comparable to the filter.
-   * 
+   * Returns true if the iteration has more elements that are Comparable to the filter.
+   *
    * @return boolean
    */
   public boolean hasNext() {
-    
-    if(nextValue != null)
-      return true;
 
-    while(super.hasNext()) {
+    if (nextValue != null) return true;
+
+    while (super.hasNext()) {
 
       nextValue = super.next();
-      if(filter.compareTo(nextValue) == 0)
-        return true;
-      
+      if (filter.compareTo(nextValue) == 0) return true;
     }
-    
-    return false;
 
+    return false;
   }
 
   /**
@@ -105,14 +91,11 @@ public class FilteredIterator extends WrappedIterator {
    */
   public Object next() {
 
-    if(nextValue == null)
-      throw new NoSuchElementException();
+    if (nextValue == null) throw new NoSuchElementException();
 
     Object o = nextValue;
     nextValue = null;
 
     return o;
-
   }
-
 }

@@ -35,33 +35,28 @@ import org.argouml.uml.cognitive.UMLDecision;
  */
 public class CrForkOutgoingTransition extends CrUML {
 
-    /**
-     * The constructor.
-     */
-    public CrForkOutgoingTransition() {
-        setupHeadAndDesc();
-        addSupportedDecision(UMLDecision.STATE_MACHINES);
-        addTrigger("outgoing");
-    }
+  /** The constructor. */
+  public CrForkOutgoingTransition() {
+    setupHeadAndDesc();
+    addSupportedDecision(UMLDecision.STATE_MACHINES);
+    addTrigger("outgoing");
+  }
 
-    /**
-     * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(java.lang.Object,
-     * org.argouml.cognitive.Designer)
-     */
-    public boolean predicate2(Object dm, Designer dsgr) {
-        if (!(Model.getFacade().isATransition(dm))) return NO_PROBLEM;
-        Object tr = /*(MTransition)*/ dm;
-        Object target = Model.getFacade().getTarget(tr);
-        Object source = Model.getFacade().getSource(tr);
-        if (!(Model.getFacade().isAPseudostate(source))) return NO_PROBLEM;
-        if (!Model
-                .getFacade()
-                .equalsPseudostateKind(Model
-                .getFacade().getPseudostateKind(source),
-                        Model.getPseudostateKind().getFork()))
-            return NO_PROBLEM;
-        if (Model.getFacade().isAState(target)) return NO_PROBLEM;
-        return PROBLEM_FOUND;
-    }
-
+  /**
+   * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(java.lang.Object,
+   *     org.argouml.cognitive.Designer)
+   */
+  public boolean predicate2(Object dm, Designer dsgr) {
+    if (!(Model.getFacade().isATransition(dm))) return NO_PROBLEM;
+    Object tr = /*(MTransition)*/ dm;
+    Object target = Model.getFacade().getTarget(tr);
+    Object source = Model.getFacade().getSource(tr);
+    if (!(Model.getFacade().isAPseudostate(source))) return NO_PROBLEM;
+    if (!Model.getFacade()
+        .equalsPseudostateKind(
+            Model.getFacade().getPseudostateKind(source), Model.getPseudostateKind().getFork()))
+      return NO_PROBLEM;
+    if (Model.getFacade().isAState(target)) return NO_PROBLEM;
+    return PROBLEM_FOUND;
+  }
 } /* end class CrForkOutgoingTransition */

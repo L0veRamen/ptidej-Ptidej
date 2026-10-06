@@ -26,70 +26,67 @@ package org.argouml.uml.ui.foundation.core;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementOrderedListModel2;
 
 /**
- * This is the model for the list of parameters for a classifier,
- * as e.g. present on the operation properties panel. <p>
+ * This is the model for the list of parameters for a classifier, as e.g. present on the operation
+ * properties panel.
  *
- * This is an ordered list, and hence it supports reordering functions.
+ * <p>This is an ordered list, and hence it supports reordering functions.
  *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 26, 2003
  */
-public class UMLClassifierParameterListModel
-    extends UMLModelElementOrderedListModel2 {
+public class UMLClassifierParameterListModel extends UMLModelElementOrderedListModel2 {
 
-    /**
-     * Constructor for UMLClassifierParameterListModel.
-     * This is an ordered list (2nd parameter = true).
-     */
-    public UMLClassifierParameterListModel() {
-        super("parameter");
+  /**
+   * Constructor for UMLClassifierParameterListModel. This is an ordered list (2nd parameter =
+   * true).
+   */
+  public UMLClassifierParameterListModel() {
+    super("parameter");
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (getTarget() != null) {
+      setAllElements(Model.getFacade().getParameters(getTarget()));
     }
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (getTarget() != null) {
-            setAllElements(Model.getFacade().getParameters(getTarget()));
-        }
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().getParameters(getTarget()).contains(element);
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().getParameters(getTarget()).contains(element);
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementOrderedListModel2#swap(int, int)
-     */
-    public void swap(int index1, int index2) {
-        Object classifier = getTarget();
-        List c = new ArrayList(Model.getFacade().getParameters(classifier));
-        /* The following does not work, because NSUML does not
-         * fire an update event, since no parameters were added or removed...
-        Collections.swap(c, index1, index2);
-        Model.getFacade().setParameters(classifier, c);
-        ... So, lets delete them first, then add them in reverse: */
-        Object mem1 = c.get(index1);
-        Object mem2 = c.get(index2);
-        List cc = new ArrayList(c);
-        cc.remove(mem1);
-        cc.remove(mem2);
-        Model.getCoreHelper().setParameters(classifier, cc);
-        // TODO: If we stop supporting java 1.3 ...
-        // the next line will replace the following 2
-        // Collections.swap(c, index1, index2);
-        c.set(index1, mem2);
-        c.set(index2, mem1);
-        Model.getCoreHelper().setParameters(classifier, c);
-        buildModelList();
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementOrderedListModel2#swap(int, int)
+   */
+  public void swap(int index1, int index2) {
+    Object classifier = getTarget();
+    List c = new ArrayList(Model.getFacade().getParameters(classifier));
+    /* The following does not work, because NSUML does not
+     * fire an update event, since no parameters were added or removed...
+    Collections.swap(c, index1, index2);
+    Model.getFacade().setParameters(classifier, c);
+    ... So, lets delete them first, then add them in reverse: */
+    Object mem1 = c.get(index1);
+    Object mem2 = c.get(index2);
+    List cc = new ArrayList(c);
+    cc.remove(mem1);
+    cc.remove(mem2);
+    Model.getCoreHelper().setParameters(classifier, cc);
+    // TODO: If we stop supporting java 1.3 ...
+    // the next line will replace the following 2
+    // Collections.swap(c, index1, index2);
+    c.set(index1, mem2);
+    c.set(index2, mem1);
+    Model.getCoreHelper().setParameters(classifier, c);
+    buildModelList();
+  }
 }

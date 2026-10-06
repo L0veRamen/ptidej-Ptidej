@@ -25,68 +25,64 @@
 package org.argouml.model.mdr;
 
 import java.util.Map;
-
 import javax.jmi.reflect.RefObject;
-
 import org.netbeans.api.xmi.XMIReferenceProvider;
 
 /**
  * Custom reference provider for MDR XMI Writer.
  *
- * Returns our internal ID to be used when writing the xmi.id field
+ * <p>Returns our internal ID to be used when writing the xmi.id field
  *
  * @author Tom Morris
  */
 class XmiReferenceProviderImpl implements XMIReferenceProvider {
-    
-    private Map<String, XmiReference> mofIdToXmiId;
 
-    private boolean topSystemIdSaved = false;
-    private String topSystemId = null;
-    
-    /**
-     * Create a new reference provider which uses the given map for lookups.
-     * 
-     * @param idMap
-     */
-    XmiReferenceProviderImpl(Map<String, XmiReference> idMap) {
-        mofIdToXmiId = idMap;
+  private Map<String, XmiReference> mofIdToXmiId;
+
+  private boolean topSystemIdSaved = false;
+  private String topSystemId = null;
+
+  /**
+   * Create a new reference provider which uses the given map for lookups.
+   *
+   * @param idMap
+   */
+  XmiReferenceProviderImpl(Map<String, XmiReference> idMap) {
+    mofIdToXmiId = idMap;
+  }
+
+  /*
+   * @see org.netbeans.api.xmi.XMIReferenceProvider#getReference(javax.jmi.reflect.RefObject)
+   */
+  public XMIReferenceProvider.XMIReference getReference(RefObject object) {
+    String mofId = object.refMofId();
+
+    // Look for an existing reference matching our MofID
+    XmiReference ref = mofIdToXmiId.get(mofId);
+
+    // Remember the system id of our root document so that we can write
+    // out profiles and linked models to a different file if requested
+    if (!topSystemIdSaved) {
+      if (ref == null) {
+        topSystemId = null;
+      } else {
+        topSystemId = ref.getSystemId();
+      }
+      topSystemIdSaved = true;
     }
 
-    /*
-     * @see org.netbeans.api.xmi.XMIReferenceProvider#getReference(javax.jmi.reflect.RefObject)
-     */
-    public XMIReferenceProvider.XMIReference getReference(RefObject object) {
-        String mofId = object.refMofId();
-        
-        // Look for an existing reference matching our MofID
-        XmiReference ref = mofIdToXmiId.get(mofId);
-
-        // Remember the system id of our root document so that we can write
-        // out profiles and linked models to a different file if requested
-        if (!topSystemIdSaved) {
-            if (ref == null) {
-                topSystemId = null;
-            } else {
-                topSystemId = ref.getSystemId();
-            }
-            topSystemIdSaved = true;
-        }
-        
-        // Anything not found is newly created, so return a null SystemID
-        // indicating that it is in the parent document. 
-        // TODO: This assumption will be invalid if/when we allow editing of
-        // linked sub-models
-        if (ref == null) {
-            return new XMIReferenceProvider.XMIReference(null, mofId);
-        } else {
-            String systemId = ref.getSystemId();
-            if (topSystemId != null && topSystemId.equals(systemId)) {
-                systemId = null;
-            }
-            return new XMIReferenceProvider.XMIReference(systemId, 
-                    ref.getXmiId());
-        }
+    // Anything not found is newly created, so return a null SystemID
+    // indicating that it is in the parent document.
+    // TODO: This assumption will be invalid if/when we allow editing of
+    // linked sub-models
+    if (ref == null) {
+      return new XMIReferenceProvider.XMIReference(null, mofId);
+    } else {
+      String systemId = ref.getSystemId();
+      if (topSystemId != null && topSystemId.equals(systemId)) {
+        systemId = null;
+      }
+      return new XMIReferenceProvider.XMIReference(systemId, ref.getXmiId());
     }
-
+  }
 }

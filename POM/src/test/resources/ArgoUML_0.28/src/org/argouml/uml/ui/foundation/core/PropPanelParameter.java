@@ -25,10 +25,8 @@
 package org.argouml.uml.ui.foundation.core;
 
 import java.util.List;
-
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.ui.targetmanager.TargetManager;
@@ -42,148 +40,137 @@ import org.argouml.uml.ui.UMLExpressionModel2;
 import org.argouml.uml.ui.UMLUserInterfaceContainer;
 import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
 
-/**
- * The property panel for parameters.
- */
+/** The property panel for parameters. */
 public class PropPanelParameter extends PropPanelModelElement {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = -1207518946939283220L;
+  /** The serial version. */
+  private static final long serialVersionUID = -1207518946939283220L;
 
-    private JPanel behFeatureScroll;
+  private JPanel behFeatureScroll;
 
-    private static UMLParameterBehavioralFeatListModel behFeatureModel;
+  private static UMLParameterBehavioralFeatListModel behFeatureModel;
 
-    /**
-     * Construct a property panel for UML Parameter elements.
-     */
-    public PropPanelParameter() {
-        super("label.parameter", lookupIcon("Parameter"));
+  /** Construct a property panel for UML Parameter elements. */
+  public PropPanelParameter() {
+    super("label.parameter", lookupIcon("Parameter"));
 
-        addField(Translator.localize("label.name"), getNameTextField());
-        addField(Translator.localize("label.owner"),
-                getBehavioralFeatureScroll());
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.owner"), getBehavioralFeatureScroll());
 
-        addSeparator();
+    addSeparator();
 
-        addField(Translator.localize("label.type"),
-                new UMLComboBox2(new UMLParameterTypeComboBoxModel(),
-                        ActionSetParameterType.getInstance()));
+    addField(
+        Translator.localize("label.type"),
+        new UMLComboBox2(
+            new UMLParameterTypeComboBoxModel(), ActionSetParameterType.getInstance()));
 
-        UMLExpressionModel2 defaultModel = new UMLDefaultValueExpressionModel(
-                this, "defaultValue");
-        JPanel defaultPanel = createBorderPanel(Translator
-                .localize("label.parameter.default-value"));
-        defaultPanel.add(new JScrollPane(new UMLExpressionBodyField(
-                defaultModel, true)));
-        defaultPanel.add(new UMLExpressionLanguageField(defaultModel,
-                false));
-        add(defaultPanel);
+    UMLExpressionModel2 defaultModel = new UMLDefaultValueExpressionModel(this, "defaultValue");
+    JPanel defaultPanel = createBorderPanel(Translator.localize("label.parameter.default-value"));
+    defaultPanel.add(new JScrollPane(new UMLExpressionBodyField(defaultModel, true)));
+    defaultPanel.add(new UMLExpressionLanguageField(defaultModel, false));
+    add(defaultPanel);
 
-        add(new UMLParameterDirectionKindRadioButtonPanel(
-                Translator.localize("label.parameter.kind"), true));
+    add(
+        new UMLParameterDirectionKindRadioButtonPanel(
+            Translator.localize("label.parameter.kind"), true));
 
-        addAction(new ActionNavigateContainerElement());
+    addAction(new ActionNavigateContainerElement());
 
-        // Up & Down are only enabled if the Parameter list is ordered
-        addAction(new ActionNavigateUpPreviousDown() {
-            public List getFamily(Object parent) {
-                return Model.getFacade().getParametersList(parent);
-            }
+    // Up & Down are only enabled if the Parameter list is ordered
+    addAction(
+        new ActionNavigateUpPreviousDown() {
+          public List getFamily(Object parent) {
+            return Model.getFacade().getParametersList(parent);
+          }
 
-            public Object getParent(Object child) {
-                return Model.getFacade().getModelElementContainer(child);
-            }
-            
-            public boolean isEnabled() {
-                return (Model.getFacade().isABehavioralFeature(getTarget()) 
-                        || Model.getFacade().isAEvent(getTarget())
-                        ) && super.isEnabled();
-            }
+          public Object getParent(Object child) {
+            return Model.getFacade().getModelElementContainer(child);
+          }
+
+          public boolean isEnabled() {
+            return (Model.getFacade().isABehavioralFeature(getTarget())
+                    || Model.getFacade().isAEvent(getTarget()))
+                && super.isEnabled();
+          }
         });
-        addAction(new ActionNavigateUpNextDown() {
-            public List getFamily(Object parent) {
-                return Model.getFacade().getParametersList(parent);
-            }
+    addAction(
+        new ActionNavigateUpNextDown() {
+          public List getFamily(Object parent) {
+            return Model.getFacade().getParametersList(parent);
+          }
 
-            public Object getParent(Object child) {
-                return Model.getFacade().getModelElementContainer(child);
-            }
-            
-            public boolean isEnabled() {
-                return (Model.getFacade().isABehavioralFeature(getTarget()) 
-                        || Model.getFacade().isAEvent(getTarget())
-                        ) && super.isEnabled();
-            }
+          public Object getParent(Object child) {
+            return Model.getFacade().getModelElementContainer(child);
+          }
+
+          public boolean isEnabled() {
+            return (Model.getFacade().isABehavioralFeature(getTarget())
+                    || Model.getFacade().isAEvent(getTarget()))
+                && super.isEnabled();
+          }
         });
-        addAction(new ActionNewParameter());
-        addAction(new ActionAddDataType());
-        addAction(new ActionAddEnumeration());
-        addAction(new ActionNewStereotype());
-        addAction(getDeleteAction());
-    }
+    addAction(new ActionNewParameter());
+    addAction(new ActionAddDataType());
+    addAction(new ActionAddEnumeration());
+    addAction(new ActionNewStereotype());
+    addAction(getDeleteAction());
+  }
 
-    /**
-     * Returns the behavioral Feature Scroll.
-     *
-     * @return JPanel
-     */
-    public JPanel getBehavioralFeatureScroll() {
-        if (behFeatureScroll == null) {
-            if (behFeatureModel == null) {
-                behFeatureModel = new UMLParameterBehavioralFeatListModel();
-            }
-            behFeatureScroll = getSingleRowScroll(behFeatureModel);
-        }
-        return behFeatureScroll;
+  /**
+   * Returns the behavioral Feature Scroll.
+   *
+   * @return JPanel
+   */
+  public JPanel getBehavioralFeatureScroll() {
+    if (behFeatureScroll == null) {
+      if (behFeatureModel == null) {
+        behFeatureModel = new UMLParameterBehavioralFeatListModel();
+      }
+      behFeatureScroll = getSingleRowScroll(behFeatureModel);
     }
-
+    return behFeatureScroll;
+  }
 }
 
 class UMLDefaultValueExpressionModel extends UMLExpressionModel2 {
 
-    /**
-     * The constructor.
-     *
-     * @param container the container of UML user interface components
-     * @param propertyName the name of the property
-     */
-    public UMLDefaultValueExpressionModel(UMLUserInterfaceContainer container,
-            String propertyName) {
-        super(container, propertyName);
+  /**
+   * The constructor.
+   *
+   * @param container the container of UML user interface components
+   * @param propertyName the name of the property
+   */
+  public UMLDefaultValueExpressionModel(UMLUserInterfaceContainer container, String propertyName) {
+    super(container, propertyName);
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLExpressionModel2#getExpression()
+   */
+  public Object getExpression() {
+    Object target = TargetManager.getInstance().getTarget();
+    if (target == null) {
+      return null;
     }
+    return Model.getFacade().getDefaultValue(target);
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLExpressionModel2#getExpression()
-     */
-    public Object getExpression() {
-        Object target = TargetManager.getInstance().getTarget();
-        if (target == null) {
-            return null;
-        }
-        return Model.getFacade().getDefaultValue(target);
+  /*
+   * @see org.argouml.uml.ui.UMLExpressionModel2#setExpression(java.lang.Object)
+   */
+  public void setExpression(Object expression) {
+    Object target = TargetManager.getInstance().getTarget();
+
+    if (target == null) {
+      throw new IllegalStateException("There is no target for " + getContainer());
     }
+    Model.getCoreHelper().setDefaultValue(target, expression);
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLExpressionModel2#setExpression(java.lang.Object)
-     */
-    public void setExpression(Object expression) {
-        Object target = TargetManager.getInstance().getTarget();
-
-        if (target == null) {
-            throw new IllegalStateException(
-                    "There is no target for " + getContainer());
-        }
-        Model.getCoreHelper().setDefaultValue(target, expression);
-    }
-
-    /*
-     * @see org.argouml.uml.ui.UMLExpressionModel2#newExpression()
-     */
-    public Object newExpression() {
-        return Model.getDataTypesFactory().createExpression("", "");
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLExpressionModel2#newExpression()
+   */
+  public Object newExpression() {
+    return Model.getDataTypesFactory().createExpression("", "");
+  }
 }

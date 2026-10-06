@@ -27,74 +27,61 @@ package org.argouml.util;
 import java.io.File;
 import javax.swing.filechooser.*;
 
-/**
- * A class representing a FileFilter for class files (.class, .jar).
- *
- */
+/** A class representing a FileFilter for class files (.class, .jar). */
 public class ClassFileFilter extends FileFilter {
 
-    ////////////////////////////////////////////////////////////////
-    // instance varaibles
+  ////////////////////////////////////////////////////////////////
+  // instance varaibles
 
-    private final String [] suffixes     = {"class", "jar"};
-    private final String    description  = "Java classfiles (*.class, *.jar)";
+  private final String[] suffixes = {"class", "jar"};
 
+  private final String description = "Java classfiles (*.class, *.jar)";
 
-    ////////////////////////////////////////////////////////////////
-    // FileFilter API
+  ////////////////////////////////////////////////////////////////
+  // FileFilter API
 
-    /**
-     * Check if  file passes the filter.
-     *
-     * @param f The file to check.
-     *
-     * @return true, if the file passes the filter, false otherwise.
-     */
-    public boolean accept(File f) {
-	if (f == null) {
-	    return false;
-	}
-	if (f.isDirectory()) {
-	    return true;
-	}
-	String extension = getExtension(f.getName());
-	for (int i = 0; i < suffixes.length; i++) {
-	    if (suffixes[i].equalsIgnoreCase(extension)) {
-	        return true;
-	    }
-	}
-	return false;
+  /**
+   * Check if file passes the filter.
+   *
+   * @param f The file to check.
+   * @return true, if the file passes the filter, false otherwise.
+   */
+  public boolean accept(File f) {
+    if (f == null) {
+      return false;
     }
-
-    /**
-     * Get the extension of a filename.
-     *
-     * @param filename The name of the file.
-     *
-     * @return The extension of the file, or null.
-     */
-    private String getExtension(String filename) {
-	int i = filename.lastIndexOf('.');
-	if (i > 0 && i < filename.length() - 1) {
-	    return filename.substring(i + 1).toLowerCase();
-	}
-	return null;
+    if (f.isDirectory()) {
+      return true;
     }
-
-    /**
-     * Get a description for this filefilter.
-     *
-     * @return The description of this filefilter.
-     */
-    public String getDescription() {
-	return description;
+    String extension = getExtension(f.getName());
+    for (int i = 0; i < suffixes.length; i++) {
+      if (suffixes[i].equalsIgnoreCase(extension)) {
+        return true;
+      }
     }
+    return false;
+  }
+
+  /**
+   * Get the extension of a filename.
+   *
+   * @param filename The name of the file.
+   * @return The extension of the file, or null.
+   */
+  private String getExtension(String filename) {
+    int i = filename.lastIndexOf('.');
+    if (i > 0 && i < filename.length() - 1) {
+      return filename.substring(i + 1).toLowerCase();
+    }
+    return null;
+  }
+
+  /**
+   * Get a description for this filefilter.
+   *
+   * @return The description of this filefilter.
+   */
+  public String getDescription() {
+    return description;
+  }
 } /* end class ClassFileFilter */
-
-
-
-
-
-
-
-

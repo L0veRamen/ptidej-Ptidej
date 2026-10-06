@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -28,158 +28,138 @@ import ptidej.ui.primitive.IPrimitiveFactory;
 import ptidej.ui.primitive.IRectangle;
 
 public class PrimitiveFactory implements IPrimitiveFactory {
-	protected static PrimitiveFactory UniqueInstance;
-	public static IPrimitiveFactory getInstance() {
-		if (PrimitiveFactory.UniqueInstance == null) {
-			PrimitiveFactory.UniqueInstance = new PrimitiveFactory();
-		}
+  protected static PrimitiveFactory UniqueInstance;
 
-		return PrimitiveFactory.UniqueInstance;
-	}
+  public static IPrimitiveFactory getInstance() {
+    if (PrimitiveFactory.UniqueInstance == null) {
+      PrimitiveFactory.UniqueInstance = new PrimitiveFactory();
+    }
 
-	private Graphics graphics;
+    return PrimitiveFactory.UniqueInstance;
+  }
 
-	public final ptidej.ui.primitive.IAggregationSymbol createAggregationSymbol(
-		final Point origin,
-		final Dimension dimension,
-		final RGB color) {
+  private Graphics graphics;
 
-		return new AggregationSymbol(this, origin, dimension, color);
-	}
-	public final IArrowSymbol createArrowSymbol(
-		final Point origin,
-		final Dimension dimension,
-		final RGB color) {
+  public final ptidej.ui.primitive.IAggregationSymbol createAggregationSymbol(
+      final Point origin, final Dimension dimension, final RGB color) {
 
-		return new ArrowSymbol(this, origin, dimension, color);
-	}
-	public final ptidej.ui.primitive.IAssociationSymbol createAssociationSymbol(
-		final Point origin,
-		final Dimension dimension,
-		final RGB color) {
+    return new AggregationSymbol(this, origin, dimension, color);
+  }
 
-		return new AssociationSymbol(this, origin, dimension, color);
-	}
-	public final IButton createButton(
-		final String label,
-		final Point position,
-		final boolean centerText,
-		final RGB color) {
+  public final IArrowSymbol createArrowSymbol(
+      final Point origin, final Dimension dimension, final RGB color) {
 
-		return new Button(this, label, position, centerText, color);
-	}
-	public final IButton createButton(
-		final String label,
-		final Point position,
-		final Dimension dimension,
-		final boolean centerText,
-		final RGB color) {
+    return new ArrowSymbol(this, origin, dimension, color);
+  }
 
-		return new Button(this, label, position, dimension, centerText, color);
-	}
-	public final ptidej.ui.primitive.ICompositionSymbol createCompositionSymbol(
-		final Point origin,
-		final Dimension dimension,
-		final RGB color) {
+  public final ptidej.ui.primitive.IAssociationSymbol createAssociationSymbol(
+      final Point origin, final Dimension dimension, final RGB color) {
 
-		return new CompositionSymbol(this, origin, dimension, color);
-	}
-	/**
-	 * @author Mohamed Kahla
-	 * @since 17/05/2006
-	 * @version 17052006H1102
-	 * build The Dotted Double SquareLine used for 
-	 * Implementations Links
-	 */
-	public final IDoubleSquareLine createDottedDoubleSquareLine(
-		final Point origin,
-		final Dimension dimension,
-		final RGB color) {
+    return new AssociationSymbol(this, origin, dimension, color);
+  }
 
-		return new DottedDoubleSquareLine(this, origin, dimension, color);
-	}
-	public final IDottedLine createDottedLine(
-		final Point origin,
-		final Dimension dimension,
-		final RGB color) {
+  public final IButton createButton(
+      final String label, final Point position, final boolean centerText, final RGB color) {
 
-		return new DottedLine(this, origin, dimension, color);
-	}
-	public final ptidej.ui.primitive.IDottedSquareLine createDottedSquareLine(
-		final Point origin,
-		final Dimension dimension,
-		final RGB color) {
-		// 
-		return new DottedSquareLine(this, origin, dimension, color);
-	}
-	public final IDottedTriangle createDottedTriangle(
-		final Point origin,
-		final int direction,
-		final RGB color) {
+    return new Button(this, label, position, centerText, color);
+  }
 
-		return new DottedTriangle(this, origin, direction, color);
-	}
-	public IInheritanceSymbol createInheritanceSymbol(
-		final Point origin,
-		final Dimension dimension,
-		final RGB color) {
+  public final IButton createButton(
+      final String label,
+      final Point position,
+      final Dimension dimension,
+      final boolean centerText,
+      final RGB color) {
 
-		return new InheritanceSymbol(this, origin, dimension, color);
-	}
-	public final ILabel createLabel(
-		final String label,
-		final Point position,
-		final Dimension dimension,
-		final RGB color) {
+    return new Button(this, label, position, dimension, centerText, color);
+  }
 
-		return new Label(this, label, position, dimension, color);
-	}
-	public final ILine createLine(
-		final Point origin,
-		final Dimension dimension,
-		final RGB color) {
+  public final ptidej.ui.primitive.ICompositionSymbol createCompositionSymbol(
+      final Point origin, final Dimension dimension, final RGB color) {
 
-		return new Line(this, origin, dimension, color);
-	}
-	/**
-	 * @author Mohamed Kahla
-	 * @since 17/05/2006
-	 * @version 17052006H1056
-	 * build The Plain Double SquareLine used for 
-	 * Specialisation Links
-	 */
-	public IDoubleSquareLine createPlainDoubleSquareLine(
-		final Point origin,
-		final Dimension dimension,
-		final RGB color) {
+    return new CompositionSymbol(this, origin, dimension, color);
+  }
 
-		return new PlainDoubleSquareLine(this, origin, dimension, color);
-	}
-	public final IPlainSquareLine createPlainSquareLine(
-		final Point origin,
-		final Dimension dimension,
-		final RGB color) {
-		// 
-		return new PlainSquareLine(this, origin, dimension, color);
-	}
-	public final IPlainTriangle createPlainTriangle(
-		final Point origin,
-		final int direction,
-		final RGB color) {
+  /**
+   * @author Mohamed Kahla
+   * @since 17/05/2006
+   * @version 17052006H1102 build The Dotted Double SquareLine used for Implementations Links
+   */
+  public final IDoubleSquareLine createDottedDoubleSquareLine(
+      final Point origin, final Dimension dimension, final RGB color) {
 
-		return new PlainTriangle(this, origin, direction, color);
-	}
-	public final IRectangle createRectangle(
-		final Point origin,
-		final Dimension dimension,
-		final RGB color) {
+    return new DottedDoubleSquareLine(this, origin, dimension, color);
+  }
 
-		return new Rectangle(this, origin, dimension, color);
-	}
-	public final Graphics getGraphics() {
-		return this.graphics;
-	}
-	public final void setGraphics(final Graphics graphics) {
-		this.graphics = graphics;
-	}
+  public final IDottedLine createDottedLine(
+      final Point origin, final Dimension dimension, final RGB color) {
+
+    return new DottedLine(this, origin, dimension, color);
+  }
+
+  public final ptidej.ui.primitive.IDottedSquareLine createDottedSquareLine(
+      final Point origin, final Dimension dimension, final RGB color) {
+    //
+    return new DottedSquareLine(this, origin, dimension, color);
+  }
+
+  public final IDottedTriangle createDottedTriangle(
+      final Point origin, final int direction, final RGB color) {
+
+    return new DottedTriangle(this, origin, direction, color);
+  }
+
+  public IInheritanceSymbol createInheritanceSymbol(
+      final Point origin, final Dimension dimension, final RGB color) {
+
+    return new InheritanceSymbol(this, origin, dimension, color);
+  }
+
+  public final ILabel createLabel(
+      final String label, final Point position, final Dimension dimension, final RGB color) {
+
+    return new Label(this, label, position, dimension, color);
+  }
+
+  public final ILine createLine(final Point origin, final Dimension dimension, final RGB color) {
+
+    return new Line(this, origin, dimension, color);
+  }
+
+  /**
+   * @author Mohamed Kahla
+   * @since 17/05/2006
+   * @version 17052006H1056 build The Plain Double SquareLine used for Specialisation Links
+   */
+  public IDoubleSquareLine createPlainDoubleSquareLine(
+      final Point origin, final Dimension dimension, final RGB color) {
+
+    return new PlainDoubleSquareLine(this, origin, dimension, color);
+  }
+
+  public final IPlainSquareLine createPlainSquareLine(
+      final Point origin, final Dimension dimension, final RGB color) {
+    //
+    return new PlainSquareLine(this, origin, dimension, color);
+  }
+
+  public final IPlainTriangle createPlainTriangle(
+      final Point origin, final int direction, final RGB color) {
+
+    return new PlainTriangle(this, origin, direction, color);
+  }
+
+  public final IRectangle createRectangle(
+      final Point origin, final Dimension dimension, final RGB color) {
+
+    return new Rectangle(this, origin, dimension, color);
+  }
+
+  public final Graphics getGraphics() {
+    return this.graphics;
+  }
+
+  public final void setGraphics(final Graphics graphics) {
+    this.graphics = graphics;
+  }
 }

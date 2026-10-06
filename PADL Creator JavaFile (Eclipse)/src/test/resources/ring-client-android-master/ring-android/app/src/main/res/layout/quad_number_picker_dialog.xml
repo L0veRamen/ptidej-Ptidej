@@ -15,112 +15,112 @@
      limitations under the License.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="match_parent"
-    android:baselineAligned="false"
-    android:gravity="center_horizontal"
-    android:orientation="horizontal"
-    android:weightSum="100" >
-
-    <Space
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="7" />
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="20"
-        android:gravity="center"
-        android:orientation="vertical" >
-
-        <TextView
-            android:id="@+id/picker_title_1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:textAppearanceMedium" />
-
-        <NumberPicker
-            android:id="@+id/number_picker_1"
-            android:layout_width="50dip"
-            android:layout_height="match_parent" />
-    </LinearLayout>
+              android:layout_width="wrap_content"
+              android:layout_height="match_parent"
+              android:baselineAligned="false"
+              android:gravity="center_horizontal"
+              android:orientation="horizontal"
+              android:weightSum="100">
 
     <Space
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="2" />
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="20"
-        android:gravity="center"
-        android:orientation="vertical" >
-
-        <TextView
-            android:id="@+id/picker_title_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:textAppearanceMedium" />
-
-        <NumberPicker
-            android:id="@+id/number_picker_2"
-            android:layout_width="50dip"
-            android:layout_height="match_parent" />
-    </LinearLayout>
-
-    <Space
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2" />
+            android:layout_weight="7"/>
 
     <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="20"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:orientation="vertical">
+
+        <TextView
+                android:id="@+id/picker_title_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:textAppearanceMedium"/>
+
+        <NumberPicker
+                android:id="@+id/number_picker_1"
+                android:layout_width="50dip"
+                android:layout_height="match_parent"/>
+    </LinearLayout>
+
+    <Space
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"/>
+
+    <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="20"
+            android:gravity="center"
+            android:orientation="vertical">
+
+        <TextView
+                android:id="@+id/picker_title_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:textAppearanceMedium"/>
+
+        <NumberPicker
+                android:id="@+id/number_picker_2"
+                android:layout_width="50dip"
+                android:layout_height="match_parent"/>
+    </LinearLayout>
+
+    <Space
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"/>
+
+    <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="20"
+            android:gravity="center"
+            android:orientation="vertical">
 
         <TextView
                 android:id="@+id/picker_title_3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:textAppearanceMedium" />
+                android:textAppearance="?android:textAppearanceMedium"/>
 
         <NumberPicker
                 android:id="@+id/number_picker_3"
                 android:layout_width="50dip"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"/>
     </LinearLayout>
 
     <Space
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="2" />
+            android:layout_weight="2"/>
 
     <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="20"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
         <TextView
                 android:id="@+id/picker_title_4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:textAppearanceMedium" />
+                android:textAppearance="?android:textAppearanceMedium"/>
 
         <NumberPicker
                 android:id="@+id/number_picker_4"
                 android:layout_width="50dip"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"/>
     </LinearLayout>
 
     <Space
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="7" />
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="7"/>
 
 </LinearLayout>

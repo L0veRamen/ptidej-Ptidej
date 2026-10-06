@@ -26,9 +26,7 @@ package org.argouml.model.uml;
 
 import java.util.Collection;
 import java.util.Iterator;
-
 import org.argouml.model.ActivityGraphsHelper;
-
 import ru.novosoft.uml.behavior.activity_graphs.MClassifierInState;
 import ru.novosoft.uml.behavior.activity_graphs.MObjectFlowState;
 import ru.novosoft.uml.behavior.state_machines.MCompositeState;
@@ -43,147 +41,137 @@ import ru.novosoft.uml.model_management.MPackage;
 /**
  * Helper class for UML BehavioralElements::ActivityGraphs Package.
  *
- * Current implementation is a placeholder.
+ * <p>Current implementation is a placeholder.
  *
  * @since ARGO0.11.2
  * @author Thierry Lach
  */
 class ActivityGraphsHelperImpl implements ActivityGraphsHelper {
 
-    /**
-     * The model implementation.
-     */
-    private NSUMLModelImplementation nsmodel;
+  /** The model implementation. */
+  private NSUMLModelImplementation nsmodel;
 
-    /**
-     * Don't allow instantiation.
-     *
-     * @param implementation To get other helpers and factories.
-     */
-    ActivityGraphsHelperImpl(NSUMLModelImplementation implementation) {
-        nsmodel = implementation;
+  /**
+   * Don't allow instantiation.
+   *
+   * @param implementation To get other helpers and factories.
+   */
+  ActivityGraphsHelperImpl(NSUMLModelImplementation implementation) {
+    nsmodel = implementation;
+  }
+
+  /**
+   * Finds the Classifier to which a given ObjectFlowState refers by its given name. This function
+   * may be used for when the user types the name of a classifier in the diagram, in an
+   * ObjectFlowState.
+   *
+   * @author MVW
+   * @param ofs the given ObjectFlowState
+   * @param s the given String that represents the name of the "type" Classifier
+   * @return the found classifier or null
+   */
+  public Object findClassifierByName(Object ofs, String s) {
+    if (!(ofs instanceof MObjectFlowState)) {
+      throw new IllegalArgumentException();
     }
 
-    /**
-     * Finds the Classifier to which a given ObjectFlowState
-     * refers by its given name. This function may be used for when the user
-     * types the name of a classifier in the diagram, in an ObjectFlowState.
-     *
-     * @author MVW
-     * @param ofs the given ObjectFlowState
-     * @param s   the given String that represents
-     *            the name of the "type" Classifier
-     * @return    the found classifier or null
-     */
-    public Object findClassifierByName(Object ofs, String s) {
-        if (!(ofs instanceof MObjectFlowState)) {
-            throw new IllegalArgumentException();
+    MCompositeState cs = ((MObjectFlowState) ofs).getContainer();
+    MStateMachine sm = cs.getStateMachine();
+    MModelElement ns = sm.getContext();
+    if (!(ns instanceof MNamespace)) {
+      ns = ns.getNamespace();
+    }
+    if (ns != null) {
+      Collection c =
+          nsmodel
+              .getModelManagementHelper()
+              .getAllModelElementsOfKind(ns, nsmodel.getMetaTypes().getClassifier());
+      Iterator i = c.iterator();
+      while (i.hasNext()) {
+        MModelElement classifier = (MModelElement) i.next();
+        String cn = classifier.getName();
+        if (cn.equals(s)) {
+          return classifier;
         }
+      }
+    } else {
+      throw new IllegalArgumentException();
+    }
+    return null;
+  }
 
-        MCompositeState cs = ((MObjectFlowState) ofs).getContainer();
-        MStateMachine sm = cs.getStateMachine();
-        MModelElement ns = sm.getContext();
-        if (!(ns instanceof MNamespace)) {
-            ns = ns.getNamespace();
-        }
-        if (ns != null) {
-            Collection c =
-                nsmodel.getModelManagementHelper()
-                	.getAllModelElementsOfKind(ns,
-                	        nsmodel.getMetaTypes().getClassifier());
-            Iterator i = c.iterator();
-            while (i.hasNext()) {
-                MModelElement classifier = (MModelElement) i.next();
-                String cn = classifier.getName();
-                if (cn.equals(s)) {
-                    return classifier;
-                }
-            }
-        } else {
-            throw new IllegalArgumentException();
-        }
-        return null;
+  /**
+   * Find a state of a Classifier by its name. This routine is used to make the connection between a
+   * ClassifierInState and its State.
+   *
+   * @author mvw
+   * @param c the Classifier. If this is not a Classifier, then IllegalArgumentException is thrown.
+   * @param s the string that represents the name of the state we are looking for. If "" or null,
+   *     then null is returned straight away.
+   * @return the State (as Object) or null, if not found.
+   */
+  public Object findStateByName(Object c, String s) {
+    if (!(c instanceof MClassifier)) {
+      throw new IllegalArgumentException();
     }
 
-    /**
-     * Find a state of a Classifier by its name.
-     * This routine is used to make the connection between
-     * a ClassifierInState and its State.
-     *
-     * @author mvw
-     * @param c the Classifier. If this is not a Classifier, then
-     *          IllegalArgumentException is thrown.
-     * @param s the string that represents the name of
-     *          the state we are looking for. If "" or null, then
-     *          null is returned straight away.
-     * @return  the State (as Object) or null, if not found.
-     */
-    public Object findStateByName(Object c, String s) {
-        if (!(c instanceof MClassifier)) {
-            throw new IllegalArgumentException();
-        }
-
-        if ((s == null) || (s.equals(""))) {
-            return null;
-        }
-
-        Collection allStatemachines = ((MClassifier) c).getBehaviors();
-        Iterator i = allStatemachines.iterator();
-        while (i.hasNext()) {
-            MStateMachine statemachine = (MStateMachine) i.next();
-            MState top = statemachine.getTop();
-            Collection allStates =
-                nsmodel.getStateMachinesHelper().getAllSubStates(top);
-            Iterator ii = allStates.iterator();
-            while (ii.hasNext()) {
-                MState state = (MState) ii.next();
-
-                String statename = state.getName();
-                if (statename != null) {
-                    if (statename.equals(s)) {
-                        return state;
-                    }
-                }
-            }
-        }
-        return null;
+    if ((s == null) || (s.equals(""))) {
+      return null;
     }
 
-    /**
-     * Returns true if an activitygraph may be added to the given
-     * context. To decouple ArgoUML as much as possible from the NSUML
-     * model, the parameter of the method is of type Object.<p>
-     *
-     * An ActivityGraph specifies the dynamics of<ol>
-     * <li> a Package, or
-     * <li> a Classifier (including UseCase), or
-     * <li> a BehavioralFeature.
-     * </ol>
-     *
-     * @param context the given context
-     * @return boolean true if an activitygraph may be added
-     */
-    public boolean isAddingActivityGraphAllowed(Object context) {
-        return context instanceof MBehavioralFeature
-            || context instanceof MClassifier
-            || context instanceof MPackage;
-    }
+    Collection allStatemachines = ((MClassifier) c).getBehaviors();
+    Iterator i = allStatemachines.iterator();
+    while (i.hasNext()) {
+      MStateMachine statemachine = (MStateMachine) i.next();
+      MState top = statemachine.getTop();
+      Collection allStates = nsmodel.getStateMachinesHelper().getAllSubStates(top);
+      Iterator ii = allStates.iterator();
+      while (ii.hasNext()) {
+        MState state = (MState) ii.next();
 
-    /**
-     * @author mvw
-     * @param classifierInState the classifierInState
-     * @param state the state that will be linked
-     */
-    public void addInState(Object classifierInState, Object state) {
-        if (classifierInState instanceof MClassifierInState
-                && state instanceof MState) {
-            ((MClassifierInState) classifierInState)
-            	.addInState((MState) state);
-        } else {
-            throw new IllegalArgumentException(
-                    "classifierInState: " + classifierInState
-                    + " or state: " + state);
+        String statename = state.getName();
+        if (statename != null) {
+          if (statename.equals(s)) {
+            return state;
+          }
         }
+      }
     }
+    return null;
+  }
+
+  /**
+   * Returns true if an activitygraph may be added to the given context. To decouple ArgoUML as much
+   * as possible from the NSUML model, the parameter of the method is of type Object.
+   *
+   * <p>An ActivityGraph specifies the dynamics of
+   *
+   * <ol>
+   *   <li>a Package, or
+   *   <li>a Classifier (including UseCase), or
+   *   <li>a BehavioralFeature.
+   * </ol>
+   *
+   * @param context the given context
+   * @return boolean true if an activitygraph may be added
+   */
+  public boolean isAddingActivityGraphAllowed(Object context) {
+    return context instanceof MBehavioralFeature
+        || context instanceof MClassifier
+        || context instanceof MPackage;
+  }
+
+  /**
+   * @author mvw
+   * @param classifierInState the classifierInState
+   * @param state the state that will be linked
+   */
+  public void addInState(Object classifierInState, Object state) {
+    if (classifierInState instanceof MClassifierInState && state instanceof MState) {
+      ((MClassifierInState) classifierInState).addInState((MState) state);
+    } else {
+      throw new IllegalArgumentException(
+          "classifierInState: " + classifierInState + " or state: " + state);
+    }
+  }
 }
-

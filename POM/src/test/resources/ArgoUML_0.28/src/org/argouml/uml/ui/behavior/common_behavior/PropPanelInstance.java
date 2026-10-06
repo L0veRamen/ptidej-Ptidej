@@ -26,7 +26,6 @@ package org.argouml.uml.ui.behavior.common_behavior;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
-
 import org.argouml.uml.ui.foundation.core.PropPanelModelElement;
 
 /**
@@ -36,46 +35,43 @@ import org.argouml.uml.ui.foundation.core.PropPanelModelElement;
  */
 public abstract class PropPanelInstance extends PropPanelModelElement {
 
-    private JPanel stimuliSenderScroll;
+  private JPanel stimuliSenderScroll;
 
-    private JPanel stimuliReceiverScroll;
+  private JPanel stimuliReceiverScroll;
 
-    private static UMLInstanceSenderStimulusListModel stimuliSenderListModel 
-        = new UMLInstanceSenderStimulusListModel();
+  private static UMLInstanceSenderStimulusListModel stimuliSenderListModel =
+      new UMLInstanceSenderStimulusListModel();
 
-    private static UMLInstanceReceiverStimulusListModel
-    stimuliReceiverListModel = new UMLInstanceReceiverStimulusListModel();
+  private static UMLInstanceReceiverStimulusListModel stimuliReceiverListModel =
+      new UMLInstanceReceiverStimulusListModel();
 
-    /**
-     * Construct a property panel for an Instance with the given name, icon and
-     * orientation.
-     * 
-     * @param name the name for the properties panel
-     * @param icon the icon shown next to the name
-     */
-    public PropPanelInstance(String name, ImageIcon icon) {
-        super(name, icon);
+  /**
+   * Construct a property panel for an Instance with the given name, icon and orientation.
+   *
+   * @param name the name for the properties panel
+   * @param icon the icon shown next to the name
+   */
+  public PropPanelInstance(String name, ImageIcon icon) {
+    super(name, icon);
+  }
+
+  /**
+   * @return the scrollpane for stimuli sender
+   */
+  protected JPanel getStimuliSenderScroll() {
+    if (stimuliSenderScroll == null) {
+      stimuliSenderScroll = getSingleRowScroll(stimuliSenderListModel);
     }
-    
+    return stimuliSenderScroll;
+  }
 
-    /**
-     * @return the scrollpane for stimuli sender
-     */
-    protected JPanel getStimuliSenderScroll() {
-        if (stimuliSenderScroll == null) {
-            stimuliSenderScroll = getSingleRowScroll(stimuliSenderListModel);
-        }
-        return stimuliSenderScroll;
+  /**
+   * @return the scrollpane for stimuli receiver
+   */
+  protected JPanel getStimuliReceiverScroll() {
+    if (stimuliReceiverScroll == null) {
+      stimuliReceiverScroll = getSingleRowScroll(stimuliReceiverListModel);
     }
-
-    /**
-     * @return the scrollpane for stimuli receiver
-     */
-    protected JPanel getStimuliReceiverScroll() {
-        if (stimuliReceiverScroll == null) {
-            stimuliReceiverScroll = 
-                getSingleRowScroll(stimuliReceiverListModel);
-        }
-        return stimuliReceiverScroll;
-    }
+    return stimuliReceiverScroll;
+  }
 }

@@ -26,7 +26,6 @@
 package org.argouml.uml.ui.behavior.collaborations;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLAction;
@@ -39,40 +38,33 @@ import org.argouml.uml.ui.UMLComboBox2;
  */
 public class ActionSetAssociationRoleBase extends UMLAction {
 
-    private static final ActionSetAssociationRoleBase SINGLETON =
-	new ActionSetAssociationRoleBase();
+  private static final ActionSetAssociationRoleBase SINGLETON = new ActionSetAssociationRoleBase();
 
-    /**
-     * Constructor for ActionSetAssociationRoleBase.
-     */
-    protected ActionSetAssociationRoleBase() {
-        super(Translator.localize("Set"), false, NO_ICON);
+  /** Constructor for ActionSetAssociationRoleBase. */
+  protected ActionSetAssociationRoleBase() {
+    super(Translator.localize("Set"), false, NO_ICON);
+  }
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    Object selected = null;
+    if (e.getSource() instanceof UMLComboBox2) {
+      UMLComboBox2 source = (UMLComboBox2) e.getSource();
+      selected = source.getSelectedItem();
+      if (Model.getFacade().isAAssociation(selected)
+          && Model.getFacade().isAAssociationRole(source.getTarget())) {
+        Model.getCollaborationsHelper().setBase(source.getTarget(), selected);
+      }
     }
+  }
 
-    /**
-     * @see
-     * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        Object selected = null;
-        if (e.getSource() instanceof UMLComboBox2) {
-            UMLComboBox2 source = (UMLComboBox2) e.getSource();
-            selected = source.getSelectedItem();
-            if (Model.getFacade().isAAssociation(selected)
-                    && Model.getFacade().isAAssociationRole(
-                            source.getTarget())) {
-                Model.getCollaborationsHelper()
-                    .setBase(source.getTarget(), selected);
-            }
-        }
-    }
-
-    /**
-     * @return Returns the sINGLETON.
-     */
-    public static ActionSetAssociationRoleBase getInstance() {
-        return SINGLETON;
-    }
-
+  /**
+   * @return Returns the sINGLETON.
+   */
+  public static ActionSetAssociationRoleBase getInstance() {
+    return SINGLETON;
+  }
 }

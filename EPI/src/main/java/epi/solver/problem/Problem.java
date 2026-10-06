@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -23,30 +23,29 @@ import ptidej.solver.fingerprint.ReducedDomainBuilder;
  * @author OlivierK
  */
 public abstract class Problem {
-	protected Hashtable domain;
-	protected ReducedDomainBuilder rdg;
+  protected Hashtable<String, List<?>> domain;
+  protected ReducedDomainBuilder rdg;
 
-	public Problem(final ICodeLevelModel aCodeLevelModel) {
-		this.rdg = new ReducedDomainBuilder(aCodeLevelModel);
-		this.domain = new Hashtable();
-	}
+  public Problem(final ICodeLevelModel aCodeLevelModel) {
+    this.rdg = new ReducedDomainBuilder(aCodeLevelModel);
+    this.domain = new Hashtable<>();
+  }
 
-	public Hashtable getDomains() {
-		return this.domain;
-	}
+  public Hashtable<String, List<?>> getDomains() {
+    return this.domain;
+  }
 
-	protected List getSimpleConstituentList(
-		final IAbstractLevelModel anAbstractModel) {
+  protected List<char[]> getSimpleConstituentList(final IAbstractLevelModel anAbstractModel) {
 
-		final List simpleList = new ArrayList();
-		final Iterator entities = anAbstractModel.getIteratorOnConstituents();
-		while (entities.hasNext()) {
-			simpleList.add(((IFirstClassEntity) entities.next()).getID());
-		}
-		return simpleList;
-	}
+    final List<char[]> simpleList = new ArrayList<>();
+    final Iterator entities = anAbstractModel.getIteratorOnConstituents();
+    while (entities.hasNext()) {
+      simpleList.add(((IFirstClassEntity) entities.next()).getID());
+    }
+    return simpleList;
+  }
 
-	public List getVariableDomain(final String var) {
-		return (List) this.domain.get(var.toLowerCase());
-	}
+  public List getVariableDomain(final String var) {
+    return (List) this.domain.get(var.toLowerCase());
+  }
 }

@@ -26,7 +26,6 @@ package org.argouml.sequence2.diagram;
 
 import java.awt.Color;
 import java.awt.Dimension;
-
 import org.argouml.uml.diagram.DiagramSettings;
 import org.argouml.uml.diagram.ui.ArgoFigGroup;
 import org.tigris.gef.presentation.Fig;
@@ -36,126 +35,119 @@ import org.tigris.gef.presentation.FigText;
 // TODO: We really want this class to have package scope however the reflection
 // used to process PGML.tee forces this to be public. I don't understand why.
 // Is there a way around this?
-public class FigHead extends ArgoFigGroup  {
-    
-    private FigText nameFig;
-    private Fig stereotypeFig;
-    private FigRect rectFig;
+public class FigHead extends ArgoFigGroup {
 
-    static final int DEFAULT_WIDTH = 150;
-    static final int DEFAULT_HEIGHT = 50;
-    
-    /**
-     * Constructor.
-     * 
-     * @param stereotypeFigure the stereotype fig
-     * @param nameFigure the name fig
-     * @deprecated for 0.28 by tfmorris. Use
-     *             {@link #FigHead(Object, DiagramSettings, Fig, FigText)}.
-     */
-    @Deprecated
-    FigHead(Fig stereotypeFigure, FigText nameFigure) {
-        initialize(stereotypeFigure, nameFigure);
-    }
+  private FigText nameFig;
+  private Fig stereotypeFig;
+  private FigRect rectFig;
 
-    private void initialize(Fig stereotypeFigure, FigText nameFigure) {
-        this.stereotypeFig = stereotypeFigure;
-        this.nameFig = nameFigure;
-        
-        nameFig.setFilled(false);
-        nameFig.setLineWidth(0);
-        
-        rectFig =
-            new FigRect(0, 0,
-                DEFAULT_WIDTH,
-                DEFAULT_HEIGHT,
-                LINE_COLOR, FILL_COLOR);
-        rectFig.setLineWidth(LINE_WIDTH);
-        addFig(rectFig);
-        addFig(nameFig);
-        addFig(stereotypeFig);
-    }
-    
-    FigHead(Object owner, DiagramSettings settings, Fig stereotypeFigure,
-            FigText nameFigure) {
-        super(owner, settings);
-        initialize(stereotypeFigure, nameFigure);
-    }
+  static final int DEFAULT_WIDTH = 150;
+  static final int DEFAULT_HEIGHT = 50;
 
+  /**
+   * Constructor.
+   *
+   * @param stereotypeFigure the stereotype fig
+   * @param nameFigure the name fig
+   * @deprecated for 0.28 by tfmorris. Use {@link #FigHead(Object, DiagramSettings, Fig, FigText)}.
+   */
+  @Deprecated
+  FigHead(Fig stereotypeFigure, FigText nameFigure) {
+    initialize(stereotypeFigure, nameFigure);
+  }
 
+  private void initialize(Fig stereotypeFigure, FigText nameFigure) {
+    this.stereotypeFig = stereotypeFigure;
+    this.nameFig = nameFigure;
 
-    /**
-     * @param x The x coordinate.
-     * @param y The y coordinate.
-     * @param w The width
-     * @param h The height
-     * @see org.tigris.gef.presentation.FigGroup#setBoundsImpl(int, int, int, int)
-     */
-    @Override
-    protected void setBoundsImpl(int x, int y, int w, int h) {
-        rectFig.setBounds(x, y, w, h);
-        int yy = y;
-        if (stereotypeFig.isVisible()) {
-            stereotypeFig.setBounds(x, yy, w,
-                    stereotypeFig.getMinimumSize().height);
-            yy += stereotypeFig.getMinimumSize().height;
-        }
+    nameFig.setFilled(false);
+    nameFig.setLineWidth(0);
 
-        nameFig.setBounds(x, yy, w, nameFig.getHeight());
-        _x = x;
-        _y = y;
-        _w = w;
-        _h = h;
+    rectFig = new FigRect(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT, LINE_COLOR, FILL_COLOR);
+    rectFig.setLineWidth(LINE_WIDTH);
+    addFig(rectFig);
+    addFig(nameFig);
+    addFig(stereotypeFig);
+  }
+
+  FigHead(Object owner, DiagramSettings settings, Fig stereotypeFigure, FigText nameFigure) {
+    super(owner, settings);
+    initialize(stereotypeFigure, nameFigure);
+  }
+
+  /**
+   * @param x The x coordinate.
+   * @param y The y coordinate.
+   * @param w The width
+   * @param h The height
+   * @see org.tigris.gef.presentation.FigGroup#setBoundsImpl(int, int, int, int)
+   */
+  @Override
+  protected void setBoundsImpl(int x, int y, int w, int h) {
+    rectFig.setBounds(x, y, w, h);
+    int yy = y;
+    if (stereotypeFig.isVisible()) {
+      stereotypeFig.setBounds(x, yy, w, stereotypeFig.getMinimumSize().height);
+      yy += stereotypeFig.getMinimumSize().height;
     }
 
-    @Override
-    public Dimension getMinimumSize() {
-        return new Dimension(getMinimumWidth(), getMinimumHeight());
+    nameFig.setBounds(x, yy, w, nameFig.getHeight());
+    _x = x;
+    _y = y;
+    _w = w;
+    _h = h;
+  }
+
+  @Override
+  public Dimension getMinimumSize() {
+    return new Dimension(getMinimumWidth(), getMinimumHeight());
+  }
+
+  int getMinimumHeight() {
+    int h =
+        stereotypeFig.getMinimumSize().height
+            // TODO: Move the magic number 4 to a descriptive constant
+            + nameFig.getMinimumHeight()
+            + 4;
+    if (h < DEFAULT_HEIGHT) {
+      h = DEFAULT_HEIGHT;
     }
-    
-    int getMinimumHeight() {
-        int h = stereotypeFig.getMinimumSize().height
-        // TODO: Move the magic number 4 to a descriptive constant
-            + nameFig.getMinimumHeight() + 4;
-        if (h < DEFAULT_HEIGHT) {
-            h = DEFAULT_HEIGHT;
-        }
-        return h;
+    return h;
+  }
+
+  int getMinimumWidth() {
+    int minWidth = 50;
+    if (minWidth < stereotypeFig.getMinimumSize().width) {
+      minWidth = stereotypeFig.getMinimumSize().width;
     }
-    
-    int getMinimumWidth() {
-        int minWidth = 50;
-        if (minWidth < stereotypeFig.getMinimumSize().width) {
-            minWidth = stereotypeFig.getMinimumSize().width;
-        }
-        if (minWidth < nameFig.getMinimumSize().width) {
-            minWidth = nameFig.getMinimumSize().width;
-        }
-        return minWidth;
+    if (minWidth < nameFig.getMinimumSize().width) {
+      minWidth = nameFig.getMinimumSize().width;
     }
-    
-    @Override
-    public void setFilled (boolean filled) {
-        rectFig.setFilled(filled);
-    }
-    
-    @Override
-    public void setLineWidth(int w) {
-        rectFig.setLineWidth(w);
-    }
-    
-    @Override
-    public void setFillColor(Color c) {
-        rectFig.setFillColor(c);
-    }
-    
-    @Override
-    public Color getFillColor() {
-        return rectFig.getFillColor();
-    }
-    
-    @Override
-    public void setLineColor(Color c) {
-        rectFig.setLineColor(c);
-    }
+    return minWidth;
+  }
+
+  @Override
+  public void setFilled(boolean filled) {
+    rectFig.setFilled(filled);
+  }
+
+  @Override
+  public void setLineWidth(int w) {
+    rectFig.setLineWidth(w);
+  }
+
+  @Override
+  public void setFillColor(Color c) {
+    rectFig.setFillColor(c);
+  }
+
+  @Override
+  public Color getFillColor() {
+    return rectFig.getFillColor();
+  }
+
+  @Override
+  public void setLineColor(Color c) {
+    rectFig.setLineColor(c);
+  }
 }

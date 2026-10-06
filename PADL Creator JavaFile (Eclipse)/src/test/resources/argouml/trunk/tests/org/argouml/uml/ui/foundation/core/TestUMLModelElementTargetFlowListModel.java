@@ -31,54 +31,52 @@ import org.argouml.uml.ui.AbstractUMLModelElementListModel2Test;
  * @since Oct 30, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class TestUMLModelElementTargetFlowListModel
-    extends AbstractUMLModelElementListModel2Test {
+public class TestUMLModelElementTargetFlowListModel extends AbstractUMLModelElementListModel2Test {
 
-    /**
-     * The number of elements used in the tests.
-     */
-    private static final int NO_OF_ELEMENTS = 10;
+  /** The number of elements used in the tests. */
+  private static final int NO_OF_ELEMENTS = 10;
 
-    /**
-     * Constructor for TestUMLModelElementTargetFlowListModel.
-     * @param arg0 is the name of the test case.
-     */
-    public TestUMLModelElementTargetFlowListModel(String arg0) {
-        super(arg0);
+  /**
+   * Constructor for TestUMLModelElementTargetFlowListModel.
+   *
+   * @param arg0 is the name of the test case.
+   */
+  public TestUMLModelElementTargetFlowListModel(String arg0) {
+    super(arg0);
+  }
+
+  /**
+   * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#buildElement()
+   */
+  protected void buildElement() {
+    setElem(Model.getCoreFactory().createClass());
+  }
+
+  /**
+   * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#buildModel()
+   */
+  protected void buildModel() {
+    setModel(new UMLModelElementTargetFlowListModel());
+  }
+
+  /**
+   * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#fillModel()
+   */
+  protected Object[] fillModel() {
+    Object[] ext = new Object[NO_OF_ELEMENTS];
+    for (int i = 0; i < NO_OF_ELEMENTS; i++) {
+      ext[i] = Model.getCoreFactory().createFlow();
+      Model.getCoreHelper().addTargetFlow(getElem(), ext[i]);
     }
+    return ext;
+  }
 
-    /**
-     * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#buildElement()
-     */
-    protected void buildElement() {
-        setElem(Model.getCoreFactory().createClass());
+  /**
+   * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#removeHalfModel(Object[])
+   */
+  protected void removeHalfModel(Object[] elements) {
+    for (int i = 0; i < NO_OF_ELEMENTS / 2; i++) {
+      Model.getCoreHelper().removeTargetFlow(getElem(), elements[i]);
     }
-
-    /**
-     * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#buildModel()
-     */
-    protected void buildModel() {
-        setModel(new UMLModelElementTargetFlowListModel());
-    }
-
-    /**
-     * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#fillModel()
-     */
-    protected Object[] fillModel() {
-        Object[] ext = new Object[NO_OF_ELEMENTS];
-        for (int i = 0; i < NO_OF_ELEMENTS; i++) {
-            ext[i] = Model.getCoreFactory().createFlow();
-            Model.getCoreHelper().addTargetFlow(getElem(), ext[i]);
-        }
-        return ext;
-    }
-
-    /**
-     * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#removeHalfModel(Object[])
-     */
-    protected void removeHalfModel(Object[] elements) {
-        for (int i = 0; i < NO_OF_ELEMENTS / 2; i++) {
-            Model.getCoreHelper().removeTargetFlow(getElem(), elements[i]);
-        }
-    }
+  }
 }

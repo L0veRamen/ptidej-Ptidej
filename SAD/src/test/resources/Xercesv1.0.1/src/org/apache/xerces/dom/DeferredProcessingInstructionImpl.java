@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xerces" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -60,71 +60,66 @@ package org.apache.xerces.dom;
 import org.w3c.dom.*;
 
 /**
- * Processing Instructions (PIs) permit documents to carry
- * processor-specific information alongside their actual content. PIs
- * are most common in XML, but they are supported in HTML as well.
+ * Processing Instructions (PIs) permit documents to carry processor-specific information alongside
+ * their actual content. PIs are most common in XML, but they are supported in HTML as well.
  *
  * @version
- * @since  PR-DOM-Level-1-19980818.
+ * @since PR-DOM-Level-1-19980818.
  */
-public class DeferredProcessingInstructionImpl
-    extends ProcessingInstructionImpl 
+public class DeferredProcessingInstructionImpl extends ProcessingInstructionImpl
     implements DeferredNode {
 
-    //
-    // Constants
-    //
+  //
+  // Constants
+  //
 
-    /** Serialization version. */
-    static final long serialVersionUID = -4643577954293565388L;
-    
-    //
-    // Data
-    //
+  /** Serialization version. */
+  static final long serialVersionUID = -4643577954293565388L;
 
-    /** Node index. */
-    protected transient int fNodeIndex;
+  //
+  // Data
+  //
 
-    //
-    // Constructors
-    //
+  /** Node index. */
+  protected transient int fNodeIndex;
 
-    /**
-     * This is the deferred constructor. Only the fNodeIndex is given here. 
-     * All other data, can be requested from the ownerDocument via the index.
-     */
-    DeferredProcessingInstructionImpl(DeferredDocumentImpl ownerDocument, int nodeIndex) {
-        super(ownerDocument, null, null);
+  //
+  // Constructors
+  //
 
-        fNodeIndex = nodeIndex;
-        syncData = true;
+  /**
+   * This is the deferred constructor. Only the fNodeIndex is given here. All other data, can be
+   * requested from the ownerDocument via the index.
+   */
+  DeferredProcessingInstructionImpl(DeferredDocumentImpl ownerDocument, int nodeIndex) {
+    super(ownerDocument, null, null);
 
-    } // <init>(DeferredDocumentImpl,int)
+    fNodeIndex = nodeIndex;
+    syncData = true;
+  } // <init>(DeferredDocumentImpl,int)
 
-    //
-    // DeferredNode methods
-    //
+  //
+  // DeferredNode methods
+  //
 
-    /** Returns the node index. */
-    public int getNodeIndex() {
-        return fNodeIndex;
-    }
+  /** Returns the node index. */
+  public int getNodeIndex() {
+    return fNodeIndex;
+  }
 
-    //
-    // Protected methods
-    //
+  //
+  // Protected methods
+  //
 
-    /** Synchronizes the data. */
-    protected void synchronizeData() {
+  /** Synchronizes the data. */
+  protected void synchronizeData() {
 
-        // no need to sync in the future
-        syncData = false;
+    // no need to sync in the future
+    syncData = false;
 
-        // fluff data
-        DeferredDocumentImpl ownerDocument = (DeferredDocumentImpl)this.ownerDocument;
-        name  = ownerDocument.getNodeNameString(fNodeIndex);
-        value = ownerDocument.getNodeValueString(fNodeIndex);
-
-    } // synchronizeData()
-
+    // fluff data
+    DeferredDocumentImpl ownerDocument = (DeferredDocumentImpl) this.ownerDocument;
+    name = ownerDocument.getNodeNameString(fNodeIndex);
+    value = ownerDocument.getNodeValueString(fNodeIndex);
+  } // synchronizeData()
 } // class DeferredProcessingInstructionImpl

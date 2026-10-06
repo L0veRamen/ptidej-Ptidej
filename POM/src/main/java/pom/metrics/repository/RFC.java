@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -21,31 +21,29 @@ import pom.metrics.IMetric;
 import pom.metrics.IUnaryMetric;
 
 public class RFC extends AbstractMetric implements IMetric, IUnaryMetric {
-	public String getDefinition() {
-		return "Response for class: a count of the number of methods of an entity and the number of methods of other entities that are invoked by the methods of the entity.";
-	}
-	protected double concretelyCompute(
-		final IAbstractModel anAbstractModel,
-		final IFirstClassEntity anEntity) {
+  public String getDefinition() {
+    return "Response for class: a count of the number of methods of an entity and the number of methods of other entities that are invoked by the methods of the entity.";
+  }
 
-		final Set setOfCalledMethods = new HashSet();
-		final Iterator iteratorOnDeclaredMethods =
-			super.classPrimitives.listOfDeclaredMethods(anEntity).iterator();
-		while (iteratorOnDeclaredMethods.hasNext()) {
-			final IOperation operation =
-				(IOperation) iteratorOnDeclaredMethods.next();
-			final Iterator iteratorOnCalledMethods =
-				operation.getIteratorOnConstituents(IMethodInvocation.class);
-			while (iteratorOnCalledMethods.hasNext()) {
-				final IMethodInvocation methodInvocation =
-					(IMethodInvocation) iteratorOnCalledMethods.next();
-				final IOperation calledMethod =
-					methodInvocation.getCalledMethod();
-				if (calledMethod != null) {
-					setOfCalledMethods.add(calledMethod.getDisplayName());
-				}
-			}
-		}
-		return setOfCalledMethods.size();
-	}
+  protected double concretelyCompute(
+      final IAbstractModel anAbstractModel, final IFirstClassEntity anEntity) {
+
+    final Set<String> setOfCalledMethods = new HashSet<>();
+    final Iterator iteratorOnDeclaredMethods =
+        super.classPrimitives.listOfDeclaredMethods(anEntity).iterator();
+    while (iteratorOnDeclaredMethods.hasNext()) {
+      final IOperation operation = (IOperation) iteratorOnDeclaredMethods.next();
+      final Iterator iteratorOnCalledMethods =
+          operation.getIteratorOnConstituents(IMethodInvocation.class);
+      while (iteratorOnCalledMethods.hasNext()) {
+        final IMethodInvocation methodInvocation =
+            (IMethodInvocation) iteratorOnCalledMethods.next();
+        final IOperation calledMethod = methodInvocation.getCalledMethod();
+        if (calledMethod != null) {
+          setOfCalledMethods.add(calledMethod.getDisplayName());
+        }
+      }
+    }
+    return setOfCalledMethods.size();
+  }
 }

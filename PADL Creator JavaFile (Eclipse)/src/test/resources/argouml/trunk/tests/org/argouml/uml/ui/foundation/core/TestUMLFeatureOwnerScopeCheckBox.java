@@ -25,7 +25,6 @@
 package org.argouml.uml.ui.foundation.core;
 
 import junit.framework.TestCase;
-
 import org.argouml.model.Model;
 
 /**
@@ -34,81 +33,68 @@ import org.argouml.model.Model;
  */
 public class TestUMLFeatureOwnerScopeCheckBox extends TestCase {
 
-    /**
-     * The box to test.
-     */
-    private UMLFeatureOwnerScopeCheckBox box;
+  /** The box to test. */
+  private UMLFeatureOwnerScopeCheckBox box;
 
-    /**
-     * The element to test.
-     */
-    private Object elem;
+  /** The element to test. */
+  private Object elem;
 
-    /**
-     * Constructor for TestUMLFeatureOwnerScopeCheckBox.
-     * @param arg0 is the name of the test case.
-     */
-    public TestUMLFeatureOwnerScopeCheckBox(String arg0) {
-        super(arg0);
+  /**
+   * Constructor for TestUMLFeatureOwnerScopeCheckBox.
+   *
+   * @param arg0 is the name of the test case.
+   */
+  public TestUMLFeatureOwnerScopeCheckBox(String arg0) {
+    super(arg0);
+  }
+
+  /**
+   * @see junit.framework.TestCase#setUp()
+   */
+  protected void setUp() throws Exception {
+    super.setUp();
+    elem = Model.getCoreFactory().createAttribute();
+
+    box = new UMLFeatureOwnerScopeCheckBox();
+    box.setTarget(elem);
+    Model.getPump().flushModelEvents();
+  }
+
+  /**
+   * @see junit.framework.TestCase#tearDown()
+   */
+  protected void tearDown() throws Exception {
+    super.tearDown();
+    Model.getUmlFactory().delete(elem);
+    elem = null;
+    box = null;
+  }
+
+  /**
+   * Tests the marking/clicking of the checkbox. Simulates the behaviour when the users selects the
+   * checkbox. Tests if the ownerscope of the element is really changed
+   */
+  public void testDoClick() {
+    Object spec = Model.getFacade().getOwnerScope(elem);
+    if (box == null) {
+      return; // Inconclusive
     }
+    box.doClick();
+    assertEquals(Model.getScopeKind().getClassifier(), Model.getFacade().getOwnerScope(elem));
+  }
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        elem = Model.getCoreFactory().createAttribute();
-
-	box = new UMLFeatureOwnerScopeCheckBox();
-        box.setTarget(elem);
-        Model.getPump().flushModelEvents();
+  /** Tests whether a change in the modelelement is reflected in the checkbox. */
+  public void testPropertySet() {
+    if (box == null) {
+      return; // Inconclusive
     }
-
-    /**
-     * @see junit.framework.TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        Model.getUmlFactory().delete(elem);
-        elem = null;
-        box = null;
+    boolean selected = box.isSelected();
+    if (selected) {
+      Model.getCoreHelper().setOwnerScope(elem, Model.getScopeKind().getInstance());
+    } else {
+      Model.getCoreHelper().setOwnerScope(elem, Model.getScopeKind().getClassifier());
     }
-
-    /**
-     * Tests the marking/clicking of the checkbox. Simulates the behaviour when
-     * the users selects the checkbox. Tests if the ownerscope of the element
-     * is really changed
-     */
-    public void testDoClick() {
-        Object spec = Model.getFacade().getOwnerScope(elem);
-	if (box == null) {
-	    return; // Inconclusive
-	}
-        box.doClick();
-        assertEquals(
-                Model.getScopeKind().getClassifier(),
-                Model.getFacade().getOwnerScope(elem));
-    }
-
-    /**
-     * Tests whether a change in the modelelement is reflected in the
-     * checkbox.
-     */
-    public void testPropertySet() {
-	if (box == null) {
-	    return; // Inconclusive
-	}
-        boolean selected = box.isSelected();
-        if (selected) {
-            Model.getCoreHelper().setOwnerScope(elem,
-                    Model.getScopeKind().getInstance());
-        } else {
-            Model.getCoreHelper().setOwnerScope(elem,
-                    Model.getScopeKind().getClassifier());
-        }
-        Model.getPump().flushModelEvents();
-        assertEquals(!selected, box.isSelected());
-    }
-
-
+    Model.getPump().flushModelEvents();
+    assertEquals(!selected, box.isSelected());
+  }
 }

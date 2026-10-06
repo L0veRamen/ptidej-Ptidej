@@ -25,7 +25,6 @@
 package org.argouml.uml.cognitive.critics;
 
 import java.util.Collection;
-
 import org.argouml.cognitive.Designer;
 import org.argouml.cognitive.ListSet;
 import org.argouml.cognitive.ToDoItem;
@@ -35,92 +34,84 @@ import org.argouml.uml.diagram.deployment.ui.FigMNode;
 import org.argouml.uml.diagram.deployment.ui.UMLDeploymentDiagram;
 
 /**
- * A critic to detect when there are nodes that
- * are inside another element
+ * A critic to detect when there are nodes that are inside another element
  *
  * @author 5eichler
  */
 public class CrNodeInsideElement extends CrUML {
 
-    /**
-     * The constructor.
-     *
-     */
-    public CrNodeInsideElement() {
-        setupHeadAndDesc();
-	addSupportedDecision(UMLDecision.PATTERNS);
-    }
+  /** The constructor. */
+  public CrNodeInsideElement() {
+    setupHeadAndDesc();
+    addSupportedDecision(UMLDecision.PATTERNS);
+  }
 
-    /*
-     * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
-     *      java.lang.Object, org.argouml.cognitive.Designer)
-     */
-    @Override
-    public boolean predicate2(Object dm, Designer dsgr) {
-	if (!(dm instanceof UMLDeploymentDiagram)) {
-            return NO_PROBLEM;
+  /*
+   * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
+   *      java.lang.Object, org.argouml.cognitive.Designer)
+   */
+  @Override
+  public boolean predicate2(Object dm, Designer dsgr) {
+    if (!(dm instanceof UMLDeploymentDiagram)) {
+      return NO_PROBLEM;
+    }
+    UMLDeploymentDiagram dd = (UMLDeploymentDiagram) dm;
+    ListSet offs = computeOffenders(dd);
+    if (offs == null) {
+      return NO_PROBLEM;
+    }
+    return PROBLEM_FOUND;
+  }
+
+  /*
+   * @see org.argouml.cognitive.critics.Critic#toDoItem( java.lang.Object,
+   *      org.argouml.cognitive.Designer)
+   */
+  @Override
+  public ToDoItem toDoItem(Object dm, Designer dsgr) {
+    UMLDeploymentDiagram dd = (UMLDeploymentDiagram) dm;
+    ListSet offs = computeOffenders(dd);
+    return new UMLToDoItem(this, offs, dsgr);
+  }
+
+  /*
+   * @see org.argouml.cognitive.Poster#stillValid(
+   *      org.argouml.cognitive.ToDoItem, org.argouml.cognitive.Designer)
+   */
+  @Override
+  public boolean stillValid(ToDoItem i, Designer dsgr) {
+    if (!isActive()) {
+      return false;
+    }
+    ListSet offs = i.getOffenders();
+    UMLDeploymentDiagram dd = (UMLDeploymentDiagram) offs.get(0);
+    // if (!predicate(dm, dsgr)) return false;
+    ListSet newOffs = computeOffenders(dd);
+    boolean res = offs.equals(newOffs);
+    return res;
+  }
+
+  /**
+   * If there are nodes that have an enclosing Fig the returned ListSet is not null. Then in the
+   * ListSet are the UMLDeploymentDiagram and all FigMNodes with an enclosing Fig
+   *
+   * @param dd the diagram to check
+   * @return the set of offenders
+   */
+  public ListSet computeOffenders(UMLDeploymentDiagram dd) {
+    Collection figs = dd.getLayer().getContents();
+    ListSet offs = null;
+    for (Object obj : figs) {
+      if (!(obj instanceof FigMNode)) continue;
+      FigMNode fn = (FigMNode) obj;
+      if (fn.getEnclosingFig() != null) {
+        if (offs == null) {
+          offs = new ListSet();
+          offs.add(dd);
         }
-	UMLDeploymentDiagram dd = (UMLDeploymentDiagram) dm;
-	ListSet offs = computeOffenders(dd);
-	if (offs == null) {
-            return NO_PROBLEM;
-        }
-	return PROBLEM_FOUND;
+        offs.add(fn);
+      }
     }
-
-    /*
-     * @see org.argouml.cognitive.critics.Critic#toDoItem( java.lang.Object,
-     *      org.argouml.cognitive.Designer)
-     */
-    @Override
-    public ToDoItem toDoItem(Object dm, Designer dsgr) {
-	UMLDeploymentDiagram dd = (UMLDeploymentDiagram) dm;
-	ListSet offs = computeOffenders(dd);
-	return new UMLToDoItem(this, offs, dsgr);
-    }
-
-    /*
-     * @see org.argouml.cognitive.Poster#stillValid(
-     *      org.argouml.cognitive.ToDoItem, org.argouml.cognitive.Designer)
-     */
-    @Override
-    public boolean stillValid(ToDoItem i, Designer dsgr) {
-	if (!isActive()) {
-            return false;
-        }
-	ListSet offs = i.getOffenders();
-	UMLDeploymentDiagram dd = (UMLDeploymentDiagram) offs.get(0);
-	//if (!predicate(dm, dsgr)) return false;
-	ListSet newOffs = computeOffenders(dd);
-	boolean res = offs.equals(newOffs);
-	return res;
-    }
-
-    /**
-     * If there are nodes that have an enclosing Fig
-     * the returned ListSet is not null. Then in the ListSet
-     * are the UMLDeploymentDiagram and all FigMNodes with an
-     * enclosing Fig
-     *
-     * @param dd the diagram to check
-     * @return the set of offenders
-     */
-    public ListSet computeOffenders(UMLDeploymentDiagram dd) {
-	Collection figs = dd.getLayer().getContents();
-	ListSet offs = null;
-        for (Object obj : figs) {
-	    if (!(obj instanceof FigMNode)) continue;
-	    FigMNode fn = (FigMNode) obj;
-	    if (fn.getEnclosingFig() != null) {
-		if (offs == null) {
-		    offs = new ListSet();
-		    offs.add(dd);
-		}
-		offs.add(fn);
-	    }
-	}
-	return offs;
-    }
-
+    return offs;
+  }
 }
-

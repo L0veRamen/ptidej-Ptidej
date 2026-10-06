@@ -25,51 +25,46 @@
 package org.argouml.model.mdr;
 
 import java.util.Map;
-
 import javax.jmi.reflect.RefObject;
-
 import org.netbeans.api.xmi.XMIReferenceProvider;
 
 /**
  * Custom reference provider for MDR XMI Writer.
  *
- * Returns our internal ID to be used when writing the xmi.id field
+ * <p>Returns our internal ID to be used when writing the xmi.id field
  *
  * @author Tom Morris
  */
 class XmiReferenceProviderImpl implements XMIReferenceProvider {
-    
-    private Map mofIdToXmiId;
-    
-    /**
-     * Create a new reference provider which uses the given map for lookups.
-     * 
-     * @param idMap
-     */
-    XmiReferenceProviderImpl(Map idMap) {
-        mofIdToXmiId = idMap;
+
+  private Map mofIdToXmiId;
+
+  /**
+   * Create a new reference provider which uses the given map for lookups.
+   *
+   * @param idMap
+   */
+  XmiReferenceProviderImpl(Map idMap) {
+    mofIdToXmiId = idMap;
+  }
+
+  /** The document for the objects. */
+  private final String systemId = null;
+
+  /**
+   * @see org.netbeans.api.xmi.XMIReferenceProvider#getReference(javax.jmi.reflect.RefObject)
+   */
+  public XMIReferenceProvider.XMIReference getReference(RefObject object) {
+    String mofId = object.refMofId();
+
+    // Look for an existing reference matching our MofID
+    XmiReference ref = ((XmiReference) mofIdToXmiId.get(mofId));
+
+    // Create a new ref if none found, otherwise create one with our sysID
+    if (ref == null) {
+      return new XMIReferenceProvider.XMIReference(systemId, mofId);
+    } else {
+      return new XMIReferenceProvider.XMIReference(systemId, ref.getXmiId());
     }
-
-    /**
-     * The document for the objects.
-     */
-    private final String systemId = null;
-
-    /**
-     * @see org.netbeans.api.xmi.XMIReferenceProvider#getReference(javax.jmi.reflect.RefObject)
-     */
-    public XMIReferenceProvider.XMIReference getReference(RefObject object) {
-        String mofId = object.refMofId();
-        
-        // Look for an existing reference matching our MofID
-        XmiReference ref = ((XmiReference) mofIdToXmiId.get(mofId));
-
-        // Create a new ref if none found, otherwise create one with our sysID
-        if (ref == null) {
-            return new XMIReferenceProvider.XMIReference(systemId, mofId);
-        } else {
-            return new XMIReferenceProvider.XMIReference(systemId, 
-                    ref.getXmiId());
-        }
-    }
+  }
 }

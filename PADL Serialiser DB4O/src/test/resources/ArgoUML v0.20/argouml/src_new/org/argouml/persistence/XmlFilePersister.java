@@ -24,7 +24,6 @@
 
 package org.argouml.persistence;
 
-
 /**
  * XMI file persister which allows .xml extension
  *
@@ -32,11 +31,10 @@ package org.argouml.persistence;
  */
 public class XmlFilePersister extends XmiFilePersister {
 
-    /**
-     * @see org.argouml.persistence.AbstractFilePersister#getExtension()
-     */
-    public String getExtension() {
-        return "xml";
-    }
-
+  /**
+   * @see org.argouml.persistence.AbstractFilePersister#getExtension()
+   */
+  public String getExtension() {
+    return "xml";
+  }
 }

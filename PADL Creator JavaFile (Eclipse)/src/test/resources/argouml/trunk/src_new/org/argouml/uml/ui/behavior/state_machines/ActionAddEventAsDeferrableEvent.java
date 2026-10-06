@@ -27,101 +27,91 @@ package org.argouml.uml.ui.behavior.state_machines;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Vector;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.AbstractActionAddModelElement;
 
 /**
- * Provide a dialog which helps the user to select events
- * out of an existing list,
- * which will be used as the deferrable events of the state.
+ * Provide a dialog which helps the user to select events out of an existing list, which will be
+ * used as the deferrable events of the state.
  *
  * @author MarkusK
  */
-public class ActionAddEventAsDeferrableEvent
-    extends AbstractActionAddModelElement {
+public class ActionAddEventAsDeferrableEvent extends AbstractActionAddModelElement {
 
-    /**
-     * The one and only instance of this class.
-     */
-    public static final ActionAddEventAsDeferrableEvent SINGLETON =
-        new ActionAddEventAsDeferrableEvent();
+  /** The one and only instance of this class. */
+  public static final ActionAddEventAsDeferrableEvent SINGLETON =
+      new ActionAddEventAsDeferrableEvent();
 
-    /**
-     * Constructor for ActionAddClassifierRoleBase.
-     */
-    protected ActionAddEventAsDeferrableEvent() {
-        super();
-        setMultiSelect(true);
+  /** Constructor for ActionAddClassifierRoleBase. */
+  protected ActionAddEventAsDeferrableEvent() {
+    super();
+    setMultiSelect(true);
+  }
+
+  /**
+   * @see org.argouml.uml.ui.AbstractActionAddModelElement#getChoices()
+   */
+  protected Vector getChoices() {
+    Vector vec = new Vector();
+    // TODO: the namespace of created events is currently the model.
+    // I think this is wrong, they should be
+    // in the namespace of the activitygraph!
+    //        vec.addAll(
+    //                Model.getModelManagementHelper().getAllModelElementsOfKind(
+    //                        Model.getFacade().getNamespace(getTarget()),
+    //                        Model.getMetaTypes().getEvent()));
+    vec.addAll(
+        Model.getModelManagementHelper()
+            .getAllModelElementsOfKind(
+                Model.getFacade().getModel(getTarget()), Model.getMetaTypes().getEvent()));
+
+    return vec;
+  }
+
+  /**
+   * @see org.argouml.uml.ui.AbstractActionAddModelElement#getSelected()
+   */
+  protected Vector getSelected() {
+    Vector vec = new Vector();
+    Collection events = Model.getFacade().getDeferrableEvents(getTarget());
+    if (events != null) {
+      vec.addAll(events);
     }
+    return vec;
+  }
 
-    /**
-     * @see org.argouml.uml.ui.AbstractActionAddModelElement#getChoices()
-     */
-    protected Vector getChoices() {
-        Vector vec = new Vector();
-        // TODO: the namespace of created events is currently the model.
-        // I think this is wrong, they should be
-        // in the namespace of the activitygraph!
-//        vec.addAll(
-//                Model.getModelManagementHelper().getAllModelElementsOfKind(
-//                        Model.getFacade().getNamespace(getTarget()),
-//                        Model.getMetaTypes().getEvent()));
-        vec.addAll(Model.getModelManagementHelper().getAllModelElementsOfKind(
-                Model.getFacade().getModel(getTarget()),
-                Model.getMetaTypes().getEvent()));
+  /**
+   * @see org.argouml.uml.ui.AbstractActionAddModelElement#getDialogTitle()
+   */
+  protected String getDialogTitle() {
+    return Translator.localize("dialog.title.add-events");
+  }
 
-        return vec;
+  /**
+   * @see org.argouml.uml.ui.AbstractActionAddModelElement#doIt( java.util.Vector)
+   */
+  protected void doIt(Vector selected) {
+    Object state = getTarget();
+    if (!Model.getFacade().isAState(state)) return;
+    Collection oldOnes = new Vector(Model.getFacade().getDeferrableEvents(state));
+    Collection toBeRemoved = new Vector(oldOnes);
+    Iterator i = selected.iterator();
+    while (i.hasNext()) {
+      Object o = i.next();
+      if (oldOnes.contains(o)) {
+        toBeRemoved.remove(o);
+      } else {
+        Model.getStateMachinesHelper().addDeferrableEvent(state, o);
+      }
     }
-
-    /**
-     * @see org.argouml.uml.ui.AbstractActionAddModelElement#getSelected()
-     */
-    protected Vector getSelected() {
-        Vector vec = new Vector();
-        Collection events = Model.getFacade().getDeferrableEvents(getTarget());
-        if (events != null) {
-            vec.addAll(events);
-        }
-        return vec;
+    i = toBeRemoved.iterator();
+    while (i.hasNext()) {
+      Object o = i.next();
+      Model.getStateMachinesHelper().removeDeferrableEvent(state, o);
     }
+  }
 
-    /**
-     * @see org.argouml.uml.ui.AbstractActionAddModelElement#getDialogTitle()
-     */
-    protected String getDialogTitle() {
-        return Translator.localize("dialog.title.add-events");
-    }
-
-    /**
-     * @see org.argouml.uml.ui.AbstractActionAddModelElement#doIt(
-     *         java.util.Vector)
-     */
-    protected void doIt(Vector selected) {
-        Object state = getTarget();
-        if (!Model.getFacade().isAState(state)) return;
-        Collection oldOnes = new Vector(Model.getFacade()
-                .getDeferrableEvents(state));
-        Collection toBeRemoved = new Vector(oldOnes);
-        Iterator i = selected.iterator();
-        while (i.hasNext()) {
-            Object o = i.next();
-            if (oldOnes.contains(o)) {
-                toBeRemoved.remove(o);
-            } else {
-                Model.getStateMachinesHelper().addDeferrableEvent(state, o);
-            }
-        }
-        i = toBeRemoved.iterator();
-        while (i.hasNext()) {
-            Object o = i.next();
-            Model.getStateMachinesHelper().removeDeferrableEvent(state, o);
-        }
-    }
-
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = 1815648968597093974L;
+  /** The UID. */
+  private static final long serialVersionUID = 1815648968597093974L;
 }

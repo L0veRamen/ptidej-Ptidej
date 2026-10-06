@@ -23,13 +23,13 @@
 package com.noelios.restlet.ext.jetty5;
 
 import java.io.File;
-
 import org.mortbay.util.InetAddrPort;
 import org.restlet.Server;
 import org.restlet.data.Protocol;
 
 /**
  * Jetty HTTPS server connector. Here is the list of additional parameters that are supported:
+ *
  * <table>
  * 	<tr>
  * 		<th>Parameter name</th>
@@ -62,85 +62,82 @@ import org.restlet.data.Protocol;
  * 		<td>The SSL key password.</td>
  * 	</tr>
  * </table>
- * @see <a href="http://jetty.mortbay.org/jetty/faq?s=400-Security&t=ssl">FAQ - Configuring SSL for Jetty</a>
+ *
+ * @see <a href="http://jetty.mortbay.org/jetty/faq?s=400-Security&t=ssl">FAQ - Configuring SSL for
+ *     Jetty</a>
  * @author Jerome Louvel (contact@noelios.com)
  */
-public class HttpsServerHelper extends JettyServerHelper
-{
-	/**
-	 * Constructor.
-	 * @param server The server to help.
-	 */
-	public HttpsServerHelper(Server server)
-	{
-		super(server);
-		getSupportedProtocols().add(Protocol.HTTPS);
-	}
+public class HttpsServerHelper extends JettyServerHelper {
+  /**
+   * Constructor.
+   *
+   * @param server The server to help.
+   */
+  public HttpsServerHelper(Server server) {
+    super(server);
+    getSupportedProtocols().add(Protocol.HTTPS);
+  }
 
-	/** Start hook. */
-	public void start() throws Exception
-	{
-		HttpsListener listener = null;
-		if (getServer().getAddress() != null)
-		{
-			listener = new HttpsListener(this, new InetAddrPort(getServer().getAddress(),
-					getServer().getPort()));
-		}
-		else
-		{
-			listener = new HttpsListener(this);
-			listener.setPort(getServer().getPort());
-		}
+  /** Start hook. */
+  public void start() throws Exception {
+    HttpsListener listener = null;
+    if (getServer().getAddress() != null) {
+      listener =
+          new HttpsListener(
+              this, new InetAddrPort(getServer().getAddress(), getServer().getPort()));
+    } else {
+      listener = new HttpsListener(this);
+      listener.setPort(getServer().getPort());
+    }
 
-		// Configure the listener
-		listener.setMinThreads(getMinThreads());
-		listener.setMaxThreads(getMaxThreads());
-		listener.setMaxIdleTimeMs(getMaxIdleTimeMs());
-		listener.setLowResourcePersistTimeMs(getLowResourcePersistTimeMs());
-		listener.setKeystore(getKeystorePath());
-		listener.setPassword(getKeystorePassword());
-		listener.setKeyPassword(getKeyPassword());
-		setListener(listener);
+    // Configure the listener
+    listener.setMinThreads(getMinThreads());
+    listener.setMaxThreads(getMaxThreads());
+    listener.setMaxIdleTimeMs(getMaxIdleTimeMs());
+    listener.setLowResourcePersistTimeMs(getLowResourcePersistTimeMs());
+    listener.setKeystore(getKeystorePath());
+    listener.setPassword(getKeystorePassword());
+    listener.setKeyPassword(getKeyPassword());
+    setListener(listener);
 
-		super.start();
-	}
+    super.start();
+  }
 
-	/**
-	 * Returns the SSL keystore path.
-	 * @return The SSL keystore path.
-	 */
-	public String getKeystorePath()
-	{
-		return getParameters().getFirstValue("keystorePath",
-				System.getProperty("user.home") + File.separator + ".keystore");
-	}
+  /**
+   * Returns the SSL keystore path.
+   *
+   * @return The SSL keystore path.
+   */
+  public String getKeystorePath() {
+    return getParameters()
+        .getFirstValue(
+            "keystorePath", System.getProperty("user.home") + File.separator + ".keystore");
+  }
 
-	/**
-	 * Returns the SSL keystore password.
-	 * @return The SSL keystore password.
-	 */
-	public String getKeystorePassword()
-	{
-		return getParameters().getFirstValue("keystorePassword", "");
-	}
+  /**
+   * Returns the SSL keystore password.
+   *
+   * @return The SSL keystore password.
+   */
+  public String getKeystorePassword() {
+    return getParameters().getFirstValue("keystorePassword", "");
+  }
 
-	/**
-	 * Returns the SSL key password.
-	 * @return The SSL key password.
-	 */
-	public String getKeyPassword()
-	{
-		return getParameters().getFirstValue("keyPassword", "");
-	}
+  /**
+   * Returns the SSL key password.
+   *
+   * @return The SSL key password.
+   */
+  public String getKeyPassword() {
+    return getParameters().getFirstValue("keyPassword", "");
+  }
 
-	/**
-	 * Returns time in ms that connections will persist if listener is low on resources.
-	 * @return Time in ms that connections will persist if listener is low on resources.
-	 */
-	public int getLowResourcePersistTimeMs()
-	{
-		return Integer.parseInt(getParameters().getFirstValue("lowResourcePersistTimeMs",
-				"2000"));
-	}
-
+  /**
+   * Returns time in ms that connections will persist if listener is low on resources.
+   *
+   * @return Time in ms that connections will persist if listener is low on resources.
+   */
+  public int getLowResourcePersistTimeMs() {
+    return Integer.parseInt(getParameters().getFirstValue("lowResourcePersistTimeMs", "2000"));
+  }
 }

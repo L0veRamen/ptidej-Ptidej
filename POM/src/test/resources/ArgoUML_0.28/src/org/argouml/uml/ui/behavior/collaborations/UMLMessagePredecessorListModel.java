@@ -26,7 +26,6 @@
 package org.argouml.uml.ui.behavior.collaborations;
 
 import java.util.Iterator;
-
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
@@ -36,35 +35,29 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  */
 public class UMLMessagePredecessorListModel extends UMLModelElementListModel2 {
 
+  /** Constructor for UMLMessagePredecessorListModel. */
+  public UMLMessagePredecessorListModel() {
+    super("predecessor");
+  }
 
-    /**
-     * Constructor for UMLMessagePredecessorListModel.
-     */
-    public UMLMessagePredecessorListModel() {
-        super("predecessor");
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    Object message = getTarget();
+    removeAllElements();
+    Iterator it = Model.getFacade().getPredecessors(message).iterator();
+    while (it.hasNext()) {
+      addElement(it.next());
     }
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        Object message = getTarget();
-        removeAllElements();
-        Iterator it = Model.getFacade().getPredecessors(message).iterator();
-        while (it.hasNext()) {
-            addElement(it.next());
-        }
-    }
-
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object elem) {
-        return Model.getFacade().isAMessage(elem)
-            && Model.getFacade().getInteraction(elem)
-            	== Model.getFacade().getInteraction(getTarget())
-            && Model.getFacade().getActivator(elem)
-            	== Model.getFacade().getActivator(getTarget());
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object elem) {
+    return Model.getFacade().isAMessage(elem)
+        && Model.getFacade().getInteraction(elem) == Model.getFacade().getInteraction(getTarget())
+        && Model.getFacade().getActivator(elem) == Model.getFacade().getActivator(getTarget());
+  }
 }

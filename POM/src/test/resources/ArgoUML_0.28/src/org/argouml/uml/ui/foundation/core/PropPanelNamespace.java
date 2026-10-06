@@ -26,86 +26,70 @@ package org.argouml.uml.ui.foundation.core;
 
 import javax.swing.ImageIcon;
 import javax.swing.JScrollPane;
-
 import org.argouml.model.Model;
 import org.argouml.ui.targetmanager.TargetManager;
 import org.argouml.uml.ui.ScrollList;
 
-/**
- * The abstract properties panel for a Namespace.
- *
- */
+/** The abstract properties panel for a Namespace. */
 public abstract class PropPanelNamespace extends PropPanelModelElement {
 
-    private JScrollPane ownedElementsScroll;
+  private JScrollPane ownedElementsScroll;
 
-    private static UMLNamespaceOwnedElementListModel ownedElementListModel =
-        new UMLNamespaceOwnedElementListModel();
+  private static UMLNamespaceOwnedElementListModel ownedElementListModel =
+      new UMLNamespaceOwnedElementListModel();
 
-    /**
-     * Construct a property panel for a Namespace with the given name and icon.
-     *
-     * @param panelName the name of the panel to be shown at the top
-     * @param icon the icon to be shown next to the name
-     */
-    public PropPanelNamespace(String panelName, ImageIcon icon) {
-        super(panelName, icon);
+  /**
+   * Construct a property panel for a Namespace with the given name and icon.
+   *
+   * @param panelName the name of the panel to be shown at the top
+   * @param icon the icon to be shown next to the name
+   */
+  public PropPanelNamespace(String panelName, ImageIcon icon) {
+    super(panelName, icon);
+  }
+
+  /** Create a class. */
+  public void addClass() {
+    Object target = getTarget();
+    if (Model.getFacade().isANamespace(target)) {
+      Object ns = target;
+      Object ownedElem = Model.getCoreFactory().buildClass();
+      Model.getCoreHelper().addOwnedElement(ns, ownedElem);
+      TargetManager.getInstance().setTarget(ownedElem);
     }
+  }
 
-
-    /**
-     * Create a class.
-     */
-    public void addClass() {
-        Object target = getTarget();
-        if (Model.getFacade().isANamespace(target)) {
-            Object ns = target;
-            Object ownedElem = Model.getCoreFactory().buildClass();
-            Model.getCoreHelper().addOwnedElement(ns, ownedElem);
-            TargetManager.getInstance().setTarget(ownedElem);
-        }
+  /** Create a new interface. */
+  public void addInterface() {
+    Object target = getTarget();
+    if (Model.getFacade().isANamespace(target)) {
+      Object ns = target;
+      Object ownedElem = Model.getCoreFactory().createInterface();
+      Model.getCoreHelper().addOwnedElement(ns, ownedElem);
+      TargetManager.getInstance().setTarget(ownedElem);
     }
+  }
 
-    /**
-     * Create a new interface.
-     */
-    public void addInterface() {
-        Object target = getTarget();
-        if (Model.getFacade().isANamespace(target)) {
-            Object ns = target;
-            Object ownedElem = Model.getCoreFactory().createInterface();
-            Model.getCoreHelper().addOwnedElement(ns, ownedElem);
-            TargetManager.getInstance().setTarget(ownedElem);
-        }
+  /** Create a new package within the namespace. */
+  public void addPackage() {
+    Object target = getTarget();
+    if (Model.getFacade().isANamespace(target)) {
+      Object ns = target;
+      Object ownedElem = Model.getModelManagementFactory().createPackage();
+      Model.getCoreHelper().addOwnedElement(ns, ownedElem);
+      TargetManager.getInstance().setTarget(ownedElem);
     }
+  }
 
-    /**
-     * Create a new package within the namespace.
-     */
-    public void addPackage() {
-        Object target = getTarget();
-        if (Model.getFacade().isANamespace(target)) {
-            Object ns = target;
-            Object ownedElem = Model.getModelManagementFactory()
-                .createPackage();
-            Model.getCoreHelper().addOwnedElement(ns, ownedElem);
-            TargetManager.getInstance().setTarget(ownedElem);
-        }
+  /**
+   * Returns the ownedElementsScroll.
+   *
+   * @return JScrollPane
+   */
+  public JScrollPane getOwnedElementsScroll() {
+    if (ownedElementsScroll == null) {
+      ownedElementsScroll = new ScrollList(ownedElementListModel, true, false);
     }
-
-
-
-    /**
-     * Returns the ownedElementsScroll.
-     * @return JScrollPane
-     */
-    public JScrollPane getOwnedElementsScroll() {
-        if (ownedElementsScroll == null) {
-            ownedElementsScroll =
-                    new ScrollList(ownedElementListModel, true, false);
-        }
-        return ownedElementsScroll;
-
-    }
-
+    return ownedElementsScroll;
+  }
 }

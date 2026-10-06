@@ -4,16 +4,14 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
 package ptidej.ui.kernel.builder.test;
 
 import java.util.Iterator;
-
 import org.junit.Assert;
-
 import padl.aspectj.kernel.IAdvice;
 import padl.aspectj.kernel.IAspect;
 import padl.aspectj.kernel.IAspectElement;
@@ -37,66 +35,66 @@ import ptidej.ui.kernel.Pointcut;
  * @since 2005/08/16
  */
 public class SanityTest extends PrimitiveBuilder {
-	public SanityTest(final String aName) {
-		super(aName);
-	}
+  public SanityTest(final String aName) {
+    super(aName);
+  }
 
-	public void testTypeMatching() {
-		final Iterator<IConstituent> iterator = this.getCodeLevelModel()
-				.getIteratorOnConstituents();
-		while (iterator.hasNext()) {
-			final IConstituent c = iterator.next();
-			if (c instanceof IAspect) {
-				Assert.assertEquals("Test type building: Aspect", true,
-						this.getBuilder().getEntity(
-								(IConstituentOfModel) c) instanceof Aspect);
+  @SuppressWarnings("unchecked") // PADL iterators are raw
+  public void testTypeMatching() {
+    final Iterator<IConstituent> iterator = this.getCodeLevelModel().getIteratorOnConstituents();
+    while (iterator.hasNext()) {
+      final IConstituent c = iterator.next();
+      if (c instanceof IAspect) {
+        Assert.assertEquals(
+            "Test type building: Aspect",
+            true,
+            this.getBuilder().getEntity((IConstituentOfModel) c) instanceof Aspect);
 
-				final Iterator<IConstituent> iterAspect = ((IAspect) c)
-						.getIteratorOnConstituents();
-				while (iterAspect.hasNext()) {
-					final IConstituent aElement = iterAspect.next();
-					if (aElement instanceof IAdvice) {
-						Assert.assertTrue("Test type building: Advice",
-								this.getBuilder().getElement((IAspect) c,
-										(IAspectElement) aElement) instanceof Advice);
-					}
-					if (aElement instanceof IPointcut) {
-						Assert.assertTrue("Test type building: Pointcut",
-								this.getBuilder().getElement((IAspect) c,
-										(IAspectElement) aElement) instanceof Pointcut);
-					}
+        final Iterator<IConstituent> iterAspect = ((IAspect) c).getIteratorOnConstituents();
+        while (iterAspect.hasNext()) {
+          final IConstituent aElement = iterAspect.next();
+          if (aElement instanceof IAdvice) {
+            Assert.assertTrue(
+                "Test type building: Advice",
+                this.getBuilder().getElement((IAspect) c, (IAspectElement) aElement)
+                    instanceof Advice);
+          }
+          if (aElement instanceof IPointcut) {
+            Assert.assertTrue(
+                "Test type building: Pointcut",
+                this.getBuilder().getElement((IAspect) c, (IAspectElement) aElement)
+                    instanceof Pointcut);
+          }
 
-					if (aElement instanceof IInterTypeField) {
-						Assert.assertTrue("Test type building: InterTypeField",
-								this.getBuilder().getElement((IAspect) c,
-										(IAspectElement) aElement) instanceof InterTypeField);
-					}
-					if (aElement instanceof IInterTypeMethod) {
-						Assert.assertTrue("Test type building: InterTypeMethod",
-								this.getBuilder().getElement((IAspect) c,
-										(IAspectElement) aElement) instanceof InterTypeMethod);
-					}
-					else {
-						if (aElement instanceof IInterTypeConstructor) {
-							Assert.assertTrue(
-									"Test type building: InterTypeConstructor",
-									this.getBuilder().getElement((IAspect) c,
-											(IAspectElement) aElement) instanceof InterTypeConstructor);
-
-						}
-					}
-					if (aElement instanceof IInterTypeDeclareParents) {
-						Assert.assertTrue(
-								"Test type building: InterTypeDeclareParents",
-								this.getBuilder().getElement((IAspect) c,
-										(IAspectElement) aElement) instanceof InterTypeDeclareParents);
-					}
-				}
-			}
-			else {
-				System.out.println("Non Aspect Element: " + c.getDisplayName()
-						+ " -> " + c.getClass());
-			}
-		}
-	}
+          if (aElement instanceof IInterTypeField) {
+            Assert.assertTrue(
+                "Test type building: InterTypeField",
+                this.getBuilder().getElement((IAspect) c, (IAspectElement) aElement)
+                    instanceof InterTypeField);
+          }
+          if (aElement instanceof IInterTypeMethod) {
+            Assert.assertTrue(
+                "Test type building: InterTypeMethod",
+                this.getBuilder().getElement((IAspect) c, (IAspectElement) aElement)
+                    instanceof InterTypeMethod);
+          } else {
+            if (aElement instanceof IInterTypeConstructor) {
+              Assert.assertTrue(
+                  "Test type building: InterTypeConstructor",
+                  this.getBuilder().getElement((IAspect) c, (IAspectElement) aElement)
+                      instanceof InterTypeConstructor);
+            }
+          }
+          if (aElement instanceof IInterTypeDeclareParents) {
+            Assert.assertTrue(
+                "Test type building: InterTypeDeclareParents",
+                this.getBuilder().getElement((IAspect) c, (IAspectElement) aElement)
+                    instanceof InterTypeDeclareParents);
+          }
+        }
+      } else {
+        System.out.println("Non Aspect Element: " + c.getDisplayName() + " -> " + c.getClass());
+      }
+    }
+  }
 }

@@ -27,62 +27,53 @@ package org.argouml.uml.cognitive.critics;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.argouml.cognitive.Designer;
 import org.argouml.model.Model;
 import org.argouml.uml.cognitive.UMLDecision;
 
-
 /**
- * A critic to detect when an initial state has more than one
- * outgoing transitions.  
- * Implements the first part of a well-formedness rule from the UML
- * 1.4.2 standard: Pseudostate [1]:<p>
- * An initial vertex can have at most one outgoing transition (...).
+ * A critic to detect when an initial state has more than one outgoing transitions. Implements the
+ * first part of a well-formedness rule from the UML 1.4.2 standard: Pseudostate [1]:
+ *
+ * <p>An initial vertex can have at most one outgoing transition (...).
  *
  * @author jrobbins
  */
 public class CrInvalidInitial extends CrUML {
 
-    /**
-     * The constructor.
-     */
-    public CrInvalidInitial() {
-        setupHeadAndDesc();
-	addSupportedDecision(UMLDecision.STATE_MACHINES);
-	addTrigger("outgoing");
-    }
+  /** The constructor. */
+  public CrInvalidInitial() {
+    setupHeadAndDesc();
+    addSupportedDecision(UMLDecision.STATE_MACHINES);
+    addTrigger("outgoing");
+  }
 
-    /*
-     * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
-     *      java.lang.Object, org.argouml.cognitive.Designer)
-     */
-    public boolean predicate2(Object dm, Designer dsgr) {
-	if (!(Model.getFacade().isAPseudostate(dm))) {
-	    return NO_PROBLEM;
-	}
-	Object k = Model.getFacade().getKind(dm);
-	if (!Model.getFacade().equalsPseudostateKind(
-	        k,
-	        Model.getPseudostateKind().getInitial())) {
-	    return NO_PROBLEM;
-	}
-	Collection outgoing = Model.getFacade().getOutgoings(dm);
-	int nOutgoing = outgoing == null ? 0 : outgoing.size();
-	if (nOutgoing > 1) {
-	    return PROBLEM_FOUND;
-	}
-	return NO_PROBLEM;
+  /*
+   * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
+   *      java.lang.Object, org.argouml.cognitive.Designer)
+   */
+  public boolean predicate2(Object dm, Designer dsgr) {
+    if (!(Model.getFacade().isAPseudostate(dm))) {
+      return NO_PROBLEM;
     }
+    Object k = Model.getFacade().getKind(dm);
+    if (!Model.getFacade().equalsPseudostateKind(k, Model.getPseudostateKind().getInitial())) {
+      return NO_PROBLEM;
+    }
+    Collection outgoing = Model.getFacade().getOutgoings(dm);
+    int nOutgoing = outgoing == null ? 0 : outgoing.size();
+    if (nOutgoing > 1) {
+      return PROBLEM_FOUND;
+    }
+    return NO_PROBLEM;
+  }
 
-    /*
-     * @see org.argouml.uml.cognitive.critics.CrUML#getCriticizedDesignMaterials()
-     */
-    public Set<Object> getCriticizedDesignMaterials() {
-        Set<Object> ret = new HashSet<Object>();
-        ret.add(Model.getMetaTypes().getPseudostate());
-        return ret;
-    }
-    
+  /*
+   * @see org.argouml.uml.cognitive.critics.CrUML#getCriticizedDesignMaterials()
+   */
+  public Set<Object> getCriticizedDesignMaterials() {
+    Set<Object> ret = new HashSet<Object>();
+    ret.add(Model.getMetaTypes().getPseudostate());
+    return ret;
+  }
 }
-

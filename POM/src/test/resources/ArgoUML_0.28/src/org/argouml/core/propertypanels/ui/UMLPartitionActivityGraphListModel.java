@@ -30,28 +30,25 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
 /**
  * @author mkl
  */
-class UMLPartitionActivityGraphListModel extends UMLModelElementListModel2
-{
+class UMLPartitionActivityGraphListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLStateVertexIncomingListModel.
-     */
-    public UMLPartitionActivityGraphListModel() {
-        super("activityGraph");
-    }
+  /** Constructor for UMLStateVertexIncomingListModel. */
+  public UMLPartitionActivityGraphListModel() {
+    super("activityGraph");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        removeAllElements();
-        addElement(Model.getFacade().getActivityGraph(getTarget()));
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    removeAllElements();
+    addElement(Model.getFacade().getActivityGraph(getTarget()));
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().getActivityGraph(getTarget()) == element;
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().getActivityGraph(getTarget()) == element;
+  }
 }

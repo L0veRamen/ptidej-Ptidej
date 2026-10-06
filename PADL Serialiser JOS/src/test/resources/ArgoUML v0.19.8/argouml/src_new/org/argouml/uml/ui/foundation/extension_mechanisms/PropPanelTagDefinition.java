@@ -27,7 +27,6 @@ package org.argouml.uml.ui.foundation.extension_mechanisms;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
-
 import org.argouml.i18n.Translator;
 import org.argouml.uml.ui.ActionDeleteSingleModelElement;
 import org.argouml.uml.ui.ActionNavigateNamespace;
@@ -38,89 +37,72 @@ import org.argouml.uml.ui.UMLMultiplicityComboBoxModel;
 import org.argouml.uml.ui.foundation.core.PropPanelModelElement;
 import org.argouml.util.ConfigLoader;
 
-/**
- * The properties panel for a Class.
- */
+/** The properties panel for a Class. */
 public class PropPanelTagDefinition extends PropPanelModelElement {
 
-    private JComponent stereotypeSelector;
+  private JComponent stereotypeSelector;
 
-    private static UMLTagDefinitionStereotypeComboBoxModel
-    stereotypeComboBoxModel = new UMLTagDefinitionStereotypeComboBoxModel();	
+  private static UMLTagDefinitionStereotypeComboBoxModel stereotypeComboBoxModel =
+      new UMLTagDefinitionStereotypeComboBoxModel();
 
+  /** The combobox for the multiplicity of this type. */
+  private UMLComboBox2 multiplicityComboBox;
 
-    /**
-     * The combobox for the multiplicity of this type.
-     */
-    private UMLComboBox2 multiplicityComboBox;
+  /** Model for the MultiplicityComboBox */
+  private static UMLMultiplicityComboBoxModel multiplicityComboBoxModel;
 
-    /**
-     * Model for the MultiplicityComboBox
-     */
-    private static UMLMultiplicityComboBoxModel multiplicityComboBoxModel;
-    
-    ////////////////////////////////////////////////////////////////
-    // contructors
-    /**
-     * The constructor.
-     */
-    public PropPanelTagDefinition() {
-        super("TagDefinition", 
-            lookupIcon("TagDefinition"),
-            ConfigLoader.getTabPropsOrientation());
+  ////////////////////////////////////////////////////////////////
+  // contructors
+  /** The constructor. */
+  public PropPanelTagDefinition() {
+    super("TagDefinition", lookupIcon("TagDefinition"), ConfigLoader.getTabPropsOrientation());
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.stereotype"),
-                getStereotypeSelector());
-        addField(Translator.localize("label.namespace"),
-                getNamespaceSelector());
-        addField(Translator.localize("label.multiplicity"),
-                getMultiplicityComboBox());
-        add(getNamespaceVisibilityPanel());
-        
-        addSeperator();
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.stereotype"), getStereotypeSelector());
+    addField(Translator.localize("label.namespace"), getNamespaceSelector());
+    addField(Translator.localize("label.multiplicity"), getMultiplicityComboBox());
+    add(getNamespaceVisibilityPanel());
 
-        addAction(new ActionNavigateNamespace());
-        addAction(new ActionNewTagDefinition());
-        addAction(new ActionDeleteSingleModelElement());
+    addSeperator();
+
+    addAction(new ActionNavigateNamespace());
+    addAction(new ActionNewTagDefinition());
+    addAction(new ActionDeleteSingleModelElement());
+  }
+
+  /**
+   * Returns the stereotype selecter. This is a component which allows the user to select a single
+   * item as the stereotype.
+   *
+   * @return the stereotype selecter
+   */
+  protected JComponent getStereotypeSelector() {
+    if (stereotypeSelector == null) {
+      stereotypeSelector = new Box(BoxLayout.X_AXIS);
+      stereotypeSelector.add(
+          new UMLComboBoxNavigator(
+              this,
+              Translator.localize("label.stereotype.navigate.tooltip"),
+              new UMLComboBox2(stereotypeComboBoxModel, new ActionSetTagDefinitionOwner())));
     }
+    return stereotypeSelector;
+  }
 
-    /**
-     * Returns the stereotype selecter. This is a component which allows the
-     * user to select a single item as the stereotype.
-     *
-     * @return the stereotype selecter
-     */
-    protected JComponent getStereotypeSelector() {
-        if (stereotypeSelector == null) {
-            stereotypeSelector = new Box(BoxLayout.X_AXIS);
-            stereotypeSelector.add(new UMLComboBoxNavigator(this,
-                    Translator.localize("label.stereotype.navigate.tooltip"),                    
-                    new UMLComboBox2(stereotypeComboBoxModel,new ActionSetTagDefinitionOwner())          
-                    ));
-        }
-        return stereotypeSelector;
+  /**
+   * Returns the multiplicityComboBox.
+   *
+   * @return UMLMultiplicityComboBox2
+   */
+  protected UMLComboBox2 getMultiplicityComboBox() {
+    if (multiplicityComboBox == null) {
+      if (multiplicityComboBoxModel == null) {
+        multiplicityComboBoxModel = new UMLTagDefinitionMultiplicityComboBoxModel();
+      }
+      multiplicityComboBox =
+          new UMLMultiplicityComboBox2(
+              multiplicityComboBoxModel, new ActionSetTagDefinitionMultiplicity());
+      multiplicityComboBox.setEditable(true);
     }
-
-    /**
-     * Returns the multiplicityComboBox.
-     *
-     * @return UMLMultiplicityComboBox2
-     */
-    protected UMLComboBox2 getMultiplicityComboBox() {
-        if (multiplicityComboBox == null) {
-            if (multiplicityComboBoxModel == null) {
-                multiplicityComboBoxModel =
-                    new UMLTagDefinitionMultiplicityComboBoxModel();
-            }
-            multiplicityComboBox = new UMLMultiplicityComboBox2(
-                    multiplicityComboBoxModel,
-                    new ActionSetTagDefinitionMultiplicity());
-            multiplicityComboBox.setEditable(true);
-        }
-        return multiplicityComboBox;
-    }
-    
-    
+    return multiplicityComboBox;
+  }
 } /* end class PropPanelClass */

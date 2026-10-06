@@ -25,46 +25,39 @@
 package org.argouml.uml.ui;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.Model;
 
 /**
- * Add a new package at the top level, i.e. a model.<p>
- * 
- * TODO: ArgoUML currently only supports one model. 
+ * Add a new package at the top level, i.e. a model.
+ *
+ * <p>TODO: ArgoUML currently only supports one model.
  */
 public class ActionAddTopLevelPackage extends UMLAction {
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    /**
-     *  The constructor.
-     */
-    public ActionAddTopLevelPackage() {
-	super("action.add-top-level-package", NO_ICON);
-    }
+  /** The constructor. */
+  public ActionAddTopLevelPackage() {
+    super("action.add-top-level-package", NO_ICON);
+  }
 
+  ////////////////////////////////////////////////////////////////
+  // main methods
 
-    ////////////////////////////////////////////////////////////////
-    // main methods
-
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-	Project p = ProjectManager.getManager().getCurrentProject();
-        int numPacks = p.getUserDefinedModels().size();
-        String nameStr = "package_" + (numPacks + 1);
-        Object/*MModel*/ model =
-	    Model.getModelManagementFactory().createModel();
-        Model.getCoreHelper().setName(model, nameStr);
-        p.addMember(model);
-        super.actionPerformed(ae);
-        new ActionClassDiagram().actionPerformed(ae);
-
-
-    }
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    Project p = ProjectManager.getManager().getCurrentProject();
+    int numPacks = p.getUserDefinedModels().size();
+    String nameStr = "package_" + (numPacks + 1);
+    Object /*MModel*/ model = Model.getModelManagementFactory().createModel();
+    Model.getCoreHelper().setName(model, nameStr);
+    p.addMember(model);
+    super.actionPerformed(ae);
+    new ActionClassDiagram().actionPerformed(ae);
+  }
 } /* end class ActionAddTopLevelPackage */

@@ -57,145 +57,134 @@
 
 package org.apache.xerces.dom;
 
-import java.util.Enumeration;
-import java.util.Vector;
 
 import org.apache.xerces.utils.StringPool;
-
 import org.w3c.dom.*;
 
 /**
- * Elements represent most of the "markup" and structure of the
- * document.  They contain both the data for the element itself
- * (element name and attributes), and any contained nodes, including
- * document text (as children).
- * <P>
- * Elements may have Attributes associated with them; the API for this is
- * defined in Node, but the function is implemented here. In general, XML
- * applications should retrive Attributes as Nodes, since they may contain
- * entity references and hence be a fairly complex sub-tree. HTML users will
- * be dealing with simple string values, and convenience methods are provided
- * to work in terms of Strings.
- * <P>
+ * Elements represent most of the "markup" and structure of the document. They contain both the data
+ * for the element itself (element name and attributes), and any contained nodes, including document
+ * text (as children).
+ *
+ * <p>Elements may have Attributes associated with them; the API for this is defined in Node, but
+ * the function is implemented here. In general, XML applications should retrive Attributes as
+ * Nodes, since they may contain entity references and hence be a fairly complex sub-tree. HTML
+ * users will be dealing with simple string values, and convenience methods are provided to work in
+ * terms of Strings.
+ *
+ * <p>
+ *
  * @version
- * @since  PR-DOM-Level-1-19980818.
+ * @since PR-DOM-Level-1-19980818.
  */
-public class DeferredElementImpl
-    extends ElementImpl
-    implements DeferredNode {
+public class DeferredElementImpl extends ElementImpl implements DeferredNode {
 
-    //
-    // Constants
-    //
+  //
+  // Constants
+  //
 
-    /** Serialization version. */
-    static final long serialVersionUID = 1698024469924430384L;
+  /** Serialization version. */
+  static final long serialVersionUID = 1698024469924430384L;
 
-    //
-    // Data
-    //
+  //
+  // Data
+  //
 
-    /** Node index. */
-    protected transient int fNodeIndex;
+  /** Node index. */
+  protected transient int fNodeIndex;
 
-    //
-    // Constructors
-    //
+  //
+  // Constructors
+  //
 
-    /**
-     * This is the deferred constructor. Only the fNodeIndex is given here. All
-     * other data, can be requested from the ownerDocument via the index.
-     */
-    DeferredElementImpl(DeferredDocumentImpl ownerDoc, int nodeIndex) {
-        super(ownerDoc, null);
+  /**
+   * This is the deferred constructor. Only the fNodeIndex is given here. All other data, can be
+   * requested from the ownerDocument via the index.
+   */
+  DeferredElementImpl(DeferredDocumentImpl ownerDoc, int nodeIndex) {
+    super(ownerDoc, null);
 
-        fNodeIndex = nodeIndex;
-        syncData = true;
-        syncChildren = true;
+    fNodeIndex = nodeIndex;
+    syncData = true;
+    syncChildren = true;
+  } // <init>(DocumentImpl,int)
 
-    } // <init>(DocumentImpl,int)
+  //
+  // DeferredNode methods
+  //
 
-    //
-    // DeferredNode methods
-    //
+  /** Returns the node index. */
+  public final int getNodeIndex() {
+    return fNodeIndex;
+  }
 
-    /** Returns the node index. */
-    public final int getNodeIndex() {
-        return fNodeIndex;
+  //
+  // Protected methods
+  //
+
+  /** Synchronizes the data (name and value) for fast nodes. */
+  protected final void synchronizeData() {
+
+    // no need to sync in the future
+    syncData = false;
+
+    // fluff data
+    DeferredDocumentImpl ownerDocument = (DeferredDocumentImpl) this.ownerDocument;
+    int elementTypeName = ownerDocument.getNodeName(fNodeIndex);
+    StringPool pool = ownerDocument.getStringPool();
+    name = pool.toString(elementTypeName);
+
+    if (ownerDocument.fNamespacesEnabled) {
+      prefix = pool.toString(pool.getPrefixForQName(elementTypeName));
+      namespaceURI = pool.toString(pool.getURIForQName(elementTypeName));
+      localName = pool.toString(pool.getLocalPartForQName(elementTypeName));
+    } else {
+      localName = name;
     }
 
-    //
-    // Protected methods
-    //
+    // attributes
+    setupDefaultAttributes();
+    int index = ownerDocument.getNodeValue(fNodeIndex);
+    if (index != -1) {
+      NamedNodeMap attrs = getAttributes();
+      do {
+        NodeImpl attr = (NodeImpl) ownerDocument.getNodeObject(index);
+        attrs.setNamedItem(attr);
+        attr.parentNode = this;
+        index = ownerDocument.getNextSibling(index);
+      } while (index != -1);
+    }
+  } // synchronizeData()
 
-    /** Synchronizes the data (name and value) for fast nodes. */
-    protected final void synchronizeData() {
+  /**
+   * Synchronizes the node's children with the internal structure. Fluffing the children at once
+   * solves a lot of work to keep the two structures in sync. The problem gets worse when editing
+   * the tree -- this makes it a lot easier.
+   */
+  protected final void synchronizeChildren() {
 
-        // no need to sync in the future
-        syncData = false;
+    // no need to sync in the future
+    syncChildren = false;
 
-        // fluff data
-        DeferredDocumentImpl ownerDocument = (DeferredDocumentImpl)this.ownerDocument;
-        int elementTypeName = ownerDocument.getNodeName(fNodeIndex);
-        StringPool pool = ownerDocument.getStringPool();
-        name = pool.toString(elementTypeName);
+    // create children and link them as siblings
+    DeferredDocumentImpl ownerDocument = (DeferredDocumentImpl) this.ownerDocument;
+    NodeImpl last = null;
+    for (int index = ownerDocument.getFirstChild(fNodeIndex);
+        index != -1;
+        index = ownerDocument.getNextSibling(index)) {
 
-        if (ownerDocument.fNamespacesEnabled) {
-            prefix = pool.toString(pool.getPrefixForQName(elementTypeName));
-            namespaceURI = pool.toString(pool.getURIForQName(elementTypeName));
-            localName = pool.toString(pool.getLocalPartForQName(elementTypeName));
-        } else {
-            localName = name;
-        }
-
-        // attributes
-        setupDefaultAttributes();
-        int index = ownerDocument.getNodeValue(fNodeIndex);
-        if (index != -1) {
-            NamedNodeMap attrs = getAttributes();
-            do {
-                NodeImpl attr = (NodeImpl)ownerDocument.getNodeObject(index);
-                attrs.setNamedItem(attr);
-                attr.parentNode = this;
-                index = ownerDocument.getNextSibling(index);
-            } while (index != -1);
-        }
-
-    } // synchronizeData()
-
-    /**
-     * Synchronizes the node's children with the internal structure.
-     * Fluffing the children at once solves a lot of work to keep
-     * the two structures in sync. The problem gets worse when
-     * editing the tree -- this makes it a lot easier.
-     */
-    protected final void synchronizeChildren() {
-
-        // no need to sync in the future
-        syncChildren = false;
-
-        // create children and link them as siblings
-        DeferredDocumentImpl ownerDocument = (DeferredDocumentImpl)this.ownerDocument;
-        NodeImpl last = null;
-        for (int index = ownerDocument.getFirstChild(fNodeIndex);
-             index != -1;
-             index = ownerDocument.getNextSibling(index)) {
-
-            NodeImpl node = (NodeImpl)ownerDocument.getNodeObject(index);
-            if (last == null) {
-                firstChild = node;
-            }
-            else {
-                last.nextSibling = node;
-            }
-            node.parentNode = this;
-            node.previousSibling = last;
-            last = node;
-        }
-        if (last != null) {
-            lastChild = last;
-        }
-
-    } // synchronizeChildren()
-
+      NodeImpl node = (NodeImpl) ownerDocument.getNodeObject(index);
+      if (last == null) {
+        firstChild = node;
+      } else {
+        last.nextSibling = node;
+      }
+      node.parentNode = this;
+      node.previousSibling = last;
+      last = node;
+    }
+    if (last != null) {
+      lastChild = last;
+    }
+  } // synchronizeChildren()
 } // class DeferredElementImpl

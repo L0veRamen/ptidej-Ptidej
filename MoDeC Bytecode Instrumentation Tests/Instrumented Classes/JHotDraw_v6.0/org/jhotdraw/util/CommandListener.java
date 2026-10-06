@@ -18,7 +18,9 @@ import java.util.EventObject;
  * @version <$CURRENT_VERSION$>
  */
 public interface CommandListener {
-	public void commandExecuted(EventObject commandEvent);
-	public void commandExecutable(EventObject commandEvent);
-	public void commandNotExecutable(EventObject commandEvent);
+  public void commandExecuted(EventObject commandEvent);
+
+  public void commandExecutable(EventObject commandEvent);
+
+  public void commandNotExecutable(EventObject commandEvent);
 }

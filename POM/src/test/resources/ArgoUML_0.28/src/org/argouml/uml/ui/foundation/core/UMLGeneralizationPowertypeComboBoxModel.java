@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;
-
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.Model;
@@ -40,68 +39,64 @@ import org.argouml.uml.util.PathComparator;
  * @since Nov 3, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class UMLGeneralizationPowertypeComboBoxModel
-    extends UMLComboBoxModel2 {
+public class UMLGeneralizationPowertypeComboBoxModel extends UMLComboBoxModel2 {
 
-    /**
-     * Constructor for UMLGeneralizationPowertypeComboBoxModel.
-     */
-    public UMLGeneralizationPowertypeComboBoxModel() {
-        super("powertype", true);
-        Model.getPump().addClassModelEventListener(this,
-                Model.getMetaTypes().getNamespace(), "ownedElement");
+  /** Constructor for UMLGeneralizationPowertypeComboBoxModel. */
+  public UMLGeneralizationPowertypeComboBoxModel() {
+    super("powertype", true);
+    Model.getPump()
+        .addClassModelEventListener(this, Model.getMetaTypes().getNamespace(), "ownedElement");
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
+   */
+  protected Object getSelectedModelElement() {
+    if (getTarget() != null) {
+      return Model.getFacade().getPowertype(getTarget());
+    }
+    return null;
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    Set<Object> elements = new TreeSet<Object>(new PathComparator());
+    Project p = ProjectManager.getManager().getCurrentProject();
+    for (Object model : p.getUserDefinedModelList()) {
+      elements.addAll(
+          Model.getModelManagementHelper()
+              .getAllModelElementsOfKind(model, Model.getMetaTypes().getClassifier()));
     }
 
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
-     */
-    protected Object getSelectedModelElement() {
-        if (getTarget() != null) {
-            return Model.getFacade().getPowertype(getTarget());
-        }
-        return null;
-    }
+    elements.addAll(
+        p.getProfileConfiguration().findByMetaType(Model.getMetaTypes().getClassifier()));
+    removeAllElements();
+    addAll(elements);
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        Set<Object> elements = new TreeSet<Object>(new PathComparator());
-        Project p = ProjectManager.getManager().getCurrentProject();
-        for (Object model : p.getUserDefinedModelList()) {
-	    elements.addAll(Model.getModelManagementHelper()
-                .getAllModelElementsOfKind(model,
-                        Model.getMetaTypes().getClassifier()));
-        }
+  @Override
+  protected void buildMinimalModelList() {
+    Collection list = new ArrayList(1);
+    Object element = getSelectedModelElement();
+    if (element == null) {
+      element = " ";
+    }
+    list.add(element);
+    setElements(list);
+    setModelInvalid();
+  }
 
-        elements.addAll(p.getProfileConfiguration().findByMetaType(
-                Model.getMetaTypes().getClassifier()));
-        removeAllElements();
-        addAll(elements);
-    }
-    
-    @Override
-    protected void buildMinimalModelList() {
-        Collection list = new ArrayList(1);
-        Object element = getSelectedModelElement();
-        if (element == null) {
-            element = " ";
-        }
-        list.add(element);
-        setElements(list);
-        setModelInvalid();
-    }
-    
-    @Override
-    protected boolean isLazy() {
-        return true;
-    }
+  @Override
+  protected boolean isLazy() {
+    return true;
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().isAClassifier(element);
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().isAClassifier(element);
+  }
 }

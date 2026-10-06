@@ -25,9 +25,7 @@
 package org.argouml.uml.ui.behavior.state_machines;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.Action;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.AbstractActionNewModelElement;
@@ -38,31 +36,26 @@ import org.argouml.uml.ui.AbstractActionNewModelElement;
  */
 public class ActionNewSubmachineState extends AbstractActionNewModelElement {
 
-    private static final ActionNewSubmachineState SINGLETON =
-        new ActionNewSubmachineState();
+  private static final ActionNewSubmachineState SINGLETON = new ActionNewSubmachineState();
 
-    /**
-     * Constructor for ActionNewFinalState.
-     */
-    protected ActionNewSubmachineState() {
-        super();
-        putValue(Action.NAME, Translator.localize(
-                "button.new-submachinestate"));
-    }
+  /** Constructor for ActionNewFinalState. */
+  protected ActionNewSubmachineState() {
+    super();
+    putValue(Action.NAME, Translator.localize("button.new-submachinestate"));
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        Model.getStateMachinesFactory().buildSubmachineState(getTarget());
-    }
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    Model.getStateMachinesFactory().buildSubmachineState(getTarget());
+  }
 
-    /**
-     * @return Returns the SINGLETON.
-     */
-    public static ActionNewSubmachineState getInstance() {
-        return SINGLETON;
-    }
-
+  /**
+   * @return Returns the SINGLETON.
+   */
+  public static ActionNewSubmachineState getInstance() {
+    return SINGLETON;
+  }
 }

@@ -25,7 +25,6 @@
 package org.argouml.uml.ui.behavior.state_machines;
 
 import javax.swing.ImageIcon;
-
 import org.argouml.i18n.Translator;
 import org.argouml.util.ConfigLoader;
 import org.tigris.swidgets.Orientation;
@@ -37,54 +36,35 @@ import org.tigris.swidgets.Orientation;
  */
 public class PropPanelSimpleState extends AbstractPropPanelState {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = 7072535148338954868L;
+  /** The serial version. */
+  private static final long serialVersionUID = 7072535148338954868L;
 
-    /**
-     * Construct a new default property panel for a Simple State.
-     */
-    public PropPanelSimpleState() {
-        this("Simple State", lookupIcon("SimpleState"),
-                ConfigLoader.getTabPropsOrientation());
-    }
+  /** Construct a new default property panel for a Simple State. */
+  public PropPanelSimpleState() {
+    this("Simple State", lookupIcon("SimpleState"), ConfigLoader.getTabPropsOrientation());
+  }
 
-    /**
-     * Construct a new property panel for a Simple State with the given 
-     * attributes.
-     *
-     * @param name the name of the properties panel, shown at the top
-     * @param icon the icon shown at the top
-     * @param orientation the orientation of the panel
-     */
-    public PropPanelSimpleState(String name, ImageIcon icon,
-            Orientation orientation) {
-        super(name, icon, orientation);
+  /**
+   * Construct a new property panel for a Simple State with the given attributes.
+   *
+   * @param name the name of the properties panel, shown at the top
+   * @param icon the icon shown at the top
+   * @param orientation the orientation of the panel
+   */
+  public PropPanelSimpleState(String name, ImageIcon icon, Orientation orientation) {
+    super(name, icon, orientation);
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.container"),
-                getContainerScroll());
-        addField(Translator.localize("label.entry"),
-                getEntryScroll());
-        addField(Translator.localize("label.exit"),
-                getExitScroll());
-        addField(Translator.localize("label.do-activity"),
-                getDoScroll());
-        addField(Translator.localize("label.deferrable"),
-                getDeferrableEventsScroll());
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.container"), getContainerScroll());
+    addField(Translator.localize("label.entry"), getEntryScroll());
+    addField(Translator.localize("label.exit"), getExitScroll());
+    addField(Translator.localize("label.do-activity"), getDoScroll());
+    addField(Translator.localize("label.deferrable"), getDeferrableEventsScroll());
 
-        addSeparator();
+    addSeparator();
 
-        addField(Translator.localize("label.incoming"),
-                getIncomingScroll());
-        addField(Translator.localize("label.outgoing"),
-                getOutgoingScroll());
-        addField(Translator.localize("label.internal-transitions"),
-                getInternalTransitionsScroll());
-
-    }
-
+    addField(Translator.localize("label.incoming"), getIncomingScroll());
+    addField(Translator.localize("label.outgoing"), getOutgoingScroll());
+    addField(Translator.localize("label.internal-transitions"), getInternalTransitionsScroll());
+  }
 } /* end class PropPanelSimpleState */
-

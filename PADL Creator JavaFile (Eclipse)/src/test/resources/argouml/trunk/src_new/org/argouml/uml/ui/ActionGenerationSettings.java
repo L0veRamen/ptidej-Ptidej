@@ -25,54 +25,46 @@
 package org.argouml.uml.ui;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.Action;
-
 import org.argouml.i18n.Translator;
 import org.argouml.kernel.ProjectManager;
 import org.argouml.uml.diagram.ui.UMLDiagram;
 import org.tigris.gef.undo.UndoableAction;
 
-/**
- * Action for viewing/editing source path settings of model elements.
- */
+/** Action for viewing/editing source path settings of model elements. */
 public class ActionGenerationSettings extends UndoableAction {
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    /**
-     *  The constructor.
-     */
-    public ActionGenerationSettings() {
-        super(Translator
-                .localize("action.settings-for-project-code-generation"), null);
-		// Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, Translator
-                .localize("action.settings-for-project-code-generation"));
-    }
+  /** The constructor. */
+  public ActionGenerationSettings() {
+    super(Translator.localize("action.settings-for-project-code-generation"), null);
+    // Set the tooltip string:
+    putValue(
+        Action.SHORT_DESCRIPTION,
+        Translator.localize("action.settings-for-project-code-generation"));
+  }
 
-    // //////////////////////////////////////////////////////////////
-    // main methods
+  // //////////////////////////////////////////////////////////////
+  // main methods
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-    	super.actionPerformed(ae);
-	SourcePathDialog cgd = new SourcePathDialog();
-	cgd.setVisible(true);
-    }
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    super.actionPerformed(ae);
+    SourcePathDialog cgd = new SourcePathDialog();
+    cgd.setVisible(true);
+  }
 
-    /**
-     * @return true if the action is enabled and the active diagram is a diagram
-     * @see org.tigris.gef.undo.UndoableAction#isEnabled()
-     */
-    public boolean isEnabled() {
-	org.argouml.ui.ArgoDiagram activeDiagram =
-	    ProjectManager.getManager().getCurrentProject().getActiveDiagram();
-	return super.isEnabled()
-	    && (activeDiagram instanceof UMLDiagram);
-    }
-
+  /**
+   * @return true if the action is enabled and the active diagram is a diagram
+   * @see org.tigris.gef.undo.UndoableAction#isEnabled()
+   */
+  public boolean isEnabled() {
+    org.argouml.ui.ArgoDiagram activeDiagram =
+        ProjectManager.getManager().getCurrentProject().getActiveDiagram();
+    return super.isEnabled() && (activeDiagram instanceof UMLDiagram);
+  }
 } /* end class ActionGenerationSettings */

@@ -30,113 +30,104 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Stack;
 import java.util.Vector;
-
 import org.argouml.model.Model;
 
 /**
  * This code piece represents an operation declaration.
  *
- * JavaRE - Code generation and reverse engineering for UML and Java.
+ * <p>JavaRE - Code generation and reverse engineering for UML and Java.
  *
  * @author Marcus Andersson andersson@users.sourceforge.net
  */
 public class OperationCodePiece extends NamedCodePiece {
-    /**
-     * The code piece this operation represents.
-     */
-    private CodePiece operationDef;
+  /** The code piece this operation represents. */
+  private CodePiece operationDef;
 
-    /**
-     * The name of the operation.
-     */
-    private String name;
+  /** The name of the operation. */
+  private String name;
 
-    /**
-     * Constructor.
-     *
-     * @param javadoc The code piece for the javadoc.
-     * @param operation The code piece this operation represents.
-     * @param n The name of the operation.
-     */
-    public OperationCodePiece(CodePiece javadoc,
-                              CodePiece operation,
-                              String n) {
-	name = n;
-	if (javadoc != null) {
-	    CompositeCodePiece cp = new CompositeCodePiece(javadoc);
-	    cp.add(operation);
-	    operationDef = cp;
-	} else {
-	    operationDef = operation;
-	}
+  /**
+   * Constructor.
+   *
+   * @param javadoc The code piece for the javadoc.
+   * @param operation The code piece this operation represents.
+   * @param n The name of the operation.
+   */
+  public OperationCodePiece(CodePiece javadoc, CodePiece operation, String n) {
+    name = n;
+    if (javadoc != null) {
+      CompositeCodePiece cp = new CompositeCodePiece(javadoc);
+      cp.add(operation);
+      operationDef = cp;
+    } else {
+      operationDef = operation;
     }
+  }
 
-    /*
-     * @see org.argouml.language.java.generator.CodePiece#getText()
-     */
-    public StringBuffer getText() {
-	return operationDef.getText();
+  /*
+   * @see org.argouml.language.java.generator.CodePiece#getText()
+   */
+  public StringBuffer getText() {
+    return operationDef.getText();
+  }
+
+  /*
+   * @see org.argouml.language.java.generator.CodePiece#getStartPosition()
+   */
+  public int getStartPosition() {
+    return operationDef.getStartPosition();
+  }
+
+  /*
+   * @see org.argouml.language.java.generator.CodePiece#getEndPosition()
+   */
+  public int getEndPosition() {
+    return operationDef.getEndPosition();
+  }
+
+  /*
+   * @see org.argouml.language.java.generator.CodePiece#getStartLine()
+   */
+  public int getStartLine() {
+    return operationDef.getStartLine();
+  }
+
+  /*
+   * @see org.argouml.language.java.generator.CodePiece#getEndLine()
+   */
+  public int getEndLine() {
+    return operationDef.getEndLine();
+  }
+
+  /*
+   * @see org.argouml.language.java.generator.NamedCodePiece#write(
+   *         java.io.BufferedReader, java.io.BufferedWriter, java.util.Stack)
+   *
+   * Write the code this piece represents to file. Remove this
+   * feature from the top vector in the stack newFeaturesStack.
+   */
+  public void write(BufferedReader reader, BufferedWriter writer, Stack parseStateStack)
+      throws IOException {
+    ParseState parseState = (ParseState) parseStateStack.peek();
+    Vector features = parseState.getNewFeatures();
+    boolean found = false;
+
+    for (Iterator j = features.iterator(); j.hasNext() && !found; ) {
+      Object feature = /*(MFeature)*/ j.next();
+      if (Model.getFacade().getName(feature).equals(name)
+          && Model.getFacade().isAOperation(feature)) {
+        found = true;
+        parseState.newFeature(feature);
+        Object mOperation = /*(MOperation)*/ feature;
+        writer.write(GeneratorJava.getInstance().generateOperation(mOperation, true));
+      }
     }
-
-    /*
-     * @see org.argouml.language.java.generator.CodePiece#getStartPosition()
-     */
-    public int getStartPosition() {
-	return operationDef.getStartPosition();
+    if (found) {
+      // fast forward original code (overwriting)
+      ffCodePiece(reader, null);
+    } else {
+      // not in model, so write the original code
+      ffCodePiece(reader, writer);
     }
-
-    /*
-     * @see org.argouml.language.java.generator.CodePiece#getEndPosition()
-     */
-    public int getEndPosition() {
-	return operationDef.getEndPosition();
-    }
-
-    /*
-     * @see org.argouml.language.java.generator.CodePiece#getStartLine()
-     */
-    public int getStartLine() {
-	return operationDef.getStartLine();
-    }
-
-    /*
-     * @see org.argouml.language.java.generator.CodePiece#getEndLine()
-     */
-    public int getEndLine() {
-	return operationDef.getEndLine();
-    }
-
-    /*
-     * @see org.argouml.language.java.generator.NamedCodePiece#write(
-     *         java.io.BufferedReader, java.io.BufferedWriter, java.util.Stack)
-     *
-     * Write the code this piece represents to file. Remove this
-     * feature from the top vector in the stack newFeaturesStack.
-     */
-    public void write (BufferedReader reader,
-                       BufferedWriter writer,
-                       Stack parseStateStack) throws IOException {
-        ParseState parseState = (ParseState) parseStateStack.peek();
-        Vector features = parseState.getNewFeatures();
-        boolean found = false;
-
-        for (Iterator j = features.iterator(); j.hasNext() && !found;) {
-            Object feature = /*(MFeature)*/ j.next();
-            if (Model.getFacade().getName(feature).equals(name)
-                    && Model.getFacade().isAOperation(feature)) {
-                found = true;
-                parseState.newFeature(feature);
-                Object mOperation = /*(MOperation)*/ feature;
-                writer.write(GeneratorJava.getInstance()
-			     .generateOperation(mOperation, true));
-            }
-        }
-        if (found) {
-            // fast forward original code (overwriting)
-            ffCodePiece(reader, null);
-        } else {
-            // not in model, so write the original code
-            ffCodePiece(reader, writer);
-        }
-    }
+  }
 }

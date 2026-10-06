@@ -25,136 +25,128 @@
 package org.argouml.uml.ui;
 
 import junit.framework.TestCase;
-
 import org.argouml.model.Model;
 
 /**
- * An abstract class that serves as a basis for testing listmodels. Only works
- * for listmodels that can contain multiple elements.
+ * An abstract class that serves as a basis for testing listmodels. Only works for listmodels that
+ * can contain multiple elements.
+ *
  * @since Oct 27, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
 public abstract class AbstractUMLModelElementListModel2Test extends TestCase {
-    private Object elem;
-    private UMLModelElementListModel2 model;
+  private Object elem;
+  private UMLModelElementListModel2 model;
 
-    /**
-     * Constructor for AbstractUMLModelElementListModel2Test.
-     *
-     * @param arg0 is the name of the test case.
-     */
-    public AbstractUMLModelElementListModel2Test(String arg0) {
-        super(arg0);
-    }
+  /**
+   * Constructor for AbstractUMLModelElementListModel2Test.
+   *
+   * @param arg0 is the name of the test case.
+   */
+  public AbstractUMLModelElementListModel2Test(String arg0) {
+    super(arg0);
+  }
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        buildElement();
-        // Tests used to be coded to assume immediate event delivery.
-        // They've been modified to use flush() where needed. - tfm
-        //oldEventPolicy = MFactoryImpl.getEventPolicy();
-        //MFactoryImpl.setEventPolicy(MFactoryImpl.EVENT_POLICY_IMMEDIATE);
-        buildModel();
-        model.setTarget(elem);
-        Model.getPump().flushModelEvents();
-    }
+  /**
+   * @see junit.framework.TestCase#setUp()
+   */
+  protected void setUp() throws Exception {
+    super.setUp();
+    buildElement();
+    // Tests used to be coded to assume immediate event delivery.
+    // They've been modified to use flush() where needed. - tfm
+    // oldEventPolicy = MFactoryImpl.getEventPolicy();
+    // MFactoryImpl.setEventPolicy(MFactoryImpl.EVENT_POLICY_IMMEDIATE);
+    buildModel();
+    model.setTarget(elem);
+    Model.getPump().flushModelEvents();
+  }
 
-    /**
-     * Developers should build the target element in this method and assing
-     * this to the variable elem. The target
-     * element is the ModelElement of which the listmodel to be tested shows
-     * an attribute
-     */
-    protected abstract void buildElement();
+  /**
+   * Developers should build the target element in this method and assing this to the variable elem.
+   * The target element is the ModelElement of which the listmodel to be tested shows an attribute
+   */
+  protected abstract void buildElement();
 
-    /**
-     * Developers should construct the listmodel to be tested in this method and
-     * assign this to the variable model.
-     */
-    protected abstract void buildModel();
+  /**
+   * Developers should construct the listmodel to be tested in this method and assign this to the
+   * variable model.
+   */
+  protected abstract void buildModel();
 
-    /**
-     * @see junit.framework.TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        Model.getUmlFactory().delete(elem);
-        // restore original event policy - not supported by MDR - tfm
-        //MFactoryImpl.setEventPolicy(oldEventPolicy);
-        model = null;
-    }
+  /**
+   * @see junit.framework.TestCase#tearDown()
+   */
+  protected void tearDown() throws Exception {
+    super.tearDown();
+    Model.getUmlFactory().delete(elem);
+    // restore original event policy - not supported by MDR - tfm
+    // MFactoryImpl.setEventPolicy(oldEventPolicy);
+    model = null;
+  }
 
-    /**
-     * Tests the programmatically adding of multiple elements to the list.
-     */
-    public void testAddMultiple() {
-        Object[] elements = fillModel();
-        Model.getPump().flushModelEvents();
-        assertEquals(10, model.getSize());
-        assertEquals(model.getElementAt(5), elements[5]);
-        assertEquals(model.getElementAt(0), elements[0]);
-        assertEquals(model.getElementAt(9), elements[9]);
-    }
+  /** Tests the programmatically adding of multiple elements to the list. */
+  public void testAddMultiple() {
+    Object[] elements = fillModel();
+    Model.getPump().flushModelEvents();
+    assertEquals(10, model.getSize());
+    assertEquals(model.getElementAt(5), elements[5]);
+    assertEquals(model.getElementAt(0), elements[0]);
+    assertEquals(model.getElementAt(9), elements[9]);
+  }
 
-    /**
-     * Developers should set the attribute that the listmodel shows in this
-     * method. They should return the contents of the attribute in the form of
-     * a ModelElement[]. The number of elements inside the attribute should be
-     * 10.
-     * @return ModelElement[]
-     */
-    protected abstract Object[] fillModel();
+  /**
+   * Developers should set the attribute that the listmodel shows in this method. They should return
+   * the contents of the attribute in the form of a ModelElement[]. The number of elements inside
+   * the attribute should be 10.
+   *
+   * @return ModelElement[]
+   */
+  protected abstract Object[] fillModel();
 
-    /**
-     * Test the removal of several elements from the list.
-     */
-    public void testRemoveMultiple() {
-        Object[] elements = fillModel();
-        Model.getPump().flushModelEvents();
-        removeHalfModel(elements);
-        Model.getPump().flushModelEvents();
-        assertEquals(5, model.getSize());
-        assertEquals(elements[5], model.getElementAt(0));
-    }
+  /** Test the removal of several elements from the list. */
+  public void testRemoveMultiple() {
+    Object[] elements = fillModel();
+    Model.getPump().flushModelEvents();
+    removeHalfModel(elements);
+    Model.getPump().flushModelEvents();
+    assertEquals(5, model.getSize());
+    assertEquals(elements[5], model.getElementAt(0));
+  }
 
-    /**
-     * Developers should remove half the contents of the attribute in
-     * this method That is: they should remove the upper 5 elements of
-     * the attribute.
-     *
-     * @param elements the element
-     */
-    protected abstract void removeHalfModel(Object[] elements);
+  /**
+   * Developers should remove half the contents of the attribute in this method That is: they should
+   * remove the upper 5 elements of the attribute.
+   *
+   * @param elements the element
+   */
+  protected abstract void removeHalfModel(Object[] elements);
 
-    /**
-     * @param theModel The model to set.
-     */
-    protected void setModel(UMLModelElementListModel2 theModel) {
-        model = theModel;
-    }
+  /**
+   * @param theModel The model to set.
+   */
+  protected void setModel(UMLModelElementListModel2 theModel) {
+    model = theModel;
+  }
 
-    /**
-     * @return Returns the model.
-     */
-    protected UMLModelElementListModel2 getModel() {
-        return model;
-    }
+  /**
+   * @return Returns the model.
+   */
+  protected UMLModelElementListModel2 getModel() {
+    return model;
+  }
 
-    /**
-     * @param theElement The elem to set.
-     */
-    protected void setElem(Object theElement) {
-        elem = theElement;
-    }
+  /**
+   * @param theElement The elem to set.
+   */
+  protected void setElem(Object theElement) {
+    elem = theElement;
+  }
 
-    /**
-     * @return Returns the elem.
-     */
-    protected Object getElem() {
-        return elem;
-    }
-
+  /**
+   * @return Returns the elem.
+   */
+  protected Object getElem() {
+    return elem;
+  }
 }

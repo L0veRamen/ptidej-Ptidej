@@ -29,7 +29,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.Vector;
-
 import org.argouml.model.Model;
 import org.argouml.uml.notation.NodeInstanceNotation;
 
@@ -38,93 +37,92 @@ import org.argouml.uml.notation.NodeInstanceNotation;
  */
 public class NodeInstanceNotationUml extends NodeInstanceNotation {
 
-    /**
-     * The constructor.
-     *
-     * @param nodeInstance the UML nodeInstance
-     */
-    public NodeInstanceNotationUml(Object nodeInstance) {
-        super(nodeInstance);
+  /**
+   * The constructor.
+   *
+   * @param nodeInstance the UML nodeInstance
+   */
+  public NodeInstanceNotationUml(Object nodeInstance) {
+    super(nodeInstance);
+  }
+
+  /**
+   * Parse a line of the form: "name : base-node".
+   *
+   * @see org.argouml.uml.notation.NotationProvider#parse(java.lang.Object, java.lang.String)
+   */
+  public void parse(Object modelElement, String text) {
+    // strip any trailing semi-colons
+    String s = text.trim();
+    if (s.length() == 0) {
+      return;
+    }
+    if (s.charAt(s.length() - 1) == ';') {
+      s = s.substring(0, s.length() - 2);
     }
 
-    /**
-     * Parse a line of the form: "name : base-node".
-     *
-     * @see org.argouml.uml.notation.NotationProvider#parse(java.lang.Object, java.lang.String)
-     */
-    public void parse(Object modelElement, String text) {
-        // strip any trailing semi-colons
-        String s = text.trim();
-        if (s.length() == 0) {
-            return;
-        }
-        if (s.charAt(s.length() - 1) == ';') {
-            s = s.substring(0, s.length() - 2);
-        }
+    String name = "";
+    String bases = "";
+    StringTokenizer tokenizer = null;
 
-        String name = "";
-        String bases = "";
-        StringTokenizer tokenizer = null;
-
-        if (s.indexOf(":", 0) > -1) {
-            name = s.substring(0, s.indexOf(":")).trim();
-            bases = s.substring(s.indexOf(":") + 1).trim();
-        } else {
-            name = s;
-        }
-
-        tokenizer = new StringTokenizer(bases, ",");
-
-        Vector v = new Vector();
-        Object ns = Model.getFacade().getNamespace(modelElement);
-        if (ns != null) {
-            while (tokenizer.hasMoreElements()) {
-                String newBase = tokenizer.nextToken();
-                Object cls = Model.getFacade().lookupIn(ns, newBase.trim());
-                if (cls != null) {
-                    v.add(cls);
-                }
-            }
-        }
-
-        Model.getCommonBehaviorHelper().setClassifiers(modelElement, v);
-        Model.getCoreHelper().setName(modelElement, name);
+    if (s.indexOf(":", 0) > -1) {
+      name = s.substring(0, s.indexOf(":")).trim();
+      bases = s.substring(s.indexOf(":") + 1).trim();
+    } else {
+      name = s;
     }
 
-    /**
-     * @see org.argouml.uml.notation.NotationProvider#getParsingHelp()
-     */
-    public String getParsingHelp() {
-        return "parsing.help.fig-nodeinstance";
+    tokenizer = new StringTokenizer(bases, ",");
+
+    Vector v = new Vector();
+    Object ns = Model.getFacade().getNamespace(modelElement);
+    if (ns != null) {
+      while (tokenizer.hasMoreElements()) {
+        String newBase = tokenizer.nextToken();
+        Object cls = Model.getFacade().lookupIn(ns, newBase.trim());
+        if (cls != null) {
+          v.add(cls);
+        }
+      }
     }
 
-    /**
-     * @see org.argouml.uml.notation.NotationProvider#toString(java.lang.Object, java.util.HashMap)
-     */
-    public String toString(Object modelElement, HashMap args) {
-        String nameStr = "";
-        if (Model.getFacade().getName(modelElement) != null) {
-            nameStr = Model.getFacade().getName(modelElement).trim();
-        }
-        // construct bases string (comma separated)
-        String baseStr = "";
-        Collection col = Model.getFacade().getClassifiers(modelElement);
-        if (col != null && col.size() > 0) {
-            Iterator it = col.iterator();
-            baseStr = Model.getFacade().getName(it.next());
-            while (it.hasNext()) {
-                baseStr += ", " + Model.getFacade().getName(it.next());
-            }
-        }
+    Model.getCommonBehaviorHelper().setClassifiers(modelElement, v);
+    Model.getCoreHelper().setName(modelElement, name);
+  }
 
-        if ((nameStr.length() == 0) && (baseStr.length() == 0)) {
-            return "";
-        }
-        baseStr = baseStr.trim();
-        if (baseStr.length() < 1) {
-            return nameStr.trim();
-        }
-        return nameStr.trim() + " : " + baseStr;
+  /**
+   * @see org.argouml.uml.notation.NotationProvider#getParsingHelp()
+   */
+  public String getParsingHelp() {
+    return "parsing.help.fig-nodeinstance";
+  }
+
+  /**
+   * @see org.argouml.uml.notation.NotationProvider#toString(java.lang.Object, java.util.HashMap)
+   */
+  public String toString(Object modelElement, HashMap args) {
+    String nameStr = "";
+    if (Model.getFacade().getName(modelElement) != null) {
+      nameStr = Model.getFacade().getName(modelElement).trim();
+    }
+    // construct bases string (comma separated)
+    String baseStr = "";
+    Collection col = Model.getFacade().getClassifiers(modelElement);
+    if (col != null && col.size() > 0) {
+      Iterator it = col.iterator();
+      baseStr = Model.getFacade().getName(it.next());
+      while (it.hasNext()) {
+        baseStr += ", " + Model.getFacade().getName(it.next());
+      }
     }
 
+    if ((nameStr.length() == 0) && (baseStr.length() == 0)) {
+      return "";
+    }
+    baseStr = baseStr.trim();
+    if (baseStr.length() < 1) {
+      return nameStr.trim();
+    }
+    return nameStr.trim() + " : " + baseStr;
+  }
 }

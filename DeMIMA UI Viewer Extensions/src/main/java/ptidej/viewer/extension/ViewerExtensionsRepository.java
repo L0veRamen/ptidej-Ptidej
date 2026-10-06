@@ -4,17 +4,15 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc  and others, see in file; API and its implementation
  ******************************************************************************/
 package ptidej.viewer.extension;
 
+import com.ibm.toad.cfparse.ClassFile;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.ibm.toad.cfparse.ClassFile;
-
 import util.io.ProxyConsole;
 import util.io.SubtypeLoader;
 import util.multilingual.MultilingualManager;
@@ -23,86 +21,88 @@ import util.repository.IRepository;
 import util.repository.impl.FileRepositoryFactory;
 
 public class ViewerExtensionsRepository implements IRepository {
-	private static ViewerExtensionsRepository UniqueInstance;
+  private static ViewerExtensionsRepository UniqueInstance;
 
-	public static ViewerExtensionsRepository getInstance() {
-		if (ViewerExtensionsRepository.UniqueInstance == null) {
-			ViewerExtensionsRepository.UniqueInstance = new ViewerExtensionsRepository();
-		}
-		return ViewerExtensionsRepository.UniqueInstance;
-	}
-	//	public static void main(final String args[]) {
-	//		final Repository extensionManager =
-	//			Repository.getCurrentExtensionManager();
-	//		System.out.println(extensionManager);
-	//	}
+  public static ViewerExtensionsRepository getInstance() {
+    if (ViewerExtensionsRepository.UniqueInstance == null) {
+      ViewerExtensionsRepository.UniqueInstance = new ViewerExtensionsRepository();
+    }
+    return ViewerExtensionsRepository.UniqueInstance;
+  }
 
-	private IViewerExtension[] viewerExtensions;
+  //	public static void main(final String args[]) {
+  //		final Repository extensionManager =
+  //			Repository.getCurrentExtensionManager();
+  //		System.out.println(extensionManager);
+  //	}
 
-	private ViewerExtensionsRepository() {
-		// Yann 2003/10/14: Demo!
-		// I must catch the AccessControlException
-		// thrown when attempting loading extensions
-		// from the applet viewer.
-		try {
-			final ClassFile[] classFiles = SubtypeLoader.loadSubtypesFromStreams(
-					"ptidej.viewer.extension.IViewerExtension",
-					FileRepositoryFactory.getInstance().getFileRepository(this)
-							.getFiles("ptidej/viewer/extension/repository/",
-									".class"),
-					"ptidej.viewer.extension.repository", ".class");
-			final List listOfExtensions = new ArrayList(classFiles.length);
-			for (int i = 0; i < classFiles.length; i++) {
-				try {
-					listOfExtensions.add((IViewerExtension) Class
-							.forName(classFiles[i].getName()).newInstance());
-				}
-				// Yann 2003/10/07: Protection!
-				// I want to make sure that any problem in this
-				// section won't break the program...
-				//	catch (final ClassNotFoundException cnfe) {
-				//		// cnfe.printStackTrace();
-				//	}
-				//	catch (final InstantiationException ie) {
-				//		// ie.printStackTrace();
-				//	}
-				//	catch (final IllegalAccessException iae) {
-				//		// iae.printStackTrace();
-				//	}
-				//	catch (final NoClassDefFoundError ncdfe) {
-				catch (final Throwable t) {
-					ProxyConsole.getInstance().errorOutput()
-							.println(MultilingualManager
-									.getString("LOAD_EXTENSION",
-											ViewerExtensionsRepository.class,
-											new Object[] {
-													classFiles[i].getName(),
-													t.getMessage() }));
-				}
-			}
+  private IViewerExtension[] viewerExtensions;
 
-			this.viewerExtensions = new IViewerExtension[listOfExtensions
-					.size()];
-			listOfExtensions.toArray(this.viewerExtensions);
-		}
-		catch (final FileAccessException e) {
-			e.printStackTrace(ProxyConsole.getInstance().errorOutput());
-			this.viewerExtensions = new IViewerExtension[0];
-		}
-	}
+  private ViewerExtensionsRepository() {
+    // Yann 2003/10/14: Demo!
+    // I must catch the AccessControlException
+    // thrown when attempting loading extensions
+    // from the applet viewer.
+    try {
+      final ClassFile[] classFiles =
+          SubtypeLoader.loadSubtypesFromStreams(
+              "ptidej.viewer.extension.IViewerExtension",
+              FileRepositoryFactory.getInstance()
+                  .getFileRepository(this)
+                  .getFiles("ptidej/viewer/extension/repository/", ".class"),
+              "ptidej.viewer.extension.repository",
+              ".class");
+      final List<IViewerExtension> listOfExtensions = new ArrayList<>(classFiles.length);
+      for (int i = 0; i < classFiles.length; i++) {
+        try {
+          listOfExtensions.add(
+              (IViewerExtension)
+                  Class.forName(classFiles[i].getName()).getDeclaredConstructor().newInstance());
+        }
+        // Yann 2003/10/07: Protection!
+        // I want to make sure that any problem in this
+        // section won't break the program...
+        //	catch (final ClassNotFoundException cnfe) {
+        //		// cnfe.printStackTrace();
+        //	}
+        //	catch (final InstantiationException ie) {
+        //		// ie.printStackTrace();
+        //	}
+        //	catch (final IllegalAccessException iae) {
+        //		// iae.printStackTrace();
+        //	}
+        //	catch (final NoClassDefFoundError ncdfe) {
+        catch (final Throwable t) {
+          ProxyConsole.getInstance()
+              .errorOutput()
+              .println(
+                  MultilingualManager.getString(
+                      "LOAD_EXTENSION",
+                      ViewerExtensionsRepository.class,
+                      new Object[] {classFiles[i].getName(), t.getMessage()}));
+        }
+      }
 
-	public IViewerExtension[] getViewerExtensions() {
-		return this.viewerExtensions;
-	}
+      this.viewerExtensions = new IViewerExtension[listOfExtensions.size()];
+      listOfExtensions.toArray(this.viewerExtensions);
+    } catch (final FileAccessException e) {
+      e.printStackTrace(ProxyConsole.getInstance().errorOutput());
+      this.viewerExtensions = new IViewerExtension[0];
+    }
+  }
 
-	public String toString() {
-		final StringBuffer buffer = new StringBuffer();
-		buffer.append("Extension Repository:\n");
-		for (int x = 0; x < this.getViewerExtensions().length; x++) {
-			buffer.append('\t');
-			buffer.append(this.getViewerExtensions()[x].getName());
-			buffer.append('\n');
-		}
-		return buffer.toString();
-	}
+  public IViewerExtension[] getViewerExtensions() {
+    return this.viewerExtensions;
+  }
+
+  public String toString() {
+    final StringBuffer buffer = new StringBuffer();
+    buffer.append("Extension Repository:\n");
+    for (int x = 0; x < this.getViewerExtensions().length; x++) {
+      buffer.append('\t');
+      buffer.append(this.getViewerExtensions()[x].getName());
+      buffer.append('\n');
+    }
+    return buffer.toString();
+  }
 }

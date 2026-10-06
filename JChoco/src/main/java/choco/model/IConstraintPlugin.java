@@ -13,15 +13,13 @@
 
 package choco.model;
 
-/**
- * An interface for all objects that can be plugged to a constraint.
- */
+/** An interface for all objects that can be plugged to a constraint. */
 public interface IConstraintPlugin {
-	public void activateListener();
+  public void activateListener();
 
-	public void addListener();
+  public void addListener();
 
-	public void deactivateListener();
+  public void deactivateListener();
 
-	public void deactivateListener(int varIndex);
+  public void deactivateListener(int varIndex);
 }

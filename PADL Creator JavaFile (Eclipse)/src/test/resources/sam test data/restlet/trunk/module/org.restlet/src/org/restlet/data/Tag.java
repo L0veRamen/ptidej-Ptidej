@@ -24,217 +24,195 @@ package org.restlet.data;
 
 /**
  * Validation tag equivalent to the HTTP entity tag. "A strong entity tag may be shared by two
- * entities of a resource only if they are equivalent by octet equality.<br/> A weak entity tag may be shared
- * by two entities of a resource only if the entities are equivalent and could be substituted for each other
- * with no significant change in semantics."
+ * entities of a resource only if they are equivalent by octet equality.<br>
+ * A weak entity tag may be shared by two entities of a resource only if the entities are equivalent
+ * and could be substituted for each other with no significant change in semantics."
+ *
  * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.11">HTTP Entity Tags</a>
- * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.3.2">HTTP Entity Tag Cache
- * Validators</a>
+ * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.3.2">HTTP Entity Tag
+ *     Cache Validators</a>
  * @author Jerome Louvel (contact@noelios.com)
  */
-public class Tag
-{
-	/** Tag matching any other tag, used in call's condition data. */
-	public static final Tag ALL = new Tag("*");
+public class Tag {
+  /** Tag matching any other tag, used in call's condition data. */
+  public static final Tag ALL = new Tag("*");
 
-	/**
-	 * Parses a tag formatted as defined by the HTTP standard.
-	 * @param httpTag The HTTP tag string; if it starts with a 'W' the tag will be marked as weak and the data 
-	 * following the 'W' used as the tag; otherwise it should be surrounded with quotes (e.g., "sometag").
-	 * @return A new tag instance.
-	 * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.11">HTTP Entity Tags</a>
-	 */
-	public static Tag parse(String httpTag)
-	{
-		Tag result = new Tag();
-		
-		if (httpTag.startsWith("W"))
-		{
-			result.setWeak(true);
-			httpTag = httpTag.substring(1);
-		}
-		else
-		{
-			result.setWeak(false);
-		}
+  /**
+   * Parses a tag formatted as defined by the HTTP standard.
+   *
+   * @param httpTag The HTTP tag string; if it starts with a 'W' the tag will be marked as weak and
+   *     the data following the 'W' used as the tag; otherwise it should be surrounded with quotes
+   *     (e.g., "sometag").
+   * @return A new tag instance.
+   * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.11">HTTP Entity
+   *     Tags</a>
+   */
+  public static Tag parse(String httpTag) {
+    Tag result = new Tag();
 
-		if (httpTag.startsWith("\"") && httpTag.endsWith("\""))
-		{
-			result.setOpaqueTag(httpTag.substring(1, httpTag.length() - 1));
-		}
-		else if (httpTag.equals("*"))
-		{
-			result.setOpaqueTag("*");
-		}
-		else
-		{
-			throw new IllegalArgumentException("Invalid tag format detected: " + httpTag);
-		}
-		
-		return result;
-	}
+    if (httpTag.startsWith("W")) {
+      result.setWeak(true);
+      httpTag = httpTag.substring(1);
+    } else {
+      result.setWeak(false);
+    }
 
-	/** The opaque tag string. */
-	private String opaqueTag;
+    if (httpTag.startsWith("\"") && httpTag.endsWith("\"")) {
+      result.setOpaqueTag(httpTag.substring(1, httpTag.length() - 1));
+    } else if (httpTag.equals("*")) {
+      result.setOpaqueTag("*");
+    } else {
+      throw new IllegalArgumentException("Invalid tag format detected: " + httpTag);
+    }
 
-	/** The tag weakness. */
-	private boolean weak;
-	
-	/**
-	 * Default constructor. 
-	 * The opaque tag is set to null and the weakness indicator is set to true.
-	 */
-	public Tag()
-	{
-		this(null, true);
-	}
+    return result;
+  }
 
-	/**
-	 * Constructor.
-	 * @param httpTag The HTTP tag string; if it starts with a 'W' the tag will be marked as weak and the data 
-	 * following the 'W' used as the tag; otherwise it should be surrounded with quotes (e.g., "sometag").
-	 * @deprecated Use the static parse() method instead.
-	 */
-	@Deprecated
-	public Tag(String httpTag)
-	{
-		if (httpTag.startsWith("W"))
-		{
-			this.weak = true;
-			httpTag = httpTag.substring(1);
-		}
-		else
-		{
-			this.weak = false;
-		}
+  /** The opaque tag string. */
+  private String opaqueTag;
 
-		if (httpTag.startsWith("\"") && httpTag.endsWith("\""))
-		{
-			this.opaqueTag = httpTag.substring(1, httpTag.length() - 1);
-		}
-		else if (httpTag.equals("*"))
-		{
-			this.opaqueTag = "*";
-		}
-		else
-		{
-			throw new IllegalArgumentException("Invalid tag format detected: " + httpTag);
-		}
+  /** The tag weakness. */
+  private boolean weak;
 
-	}
+  /**
+   * Default constructor. The opaque tag is set to null and the weakness indicator is set to true.
+   */
+  public Tag() {
+    this(null, true);
+  }
 
-	/**
-	 * Constructor.
-	 * @param opaqueTag The tag value.
-	 * @param weak The weakness indicator.
-	 */
-	public Tag(String opaqueTag, boolean weak)
-	{
-		this.opaqueTag = opaqueTag;
-		this.weak = weak;
-	}
-	
-	/**
-	 * Indicates if both tags are equal.
-	 * @param object The object to compare to.
-	 * @return True if both tags are equal.
-	 */
-	@Override
-	public boolean equals(Object object)
-	{
-		return (object instanceof Tag) && getName().equals(((Tag) object).getName());
-	}
+  /**
+   * Constructor.
+   *
+   * @param httpTag The HTTP tag string; if it starts with a 'W' the tag will be marked as weak and
+   *     the data following the 'W' used as the tag; otherwise it should be surrounded with quotes
+   *     (e.g., "sometag").
+   * @deprecated Use the static parse() method instead.
+   */
+  @Deprecated
+  public Tag(String httpTag) {
+    if (httpTag.startsWith("W")) {
+      this.weak = true;
+      httpTag = httpTag.substring(1);
+    } else {
+      this.weak = false;
+    }
 
-	/**
-	 * Returns tag formatted as an HTTP tag string.
-	 * @return The formatted HTTP tag string.
-	 * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.11">HTTP Entity Tags</a>
-	 */
-	public String format()
-	{
-		if (getOpaqueTag().equals("*"))
-		{
-			return "*";
-		}
-		else
-		{
-			StringBuilder sb = new StringBuilder();
-			if (isWeak()) sb.append("W/");
-			return sb.append('"').append(getOpaqueTag()).append('"').toString();
-		}
-	}
+    if (httpTag.startsWith("\"") && httpTag.endsWith("\"")) {
+      this.opaqueTag = httpTag.substring(1, httpTag.length() - 1);
+    } else if (httpTag.equals("*")) {
+      this.opaqueTag = "*";
+    } else {
+      throw new IllegalArgumentException("Invalid tag format detected: " + httpTag);
+    }
+  }
 
-	/**
-	 * Returns the description.
-	 * @return The description.
-	 */
-	public String getDescription()
-	{
-		return "Validation tag equivalent to the HTTP entity tag";
-	}
+  /**
+   * Constructor.
+   *
+   * @param opaqueTag The tag value.
+   * @param weak The weakness indicator.
+   */
+  public Tag(String opaqueTag, boolean weak) {
+    this.opaqueTag = opaqueTag;
+    this.weak = weak;
+  }
 
-	/**
-	 * Returns the equivalent HTTP string.
-	 * @return The equivalent HTTP string.
-	 * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.11">HTTP Entity Tags</a>
-	 * @deprecated Use the format() method instead.
-	 */
-	@Deprecated
-	public String getName()
-	{
-		if (getOpaqueTag().equals("*"))
-		{
-			return "*";
-		}
-		else
-		{
-			StringBuilder sb = new StringBuilder();
-			if (isWeak()) sb.append("W/");
-			return sb.append('"').append(getOpaqueTag()).append('"').toString();
-		}
-	}
+  /**
+   * Indicates if both tags are equal.
+   *
+   * @param object The object to compare to.
+   * @return True if both tags are equal.
+   */
+  @Override
+  public boolean equals(Object object) {
+    return (object instanceof Tag) && getName().equals(((Tag) object).getName());
+  }
 
-	/**
-	 * Returns the opaque tag string.
-	 * @return The opaque tag string.
-	 */
-	public String getOpaqueTag()
-	{
-		return opaqueTag;
-	}
+  /**
+   * Returns tag formatted as an HTTP tag string.
+   *
+   * @return The formatted HTTP tag string.
+   * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.11">HTTP Entity
+   *     Tags</a>
+   */
+  public String format() {
+    if (getOpaqueTag().equals("*")) {
+      return "*";
+    } else {
+      StringBuilder sb = new StringBuilder();
+      if (isWeak()) sb.append("W/");
+      return sb.append('"').append(getOpaqueTag()).append('"').toString();
+    }
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public int hashCode()
-	{
-		return (getName() == null) ? 0 : getName().hashCode();
-	}
+  /**
+   * Returns the description.
+   *
+   * @return The description.
+   */
+  public String getDescription() {
+    return "Validation tag equivalent to the HTTP entity tag";
+  }
 
-	/**
-	 * Indicates if the tag is weak.
-	 * @return True if the tag is weak, false if the tag is strong.
-	 */
-	public boolean isWeak()
-	{
-		return weak;
-	}
+  /**
+   * Returns the equivalent HTTP string.
+   *
+   * @return The equivalent HTTP string.
+   * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.11">HTTP Entity
+   *     Tags</a>
+   * @deprecated Use the format() method instead.
+   */
+  @Deprecated
+  public String getName() {
+    if (getOpaqueTag().equals("*")) {
+      return "*";
+    } else {
+      StringBuilder sb = new StringBuilder();
+      if (isWeak()) sb.append("W/");
+      return sb.append('"').append(getOpaqueTag()).append('"').toString();
+    }
+  }
 
-	/**
-	 * Sets the opaque tag string.
-	 * @param opaqueTag The opaque tag string.
-	 */
-	public void setOpaqueTag(String opaqueTag)
-	{
-		this.opaqueTag = opaqueTag;
-	}
+  /**
+   * Returns the opaque tag string.
+   *
+   * @return The opaque tag string.
+   */
+  public String getOpaqueTag() {
+    return opaqueTag;
+  }
 
-	/**
-	 * Sets the tag weakness.
-	 * @param weak True if the tag is weak, false if the tag is strong.
-	 */
-	public void setWeak(boolean weak)
-	{
-		this.weak = weak;
-	}
+  /** {@inheritDoc} */
+  @Override
+  public int hashCode() {
+    return (getName() == null) ? 0 : getName().hashCode();
+  }
 
+  /**
+   * Indicates if the tag is weak.
+   *
+   * @return True if the tag is weak, false if the tag is strong.
+   */
+  public boolean isWeak() {
+    return weak;
+  }
+
+  /**
+   * Sets the opaque tag string.
+   *
+   * @param opaqueTag The opaque tag string.
+   */
+  public void setOpaqueTag(String opaqueTag) {
+    this.opaqueTag = opaqueTag;
+  }
+
+  /**
+   * Sets the tag weakness.
+   *
+   * @param weak True if the tag is weak, false if the tag is strong.
+   */
+  public void setWeak(boolean weak) {
+    this.weak = weak;
+  }
 }

@@ -26,11 +26,9 @@ package org.argouml.uml.ui.model_management;
 
 import java.awt.event.ActionEvent;
 import java.util.Collection;
-
 import javax.swing.Action;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
@@ -41,74 +39,64 @@ import org.argouml.uml.ui.UMLLinkedList;
 import org.argouml.uml.ui.foundation.core.UMLClassifierFeatureListModel;
 import org.argouml.util.ConfigLoader;
 
-/**
- * A property panel for UML subsystems.
- */
+/** A property panel for UML subsystems. */
 public class PropPanelSubsystem extends PropPanelPackage {
 
-    private JScrollPane featureScroll;
+  private JScrollPane featureScroll;
 
-    private static UMLClassifierFeatureListModel featureListModel =
-        new UMLClassifierFeatureListModel();
+  private static UMLClassifierFeatureListModel featureListModel =
+      new UMLClassifierFeatureListModel();
 
-    /**
-     * The constructor.
-     *
-     */
-    public PropPanelSubsystem() {
-        super("Subsystem", lookupIcon("Subsystem"),
-                ConfigLoader.getTabPropsOrientation());
+  /** The constructor. */
+  public PropPanelSubsystem() {
+    super("Subsystem", lookupIcon("Subsystem"), ConfigLoader.getTabPropsOrientation());
 
-        addField(Translator.localize("label.available-features"),
-                getFeatureScroll());
+    addField(Translator.localize("label.available-features"), getFeatureScroll());
 
-        addAction(new ActionNewOperation());
+    addAction(new ActionNewOperation());
+  }
+
+  /**
+   * Add a new operation to this classifier.
+   *
+   * @author mvw@tigris.org
+   */
+  private class ActionNewOperation extends AbstractActionNewModelElement {
+
+    /** The constructor. */
+    public ActionNewOperation() {
+      super("button.new-operation");
+      putValue(Action.NAME, Translator.localize("button.new-operation"));
     }
 
     /**
-     * Add a new operation to this classifier.
-     *
-     * @author mvw@tigris.org
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
-    private class ActionNewOperation extends AbstractActionNewModelElement {
-
-        /**
-         * The constructor.
-         */
-        public ActionNewOperation() {
-            super("button.new-operation");
-            putValue(Action.NAME, Translator.localize("button.new-operation"));
-        }
-
-        /**
-         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-         */
-        public void actionPerformed(ActionEvent e) {
-            Object target = TargetManager.getInstance().getModelTarget();
-            if (Model.getFacade().isAClassifier(target)) {
-                Project p = ProjectManager.getManager().getCurrentProject();
-                Collection pCListeners = p.findFigsForMember(target);
-                Object model = p.getModel();
-                Object voidType = p.findType("void");
-                Object newOper = Model.getCoreFactory()
-                    .buildOperation(target, model, voidType, pCListeners);
-                TargetManager.getInstance().setTarget(newOper);
-                super.actionPerformed(e);
-            }
-        }
+    public void actionPerformed(ActionEvent e) {
+      Object target = TargetManager.getInstance().getModelTarget();
+      if (Model.getFacade().isAClassifier(target)) {
+        Project p = ProjectManager.getManager().getCurrentProject();
+        Collection pCListeners = p.findFigsForMember(target);
+        Object model = p.getModel();
+        Object voidType = p.findType("void");
+        Object newOper =
+            Model.getCoreFactory().buildOperation(target, model, voidType, pCListeners);
+        TargetManager.getInstance().setTarget(newOper);
+        super.actionPerformed(e);
+      }
     }
+  }
 
-    /**
-     * Returns the featureScroll.
-     *
-     * @return JScrollPane
-     */
-    public JScrollPane getFeatureScroll() {
-        if (featureScroll == null) {
-            JList list = new UMLLinkedList(featureListModel);
-            featureScroll = new JScrollPane(list);
-        }
-        return featureScroll;
+  /**
+   * Returns the featureScroll.
+   *
+   * @return JScrollPane
+   */
+  public JScrollPane getFeatureScroll() {
+    if (featureScroll == null) {
+      JList list = new UMLLinkedList(featureListModel);
+      featureScroll = new JScrollPane(list);
     }
-
+    return featureScroll;
+  }
 } /* end class PropPanelSubsystem */

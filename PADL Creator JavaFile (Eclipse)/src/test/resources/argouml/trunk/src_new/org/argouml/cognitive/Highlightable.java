@@ -24,6 +24,7 @@
 package org.argouml.cognitive;
 
 public interface Highlightable {
-    void setHighlight(boolean b);
-    boolean getHighlight();
+  void setHighlight(boolean b);
+
+  boolean getHighlight();
 } /* end interface Highlightable */

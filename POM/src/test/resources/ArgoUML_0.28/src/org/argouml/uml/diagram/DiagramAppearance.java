@@ -26,143 +26,120 @@ package org.argouml.uml.diagram;
 import java.awt.Font;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import javax.swing.UIManager;
-
 import org.apache.log4j.Logger;
 import org.argouml.configuration.Configuration;
 import org.argouml.configuration.ConfigurationKey;
 
 /**
  * Provides centralized methods dealing with diagram appearance.
- * <p>
- * These settings do not apply to the appearance of the ArgoUML application! <p>
- * 
- * In the MVC pattern, this is part of the Model.
+ *
+ * <p>These settings do not apply to the appearance of the ArgoUML application!
+ *
+ * <p>In the MVC pattern, this is part of the Model.
  *
  * @stereotype singleton
  * @author Aleksandar
  */
 public final class DiagramAppearance implements PropertyChangeListener {
 
-    /**
-     * Define a static log4j category variable for ArgoUML diagram appearance.
-     */
-    private static final Logger LOG = Logger.getLogger(DiagramAppearance.class);
+  /** Define a static log4j category variable for ArgoUML diagram appearance. */
+  private static final Logger LOG = Logger.getLogger(DiagramAppearance.class);
 
-    /**
-     * The configuration key for the font name.
-     */
-    public static final ConfigurationKey KEY_FONT_NAME = Configuration.makeKey(
-            "diagramappearance", "fontname");
+  /** The configuration key for the font name. */
+  public static final ConfigurationKey KEY_FONT_NAME =
+      Configuration.makeKey("diagramappearance", "fontname");
 
-    /**
-     * The configuration key for the font size.
-     */
-    public static final ConfigurationKey KEY_FONT_SIZE = Configuration.makeKey(
-            "diagramappearance", "fontsize");
+  /** The configuration key for the font size. */
+  public static final ConfigurationKey KEY_FONT_SIZE =
+      Configuration.makeKey("diagramappearance", "fontsize");
 
-    /**
-     * The instance.
-     */
-    private static final DiagramAppearance SINGLETON = new DiagramAppearance();
+  /** The instance. */
+  private static final DiagramAppearance SINGLETON = new DiagramAppearance();
 
-    /**
-     * Used for FigNodeModelElement#setStereotypeView(). 
-     * Represents the default view for 
-     * stereotypes applied to this node.
-     * 
-     * @see org.argouml.uml.diagram.ui.ActionStereotypeViewTextual
-     */
-    public static final int STEREOTYPE_VIEW_TEXTUAL = 0;
+  /**
+   * Used for FigNodeModelElement#setStereotypeView(). Represents the default view for stereotypes
+   * applied to this node.
+   *
+   * @see org.argouml.uml.diagram.ui.ActionStereotypeViewTextual
+   */
+  public static final int STEREOTYPE_VIEW_TEXTUAL = 0;
 
-    /**
-     * Used for FigNodeModelElement#setStereotypeView(). 
-     * Represents the view for stereotypes where the 
-     * default representation is replaced by a provided
-     * icon. 
-     * 
-     * @see org.argouml.uml.diagram.ui.ActionStereotypeViewBigIcon
-     */
-    public static final int STEREOTYPE_VIEW_BIG_ICON = 1;
+  /**
+   * Used for FigNodeModelElement#setStereotypeView(). Represents the view for stereotypes where the
+   * default representation is replaced by a provided icon.
+   *
+   * @see org.argouml.uml.diagram.ui.ActionStereotypeViewBigIcon
+   */
+  public static final int STEREOTYPE_VIEW_BIG_ICON = 1;
 
-    /**
-     * Used for FigNodeModelElement#setStereotypeView(). 
-     * Represents the view for stereotypes where the 
-     * default view is adorned with a small version of the
-     * provided icon.
-     * 
-     * @see org.argouml.uml.diagram.ui.ActionStereotypeViewSmallIcon
-     */
-    public static final int STEREOTYPE_VIEW_SMALL_ICON = 2;
+  /**
+   * Used for FigNodeModelElement#setStereotypeView(). Represents the view for stereotypes where the
+   * default view is adorned with a small version of the provided icon.
+   *
+   * @see org.argouml.uml.diagram.ui.ActionStereotypeViewSmallIcon
+   */
+  public static final int STEREOTYPE_VIEW_SMALL_ICON = 2;
 
-    /**
-     * The constructor.
-     */
-    private DiagramAppearance() {
-        Configuration.addListener(DiagramAppearance.KEY_FONT_NAME, this);
-        Configuration.addListener(DiagramAppearance.KEY_FONT_SIZE, this);
-//        Configuration.addListener(DiagramAppearance.KEY_FONT_BOLD, this);
-//        Configuration.addListener(DiagramAppearance.KEY_FONT_ITALLIC, this);
+  /** The constructor. */
+  private DiagramAppearance() {
+    Configuration.addListener(DiagramAppearance.KEY_FONT_NAME, this);
+    Configuration.addListener(DiagramAppearance.KEY_FONT_SIZE, this);
+    //        Configuration.addListener(DiagramAppearance.KEY_FONT_BOLD, this);
+    //        Configuration.addListener(DiagramAppearance.KEY_FONT_ITALLIC, this);
+  }
+
+  /**
+   * @return the singleton
+   */
+  public static DiagramAppearance getInstance() {
+    return SINGLETON;
+  }
+
+  /*
+   * Called after the diagram font gets changed. <p>
+   *
+   * TODO: Do we need to do anything here?
+   *
+   * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+   */
+  public void propertyChange(PropertyChangeEvent pce) {
+    LOG.info("Diagram appearance change:" + pce.getOldValue() + " to " + pce.getNewValue());
+  }
+
+  /**
+   * Gets font name. If it doesn't exist in configuration it creates new entries in configuration
+   * for appearance.
+   *
+   * <p>TODO: Why create in a getter?
+   *
+   * @return the name of the configured font
+   */
+  public String getConfiguredFontName() {
+    String fontName = Configuration.getString(DiagramAppearance.KEY_FONT_NAME);
+    if (fontName.equals("")) {
+      Font f = getStandardFont();
+      fontName = f.getName();
+
+      Configuration.setString(DiagramAppearance.KEY_FONT_NAME, f.getName());
+      Configuration.setInteger(DiagramAppearance.KEY_FONT_SIZE, f.getSize());
     }
 
-    /**
-     * @return the singleton
-     */
-    public static DiagramAppearance getInstance() {
-        return SINGLETON;
-    }
+    return fontName;
+  }
 
-    /*
-     * Called after the diagram font gets changed. <p>
-     * 
-     * TODO: Do we need to do anything here?
-     *
-     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
-     */
-    public void propertyChange(PropertyChangeEvent pce) {
-        LOG.info("Diagram appearance change:" + pce.getOldValue() + " to "
-                + pce.getNewValue());
+  /**
+   * This is the same function as LookAndFeelMgr.getInstance().getStandardFont(); but used for a
+   * totally different puropose: here it determines a default font when none is set. In the
+   * LookAndFeelMgr it determines the looks of the UI.
+   *
+   * @return the standard textfield font
+   */
+  private Font getStandardFont() {
+    Font font = UIManager.getDefaults().getFont("TextField.font");
+    if (font == null) {
+      font = (new javax.swing.JTextField()).getFont();
     }
-
-    /**
-     * Gets font name. If it doesn't exist in configuration it creates new
-     * entries in configuration for appearance.
-     * 
-     * TODO: Why create in a getter?
-     *
-     * @return the name of the configured font
-     */
-    public String getConfiguredFontName() {
-        String fontName = Configuration
-                .getString(DiagramAppearance.KEY_FONT_NAME);
-        if (fontName.equals("")) {
-            Font f = getStandardFont();
-            fontName = f.getName();
-
-            Configuration.setString(DiagramAppearance.KEY_FONT_NAME, f
-                    .getName());
-            Configuration.setInteger(DiagramAppearance.KEY_FONT_SIZE, f
-                    .getSize());
-        }
-
-        return fontName;
-    }
-    
-    /**
-     * This is the same function as 
-     * LookAndFeelMgr.getInstance().getStandardFont();
-     * but used for a totally different puropose: here it determines 
-     * a default font when none is set. In the LookAndFeelMgr it
-     * determines the looks of the UI. 
-     * 
-     * @return the standard textfield font
-     */
-    private Font getStandardFont() {
-        Font font = UIManager.getDefaults().getFont("TextField.font");
-        if (font == null) {
-            font = (new javax.swing.JTextField()).getFont();
-        }
-        return font;
-    }
+    return font;
+  }
 }

@@ -25,48 +25,42 @@
 package org.argouml.uml.ui.behavior.common_behavior;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLAction;
 import org.argouml.uml.ui.UMLCheckBox2;
 
 /**
- * 
  * @author MarkusK
- *
  */
 public class ActionSetActionAsynchronous extends UMLAction {
 
-    private static final ActionSetActionAsynchronous SINGLETON =
-	new ActionSetActionAsynchronous();
+  private static final ActionSetActionAsynchronous SINGLETON = new ActionSetActionAsynchronous();
 
-    /**
-     * Constructor for ActionSetElementOwnershipSpecification.
-     */
-    protected ActionSetActionAsynchronous() {
-        super(Translator.localize("action.set"), true, NO_ICON);
-    }
+  /** Constructor for ActionSetElementOwnershipSpecification. */
+  protected ActionSetActionAsynchronous() {
+    super(Translator.localize("action.set"), true, NO_ICON);
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        if (e.getSource() instanceof UMLCheckBox2) {
-            UMLCheckBox2 source = (UMLCheckBox2) e.getSource();
-            Object target = source.getTarget();
-            if (Model.getFacade().isAAction(target)) {
-                Object m = target;
-                Model.getCommonBehaviorHelper().setAsynchronous(m, source.isSelected());
-            }
-        }
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    if (e.getSource() instanceof UMLCheckBox2) {
+      UMLCheckBox2 source = (UMLCheckBox2) e.getSource();
+      Object target = source.getTarget();
+      if (Model.getFacade().isAAction(target)) {
+        Object m = target;
+        Model.getCommonBehaviorHelper().setAsynchronous(m, source.isSelected());
+      }
     }
+  }
 
-    /**
-     * @return Returns the SINGLETON.
-     */
-    public static ActionSetActionAsynchronous getInstance() {
-        return SINGLETON;
-    }
+  /**
+   * @return Returns the SINGLETON.
+   */
+  public static ActionSetActionAsynchronous getInstance() {
+    return SINGLETON;
+  }
 }

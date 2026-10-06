@@ -27,33 +27,27 @@ package org.argouml.uml.ui.behavior.common_behavior;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
-/**
- *
- */
-public class UMLInstanceLinkEndListModel
-    extends UMLModelElementListModel2 {
+/** */
+public class UMLInstanceLinkEndListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLInstanceLinkEndListModel.
-     */
-    public UMLInstanceLinkEndListModel() {
-        super("linkEnd");
+  /** Constructor for UMLInstanceLinkEndListModel. */
+  public UMLInstanceLinkEndListModel() {
+    super("linkEnd");
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (getTarget() != null) {
+      setAllElements(Model.getFacade().getLinkEnds(getTarget()));
     }
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (getTarget() != null) {
-            setAllElements(Model.getFacade().getLinkEnds(getTarget()));
-        }
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ element) {
-        return Model.getFacade().getLinkEnds(getTarget()).contains(element);
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ element) {
+    return Model.getFacade().getLinkEnds(getTarget()).contains(element);
+  }
 }

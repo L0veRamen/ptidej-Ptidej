@@ -27,22 +27,20 @@ package org.argouml.uml.ui;
 import org.argouml.ui.targetmanager.TargetManager;
 
 /**
- * Action for removing (moving to trash) objects from the model. Objects can be:
- * - Modelelements (NSUML)
- * - Diagrams (argodiagram and it's children)
- * The root model and the last diagram in the project can not be removed. The
- * reason for this is to prevent problems updating the detailspane and the
- * navpane. Besides that, it is not possible to make a new root model.
+ * Action for removing (moving to trash) objects from the model. Objects can be: - Modelelements
+ * (NSUML) - Diagrams (argodiagram and it's children) The root model and the last diagram in the
+ * project can not be removed. The reason for this is to prevent problems updating the detailspane
+ * and the navpane. Besides that, it is not possible to make a new root model.
  *
  * @author original author not known.
  * @author jaap.branderhorst@xs4all.nl extensions
  */
 public class ActionDeleteModelElements extends ActionBaseDelete {
 
-    /**
-     * @return the complete array of targets
-     */
-    protected Object[] getTargets() {
-        return TargetManager.getInstance().getTargets().toArray();
-    }
+  /**
+   * @return the complete array of targets
+   */
+  protected Object[] getTargets() {
+    return TargetManager.getInstance().getTargets().toArray();
+  }
 } /* end class ActionRemoveFromModel */

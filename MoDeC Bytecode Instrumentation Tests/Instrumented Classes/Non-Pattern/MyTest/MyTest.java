@@ -1,31 +1,26 @@
 /**
  * @(#)MyTest.java
  *
- *
- * @author 
+ * @author
  * @version 1.00 2007/2/19
  */
-
-
 public class A {
 
-    public void mA() {
-    	B b = new B() ;
-    	boolean test1 = true ;
-    	boolean test2 = true ;
-    	if(test1)
-    		while (test2)
-    		{
-    			b.mB();
-    			test1 = false ;
-    			test2 = false ;
-    		}  			
-	}   
+  public void mA() {
+    B b = new B();
+    boolean test1 = true;
+    boolean test2 = true;
+    if (test1)
+      while (test2) {
+        b.mB();
+        test1 = false;
+        test2 = false;
+      }
+  }
 }
 
 class B {
-	public void mB() 
-	{
-		System.out.println("mB");
-	}
+  public void mB() {
+    System.out.println("mB");
+  }
 }

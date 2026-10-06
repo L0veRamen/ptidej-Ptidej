@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -15,30 +15,24 @@
 package util.parser.java.v14.nodes;
 
 /**
- * Grammar production:
- * f0 -> Initializer()
- *       | NestedClassDeclaration()
- *       | NestedInterfaceDeclaration()
- *       | ConstructorDeclaration()
- *       | MethodDeclaration()
- *       | FieldDeclaration()
+ * Grammar production: f0 -> Initializer() | NestedClassDeclaration() | NestedInterfaceDeclaration()
+ * | ConstructorDeclaration() | MethodDeclaration() | FieldDeclaration()
  */
 public class ClassBodyDeclaration implements Node {
-   /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-public NodeChoice f0;
+  /** */
+  private static final long serialVersionUID = 1L;
 
-   public ClassBodyDeclaration(NodeChoice n0) {
-      this.f0 = n0;
-   }
+  public NodeChoice f0;
 
-   public void accept(util.parser.java.v14.visitors.Visitor v) {
-      v.visit(this);
-   }
-   public Object accept(util.parser.java.v14.visitors.ObjectVisitor v, Object argu) {
-      return v.visit(this,argu);
-   }
+  public ClassBodyDeclaration(NodeChoice n0) {
+    this.f0 = n0;
+  }
+
+  public void accept(util.parser.java.v14.visitors.Visitor v) {
+    v.visit(this);
+  }
+
+  public Object accept(util.parser.java.v14.visitors.ObjectVisitor v, Object argu) {
+    return v.visit(this, argu);
+  }
 }
-

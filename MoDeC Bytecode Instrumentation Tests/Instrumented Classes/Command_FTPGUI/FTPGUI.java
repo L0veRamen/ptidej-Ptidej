@@ -1,5 +1,6 @@
-//package COMMAND.GUI.before;
+// package COMMAND.GUI.before;
 
+import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.GridBagConstraints;
@@ -9,7 +10,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -20,8 +20,6 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-
-import com.sun.java.swing.plaf.windows.WindowsLookAndFeel;
 
 public class FTPGUI extends JFrame {
   public static final String newline = "\n";
@@ -49,22 +47,20 @@ public class FTPGUI extends JFrame {
     remoteList = new JList(defRemoteList);
     pnlFTPUI = new JPanel();
 
-    localList.setSelectionMode(
-      ListSelectionModel.SINGLE_SELECTION);
+    localList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     localList.setSelectedIndex(-1);
     JScrollPane spLocalList = new JScrollPane(localList);
 
-    remoteList.setSelectionMode(
-      ListSelectionModel.SINGLE_SELECTION);
+    remoteList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     remoteList.setSelectedIndex(-1);
     JScrollPane spRemoteList = new JScrollPane(remoteList);
 
-    //Create Labels
+    // Create Labels
     JLabel lblLocalList = new JLabel("Local List:");
     JLabel lblRemoteList = new JLabel("Remote List:");
     JLabel lblSpacer = new JLabel("         ");
 
-    //Create buttons
+    // Create buttons
     btnUpload = new JButton(FTPGUI.UPLOAD);
     btnUpload.setMnemonic(KeyEvent.VK_U);
     btnDownload = new JButton(FTPGUI.DOWNLOAD);
@@ -109,11 +105,11 @@ public class FTPGUI extends JFrame {
     gbc2.gridy = 1;
     gridbag2.setConstraints(spRemoteList, gbc2);
 
-    //-----------------------------------
-    //For layout purposes, put the buttons in a separate panel
+    // -----------------------------------
+    // For layout purposes, put the buttons in a separate panel
     JPanel buttonPanel = new JPanel();
 
-    //----------------------------------------------
+    // ----------------------------------------------
     GridBagLayout gridbag = new GridBagLayout();
     buttonPanel.setLayout(gridbag);
     GridBagConstraints gbc = new GridBagConstraints();
@@ -151,8 +147,8 @@ public class FTPGUI extends JFrame {
     gbc.insets.right = 2;
     gbc.insets.top = 40;
 
-    //****************************************************
-    //Add the buttons and the log to the frame
+    // ****************************************************
+    // Add the buttons and the log to the frame
     Container contentPane = getContentPane();
     contentPane.add(lstPanel, BorderLayout.CENTER);
     contentPane.add(buttonPanel, BorderLayout.SOUTH);
@@ -164,8 +160,8 @@ public class FTPGUI extends JFrame {
     } catch (Exception ex) {
       System.out.println(ex);
     }
-
   }
+
   private void initialize() {
     // fill some test data here into the listbox.
     defLocalList.addElement("first.html");
@@ -180,20 +176,19 @@ public class FTPGUI extends JFrame {
     defRemoteList.addElement("eighth.html");
     defRemoteList.addElement("ninth.html");
     defRemoteList.addElement("Design Patterns 2.html");
-
   }
 
   public static void main(String[] args) throws Exception {
 
     JFrame frame = new FTPGUI();
-    frame.addWindowListener(new WindowAdapter() {
+    frame.addWindowListener(
+        new WindowAdapter() {
           public void windowClosing(WindowEvent e) {
             System.exit(0);
           }
-        }
-                           );
+        });
 
-    //frame.pack();
+    // frame.pack();
     frame.setSize(450, 300);
     frame.setVisible(true);
   }
@@ -207,39 +202,29 @@ public class FTPGUI extends JFrame {
       }
       if (e.getActionCommand().equals(FTPGUI.UPLOAD)) {
         int index = localList.getSelectedIndex();
-        String selectedItem =
-          localList.getSelectedValue().toString();
-        ((DefaultListModel) localList.getModel()).remove(
-          index);
+        String selectedItem = localList.getSelectedValue().toString();
+        ((DefaultListModel) localList.getModel()).remove(index);
 
-        ((DefaultListModel) remoteList.getModel()).
-        addElement(selectedItem);
+        ((DefaultListModel) remoteList.getModel()).addElement(selectedItem);
       }
       if (e.getActionCommand().equals(FTPGUI.DOWNLOAD)) {
         int index = remoteList.getSelectedIndex();
-        String selectedItem =
-          remoteList.getSelectedValue().toString();
-        ((DefaultListModel) remoteList.getModel()).remove(
-          index);
+        String selectedItem = remoteList.getSelectedValue().toString();
+        ((DefaultListModel) remoteList.getModel()).remove(index);
 
-        ((DefaultListModel) localList.getModel()).
-        addElement(selectedItem);
+        ((DefaultListModel) localList.getModel()).addElement(selectedItem);
       }
       if (e.getActionCommand().equals(FTPGUI.DELETE)) {
         int index = localList.getSelectedIndex();
         if (index >= 0) {
-          ((DefaultListModel) localList.getModel()).
-          remove(index);
+          ((DefaultListModel) localList.getModel()).remove(index);
         }
 
         index = remoteList.getSelectedIndex();
         if (index >= 0) {
-          ((DefaultListModel) remoteList.getModel()).
-          remove(index);
+          ((DefaultListModel) remoteList.getModel()).remove(index);
         }
       }
-
     }
   }
-}// end of class
-
+} // end of class

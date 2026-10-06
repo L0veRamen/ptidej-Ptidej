@@ -29,31 +29,29 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
 
 /**
  * Listmodel to show the sender belonging to some message.
+ *
  * @since Oct 3, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
 public class UMLStimulusSenderListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLMessageSenderListModel.
-     */
-    public UMLStimulusSenderListModel() {
-        super("sender");
-    }
+  /** Constructor for UMLMessageSenderListModel. */
+  public UMLStimulusSenderListModel() {
+    super("sender");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        removeAllElements();
-        addElement(Model.getFacade().getSender(getTarget()));
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    removeAllElements();
+    addElement(Model.getFacade().getSender(getTarget()));
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object elem) {
-        return Model.getFacade().getSender(getTarget()) == elem;
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object elem) {
+    return Model.getFacade().getSender(getTarget()) == elem;
+  }
 }

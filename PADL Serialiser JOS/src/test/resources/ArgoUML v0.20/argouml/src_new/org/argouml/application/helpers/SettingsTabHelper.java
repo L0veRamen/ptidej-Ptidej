@@ -25,14 +25,12 @@
 package org.argouml.application.helpers;
 
 import java.util.Vector;
-
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
-
 import org.argouml.application.api.PluggableSettingsTab;
 import org.argouml.application.api.SettingsTabPanel;
 import org.argouml.i18n.Translator;
@@ -41,113 +39,121 @@ import org.argouml.i18n.Translator;
  * Helper object for Settings Tabs.
  *
  * @author Thierry Lach
- * @since  0.9.4
+ * @since 0.9.4
  */
 public abstract class SettingsTabHelper extends JPanel
     implements SettingsTabPanel, PluggableSettingsTab {
 
-    /**
-     * Constructor.
-     */
-    public SettingsTabHelper() {
-    }
+  /** Constructor. */
+  public SettingsTabHelper() {}
 
-    /**
-     * Helper for localization, localizes using the bundle passed in
-     * the constructor.
-     *
-     * @param key the key for the string to localize
-     * @return the localized string
-     */
-    public String localize(String key) {
-        return Translator.localize(key);
-    }
+  /**
+   * Helper for localization, localizes using the bundle passed in the constructor.
+   *
+   * @param key the key for the string to localize
+   * @return the localized string
+   */
+  public String localize(String key) {
+    return Translator.localize(key);
+  }
 
-    /**
-     * Create a localized JLabel.
-     *
-     * @param key the key of the text for the label
-     * @return a new label with a localized text for the given key
-     */
-    protected JLabel createLabel(String key) {
-    	return new JLabel(localize(key));
-    }
+  /**
+   * Create a localized JLabel.
+   *
+   * @param key the key of the text for the label
+   * @return a new label with a localized text for the given key
+   */
+  protected JLabel createLabel(String key) {
+    return new JLabel(localize(key));
+  }
 
-    /**
-     * Create a localized JCheckBox.
-     *
-     * @param key the key for the string to be localized
-     * @return a new checkbox with localized text
-     */
-    protected JCheckBox createCheckBox(String key) {
-    	JCheckBox j = new JCheckBox(localize(key));
-	return j;
-    }
+  /**
+   * Create a localized JCheckBox.
+   *
+   * @param key the key for the string to be localized
+   * @return a new checkbox with localized text
+   */
+  protected JCheckBox createCheckBox(String key) {
+    JCheckBox j = new JCheckBox(localize(key));
+    return j;
+  }
 
-    /**
-     * Create a localized JRadioButton.
-     *
-     * @param bg the buttongroup
-     * @param key the key for the string to be localized
-     * @param selected true if selected
-     * @return a new radiobutton with localized string
-     */
-    protected JRadioButton createRadioButton(ButtonGroup bg, String key,
-					     boolean selected) {
-	JRadioButton j = new JRadioButton(localize(key), selected);
-	bg.add(j);
-	return j;
-    }
+  /**
+   * Create a localized JRadioButton.
+   *
+   * @param bg the buttongroup
+   * @param key the key for the string to be localized
+   * @param selected true if selected
+   * @return a new radiobutton with localized string
+   */
+  protected JRadioButton createRadioButton(ButtonGroup bg, String key, boolean selected) {
+    JRadioButton j = new JRadioButton(localize(key), selected);
+    bg.add(j);
+    return j;
+  }
 
-    /**
-     * Create a JTextField.
-     *
-     * @return a new textfield
-     */
-    protected JTextField createTextField() {
-    	JTextField j = new JTextField();
-	return j;
-    }
+  /**
+   * Create a JTextField.
+   *
+   * @return a new textfield
+   */
+  protected JTextField createTextField() {
+    JTextField j = new JTextField();
+    return j;
+  }
 
-    /**
-     * @see org.argouml.application.api.ArgoModule#setModuleEnabled(boolean)
-     */
-    public void setModuleEnabled(boolean v) { }
+  /**
+   * @see org.argouml.application.api.ArgoModule#setModuleEnabled(boolean)
+   */
+  public void setModuleEnabled(boolean v) {}
 
-    /**
-     * @see org.argouml.application.api.ArgoModule#initializeModule()
-     */
-    public boolean initializeModule() { return true; }
+  /**
+   * @see org.argouml.application.api.ArgoModule#initializeModule()
+   */
+  public boolean initializeModule() {
+    return true;
+  }
 
-    /**
-     * @see org.argouml.application.api.Pluggable#inContext(java.lang.Object[])
-     */
-    public boolean inContext(Object[] o) { return true; }
+  /**
+   * @see org.argouml.application.api.Pluggable#inContext(java.lang.Object[])
+   */
+  public boolean inContext(Object[] o) {
+    return true;
+  }
 
-    /**
-     * @see org.argouml.application.api.ArgoModule#isModuleEnabled()
-     */
-    public boolean isModuleEnabled() { return true; }
+  /**
+   * @see org.argouml.application.api.ArgoModule#isModuleEnabled()
+   */
+  public boolean isModuleEnabled() {
+    return true;
+  }
 
-    /**
-     * @see org.argouml.application.api.ArgoModule#getModulePopUpActions(
-     * java.util.Vector, java.lang.Object)
-     */
-    public Vector getModulePopUpActions(Vector v, Object o) { return null; }
+  /**
+   * @see org.argouml.application.api.ArgoModule#getModulePopUpActions( java.util.Vector,
+   *     java.lang.Object)
+   */
+  public Vector getModulePopUpActions(Vector v, Object o) {
+    return null;
+  }
 
-    /**
-     * @see org.argouml.application.api.ArgoModule#shutdownModule()
-     */
-    public boolean shutdownModule() { return true; }
+  /**
+   * @see org.argouml.application.api.ArgoModule#shutdownModule()
+   */
+  public boolean shutdownModule() {
+    return true;
+  }
 
-    /**
-     * @see org.argouml.application.api.PluggableSettingsTab#getSettingsTabPanel()
-     */
-    public SettingsTabPanel getSettingsTabPanel() { return this; }
+  /**
+   * @see org.argouml.application.api.PluggableSettingsTab#getSettingsTabPanel()
+   */
+  public SettingsTabPanel getSettingsTabPanel() {
+    return this;
+  }
 
-    /**
-     * @see org.argouml.application.api.SettingsTabPanel#getTabPanel()
-     */
-    public JPanel getTabPanel() { return this; }
+  /**
+   * @see org.argouml.application.api.SettingsTabPanel#getTabPanel()
+   */
+  public JPanel getTabPanel() {
+    return this;
+  }
 }
-

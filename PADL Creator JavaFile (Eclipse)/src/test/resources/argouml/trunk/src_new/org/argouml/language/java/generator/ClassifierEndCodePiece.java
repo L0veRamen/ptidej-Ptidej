@@ -30,119 +30,105 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Stack;
 import java.util.Vector;
-
 import org.argouml.model.Model;
 
 /**
  * This code piece represents the end of a class or an interface.
  *
- * JavaRE - Code generation and reverse engineering for UML and Java
+ * <p>JavaRE - Code generation and reverse engineering for UML and Java
  *
  * @author Marcus Andersson andersson@users.sourceforge.net
  */
 public class ClassifierEndCodePiece extends NamedCodePiece {
-    /**
-     * The curly bracket at the end.
-     */
-    private CodePiece bracket;
+  /** The curly bracket at the end. */
+  private CodePiece bracket;
 
-    /**
-     * Constructor.
-     *
-     * @param br The curly bracket at the end.
-     */
-    public ClassifierEndCodePiece(CodePiece br) {
-	bracket = br;
+  /**
+   * Constructor.
+   *
+   * @param br The curly bracket at the end.
+   */
+  public ClassifierEndCodePiece(CodePiece br) {
+    bracket = br;
+  }
+
+  /**
+   * @see org.argouml.language.java.generator.CodePiece#getText()
+   *     <p>Return the string representation for this piece of code.
+   */
+  public StringBuffer getText() {
+    return bracket.getText();
+  }
+
+  /**
+   * @see org.argouml.language.java.generator.CodePiece#getStartPosition()
+   *     <p>Return the start position.
+   */
+  public int getStartPosition() {
+    return bracket.getStartPosition();
+  }
+
+  /**
+   * @see org.argouml.language.java.generator.CodePiece#getEndPosition()
+   *     <p>Return the end position.
+   */
+  public int getEndPosition() {
+    return bracket.getEndPosition();
+  }
+
+  /**
+   * @see org.argouml.language.java.generator.CodePiece#getStartLine()
+   *     <p>Return the start line
+   */
+  public int getStartLine() {
+    return bracket.getStartLine();
+  }
+
+  /**
+   * @see org.argouml.language.java.generator.CodePiece#getEndLine()
+   *     <p>Return the end line
+   */
+  public int getEndLine() {
+    return bracket.getEndLine();
+  }
+
+  /**
+   * @see org.argouml.language.java.generator.NamedCodePiece#write( java.io.BufferedReader,
+   *     java.io.BufferedWriter, java.util.Stack)
+   *     <p>Write the code this piece represents to file. This removes one layer from the stack and
+   *     adds new inner classes and features to the class or interface.
+   */
+  public void write(BufferedReader reader, BufferedWriter writer, Stack parseStateStack)
+      throws IOException {
+    ParseState parseState = (ParseState) parseStateStack.pop();
+    Object mClassifier = parseState.getClassifier();
+    Vector newFeatures = parseState.getNewFeatures();
+    Vector newInnerClasses = parseState.getNewInnerClasses();
+
+    // Insert new features
+    for (Iterator i = newFeatures.iterator(); i.hasNext(); ) {
+      Object mFeature = /*(MFeature)*/ i.next();
+      if (Model.getFacade().isAOperation(mFeature)) {
+        CodeGenerator.generateOperation(mFeature, mClassifier, reader, writer);
+      } else if (Model.getFacade().isAAttribute(mFeature)) {
+        CodeGenerator.generateAttribute(mFeature, mClassifier, reader, writer);
+      }
     }
 
-    /**
-     * @see org.argouml.language.java.generator.CodePiece#getText()
-     *
-     * Return the string representation for this piece of code.
-     */
-    public StringBuffer getText() {
-	return bracket.getText();
+    // Insert new inner classes
+    for (Iterator i = newInnerClasses.iterator(); i.hasNext(); ) {
+      Object element = /*(MModelElement)*/ i.next();
+      if (Model.getFacade().isAClass(element)) {
+        CodeGenerator.generateClass(element, reader, writer);
+      } else if (Model.getFacade().isAInterface(element)) {
+        CodeGenerator.generateInterface(element, reader, writer);
+      }
     }
 
-    /**
-     * @see org.argouml.language.java.generator.CodePiece#getStartPosition()
-     *
-     * Return the start position.
-     */
-    public int getStartPosition() {
-	return bracket.getStartPosition();
-    }
-
-    /**
-     * @see org.argouml.language.java.generator.CodePiece#getEndPosition()
-     *
-     * Return the end position.
-     */
-    public int getEndPosition() {
-	return bracket.getEndPosition();
-    }
-
-    /**
-     * @see org.argouml.language.java.generator.CodePiece#getStartLine()
-     *
-     * Return the start line
-     */
-    public int getStartLine() {
-	return bracket.getStartLine();
-    }
-
-    /**
-     * @see org.argouml.language.java.generator.CodePiece#getEndLine()
-     *
-     * Return the end line
-     */
-    public int getEndLine() {
-	return bracket.getEndLine();
-    }
-
-    /**
-     * @see org.argouml.language.java.generator.NamedCodePiece#write(
-     *         java.io.BufferedReader, java.io.BufferedWriter, java.util.Stack)
-     *
-     * Write the code this piece represents to file. This removes one
-     * layer from the stack and adds new inner classes and features
-     * to the class or interface.
-     */
-    public void write(BufferedReader reader,
-                      BufferedWriter writer,
-                      Stack parseStateStack) throws IOException {
-        ParseState parseState = (ParseState) parseStateStack.pop();
-        Object mClassifier = parseState.getClassifier();
-        Vector newFeatures = parseState.getNewFeatures();
-        Vector newInnerClasses = parseState.getNewInnerClasses();
-
-        // Insert new features
-        for (Iterator i = newFeatures.iterator(); i.hasNext();) {
-            Object mFeature = /*(MFeature)*/ i.next();
-            if (Model.getFacade().isAOperation(mFeature)) {
-                CodeGenerator.generateOperation(mFeature,
-						mClassifier, reader, writer);
-            } else if (Model.getFacade().isAAttribute(mFeature)) {
-                CodeGenerator.generateAttribute(mFeature,
-						mClassifier, reader, writer);
-            }
-        }
-
-        // Insert new inner classes
-        for (Iterator i = newInnerClasses.iterator(); i.hasNext();) {
-            Object element = /*(MModelElement)*/ i.next();
-            if (Model.getFacade().isAClass(element)) {
-                CodeGenerator.generateClass(element, reader, writer);
-            } else if (Model.getFacade().isAInterface(element)) {
-                CodeGenerator.generateInterface(element, reader, writer);
-            }
-        }
-
-	StringBuffer sb =
-	    GeneratorJava.getInstance()
-	        .appendClassifierEnd(new StringBuffer(2), mClassifier);
-	writer.write (sb.toString());
-	// fast forward original code (overwriting)
-	ffCodePiece(reader, null);
-    }
+    StringBuffer sb =
+        GeneratorJava.getInstance().appendClassifierEnd(new StringBuffer(2), mClassifier);
+    writer.write(sb.toString());
+    // fast forward original code (overwriting)
+    ffCodePiece(reader, null);
+  }
 }

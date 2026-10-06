@@ -27,38 +27,39 @@ package org.argouml.uml.diagram.ui;
 import org.argouml.model.Model;
 
 class ActionModifierAbstract extends AbstractActionCheckBoxMenuItem {
-    /**
-     * The constructor.
-     *
-     * @param o the target
-     */
-    public ActionModifierAbstract(Object o) {
-        super("checkbox.abstract-uc", NO_ICON);
-        putValue("SELECTED", new Boolean(valueOfTarget(o)));
-    }
+  /**
+   * The constructor.
+   *
+   * @param o the target
+   */
+  public ActionModifierAbstract(Object o) {
+    super("checkbox.abstract-uc", NO_ICON);
+    putValue("SELECTED", new Boolean(valueOfTarget(o)));
+  }
 
-    /**
-     * This action is performed on ALL targets.
-     *
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement.AbstractActionCheckBoxMenuItem#toggleValueOfTarget(java.lang.Object)
-     */
-    void toggleValueOfTarget(Object t) {
-        Model.getCoreHelper().setAbstract(t,
-                            !Model.getFacade().isAbstract(t));
-    }
-    
-    /**
-     * This action should be enabled when: <ul>
-     * <li>all targets are modelelements that support 
-     *     the "abstract" checkmark and 
-     * <li>all targets are either abstract or not 
-     *     (mixed is not yet supported, but could be if a tri-state
-     *     checkmark is implemented) 
-     * </ul>
-     * 
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement.AbstractActionCheckBoxMenuItem#valueOfTarget(java.lang.Object)
-     */
-    boolean valueOfTarget(Object t) {
-        return Model.getFacade().isAbstract(t);
-    }
+  /**
+   * This action is performed on ALL targets.
+   *
+   * @see
+   *     org.argouml.uml.diagram.ui.FigNodeModelElement.AbstractActionCheckBoxMenuItem#toggleValueOfTarget(java.lang.Object)
+   */
+  void toggleValueOfTarget(Object t) {
+    Model.getCoreHelper().setAbstract(t, !Model.getFacade().isAbstract(t));
+  }
+
+  /**
+   * This action should be enabled when:
+   *
+   * <ul>
+   *   <li>all targets are modelelements that support the "abstract" checkmark and
+   *   <li>all targets are either abstract or not (mixed is not yet supported, but could be if a
+   *       tri-state checkmark is implemented)
+   * </ul>
+   *
+   * @see
+   *     org.argouml.uml.diagram.ui.FigNodeModelElement.AbstractActionCheckBoxMenuItem#valueOfTarget(java.lang.Object)
+   */
+  boolean valueOfTarget(Object t) {
+    return Model.getFacade().isAbstract(t);
+  }
 }

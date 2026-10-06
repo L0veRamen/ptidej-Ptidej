@@ -31,25 +31,24 @@ import org.eclipse.uml2.uml.ParameterDirectionKind;
 
 /**
  * The Eclipse UML2 implementation of DirectionKind.
- * 
+ *
  * @author Tom Morris
  */
 class DirectionKindEUMLImpl implements DirectionKind {
 
-    public Object getInOutParameter() {
-        return ParameterDirectionKind.INOUT_LITERAL;
-    }
+  public Object getInOutParameter() {
+    return ParameterDirectionKind.INOUT_LITERAL;
+  }
 
-    public Object getInParameter() {
-        return ParameterDirectionKind.IN_LITERAL;
-    }
+  public Object getInParameter() {
+    return ParameterDirectionKind.IN_LITERAL;
+  }
 
-    public Object getOutParameter() {
-        return ParameterDirectionKind.OUT_LITERAL;
-    }
+  public Object getOutParameter() {
+    return ParameterDirectionKind.OUT_LITERAL;
+  }
 
-    public Object getReturnParameter() {
-        return ParameterDirectionKind.RETURN_LITERAL;
-    }
-
+  public Object getReturnParameter() {
+    return ParameterDirectionKind.RETURN_LITERAL;
+  }
 }

@@ -27,129 +27,117 @@
   Author: Marcus Andersson andersson@users.sourceforge.net
 */
 
-
 package org.argouml.language.java.generator;
 
 import java.util.Vector;
-
 import org.argouml.model.Model;
+
 /**
-   This class handles information during the replacement of code
-   pieces. One parse state for each classifier handled.
-*/
+ * This class handles information during the replacement of code pieces. One parse state for each
+ * classifier handled.
+ */
 public class ParseState {
-    /**
-     * The current namespace.
-     */
-    private Object namespace;
+  /** The current namespace. */
+  private Object namespace;
 
-    /**
-     * The inner classes not found yet.
-     */
-    private Vector newInnerClasses;
+  /** The inner classes not found yet. */
+  private Vector newInnerClasses;
 
-    /**
-     * The features not found yet.
-     */
-    private Vector newFeatures;
+  /** The features not found yet. */
+  private Vector newFeatures;
 
-    /**
-     * The current classifier.
-     */
-    private Object mClassifier;
+  /** The current classifier. */
+  private Object mClassifier;
 
-    /**
-     * Create a new parse state.
-     *
-     * @param handle is the namespace the classifier belongs to.
-     */
-    public ParseState(Object handle) {
-        if (Model.getFacade().isAClassifier(handle)) {
-            this.mClassifier = handle;
-            namespace = handle;
-            newFeatures =
-                new Vector(Model.getFacade().getFeatures(mClassifier));
-            newInnerClasses =
-                new Vector(Model.getFacade().getOwnedElements(mClassifier));
-        } else {
-            this.mClassifier = null;
-            namespace = handle;
-            newFeatures = new Vector();
-            newInnerClasses = new Vector();
-        }
+  /**
+   * Create a new parse state.
+   *
+   * @param handle is the namespace the classifier belongs to.
+   */
+  public ParseState(Object handle) {
+    if (Model.getFacade().isAClassifier(handle)) {
+      this.mClassifier = handle;
+      namespace = handle;
+      newFeatures = new Vector(Model.getFacade().getFeatures(mClassifier));
+      newInnerClasses = new Vector(Model.getFacade().getOwnedElements(mClassifier));
+    } else {
+      this.mClassifier = null;
+      namespace = handle;
+      newFeatures = new Vector();
+      newInnerClasses = new Vector();
     }
+  }
 
-    /**
-       Tell the parse state that an inner classifier is found.
-
-       @param name The name of the classifier.
-       @return The new classifier.
-     */
-    public Object newClassifier(String name) {
-	Object mc = Model.getFacade().lookupIn(namespace, name);
-	if (mc != null) {
-	    newInnerClasses.remove(mc);
-	}
-	return mc;
+  /**
+   * Tell the parse state that an inner classifier is found.
+   *
+   * @param name The name of the classifier.
+   * @return The new classifier.
+   */
+  public Object newClassifier(String name) {
+    Object mc = Model.getFacade().lookupIn(namespace, name);
+    if (mc != null) {
+      newInnerClasses.remove(mc);
     }
+    return mc;
+  }
 
-    /**
-       Tell the parse state that a feature is found in the current
-       classifier.
+  /**
+   * Tell the parse state that a feature is found in the current classifier.
+   *
+   * @param mFeature The feature found.
+   */
+  public void newFeature(Object mFeature) {
+    newFeatures.remove(mFeature);
+  }
 
-       @param mFeature The feature found.
-    */
-    public void newFeature(Object mFeature) {
-	newFeatures.remove(mFeature);
+  /**
+   * Get the current classifier.
+   *
+   * @return the current classifier
+   */
+  public Object getClassifier() {
+    return mClassifier;
+  }
+
+  /**
+   * Get all features not in the source.
+   *
+   * @return all features not in the source
+   */
+  public Vector getNewFeatures() {
+    return new Vector(newFeatures);
+  }
+
+  /**
+   * Get all inner classes not in the source.
+   *
+   * @return all inner classes not in the source
+   */
+  public Vector getNewInnerClasses() {
+    return new Vector(newInnerClasses);
+  }
+
+  /**
+   * Get the current namespace.
+   *
+   * @return the current namespace
+   */
+  public Object getNamespace() {
+    return namespace;
+  }
+
+  /**
+   * Get the association ends.
+   *
+   * @return the association ends
+   */
+  public Vector getAssociationEnds() {
+    Vector result = new Vector();
+    if (mClassifier == null) {
+      return result;
     }
-
-    /**
-     * Get the current classifier.
-     *
-     * @return the current classifier
-     */
-    public Object getClassifier() {
-	return mClassifier;
-    }
-
-    /**
-     * Get all features not in the source.
-     *
-     * @return all features not in the source
-     */
-    public Vector getNewFeatures() {
-	return new Vector(newFeatures);
-    }
-
-    /**
-     * Get all inner classes not in the source.
-     *
-     * @return all inner classes not in the source
-     */
-    public Vector getNewInnerClasses() {
-	return new Vector(newInnerClasses);
-    }
-
-    /**
-     * Get the current namespace.
-     *
-     * @return the current namespace
-     */
-    public Object getNamespace() {
-	return namespace;
-    }
-
-    /**
-     * Get the association ends.
-     *
-     * @return the association ends
-     */
-    public Vector getAssociationEnds() {
-        Vector result = new Vector();
-        if (mClassifier == null) {
-            return result;
-        }
-        result.addAll(Model.getFacade().getAssociationEnds(mClassifier));
-        return result;
-    }
+    result.addAll(Model.getFacade().getAssociationEnds(mClassifier));
+    return result;
+  }
 }

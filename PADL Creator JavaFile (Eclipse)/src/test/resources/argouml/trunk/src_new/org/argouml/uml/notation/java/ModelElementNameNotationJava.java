@@ -29,7 +29,6 @@ import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.util.Stack;
 import java.util.Vector;
-
 import org.argouml.i18n.Translator;
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.Model;
@@ -39,258 +38,233 @@ import org.argouml.util.MyTokenizer;
 
 /**
  * Java notation for the name of a modelelement.
- * 
+ *
  * @author mvw@tigris.org
  */
 public class ModelElementNameNotationJava extends ModelElementNameNotation {
 
-    /**
-     * The constructor.
-     *
-     * @param name the modelelement
-     */
-    public ModelElementNameNotationJava(Object name) {
-        super(name);
+  /**
+   * The constructor.
+   *
+   * @param name the modelelement
+   */
+  public ModelElementNameNotationJava(Object name) {
+    super(name);
+  }
+
+  /**
+   * @see org.argouml.uml.notation.NotationProvider#parse(java.lang.Object, java.lang.String)
+   */
+  public void parse(Object modelElement, String text) {
+    try {
+      parseModelElement(modelElement, text);
+    } catch (ParseException pe) {
+      String msg = "statusmsg.bar.error.parsing.node-modelelement";
+      Object[] args = {
+        pe.getLocalizedMessage(), Integer.valueOf(pe.getErrorOffset()),
+      };
+      ProjectBrowser.getInstance().getStatusBar().showStatus(Translator.messageFormat(msg, args));
     }
+  }
 
-    /**
-     * @see org.argouml.uml.notation.NotationProvider#parse(java.lang.Object, java.lang.String)
-     */
-    public void parse(Object modelElement, String text) {
-        try {
-            parseModelElement(modelElement, text);
-        } catch (ParseException pe) {
-            String msg = "statusmsg.bar.error.parsing.node-modelelement";
-            Object[] args = {
-                pe.getLocalizedMessage(),
-                Integer.valueOf(pe.getErrorOffset()),
-            };
-            ProjectBrowser.getInstance().getStatusBar().showStatus(
-                Translator.messageFormat(msg, args));
-        }
-    }
+  /**
+   * @param modelElement the UML modelelement
+   * @param text the string to parse
+   */
+  private void parseModelElement(Object modelElement, String text) throws ParseException {
+    MyTokenizer st;
 
-    /**
-     * @param modelElement the UML modelelement
-     * @param text the string to parse
-     */
-    private void parseModelElement(Object modelElement, String text) 
-        throws ParseException {
-        MyTokenizer st;
+    boolean abstrac = false;
+    boolean fina = false;
+    boolean publi = false;
+    boolean privat = false;
+    boolean protect = false;
+    String token;
+    Vector path = null;
+    String name = null;
 
-        boolean abstrac = false;
-        boolean fina = false;
-        boolean publi = false;
-        boolean privat = false;
-        boolean protect = false;
-        String token;
-        Vector path = null;
-        String name = null;
+    try {
+      st = new MyTokenizer(text, " ,.,abstract,final,public,private,protected");
+      while (st.hasMoreTokens()) {
+        token = st.nextToken();
 
-        try {
-            st = new MyTokenizer(text, 
-                    " ,.,abstract,final,public,private,protected");
-            while (st.hasMoreTokens()) {
-                token = st.nextToken();
-
-                if (" ".equals(token)) {
-                    ; /* skip spaces */
-                } else if ("abstract".equals(token)) {
-                    abstrac = true;
-                } else if ("final".equals(token)) {
-                    fina = true;
-                } else if ("public".equals(token)) {
-                    publi = true;
-                } else if ("private".equals(token)) {
-                    privat = true;
-                } else if ("protected".equals(token)) {
-                    protect = true;
-                } else if (".".equals(token)) {
-                    if (name != null) {
-                        name = name.trim();
-                    }
-
-                    if (path != null && (name == null || "".equals(name))) {
-                        String msg = 
-                            "parsing.error.model-element-name.anon-qualifiers";
-                        throw new ParseException(Translator.localize(msg), 
-                                st.getTokenIndex());
-                    }
-
-                    if (path == null) {
-                        path = new Vector();
-                    }
-                    if (name != null) {
-                        path.add(name);
-                    }
-                    name = null;
-                
-                } else { // the name itself
-                    if (name != null) {
-                        String msg = 
-                            "parsing.error.model-element-name.twin-names";
-                        throw new ParseException(Translator.localize(msg), 
-                                st.getTokenIndex());
-                    }
-                    name = token;
-                }
-            }
-        } catch (NoSuchElementException nsee) {
-            String msg = 
-                "parsing.error.model-element-name.unexpected-name-element";
-            throw new ParseException(Translator.localize(msg),
-                    text.length());
-        } catch (ParseException pre) {
-            throw pre;
-        }
-        
-        if (name != null) {
+        if (" ".equals(token)) {
+          ; /* skip spaces */
+        } else if ("abstract".equals(token)) {
+          abstrac = true;
+        } else if ("final".equals(token)) {
+          fina = true;
+        } else if ("public".equals(token)) {
+          publi = true;
+        } else if ("private".equals(token)) {
+          privat = true;
+        } else if ("protected".equals(token)) {
+          protect = true;
+        } else if (".".equals(token)) {
+          if (name != null) {
             name = name.trim();
-        }
-        
-        if (path != null && (name == null || "".equals(name))) {
-            String msg = "parsing.error.model-element-name.must-end-with-name";
-            throw new ParseException(Translator.localize(msg), 0);
-        }
-        
-        /* Check the name for validity: */
-        if (!isValidJavaClassName(name)) {
-            throw new ParseException(
-                    "Invalid class name for Java: "
-                    + name, 0);
-        }
-        
-        if (path != null) {
-            Object nspe =
-                Model.getModelManagementHelper().getElement(
-                        path,
-                        Model.getFacade().getModel(modelElement));
+          }
 
-            if (nspe == null || !(Model.getFacade().isANamespace(nspe))) {
-                String msg = 
-                        "parsing.error.model-element-name.namespace-unresolved";
-                throw new ParseException(Translator.localize(msg), 
-                        0);
-            }
-            Object model =
-                ProjectManager.getManager().getCurrentProject().getRoot();
-            if (!Model.getCoreHelper().getAllPossibleNamespaces(
-                    modelElement, model).contains(nspe)) {
-                String msg = 
-                        "parsing.error.model-element-name.namespace-invalid";
-                throw new ParseException(Translator.localize(msg), 
-                        0);
-            }
-            Model.getCoreHelper().addOwnedElement(nspe, modelElement);
-        }
+          if (path != null && (name == null || "".equals(name))) {
+            String msg = "parsing.error.model-element-name.anon-qualifiers";
+            throw new ParseException(Translator.localize(msg), st.getTokenIndex());
+          }
 
-        Model.getCoreHelper().setName(modelElement, name);
-        
-        if (abstrac) Model.getCoreHelper().setAbstract(modelElement, abstrac);
-        if (fina) Model.getCoreHelper().setLeaf(modelElement, fina);
-        if (publi) Model.getCoreHelper().setVisibility(modelElement,
-                Model.getVisibilityKind().getPublic());
-        if (privat) Model.getCoreHelper().setVisibility(modelElement,
-                Model.getVisibilityKind().getPrivate());
-        if (protect) Model.getCoreHelper().setVisibility(modelElement,
-                Model.getVisibilityKind().getProtected());
+          if (path == null) {
+            path = new Vector();
+          }
+          if (name != null) {
+            path.add(name);
+          }
+          name = null;
+
+        } else { // the name itself
+          if (name != null) {
+            String msg = "parsing.error.model-element-name.twin-names";
+            throw new ParseException(Translator.localize(msg), st.getTokenIndex());
+          }
+          name = token;
+        }
+      }
+    } catch (NoSuchElementException nsee) {
+      String msg = "parsing.error.model-element-name.unexpected-name-element";
+      throw new ParseException(Translator.localize(msg), text.length());
+    } catch (ParseException pre) {
+      throw pre;
     }
 
-    /**
-     * @param name the name of the element
-     * @return true if the given name is a valid name according java syntax
-     */
-    private boolean isValidJavaClassName(String name) {
-        /* TODO: Check the name for validity. */
-        return true;
+    if (name != null) {
+      name = name.trim();
     }
 
-    /**
-     * @see org.argouml.uml.notation.NotationProvider#getParsingHelp()
-     */
-    public String getParsingHelp() {
-        return "parsing.help.java.fig-nodemodelelement";
+    if (path != null && (name == null || "".equals(name))) {
+      String msg = "parsing.error.model-element-name.must-end-with-name";
+      throw new ParseException(Translator.localize(msg), 0);
     }
 
-    /**
-     * @see org.argouml.uml.notation.NotationProvider#toString(java.lang.Object, java.util.HashMap)
-     */
-    public String toString(Object modelElement, HashMap args) {
-        String name;
-        name = Model.getFacade().getName(modelElement);
-        if (name == null) return "";
-        return generateLeaf(modelElement, args)
-            + generateAbstract(modelElement, args)
-            + generateVisibility(modelElement, args) 
-            + generatePath(modelElement, args) 
-            + name;
+    /* Check the name for validity: */
+    if (!isValidJavaClassName(name)) {
+      throw new ParseException("Invalid class name for Java: " + name, 0);
     }
 
-    /**
-     * @param modelElement the UML element
-     * @param args a set of arguments that may influence 
-     * the generated notation
-     * @return a string which represents abstractness
-     */
-    private String generateAbstract(Object modelElement, HashMap args) {
-        if (Model.getFacade().isAbstract(modelElement)) {
-            return "abstract ";
-        }
-        return "";
+    if (path != null) {
+      Object nspe =
+          Model.getModelManagementHelper()
+              .getElement(path, Model.getFacade().getModel(modelElement));
+
+      if (nspe == null || !(Model.getFacade().isANamespace(nspe))) {
+        String msg = "parsing.error.model-element-name.namespace-unresolved";
+        throw new ParseException(Translator.localize(msg), 0);
+      }
+      Object model = ProjectManager.getManager().getCurrentProject().getRoot();
+      if (!Model.getCoreHelper().getAllPossibleNamespaces(modelElement, model).contains(nspe)) {
+        String msg = "parsing.error.model-element-name.namespace-invalid";
+        throw new ParseException(Translator.localize(msg), 0);
+      }
+      Model.getCoreHelper().addOwnedElement(nspe, modelElement);
     }
 
-    /**
-     * @param modelElement the UML element
-     * @param args a set of arguments that may influence 
-     * the generated notation
-     * @return a string which represents leaf
-     */
-    private String generateLeaf(Object modelElement, HashMap args) {
-        if (Model.getFacade().isLeaf(modelElement)) {
-            return "final ";
-        }
-        return "";
-    }
+    Model.getCoreHelper().setName(modelElement, name);
 
-    /**
-     * @param modelElement the UML element
-     * @param args a set of arguments that may influence 
-     * the generated notation
-     * @return a string which represents the path
-     */
-    protected String generatePath(Object modelElement, 
-            HashMap args) {
-        String s = "";
-        if (isValue("pathVisible", args)) {
-            Stack stack = new Stack();
-            Object ns = Model.getFacade().getNamespace(modelElement);
-            while (ns != null && !Model.getFacade().isAModel(ns)) {
-                stack.push(Model.getFacade().getName(ns));
-                ns = Model.getFacade().getNamespace(ns);
-            }
-            while (!stack.isEmpty()) {
-                s += (String) stack.pop() + ".";
-            }
+    if (abstrac) Model.getCoreHelper().setAbstract(modelElement, abstrac);
+    if (fina) Model.getCoreHelper().setLeaf(modelElement, fina);
+    if (publi)
+      Model.getCoreHelper().setVisibility(modelElement, Model.getVisibilityKind().getPublic());
+    if (privat)
+      Model.getCoreHelper().setVisibility(modelElement, Model.getVisibilityKind().getPrivate());
+    if (protect)
+      Model.getCoreHelper().setVisibility(modelElement, Model.getVisibilityKind().getProtected());
+  }
 
-            if (s.length() > 0 && !s.endsWith(".")) {
-                s += ".";
-            }
-        }
-        return s;
-    }
+  /**
+   * @param name the name of the element
+   * @return true if the given name is a valid name according java syntax
+   */
+  private boolean isValidJavaClassName(String name) {
+    /* TODO: Check the name for validity. */
+    return true;
+  }
 
-    /**
-     * @param modelElement the UML element
-     * @param args a set of arguments that may influence 
-     * the generated notation
-     * @return a string which represents the visibility
-     */
-    protected String generateVisibility(Object modelElement, 
-            HashMap args) {
-        String s = "";
-        if (isValue("visibilityVisible", args)) {
-            s = NotationUtilityJava.generateVisibility(modelElement);
-        }
-        return s;
+  /**
+   * @see org.argouml.uml.notation.NotationProvider#getParsingHelp()
+   */
+  public String getParsingHelp() {
+    return "parsing.help.java.fig-nodemodelelement";
+  }
+
+  /**
+   * @see org.argouml.uml.notation.NotationProvider#toString(java.lang.Object, java.util.HashMap)
+   */
+  public String toString(Object modelElement, HashMap args) {
+    String name;
+    name = Model.getFacade().getName(modelElement);
+    if (name == null) return "";
+    return generateLeaf(modelElement, args)
+        + generateAbstract(modelElement, args)
+        + generateVisibility(modelElement, args)
+        + generatePath(modelElement, args)
+        + name;
+  }
+
+  /**
+   * @param modelElement the UML element
+   * @param args a set of arguments that may influence the generated notation
+   * @return a string which represents abstractness
+   */
+  private String generateAbstract(Object modelElement, HashMap args) {
+    if (Model.getFacade().isAbstract(modelElement)) {
+      return "abstract ";
     }
+    return "";
+  }
+
+  /**
+   * @param modelElement the UML element
+   * @param args a set of arguments that may influence the generated notation
+   * @return a string which represents leaf
+   */
+  private String generateLeaf(Object modelElement, HashMap args) {
+    if (Model.getFacade().isLeaf(modelElement)) {
+      return "final ";
+    }
+    return "";
+  }
+
+  /**
+   * @param modelElement the UML element
+   * @param args a set of arguments that may influence the generated notation
+   * @return a string which represents the path
+   */
+  protected String generatePath(Object modelElement, HashMap args) {
+    String s = "";
+    if (isValue("pathVisible", args)) {
+      Stack stack = new Stack();
+      Object ns = Model.getFacade().getNamespace(modelElement);
+      while (ns != null && !Model.getFacade().isAModel(ns)) {
+        stack.push(Model.getFacade().getName(ns));
+        ns = Model.getFacade().getNamespace(ns);
+      }
+      while (!stack.isEmpty()) {
+        s += (String) stack.pop() + ".";
+      }
+
+      if (s.length() > 0 && !s.endsWith(".")) {
+        s += ".";
+      }
+    }
+    return s;
+  }
+
+  /**
+   * @param modelElement the UML element
+   * @param args a set of arguments that may influence the generated notation
+   * @return a string which represents the visibility
+   */
+  protected String generateVisibility(Object modelElement, HashMap args) {
+    String s = "";
+    if (isValue("visibilityVisible", args)) {
+      s = NotationUtilityJava.generateVisibility(modelElement);
+    }
+    return s;
+  }
 }

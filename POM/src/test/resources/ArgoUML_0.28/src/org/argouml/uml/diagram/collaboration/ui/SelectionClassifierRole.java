@@ -25,7 +25,6 @@
 package org.argouml.uml.diagram.collaboration.ui;
 
 import javax.swing.Icon;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.model.Model;
 import org.argouml.uml.diagram.ui.SelectionNodeClarifiers2;
@@ -37,127 +36,118 @@ import org.tigris.gef.presentation.Fig;
 import org.tigris.gef.presentation.Handle;
 
 /**
- * The selection buttons for a classifier role. <p>
- * 
- * The AssociationRoles created shall be unidirectional.
+ * The selection buttons for a classifier role.
+ *
+ * <p>The AssociationRoles created shall be unidirectional.
  */
 public class SelectionClassifierRole extends SelectionNodeClarifiers2 {
 
-    private static Icon assocrole =
-	ResourceLoaderWrapper
-	    .lookupIconResource("AssociationRole");
+  private static Icon assocrole = ResourceLoaderWrapper.lookupIconResource("AssociationRole");
 
-    private static Icon selfassoc =
-        ResourceLoaderWrapper
-	    .lookupIconResource("SelfAssociation");
+  private static Icon selfassoc = ResourceLoaderWrapper.lookupIconResource("SelfAssociation");
 
-    private static Icon icons[] = 
-    {null,
-     null,
-     assocrole,
-     assocrole,
-     selfassoc,
-    };
-    
-    // TODO: I18N required
-    private static String instructions[] = 
-    {null,
-     null,
-     "Add an outgoing classifierrole",
-     "Add an incoming classifierrole",
-     "Add a associationrole to this",
-     "Move object(s)",
-    };
+  private static Icon icons[] = {
+    null, null, assocrole, assocrole, selfassoc,
+  };
 
-    private boolean showIncoming = true;
+  // TODO: I18N required
+  private static String instructions[] = {
+    null,
+    null,
+    "Add an outgoing classifierrole",
+    "Add an incoming classifierrole",
+    "Add a associationrole to this",
+    "Move object(s)",
+  };
 
-    private boolean showOutgoing = true;
+  private boolean showIncoming = true;
 
-    /**
-     * Construct a new SelectionClassifierRole for the given Fig.
-     *
-     * @param f The given Fig.
-     */
-    public SelectionClassifierRole(Fig f) {
-	super(f);
+  private boolean showOutgoing = true;
+
+  /**
+   * Construct a new SelectionClassifierRole for the given Fig.
+   *
+   * @param f The given Fig.
+   */
+  public SelectionClassifierRole(Fig f) {
+    super(f);
+  }
+
+  /**
+   * @param b true if the incoming button is enabled
+   */
+  public void setIncomingButtonEnabled(boolean b) {
+    showIncoming = b;
+  }
+
+  /**
+   * @param b true if the outgoing button is enabled
+   */
+  public void setOutgoingButtonEnabled(boolean b) {
+    showOutgoing = b;
+  }
+
+  @Override
+  protected Icon[] getIcons() {
+    Icon workingIcons[] = new Icon[icons.length];
+    System.arraycopy(icons, 0, workingIcons, 0, icons.length);
+
+    if (!showIncoming) {
+      workingIcons[BASE - LEFT] = null;
     }
-
-    /**
-     * @param b true if the incoming button is enabled
-     */
-    public void setIncomingButtonEnabled(boolean b) {
-	showIncoming = b;
+    if (!showOutgoing) {
+      workingIcons[BASE - RIGHT] = null;
     }
-
-    /**
-     * @param b true if the outgoing button is enabled
-     */
-    public void setOutgoingButtonEnabled(boolean b) {
-	showOutgoing = b;
+    if (!showOutgoing && !showIncoming) {
+      workingIcons[BASE - LOWER_LEFT] = null;
     }
+    return workingIcons;
+  }
 
-    @Override
-    protected Icon[] getIcons() {
-        Icon workingIcons[] = new Icon[icons.length];
-        System.arraycopy(icons, 0, workingIcons, 0, icons.length);
+  @Override
+  protected String getInstructions(int index) {
+    return instructions[index - BASE];
+  }
 
-        if (!showIncoming) {
-            workingIcons[BASE - LEFT] = null;
-        }
-        if (!showOutgoing) {
-            workingIcons[BASE - RIGHT] = null;
-        }
-        if (!showOutgoing && !showIncoming) {
-            workingIcons[BASE - LOWER_LEFT] = null;
-        }
-        return workingIcons;
+  @Override
+  protected Object getNewEdgeType(int index) {
+    /* The next 4 lines fix the first half of issue 5638.
+     * Is there no better way? */
+    Editor curEditor = Globals.curEditor();
+    ModeManager modeManager = curEditor.getModeManager();
+    Mode mode = modeManager.top();
+    mode.setArg("unidirectional", true);
+
+    return Model.getMetaTypes().getAssociationRole();
+  }
+
+  @Override
+  protected Object getNewNodeType(int index) {
+    return Model.getMetaTypes().getClassifierRole();
+  }
+
+  @Override
+  protected Object getNewNode(int index) {
+    return Model.getCollaborationsFactory().createClassifierRole();
+  }
+
+  @Override
+  protected boolean isReverseEdge(int index) {
+    if (index == LEFT) {
+      return true;
     }
+    return false;
+  }
 
-    @Override
-    protected String getInstructions(int index) {
-        return instructions[index - BASE];
-    }
+  @Override
+  public void dragHandle(int mx, int my, int anX, int anY, Handle hand) {
+    super.dragHandle(mx, my, anX, anY, hand);
 
-    @Override
-    protected Object getNewEdgeType(int index) {
-        /* The next 4 lines fix the first half of issue 5638.
-         * Is there no better way? */
-        Editor curEditor = Globals.curEditor();
-        ModeManager modeManager = curEditor.getModeManager();
-        Mode mode = modeManager.top();
-        mode.setArg("unidirectional", true);
-
-        return Model.getMetaTypes().getAssociationRole();
-    }
-
-    @Override
-    protected Object getNewNodeType(int index) {
-        return Model.getMetaTypes().getClassifierRole();
-    }
-
-    @Override
-    protected Object getNewNode(int index) {
-        return Model.getCollaborationsFactory().createClassifierRole();
-    }
-
-    @Override
-    protected boolean isReverseEdge(int index) {
-        if (index == LEFT) {
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public void dragHandle(int mx, int my, int anX, int anY, Handle hand) {
-        super.dragHandle(mx, my, anX, anY, hand);
-
-        /* The next 4 lines fix the 2nd half of issue 5638.
-         * Is there no better way? */
-        Editor curEditor = Globals.curEditor();
-        ModeManager modeManager = curEditor.getModeManager();
-        Mode mode = modeManager.top();
-        mode.setArg("unidirectional", true);
-    }
-
-} 
+    /* The next 4 lines fix the 2nd half of issue 5638.
+     * Is there no better way? */
+    Editor curEditor = Globals.curEditor();
+    ModeManager modeManager = curEditor.getModeManager();
+    Mode mode = modeManager.top();
+    mode.setArg("unidirectional", true);
+  }
+}

@@ -8,31 +8,30 @@
  * License:		Lesser GNU Public License (LGPL)
  *				http://www.opensource.org/licenses/lgpl-license.html
  */
- 
+
 package org.jhotdraw.contrib;
 
 import org.jhotdraw.framework.*;
 
 /**
- * An interface which allows a popup menu to interact with its Figure to
- * which it is associated.
+ * An interface which allows a popup menu to interact with its Figure to which it is associated.
  *
- * @author      Wolfram Kaiser
+ * @author Wolfram Kaiser
  * @version <$CURRENT_VERSION$>
  */
 public interface PopupMenuFigureSelection {
 
-	/**
-	 * Set the figure which was selected when the popup menu was invoked.
-	 *
-	 * @param   newSelectedFigure   figure which is selected (typically be a SelectionTool)
-	 */
-	public void setSelectedFigure(Figure newSelectedFigure);
+  /**
+   * Set the figure which was selected when the popup menu was invoked.
+   *
+   * @param newSelectedFigure figure which is selected (typically be a SelectionTool)
+   */
+  public void setSelectedFigure(Figure newSelectedFigure);
 
-	/**
-	 * Get the figure which was selected when the popup menu was invoked.
-	 *
-	 * @return  figure which is selected (typically be a SelectionTool)
-	 */
-	public Figure getSelectedFigure();
+  /**
+   * Get the figure which was selected when the popup menu was invoked.
+   *
+   * @return figure which is selected (typically be a SelectionTool)
+   */
+  public Figure getSelectedFigure();
 }

@@ -28,18 +28,18 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * An interface to be implemented by classes outside of the model subsystem that
- * wish to inject data into the XMI output stream.
+ * An interface to be implemented by classes outside of the model subsystem that wish to inject data
+ * into the XMI output stream.
  *
  * @author Bob Tarling
  */
 public interface XmiExtensionWriter {
 
-    /**
-     * Write XMI to registered writer.
-     * @param writer the writer
-     *
-     * @throws IOException if it goes wrong
-     */
-    void write(Writer writer) throws IOException;
+  /**
+   * Write XMI to registered writer.
+   *
+   * @param writer the writer
+   * @throws IOException if it goes wrong
+   */
+  void write(Writer writer) throws IOException;
 }

@@ -26,7 +26,6 @@ package org.argouml.model.mdr;
 
 import java.util.Collection;
 import java.util.Iterator;
-
 import org.argouml.model.ActivityGraphsHelper;
 import org.argouml.model.Model;
 import org.omg.uml.behavioralelements.activitygraphs.ClassifierInState;
@@ -42,112 +41,102 @@ import org.omg.uml.modelmanagement.UmlPackage;
 
 /**
  * Class to implement ActivityGraphsHelper.
+ *
  * @since ARGO0.19.5
- * @author Ludovic Maître
- * Derived from NSUML implementation 
+ * @author Ludovic Maï¿½tre Derived from NSUML implementation
  */
 class ActivityGraphsHelperMDRImpl implements ActivityGraphsHelper {
 
-    /**
-     * Constructor.
-     */
-    public ActivityGraphsHelperMDRImpl() {
-        super();
+  /** Constructor. */
+  public ActivityGraphsHelperMDRImpl() {
+    super();
+  }
+
+  /**
+   * @see org.argouml.model.ActivityGraphsHelper#findClassifierByName( java.lang.Object,
+   *     java.lang.String)
+   */
+  public Object findClassifierByName(Object ofs, String s) {
+    if (!(ofs instanceof ObjectFlowState)) {
+      throw new IllegalArgumentException();
     }
 
-    /**
-     * @see org.argouml.model.ActivityGraphsHelper#findClassifierByName(
-     *         java.lang.Object, java.lang.String)
-     */
-    public Object findClassifierByName(Object ofs, String s) {
-        if (!(ofs instanceof ObjectFlowState)) {
-            throw new IllegalArgumentException();
+    CompositeState cs = ((ObjectFlowState) ofs).getContainer();
+    StateMachine sm = cs.getStateMachine();
+    ModelElement ns = sm.getContext();
+    if (!(ns instanceof Namespace)) {
+      ns = ns.getNamespace();
+    }
+    if (ns != null) {
+      Collection c =
+          Model.getModelManagementHelper()
+              .getAllModelElementsOfKind(ns, Model.getMetaTypes().getClassifier());
+      Iterator i = c.iterator();
+      while (i.hasNext()) {
+        ModelElement classifier = (ModelElement) i.next();
+        String cn = classifier.getName();
+        if (cn.equals(s)) {
+          return classifier;
         }
+      }
+    } else {
+      throw new IllegalArgumentException();
+    }
+    return null;
+  }
 
-        CompositeState cs = ((ObjectFlowState) ofs).getContainer();
-        StateMachine sm = cs.getStateMachine();
-        ModelElement ns = sm.getContext();
-        if (!(ns instanceof Namespace)) {
-            ns = ns.getNamespace();
-        }
-        if (ns != null) {
-            Collection c =
-                Model.getModelManagementHelper().
-                    getAllModelElementsOfKind(ns,
-                	        Model.getMetaTypes().getClassifier());
-            Iterator i = c.iterator();
-            while (i.hasNext()) {
-                ModelElement classifier = (ModelElement) i.next();
-                String cn = classifier.getName();
-                if (cn.equals(s)) {
-                    return classifier;
-                }
-            }
-        } else {
-            throw new IllegalArgumentException();
-        }
-        return null;
+  /**
+   * @see org.argouml.model.ActivityGraphsHelper#findStateByName( java.lang.Object,
+   *     java.lang.String)
+   */
+  public Object findStateByName(Object c, String s) {
+    if (!(c instanceof Classifier)) {
+      throw new IllegalArgumentException();
     }
 
-    /**
-     * @see org.argouml.model.ActivityGraphsHelper#findStateByName(
-     *         java.lang.Object, java.lang.String)
-     */
-    public Object findStateByName(Object c, String s) {
-        if (!(c instanceof Classifier)) {
-            throw new IllegalArgumentException();
-        }
-
-        if ((s == null) || (s.equals(""))) {
-            return null;
-        }
-
-        Collection allStatemachines = Model.getFacade().getBehaviors(c);
-        Iterator i = allStatemachines.iterator();
-        while (i.hasNext()) {
-            StateMachine statemachine = (StateMachine) i.next();
-            State top = statemachine.getTop();
-            Collection allStates =
-                Model.getStateMachinesHelper().getAllSubStates(top);
-            Iterator ii = allStates.iterator();
-            while (ii.hasNext()) {
-                State state = (State) ii.next();
-
-                String statename = state.getName();
-                if (statename != null) {
-                    if (statename.equals(s)) {
-                        return state;
-                    }
-                }
-            }
-        }
-        return null;
+    if ((s == null) || (s.equals(""))) {
+      return null;
     }
 
-    /**
-     * @see org.argouml.model.ActivityGraphsHelper#isAddingActivityGraphAllowed(java.lang.Object)
-     */
-    public boolean isAddingActivityGraphAllowed(Object context) {
-        return context instanceof BehavioralFeature
-            || context instanceof Classifier
-            || context instanceof UmlPackage;
-    }
+    Collection allStatemachines = Model.getFacade().getBehaviors(c);
+    Iterator i = allStatemachines.iterator();
+    while (i.hasNext()) {
+      StateMachine statemachine = (StateMachine) i.next();
+      State top = statemachine.getTop();
+      Collection allStates = Model.getStateMachinesHelper().getAllSubStates(top);
+      Iterator ii = allStates.iterator();
+      while (ii.hasNext()) {
+        State state = (State) ii.next();
 
-    /**
-     * @see org.argouml.model.ActivityGraphsHelper#addInState(
-     *         java.lang.Object, java.lang.Object)
-     */
-    public void addInState(Object classifierInState, Object state) {
-        if (classifierInState instanceof ClassifierInState
-                && state instanceof State) {
-            ((ClassifierInState) classifierInState).getInState().
-                add(state);
-        } else {
-            throw new IllegalArgumentException(
-                    "classifierInState: " + classifierInState
-                    + " or state: " + state);
-        }        
+        String statename = state.getName();
+        if (statename != null) {
+          if (statename.equals(s)) {
+            return state;
+          }
+        }
+      }
     }
+    return null;
+  }
 
+  /**
+   * @see org.argouml.model.ActivityGraphsHelper#isAddingActivityGraphAllowed(java.lang.Object)
+   */
+  public boolean isAddingActivityGraphAllowed(Object context) {
+    return context instanceof BehavioralFeature
+        || context instanceof Classifier
+        || context instanceof UmlPackage;
+  }
+
+  /**
+   * @see org.argouml.model.ActivityGraphsHelper#addInState( java.lang.Object, java.lang.Object)
+   */
+  public void addInState(Object classifierInState, Object state) {
+    if (classifierInState instanceof ClassifierInState && state instanceof State) {
+      ((ClassifierInState) classifierInState).getInState().add(state);
+    } else {
+      throw new IllegalArgumentException(
+          "classifierInState: " + classifierInState + " or state: " + state);
+    }
+  }
 }
-

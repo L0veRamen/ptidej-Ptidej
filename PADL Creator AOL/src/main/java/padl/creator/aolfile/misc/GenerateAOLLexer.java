@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -17,13 +17,12 @@ import padl.creator.aolfile.jlex.JLex;
  * @author Yann-Gaël Guéhéneuc
  */
 public class GenerateAOLLexer {
-	public static void main(final String[] args) throws Exception {
-		JLex.main(new String[] { "rsc/AOL.lex" });
+  public static void main(final String[] args) throws Exception {
+    JLex.main(new String[] {"rsc/AOL.lex"});
 
-		final File previousLexer =
-			new File("src/padl/creator/parser/AOLLexer.java");
-		previousLexer.delete();
-		final File generatedFile = new File("rsc/AOL.lex.java");
-		generatedFile.renameTo(previousLexer);
-	}
+    final File previousLexer = new File("src/padl/creator/parser/AOLLexer.java");
+    previousLexer.delete();
+    final File generatedFile = new File("rsc/AOL.lex.java");
+    generatedFile.renameTo(previousLexer);
+  }
 }

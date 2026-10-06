@@ -26,136 +26,125 @@ package org.argouml.uml.diagram.sequence.ui;
 
 import java.awt.Color;
 import java.awt.Graphics;
-
 import java.awt.event.MouseEvent;
-
+import org.argouml.i18n.Translator;
 import org.tigris.gef.base.Editor;
 import org.tigris.gef.base.FigModifyingModeImpl;
 import org.tigris.gef.base.Globals;
 
-import org.argouml.i18n.Translator;
-
 /**
- * 
- *
  * @deprecated in 0.26 alpha3 Use ModeContract or ModeExpand
  */
 public class ModeChangeHeight extends FigModifyingModeImpl {
 
-    /**
-     * The constructor.
-     *
-     */
-    public ModeChangeHeight() {
-        contractSet = false;
-        editor = Globals.curEditor();
-        rubberbandColor = Globals.getPrefs().getRubberbandColor();
+  /** The constructor. */
+  public ModeChangeHeight() {
+    contractSet = false;
+    editor = Globals.curEditor();
+    rubberbandColor = Globals.getPrefs().getRubberbandColor();
+  }
+
+  /*
+   * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
+   */
+  public void mousePressed(MouseEvent me) {
+    if (me.isConsumed()) {
+      return;
     }
 
-    /*
-     * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
-     */
-    public void mousePressed(MouseEvent me) {
-        if (me.isConsumed()) {
-            return;
-	}
+    startY = me.getY();
+    startX = me.getX();
+    start();
+    me.consume();
+  }
 
-        startY = me.getY();
-        startX = me.getX();
-        start();
-        me.consume();
+  /*
+   * @see java.awt.event.MouseMotionListener#mouseDragged(java.awt.event.MouseEvent)
+   */
+  public void mouseDragged(MouseEvent me) {
+    if (me.isConsumed()) {
+      return;
     }
 
-    /*
-     * @see java.awt.event.MouseMotionListener#mouseDragged(java.awt.event.MouseEvent)
-     */
-    public void mouseDragged(MouseEvent me) {
-        if (me.isConsumed()) {
-            return;
-        }
+    currentY = me.getY();
+    editor.damageAll();
+    me.consume();
+  }
 
-        currentY = me.getY();
-        editor.damageAll();
-        me.consume();
+  /*
+   * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
+   */
+  public void mouseReleased(MouseEvent me) {
+    if (me.isConsumed()) {
+      return;
     }
 
-    /*
-     * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
-     */
-    public void mouseReleased(MouseEvent me) {
-        if (me.isConsumed()) {
-            return;
-	}
-
-        SequenceDiagramLayer layer =
-	    (SequenceDiagramLayer) Globals.curEditor().getLayerManager()
-	        .getActiveLayer();
-        int endY = me.getY();
-        if (isContract()) {
-            int startOffset = layer.getNodeIndex(startY);
-            int endOffset;
-            if (startY > endY) {
-                endOffset = startOffset;
-                startOffset = layer.getNodeIndex(endY);
-            } else {
-                endOffset = layer.getNodeIndex(endY);
-	    }
-            int diff = endOffset - startOffset;
-            if (diff > 0) {
-                layer.contractDiagram(startOffset, diff);
-            }
-        } else {
-            int startOffset = layer.getNodeIndex(startY);
-            if (startOffset > 0 && endY < startY) {
-                startOffset--;
-	    }
-            int diff = layer.getNodeIndex(endY) - startOffset;
-            if (diff < 0) {
-                diff = -diff;
-	    }
-            if (diff > 0) {
-                layer.expandDiagram(startOffset, diff);
-	    }
-        }
-
-        me.consume();
-        done();
+    SequenceDiagramLayer layer =
+        (SequenceDiagramLayer) Globals.curEditor().getLayerManager().getActiveLayer();
+    int endY = me.getY();
+    if (isContract()) {
+      int startOffset = layer.getNodeIndex(startY);
+      int endOffset;
+      if (startY > endY) {
+        endOffset = startOffset;
+        startOffset = layer.getNodeIndex(endY);
+      } else {
+        endOffset = layer.getNodeIndex(endY);
+      }
+      int diff = endOffset - startOffset;
+      if (diff > 0) {
+        layer.contractDiagram(startOffset, diff);
+      }
+    } else {
+      int startOffset = layer.getNodeIndex(startY);
+      if (startOffset > 0 && endY < startY) {
+        startOffset--;
+      }
+      int diff = layer.getNodeIndex(endY) - startOffset;
+      if (diff < 0) {
+        diff = -diff;
+      }
+      if (diff > 0) {
+        layer.expandDiagram(startOffset, diff);
+      }
     }
 
-    /*
-     * @see org.tigris.gef.base.FigModifyingMode#paint(java.awt.Graphics)
-     */
-    public void paint(Graphics g) {
-        g.setColor(rubberbandColor);
-        g.drawLine(startX, startY, startX, currentY);
+    me.consume();
+    done();
+  }
+
+  /*
+   * @see org.tigris.gef.base.FigModifyingMode#paint(java.awt.Graphics)
+   */
+  public void paint(Graphics g) {
+    g.setColor(rubberbandColor);
+    g.drawLine(startX, startY, startX, currentY);
+  }
+
+  /*
+   * @see org.tigris.gef.base.FigModifyingMode#instructions()
+   */
+  public String instructions() {
+    if (isContract()) {
+      return Translator.localize("action.sequence-contract");
     }
+    return Translator.localize("action.sequence-expand");
+  }
 
-    /*
-     * @see org.tigris.gef.base.FigModifyingMode#instructions()
-     */
-    public String instructions() {
-        if (isContract()) {
-            return Translator.localize("action.sequence-contract");
-        }
-        return Translator.localize("action.sequence-expand");
+  private boolean isContract() {
+    if (!contractSet) {
+      contract = getArg("name").equals("button.sequence-contract");
+      contractSet = true;
     }
+    return contract;
+  }
 
-    private boolean isContract() {
-        if (!contractSet) {
-            contract = getArg("name").equals("button.sequence-contract");
-            contractSet = true;
-        }
-        return contract;
-    }
+  private boolean contract;
+  private boolean contractSet;
+  private int startX, startY, currentY;
+  private Editor editor;
+  private Color rubberbandColor;
 
-    private boolean contract;
-    private boolean contractSet;
-    private int startX, startY, currentY;
-    private Editor editor;
-    private Color rubberbandColor;
-
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = 2383958235268066102L;
+  /** The UID. */
+  private static final long serialVersionUID = 2383958235268066102L;
 }

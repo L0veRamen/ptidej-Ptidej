@@ -15,49 +15,49 @@ import org.jhotdraw.framework.*;
 import org.jhotdraw.util.Undoable;
 
 /**
- * BringToFrontCommand brings the selected figures in the front of
- * the other figures.
+ * BringToFrontCommand brings the selected figures in the front of the other figures.
  *
  * @see SendToBackCommand
  * @version <$CURRENT_VERSION$>
  */
 public class BringToFrontCommand extends AbstractCommand {
 
-	/**
-	 * Constructs a bring to front command.
-	 * @param name the command name
-	 * @param newDrawingEditor the DrawingEditor which manages the views
-	 */
-	public BringToFrontCommand(String name, DrawingEditor newDrawingEditor) {
-		super(name, newDrawingEditor);
-	}
+  /**
+   * Constructs a bring to front command.
+   *
+   * @param name the command name
+   * @param newDrawingEditor the DrawingEditor which manages the views
+   */
+  public BringToFrontCommand(String name, DrawingEditor newDrawingEditor) {
+    super(name, newDrawingEditor);
+  }
 
-	public void execute() {
-		super.execute();
-		setUndoActivity(createUndoActivity());
-		getUndoActivity().setAffectedFigures(view().selection());
-		FigureEnumeration fe = getUndoActivity().getAffectedFigures();
-		while (fe.hasNextFigure()) {
-			view().drawing().bringToFront(fe.nextFigure());
-		}
-		view().checkDamage();
-	}
+  public void execute() {
+    super.execute();
+    setUndoActivity(createUndoActivity());
+    getUndoActivity().setAffectedFigures(view().selection());
+    FigureEnumeration fe = getUndoActivity().getAffectedFigures();
+    while (fe.hasNextFigure()) {
+      view().drawing().bringToFront(fe.nextFigure());
+    }
+    view().checkDamage();
+  }
 
-	public boolean isExecutableWithView() {
-		return view().selectionCount() > 0;
-	}
+  public boolean isExecutableWithView() {
+    return view().selectionCount() > 0;
+  }
 
-	protected Undoable createUndoActivity() {
-		return new BringToFrontCommand.UndoActivity(view());
-	}
+  protected Undoable createUndoActivity() {
+    return new BringToFrontCommand.UndoActivity(view());
+  }
 
-	public static class UndoActivity extends SendToBackCommand.UndoActivity {
-		public UndoActivity(DrawingView newDrawingView) {
-			super(newDrawingView);
-		}
+  public static class UndoActivity extends SendToBackCommand.UndoActivity {
+    public UndoActivity(DrawingView newDrawingView) {
+      super(newDrawingView);
+    }
 
-		protected void sendToCommand(Figure f) {
-			getDrawingView().drawing().bringToFront(f);
-		}
-	}
+    protected void sendToCommand(Figure f) {
+      getDrawingView().drawing().bringToFront(f);
+    }
+  }
 }

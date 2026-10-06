@@ -23,21 +23,20 @@
 // UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 package org.argouml.application.events;
+
 import org.argouml.application.api.ArgoEventListener;
 
-/** 
- * An interface that objects interested in ArgoDiagramAppearanceEvent
- *  notifications must extend.
+/**
+ * An interface that objects interested in ArgoDiagramAppearanceEvent notifications must extend.
  *
- *  @author Aleksandar
+ * @author Aleksandar
  */
-
 public interface ArgoDiagramAppearanceEventListener extends ArgoEventListener {
 
-    /**
-     * Invoked when any aspect of the notation has been changed.
-     * @param e <code>ArgoNotationEvent</code> describing the change.
-     */
-    public void diagramFontChanged(ArgoDiagramAppearanceEvent e);
+  /**
+   * Invoked when any aspect of the notation has been changed.
+   *
+   * @param e <code>ArgoNotationEvent</code> describing the change.
+   */
+  public void diagramFontChanged(ArgoDiagramAppearanceEvent e);
 }
-

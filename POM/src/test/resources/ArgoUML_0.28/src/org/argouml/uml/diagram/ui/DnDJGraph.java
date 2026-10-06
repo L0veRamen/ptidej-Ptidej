@@ -35,7 +35,6 @@ import java.awt.dnd.DropTargetListener;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
-
 import org.apache.log4j.Logger;
 import org.argouml.ui.TransferableModelElements;
 import org.argouml.uml.diagram.ArgoDiagram;
@@ -54,175 +53,157 @@ import org.tigris.gef.presentation.FigNode;
  *
  * @author mvw@tigris.org
  */
-class DnDJGraph
-    extends JGraph
-    implements DropTargetListener {
-    
-    private static final Logger LOG = Logger.getLogger(DnDJGraph.class);
+class DnDJGraph extends JGraph implements DropTargetListener {
 
-    /**
-     * The constructor.
-     *
-     */
-    public DnDJGraph() {
-        super();
-        makeDropTarget();
+  private static final Logger LOG = Logger.getLogger(DnDJGraph.class);
+
+  /** The constructor. */
+  public DnDJGraph() {
+    super();
+    makeDropTarget();
+  }
+
+  /**
+   * The constructor.
+   *
+   * @param cc The ConnectionConstrainer.
+   */
+  public DnDJGraph(ConnectionConstrainer cc) {
+    super(cc);
+    makeDropTarget();
+  }
+
+  /**
+   * The constructor.
+   *
+   * @param d The Diagram.
+   */
+  public DnDJGraph(Diagram d) {
+    super(d);
+    makeDropTarget();
+  }
+
+  /**
+   * The constructor.
+   *
+   * @param gm The GraphModel.
+   */
+  public DnDJGraph(GraphModel gm) {
+    super(gm);
+    makeDropTarget();
+  }
+
+  /**
+   * The constructor.
+   *
+   * @param ed The Editor.
+   */
+  public DnDJGraph(Editor ed) {
+    super(ed);
+    makeDropTarget();
+  }
+
+  private void makeDropTarget() {
+    new DropTarget(this, DnDConstants.ACTION_COPY_OR_MOVE, this);
+  }
+
+  /*
+   * @see java.awt.dnd.DropTargetListener#dragEnter(
+   *         java.awt.dnd.DropTargetDragEvent)
+   */
+  public void dragEnter(DropTargetDragEvent dtde) {
+    try {
+      if (dtde.isDataFlavorSupported(TransferableModelElements.UML_COLLECTION_FLAVOR)) {
+        dtde.acceptDrag(dtde.getDropAction());
+        return;
+      }
+    } catch (NullPointerException e) {
+      //			System.err.println("NullPointerException ignored.");
+    }
+    dtde.rejectDrag();
+  }
+
+  /*
+   * @see java.awt.dnd.DropTargetListener#dragOver(
+   *         java.awt.dnd.DropTargetDragEvent)
+   */
+  public void dragOver(DropTargetDragEvent dtde) {
+    try {
+      ArgoDiagram dia = DiagramUtils.getActiveDiagram();
+      if (dia instanceof UMLDiagram
+      /*&& ((UMLDiagram) dia).doesAccept(dtde.getSource())*/ ) {
+        dtde.acceptDrag(dtde.getDropAction());
+        return;
+      }
+      if (dtde.isDataFlavorSupported(TransferableModelElements.UML_COLLECTION_FLAVOR)) {
+        dtde.acceptDrag(dtde.getDropAction());
+        return;
+      }
+    } catch (NullPointerException e) {
+      //    		System.err.println("NullPointerException ignored.");
+    }
+    dtde.rejectDrag();
+  }
+
+  /*
+   * @see java.awt.dnd.DropTargetListener#dropActionChanged(
+   *         java.awt.dnd.DropTargetDragEvent)
+   */
+  public void dropActionChanged(DropTargetDragEvent dtde) {
+    // ignored
+  }
+
+  /*
+   * @see java.awt.dnd.DropTargetListener#dragExit(
+   *         java.awt.dnd.DropTargetEvent)
+   */
+  public void dragExit(DropTargetEvent dte) {
+    // ignored
+  }
+
+  /*
+   * @see java.awt.dnd.DropTargetListener#drop(
+   *         java.awt.dnd.DropTargetDropEvent)
+   */
+  public void drop(DropTargetDropEvent dropTargetDropEvent) {
+    Transferable tr = dropTargetDropEvent.getTransferable();
+    // if the flavor is not supported, then reject the drop:
+    if (!tr.isDataFlavorSupported(TransferableModelElements.UML_COLLECTION_FLAVOR)) {
+      dropTargetDropEvent.rejectDrop();
+      return;
     }
 
-    /**
-     * The constructor.
-     *
-     * @param cc The ConnectionConstrainer.
-     */
-    public DnDJGraph(ConnectionConstrainer cc) {
-        super(cc);
-        makeDropTarget();
-    }
+    dropTargetDropEvent.acceptDrop(dropTargetDropEvent.getDropAction());
+    // get the model elements that are being transfered.
+    Collection modelElements;
+    try {
+      ArgoDiagram diagram = DiagramUtils.getActiveDiagram();
+      modelElements =
+          (Collection) tr.getTransferData(TransferableModelElements.UML_COLLECTION_FLAVOR);
 
-    /**
-     * The constructor.
-     *
-     * @param d The Diagram.
-     */
-    public DnDJGraph(Diagram d) {
-        super(d);
-        makeDropTarget();
-    }
+      Iterator i = modelElements.iterator();
+      while (i.hasNext()) {
+        FigNode figNode = ((UMLDiagram) diagram).drop(i.next(), dropTargetDropEvent.getLocation());
 
-    /**
-     * The constructor.
-     *
-     * @param gm The GraphModel.
-     */
-    public DnDJGraph(GraphModel gm) {
-        super(gm);
-        makeDropTarget();
-    }
+        if (figNode != null) {
+          MutableGraphModel gm = (MutableGraphModel) diagram.getGraphModel();
+          if (!gm.getNodes().contains(figNode.getOwner())) {
+            gm.getNodes().add(figNode.getOwner());
+          }
 
-    /**
-     * The constructor.
-     *
-     * @param ed The Editor.
-     */
-    public DnDJGraph(Editor ed) {
-        super(ed);
-        makeDropTarget();
-    }
-
-    private void makeDropTarget() {
-        new DropTarget(this,
-                DnDConstants.ACTION_COPY_OR_MOVE,
-                this);
-    }
-    
-    /*
-     * @see java.awt.dnd.DropTargetListener#dragEnter(
-     *         java.awt.dnd.DropTargetDragEvent)
-     */
-    public void dragEnter(DropTargetDragEvent dtde) {
-    	try {
-    	    if (dtde.isDataFlavorSupported(
-    	            TransferableModelElements.UML_COLLECTION_FLAVOR)) {
-    	        dtde.acceptDrag(dtde.getDropAction());
-    	        return;
-    	    }
-    	} catch (NullPointerException e) {
-//			System.err.println("NullPointerException ignored.");
-    	}
-    	dtde.rejectDrag();
-    }
-
-    /*
-     * @see java.awt.dnd.DropTargetListener#dragOver(
-     *         java.awt.dnd.DropTargetDragEvent)
-     */
-    public void dragOver(DropTargetDragEvent dtde) {
-    	try {
-    	    ArgoDiagram dia = DiagramUtils.getActiveDiagram();
-    	    if (dia instanceof UMLDiagram 
-                /*&& ((UMLDiagram) dia).doesAccept(dtde.getSource())*/) {
-    	        dtde.acceptDrag(dtde.getDropAction());
-    	        return;
-    	    }
-    	    if (dtde.isDataFlavorSupported(
-    	            TransferableModelElements.UML_COLLECTION_FLAVOR)) {
-    	        dtde.acceptDrag(dtde.getDropAction());
-    	        return;
-    	    }
-    	} catch (NullPointerException e) {
-//    		System.err.println("NullPointerException ignored.");
-    	}
-    	dtde.rejectDrag();
-    }
-
-    /*
-     * @see java.awt.dnd.DropTargetListener#dropActionChanged(
-     *         java.awt.dnd.DropTargetDragEvent)
-     */
-    public void dropActionChanged(DropTargetDragEvent dtde) {
-        // ignored
-    }
-
-    /*
-     * @see java.awt.dnd.DropTargetListener#dragExit(
-     *         java.awt.dnd.DropTargetEvent)
-     */
-    public void dragExit(DropTargetEvent dte) {
-        // ignored
-    }
-
-    /*
-     * @see java.awt.dnd.DropTargetListener#drop(
-     *         java.awt.dnd.DropTargetDropEvent)
-     */
-    public void drop(DropTargetDropEvent dropTargetDropEvent) {
-        Transferable tr = dropTargetDropEvent.getTransferable();
-        //if the flavor is not supported, then reject the drop:
-        if (!tr.isDataFlavorSupported(
-                     TransferableModelElements.UML_COLLECTION_FLAVOR)) {
-            dropTargetDropEvent.rejectDrop();
-            return;
+          Globals.curEditor().getLayerManager().getActiveLayer().add(figNode);
+          gm.addNodeRelatedEdges(figNode.getOwner());
         }
+      }
 
-        dropTargetDropEvent.acceptDrop(dropTargetDropEvent.getDropAction());
-        //get the model elements that are being transfered.
-        Collection modelElements; 
-        try {
-            ArgoDiagram diagram = DiagramUtils.getActiveDiagram();
-            modelElements =
-                (Collection) tr.getTransferData(
-                    TransferableModelElements.UML_COLLECTION_FLAVOR);
-            
-            Iterator i = modelElements.iterator();
-            while (i.hasNext()) {
-                FigNode figNode = ((UMLDiagram ) diagram).drop(i.next(),
-                        dropTargetDropEvent.getLocation());
-                
-                if (figNode != null) {
-                    MutableGraphModel gm =
-                        (MutableGraphModel) diagram.getGraphModel();
-                    if (!gm.getNodes().contains(figNode.getOwner())) {
-                        gm.getNodes().add(figNode.getOwner());
-                    }
-                    
-                    Globals.curEditor().getLayerManager().getActiveLayer()
-                            .add(figNode);
-                    gm.addNodeRelatedEdges(figNode.getOwner());
-                }
-                
-            }
-
-            dropTargetDropEvent.getDropTargetContext().dropComplete(true);
-        } catch (UnsupportedFlavorException e) {
-            LOG.debug("Exception caught", e);
-        } catch (IOException e) {
-            LOG.debug("Exception caught", e);
-        }
+      dropTargetDropEvent.getDropTargetContext().dropComplete(true);
+    } catch (UnsupportedFlavorException e) {
+      LOG.debug("Exception caught", e);
+    } catch (IOException e) {
+      LOG.debug("Exception caught", e);
     }
+  }
 
-
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -5753683239435014182L;
+  /** The UID. */
+  private static final long serialVersionUID = -5753683239435014182L;
 }

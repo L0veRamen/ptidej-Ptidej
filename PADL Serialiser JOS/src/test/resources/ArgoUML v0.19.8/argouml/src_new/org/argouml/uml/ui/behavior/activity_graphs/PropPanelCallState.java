@@ -25,35 +25,25 @@
 package org.argouml.uml.ui.behavior.activity_graphs;
 
 import javax.swing.ImageIcon;
-
-import org.tigris.swidgets.Orientation;
 import org.argouml.util.ConfigLoader;
+import org.tigris.swidgets.Orientation;
 
 /**
- *
  * @author mkl
- *
  */
 public class PropPanelCallState extends PropPanelActionState {
 
-    /**
-     * The constructor.
-     *
-     */
-    public PropPanelCallState() {
-        this("CallState", lookupIcon("CallState"), ConfigLoader
-                .getTabPropsOrientation());
-    }
+  /** The constructor. */
+  public PropPanelCallState() {
+    this("CallState", lookupIcon("CallState"), ConfigLoader.getTabPropsOrientation());
+  }
 
-    /**
-     * @param name the name of the properties panel
-     * @param icon the icon to be shown next to the name
-     * @param orientation the orientation of the panel
-     */
-    public PropPanelCallState(String name, ImageIcon icon,
-            Orientation orientation) {
-        super(name, icon, orientation);
-
-    }
-
+  /**
+   * @param name the name of the properties panel
+   * @param icon the icon to be shown next to the name
+   * @param orientation the orientation of the panel
+   */
+  public PropPanelCallState(String name, ImageIcon icon, Orientation orientation) {
+    super(name, icon, orientation);
+  }
 }

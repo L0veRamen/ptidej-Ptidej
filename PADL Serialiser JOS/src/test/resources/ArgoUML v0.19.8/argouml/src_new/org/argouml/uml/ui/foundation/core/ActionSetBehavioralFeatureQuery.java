@@ -25,7 +25,6 @@
 package org.argouml.uml.ui.foundation.core;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLAction;
@@ -37,35 +36,33 @@ import org.argouml.uml.ui.UMLCheckBox2;
  */
 public class ActionSetBehavioralFeatureQuery extends UMLAction {
 
-    private static final ActionSetBehavioralFeatureQuery SINGLETON =
-        new ActionSetBehavioralFeatureQuery();
+  private static final ActionSetBehavioralFeatureQuery SINGLETON =
+      new ActionSetBehavioralFeatureQuery();
 
-    /**
-     * Constructor.
-     */
-    protected ActionSetBehavioralFeatureQuery() {
-        super(Translator.localize("Set"), true, NO_ICON);
-    }
+  /** Constructor. */
+  protected ActionSetBehavioralFeatureQuery() {
+    super(Translator.localize("Set"), true, NO_ICON);
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        if (e.getSource() instanceof UMLCheckBox2) {
-            UMLCheckBox2 source = (UMLCheckBox2) e.getSource();
-            Object target = source.getTarget();
-            if (Model.getFacade().isABehavioralFeature(target)) {
-                Object m = /*(MGeneralizableElement)*/ target;
-                Model.getCoreHelper().setQuery(m, source.isSelected());
-            }
-        }
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    if (e.getSource() instanceof UMLCheckBox2) {
+      UMLCheckBox2 source = (UMLCheckBox2) e.getSource();
+      Object target = source.getTarget();
+      if (Model.getFacade().isABehavioralFeature(target)) {
+        Object m = /*(MGeneralizableElement)*/ target;
+        Model.getCoreHelper().setQuery(m, source.isSelected());
+      }
     }
+  }
 
-    /**
-     * @return Returns the SINGLETON.
-     */
-    public static ActionSetBehavioralFeatureQuery getInstance() {
-        return SINGLETON;
-    }
+  /**
+   * @return Returns the SINGLETON.
+   */
+  public static ActionSetBehavioralFeatureQuery getInstance() {
+    return SINGLETON;
+  }
 }

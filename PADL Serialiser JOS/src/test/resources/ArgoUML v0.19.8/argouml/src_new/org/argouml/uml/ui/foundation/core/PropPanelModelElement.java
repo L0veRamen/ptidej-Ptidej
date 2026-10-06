@@ -25,14 +25,12 @@
 package org.argouml.uml.ui.foundation.core;
 
 import java.util.Vector;
-
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-
 import org.apache.log4j.Logger;
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
@@ -47,322 +45,296 @@ import org.argouml.uml.ui.UMLTextField2;
 import org.argouml.util.ConfigLoader;
 import org.tigris.swidgets.Orientation;
 
-/**
- * The properties panel for a modelelement.
- *
- */
+/** The properties panel for a modelelement. */
 public abstract class PropPanelModelElement extends PropPanel {
 
-    private static final Logger LOG = Logger
-            .getLogger(PropPanelModelElement.class);
+  private static final Logger LOG = Logger.getLogger(PropPanelModelElement.class);
 
-    private JScrollPane namespaceScroll;
+  private JScrollPane namespaceScroll;
 
-    private JComponent namespaceSelector;
+  private JComponent namespaceSelector;
 
-    private JComponent stereotypeSelector;
+  private JComponent stereotypeSelector;
 
-    private JScrollPane supplierDependencyScroll;
+  private JScrollPane supplierDependencyScroll;
 
-    private JScrollPane clientDependencyScroll;
+  private JScrollPane clientDependencyScroll;
 
-    private JScrollPane targetFlowScroll;
+  private JScrollPane targetFlowScroll;
 
-    private JScrollPane sourceFlowScroll;
+  private JScrollPane sourceFlowScroll;
 
-    private JScrollPane constraintScroll;
+  private JScrollPane constraintScroll;
 
-    private JPanel namespaceVisibilityPanel;
+  private JPanel namespaceVisibilityPanel;
 
-    private JScrollPane elementResidenceScroll;
+  private JScrollPane elementResidenceScroll;
 
-    private JTextField nameTextField;
+  private JTextField nameTextField;
 
-    private UMLModelElementNamespaceComboBoxModel namespaceComboBoxModel =
-	new UMLModelElementNamespaceComboBoxModel();
+  private UMLModelElementNamespaceComboBoxModel namespaceComboBoxModel =
+      new UMLModelElementNamespaceComboBoxModel();
 
-    private static UMLModelElementNamespaceListModel namespaceListModel =
-	new UMLModelElementNamespaceListModel();
+  private static UMLModelElementNamespaceListModel namespaceListModel =
+      new UMLModelElementNamespaceListModel();
 
-    private static UMLModelElementClientDependencyListModel
-        clientDependencyListModel =
-	new UMLModelElementClientDependencyListModel();
+  private static UMLModelElementClientDependencyListModel clientDependencyListModel =
+      new UMLModelElementClientDependencyListModel();
 
-    private static UMLModelElementConstraintListModel constraintListModel =
-	new UMLModelElementConstraintListModel();
+  private static UMLModelElementConstraintListModel constraintListModel =
+      new UMLModelElementConstraintListModel();
 
-    private static UMLModelElementElementResidenceListModel
-        elementResidenceListModel =
-	new UMLModelElementElementResidenceListModel();
+  private static UMLModelElementElementResidenceListModel elementResidenceListModel =
+      new UMLModelElementElementResidenceListModel();
 
-    private static UMLModelElementNameDocument nameDocument =
-	new UMLModelElementNameDocument();
+  private static UMLModelElementNameDocument nameDocument = new UMLModelElementNameDocument();
 
-    private static UMLModelElementSourceFlowListModel sourceFlowListModel =
-	new UMLModelElementSourceFlowListModel();
+  private static UMLModelElementSourceFlowListModel sourceFlowListModel =
+      new UMLModelElementSourceFlowListModel();
 
-    // private static UMLModelElementSupplierDependencyListModel
-    //    supplierDependencyListModel =
-    //        new UMLModelElementSupplierDependencyListModel();
+  // private static UMLModelElementSupplierDependencyListModel
+  //    supplierDependencyListModel =
+  //        new UMLModelElementSupplierDependencyListModel();
 
-    private static UMLModelElementTargetFlowListModel targetFlowListModel =
-	new UMLModelElementTargetFlowListModel();
+  private static UMLModelElementTargetFlowListModel targetFlowListModel =
+      new UMLModelElementTargetFlowListModel();
 
-    /**
-     * The constructor.
-     *
-     * @param name the name of the properties panel
-     * @param icon the icon to be shown next to the name
-     * @param orientation the orientation
-     */
-    public PropPanelModelElement(String name, ImageIcon icon,
-            Orientation orientation) {
-        super(name, icon, orientation);
+  /**
+   * The constructor.
+   *
+   * @param name the name of the properties panel
+   * @param icon the icon to be shown next to the name
+   * @param orientation the orientation
+   */
+  public PropPanelModelElement(String name, ImageIcon icon, Orientation orientation) {
+    super(name, icon, orientation);
+  }
+
+  /**
+   * The constructor.
+   *
+   * @param name the name of the properties panel
+   * @param orientation the orientation
+   */
+  public PropPanelModelElement(String name, Orientation orientation) {
+    super(name, orientation);
+  }
+
+  /**
+   * Constructor that is used if no other proppanel can be found for a modelelement of some kind.
+   * Since this is the default
+   */
+  public PropPanelModelElement() {
+    this("ModelElement", null, ConfigLoader.getTabPropsOrientation());
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.stereotype"), getStereotypeSelector());
+
+    addField(Translator.localize("label.namespace"), getNamespaceScroll());
+
+    addSeperator();
+
+    addField(Translator.localize("label.supplier-dependencies"), getSupplierDependencyScroll());
+    addField(Translator.localize("label.client-dependencies"), getClientDependencyScroll());
+    addField(Translator.localize("label.source-flows"), getSourceFlowScroll());
+    addField(Translator.localize("label.target-flows"), getTargetFlowScroll());
+
+    addSeperator();
+
+    addField(Translator.localize("label.constraints"), getConstraintScroll());
+    add(getNamespaceVisibilityPanel());
+  }
+
+  /**
+   * Calling this method navigates the target one level up, to the owner of the current target. In
+   * most cases this navigates to the owning namespace. In some cases it navigates to, for example,
+   * the owning composite state for some simple state.
+   */
+  public void navigateUp() {
+    TargetManager.getInstance().setTarget(Model.getUmlHelper().getOwner(getTarget()));
+  }
+
+  //
+  // Pluggable Property Panel support
+  //
+  // THIS CLASS MUST NOT IMPLEMENT PluggablePropertyPanel. These
+  // are present to provide default implementations for any
+  // property panel that extends this class.
+  /**
+   * @see org.argouml.application.api.PluggablePropertyPanel#getPropertyPanel()
+   */
+  public PropPanel getPropertyPanel() {
+    return this;
+  }
+
+  /**
+   * @see org.argouml.application.api.ArgoModule#isModuleEnabled()
+   */
+  public boolean isModuleEnabled() {
+    return true;
+  }
+
+  /**
+   * @see org.argouml.application.api.ArgoModule#getModulePopUpActions( Vector, Object)
+   */
+  public Vector getModulePopUpActions(Vector v, Object o) {
+    return null;
+  }
+
+  /**
+   * @see org.argouml.application.api.ArgoModule#shutdownModule()
+   */
+  public boolean shutdownModule() {
+    return true;
+  }
+
+  /**
+   * @see org.argouml.application.api.ArgoModule#initializeModule()
+   */
+  public boolean initializeModule() {
+    LOG.debug("initializeModule()");
+    return true;
+  }
+
+  /**
+   * @see org.argouml.application.api.ArgoModule#setModuleEnabled(boolean)
+   */
+  public void setModuleEnabled(boolean enabled) {}
+
+  /**
+   * @see org.argouml.application.api.Pluggable#inContext(Object[])
+   */
+  public boolean inContext(Object[] o) {
+    return true;
+  }
+
+  /**
+   * @return a scrollpane for the namespace
+   */
+  protected JComponent getNamespaceScroll() {
+    if (namespaceScroll == null) {
+      JList namespaceList = new UMLLinkedList(namespaceListModel);
+      namespaceList.setVisibleRowCount(1);
+      namespaceScroll = new JScrollPane(namespaceList);
     }
+    return namespaceScroll;
+  }
 
-    /**
-     * The constructor.
-     *
-     * @param name the name of the properties panel
-     * @param orientation the orientation
-     */
-    public PropPanelModelElement(String name, Orientation orientation) {
-        super(name, orientation);
+  /**
+   * Returns the namespace selecter. This is a component which allows the user to select a single
+   * item as the namespace.
+   *
+   * @return a component for selecting the namespace
+   */
+  protected JComponent getNamespaceSelector() {
+    if (namespaceSelector == null) {
+      namespaceSelector =
+          new UMLSearchableComboBox(
+              namespaceComboBoxModel, ActionSetModelElementNamespace.getInstance(), true);
     }
+    return namespaceSelector;
+  }
 
-    /**
-     * Constructor that is used if no other proppanel can be found for a
-     * modelelement of some kind. Since this is the default
-     */
-    public PropPanelModelElement() {
-        this("ModelElement", null, ConfigLoader.getTabPropsOrientation());
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.stereotype"),
-                getStereotypeSelector());
+  /**
+   * Returns the stereotype selecter. This is a component which allows the user to select a single
+   * item as the stereotype.
+   *
+   * @return the stereotype selecter
+   */
+  protected JComponent getStereotypeSelector() {
+    return null;
+  }
 
-        addField(Translator.localize("label.namespace"),
-                getNamespaceScroll());
-
-        addSeperator();
-
-        addField(Translator.localize("label.supplier-dependencies"),
-                getSupplierDependencyScroll());
-        addField(Translator.localize("label.client-dependencies"),
-                getClientDependencyScroll());
-        addField(Translator.localize("label.source-flows"),
-                getSourceFlowScroll());
-        addField(Translator.localize("label.target-flows"),
-                getTargetFlowScroll());
-
-        addSeperator();
-
-        addField(Translator.localize("label.constraints"),
-                getConstraintScroll());
-        add(getNamespaceVisibilityPanel());
-        
+  /**
+   * @return a scrollpane for supplier dependency
+   */
+  protected JComponent getSupplierDependencyScroll() {
+    if (supplierDependencyScroll == null) {
+      supplierDependencyScroll = new ScrollList(new UMLModelElementSupplierDependencyListModel());
     }
+    return supplierDependencyScroll;
+  }
 
-    /**
-     * Calling this method navigates the target one level up, to the owner of
-     * the current target. In most cases this navigates to the owning namespace.
-     * In some cases it navigates to, for example, the owning composite state
-     * for some simple state.
-     */
-    public void navigateUp() {
-        TargetManager.getInstance().setTarget(
-                Model.getUmlHelper().getOwner(getTarget()));
+  /**
+   * @return a scrollpane for client dependency
+   */
+  protected JComponent getClientDependencyScroll() {
+    if (clientDependencyScroll == null) {
+      clientDependencyScroll = new ScrollList(clientDependencyListModel);
     }
+    return clientDependencyScroll;
+  }
 
-
-    //
-    // Pluggable Property Panel support
-    //
-    // THIS CLASS MUST NOT IMPLEMENT PluggablePropertyPanel. These
-    // are present to provide default implementations for any
-    // property panel that extends this class.
-    /**
-     * @see org.argouml.application.api.PluggablePropertyPanel#getPropertyPanel()
-     */
-    public PropPanel getPropertyPanel() {
-        return this;
+  /**
+   * @return a scrollpane for target flow
+   */
+  protected JComponent getTargetFlowScroll() {
+    if (targetFlowScroll == null) {
+      targetFlowScroll = new ScrollList(targetFlowListModel);
     }
+    return targetFlowScroll;
+  }
 
-    /**
-     * @see org.argouml.application.api.ArgoModule#isModuleEnabled()
-     */
-    public boolean isModuleEnabled() {
-        return true;
+  /**
+   * @return a scrollpane for source flow
+   */
+  protected JComponent getSourceFlowScroll() {
+    if (sourceFlowScroll == null) {
+      sourceFlowScroll = new ScrollList(sourceFlowListModel);
     }
+    return sourceFlowScroll;
+  }
 
-    /**
-     * @see org.argouml.application.api.ArgoModule#getModulePopUpActions(
-     *         Vector, Object)
-     */
-    public Vector getModulePopUpActions(Vector v, Object o) {
-        return null;
+  /**
+   * @return a scrollpane for constraints
+   */
+  protected JComponent getConstraintScroll() {
+    if (constraintScroll == null) {
+      JList constraintList =
+          new UMLMutableLinkedList(
+              constraintListModel, null, ActionNewModelElementConstraint.getInstance());
+      constraintScroll = new JScrollPane(constraintList);
     }
+    return constraintScroll;
+  }
 
-    /**
-     * @see org.argouml.application.api.ArgoModule#shutdownModule()
-     */
-    public boolean shutdownModule() {
-        return true;
+  /**
+   * @return a panel for the visibility
+   */
+  protected JComponent getNamespaceVisibilityPanel() {
+    if (namespaceVisibilityPanel == null) {
+      namespaceVisibilityPanel =
+          new UMLModelElementVisibilityRadioButtonPanel(
+              Translator.localize("label.visibility"), true);
     }
+    return namespaceVisibilityPanel;
+  }
 
-    /**
-     * @see org.argouml.application.api.ArgoModule#initializeModule()
-     */
-    public boolean initializeModule() {
-        LOG.debug("initializeModule()");
-        return true;
+  /**
+   * @return a scrollpane for residence
+   */
+  protected JComponent getElementResidenceScroll() {
+    if (elementResidenceScroll == null) {
+      elementResidenceScroll = new ScrollList(elementResidenceListModel);
     }
+    return elementResidenceScroll;
+  }
 
-    /**
-     * @see org.argouml.application.api.ArgoModule#setModuleEnabled(boolean)
-     */
-    public void setModuleEnabled(boolean enabled) {
+  /**
+   * @return a textfield for the name
+   */
+  protected JComponent getNameTextField() {
+    if (nameTextField == null) {
+      nameTextField = new UMLTextField2(nameDocument);
     }
+    return nameTextField;
+  }
 
-    /**
-     * @see org.argouml.application.api.Pluggable#inContext(Object[])
-     */
-    public boolean inContext(Object[] o) {
-        return true;
-    }
-
-    /**
-     * @return a scrollpane for the namespace
-     */
-    protected JComponent getNamespaceScroll() {
-        if (namespaceScroll == null) {
-            JList namespaceList = new UMLLinkedList(namespaceListModel);
-            namespaceList.setVisibleRowCount(1);
-            namespaceScroll = new JScrollPane(namespaceList);
-        }
-        return namespaceScroll;
-    }
-
-    /**
-     * Returns the namespace selecter. This is a component which allows the
-     * user to select a single item as the namespace.
-     *
-     * @return a component for selecting the namespace
-     */
-    protected JComponent getNamespaceSelector() {
-        if (namespaceSelector == null) {
-            namespaceSelector = new UMLSearchableComboBox(
-                    namespaceComboBoxModel,
-                    ActionSetModelElementNamespace.getInstance(), true);
-        }
-        return namespaceSelector;
-
-    }
-
-    /**
-     * Returns the stereotype selecter. This is a component which allows the
-     * user to select a single item as the stereotype.
-     * 
-     * @return the stereotype selecter
-     */
-    protected JComponent getStereotypeSelector() {
-        return null;
-    }
-
-    /**
-     * @return a scrollpane for supplier dependency
-     */
-    protected JComponent getSupplierDependencyScroll() {
-        if (supplierDependencyScroll == null) {
-            supplierDependencyScroll = new ScrollList(
-                    new UMLModelElementSupplierDependencyListModel());
-        }
-        return supplierDependencyScroll;
-    }
-
-    /**
-     * @return a scrollpane for client dependency
-     */
-    protected JComponent getClientDependencyScroll() {
-        if (clientDependencyScroll == null) {
-            clientDependencyScroll = new ScrollList(clientDependencyListModel);
-        }
-        return clientDependencyScroll;
-    }
-
-    /**
-     * @return a scrollpane for target flow
-     */
-    protected JComponent getTargetFlowScroll() {
-        if (targetFlowScroll == null) {
-            targetFlowScroll = new ScrollList(targetFlowListModel);
-        }
-        return targetFlowScroll;
-    }
-
-    /**
-     * @return a scrollpane for source flow
-     */
-    protected JComponent getSourceFlowScroll() {
-        if (sourceFlowScroll == null) {
-            sourceFlowScroll = new ScrollList(sourceFlowListModel);
-        }
-        return sourceFlowScroll;
-    }
-
-    /**
-     * @return a scrollpane for constraints
-     */
-    protected JComponent getConstraintScroll() {
-        if (constraintScroll == null) {
-            JList constraintList = new UMLMutableLinkedList(
-                    constraintListModel, null,
-                    ActionNewModelElementConstraint.getInstance());
-            constraintScroll = new JScrollPane(constraintList);
-        }
-        return constraintScroll;
-    }
-
-    /**
-     * @return a panel for the visibility
-     */
-    protected JComponent getNamespaceVisibilityPanel() {
-        if (namespaceVisibilityPanel == null) {
-            namespaceVisibilityPanel =
-		new UMLModelElementVisibilityRadioButtonPanel(
-                    Translator.localize("label.visibility"), true);
-        }
-        return namespaceVisibilityPanel;
-    }
-
-    /**
-     * @return a scrollpane for residence
-     */
-    protected JComponent getElementResidenceScroll() {
-        if (elementResidenceScroll == null) {
-            elementResidenceScroll = new ScrollList(elementResidenceListModel);
-        }
-        return elementResidenceScroll;
-    }
-
-    /**
-     * @return a textfield for the name
-     */
-    protected JComponent getNameTextField() {
-        if (nameTextField == null) {
-            nameTextField = new UMLTextField2(nameDocument);
-        }
-        return nameTextField;
-    }
-
-    /**
-     * Returns the document (model) for the name. Only used for the
-     * PropPanelComment.
-     *
-     * @return Document
-     */
-    protected UMLPlainTextDocument getNameDocument() {
-        return nameDocument;
-    }
-
+  /**
+   * Returns the document (model) for the name. Only used for the PropPanelComment.
+   *
+   * @return Document
+   */
+  protected UMLPlainTextDocument getNameDocument() {
+    return nameDocument;
+  }
 }

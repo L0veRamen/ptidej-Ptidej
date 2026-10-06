@@ -28,39 +28,38 @@ import junit.framework.TestCase;
 import org.argouml.util.CheckMain;
 
 /**
- * This is to test the CommandLineInterface functions.<p>
+ * This is to test the CommandLineInterface functions.
  *
- * Note that:<ul>
- * <li>We can't do the real ActionExit() here because that would exit
- *     the jvm running the test case.
- * <li>As a consequence, we can't use the -batch command line option
- *     since that would invoke ActionExit().
- * <li>After calling main we must reset the ArgoSecurityManager or else
- *     the test case will not be able to exit. For this reason use
- *     {@link CheckMain#callMain(String[])} instead of a direct call.
+ * <p>Note that:
+ *
+ * <ul>
+ *   <li>We can't do the real ActionExit() here because that would exit the jvm running the test
+ *       case.
+ *   <li>As a consequence, we can't use the -batch command line option since that would invoke
+ *       ActionExit().
+ *   <li>After calling main we must reset the ArgoSecurityManager or else the test case will not be
+ *       able to exit. For this reason use {@link CheckMain#callMain(String[])} instead of a direct
+ *       call.
+ *
  * @author Linus Tolke
  */
 public class GUITestCommandLineInterface extends TestCase {
-    /**
-     * Constructor.
-     *
-     * @param name the name of the test case
-     */
-    public GUITestCommandLineInterface(String name) {
-        super(name);
-    }
+  /**
+   * Constructor.
+   *
+   * @param name the name of the test case
+   */
+  public GUITestCommandLineInterface(String name) {
+    super(name);
+  }
 
-    /**
-     * Test the simplest possible action.
-     */
-    public void testActionExit() {
-        CheckMain.callMain(new String[] {
-            "-nosplash",
-            "-command",
-            "org.argouml.application.api.FalseActionExit",
+  /** Test the simplest possible action. */
+  public void testActionExit() {
+    CheckMain.callMain(
+        new String[] {
+          "-nosplash", "-command", "org.argouml.application.api.FalseActionExit",
         });
 
-	assertTrue(FalseActionExit.getLast().isExited());
-    }
+    assertTrue(FalseActionExit.getLast().isExited());
+  }
 }
-

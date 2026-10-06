@@ -41,218 +41,218 @@ import org.omg.uml.foundation.datatypes.PseudostateKindEnum;
 import org.omg.uml.foundation.datatypes.ScopeKindEnum;
 import org.omg.uml.foundation.datatypes.VisibilityKindEnum;
 
-/**
- * Class that contains enums in the Model.
- */
-public class KindsMDRImpl implements ChangeableKind, AggregationKind,
-        PseudostateKind, ScopeKind, ConcurrencyKind, DirectionKind,
-        OrderingKind, VisibilityKind {
+/** Class that contains enums in the Model. */
+public class KindsMDRImpl
+    implements ChangeableKind,
+        AggregationKind,
+        PseudostateKind,
+        ScopeKind,
+        ConcurrencyKind,
+        DirectionKind,
+        OrderingKind,
+        VisibilityKind {
 
-    private MDRModelImplementation modelImplementation;
-	
-    /**
-     * Constructor.
-     */
-    KindsMDRImpl(MDRModelImplementation mi) {
-        modelImplementation = mi;
-    }
+  private MDRModelImplementation modelImplementation;
 
-    /**
-     * @return Returns the AddOnly ChangeableKind.
-     */
-    public Object getAddOnly() {
-        return ChangeableKindEnum.CK_ADD_ONLY;
-    }
+  /** Constructor. */
+  KindsMDRImpl(MDRModelImplementation mi) {
+    modelImplementation = mi;
+  }
 
-    /**
-     * @return Returns the Aggregate AggregationKind.
-     */
-    public Object getAggregate() {
-        return AggregationKindEnum.AK_AGGREGATE;
-    }
+  /**
+   * @return Returns the AddOnly ChangeableKind.
+   */
+  public Object getAddOnly() {
+    return ChangeableKindEnum.CK_ADD_ONLY;
+  }
 
-    /**
-     * @return Returns the Branch PseudostateKind.
-     * @deprecated UML 1.3 only - use getChoice
-     */
-    public Object getBranch() {
-        return getChoice();
-    }
+  /**
+   * @return Returns the Aggregate AggregationKind.
+   */
+  public Object getAggregate() {
+    return AggregationKindEnum.AK_AGGREGATE;
+  }
 
-    /**
-     * @return Returns the Choice PseudostateKind.
-     */
-    public Object getChoice() {
-        return PseudostateKindEnum.PK_CHOICE;
-    }
+  /**
+   * @return Returns the Branch PseudostateKind.
+   * @deprecated UML 1.3 only - use getChoice
+   */
+  public Object getBranch() {
+    return getChoice();
+  }
 
-    /**
-     * @return Returns the Changeable ChangeableKind.
-     */
-    public Object getChangeable() {
-        return ChangeableKindEnum.CK_CHANGEABLE;
-    }
+  /**
+   * @return Returns the Choice PseudostateKind.
+   */
+  public Object getChoice() {
+    return PseudostateKindEnum.PK_CHOICE;
+  }
 
-    /**
-     * @return Returns the Classifier ScopeKind.
-     */
-    public Object getClassifier() {
-        return ScopeKindEnum.SK_CLASSIFIER;
-    }
+  /**
+   * @return Returns the Changeable ChangeableKind.
+   */
+  public Object getChangeable() {
+    return ChangeableKindEnum.CK_CHANGEABLE;
+  }
 
-    /**
-     * @return Returns the Composite AggregationKind.
-     */
-    public Object getComposite() {
-        return AggregationKindEnum.AK_COMPOSITE;
-    }
+  /**
+   * @return Returns the Classifier ScopeKind.
+   */
+  public Object getClassifier() {
+    return ScopeKindEnum.SK_CLASSIFIER;
+  }
 
-    /**
-     * @return Returns the Concurrent CallConcurrencyKind.
-     */
-    public Object getConcurrent() {
-        return CallConcurrencyKindEnum.CCK_CONCURRENT;
-    }
+  /**
+   * @return Returns the Composite AggregationKind.
+   */
+  public Object getComposite() {
+    return AggregationKindEnum.AK_COMPOSITE;
+  }
 
-    /**
-     * @return Returns the DeepHistory PseudostateKind.
-     */
-    public Object getDeepHistory() {
-        return PseudostateKindEnum.PK_DEEP_HISTORY;
-    }
+  /**
+   * @return Returns the Concurrent CallConcurrencyKind.
+   */
+  public Object getConcurrent() {
+    return CallConcurrencyKindEnum.CCK_CONCURRENT;
+  }
 
-    /**
-     * @return Returns the Fork PseudostateKind.
-     */
-    public Object getFork() {
-        return PseudostateKindEnum.PK_FORK;
-    }
+  /**
+   * @return Returns the DeepHistory PseudostateKind.
+   */
+  public Object getDeepHistory() {
+    return PseudostateKindEnum.PK_DEEP_HISTORY;
+  }
 
-    /**
-     * @return Returns the Frozen ChangeableKind.
-     */
-    public Object getFrozen() {
-        return ChangeableKindEnum.CK_FROZEN;
-    }
+  /**
+   * @return Returns the Fork PseudostateKind.
+   */
+  public Object getFork() {
+    return PseudostateKindEnum.PK_FORK;
+  }
 
-    /**
-     * @return Returns the Guarded CallConcurrencyKind.
-     */
-    public Object getGuarded() {
-        return CallConcurrencyKindEnum.CCK_GUARDED;
-    }
+  /**
+   * @return Returns the Frozen ChangeableKind.
+   */
+  public Object getFrozen() {
+    return ChangeableKindEnum.CK_FROZEN;
+  }
 
-    /**
-     * @return Returns the In ParameterDirectionKind.
-     */
-    public Object getInParameter() {
-        return ParameterDirectionKindEnum.PDK_IN;
-    }
+  /**
+   * @return Returns the Guarded CallConcurrencyKind.
+   */
+  public Object getGuarded() {
+    return CallConcurrencyKindEnum.CCK_GUARDED;
+  }
 
-    /**
-     * @return Returns the Initial PseudostateKind.
-     */
-    public Object getInitial() {
-        return PseudostateKindEnum.PK_INITIAL;
-    }
+  /**
+   * @return Returns the In ParameterDirectionKind.
+   */
+  public Object getInParameter() {
+    return ParameterDirectionKindEnum.PDK_IN;
+  }
 
-    /**
-     * @return Returns the Inout ParameterDirectionKind.
-     */
-    public Object getInOutParameter() {
-        return ParameterDirectionKindEnum.PDK_INOUT;
-    }
+  /**
+   * @return Returns the Initial PseudostateKind.
+   */
+  public Object getInitial() {
+    return PseudostateKindEnum.PK_INITIAL;
+  }
 
-    /**
-     * @return Returns the Instance ScopeKind.
-     */
-    public Object getInstance() {
-        return ScopeKindEnum.SK_INSTANCE;
-    }
+  /**
+   * @return Returns the Inout ParameterDirectionKind.
+   */
+  public Object getInOutParameter() {
+    return ParameterDirectionKindEnum.PDK_INOUT;
+  }
 
-    /**
-     * @return Returns the Join PseudostateKind.
-     */
-    public Object getJoin() {
-        return PseudostateKindEnum.PK_JOIN;
-    }
+  /**
+   * @return Returns the Instance ScopeKind.
+   */
+  public Object getInstance() {
+    return ScopeKindEnum.SK_INSTANCE;
+  }
 
-    /**
-     * @return Returns the Junction PseudostateKind.
-     */
-    public Object getJunction() {
-        return PseudostateKindEnum.PK_JUNCTION;
-    }
+  /**
+   * @return Returns the Join PseudostateKind.
+   */
+  public Object getJoin() {
+    return PseudostateKindEnum.PK_JOIN;
+  }
 
-    /**
-     * @return Returns the None AggregationKind.
-     */
-    public Object getNone() {
-        return AggregationKindEnum.AK_NONE;
-    }
+  /**
+   * @return Returns the Junction PseudostateKind.
+   */
+  public Object getJunction() {
+    return PseudostateKindEnum.PK_JUNCTION;
+  }
 
-    /**
-     * @return Returns the Ordered OrderingKind.
-     */
-    public Object getOrdered() {
-        return OrderingKindEnum.OK_ORDERED;
-    }
+  /**
+   * @return Returns the None AggregationKind.
+   */
+  public Object getNone() {
+    return AggregationKindEnum.AK_NONE;
+  }
 
-    /**
-     * @return Returns the Out ParameterDirectionKind.
-     */
-    public Object getOutParameter() {
-        return ParameterDirectionKindEnum.PDK_OUT;
-    }
+  /**
+   * @return Returns the Ordered OrderingKind.
+   */
+  public Object getOrdered() {
+    return OrderingKindEnum.OK_ORDERED;
+  }
 
-    /**
-     * @return Returns the Private VisibilityKind.
-     */
-    public Object getPrivate() {
-        return VisibilityKindEnum.VK_PRIVATE;
-    }
+  /**
+   * @return Returns the Out ParameterDirectionKind.
+   */
+  public Object getOutParameter() {
+    return ParameterDirectionKindEnum.PDK_OUT;
+  }
 
-    /**
-     * @return Returns the Protected VisibilityKind.
-     */
-    public Object getProtected() {
-        return VisibilityKindEnum.VK_PROTECTED;
-    }
+  /**
+   * @return Returns the Private VisibilityKind.
+   */
+  public Object getPrivate() {
+    return VisibilityKindEnum.VK_PRIVATE;
+  }
 
-    /**
-     * @return Returns the Public VisibilityKind.
-     */
-    public Object getPublic() {
-        return VisibilityKindEnum.VK_PUBLIC;
-    }
+  /**
+   * @return Returns the Protected VisibilityKind.
+   */
+  public Object getProtected() {
+    return VisibilityKindEnum.VK_PROTECTED;
+  }
 
-    /**
-     * @return Returns the Return ParameterDirectionKind.
-     */
-    public Object getReturnParameter() {
-        return ParameterDirectionKindEnum.PDK_RETURN;
-    }
+  /**
+   * @return Returns the Public VisibilityKind.
+   */
+  public Object getPublic() {
+    return VisibilityKindEnum.VK_PUBLIC;
+  }
 
-    /**
-     * @return Returns the Sequential CallConcurrencyKind.
-     */
-    public Object getSequential() {
-        return CallConcurrencyKindEnum.CCK_SEQUENTIAL;
-    }
+  /**
+   * @return Returns the Return ParameterDirectionKind.
+   */
+  public Object getReturnParameter() {
+    return ParameterDirectionKindEnum.PDK_RETURN;
+  }
 
-    /**
-     * @return Returns the ShallowHistory PseudostateKind.
-     */
-    public Object getShallowHistory() {
-        return PseudostateKindEnum.PK_SHALLOW_HISTORY;
-    }
+  /**
+   * @return Returns the Sequential CallConcurrencyKind.
+   */
+  public Object getSequential() {
+    return CallConcurrencyKindEnum.CCK_SEQUENTIAL;
+  }
 
-    /**
-     * @return Returns the Unordered OrderingKind.
-     */
-    public Object getUnordered() {
-        return OrderingKindEnum.OK_UNORDERED;
-    }
+  /**
+   * @return Returns the ShallowHistory PseudostateKind.
+   */
+  public Object getShallowHistory() {
+    return PseudostateKindEnum.PK_SHALLOW_HISTORY;
+  }
 
+  /**
+   * @return Returns the Unordered OrderingKind.
+   */
+  public Object getUnordered() {
+    return OrderingKindEnum.OK_UNORDERED;
+  }
 }
-

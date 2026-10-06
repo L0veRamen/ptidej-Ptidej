@@ -30,11 +30,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.List;
-
 import javax.swing.JButton;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
-
 import org.argouml.application.api.GUISettingsTabInterface;
 import org.argouml.configuration.Configuration;
 import org.argouml.i18n.Translator;
@@ -49,169 +47,159 @@ import org.argouml.util.ArgoDialog;
  */
 class SettingsDialog extends ArgoDialog implements WindowListener {
 
-    private JButton applyButton;
+  private JButton applyButton;
 
-    private JTabbedPane tabs;
+  private JTabbedPane tabs;
 
-    private boolean windowOpen;
+  private boolean windowOpen;
 
-    /**
-     * Constructor to build new settings dialog.
-     */
-    SettingsDialog() {
-        super(Translator.localize("dialog.settings"),
-              ArgoDialog.OK_CANCEL_OPTION,
-              true);
+  /** Constructor to build new settings dialog. */
+  SettingsDialog() {
+    super(Translator.localize("dialog.settings"), ArgoDialog.OK_CANCEL_OPTION, true);
 
+    tabs = new JTabbedPane();
 
-        tabs = new JTabbedPane();
-
-        applyButton = new JButton(Translator.localize("button.apply"));
-        String mnemonic = Translator.localize("button.apply.mnemonic");
-        if (mnemonic != null && mnemonic.length() > 0) {
-            applyButton.setMnemonic(mnemonic.charAt(0));
-        }
-        applyButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                handleSave();
-            }
-        });
-        addButton(applyButton);
-
-        // Add settings from the settings registry.
-        settingsTabs = GUI.getInstance().getSettingsTabs();
-        for (GUISettingsTabInterface stp : settingsTabs) {
-            tabs.addTab(
-                    Translator.localize(stp.getTabKey()),
-                    stp.getTabPanel());
-        }
-
-        // Increase width to accommodate all tabs on one row.
-        final int minimumWidth = 480;
-        tabs.setPreferredSize(new Dimension(Math.max(tabs
-                .getPreferredSize().width, minimumWidth), tabs
-                .getPreferredSize().height));
-
-        tabs.setTabPlacement(SwingConstants.LEFT);
-        setContent(tabs);
-        addWindowListener(this);
+    applyButton = new JButton(Translator.localize("button.apply"));
+    String mnemonic = Translator.localize("button.apply.mnemonic");
+    if (mnemonic != null && mnemonic.length() > 0) {
+      applyButton.setMnemonic(mnemonic.charAt(0));
     }
-
-    @Override
-    public void setVisible(boolean show) {
-        if (show) {
-            handleRefresh();
-            toFront();
-        }
-        super.setVisible(show);
-        // windowOpen state will be changed when window is activated
-    }
-
-    /*
-     * @see java.awt.event.ActionListener#actionPerformed(
-     *      java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ev) {
-        super.actionPerformed(ev);
-        if (ev.getSource() == getOkButton()) {
+    applyButton.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
             handleSave();
-        } else if (ev.getSource() == getCancelButton()) {
-            handleCancel();
-        }
+          }
+        });
+    addButton(applyButton);
+
+    // Add settings from the settings registry.
+    settingsTabs = GUI.getInstance().getSettingsTabs();
+    for (GUISettingsTabInterface stp : settingsTabs) {
+      tabs.addTab(Translator.localize(stp.getTabKey()), stp.getTabPanel());
     }
 
-    /*
-     * Called when the user has pressed Save. Performs "Save" in all Tabs.
-     */
-    private void handleSave() {
-        for (GUISettingsTabInterface tab : settingsTabs) {
-            tab.handleSettingsTabSave();
-        }
-        windowOpen = false;
-        Configuration.save();
+    // Increase width to accommodate all tabs on one row.
+    final int minimumWidth = 480;
+    tabs.setPreferredSize(
+        new Dimension(
+            Math.max(tabs.getPreferredSize().width, minimumWidth), tabs.getPreferredSize().height));
+
+    tabs.setTabPlacement(SwingConstants.LEFT);
+    setContent(tabs);
+    addWindowListener(this);
+  }
+
+  @Override
+  public void setVisible(boolean show) {
+    if (show) {
+      handleRefresh();
+      toFront();
     }
+    super.setVisible(show);
+    // windowOpen state will be changed when window is activated
+  }
 
-    /*
-     * Called when the user has pressed Cancel. Performs "Cancel" in all Tabs.
-     */
-    private void handleCancel() {
-        for (GUISettingsTabInterface tab : settingsTabs) {
-            tab.handleSettingsTabCancel();
-        }
-        windowOpen = false;
+  /*
+   * @see java.awt.event.ActionListener#actionPerformed(
+   *      java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ev) {
+    super.actionPerformed(ev);
+    if (ev.getSource() == getOkButton()) {
+      handleSave();
+    } else if (ev.getSource() == getCancelButton()) {
+      handleCancel();
     }
+  }
 
-    /**
-     * Perform "Refresh" in all Tabs.
-     */
-    private void handleRefresh() {
-        for (GUISettingsTabInterface tab : settingsTabs) {
-            tab.handleSettingsTabRefresh();
-        }
+  /*
+   * Called when the user has pressed Save. Performs "Save" in all Tabs.
+   */
+  private void handleSave() {
+    for (GUISettingsTabInterface tab : settingsTabs) {
+      tab.handleSettingsTabSave();
     }
+    windowOpen = false;
+    Configuration.save();
+  }
 
-    private void handleOpen() {
-        // We only request focus the first time we become visible
-        if (!windowOpen) {
-            getOkButton().requestFocusInWindow();
-            windowOpen = true;
-        }
+  /*
+   * Called when the user has pressed Cancel. Performs "Cancel" in all Tabs.
+   */
+  private void handleCancel() {
+    for (GUISettingsTabInterface tab : settingsTabs) {
+      tab.handleSettingsTabCancel();
     }
+    windowOpen = false;
+  }
 
-    /*
-     * @see java.awt.event.WindowListener#windowActivated(java.awt.event.WindowEvent)
-     */
-    public void windowActivated(WindowEvent e) {
-        handleOpen();
+  /** Perform "Refresh" in all Tabs. */
+  private void handleRefresh() {
+    for (GUISettingsTabInterface tab : settingsTabs) {
+      tab.handleSettingsTabRefresh();
     }
+  }
 
-    /*
-     * @see java.awt.event.WindowListener#windowClosed(java.awt.event.WindowEvent)
-     */
-    public void windowClosed(WindowEvent e) {
-        // ignored - we only care about open/closing
+  private void handleOpen() {
+    // We only request focus the first time we become visible
+    if (!windowOpen) {
+      getOkButton().requestFocusInWindow();
+      windowOpen = true;
     }
+  }
 
-    /*
-     * @see java.awt.event.WindowListener#windowDeactivated(java.awt.event.WindowEvent)
-     */
-    public void windowDeactivated(WindowEvent e) {
-        // ignored - we only care about open/closing
-    }
+  /*
+   * @see java.awt.event.WindowListener#windowActivated(java.awt.event.WindowEvent)
+   */
+  public void windowActivated(WindowEvent e) {
+    handleOpen();
+  }
 
-    /*
-     * @see java.awt.event.WindowListener#windowDeiconified(java.awt.event.WindowEvent)
-     */
-    public void windowDeiconified(WindowEvent e) {
-        // ignored - we only care about open/closing
-    }
+  /*
+   * @see java.awt.event.WindowListener#windowClosed(java.awt.event.WindowEvent)
+   */
+  public void windowClosed(WindowEvent e) {
+    // ignored - we only care about open/closing
+  }
 
-    /*
-     * @see java.awt.event.WindowListener#windowIconified(java.awt.event.WindowEvent)
-     */
-    public void windowIconified(WindowEvent e) {
-        // ignored - we only care about open/closing
-    }
+  /*
+   * @see java.awt.event.WindowListener#windowDeactivated(java.awt.event.WindowEvent)
+   */
+  public void windowDeactivated(WindowEvent e) {
+    // ignored - we only care about open/closing
+  }
 
-    /*
-     * @see java.awt.event.WindowListener#windowOpened(java.awt.event.WindowEvent)
-     */
-    public void windowOpened(WindowEvent e) {
-        handleOpen();
-    }
+  /*
+   * @see java.awt.event.WindowListener#windowDeiconified(java.awt.event.WindowEvent)
+   */
+  public void windowDeiconified(WindowEvent e) {
+    // ignored - we only care about open/closing
+  }
 
-    /*
-     * @see java.awt.event.WindowListener#windowClosing(java.awt.event.WindowEvent)
-     */
-    public void windowClosing(WindowEvent e) {
-        // Handle the same as an explicit cancel
-        handleCancel();
-    }
+  /*
+   * @see java.awt.event.WindowListener#windowIconified(java.awt.event.WindowEvent)
+   */
+  public void windowIconified(WindowEvent e) {
+    // ignored - we only care about open/closing
+  }
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = -8233301947357843703L;
+  /*
+   * @see java.awt.event.WindowListener#windowOpened(java.awt.event.WindowEvent)
+   */
+  public void windowOpened(WindowEvent e) {
+    handleOpen();
+  }
 
-    private List<GUISettingsTabInterface> settingsTabs;
+  /*
+   * @see java.awt.event.WindowListener#windowClosing(java.awt.event.WindowEvent)
+   */
+  public void windowClosing(WindowEvent e) {
+    // Handle the same as an explicit cancel
+    handleCancel();
+  }
+
+  /** The serial version. */
+  private static final long serialVersionUID = -8233301947357843703L;
+
+  private List<GUISettingsTabInterface> settingsTabs;
 }

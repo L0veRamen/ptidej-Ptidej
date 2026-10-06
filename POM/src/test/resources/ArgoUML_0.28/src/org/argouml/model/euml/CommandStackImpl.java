@@ -26,53 +26,47 @@
 
 package org.argouml.model.euml;
 
-//import org.argouml.model.CommandStack;
+// import org.argouml.model.CommandStack;
 
-/**
- * CommandStack implementation to support Undo/Redo.
- * 
- */
+/** CommandStack implementation to support Undo/Redo. */
 public class CommandStackImpl /*implements CommandStack*/ {
 
-    private EUMLModelImplementation modelImplementation;
+  private EUMLModelImplementation modelImplementation;
 
-    public CommandStackImpl(EUMLModelImplementation implementation) {
-        modelImplementation = implementation;
-        implementation.getEditingDomain().getCommandStack().flush();
-    }
+  public CommandStackImpl(EUMLModelImplementation implementation) {
+    modelImplementation = implementation;
+    implementation.getEditingDomain().getCommandStack().flush();
+  }
 
-    public boolean canRedo() {
-        return modelImplementation.getEditingDomain().getCommandStack()
-                .canRedo();
-    }
+  public boolean canRedo() {
+    return modelImplementation.getEditingDomain().getCommandStack().canRedo();
+  }
 
-    public boolean canUndo() {
-        return modelImplementation.getEditingDomain().getCommandStack()
-                .canUndo();
-    }
+  public boolean canUndo() {
+    return modelImplementation.getEditingDomain().getCommandStack().canUndo();
+  }
 
-    public String getRedoLabel() {
-        return canRedo() ? modelImplementation.getEditingDomain()
-                        .getCommandStack().getRedoCommand().getLabel()
-                : null;
-    }
+  public String getRedoLabel() {
+    return canRedo()
+        ? modelImplementation.getEditingDomain().getCommandStack().getRedoCommand().getLabel()
+        : null;
+  }
 
-    public String getUndoLabel() {
-        return canUndo() ? modelImplementation.getEditingDomain()
-                        .getCommandStack().getUndoCommand().getLabel()
-                : null;
-    }
+  public String getUndoLabel() {
+    return canUndo()
+        ? modelImplementation.getEditingDomain().getCommandStack().getUndoCommand().getLabel()
+        : null;
+  }
 
-    public boolean isCommandStackCapabilityAvailable() {
-        return true;
-    }
+  public boolean isCommandStackCapabilityAvailable() {
+    return true;
+  }
 
-    public void redo() {
-        modelImplementation.getEditingDomain().getCommandStack().redo();
-    }
+  public void redo() {
+    modelImplementation.getEditingDomain().getCommandStack().redo();
+  }
 
-    public void undo() {
-        modelImplementation.getEditingDomain().getCommandStack().undo();
-    }
-
+  public void undo() {
+    modelImplementation.getEditingDomain().getCommandStack().undo();
+  }
 }

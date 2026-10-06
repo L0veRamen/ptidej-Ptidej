@@ -1,4 +1,4 @@
-//package src.MEMENTO;
+// package src.MEMENTO;
 import java.io.*;
 
 public class MementoHandler {
@@ -11,20 +11,18 @@ public class MementoHandler {
     FileUtil util = new FileUtil();
 
     if (util.isFileExists(ID_FILE)) {
-      //read the object from the file
+      // read the object from the file
       try {
-        objStream = new ObjectInputStream(
-                      new FileInputStream(new File(ID_FILE)));
+        objStream = new ObjectInputStream(new FileInputStream(new File(ID_FILE)));
 
-        objMemento = (DataConverter.Memento)
-                     objStream.readObject();
+        objMemento = (DataConverter.Memento) objStream.readObject();
         objStream.close();
 
       } catch (Exception e) {
         System.out.println("Error Reading Memento");
         System.exit(1);
       }
-      //delete the old memento
+      // delete the old memento
       util.deleteFile(ID_FILE);
     }
     return objMemento;
@@ -33,10 +31,9 @@ public class MementoHandler {
   public void setMemento(DataConverter.Memento memento) {
     ObjectOutputStream objStream = null;
 
-    //write the object to the file
+    // write the object to the file
     try {
-      objStream = new ObjectOutputStream(
-                    new FileOutputStream(new File(ID_FILE)));
+      objStream = new ObjectOutputStream(new FileOutputStream(new File(ID_FILE)));
 
       objStream.writeObject(memento);
       objStream.close();
@@ -46,6 +43,4 @@ public class MementoHandler {
       System.exit(1);
     }
   }
-
-}// end of class
-
+} // end of class

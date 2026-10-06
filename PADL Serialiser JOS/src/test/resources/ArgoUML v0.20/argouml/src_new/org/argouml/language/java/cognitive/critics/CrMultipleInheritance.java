@@ -25,7 +25,6 @@
 package org.argouml.language.java.cognitive.critics;
 
 import java.util.Collection;
-
 import org.argouml.cognitive.Designer;
 import org.argouml.cognitive.ToDoItem;
 import org.argouml.cognitive.ui.Wizard;
@@ -35,61 +34,61 @@ import org.argouml.uml.cognitive.critics.CrUML;
 import org.argouml.uml.cognitive.critics.WizCueCards;
 
 /**
- * Well-formedness rule [2] for MAssociationEnd. See page 28 of UML 1.1
- * Semantics. OMG document ad/97-08-04.
+ * Well-formedness rule [2] for MAssociationEnd. See page 28 of UML 1.1 Semantics. OMG document
+ * ad/97-08-04.
  */
 public class CrMultipleInheritance extends CrUML {
 
-    /**
-     * The constructor.
-     */
-    public CrMultipleInheritance() {
-        setupHeadAndDesc();;
-	addSupportedDecision(UMLDecision.INHERITANCE);
-	addSupportedDecision(UMLDecision.CODE_GEN);
-	addTrigger("generalization");
+  /** The constructor. */
+  public CrMultipleInheritance() {
+    setupHeadAndDesc();
+    ;
+    addSupportedDecision(UMLDecision.INHERITANCE);
+    addSupportedDecision(UMLDecision.CODE_GEN);
+    addTrigger("generalization");
+  }
+
+  /**
+   * @see org.argouml.uml.cognitive.critics.CrUML#predicate2( java.lang.Object,
+   *     org.argouml.cognitive.Designer)
+   */
+  public boolean predicate2(Object designMaterial, Designer dsgr) {
+    if (!(Model.getFacade().isAClassifier(designMaterial))) {
+      return NO_PROBLEM;
     }
-
-    /**
-     * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
-     * java.lang.Object, org.argouml.cognitive.Designer)
-     */
-    public boolean predicate2(Object designMaterial, Designer dsgr) {
-	if (!(Model.getFacade().isAClassifier(designMaterial))) {
-	    return NO_PROBLEM;
-	}
-	Object cls = /*(MClassifier)*/ designMaterial;
-	Collection gen = Model.getFacade().getGeneralizations(cls);
-	if (gen != null && gen.size() > 1) {
-	    return PROBLEM_FOUND;
-	}
-        return NO_PROBLEM;
+    Object cls = /*(MClassifier)*/ designMaterial;
+    Collection gen = Model.getFacade().getGeneralizations(cls);
+    if (gen != null && gen.size() > 1) {
+      return PROBLEM_FOUND;
     }
+    return NO_PROBLEM;
+  }
 
-    /**
-     * @see org.argouml.cognitive.critics.Critic#initWizard(
-     *         org.argouml.cognitive.ui.Wizard)
-     */
-    public void initWizard(Wizard w) {
-	if (w instanceof WizCueCards) {
-	    WizCueCards wcc = (WizCueCards) w;
-	    wcc.addCue("Remove the generalization arrow to one of the base "
-		   + "classes of {name}.");
-	    wcc.addCue("Optionally, use the MInterface tool to create a new "
-		   + "MInterface for {name} to implement.");
-	    wcc.addCue("Use the Realization tool to add a dashed arrow from "
-		   + "{name} to the new MInterface.");
-	    wcc.addCue("Move method declarations from the unused base class "
-		   + "to the new MInterface and move method bodies down into "
-		   + "{name}.");
-	    wcc.addCue("If the unused base class is not used by anything else "
-		   + "then it can be removed.");
-	}
+  /**
+   * @see org.argouml.cognitive.critics.Critic#initWizard( org.argouml.cognitive.ui.Wizard)
+   */
+  public void initWizard(Wizard w) {
+    if (w instanceof WizCueCards) {
+      WizCueCards wcc = (WizCueCards) w;
+      wcc.addCue("Remove the generalization arrow to one of the base " + "classes of {name}.");
+      wcc.addCue(
+          "Optionally, use the MInterface tool to create a new "
+              + "MInterface for {name} to implement.");
+      wcc.addCue(
+          "Use the Realization tool to add a dashed arrow from " + "{name} to the new MInterface.");
+      wcc.addCue(
+          "Move method declarations from the unused base class "
+              + "to the new MInterface and move method bodies down into "
+              + "{name}.");
+      wcc.addCue(
+          "If the unused base class is not used by anything else " + "then it can be removed.");
     }
+  }
 
-    /**
-     * @see org.argouml.cognitive.critics.Critic#getWizardClass(org.argouml.cognitive.ToDoItem)
-     */
-    public Class getWizardClass(ToDoItem item) { return WizCueCards.class; }
-
+  /**
+   * @see org.argouml.cognitive.critics.Critic#getWizardClass(org.argouml.cognitive.ToDoItem)
+   */
+  public Class getWizardClass(ToDoItem item) {
+    return WizCueCards.class;
+  }
 } /* end class CrMultipleInheritance.java */

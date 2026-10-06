@@ -27,7 +27,6 @@ package org.argouml.uml.ui.behavior.collaborations;
 import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.uml.diagram.ui.ActionAddMessage;
 import org.argouml.uml.ui.ActionDeleteSingleModelElement;
@@ -37,48 +36,34 @@ import org.argouml.uml.ui.UMLLinkedList;
 import org.argouml.uml.ui.foundation.core.PropPanelAssociation;
 import org.argouml.util.ConfigLoader;
 
-/**
- * The properties panel for an AssociationRole.
- *
- */
+/** The properties panel for an AssociationRole. */
 public class PropPanelAssociationRole extends PropPanelAssociation {
 
-    /**
-     * The constructor.
-     *
-     */
-    public PropPanelAssociationRole() {
-        super("Association Role", ConfigLoader.getTabPropsOrientation());
+  /** The constructor. */
+  public PropPanelAssociationRole() {
+    super("Association Role", ConfigLoader.getTabPropsOrientation());
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.stereotype"),
-		 getStereotypeSelector());
-        addField(Translator.localize("label.namespace"),
-		 getNamespaceScroll());
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.stereotype"), getStereotypeSelector());
+    addField(Translator.localize("label.namespace"), getNamespaceScroll());
 
-        JComboBox baseComboBox =
-	    new UMLComboBox2(new UMLAssociationRoleBaseComboBoxModel(),
-                ActionSetAssociationRoleBase.getInstance());
-        addField(Translator.localize("label.base"), baseComboBox);
+    JComboBox baseComboBox =
+        new UMLComboBox2(
+            new UMLAssociationRoleBaseComboBoxModel(), ActionSetAssociationRoleBase.getInstance());
+    addField(Translator.localize("label.base"), baseComboBox);
 
-        addSeperator();
+    addSeperator();
 
-        JList assocEndList = new UMLLinkedList(
-                new UMLAssociationRoleAssociationEndRoleListModel());
-	// only binary associationroles are allowed
-        assocEndList.setVisibleRowCount(2);
-        addField(Translator.localize("label.associationrole-ends"),
-		 new JScrollPane(assocEndList));
+    JList assocEndList = new UMLLinkedList(new UMLAssociationRoleAssociationEndRoleListModel());
+    // only binary associationroles are allowed
+    assocEndList.setVisibleRowCount(2);
+    addField(Translator.localize("label.associationrole-ends"), new JScrollPane(assocEndList));
 
-        JList messageList =
-	    new UMLLinkedList(new UMLAssociationRoleMessageListModel());
-        addField(Translator.localize("label.messages"),
-		 new JScrollPane(messageList));
+    JList messageList = new UMLLinkedList(new UMLAssociationRoleMessageListModel());
+    addField(Translator.localize("label.messages"), new JScrollPane(messageList));
 
-        addAction(new ActionNavigateContainerElement());
-        addAction(ActionAddMessage.getSingleton());
-        addAction(new ActionDeleteSingleModelElement());
-    }
-
+    addAction(new ActionNavigateContainerElement());
+    addAction(ActionAddMessage.getSingleton());
+    addAction(new ActionDeleteSingleModelElement());
+  }
 } /* end class PropPanelAssociationRole */

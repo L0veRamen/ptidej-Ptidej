@@ -28,19 +28,17 @@ import org.argouml.model.Model;
 
 public class TestCrTooManyStates extends AbstractTestCrTooMany {
 
-    public TestCrTooManyStates(String arg0) {
-        super(arg0);
-        dm = Model.getStateMachinesFactory().createCompositeState();
-    }
+  public TestCrTooManyStates(String arg0) {
+    super(arg0);
+    dm = Model.getStateMachinesFactory().createCompositeState();
+  }
 
-    protected void setUp() throws Exception {
-        super.setUp();
-        cr = new CrTooManyStates();
-    }
+  protected void setUp() throws Exception {
+    super.setUp();
+    cr = new CrTooManyStates();
+  }
 
-    protected void createNewModelElement() {
-        Model.getStateMachinesFactory().buildSimpleState(dm);
-
-    }
-
+  protected void createNewModelElement() {
+    Model.getStateMachinesFactory().buildSimpleState(dm);
+  }
 }

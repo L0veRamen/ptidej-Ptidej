@@ -25,9 +25,7 @@
 package org.argouml.uml.cognitive.critics;
 
 import java.util.Iterator;
-
 import javax.swing.Icon;
-
 import org.argouml.cognitive.Designer;
 import org.argouml.cognitive.ToDoItem;
 import org.argouml.cognitive.critics.Critic;
@@ -36,124 +34,109 @@ import org.argouml.model.Model;
 import org.argouml.uml.cognitive.UMLDecision;
 
 /**
- * A critic to detect if a class has instance variables.
- * The critic fires currently only if a class and its base classes have
- * no attributes at all.
- * This is not neccesarily correct and the critic will have to deal with
- * static attributes or attributes which are defined in a base class but are
+ * A critic to detect if a class has instance variables. The critic fires currently only if a class
+ * and its base classes have no attributes at all. This is not neccesarily correct and the critic
+ * will have to deal with static attributes or attributes which are defined in a base class but are
  * private.
  */
 public class CrNoInstanceVariables extends CrUML {
 
-    /**
-     * The constructor.
-     */
-    public CrNoInstanceVariables() {
-        setupHeadAndDesc();
-	addSupportedDecision(UMLDecision.STORAGE);
-	setKnowledgeTypes(Critic.KT_COMPLETENESS);
-	addTrigger("structuralFeature");
+  /** The constructor. */
+  public CrNoInstanceVariables() {
+    setupHeadAndDesc();
+    addSupportedDecision(UMLDecision.STORAGE);
+    setKnowledgeTypes(Critic.KT_COMPLETENESS);
+    addTrigger("structuralFeature");
+  }
+
+  /**
+   * @see org.argouml.uml.cognitive.critics.CrUML#predicate2( java.lang.Object,
+   *     org.argouml.cognitive.Designer)
+   */
+  public boolean predicate2(Object dm, Designer dsgr) {
+    if (!(Model.getFacade().isAClass(dm))) return NO_PROBLEM;
+
+    if (!(Model.getFacade().isPrimaryObject(dm))) return NO_PROBLEM;
+
+    // if the object does not have a name,
+    // than no problem
+    if ((Model.getFacade().getName(dm) == null) || ("".equals(Model.getFacade().getName(dm)))) {
+      return NO_PROBLEM;
     }
 
-    /**
-     * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
-     * java.lang.Object, org.argouml.cognitive.Designer)
-     */
-    public boolean predicate2(Object dm, Designer dsgr) {
-	if (!(Model.getFacade().isAClass(dm))) return NO_PROBLEM;
+    // types can probably have variables, but we should not nag at them
+    // not having any.
+    if (Model.getFacade().isType(dm)) return NO_PROBLEM;
 
-	if (!(Model.getFacade().isPrimaryObject(dm))) return NO_PROBLEM;
+    // utility is a namespace collection - also not strictly
+    // required to have variables.
+    if (Model.getFacade().isUtility(dm)) return NO_PROBLEM;
 
-        // if the object does not have a name,
-        // than no problem
-        if ((Model.getFacade().getName(dm) == null)
-	    || ("".equals(Model.getFacade().getName(dm)))) {
-            return NO_PROBLEM;
-	}
+    if (findChangeableInstanceAttributeInInherited(dm, 0)) return NO_PROBLEM;
 
-	// types can probably have variables, but we should not nag at them
-	// not having any.
-	if (Model.getFacade().isType(dm)) return NO_PROBLEM;
+    return PROBLEM_FOUND;
+  }
 
-	// utility is a namespace collection - also not strictly
-	// required to have variables.
-	if (Model.getFacade().isUtility(dm)) return NO_PROBLEM;
+  /**
+   * @see org.argouml.cognitive.Poster#getClarifier()
+   */
+  public Icon getClarifier() {
+    return ClAttributeCompartment.getTheInstance();
+  }
 
-	if (findChangeableInstanceAttributeInInherited(dm, 0))
-	    return NO_PROBLEM;
+  /**
+   * Searches for attributes that are changeable instance attributes.
+   *
+   * @param dm The classifier to examine.
+   * @param depth Number of levels searched.
+   * @return true if an attribute can be found in this class or in any of its generalizations.
+   */
+  private boolean findChangeableInstanceAttributeInInherited(Object dm, int depth) {
 
-	return PROBLEM_FOUND;
+    Iterator attribs = Model.getFacade().getAttributes(dm).iterator();
+
+    while (attribs.hasNext()) {
+      Object attr = attribs.next();
+
+      // If we find an instance variable that is not a constant
+      // we have succeeded
+      if (Model.getFacade().isInstanceScope(attr) && Model.getFacade().isChangeable(attr))
+        return true;
     }
 
-    /**
-     * @see org.argouml.cognitive.Poster#getClarifier()
-     */
-    public Icon getClarifier() {
-	return ClAttributeCompartment.getTheInstance();
+    // I am only prepared to go this far.
+    if (depth > 50) return false;
+
+    Iterator iter = Model.getFacade().getGeneralizations(dm).iterator();
+
+    while (iter.hasNext()) {
+      Object parent = Model.getFacade().getParent(iter.next());
+
+      if (parent == dm) continue;
+
+      if (Model.getFacade().isAClassifier(parent))
+        if (findChangeableInstanceAttributeInInherited(parent, depth + 1)) return true;
     }
 
-    /**
-     * Searches for attributes that are changeable instance attributes.
-     *
-     * @param dm The classifier to examine.
-     * @param depth Number of levels searched.
-     * @return true if an attribute can be found in this class
-     *		or in any of its generalizations.
-     */
-    private boolean findChangeableInstanceAttributeInInherited(Object dm,
-							       int depth) {
+    return false;
+  }
 
-	Iterator attribs = Model.getFacade().getAttributes(dm).iterator();
-
-	while (attribs.hasNext()) {
-	    Object attr = attribs.next();
-
-	    // If we find an instance variable that is not a constant
-	    // we have succeeded
-	    if (Model.getFacade().isInstanceScope(attr)
-		&& Model.getFacade().isChangeable(attr))
-		return true;
-	}
-
-	// I am only prepared to go this far.
-	if (depth > 50)
-	    return false;
-
-	Iterator iter = Model.getFacade().getGeneralizations(dm).iterator();
-
-	while (iter.hasNext()) {
-	    Object parent = Model.getFacade().getParent(iter.next());
-
-	    if (parent == dm)
-		continue;
-
-	    if (Model.getFacade().isAClassifier(parent))
-		if (findChangeableInstanceAttributeInInherited(parent,
-							       depth + 1))
-		    return true;
-	}
-
-	return false;
+  /**
+   * @see org.argouml.cognitive.critics.Critic#initWizard( org.argouml.cognitive.ui.Wizard)
+   */
+  public void initWizard(Wizard w) {
+    if (w instanceof WizAddInstanceVariable) {
+      String ins = "Set the name of the new variable.";
+      String sug = "newAttr";
+      ((WizAddInstanceVariable) w).setInstructions(ins);
+      ((WizAddInstanceVariable) w).setSuggestion(sug);
     }
+  }
 
-    /**
-     * @see org.argouml.cognitive.critics.Critic#initWizard(
-     *         org.argouml.cognitive.ui.Wizard)
-     */
-    public void initWizard(Wizard w) {
-	if (w instanceof WizAddInstanceVariable) {
-	    String ins = "Set the name of the new variable.";
-	    String sug = "newAttr";
-	    ((WizAddInstanceVariable) w).setInstructions(ins);
-	    ((WizAddInstanceVariable) w).setSuggestion(sug);
-	}
-    }
-
-    /**
-     * @see org.argouml.cognitive.critics.Critic#getWizardClass(org.argouml.cognitive.ToDoItem)
-     */
-    public Class getWizardClass(ToDoItem item) {
-	return WizAddInstanceVariable.class;
-    }
+  /**
+   * @see org.argouml.cognitive.critics.Critic#getWizardClass(org.argouml.cognitive.ToDoItem)
+   */
+  public Class getWizardClass(ToDoItem item) {
+    return WizAddInstanceVariable.class;
+  }
 } /* end class CrNoInstanceVariables */
-

@@ -22,85 +22,108 @@ Part of the Spacewar system.
 
 package spacewar;
 
-
 /**
- * SpaceObjects are objects that float around in space.  They support the
- * minimal SpaceObject protocol, having to do with position, velocity,
- * size and liveness.  They are constructed with game, position, velocity
- * and size.  When constructed, a spaceobject adds itself to the registry.
+ * SpaceObjects are objects that float around in space. They support the minimal SpaceObject
+ * protocol, having to do with position, velocity, size and liveness. They are constructed with
+ * game, position, velocity and size. When constructed, a spaceobject adds itself to the registry.
  *
- * When it dies, a spaceobject removes itself from the registry.  But note
- * that it doesn't decide when to die, subclasses do that.
+ * <p>When it dies, a spaceobject removes itself from the registry. But note that it doesn't decide
+ * when to die, subclasses do that.
  *
- * The display aspects actually draw the space object on the screen and say
- * how much space it takes up there.
+ * <p>The display aspects actually draw the space object on the screen and say how much space it
+ * takes up there.
  */
 abstract class SpaceObject {
 
-    private Game    game;
-    private double  xPos, yPos, oldXPos, oldYPos, xVel, yVel;
-    private boolean alive;
+  private Game game;
+  private double xPos, yPos, oldXPos, oldYPos, xVel, yVel;
+  private boolean alive;
 
-    SpaceObject (Game theGame, double xP, double yP, double xV, double yV) {
-        game = theGame;
-        xPos = xP;
-        yPos = yP;
-        oldXPos = xP;
-        oldYPos = yP;
-        xVel = xV;
-        yVel = yV;
+  SpaceObject(Game theGame, double xP, double yP, double xV, double yV) {
+    game = theGame;
+    xPos = xP;
+    yPos = yP;
+    oldXPos = xP;
+    oldYPos = yP;
+    xVel = xV;
+    yVel = yV;
 
-        alive = true;
-        getGame().getRegistry().register(this);
-    }
+    alive = true;
+    getGame().getRegistry().register(this);
+  }
 
-    Game getGame()      { return game; }
+  Game getGame() {
+    return game;
+  }
 
-    double getXPos()    { return xPos; }
-    double getYPos()    { return yPos; }
+  double getXPos() {
+    return xPos;
+  }
 
-    double getOldXPos() { return oldXPos; }
-    double getOldYPos() { return oldYPos; }
+  double getYPos() {
+    return yPos;
+  }
 
-    double getXVel()    { return xVel; }
-    double getYVel()    { return yVel; }
+  double getOldXPos() {
+    return oldXPos;
+  }
 
-    void setXVel (double n) { xVel = n; }
-    void setYVel (double n) { yVel = n; }
+  double getOldYPos() {
+    return oldYPos;
+  }
 
-    boolean isAlive()          { return alive; }
-    void setIsAlive(boolean n) { alive = n; }
+  double getXVel() {
+    return xVel;
+  }
 
+  double getYVel() {
+    return yVel;
+  }
 
-    /**
-     * Move 1 unit of time's worth of distance.  I.e. increment xPos by xVel
-     * and yPos by yVel.  If we move off an edge of the screen move us back
-     * in the opposite edge.
-     */
-    void clockTick() {
-        oldXPos = xPos;
-        oldYPos = yPos;
-        xPos = (xPos + xVel) % getGame().getWidth();
-        if(xPos < 0)
-            xPos += getGame().getWidth();
-        yPos = (yPos + yVel) % getGame().getHeight();
-        if(yPos < 0)
-            yPos += getGame().getHeight();
-    }
+  void setXVel(double n) {
+    xVel = n;
+  }
 
-    void accelerate(double dXVel, double dYVel) {
-        xVel += dXVel;
-        yVel += dYVel;
-    }
+  void setYVel(double n) {
+    yVel = n;
+  }
 
-    void die() {
-        getGame().getRegistry().unregister(this);
-    }
+  boolean isAlive() {
+    return alive;
+  }
 
-    abstract int getSize();
+  void setIsAlive(boolean n) {
+    alive = n;
+  }
 
-    /** resolve the effects of colliding with a space object.
-     *  @param obj the space object that this object is colliding with.
-     */
-    abstract void handleCollision(SpaceObject obj);
+  /**
+   * Move 1 unit of time's worth of distance. I.e. increment xPos by xVel and yPos by yVel. If we
+   * move off an edge of the screen move us back in the opposite edge.
+   */
+  void clockTick() {
+    oldXPos = xPos;
+    oldYPos = yPos;
+    xPos = (xPos + xVel) % getGame().getWidth();
+    if (xPos < 0) xPos += getGame().getWidth();
+    yPos = (yPos + yVel) % getGame().getHeight();
+    if (yPos < 0) yPos += getGame().getHeight();
+  }
+
+  void accelerate(double dXVel, double dYVel) {
+    xVel += dXVel;
+    yVel += dYVel;
+  }
+
+  void die() {
+    getGame().getRegistry().unregister(this);
+  }
+
+  abstract int getSize();
+
+  /**
+   * resolve the effects of colliding with a space object.
+   *
+   * @param obj the space object that this object is colliding with.
+   */
+  abstract void handleCollision(SpaceObject obj);
 }

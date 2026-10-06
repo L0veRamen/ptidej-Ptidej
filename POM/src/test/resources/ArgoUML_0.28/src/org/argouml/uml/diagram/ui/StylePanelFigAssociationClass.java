@@ -28,97 +28,87 @@ import java.awt.Rectangle;
 import java.awt.event.FocusListener;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyListener;
-
 import org.argouml.uml.diagram.static_structure.ui.StylePanelFigClass;
 import org.tigris.gef.presentation.Fig;
 
-/**
- * The style Panel for FigEdgeModelElement.
- *
- */
-public class StylePanelFigAssociationClass extends StylePanelFigClass implements
-        ItemListener, FocusListener, KeyListener {
+/** The style Panel for FigEdgeModelElement. */
+public class StylePanelFigAssociationClass extends StylePanelFigClass
+    implements ItemListener, FocusListener, KeyListener {
 
-    public StylePanelFigAssociationClass() {
+  public StylePanelFigAssociationClass() {}
+
+  /** Bounding box is editable (although this is style panel for an FigEdgeModelElement). */
+  @Override
+  protected void hasEditableBoundingBox(boolean value) {
+    super.hasEditableBoundingBox(true);
+  }
+
+  /*
+   * @see org.argouml.ui.StylePanelFig#setTargetBBox()
+   */
+  @Override
+  protected void setTargetBBox() {
+    Fig target = getPanelTarget();
+    // Can't do anything if we don't have a fig.
+    if (target == null) {
+      return;
+    }
+    // Parse the boundary box text. Null is
+    // returned if it is empty or
+    // invalid, which causes no change. Otherwise we tell
+    // GEF we are making
+    // a change, make the change and tell GEF we've
+    // finished.
+    Rectangle bounds = parseBBox();
+    if (bounds == null) {
+      return;
     }
 
-    /**
-     * Bounding box is editable (although this is style panel for an
-     * FigEdgeModelElement).
-     */
-    @Override
-    protected void hasEditableBoundingBox(boolean value) {
-        super.hasEditableBoundingBox(true);
+    // Get class box, because we will set it's bounding box
+    Rectangle oldAssociationBounds = target.getBounds();
+    if (((FigAssociationClass) target).getAssociationClass() != null) {
+      target = ((FigAssociationClass) target).getAssociationClass();
     }
 
-    /*
-     * @see org.argouml.ui.StylePanelFig#setTargetBBox()
-     */
-    @Override
-    protected void setTargetBBox() {
-        Fig target = getPanelTarget();
-        // Can't do anything if we don't have a fig.
-        if (target == null) {
-            return;
-        }
-        // Parse the boundary box text. Null is
-        // returned if it is empty or
-        // invalid, which causes no change. Otherwise we tell
-        // GEF we are making
-        // a change, make the change and tell GEF we've
-        // finished.
-        Rectangle bounds = parseBBox();
-        if (bounds == null) {
-            return;
-        }
+    if (!target.getBounds().equals(bounds) && !oldAssociationBounds.equals(bounds)) {
+      target.setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
+      target.endTrans();
+    }
+  }
 
-        // Get class box, because we will set it's bounding box
-        Rectangle oldAssociationBounds = target.getBounds();
-        if (((FigAssociationClass) target).getAssociationClass() != null) {
-            target = ((FigAssociationClass) target).getAssociationClass();
-        }
+  /*
+   * @see org.argouml.ui.StylePanelFig#refresh()
+   */
+  @Override
+  public void refresh() {
+    super.refresh();
 
-        if (!target.getBounds().equals(bounds)
-                && !oldAssociationBounds.equals(bounds)) {
-            target.setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
-            target.endTrans();
-        }
+    // The boundary box as held in the target fig, and as listed in
+    // the
+    // boundary box style field (null if we don't have anything
+    // valid)
+    Fig target = getPanelTarget();
+
+    // Get class box, because we will set it's bounding box in text field
+    if (((FigAssociationClass) target).getAssociationClass() != null) {
+      target = ((FigAssociationClass) target).getAssociationClass();
     }
 
-    /*
-     * @see org.argouml.ui.StylePanelFig#refresh()
-     */
-    @Override
-    public void refresh() {
-        super.refresh();
+    Rectangle figBounds = target.getBounds();
+    Rectangle styleBounds = parseBBox();
 
-        // The boundary box as held in the target fig, and as listed in
-        // the
-        // boundary box style field (null if we don't have anything
-        // valid)
-        Fig target = getPanelTarget();
+    // Only reset the text if the two are not the same (i.e the fig
+    // has
+    // moved, rather than we've just edited the text, when
+    // setTargetBBox()
+    // will have made them the same). Note that styleBounds could
+    // be null,
+    // so we do the test this way round.
 
-        // Get class box, because we will set it's bounding box in text field
-        if (((FigAssociationClass) target).getAssociationClass() != null) {
-            target = ((FigAssociationClass) target).getAssociationClass();
-        }
-
-        Rectangle figBounds = target.getBounds();
-        Rectangle styleBounds = parseBBox();
-
-        // Only reset the text if the two are not the same (i.e the fig
-        // has
-        // moved, rather than we've just edited the text, when
-        // setTargetBBox()
-        // will have made them the same). Note that styleBounds could
-        // be null,
-        // so we do the test this way round.
-
-        if (!(figBounds.equals(styleBounds))) {
-            getBBoxField().setText(
-                    figBounds.x + "," + figBounds.y + "," + figBounds.width
-                            + "," + figBounds.height);
-        }
+    if (!(figBounds.equals(styleBounds))) {
+      getBBoxField()
+          .setText(
+              figBounds.x + "," + figBounds.y + "," + figBounds.width + "," + figBounds.height);
     }
-
+  }
 } /* end class StylePanelFigAssociationClass */

@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xerces" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -60,109 +60,102 @@ package org.apache.xerces.dom;
 import org.w3c.dom.*;
 
 /**
- * Processing Instructions (PIs) permit documents to carry
- * processor-specific information alongside their actual content. PIs
- * are most common in XML, but they are supported in HTML as well.
+ * Processing Instructions (PIs) permit documents to carry processor-specific information alongside
+ * their actual content. PIs are most common in XML, but they are supported in HTML as well.
  *
  * @version
- * @since  PR-DOM-Level-1-19980818.
+ * @since PR-DOM-Level-1-19980818.
  */
-public class ProcessingInstructionImpl
-    extends NodeImpl
-    implements ProcessingInstruction {
+public class ProcessingInstructionImpl extends NodeImpl implements ProcessingInstruction {
 
-    //
-    // Constants
-    //
+  //
+  // Constants
+  //
 
-    /** Serialization version. */
-    static final long serialVersionUID = 7554435174099981510L;
+  /** Serialization version. */
+  static final long serialVersionUID = 7554435174099981510L;
 
-    //
-    // Constructors
-    //
+  //
+  // Constructors
+  //
 
-    /** Factory constructor. */
-    public ProcessingInstructionImpl(DocumentImpl ownerDoc,
-                                     String target, String data) {
-        super(ownerDoc, target, data);
+  /** Factory constructor. */
+  public ProcessingInstructionImpl(DocumentImpl ownerDoc, String target, String data) {
+    super(ownerDoc, target, data);
+  }
+
+  //
+  // Node methods
+  //
+
+  /**
+   * A short integer indicating what type of node this is. The named constants for this value are
+   * defined in the org.w3c.dom.Node interface.
+   */
+  public short getNodeType() {
+    return Node.PROCESSING_INSTRUCTION_NODE;
+  }
+
+  /** Clones this node. */
+  public Node cloneNode(boolean deep) {
+    if (syncData) {
+      synchronizeData();
     }
+    return ownerDocument.createProcessingInstruction(name, value);
+  }
 
-    //
-    // Node methods
-    //
+  //
+  // ProcessingInstruction methods
+  //
 
-    /**
-     * A short integer indicating what type of node this is. The named
-     * constants for this value are defined in the org.w3c.dom.Node interface.
-     */
-    public short getNodeType() {
-        return Node.PROCESSING_INSTRUCTION_NODE;
+  /**
+   * A PI's "target" states what processor channel the PI's data should be directed to. It is
+   * defined differently in HTML and XML.
+   *
+   * <p>In XML, a PI's "target" is the first (whitespace-delimited) token following the "<?" token
+   * that begins the PI.
+   *
+   * <p>In HTML, target is always null.
+   *
+   * <p>Note that getNodeName is aliased to getTarget.
+   */
+  public String getTarget() {
+
+    if (syncData) {
+      synchronizeData();
     }
+    return name;
+  } // getTarget():String
 
-    /** Clones this node. */
-    public Node cloneNode(boolean deep) {
-        if (syncData) {
-            synchronizeData();
-        }
-        return ownerDocument.createProcessingInstruction(name, value);
+  /**
+   * A PI's data content tells the processor what we actually want it to do. It is defined slightly
+   * differently in HTML and XML.
+   *
+   * <p>In XML, the data begins with the non-whitespace character immediately after the target
+   * -- @see getTarget().
+   *
+   * <p>In HTML, the data begins with the character immediately after the "&lt;?" token that begins
+   * the PI.
+   *
+   * <p>Note that getNodeValue is aliased to getData
+   */
+  public String getData() {
+
+    if (syncData) {
+      synchronizeData();
     }
+    return value;
+  } // getData():String
 
-    //
-    // ProcessingInstruction methods
-    //
-
-    /**
-     * A PI's "target" states what processor channel the PI's data
-     * should be directed to. It is defined differently in HTML and XML.
-     * <p>
-     * In XML, a PI's "target" is the first (whitespace-delimited) token
-     * following the "<?" token that begins the PI.
-     * <p>
-     * In HTML, target is always null.
-     * <p>
-     * Note that getNodeName is aliased to getTarget.
-     */
-    public String getTarget() {
-
-        if (syncData) {
-            synchronizeData();
-            }
-        return name;
-
-    } // getTarget():String
-
-    /**
-     * A PI's data content tells the processor what we actually want it
-     * to do.  It is defined slightly differently in HTML and XML.
-     * <p>
-     * In XML, the data begins with the non-whitespace character
-     * immediately after the target -- @see getTarget().
-     * <p>
-     * In HTML, the data begins with the character immediately after the
-     * "&lt;?" token that begins the PI.
-     * <p>
-     * Note that getNodeValue is aliased to getData
-     */
-    public String getData() {
-
-        if (syncData) {
-            synchronizeData();
-            }
-        return value;
-
-    } // getData():String
-
-    /**
-     * Change the data content of this PI.
-     * Note that setData is aliased to setNodeValue.
-     * @see #getData().
-     * @throws DOMException(NO_MODIFICATION_ALLOWED_ERR) if node is read-only.
-     */
-    public void setData(String data) {
-	    // Hand off to setNodeValue for code-reuse reasons (mutation
-	    // events, readonly protection, synchronizing, etc.)
-        setNodeValue(data);
-    } // setData(String)
-
+  /**
+   * Change the data content of this PI. Note that setData is aliased to setNodeValue.
+   *
+   * @see #getData().
+   * @throws DOMException(NO_MODIFICATION_ALLOWED_ERR) if node is read-only.
+   */
+  public void setData(String data) {
+    // Hand off to setNodeValue for code-reuse reasons (mutation
+    // events, readonly protection, synchronizing, etc.)
+    setNodeValue(data);
+  } // setData(String)
 } // class ProcessingInstructionImpl

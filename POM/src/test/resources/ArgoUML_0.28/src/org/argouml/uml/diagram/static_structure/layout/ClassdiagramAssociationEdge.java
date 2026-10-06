@@ -25,93 +25,80 @@
 package org.argouml.uml.diagram.static_structure.layout;
 
 import java.awt.Point;
-
 import org.tigris.gef.presentation.FigEdge;
 import org.tigris.gef.presentation.FigNode;
 import org.tigris.gef.presentation.FigPoly;
 
 /**
- *
- * @author  mkl
+ * @author mkl
  */
 public class ClassdiagramAssociationEdge extends ClassdiagramEdge {
 
-    /**
-     * The constructor.
-     *
-     * @param edge the fig of the edge
-     */
-    public ClassdiagramAssociationEdge(FigEdge edge) {
-        super(edge);
+  /**
+   * The constructor.
+   *
+   * @param edge the fig of the edge
+   */
+  public ClassdiagramAssociationEdge(FigEdge edge) {
+    super(edge);
+  }
+
+  /** Size of self association edges. */
+  private static final int SELF_SIZE = 30;
+
+  /*
+   * @see org.argouml.uml.diagram.layout.LayoutedEdge#layout()
+   */
+  public void layout() {
+    // TODO: Multiple associations between the same pair of elements
+    // need to be special cased so that they don't overlap - tfm - 20060228
+
+    // self associations are special cases. No need to let the maze
+    // runner find the way.
+    if (getDestFigNode() == getSourceFigNode()) {
+      Point centerRight = getCenterRight((FigNode) getSourceFigNode());
+      int yoffset = getSourceFigNode().getHeight() / 2;
+      yoffset = java.lang.Math.min(SELF_SIZE, yoffset);
+      FigPoly fig = getUnderlyingFig();
+      fig.addPoint(centerRight);
+      // move more right
+      fig.addPoint(centerRight.x + SELF_SIZE, centerRight.y);
+      // move down
+      fig.addPoint(centerRight.x + SELF_SIZE, centerRight.y + yoffset);
+      // move left
+      fig.addPoint(centerRight.x, centerRight.y + yoffset);
+
+      fig.setFilled(false);
+      fig.setSelfLoop(true);
+      getCurrentEdge().setFig(fig);
     }
+    /* else {
+        // brute force rectangular layout
+        Point centerSource = sourceFigNode.center();
+        Point centerDest   = destFigNode.center();
 
-    /**
-     * Size of self association edges.
-     */
-    private static final int SELF_SIZE = 30;
-    
-    /*
-     * @see org.argouml.uml.diagram.layout.LayoutedEdge#layout()
-     */
-    public void layout() {
-        // TODO: Multiple associations between the same pair of elements
-        // need to be special cased so that they don't overlap - tfm - 20060228
-        
-        // self associations are special cases. No need to let the maze
-        // runner find the way.
-        if (getDestFigNode() == getSourceFigNode()) {
-            Point centerRight = getCenterRight((FigNode) getSourceFigNode());
-            int yoffset = getSourceFigNode().getHeight() / 2;
-            yoffset = java.lang.Math.min(SELF_SIZE, yoffset);
-            FigPoly fig = getUnderlyingFig();
-            fig.addPoint(centerRight);
-            // move more right
-            fig.addPoint(centerRight.x + SELF_SIZE, centerRight.y);
-            // move down
-            fig.addPoint(centerRight.x + SELF_SIZE, centerRight.y + yoffset);
-            // move left
-            fig.addPoint(centerRight.x, centerRight.y + yoffset);
+        underlyingFig.addPoint(centerSource.x, centerSource.y);
+        underlyingFig.addPoint(centerSource.x +
+                               (centerDest.x-centerSource.x)/2,
+                               centerSource.y);
+        underlyingFig.addPoint(centerSource.x +
+                               (centerDest.x-centerSource.x)/2,
+                               centerDest.y);
+        underlyingFig.addPoint(centerDest.x, centerDest.y);
+        underlyingFig.setFilled(false);
+        underlyingFig.setSelfLoop(false);
+        currentEdge.setFig(underlyingFig);
+    }*/
+  }
 
-            fig.setFilled(false);
-            fig.setSelfLoop(true);
-            getCurrentEdge().setFig(fig);
-        }
-        /* else {
-            // brute force rectangular layout
-            Point centerSource = sourceFigNode.center();
-            Point centerDest   = destFigNode.center();
-
-            underlyingFig.addPoint(centerSource.x, centerSource.y);
-            underlyingFig.addPoint(centerSource.x +
-                                   (centerDest.x-centerSource.x)/2,
-                                   centerSource.y);
-            underlyingFig.addPoint(centerSource.x +
-                                   (centerDest.x-centerSource.x)/2,
-                                   centerDest.y);
-            underlyingFig.addPoint(centerDest.x, centerDest.y);
-            underlyingFig.setFilled(false);
-            underlyingFig.setSelfLoop(false);
-            currentEdge.setFig(underlyingFig);
-        }*/
-    }
-
-    /**
-     * Return a point which is centered vertically on the right hand edge of the
-     * figure.
-     * 
-     * @param fig
-     *            The fig.
-     * @return A Point.
-     */
-    private Point getCenterRight(FigNode fig) {
-        Point center = fig.getCenter();
-        return new Point(center.x + fig.getWidth() / 2, center.y);
-    }
+  /**
+   * Return a point which is centered vertically on the right hand edge of the figure.
+   *
+   * @param fig The fig.
+   * @return A Point.
+   */
+  private Point getCenterRight(FigNode fig) {
+    Point center = fig.getCenter();
+    return new Point(center.x + fig.getWidth() / 2, center.y);
+  }
 }
-
-
-
-
-
-
-

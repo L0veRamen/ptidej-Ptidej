@@ -25,6 +25,7 @@
 
     <string name="pref_clearHistory_key" translatable="false">pref_clearHistory</string>
     <string name="pref_clearHistory_title">Clear history</string>
-    <string name="pref_clearHistory_summary">Clear all the conversations history. This action can not be undone.</string>
+    <string name="pref_clearHistory_summary">Clear all the conversations history. This action can not be undone.
+    </string>
 
 </resources>

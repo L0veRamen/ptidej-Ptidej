@@ -35,7 +35,6 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.StringTokenizer;
-
 import org.argouml.application.api.Argo;
 import org.argouml.cognitive.Designer;
 import org.argouml.configuration.Configuration;
@@ -53,574 +52,511 @@ import org.tigris.gef.base.Globals;
 
 /**
  * Source language import class - GUI independent superclass.
- * <p>
- * Specific Swing and SWT/Eclipse importers will extend this class.
- * <p>
- * <em>NOTE:</em>Any change to the public API here must be tested in both Swing
- * (standalone ArgoUML) and Eclipse (ArgoEclipse) environments.
- * 
+ *
+ * <p>Specific Swing and SWT/Eclipse importers will extend this class.
+ *
+ * <p><em>NOTE:</em>Any change to the public API here must be tested in both Swing (standalone
+ * ArgoUML) and Eclipse (ArgoEclipse) environments.
+ *
  * @author Tom Morris
  */
 public abstract class ImportCommon implements ImportSettingsInternal {
 
-    /**
-     * The % maximum progress required to preparing for import.
-     */
-    protected static final int MAX_PROGRESS_PREPARE = 1;
+  /** The % maximum progress required to preparing for import. */
+  protected static final int MAX_PROGRESS_PREPARE = 1;
 
-    /**
-     * The % maximum progress required to import.
-     */
-    protected static final int MAX_PROGRESS_IMPORT = 99;
+  /** The % maximum progress required to import. */
+  protected static final int MAX_PROGRESS_IMPORT = 99;
 
-    protected static final int MAX_PROGRESS = MAX_PROGRESS_PREPARE
-            + MAX_PROGRESS_IMPORT;
-    /**
-     * keys are module name, values are PluggableImport instance.
-     */
-    private Hashtable<String, ImportInterface> modules;
+  protected static final int MAX_PROGRESS = MAX_PROGRESS_PREPARE + MAX_PROGRESS_IMPORT;
 
-    /**
-     * Current language module.
-     */
-    private ImportInterface currentModule;
+  /** keys are module name, values are PluggableImport instance. */
+  private Hashtable<String, ImportInterface> modules;
 
+  /** Current language module. */
+  private ImportInterface currentModule;
 
-    /**
-     * Imported directory.
-     */
-    private String srcPath;
+  /** Imported directory. */
+  private String srcPath;
 
-    /**
-     * Create a interface to the current diagram.
-     */
-    private DiagramInterface diagramInterface;
+  /** Create a interface to the current diagram. */
+  private DiagramInterface diagramInterface;
 
-    private File[] selectedFiles;
-    
-    private SuffixFilter selectedSuffixFilter;
+  private File[] selectedFiles;
 
-    protected ImportCommon() {
-        super();
-        modules = new Hashtable<String, ImportInterface>();
+  private SuffixFilter selectedSuffixFilter;
 
-        for (ImportInterface importer : ImporterManager.getInstance()
-                .getImporters()) {
-            modules.put(importer.getName(), importer);
+  protected ImportCommon() {
+    super();
+    modules = new Hashtable<String, ImportInterface>();
+
+    for (ImportInterface importer : ImporterManager.getInstance().getImporters()) {
+      modules.put(importer.getName(), importer);
+    }
+    if (modules.isEmpty()) {
+      throw new RuntimeException("Internal error. " + "No importer modules found.");
+    }
+    // "Java" is the default module for historical reasons,
+    // but it's not required to be there
+    currentModule = modules.get("Java");
+    if (currentModule == null) {
+      currentModule = modules.elements().nextElement();
+    }
+  }
+
+  /*
+   * @see org.argouml.uml.reveng.ImportSettings#getImportLevel()
+   */
+  public abstract int getImportLevel();
+
+  /** Compute and cache the current diagram interface. */
+  protected void initCurrentDiagram() {
+    diagramInterface = getCurrentDiagram();
+  }
+
+  /**
+   * Set target diagram.
+   *
+   * <p>
+   *
+   * @return selected diagram, if it is class diagram, else return null.
+   */
+  private DiagramInterface getCurrentDiagram() {
+    DiagramInterface result = null;
+    if (Globals.curEditor().getGraphModel() instanceof ClassDiagramGraphModel) {
+      result = new DiagramInterface(Globals.curEditor());
+    }
+    return result;
+  }
+
+  /*
+   * @see org.argouml.uml.reveng.ImportSettings#getInputSourceEncoding()
+   */
+  public abstract String getInputSourceEncoding();
+
+  /**
+   * Get the files. We generate it based on their specified file suffixes.
+   *
+   * @param monitor progress monitor which can be used to cancel long running request
+   * @return the list of files to be imported
+   */
+  protected List<File> getFileList(ProgressMonitor monitor) {
+    List<File> files = Arrays.asList(getSelectedFiles());
+    if (files.size() == 1) {
+      File file = files.get(0);
+      SuffixFilter suffixFilters[] = {selectedSuffixFilter};
+      if (suffixFilters[0] == null) {
+        // not a SuffixFilter selected, so we take all
+        suffixFilters = currentModule.getSuffixFilters();
+      }
+      files = FileImportUtils.getList(file, isDescendSelected(), suffixFilters, monitor);
+      if (file.isDirectory()) {
+        setSrcPath(file.getAbsolutePath());
+      } else {
+        setSrcPath(null);
+      }
+    }
+
+    if (isChangedOnlySelected()) {
+      // filter out all unchanged files
+      Object model = ProjectManager.getManager().getCurrentProject().getModel();
+      for (int i = files.size() - 1; i >= 0; i--) {
+        File f = files.get(i);
+        String fn = f.getAbsolutePath();
+        String lm = String.valueOf(f.lastModified());
+        if (lm.equals(Model.getFacade().getTaggedValueValue(model, fn))) {
+          files.remove(i);
         }
-        if (modules.isEmpty()) {
-            throw new RuntimeException("Internal error. "
-                    + "No importer modules found.");
-        }
-        // "Java" is the default module for historical reasons,
-        // but it's not required to be there
-        currentModule = modules.get("Java");
-        if (currentModule == null) {
-            currentModule = modules.elements().nextElement();
-        }
+      }
     }
 
-    /*
-     * @see org.argouml.uml.reveng.ImportSettings#getImportLevel()
-     */
-    public abstract int getImportLevel();
+    return files;
+  }
 
+  /**
+   * Set path for processed directory.
+   *
+   * @param path the given path
+   */
+  public void setSrcPath(String path) {
+    srcPath = path;
+  }
 
-    /**
-     * Compute and cache the current diagram interface.
-     */
-    protected void initCurrentDiagram() {
-        diagramInterface = getCurrentDiagram();
+  /**
+   * @return path for processed directory.
+   */
+  public String getSrcPath() {
+    return srcPath;
+  }
+
+  /*
+   * Create a TaggedValue with a tag/type matching our source module
+   * filename and a value of the file's last modified timestamp.
+   *
+   * TODO: This functionality needs to be moved someplace useful if
+   * it's needed, otherwise it can be deleted. - tfm - 20070217
+   */
+  private void setLastModified(Project project, File file) {
+    // set the lastModified value
+    String fn = file.getAbsolutePath();
+    String lm = String.valueOf(file.lastModified());
+    if (lm != null) {
+      Model.getCoreHelper().setTaggedValue(project.getModel(), fn, lm);
+    }
+  }
+
+  /*
+   * @see org.argouml.uml.reveng.ImportSettings#isCreateDiagramsSelected()
+   */
+  public abstract boolean isCreateDiagramsSelected();
+
+  /*
+   * @see org.argouml.uml.reveng.ImportSettings#isMinimiseFigsSelected()
+   */
+  public abstract boolean isMinimizeFigsSelected();
+
+  /*
+   * @see org.argouml.uml.reveng.ImportSettingsInternal#isDiagramLayoutSelected()
+   */
+  public abstract boolean isDiagramLayoutSelected();
+
+  /*
+   * @see org.argouml.uml.reveng.ImportSettingsInternal#isDescendSelected()
+   */
+  public abstract boolean isDescendSelected();
+
+  /*
+   * @see org.argouml.uml.reveng.ImportSettingsInternal#isChangedOnlySelected()
+   */
+  public abstract boolean isChangedOnlySelected();
+
+  protected Hashtable<String, ImportInterface> getModules() {
+    return modules;
+  }
+
+  protected void setSelectedFiles(final File[] files) {
+    selectedFiles = files;
+  }
+
+  /**
+   * Set the selected (file) suffix filter.
+   *
+   * @param suffixFilter the (file) suffix filter
+   */
+  protected void setSelectedSuffixFilter(final SuffixFilter suffixFilter) {
+    selectedSuffixFilter = suffixFilter;
+  }
+
+  protected File[] getSelectedFiles() {
+    File[] copy = new File[selectedFiles.length];
+    for (int i = 0; i < selectedFiles.length; i++) {
+      copy[i] = selectedFiles[i];
+    }
+    return copy;
+    // return Arrays.copyOf(selectedFiles, selectedFiles.length);
+  }
+
+  protected void setCurrentModule(ImportInterface module) {
+    currentModule = module;
+  }
+
+  protected ImportInterface getCurrentModule() {
+    return currentModule;
+  }
+
+  /**
+   * Returns the possible languages in which the user can import the sources.
+   *
+   * @return a list of Strings with the names of the languages available
+   */
+  public List<String> getLanguages() {
+    return Collections.unmodifiableList(new ArrayList<String>(modules.keySet()));
+  }
+
+  /**
+   * The flag for: descend directories recursively. This should be asked by the GUI for
+   * initialization.
+   *
+   * @return the flag stored in KEY_IMPORT_GENERAL_SETTINGS_FLAGS key or true if this is null.
+   */
+  public boolean isDescend() {
+    String flags = Configuration.getString(Argo.KEY_IMPORT_GENERAL_SETTINGS_FLAGS);
+    if (flags != null && flags.length() > 0) {
+      StringTokenizer st = new StringTokenizer(flags, ",");
+      if (st.hasMoreTokens() && st.nextToken().equals("false")) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
+   * The flag for: changed/new files only. This should be asked by the GUI for initialization.
+   *
+   * @return the flag stored in KEY_IMPORT_GENERAL_SETTINGS_FLAGS key or true if this is null.
+   */
+  public boolean isChangedOnly() {
+    String flags = Configuration.getString(Argo.KEY_IMPORT_GENERAL_SETTINGS_FLAGS);
+    if (flags != null && flags.length() > 0) {
+      StringTokenizer st = new StringTokenizer(flags, ",");
+      skipTokens(st, 1);
+      if (st.hasMoreTokens() && st.nextToken().equals("false")) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
+   * The flag for: create diagrams from imported code. This should be asked by the GUI for
+   * initialization.
+   *
+   * @return the flag stored in KEY_IMPORT_GENERAL_SETTINGS_FLAGS key or true if this is null.
+   */
+  public boolean isCreateDiagrams() {
+    String flags = Configuration.getString(Argo.KEY_IMPORT_GENERAL_SETTINGS_FLAGS);
+    if (flags != null && flags.length() > 0) {
+      StringTokenizer st = new StringTokenizer(flags, ",");
+      skipTokens(st, 2);
+      if (st.hasMoreTokens() && st.nextToken().equals("false")) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
+   * The flag for: minimise class icons in diagrams. This should be asked by the GUI for
+   * initialization.
+   *
+   * @return the flag stored in KEY_IMPORT_GENERAL_SETTINGS_FLAGS key or true if this is null.
+   */
+  public boolean isMinimizeFigs() {
+    String flags = Configuration.getString(Argo.KEY_IMPORT_GENERAL_SETTINGS_FLAGS);
+    if (flags != null && flags.length() > 0) {
+      StringTokenizer st = new StringTokenizer(flags, ",");
+      skipTokens(st, 3);
+      if (st.hasMoreTokens() && st.nextToken().equals("false")) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private void skipTokens(StringTokenizer st, int count) {
+    for (int i = 0; i < count; i++) {
+      if (st.hasMoreTokens()) {
+        st.nextToken();
+      }
+    }
+  }
+
+  /**
+   * The flag for: perform automatic diagram layout. This should be asked by the GUI for
+   * initialization.
+   *
+   * @return the flag stored in KEY_IMPORT_GENERAL_SETTINGS_FLAGS key or true if this is null.
+   */
+  public boolean isDiagramLayout() {
+    String flags = Configuration.getString(Argo.KEY_IMPORT_GENERAL_SETTINGS_FLAGS);
+    if (flags != null && flags.length() > 0) {
+      StringTokenizer st = new StringTokenizer(flags, ",");
+      skipTokens(st, 4);
+      if (st.hasMoreTokens() && st.nextToken().equals("false")) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
+   * The default encoding. This should be asked by the GUI for initialization.
+   *
+   * @return the encoding stored in Argo.KEY_INPUT_SOURCE_ENCODING key or if this is null the
+   *     default system encoding
+   */
+  public String getEncoding() {
+    String enc = Configuration.getString(Argo.KEY_INPUT_SOURCE_ENCODING);
+    if (enc == null || enc.trim().equals("")) { // $NON-NLS-1$
+      enc = System.getProperty("file.encoding"); // $NON-NLS-1$
     }
 
-    /**
-     * Set target diagram.<p>
-     *
-     * @return selected diagram, if it is class diagram,
-     * else return null.
-     */
-    private DiagramInterface getCurrentDiagram() {
-        DiagramInterface result = null;
-        if (Globals.curEditor().getGraphModel()
-                instanceof ClassDiagramGraphModel) {
-            result =  new DiagramInterface(Globals.curEditor());
-        }
-        return result;
+    return enc;
+  }
+
+  /**
+   * Layouts the diagrams.
+   *
+   * @param monitor the progress meter. Null if not progress updates desired.
+   * @param startingProgress the actual progress until now
+   */
+  public void layoutDiagrams(ProgressMonitor monitor, int startingProgress) {
+
+    if (diagramInterface == null) {
+      return;
     }
-
-    /*
-     * @see org.argouml.uml.reveng.ImportSettings#getInputSourceEncoding()
-     */
-    public abstract String getInputSourceEncoding();
-
-
-    /**
-     * Get the files.  We generate it based on their specified
-     * file suffixes.
-     * @param monitor progress monitor which can be used to cancel long running 
-     * request
-     * @return the list of files to be imported
-     */
-    protected List<File> getFileList(ProgressMonitor monitor) {
-        List<File> files = Arrays.asList(getSelectedFiles());
-        if (files.size() == 1) {
-            File file = files.get(0);
-            SuffixFilter suffixFilters[] = {selectedSuffixFilter};
-            if (suffixFilters[0] == null) {
-                // not a SuffixFilter selected, so we take all
-                suffixFilters = currentModule.getSuffixFilters();
-            }
-            files =
-                FileImportUtils.getList(
-                        file, isDescendSelected(),
-                        suffixFilters, monitor);
-            if (file.isDirectory()) {
-                setSrcPath(file.getAbsolutePath());
-            } else {
-                setSrcPath(null);
-            }
-        }
-
-
-        if (isChangedOnlySelected()) {
-            // filter out all unchanged files
-            Object model =
-                ProjectManager.getManager().getCurrentProject().getModel();
-            for (int i = files.size() - 1; i >= 0; i--) {
-                File f = files.get(i);
-                String fn = f.getAbsolutePath();
-                String lm = String.valueOf(f.lastModified());
-                if (lm.equals(
-                        Model.getFacade().getTaggedValueValue(model, fn))) {
-                    files.remove(i);
-                }
-            }
-        }
-
-        return files;
-    }
-
-    /**
-     * Set path for processed directory.
-     *
-     * @param path the given path
-     */
-    public void setSrcPath(String path) {
-        srcPath = path;
-    }
-
-    /**
-     * @return path for processed directory.
-     */
-    public String getSrcPath() {
-        return srcPath;
-    }
-
-    /*
-     * Create a TaggedValue with a tag/type matching our source module
-     * filename and a value of the file's last modified timestamp.
-     *
-     * TODO: This functionality needs to be moved someplace useful if
-     * it's needed, otherwise it can be deleted. - tfm - 20070217
-     */
-    private void setLastModified(Project project, File file) {
-        // set the lastModified value
-        String fn = file.getAbsolutePath();
-        String lm = String.valueOf(file.lastModified());
-        if (lm != null) {
-            Model.getCoreHelper()
-                .setTaggedValue(project.getModel(), fn, lm);
-        }
-    }
-
-    /*
-     * @see org.argouml.uml.reveng.ImportSettings#isCreateDiagramsSelected()
-     */
-    public abstract boolean isCreateDiagramsSelected();
-
-    /*
-     * @see org.argouml.uml.reveng.ImportSettings#isMinimiseFigsSelected()
-     */
-    public abstract boolean isMinimizeFigsSelected();
-
-    /*
-     * @see org.argouml.uml.reveng.ImportSettingsInternal#isDiagramLayoutSelected()
-     */
-    public abstract boolean isDiagramLayoutSelected();
-
-    /*
-     * @see org.argouml.uml.reveng.ImportSettingsInternal#isDescendSelected()
-     */
-    public abstract boolean isDescendSelected();
-
-    /*
-     * @see org.argouml.uml.reveng.ImportSettingsInternal#isChangedOnlySelected()
-     */
-    public abstract boolean isChangedOnlySelected();
-
-    protected Hashtable<String, ImportInterface> getModules() {
-        return modules;
-    }
-
-
-    protected void setSelectedFiles(final File[] files) {
-        selectedFiles = files;
-    }
-
-    /**
-     * Set the selected (file) suffix filter.
-     * 
-     * @param suffixFilter the (file) suffix filter
-     */
-    protected void setSelectedSuffixFilter(final SuffixFilter suffixFilter) {
-        selectedSuffixFilter = suffixFilter;
-    }
-
-    protected File[] getSelectedFiles() {
-	File[] copy = new File[selectedFiles.length];
-	for (int i = 0; i < selectedFiles.length; i++) {
-	    copy[i] = selectedFiles[i];
-	}
-	return copy;
-        //return Arrays.copyOf(selectedFiles, selectedFiles.length);
-    }
-    
-    protected void setCurrentModule(ImportInterface module) {
-        currentModule = module;
-    }
-
-    protected ImportInterface getCurrentModule() {
-        return currentModule;
-    }
-
-    /**
-     * Returns the possible languages in which the user can import the sources.
-     * @return a list of Strings with the names of the languages available
-     */
-    public List<String> getLanguages() {
-        return Collections.unmodifiableList(
-                new ArrayList<String>(modules.keySet()));
-    }
-
-    /**
-     * The flag for: descend directories recursively.
-     * This should be asked by the GUI for initialization.
-     * @return the flag stored in KEY_IMPORT_GENERAL_SETTINGS_FLAGS key or
-     * true if this is null.
-     */
-    public boolean isDescend() {
-        String flags =
-                Configuration.getString(
-                        Argo.KEY_IMPORT_GENERAL_SETTINGS_FLAGS);
-        if (flags != null && flags.length() > 0) {
-            StringTokenizer st = new StringTokenizer(flags, ",");
-            if (st.hasMoreTokens() && st.nextToken().equals("false")) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * The flag for: changed/new files only.
-     * This should be asked by the GUI for initialization.
-     * @return the flag stored in KEY_IMPORT_GENERAL_SETTINGS_FLAGS key or
-     * true if this is null.
-     */
-    public boolean isChangedOnly() {
-        String flags =
-                Configuration.getString(Argo.KEY_IMPORT_GENERAL_SETTINGS_FLAGS);
-        if (flags != null && flags.length() > 0) {
-            StringTokenizer st = new StringTokenizer(flags, ",");
-            skipTokens(st, 1);
-            if (st.hasMoreTokens() && st.nextToken().equals("false")) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * The flag for: create diagrams from imported code.
-     * This should be asked by the GUI for initialization.
-     * @return the flag stored in KEY_IMPORT_GENERAL_SETTINGS_FLAGS key or
-     * true if this is null.
-     */
-    public boolean isCreateDiagrams() {
-        String flags =
-                Configuration.getString(
-                        Argo.KEY_IMPORT_GENERAL_SETTINGS_FLAGS);
-        if (flags != null && flags.length() > 0) {
-            StringTokenizer st = new StringTokenizer(flags, ",");
-            skipTokens(st, 2);
-            if (st.hasMoreTokens() && st.nextToken().equals("false")) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * The flag for: minimise class icons in diagrams.
-     * This should be asked by the GUI for initialization.
-     * @return the flag stored in KEY_IMPORT_GENERAL_SETTINGS_FLAGS key or
-     * true if this is null.
-     */
-    public boolean isMinimizeFigs() {
-        String flags =
-                Configuration.getString(
-                        Argo.KEY_IMPORT_GENERAL_SETTINGS_FLAGS);
-        if (flags != null && flags.length() > 0) {
-            StringTokenizer st = new StringTokenizer(flags, ",");
-            skipTokens(st, 3);
-            if (st.hasMoreTokens() && st.nextToken().equals("false")) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private void skipTokens(StringTokenizer st, int count) {
-        for (int i = 0; i < count; i++) {
-            if (st.hasMoreTokens()) {
-                st.nextToken();
-            }
-        }
-    }
-
-    /**
-     * The flag for: perform automatic diagram layout.
-     * This should be asked by the GUI for initialization.
-     * @return the flag stored in KEY_IMPORT_GENERAL_SETTINGS_FLAGS key or
-     * true if this is null.
-     */
-    public boolean isDiagramLayout() {
-        String flags =
-                Configuration.getString(
-                        Argo.KEY_IMPORT_GENERAL_SETTINGS_FLAGS);
-        if (flags != null && flags.length() > 0) {
-            StringTokenizer st = new StringTokenizer(flags, ",");
-            skipTokens(st, 4);
-            if (st.hasMoreTokens() && st.nextToken().equals("false")) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * The default encoding. This should be asked by the GUI for
-     * initialization.
-     * @return the encoding stored in Argo.KEY_INPUT_SOURCE_ENCODING key or if
-     * this is null the default system encoding
-     */
-    public String getEncoding() {
-        String enc = Configuration.getString(Argo.KEY_INPUT_SOURCE_ENCODING);
-        if (enc == null || enc.trim().equals("")) { //$NON-NLS-1$
-            enc = System.getProperty("file.encoding"); //$NON-NLS-1$
-        }
-
-        return enc;
-    }
-
-
-    /**
-     * Layouts the diagrams.
-     *
-     * @param monitor
-     *            the progress meter.  Null if not progress updates desired.
-     * @param startingProgress
-     *            the actual progress until now
-     */
-    public void layoutDiagrams(ProgressMonitor monitor, int startingProgress) {
-
-        if (diagramInterface == null) {
-            return;
-        }
-//        if (monitor != null) {
-//            monitor.updateSubTask(ImportsMessages.layoutingAction);
-//        }
-        List<ArgoDiagram> diagrams = diagramInterface.getModifiedDiagramList();
-        int total = startingProgress + diagrams.size()
-                / 10;
-        for (int i = 0; i < diagrams.size(); i++) {
-            ArgoDiagram diagram = diagrams.get(i);
-            ClassdiagramLayouter layouter = new ClassdiagramLayouter(diagram);
-            layouter.layout();
-            int act = startingProgress + (i + 1) / 10;
-            int progress = MAX_PROGRESS_PREPARE
-                    + MAX_PROGRESS_IMPORT * act / total;
-            if (monitor != null) {
-                monitor.updateProgress(progress);
-            }
-//          iss.setValue(countFiles + (i + 1) / 10);
-        }
-
-    }
-
-
-    /**
-     * Import the selected source modules.
-     *
-     * @param monitor
-     *            a ProgressMonitor to both receive progress updates and to be
-     *            polled for user requests to cancel.
-     */
-    protected void doImport(ProgressMonitor monitor) {
-        // Roughly equivalent to and derived from old Import.doFile()
-        monitor.setMaximumProgress(MAX_PROGRESS);
-        int progress = 0;
-        monitor.updateSubTask(Translator.localize("dialog.import.preImport"));
-        List<File> files = getFileList(monitor);
-        progress += MAX_PROGRESS_PREPARE;
+    //        if (monitor != null) {
+    //            monitor.updateSubTask(ImportsMessages.layoutingAction);
+    //        }
+    List<ArgoDiagram> diagrams = diagramInterface.getModifiedDiagramList();
+    int total = startingProgress + diagrams.size() / 10;
+    for (int i = 0; i < diagrams.size(); i++) {
+      ArgoDiagram diagram = diagrams.get(i);
+      ClassdiagramLayouter layouter = new ClassdiagramLayouter(diagram);
+      layouter.layout();
+      int act = startingProgress + (i + 1) / 10;
+      int progress = MAX_PROGRESS_PREPARE + MAX_PROGRESS_IMPORT * act / total;
+      if (monitor != null) {
         monitor.updateProgress(progress);
-        if (files.size() == 0) {
-            monitor.notifyNullAction();
-            return;
-        }
-        Model.getPump().stopPumpingEvents();
-        boolean criticThreadWasOn = Designer.theDesigner().getAutoCritique();
-        if (criticThreadWasOn) {
-            Designer.theDesigner().setAutoCritique(false);
-        }
-        try {
-            doImportInternal(files, monitor, progress);
-        } finally {
-            if (criticThreadWasOn) {
-                Designer.theDesigner().setAutoCritique(true);
-            }
-            // TODO: Send an event instead of calling Explorer directly
-            ExplorerEventAdaptor.getInstance().structureChanged();
-            Model.getPump().startPumpingEvents();
-        }
+      }
+      //          iss.setValue(countFiles + (i + 1) / 10);
+    }
+  }
+
+  /**
+   * Import the selected source modules.
+   *
+   * @param monitor a ProgressMonitor to both receive progress updates and to be polled for user
+   *     requests to cancel.
+   */
+  protected void doImport(ProgressMonitor monitor) {
+    // Roughly equivalent to and derived from old Import.doFile()
+    monitor.setMaximumProgress(MAX_PROGRESS);
+    int progress = 0;
+    monitor.updateSubTask(Translator.localize("dialog.import.preImport"));
+    List<File> files = getFileList(monitor);
+    progress += MAX_PROGRESS_PREPARE;
+    monitor.updateProgress(progress);
+    if (files.size() == 0) {
+      monitor.notifyNullAction();
+      return;
+    }
+    Model.getPump().stopPumpingEvents();
+    boolean criticThreadWasOn = Designer.theDesigner().getAutoCritique();
+    if (criticThreadWasOn) {
+      Designer.theDesigner().setAutoCritique(false);
+    }
+    try {
+      doImportInternal(files, monitor, progress);
+    } finally {
+      if (criticThreadWasOn) {
+        Designer.theDesigner().setAutoCritique(true);
+      }
+      // TODO: Send an event instead of calling Explorer directly
+      ExplorerEventAdaptor.getInstance().structureChanged();
+      Model.getPump().startPumpingEvents();
+    }
+  }
+
+  /**
+   * Do the import.
+   *
+   * @param filesLeft the files to parse
+   * @param monitor the progress meter
+   * @param progress the actual progress until now
+   */
+  private void doImportInternal(List<File> filesLeft, final ProgressMonitor monitor, int progress) {
+    Project project = ProjectManager.getManager().getCurrentProject();
+    initCurrentDiagram();
+    final StringBuffer problems = new StringBuffer();
+    Collection newElements = new HashSet();
+
+    try {
+      newElements.addAll(currentModule.parseFiles(project, filesLeft, this, monitor));
+    } catch (Exception e) {
+      problems.append(printToBuffer(e));
+    }
+    // New style importers don't create diagrams, so we'll do it
+    // based on the list of newElements that they created
+    if (isCreateDiagramsSelected()) {
+      addFiguresToDiagrams(newElements);
     }
 
-
-    /**
-     * Do the import.
-     * @param filesLeft the files to parse
-     * @param monitor the progress meter
-     * @param progress the actual progress until now
-     */
-    private void doImportInternal(List<File> filesLeft,
-            final ProgressMonitor monitor, int progress) {
-        Project project =  ProjectManager.getManager().getCurrentProject();
-        initCurrentDiagram();
-        final StringBuffer problems = new StringBuffer();
-        Collection newElements = new HashSet();
-        
-        try {
-            newElements.addAll(currentModule.parseFiles(
-                    project, filesLeft, this, monitor));
-        } catch (Exception e) {
-            problems.append(printToBuffer(e));
-        }
-        // New style importers don't create diagrams, so we'll do it
-        // based on the list of newElements that they created
-        if (isCreateDiagramsSelected()) {
-            addFiguresToDiagrams(newElements);
-        }
-
-        // Do layout even if problems occurred during import
-        if (isDiagramLayoutSelected()) {
-            // TODO: Monitor is getting dismissed before layout is complete
-            monitor.updateMainTask(
-                    Translator.localize("dialog.import.postImport"));
-            monitor.updateSubTask(
-                    Translator.localize("dialog.import.layoutAction"));
-            layoutDiagrams(monitor, progress + filesLeft.size());
-        }
-        
-        // Add messages from caught exceptions
-        if (problems != null && problems.length() > 0) {
-            monitor.notifyMessage(
-                    Translator.localize(
-                            "dialog.title.import-problems"), //$NON-NLS-1$
-                            Translator.localize(
-                            "label.import-problems"),        //$NON-NLS-1$
-                            problems.toString());
-        }
-        
-        monitor.updateMainTask(Translator.localize("dialog.import.done"));
-        monitor.updateSubTask(""); //$NON-NLS-1$
-        monitor.updateProgress(MAX_PROGRESS);
-
+    // Do layout even if problems occurred during import
+    if (isDiagramLayoutSelected()) {
+      // TODO: Monitor is getting dismissed before layout is complete
+      monitor.updateMainTask(Translator.localize("dialog.import.postImport"));
+      monitor.updateSubTask(Translator.localize("dialog.import.layoutAction"));
+      layoutDiagrams(monitor, progress + filesLeft.size());
     }
 
+    // Add messages from caught exceptions
+    if (problems != null && problems.length() > 0) {
+      monitor.notifyMessage(
+          Translator.localize("dialog.title.import-problems"), // $NON-NLS-1$
+          Translator.localize("label.import-problems"), // $NON-NLS-1$
+          problems.toString());
+    }
 
-    /**
-     * Create diagram figures for a collection of model elements.
-     *
-     * @param newElements
-     *            the collection of elements for which figures should be
-     *            created.
-     */
-    private void addFiguresToDiagrams(Collection newElements) {
-        for (Object element : newElements) {
-            if (Model.getFacade().isAClassifier(element)
-                    || Model.getFacade().isAPackage(element)) {
+    monitor.updateMainTask(Translator.localize("dialog.import.done"));
+    monitor.updateSubTask(""); // $NON-NLS-1$
+    monitor.updateProgress(MAX_PROGRESS);
+  }
 
-                Object ns = Model.getFacade().getNamespace(element);
-                if (ns == null) {
-                    diagramInterface.createRootClassDiagram();
-                } else {
-                    String packageName = getQualifiedName(ns);
-                    // Select the correct diagram (implicitly creates it)
-                    if (packageName != null
-                            && !packageName.equals("")) {
-                        diagramInterface.selectClassDiagram(ns,
-                                packageName);
-                    } else {
-                        diagramInterface.createRootClassDiagram();
-                    }
-                    // Add the element to the diagram
-                    if (Model.getFacade().isAInterface(element)) {
-                        diagramInterface.addInterface(element,
-                                isMinimizeFigsSelected());
-                    } else if (Model.getFacade().isAClass(element)) {
-                        diagramInterface.addClass(element,
-                                isMinimizeFigsSelected());
-                    } else if (Model.getFacade().isAPackage(element)) {
-                        diagramInterface.addPackage(element);
-                    }
-                }
-            }
+  /**
+   * Create diagram figures for a collection of model elements.
+   *
+   * @param newElements the collection of elements for which figures should be created.
+   */
+  private void addFiguresToDiagrams(Collection newElements) {
+    for (Object element : newElements) {
+      if (Model.getFacade().isAClassifier(element) || Model.getFacade().isAPackage(element)) {
+
+        Object ns = Model.getFacade().getNamespace(element);
+        if (ns == null) {
+          diagramInterface.createRootClassDiagram();
+        } else {
+          String packageName = getQualifiedName(ns);
+          // Select the correct diagram (implicitly creates it)
+          if (packageName != null && !packageName.equals("")) {
+            diagramInterface.selectClassDiagram(ns, packageName);
+          } else {
+            diagramInterface.createRootClassDiagram();
+          }
+          // Add the element to the diagram
+          if (Model.getFacade().isAInterface(element)) {
+            diagramInterface.addInterface(element, isMinimizeFigsSelected());
+          } else if (Model.getFacade().isAClass(element)) {
+            diagramInterface.addClass(element, isMinimizeFigsSelected());
+          } else if (Model.getFacade().isAPackage(element)) {
+            diagramInterface.addPackage(element);
+          }
         }
+      }
     }
+  }
 
-    /**
-     * Return the fully qualified name of a model element in Java (dot
-     * separated) format.
-     * <p>
-     * TODO: We really need a language independent format here. Perhaps the list
-     * of names that form the hierarchy? - tfm
-     */
-    private String getQualifiedName(Object element) {
-        StringBuffer sb = new StringBuffer();
-        
-        Object ns = element;
-        while (ns != null) {
-            String name = Model.getFacade().getName(ns);
-            if (name == null) {
-                name = "";
-            }
-            sb.insert(0, name);
-            ns = Model.getFacade().getNamespace(ns);
-            if (ns != null) {
-                sb.insert(0, ".");
-            }
-        }
-        return sb.toString();
+  /**
+   * Return the fully qualified name of a model element in Java (dot separated) format.
+   *
+   * <p>TODO: We really need a language independent format here. Perhaps the list of names that form
+   * the hierarchy? - tfm
+   */
+  private String getQualifiedName(Object element) {
+    StringBuffer sb = new StringBuffer();
+
+    Object ns = element;
+    while (ns != null) {
+      String name = Model.getFacade().getName(ns);
+      if (name == null) {
+        name = "";
+      }
+      sb.insert(0, name);
+      ns = Model.getFacade().getNamespace(ns);
+      if (ns != null) {
+        sb.insert(0, ".");
+      }
     }
+    return sb.toString();
+  }
 
-    /*
-     * Print an exception trace to a string buffer
-     */
-    private StringBuffer printToBuffer(Exception e) {
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new java.io.PrintWriter(sw);
-        e.printStackTrace(pw);
-        return sw.getBuffer();
-    }
-
+  /*
+   * Print an exception trace to a string buffer
+   */
+  private StringBuffer printToBuffer(Exception e) {
+    StringWriter sw = new StringWriter();
+    PrintWriter pw = new java.io.PrintWriter(sw);
+    e.printStackTrace(pw);
+    return sw.getBuffer();
+  }
 }

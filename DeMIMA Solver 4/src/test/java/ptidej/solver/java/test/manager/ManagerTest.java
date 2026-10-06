@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -14,10 +14,8 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.List;
-
-import org.junit.Assert;
-
 import junit.framework.TestCase;
+import org.junit.Assert;
 import padl.creator.classfile.CompleteClassFileCreator;
 import padl.kernel.ICodeLevelModel;
 import padl.kernel.exception.CreationException;
@@ -28,61 +26,55 @@ import util.io.ProxyDisk;
 
 /**
  * @author Yann-Gaël Guéhéneuc
- * @since  2004/05/16
+ * @since 2004/05/16
  */
 public class ManagerTest extends TestCase {
-	private static ICodeLevelModel CodeLevelModel;
+  private static ICodeLevelModel CodeLevelModel;
 
-	public ManagerTest(final String aName) {
-		super(aName);
-	}
+  public ManagerTest(final String aName) {
+    super(aName);
+  }
 
-	protected void setUp() {
-		if (ManagerTest.CodeLevelModel == null) {
-			final String path = "../DeMIMA/target/test-classes/ptidej/example/composite2/";
+  protected void setUp() {
+    if (ManagerTest.CodeLevelModel == null) {
+      final String path = "../DeMIMA/target/test-classes/ptidej/example/composite2/";
 
-			// Instantiating model.
-			ManagerTest.CodeLevelModel = Factory.getInstance()
-					.createCodeLevelModel(path);
-			final ModelStatistics patternStatistics = new ModelStatistics();
-			ManagerTest.CodeLevelModel.addModelListener(patternStatistics);
+      // Instantiating model.
+      ManagerTest.CodeLevelModel = Factory.getInstance().createCodeLevelModel(path);
+      final ModelStatistics patternStatistics = new ModelStatistics();
+      ManagerTest.CodeLevelModel.addModelListener(patternStatistics);
 
-			// Building the program representation.
-			try {
-				ManagerTest.CodeLevelModel.create(
-						new CompleteClassFileCreator(new String[] { path }));
-			}
-			catch (final CreationException e) {
-				e.printStackTrace();
-			}
-			System.out.println();
-			System.out.println(patternStatistics);
+      // Building the program representation.
+      try {
+        ManagerTest.CodeLevelModel.create(new CompleteClassFileCreator(new String[] {path}));
+      } catch (final CreationException e) {
+        e.printStackTrace();
+      }
+      System.out.println();
+      System.out.println(patternStatistics);
 
-			try {
-				final Writer writer = ProxyDisk.getInstance()
-						.fileTempOutput("Domain.ini");
-				Manager.save(ManagerTest.CodeLevelModel, writer);
-				writer.close();
-			}
-			catch (final IOException ioe) {
-				ioe.printStackTrace();
-			}
-		}
-	}
+      try {
+        final Writer writer = ProxyDisk.getInstance().fileTempOutput("Domain.ini");
+        Manager.save(ManagerTest.CodeLevelModel, writer);
+        writer.close();
+      } catch (final IOException ioe) {
+        ioe.printStackTrace();
+      }
+    }
+  }
 
-	public void testLoader() {
-		try {
-			final Reader reader = ProxyDisk.getInstance()
-					.fileTempInput("Domain.ini");
-			final List listOfEntities = Manager.load(reader);
-			reader.close();
+  public void testLoader() {
+    try {
+      final Reader reader = ProxyDisk.getInstance().fileTempInput("Domain.ini");
+      final List listOfEntities = Manager.load(reader);
+      reader.close();
 
-			Assert.assertEquals("Number of entities",
-					ManagerTest.CodeLevelModel.getNumberOfTopLevelEntities(),
-					listOfEntities.size());
-		}
-		catch (final IOException ioe) {
-			ioe.printStackTrace();
-		}
-	}
+      Assert.assertEquals(
+          "Number of entities",
+          ManagerTest.CodeLevelModel.getNumberOfTopLevelEntities(),
+          listOfEntities.size());
+    } catch (final IOException ioe) {
+      ioe.printStackTrace();
+    }
+  }
 }

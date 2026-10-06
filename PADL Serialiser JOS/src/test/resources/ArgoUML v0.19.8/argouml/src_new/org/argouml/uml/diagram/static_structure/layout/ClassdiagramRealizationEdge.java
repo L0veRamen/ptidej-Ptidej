@@ -27,19 +27,16 @@ package org.argouml.uml.diagram.static_structure.layout;
 import org.tigris.gef.presentation.*;
 
 /**
- *
- * @author  mkl
+ * @author mkl
  */
 public class ClassdiagramRealizationEdge extends ClassdiagramInheritanceEdge {
-    
-    
-    /**
-     * The constructor.
-     * 
-     * @param edge the fig edge
-     */
-    public ClassdiagramRealizationEdge(FigEdge edge) {
-        super(edge);
-    }
-}
 
+  /**
+   * The constructor.
+   *
+   * @param edge the fig edge
+   */
+  public ClassdiagramRealizationEdge(FigEdge edge) {
+    super(edge);
+  }
+}

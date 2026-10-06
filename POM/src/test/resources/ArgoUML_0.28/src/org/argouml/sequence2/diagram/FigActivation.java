@@ -25,149 +25,150 @@
 package org.argouml.sequence2.diagram;
 
 import java.awt.Rectangle;
-
 import org.argouml.uml.diagram.DiagramSettings;
 import org.argouml.uml.diagram.ui.ArgoFigGroup;
 import org.tigris.gef.presentation.FigRect;
 
 /**
  * TODO: Document!
- * 
+ *
  * @author penyaskito
  */
 class FigActivation extends ArgoFigGroup {
-    
-    static final int DEFAULT_HEIGHT = 40;
-    static final int DEFAULT_WIDTH = 20;
-    
-    private FigRect rectFig;
-    private FigDestroy destroyFig;
-    
-    // The FigMessage that triggered this FigActivation into existence
-    private FigMessage activatingMessage;
-    
-    /**
-     * TODO: Document
-     * 
-     * @param x
-     * @param y
-     * @param destroy 
-     * @deprecated for 0.28 by tfmorris.  
-     */
-    public FigActivation(int x, int y, boolean destroy) {
-        super();
-        initialize(new Rectangle(x, y, DEFAULT_HEIGHT, DEFAULT_WIDTH), destroy);
-    }
 
-    private void initialize(Rectangle bounds, boolean destroy) {
-        if (bounds.width == 0) {
-            bounds.width = DEFAULT_WIDTH;
-        }
-        if (bounds.height == 0) {
-            bounds.height = DEFAULT_HEIGHT;
-        }
-        rectFig = new FigRect(bounds.x - bounds.width / 2, bounds.y,
-                bounds.width, bounds.height, LINE_COLOR, FILL_COLOR);
-        rectFig.setLineWidth(LINE_WIDTH);
-        addFig(rectFig);
-        setDestroy(destroy);
-    }
+  static final int DEFAULT_HEIGHT = 40;
+  static final int DEFAULT_WIDTH = 20;
 
-    /**
-     * Create a new default activation fig (ie one without a destroy fig at the
-     * end).
-     * 
-     * @param owner owning UML element or null
-     * @param bounds position (top center) and size. If the width or height is
-     *            0, the default will be used.
-     * @param activatingMessage The FigMessage that triggered this activation
-     *            to exist
-     * @param settings rendering settings
-     */
-    public FigActivation(
-            final Object owner,
-            final Rectangle bounds,
-            final DiagramSettings settings,
-            final FigMessage activatingMessage) {
-        this(owner, bounds, settings, activatingMessage, false);
-    }
+  private FigRect rectFig;
+  private FigDestroy destroyFig;
 
-    /**
-     * Create a new activation fig which optionally ends with a destroy fig.
-     * 
-     * @param owner owning UML element or null
-     * @param bounds position (top center) and size.  If the width or height is
-     *            0, the default will be used.
-     * @param settings rendering settings
-     * @param activatingMessage The FigMessage that triggered this activation
-     *            to exist
-     * @param destroy true if activation should end with a destroy fig.
-     */
-    public FigActivation(
-            final Object owner,
-            final Rectangle bounds,
-            final DiagramSettings settings,
-            final FigMessage activatingMessage,
-            final boolean destroy) {
-        super(owner, settings);
-        this.activatingMessage = activatingMessage;
-        initialize(bounds, destroy);
+  // The FigMessage that triggered this FigActivation into existence
+  private FigMessage activatingMessage;
+
+  /**
+   * TODO: Document
+   *
+   * @param x
+   * @param y
+   * @param destroy
+   * @deprecated for 0.28 by tfmorris.
+   */
+  public FigActivation(int x, int y, boolean destroy) {
+    super();
+    initialize(new Rectangle(x, y, DEFAULT_HEIGHT, DEFAULT_WIDTH), destroy);
+  }
+
+  private void initialize(Rectangle bounds, boolean destroy) {
+    if (bounds.width == 0) {
+      bounds.width = DEFAULT_WIDTH;
     }
-    
-    /**     
-     * @param isDestroy 
-     */
-    public void setDestroy (boolean isDestroy) {
-        if (isDestroy) {
-            if (destroyFig == null) {
-                destroyFig = new FigDestroy(getOwner(), new Rectangle(getX(),
-                        getY() + getHeight(), getWidth(), getWidth()),
-                        getSettings());
-                addFig(destroyFig);
-            }
-        }
-        else {
-            if (destroyFig != null) {
-                removeFig(destroyFig);
-            }
-            destroyFig = null;
-        }
+    if (bounds.height == 0) {
+      bounds.height = DEFAULT_HEIGHT;
     }
-    
-    /**
-     * Checks if ends with a destroy message.
-     * @return true if ends with a destroy message, false otherwise
-     */
-    public boolean isDestroy () {
-        return destroyFig != null;
+    rectFig =
+        new FigRect(
+            bounds.x - bounds.width / 2,
+            bounds.y,
+            bounds.width,
+            bounds.height,
+            LINE_COLOR,
+            FILL_COLOR);
+    rectFig.setLineWidth(LINE_WIDTH);
+    addFig(rectFig);
+    setDestroy(destroy);
+  }
+
+  /**
+   * Create a new default activation fig (ie one without a destroy fig at the end).
+   *
+   * @param owner owning UML element or null
+   * @param bounds position (top center) and size. If the width or height is 0, the default will be
+   *     used.
+   * @param activatingMessage The FigMessage that triggered this activation to exist
+   * @param settings rendering settings
+   */
+  public FigActivation(
+      final Object owner,
+      final Rectangle bounds,
+      final DiagramSettings settings,
+      final FigMessage activatingMessage) {
+    this(owner, bounds, settings, activatingMessage, false);
+  }
+
+  /**
+   * Create a new activation fig which optionally ends with a destroy fig.
+   *
+   * @param owner owning UML element or null
+   * @param bounds position (top center) and size. If the width or height is 0, the default will be
+   *     used.
+   * @param settings rendering settings
+   * @param activatingMessage The FigMessage that triggered this activation to exist
+   * @param destroy true if activation should end with a destroy fig.
+   */
+  public FigActivation(
+      final Object owner,
+      final Rectangle bounds,
+      final DiagramSettings settings,
+      final FigMessage activatingMessage,
+      final boolean destroy) {
+    super(owner, settings);
+    this.activatingMessage = activatingMessage;
+    initialize(bounds, destroy);
+  }
+
+  /**
+   * @param isDestroy
+   */
+  public void setDestroy(boolean isDestroy) {
+    if (isDestroy) {
+      if (destroyFig == null) {
+        destroyFig =
+            new FigDestroy(
+                getOwner(),
+                new Rectangle(getX(), getY() + getHeight(), getWidth(), getWidth()),
+                getSettings());
+        addFig(destroyFig);
+      }
+    } else {
+      if (destroyFig != null) {
+        removeFig(destroyFig);
+      }
+      destroyFig = null;
     }
-    
-    /**
-     * Return true if the given message should signal the end of this
-     * activation.
-     * This is true if the message is a return message pointing the
-     * other way to the activator.
-     * @param messageFig
-     * @return
-     */
-    public boolean isActivatorEnd(FigMessage messageFig) {
-        if (messageFig == null) {
-            throw new IllegalArgumentException(
-                    "An instance of FigMessage is required");
-        }
-        if (!messageFig.isReturnAction()) {
-            return false;
-        }
-        if (activatingMessage == null) {
-            return false;
-        }
-        // We know this is a return action now. It must be pointing the
-        // opposite way to the activator.
-        return activatingMessage.getSourceFigNode()
-            == messageFig.getDestFigNode();
+  }
+
+  /**
+   * Checks if ends with a destroy message.
+   *
+   * @return true if ends with a destroy message, false otherwise
+   */
+  public boolean isDestroy() {
+    return destroyFig != null;
+  }
+
+  /**
+   * Return true if the given message should signal the end of this activation. This is true if the
+   * message is a return message pointing the other way to the activator.
+   *
+   * @param messageFig
+   * @return
+   */
+  public boolean isActivatorEnd(FigMessage messageFig) {
+    if (messageFig == null) {
+      throw new IllegalArgumentException("An instance of FigMessage is required");
     }
-    
-    public FigMessage getActivatingMessage() {
-        return activatingMessage;
+    if (!messageFig.isReturnAction()) {
+      return false;
     }
+    if (activatingMessage == null) {
+      return false;
+    }
+    // We know this is a return action now. It must be pointing the
+    // opposite way to the activator.
+    return activatingMessage.getSourceFigNode() == messageFig.getDestFigNode();
+  }
+
+  public FigMessage getActivatingMessage() {
+    return activatingMessage;
+  }
 }

@@ -27,12 +27,10 @@ package org.argouml.ui;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
-
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
-
 import org.argouml.i18n.Translator;
 import org.argouml.uml.diagram.ui.FigNodeModelElement;
 
@@ -43,154 +41,129 @@ import org.argouml.uml.diagram.ui.FigNodeModelElement;
  */
 public class ShadowComboBox extends JComboBox {
 
-    private static ShadowFig[]  shadowFigs;
+  private static ShadowFig[] shadowFigs;
+
+  /** The constructor. */
+  public ShadowComboBox() {
+    super();
+
+    addItem(Translator.localize("label.stylepane.no-shadow"));
+    addItem("1");
+    addItem("2");
+    addItem("3");
+    addItem("4");
+    addItem("5");
+    addItem("6");
+    addItem("7");
+    addItem("8");
+
+    setRenderer(new ShadowRenderer());
+  }
+
+  /**
+   * Renders each combo box entry as a shadowed diagram figure with the associated level of shadow.
+   */
+  private class ShadowRenderer extends JComponent implements ListCellRenderer {
+
+    private ShadowFig currentFig;
+
+    /** Constructor. */
+    public ShadowRenderer() {
+      super();
+    }
 
     /**
-     * The constructor.
+     * @see javax.swing.ListCellRenderer#getListCellRendererComponent( javax.swing.JList,
+     *     java.lang.Object, int, boolean, boolean)
+     */
+    public Component getListCellRendererComponent(
+        JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+
+      if (shadowFigs == null) {
+        shadowFigs = new ShadowFig[ShadowComboBox.this.getItemCount()];
+
+        for (int i = 0; i < shadowFigs.length; ++i) {
+          shadowFigs[i] = new ShadowFig();
+          shadowFigs[i].setShadowSize(i);
+          shadowFigs[i].setName((String) ShadowComboBox.this.getItemAt(i));
+        }
+      }
+
+      if (isSelected) {
+        setBackground(list.getSelectionBackground());
+      } else {
+        setBackground(list.getBackground());
+      }
+
+      int figIndex = index;
+      if (figIndex < 0) {
+        for (int i = 0; i < shadowFigs.length; ++i) {
+          if (value == ShadowComboBox.this.getItemAt(i)) {
+            figIndex = i;
+          }
+        }
+      }
+
+      if (figIndex >= 0) {
+        currentFig = shadowFigs[figIndex];
+        setPreferredSize(
+            new Dimension(
+                currentFig.getWidth() + figIndex + 4, currentFig.getHeight() + figIndex + 2));
+      } else {
+        currentFig = null;
+      }
+
+      return this;
+    }
+
+    /**
+     * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
+     */
+    protected void paintComponent(Graphics g) {
+      g.setColor(getBackground());
+      g.fillRect(0, 0, getWidth(), getHeight());
+      if (currentFig != null) {
+        currentFig.setLocation(2, 1);
+        currentFig.paint(g);
+      }
+    }
+
+    /** The UID. */
+    private static final long serialVersionUID = 5939340501470674464L;
+  }
+
+  /**
+   * This Fig is never placed on a diagram. It is only used by the call renderer so that pick list
+   * items look like diagram Figs.
+   */
+  private static class ShadowFig extends FigNodeModelElement {
+    /** Constructor. */
+    public ShadowFig() {
+      super();
+      addFig(getBigPort());
+      addFig(getNameFig());
+    }
+
+    public void setName(String text) {
+      getNameFig().setText(text);
+    }
+
+    /**
+     * TODO: Bob says - This is a really nasty horrible hack. ShadowFig should not extend
+     * FigNodeModelElement. Instead we require a base class FigNode with common behaviour of ALL
+     * nodes in ArgoUML. ShadowFig should extend that and FigNodeModelElement should extend that
+     * same base class adding common functionality for FigNode that represent model element.
      *
+     * @see org.argouml.uml.diagram.ui.FigNodeModelElement#setShadowSize(int)
      */
-    public ShadowComboBox() {
-        super();
-
-        addItem(Translator.localize("label.stylepane.no-shadow"));
-        addItem("1");
-        addItem("2");
-        addItem("3");
-        addItem("4");
-        addItem("5");
-        addItem("6");
-        addItem("7");
-        addItem("8");
-
-        setRenderer(new ShadowRenderer());
+    public void setShadowSize(int size) {
+      super.setShadowSizeFriend(size);
     }
 
-    /**
-     * Renders each combo box entry as a shadowed diagram figure with the
-     * associated level of shadow.
-     */
-    private class ShadowRenderer
-	extends JComponent
-	implements ListCellRenderer {
+    /** The UID. */
+    private static final long serialVersionUID = 4999132551417131227L;
+  }
 
-        private ShadowFig  currentFig;
-
-        /**
-         * Constructor.
-         */
-        public ShadowRenderer() {
-            super();
-        }
-
-        /**
-         * @see javax.swing.ListCellRenderer#getListCellRendererComponent(
-         *         javax.swing.JList, java.lang.Object, int, boolean, boolean)
-         */
-        public Component getListCellRendererComponent(
-            JList list,
-            Object value,
-            int index,
-            boolean isSelected,
-            boolean cellHasFocus) {
-
-            if (shadowFigs == null) {
-                shadowFigs = new ShadowFig[ShadowComboBox.this.getItemCount()];
-
-                for (int i = 0; i < shadowFigs.length; ++i) {
-                    shadowFigs[i] = new ShadowFig();
-                    shadowFigs[i].setShadowSize(i);
-                    shadowFigs[i].setName(
-                        (String) ShadowComboBox.this.getItemAt(i));
-                }
-            }
-
-            if (isSelected) {
-                setBackground(list.getSelectionBackground());
-            } else {
-                setBackground(list.getBackground());
-            }
-
-            int figIndex = index;
-            if (figIndex < 0) {
-                for (int i = 0; i < shadowFigs.length; ++i) {
-                    if (value == ShadowComboBox.this.getItemAt(i)) {
-                        figIndex = i;
-                    }
-                }
-            }
-
-            if (figIndex >= 0) {
-                currentFig = shadowFigs[figIndex];
-                setPreferredSize(new Dimension(
-                    currentFig.getWidth() + figIndex + 4,
-                    currentFig.getHeight() + figIndex + 2));
-            } else {
-                currentFig = null;
-            }
-
-            return this;
-        }
-
-        /**
-         * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
-         */
-        protected void paintComponent(Graphics g) {
-            g.setColor(getBackground());
-            g.fillRect(0, 0, getWidth(), getHeight());
-            if (currentFig != null) {
-                currentFig.setLocation(2, 1);
-                currentFig.paint(g);
-            }
-        }
-
-        /**
-         * The UID.
-         */
-        private static final long serialVersionUID = 5939340501470674464L;
-    }
-
-    /**
-     * This Fig is never placed on a diagram. It is only used by the call
-     * renderer so that pick list items look like diagram Figs.
-     */
-    private static class ShadowFig extends FigNodeModelElement {
-        /**
-         * Constructor.
-         */
-        public ShadowFig() {
-            super();
-            addFig(getBigPort());
-            addFig(getNameFig());
-        }
-        
-        public void setName(String text) {
-            getNameFig().setText(text);
-        }
-        
-        /**
-         * TODO: Bob says - This is a really nasty horrible hack.
-         * ShadowFig should not extend FigNodeModelElement. Instead
-         * we require a base class FigNode with common behaviour of ALL
-         * nodes in ArgoUML. ShadowFig should extend that and
-         * FigNodeModelElement should extend that same base class adding
-         * common functionality for FigNode that represent model element.
-         * @see org.argouml.uml.diagram.ui.FigNodeModelElement#setShadowSize(int)
-         */
-        public void setShadowSize(int size) {
-            super.setShadowSizeFriend(size);
-        }
-        
-
-        /**
-         * The UID.
-         */
-        private static final long serialVersionUID = 4999132551417131227L;
-
-
-    }
-
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = 3440806802523267746L;
+  /** The UID. */
+  private static final long serialVersionUID = 3440806802523267746L;
 }

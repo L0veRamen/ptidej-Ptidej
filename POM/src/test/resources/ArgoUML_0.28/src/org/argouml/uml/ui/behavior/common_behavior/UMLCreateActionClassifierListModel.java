@@ -27,40 +27,31 @@ package org.argouml.uml.ui.behavior.common_behavior;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
-/**
- * Model for the list of classifiers for the create action.
- */
-public class UMLCreateActionClassifierListModel extends
-        UMLModelElementListModel2 {
+/** Model for the list of classifiers for the create action. */
+public class UMLCreateActionClassifierListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for ClassifierCreateActionListModel.
-     */
-    public UMLCreateActionClassifierListModel() {
-        super("instantiation");
-    }
+  /** Constructor for ClassifierCreateActionListModel. */
+  public UMLCreateActionClassifierListModel() {
+    super("instantiation");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        removeAllElements();
-        addElement(Model.getCommonBehaviorHelper()
-                .getInstantiation(getTarget()));
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    removeAllElements();
+    addElement(Model.getCommonBehaviorHelper().getInstantiation(getTarget()));
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(
-     *         java.lang.Object)
-     */
-    protected boolean isValidElement(Object elem) {
-        return Model.getFacade().isAClassifier(elem)
-                && Model.getCommonBehaviorHelper()
-                        .getInstantiation(getTarget()) == elem;
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(
+   *         java.lang.Object)
+   */
+  protected boolean isValidElement(Object elem) {
+    return Model.getFacade().isAClassifier(elem)
+        && Model.getCommonBehaviorHelper().getInstantiation(getTarget()) == elem;
+  }
 
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -3653652920890159417L;
+  /** The UID. */
+  private static final long serialVersionUID = -3653652920890159417L;
 }

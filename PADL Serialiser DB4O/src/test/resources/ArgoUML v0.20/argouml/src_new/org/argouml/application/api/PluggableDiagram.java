@@ -27,19 +27,16 @@ package org.argouml.application.api;
 import javax.swing.JMenuItem;
 
 /**
- * An module interface which identifies an ArgoUML plug-in used
- * as a diagram type.
+ * An module interface which identifies an ArgoUML plug-in used as a diagram type.
  *
  * @author Thomas Neustupny
  * @since 0.9.5
  */
 public interface PluggableDiagram extends Pluggable {
-    /**
-     * Returns the settings tab panel for the plugin.
-     *
-     * @return the menu item.
-     */
-    JMenuItem getDiagramMenuItem();
-
+  /**
+   * Returns the settings tab panel for the plugin.
+   *
+   * @return the menu item.
+   */
+  JMenuItem getDiagramMenuItem();
 } /* End interface PluggableDiagram */
-

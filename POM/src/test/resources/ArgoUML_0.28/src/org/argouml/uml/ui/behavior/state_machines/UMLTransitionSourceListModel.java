@@ -33,27 +33,23 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  */
 public class UMLTransitionSourceListModel extends UMLModelElementListModel2 {
 
-   /**
-     * Constructor for UMLStateMachineTopListModel.
-     */
-    public UMLTransitionSourceListModel() {
-        super("source");
-    }
+  /** Constructor for UMLStateMachineTopListModel. */
+  public UMLTransitionSourceListModel() {
+    super("source");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        removeAllElements();
-        addElement(Model.getFacade().getSource(getTarget()));
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    removeAllElements();
+    addElement(Model.getFacade().getSource(getTarget()));
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return element == Model.getFacade().getSource(getTarget());
-    }
-
-
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return element == Model.getFacade().getSource(getTarget());
+  }
 }

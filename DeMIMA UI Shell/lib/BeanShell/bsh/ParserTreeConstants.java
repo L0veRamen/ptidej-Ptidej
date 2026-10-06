@@ -2,8 +2,7 @@
 
 package bsh;
 
-public interface ParserTreeConstants
-{
+public interface ParserTreeConstants {
   public int JJTVOID = 0;
   public int JJTCLASSDECLARATION = 1;
   public int JJTMETHODDECLARATION = 2;
@@ -42,7 +41,6 @@ public interface ParserTreeConstants
   public int JJTRETURNSTATEMENT = 35;
   public int JJTTHROWSTATEMENT = 36;
   public int JJTTRYSTATEMENT = 37;
-
 
   public String[] jjtNodeName = {
     "void",

@@ -28,100 +28,93 @@ import java.util.Enumeration;
 import java.util.Vector;
 
 /**
- * This class makes it easy to get the time between two or several
- * points in the code.
+ * This class makes it easy to get the time between two or several points in the code.
  *
  * @author Linus Tolke
  */
 public class SimpleTimer {
-    private String name = null;
-    private Vector points = new Vector();
-    private Vector labels = new Vector();
+  private String name = null;
+  private Vector points = new Vector();
+  private Vector labels = new Vector();
 
-    /**
-     * The constructor. Creates a simple timer with given name.
-     *
-     * @param n the name
-     */
-    public SimpleTimer(String n) {
-	name = n;
+  /**
+   * The constructor. Creates a simple timer with given name.
+   *
+   * @param n the name
+   */
+  public SimpleTimer(String n) {
+    name = n;
+  }
+
+  /** Mark (Store) the current time. */
+  public void mark() {
+    points.add(new Long(System.currentTimeMillis()));
+    labels.add(null);
+  }
+
+  /**
+   * Mark (Store) the current time.
+   *
+   * @param label the mark will be labelled with this string
+   */
+  public void mark(String label) {
+    mark();
+    labels.setElementAt(label, labels.size() - 1);
+  }
+
+  /**
+   * Returns a string of formatted distances.
+   *
+   * @return a string representing the results
+   */
+  public Enumeration result() {
+    mark();
+    return new Enumeration() {
+      private int count = 1;
+
+      public boolean hasMoreElements() {
+        return count <= points.size();
+      }
+
+      public Object nextElement() {
+        StringBuffer res = new StringBuffer();
+        synchronized (points) {
+          if (count < points.size()) {
+            if (labels.get(count - 1) == null) {
+              res.append("phase ").append(count);
+            } else {
+              res.append(labels.get(count - 1));
+            }
+            res.append("                            ");
+            res.append("                            ");
+            res.setLength(60);
+            res.append(
+                (((Long) points.elementAt(count)).longValue()
+                    - ((Long) points.elementAt(count - 1)).longValue()));
+          } else if (count == points.size()) {
+            res.append("Total                      ");
+            res.setLength(18);
+            res.append(
+                (((Long) points.elementAt(points.size() - 1)).longValue()
+                    - ((Long) points.elementAt(0)).longValue()));
+          }
+        }
+        count++;
+        return res.toString();
+      }
+    };
+  }
+
+  /**
+   * @see java.lang.Object#toString()
+   */
+  public String toString() {
+    StringBuffer sb = new StringBuffer("");
+
+    for (Enumeration e = result(); e.hasMoreElements(); ) {
+      sb.append((String) e.nextElement());
+      sb.append("\n");
     }
-
-    /**
-     * Mark (Store) the current time.
-     */
-    public void mark() {
-	points.add(new Long(System.currentTimeMillis()));
-	labels.add(null);
-    }
-
-    /**
-     * Mark (Store) the current time.
-     *
-     * @param label the mark will be labelled with this string
-     */
-    public void mark(String label) {
-	mark();
-	labels.setElementAt(label, labels.size() - 1);
-    }
-
-    /**
-     * Returns a string of formatted distances.
-     *
-     * @return a string representing the results
-     */
-    public Enumeration result() {
-	mark();
-	return new Enumeration() {
-	    private int count = 1;
-
-	    public boolean hasMoreElements() {
-		return count <= points.size();
-	    }
-
-	    public Object nextElement() {
-		StringBuffer res = new StringBuffer();
-		synchronized (points) {
-		    if (count < points.size()) {
-			if (labels.get(count - 1) == null) {
-			    res.append("phase ").append(count);
-			} else {
-			    res.append(labels.get(count - 1));
-			}
-			res.append("                            ");
-			res.append("                            ");
-			res.setLength(60);
-			res.append((((Long) points.elementAt(count)).
-				    longValue()
-				    - ((Long) points.elementAt(count - 1))
-				    .longValue()));
-		    }
-		    else if (count == points.size()) {
-			res.append("Total                      ");
-			res.setLength(18);
-			res.append((((Long) points.
-				     elementAt(points.size() - 1))
-				    .longValue()
-				    - ((Long) points.
-				       elementAt(0)).longValue()));
-		    }
-		}
-		count++;
-		return res.toString();
-	    }
-	};
-    }
-
-    /**
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-	StringBuffer sb = new StringBuffer("");
-
-	for (Enumeration e = result(); e.hasMoreElements();) {
-	    sb.append((String) e.nextElement());
-	    sb.append("\n");
-	}
-	return sb.toString();
-    }
+    return sb.toString();
+  }
 }

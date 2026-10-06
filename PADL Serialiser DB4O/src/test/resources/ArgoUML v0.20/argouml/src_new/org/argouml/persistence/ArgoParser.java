@@ -28,7 +28,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.log4j.Logger;
 import org.argouml.kernel.Project;
 import org.xml.sax.SAXException;
@@ -38,220 +37,216 @@ import org.xml.sax.SAXException;
  */
 public class ArgoParser extends SAXParserBase {
 
-    /**
-     * Logger.
-     */
-    private static final Logger LOG = Logger.getLogger(ArgoParser.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(ArgoParser.class);
 
-    ////////////////////////////////////////////////////////////////
-    // instance variables
+  ////////////////////////////////////////////////////////////////
+  // instance variables
 
-    private Project project;
+  private Project project;
 
-    private ArgoTokenTable tokens = new ArgoTokenTable();
+  private ArgoTokenTable tokens = new ArgoTokenTable();
 
-    private URL url;
-    private ArrayList memberList = new ArrayList();
+  private URL url;
+  private ArrayList memberList = new ArrayList();
 
-    /**
-     * The constructor.
-     *
-     */
-    public ArgoParser() {
-        super();
+  /** The constructor. */
+  public ArgoParser() {
+    super();
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // main parsing methods
+
+  /**
+   * @param theProject the project to populate
+   * @param is the inputStream
+   * @throws SAXException on error when parsing xml
+   */
+  public void readProject(Project theProject, InputStream is) throws SAXException {
+
+    if (is == null) {
+      throw new IllegalArgumentException("An input stream must be supplied");
     }
 
-    ////////////////////////////////////////////////////////////////
-    // main parsing methods
+    LastLoadInfo.getInstance().setLastLoadMessage("OK");
+    LastLoadInfo.getInstance().setLastLoadStatus(true);
 
-    /**
-     * @param theProject the project to populate
-     * @param is the inputStream
-     * @throws SAXException on error when parsing xml
-     */
-    public void readProject(Project theProject, InputStream is)
-    	throws SAXException {
-
-        if (is == null) {
-            throw new IllegalArgumentException(
-                    "An input stream must be supplied");
-        }
-
-        LastLoadInfo.getInstance().setLastLoadMessage("OK");
-        LastLoadInfo.getInstance().setLastLoadStatus(true);
-
-        try {
-            LOG.info("=======================================");
-            LOG.info("== READING PROJECT " + url);
-            this.project = theProject;
-            parse(is);
-        } catch (SAXException e) {
-            LastLoadInfo.getInstance().setLastLoadStatus(false);
-            LOG.error("Exception reading project================");
-            LOG.error(is.toString());
-            LastLoadInfo.getInstance().setLastLoadMessage(e.toString());
-            throw e;
-        }
+    try {
+      LOG.info("=======================================");
+      LOG.info("== READING PROJECT " + url);
+      this.project = theProject;
+      parse(is);
+    } catch (SAXException e) {
+      LastLoadInfo.getInstance().setLastLoadStatus(false);
+      LOG.error("Exception reading project================");
+      LOG.error(is.toString());
+      LastLoadInfo.getInstance().setLastLoadMessage(e.toString());
+      throw e;
     }
+  }
 
-    /**
-     * Get the project to which the URL is to be parsed.
-     * @return the project
-     */
-    public Project getProject() {
-        return project;
+  /**
+   * Get the project to which the URL is to be parsed.
+   *
+   * @return the project
+   */
+  public Project getProject() {
+    return project;
+  }
+
+  /**
+   * Set the project to which the URL is to be parsed.
+   *
+   * @param newProj the project
+   */
+  public void setProject(Project newProj) {
+    project = newProj;
+  }
+
+  /**
+   * @see org.argouml.persistence.SAXParserBase#handleStartElement(
+   *     org.argouml.persistence.XMLElement)
+   */
+  public void handleStartElement(XMLElement e) throws SAXException {
+    if (DBG) {
+      LOG.debug("NOTE: ArgoParser handleStartTag:" + e.getName());
     }
-
-    /**
-     * Set the project to which the URL is to be parsed.
-     * @param newProj the project
-     */
-    public void setProject(Project newProj) {
-        project = newProj;
-    }
-
-    /**
-     * @see org.argouml.persistence.SAXParserBase#handleStartElement(
-     *         org.argouml.persistence.XMLElement)
-     */
-    public void handleStartElement(XMLElement e) throws SAXException {
+    switch (tokens.toToken(e.getName(), true)) {
+      case ArgoTokenTable.TOKEN_ARGO:
+        handleArgo(e);
+        break;
+      case ArgoTokenTable.TOKEN_DOCUMENTATION:
+        handleDocumentation(e);
+        break;
+      default:
         if (DBG) {
-            LOG.debug("NOTE: ArgoParser handleStartTag:" + e.getName());
+          LOG.warn("WARNING: unknown tag:" + e.getName());
         }
-        switch (tokens.toToken(e.getName(), true)) {
-        case ArgoTokenTable.TOKEN_ARGO:
-            handleArgo(e);
-            break;
-        case ArgoTokenTable.TOKEN_DOCUMENTATION:
-            handleDocumentation(e);
-            break;
-        default:
-            if (DBG) {
-                LOG.warn("WARNING: unknown tag:" + e.getName());
-            }
-            break;
-        }
+        break;
     }
+  }
 
-    /**
-     * @see org.argouml.persistence.SAXParserBase#handleEndElement(
-     *         org.argouml.persistence.XMLElement)
-     */
-    public void handleEndElement(XMLElement e) throws SAXException {
+  /**
+   * @see org.argouml.persistence.SAXParserBase#handleEndElement(
+   *     org.argouml.persistence.XMLElement)
+   */
+  public void handleEndElement(XMLElement e) throws SAXException {
+    if (DBG) {
+      LOG.debug("NOTE: ArgoParser handleEndTag:" + e.getName() + ".");
+    }
+    switch (tokens.toToken(e.getName(), false)) {
+      case ArgoTokenTable.TOKEN_MEMBER:
+        handleMember(e);
+        break;
+      case ArgoTokenTable.TOKEN_AUTHORNAME:
+        handleAuthorname(e);
+        break;
+      case ArgoTokenTable.TOKEN_VERSION:
+        handleVersion(e);
+        break;
+      case ArgoTokenTable.TOKEN_DESCRIPTION:
+        handleDescription(e);
+        break;
+      case ArgoTokenTable.TOKEN_SEARCHPATH:
+        handleSearchpath(e);
+        break;
+      case ArgoTokenTable.TOKEN_HISTORYFILE:
+        handleHistoryfile(e);
+        break;
+      default:
         if (DBG) {
-            LOG.debug("NOTE: ArgoParser handleEndTag:" + e.getName() + ".");
-        }
-        switch (tokens.toToken(e.getName(), false)) {
-        case ArgoTokenTable.TOKEN_MEMBER:
-            handleMember(e);
-            break;
-        case ArgoTokenTable.TOKEN_AUTHORNAME:
-            handleAuthorname(e);
-            break;
-        case ArgoTokenTable.TOKEN_VERSION:
-            handleVersion(e);
-            break;
-        case ArgoTokenTable.TOKEN_DESCRIPTION:
-            handleDescription(e);
-            break;
-        case ArgoTokenTable.TOKEN_SEARCHPATH:
-            handleSearchpath(e);
-            break;
-        case ArgoTokenTable.TOKEN_HISTORYFILE:
-            handleHistoryfile(e);
-            break;
-        default:
-            if (DBG) {
-                LOG.warn("WARNING: unknown end tag:" + e.getName());
-            }
+          LOG.warn("WARNING: unknown end tag:" + e.getName());
         }
     }
+  }
 
-    /**
-     * @see org.argouml.persistence.SAXParserBase#isElementOfInterest(String)
-     */
-    protected boolean isElementOfInterest(String name) {
-        return tokens.contains(name);
-    }
+  /**
+   * @see org.argouml.persistence.SAXParserBase#isElementOfInterest(String)
+   */
+  protected boolean isElementOfInterest(String name) {
+    return tokens.contains(name);
+  }
 
-    /**
-     * @param e the element
-     */
-    protected void handleArgo(XMLElement e) {
-        /* do nothing */
-    }
+  /**
+   * @param e the element
+   */
+  protected void handleArgo(XMLElement e) {
+    /* do nothing */
+  }
 
-    /**
-     * @param e the element
-     */
-    protected void handleDocumentation(XMLElement e) {
-        /* do nothing */
-    }
+  /**
+   * @param e the element
+   */
+  protected void handleDocumentation(XMLElement e) {
+    /* do nothing */
+  }
 
-    /**
-     * @param e the element
-     */
-    protected void handleAuthorname(XMLElement e) {
-        String authorname = e.getText().trim();
-        project.setAuthorname(authorname);
-    }
+  /**
+   * @param e the element
+   */
+  protected void handleAuthorname(XMLElement e) {
+    String authorname = e.getText().trim();
+    project.setAuthorname(authorname);
+  }
 
-    /**
-     * @param e the element
-     */
-    protected void handleVersion(XMLElement e) {
-        String version = e.getText().trim();
-        project.setVersion(version);
-    }
+  /**
+   * @param e the element
+   */
+  protected void handleVersion(XMLElement e) {
+    String version = e.getText().trim();
+    project.setVersion(version);
+  }
 
-    /**
-     * @param e the element
-     */
-    protected void handleDescription(XMLElement e) {
-        String description = e.getText().trim();
-        project.setDescription(description);
-    }
+  /**
+   * @param e the element
+   */
+  protected void handleDescription(XMLElement e) {
+    String description = e.getText().trim();
+    project.setDescription(description);
+  }
 
-    /**
-     * @param e the element
-     */
-    protected void handleSearchpath(XMLElement e) {
-        String searchpath = e.getAttribute("href").trim();
-        project.addSearchPath(searchpath);
-    }
+  /**
+   * @param e the element
+   */
+  protected void handleSearchpath(XMLElement e) {
+    String searchpath = e.getAttribute("href").trim();
+    project.addSearchPath(searchpath);
+  }
 
-    /**
-     * @param e the element
-     * @throws SAXException on any error parsing the member XML.
-     */
-    protected void handleMember(XMLElement e) throws SAXException {
-        String type = e.getAttribute("type");
-        // The members list dictates the order in which the
-        // members are loaded. So make sure that XMI is at the top
-        // and others below.
-        if (type.equals("xmi")) {
-            memberList.add(0, type);
-        } else {
-            memberList.add(type);
-        }
+  /**
+   * @param e the element
+   * @throws SAXException on any error parsing the member XML.
+   */
+  protected void handleMember(XMLElement e) throws SAXException {
+    String type = e.getAttribute("type");
+    // The members list dictates the order in which the
+    // members are loaded. So make sure that XMI is at the top
+    // and others below.
+    if (type.equals("xmi")) {
+      memberList.add(0, type);
+    } else {
+      memberList.add(type);
     }
+  }
 
-    /**
-     * @param e the element
-     */
-    protected void handleHistoryfile(XMLElement e) {
-        if (e.getAttribute("name") == null) {
-            return;
-        }
-        String historyfile = e.getAttribute("name").trim();
-        project.setHistoryFile(historyfile);
+  /**
+   * @param e the element
+   */
+  protected void handleHistoryfile(XMLElement e) {
+    if (e.getAttribute("name") == null) {
+      return;
     }
+    String historyfile = e.getAttribute("name").trim();
+    project.setHistoryFile(historyfile);
+  }
 
-    /**
-     * Get the numer of diagram members read.
-     * @return the numer of diagram members read.
-     */
-    public List getMemberList() {
-        return memberList;
-    }
+  /**
+   * Get the numer of diagram members read.
+   *
+   * @return the numer of diagram members read.
+   */
+  public List getMemberList() {
+    return memberList;
+  }
 } /* end class ArgoParser */

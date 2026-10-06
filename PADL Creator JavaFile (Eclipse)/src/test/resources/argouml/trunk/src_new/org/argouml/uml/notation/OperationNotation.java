@@ -27,23 +27,21 @@ package org.argouml.uml.notation;
 import org.argouml.model.Model;
 
 /**
- * This abstract class forms the basis of all Notation providers
- * for the text shown in the operation compartment of a Class.
- * Subclass this for all languages.
+ * This abstract class forms the basis of all Notation providers for the text shown in the operation
+ * compartment of a Class. Subclass this for all languages.
  *
  * @author mvw@tigris.org
  */
 public abstract class OperationNotation extends NotationProvider {
 
-    /**
-     * The constructor.
-     *
-     * @param operation The operation.
-     */
-    public OperationNotation(Object operation) {
-        if (!Model.getFacade().isAOperation(operation)) {
-            throw new IllegalArgumentException("This is not an Operation.");
-        }
+  /**
+   * The constructor.
+   *
+   * @param operation The operation.
+   */
+  public OperationNotation(Object operation) {
+    if (!Model.getFacade().isAOperation(operation)) {
+      throw new IllegalArgumentException("This is not an Operation.");
     }
-
+  }
 }

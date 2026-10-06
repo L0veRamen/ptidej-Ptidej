@@ -36,63 +36,62 @@ import org.tigris.gef.ui.IStatusBar;
 /**
  * The splash screen.
  *
- * TODO: JWindow? I don't want a frame or close widgets.
- *
+ * <p>TODO: JWindow? I don't want a frame or close widgets.
  */
 public class SplashScreen extends JWindow implements IStatusBar {
 
-    private StatusBar statusBar = new StatusBar();
+  private StatusBar statusBar = new StatusBar();
 
-    /**
-     * The constructor.
-     */
-    public SplashScreen() {
-        this("Loading ArgoUML...", "Splash");
+  /** The constructor. */
+  public SplashScreen() {
+    this("Loading ArgoUML...", "Splash");
+  }
+
+  /**
+   * The constructor.
+   *
+   * @param title the title of the window
+   * @param iconName the icon for the window
+   */
+  private SplashScreen(String title, String iconName) {
+    super();
+
+    setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+    getContentPane().setLayout(new BorderLayout(0, 0));
+
+    SplashPanel panel = new SplashPanel(iconName);
+    if (panel.getImage() != null) {
+      int imgWidth = panel.getImage().getIconWidth();
+      int imgHeight = panel.getImage().getIconHeight();
+      Dimension scrSize = Toolkit.getDefaultToolkit().getScreenSize();
+      setLocation(scrSize.width / 2 - imgWidth / 2, scrSize.height / 2 - imgHeight / 2);
     }
 
-    /**
-     * The constructor.
-     *
-     * @param title the title of the window
-     * @param iconName the icon for the window
-     */
-    private SplashScreen(String title, String iconName) {
-	super();
+    JPanel splash = new JPanel(new BorderLayout());
+    splash.setBorder(new EtchedBorder(EtchedBorder.RAISED));
+    splash.add(panel, BorderLayout.CENTER);
+    splash.add(statusBar, BorderLayout.SOUTH);
+    getContentPane().add(splash);
+    // add preloading progress bar?
+    Dimension contentPaneSize = getContentPane().getPreferredSize();
+    setSize(contentPaneSize.width, contentPaneSize.height);
+    pack();
+  }
 
-	setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-	getContentPane().setLayout(new BorderLayout(0, 0));
+  /**
+   * @return the status bar of this dialog
+   */
+  public StatusBar getStatusBar() {
+    return statusBar;
+  }
 
-	SplashPanel panel = new SplashPanel(iconName);
-	if (panel.getImage() != null) {
-	    int imgWidth = panel.getImage().getIconWidth();
-	    int imgHeight = panel.getImage().getIconHeight();
-	    Dimension scrSize = Toolkit.getDefaultToolkit().getScreenSize();
-	    setLocation(scrSize.width / 2 - imgWidth / 2,
-			scrSize.height / 2 - imgHeight / 2);
-	}
+  ////////////////////////////////////////////////////////////////
+  // IStatusBar
 
-	JPanel splash = new JPanel(new BorderLayout());
-	splash.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-	splash.add(panel, BorderLayout.CENTER);
-	splash.add(statusBar, BorderLayout.SOUTH);
-	getContentPane().add(splash);
-	// add preloading progress bar?
-	Dimension contentPaneSize = getContentPane().getPreferredSize();
-	setSize(contentPaneSize.width, contentPaneSize.height);
-	pack();
-    }
-
-    /**
-     * @return the status bar of this dialog
-     */
-    public StatusBar getStatusBar() { return statusBar; }
-
-    ////////////////////////////////////////////////////////////////
-    // IStatusBar
-
-    /**
-     * @see org.tigris.gef.ui.IStatusBar#showStatus(java.lang.String)
-     */
-    public void showStatus(String s) { statusBar.showStatus(s); }
-
+  /**
+   * @see org.tigris.gef.ui.IStatusBar#showStatus(java.lang.String)
+   */
+  public void showStatus(String s) {
+    statusBar.showStatus(s);
+  }
 } /* end class SplashScreen */

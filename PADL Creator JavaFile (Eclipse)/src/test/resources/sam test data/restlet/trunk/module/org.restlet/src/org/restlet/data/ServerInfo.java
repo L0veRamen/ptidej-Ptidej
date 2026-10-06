@@ -24,105 +24,101 @@ package org.restlet.data;
 
 /**
  * Server specific data related to a call.
+ *
  * @author Jerome Louvel (contact@noelios.com)
  */
-public class ServerInfo
-{
-	/** The IP address. */
-	private String address;
+public class ServerInfo {
+  /** The IP address. */
+  private String address;
 
-	/** The agent name. */
-	private String agent;
+  /** The agent name. */
+  private String agent;
 
-	/** The domain name. */
-	private String domain;
+  /** The domain name. */
+  private String domain;
 
-	/** The port number. */
-	private Integer port;
+  /** The port number. */
+  private Integer port;
 
-	/**
-	 * Constructor.
-	 */
-	public ServerInfo()
-	{
-		this.address = null;
-		this.agent = null;
-		this.domain = null;
-		this.port = null;
-	}
+  /** Constructor. */
+  public ServerInfo() {
+    this.address = null;
+    this.agent = null;
+    this.domain = null;
+    this.port = null;
+  }
 
-	/**
-	 * Returns the IP address.
-	 * @return The IP address.
-	 */
-	public String getAddress()
-	{
-		return this.address;
-	}
+  /**
+   * Returns the IP address.
+   *
+   * @return The IP address.
+   */
+  public String getAddress() {
+    return this.address;
+  }
 
-	/**
-	 * Returns the agent name (ex: "Noelios Restlet Engine/1.0").
-	 * @return The agent name.
-	 */
-	public String getAgent()
-	{
-		return this.agent;
-	}
+  /**
+   * Returns the agent name (ex: "Noelios Restlet Engine/1.0").
+   *
+   * @return The agent name.
+   */
+  public String getAgent() {
+    return this.agent;
+  }
 
-	/**
-	 * Returns the domain name that received the call. This will often be similar to the host name specified 
-	 * in the Call's target resource but it may diverge in specific cases, for exampl when a resource is 
-	 * identifed by an URN and retrieved by HTTP.  
-	 * @return The host name that received the call. 
-	 */
-	public String getDomain()
-	{
-		return this.domain;
-	}
+  /**
+   * Returns the domain name that received the call. This will often be similar to the host name
+   * specified in the Call's target resource but it may diverge in specific cases, for exampl when a
+   * resource is identifed by an URN and retrieved by HTTP.
+   *
+   * @return The host name that received the call.
+   */
+  public String getDomain() {
+    return this.domain;
+  }
 
-	/**
-	 * Returns the port number which received the call.
-	 * @return The port number which received the call.
-	 */
-	public Integer getPort()
-	{
-		return this.port;
-	}
+  /**
+   * Returns the port number which received the call.
+   *
+   * @return The port number which received the call.
+   */
+  public Integer getPort() {
+    return this.port;
+  }
 
-	/**
-	 * Sets the IP address which received the call.
-	 * @param address The IP address which received the call.
-	 */
-	public void setAddress(String address)
-	{
-		this.address = address;
-	}
+  /**
+   * Sets the IP address which received the call.
+   *
+   * @param address The IP address which received the call.
+   */
+  public void setAddress(String address) {
+    this.address = address;
+  }
 
-	/**
-	 * Sets the agent name (ex: "Noelios Restlet Engine/1.0").
-	 * @param agent The agent name.
-	 */
-	public void setAgent(String agent)
-	{
-		this.agent = agent;
-	}
+  /**
+   * Sets the agent name (ex: "Noelios Restlet Engine/1.0").
+   *
+   * @param agent The agent name.
+   */
+  public void setAgent(String agent) {
+    this.agent = agent;
+  }
 
-	/**
-	 * Sets the domain name that received the call.
-	 * @param domain The domain name that received the call. 
-	 */
-	public void setDomain(String domain)
-	{
-		this.domain = domain;
-	}
+  /**
+   * Sets the domain name that received the call.
+   *
+   * @param domain The domain name that received the call.
+   */
+  public void setDomain(String domain) {
+    this.domain = domain;
+  }
 
-	/**
-	 * Sets the port number which received the call.
-	 * @param port The port number which received the call.
-	 */
-	public void setPort(Integer port)
-	{
-		this.port = port;
-	}
-
+  /**
+   * Sets the port number which received the call.
+   *
+   * @param port The port number which received the call.
+   */
+  public void setPort(Integer port) {
+    this.port = port;
+  }
 }

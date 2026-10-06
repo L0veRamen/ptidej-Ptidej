@@ -27,63 +27,62 @@ package org.argouml.cognitive.ui;
 import java.util.Vector;
 import org.argouml.cognitive.critics.Critic;
 
-
-/**
- * This class represents a knowledgetype, which is a classification for critics.
- *
- */
+/** This class represents a knowledgetype, which is a classification for critics. */
 public class KnowledgeTypeNode {
 
-    ////////////////////////////////////////////////////////////////
-    // static variables and methods
-    private static Vector types = null;
+  ////////////////////////////////////////////////////////////////
+  // static variables and methods
+  private static Vector types = null;
 
-    ////////////////////////////////////////////////////////////////
-    // instance variables
+  ////////////////////////////////////////////////////////////////
+  // instance variables
 
-    private String name;
+  private String name;
 
-    /**
-     * The constructor.
-     *
-     * @param n the name for the knowledgetype
-     */
-    public KnowledgeTypeNode(String n) {
-	name = n;
+  /**
+   * The constructor.
+   *
+   * @param n the name for the knowledgetype
+   */
+  public KnowledgeTypeNode(String n) {
+    name = n;
+  }
+
+  /**
+   * @return a list of all the types
+   */
+  public static Vector getTypes() {
+    if (types == null) {
+      types = new Vector();
+      types.addElement(new KnowledgeTypeNode(Critic.KT_DESIGNERS));
+      types.addElement(new KnowledgeTypeNode(Critic.KT_CORRECTNESS));
+      types.addElement(new KnowledgeTypeNode(Critic.KT_COMPLETENESS));
+      types.addElement(new KnowledgeTypeNode(Critic.KT_CONSISTENCY));
+      types.addElement(new KnowledgeTypeNode(Critic.KT_SYNTAX));
+      types.addElement(new KnowledgeTypeNode(Critic.KT_SEMANTICS));
+      types.addElement(new KnowledgeTypeNode(Critic.KT_OPTIMIZATION));
+      types.addElement(new KnowledgeTypeNode(Critic.KT_PRESENTATION));
+      types.addElement(new KnowledgeTypeNode(Critic.KT_ORGANIZATIONAL));
+      types.addElement(new KnowledgeTypeNode(Critic.KT_EXPERIENCIAL));
+      types.addElement(new KnowledgeTypeNode(Critic.KT_TOOL));
     }
-
-    /**
-     * @return a list of all the types
-     */
-    public static Vector getTypes() {
-        if (types == null) {
-            types = new Vector();
-            types.addElement(new KnowledgeTypeNode(Critic.KT_DESIGNERS));
-            types.addElement(new KnowledgeTypeNode(Critic.KT_CORRECTNESS));
-            types.addElement(new KnowledgeTypeNode(Critic.KT_COMPLETENESS));
-            types.addElement(new KnowledgeTypeNode(Critic.KT_CONSISTENCY));
-            types.addElement(new KnowledgeTypeNode(Critic.KT_SYNTAX));
-            types.addElement(new KnowledgeTypeNode(Critic.KT_SEMANTICS));
-            types.addElement(new KnowledgeTypeNode(Critic.KT_OPTIMIZATION));
-            types.addElement(new KnowledgeTypeNode(Critic.KT_PRESENTATION));
-            types.addElement(new KnowledgeTypeNode(Critic.KT_ORGANIZATIONAL));
-            types.addElement(new KnowledgeTypeNode(Critic.KT_EXPERIENCIAL));
-            types.addElement(new KnowledgeTypeNode(Critic.KT_TOOL));
-        }
     return types;
-    }
+  }
 
-    ////////////////////////////////////////////////////////////////
-    // accessors
+  ////////////////////////////////////////////////////////////////
+  // accessors
 
-    /**
-     * @return the name of the knowledgetype
-     */
-    public String getName() { return name; }
+  /**
+   * @return the name of the knowledgetype
+   */
+  public String getName() {
+    return name;
+  }
 
-    /**
-     * @see java.lang.Object#toString()
-     */
-    public String toString() { return getName(); }
-
+  /**
+   * @see java.lang.Object#toString()
+   */
+  public String toString() {
+    return getName();
+  }
 } /* end class KnowledgeTypeNode */

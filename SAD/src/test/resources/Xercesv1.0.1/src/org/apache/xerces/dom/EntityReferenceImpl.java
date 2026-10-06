@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xerces" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -60,318 +60,295 @@ package org.apache.xerces.dom;
 import org.w3c.dom.*;
 
 /**
- * EntityReference models the XML &entityname; syntax, when used for
- * entities defined by the DOM. Entities hardcoded into XML, such as
- * character entities, should instead have been translated into text
- * by the code which generated the DOM tree.
- * <P>
- * An XML processor has the alternative of fully expanding Entities
- * into the normal document tree. If it does so, no EntityReference nodes
- * will appear.
- * <P>
- * Similarly, non-validating XML processors are not required to read
- * or process entity declarations made in the external subset or
- * declared in external parameter entities. Hence, some applications
- * may not make the replacement value available for Parsed Entities 
- * of these types.
- * <P>
- * EntityReference behaves as a read-only node, and the children of 
- * the EntityReference (which reflect those of the Entity, and should
- * also be read-only) give its replacement value, if any. They are 
- * supposed to automagically stay in synch if the DocumentType is 
- * updated with new values for the Entity.
- * <P>
- * The defined behavior makes efficient storage difficult for the DOM
- * implementor. We can't just look aside to the Entity's definition
- * in the DocumentType since those nodes have the wrong parent (unless
- * we can come up with a clever "imaginary parent" mechanism). We
- * must at least appear to clone those children... which raises the
- * issue of keeping the reference synchronized with its parent.
- * This leads me back to the "cached image of centrally defined data"
- * solution, much as I dislike it.
- * <P>
- * For now I have decided, since REC-DOM-Level-1-19980818 doesn't
- * cover this in much detail, that synchronization doesn't have to be
- * considered while the user is deep in the tree. That is, if you're
- * looking within one of the EntityReferennce's children and the Entity
- * changes, you won't be informed; instead, you will continue to access
- * the same object -- which may or may not still be part of the tree.
- * This is the same behavior that obtains elsewhere in the DOM if the
- * subtree you're looking at is deleted from its parent, so it's
- * acceptable here. (If it really bothers folks, we could set things
- * up so deleted subtrees are walked and marked invalid, but that's
- * not part of the DOM's defined behavior.)
- * <P>
- * As a result, only the EntityReference itself has to be aware of
- * changes in the Entity. And it can take advantage of the same
- * structure-change-monitoring code I implemented to support
+ * EntityReference models the XML &entityname; syntax, when used for entities defined by the DOM.
+ * Entities hardcoded into XML, such as character entities, should instead have been translated into
+ * text by the code which generated the DOM tree.
+ *
+ * <p>An XML processor has the alternative of fully expanding Entities into the normal document
+ * tree. If it does so, no EntityReference nodes will appear.
+ *
+ * <p>Similarly, non-validating XML processors are not required to read or process entity
+ * declarations made in the external subset or declared in external parameter entities. Hence, some
+ * applications may not make the replacement value available for Parsed Entities of these types.
+ *
+ * <p>EntityReference behaves as a read-only node, and the children of the EntityReference (which
+ * reflect those of the Entity, and should also be read-only) give its replacement value, if any.
+ * They are supposed to automagically stay in synch if the DocumentType is updated with new values
+ * for the Entity.
+ *
+ * <p>The defined behavior makes efficient storage difficult for the DOM implementor. We can't just
+ * look aside to the Entity's definition in the DocumentType since those nodes have the wrong parent
+ * (unless we can come up with a clever "imaginary parent" mechanism). We must at least appear to
+ * clone those children... which raises the issue of keeping the reference synchronized with its
+ * parent. This leads me back to the "cached image of centrally defined data" solution, much as I
+ * dislike it.
+ *
+ * <p>For now I have decided, since REC-DOM-Level-1-19980818 doesn't cover this in much detail, that
+ * synchronization doesn't have to be considered while the user is deep in the tree. That is, if
+ * you're looking within one of the EntityReferennce's children and the Entity changes, you won't be
+ * informed; instead, you will continue to access the same object -- which may or may not still be
+ * part of the tree. This is the same behavior that obtains elsewhere in the DOM if the subtree
+ * you're looking at is deleted from its parent, so it's acceptable here. (If it really bothers
+ * folks, we could set things up so deleted subtrees are walked and marked invalid, but that's not
+ * part of the DOM's defined behavior.)
+ *
+ * <p>As a result, only the EntityReference itself has to be aware of changes in the Entity. And it
+ * can take advantage of the same structure-change-monitoring code I implemented to support
  * DeepNodeList.
- * 
+ *
  * @version
- * @since  PR-DOM-Level-1-19980818.
+ * @since PR-DOM-Level-1-19980818.
  */
-public class EntityReferenceImpl 
-    extends NodeImpl 
-    implements EntityReference {
+public class EntityReferenceImpl extends NodeImpl implements EntityReference {
 
-    //
-    // Constants
-    //
+  //
+  // Constants
+  //
 
-    /** Serialization version. */
-    static final long serialVersionUID = -7381452955687102062L;
-    
-    //
-    // Data
-    //
+  /** Serialization version. */
+  static final long serialVersionUID = -7381452955687102062L;
 
-    /** Entity changes. */
-	//protected int entityChanges = -1;	
+  //
+  // Data
+  //
 
-    /** Enable synchronize. */
-    //protected boolean fEnableSynchronize = false;
+  /** Entity changes. */
+  // protected int entityChanges = -1;
 
-    //
-    // Constructors
-    //
+  /** Enable synchronize. */
+  // protected boolean fEnableSynchronize = false;
 
-    /** Factory constructor. */
-    public EntityReferenceImpl(DocumentImpl ownerDoc, String name) {
-    	super(ownerDoc, name, null);
-        //fEnableSynchronize = false;
+  //
+  // Constructors
+  //
 
-    	// EntityReference behaves as a read-only node, since its contents
-    	// reflect the Entity it refers to -- but see setNodeName().
-    	//readOnly = true;
-    }
-    
-    //
-    // Node methods
-    //
+  /** Factory constructor. */
+  public EntityReferenceImpl(DocumentImpl ownerDoc, String name) {
+    super(ownerDoc, name, null);
+    // fEnableSynchronize = false;
 
-    /** 
-     * A short integer indicating what type of node this is. The named
-     * constants for this value are defined in the org.w3c.dom.Node interface.
-     */
-    public short getNodeType() {
-        return Node.ENTITY_REFERENCE_NODE;
-    }
+    // EntityReference behaves as a read-only node, since its contents
+    // reflect the Entity it refers to -- but see setNodeName().
+    // readOnly = true;
+  }
 
-    // REVISIT: Return original entity reference code. -Ac
+  //
+  // Node methods
+  //
 
-    /**
-     * Perform synchronize() before accessing children.
-     * 
-     * @return org.w3c.dom.NodeList
-     */
-    /***
-    // revisit: enable editing of Entity
-    public NodeList getChildNodes() {
-    	synchronize();
-    	return super.getChildNodes();
-    }
-    /***/
+  /**
+   * A short integer indicating what type of node this is. The named constants for this value are
+   * defined in the org.w3c.dom.Node interface.
+   */
+  public short getNodeType() {
+    return Node.ENTITY_REFERENCE_NODE;
+  }
 
-    /**
-     * Perform synchronize() before accessing children.
-     * 
-     * @return org.w3c.dom.NodeList
-     */
-    /***
-    // revisit: enable editing of Entity
-    public Node getFirstChild() {
-    	synchronize();
-    	return super.getFirstChild();
-    }
-    /***/
+  // REVISIT: Return original entity reference code. -Ac
 
-    /**
-     * Perform synchronize() before accessing children.
-     * 
-     * @return org.w3c.dom.NodeList
-     */
-    /***
-    // revisit: enable editing of Entity
-    public Node getLastChild() {
-    	synchronize();
-    	return super.getLastChild();
-    }
-    /***/
+  /**
+   * Perform synchronize() before accessing children.
+   *
+   * @return org.w3c.dom.NodeList
+   */
+  /***
+   * // revisit: enable editing of Entity
+   * public NodeList getChildNodes() {
+   * synchronize();
+   * return super.getChildNodes();
+   * }
+   * /***/
 
-    /**
-     * Query the number of children in the entity definition.
-     * (A bit more work than asking locally, but may be able to avoid
-     * or defer building the clone subtree.)
-     *
-     * @return org.w3c.dom.NodeList
-     */
-    /***
-    // revisit: enable editing of Entity
-    public int getLength() {
-    	int length=0;
-    	
-    	DocumentType doctype;
-    	NamedNodeMap entities;
-    	Entity entDef;
-    	if (null != (doctype = getOwnerDocument().getDoctype()) && 
-    		null != (entities = doctype.getEntities()) &&
-    		null != (entDef = (Entity)entities.getNamedItem(getNodeName()))
-    		)
-    		length=entDef.getChildNodes().getLength();
+  /**
+   * Perform synchronize() before accessing children.
+   *
+   * @return org.w3c.dom.NodeList
+   */
+  /***
+   * // revisit: enable editing of Entity
+   * public Node getFirstChild() {
+   * synchronize();
+   * return super.getFirstChild();
+   * }
+   * /***/
 
-    	return length;
-    }
-    /***/
+  /**
+   * Perform synchronize() before accessing children.
+   *
+   * @return org.w3c.dom.NodeList
+   */
+  /***
+   * // revisit: enable editing of Entity
+   * public Node getLastChild() {
+   * synchronize();
+   * return super.getLastChild();
+   * }
+   * /***/
 
-    /**
-     * Query the presence of children in the entity definition.
-     * (A bit more work than asking locally, but may be able to avoid
-     * or defer building the clone subtree.)
-     *
-     * @return boolean
-     */
-    /***
-    // revisit: enable editing of Entity
-    public boolean hasChildNodes() {
-    	boolean haskids=false;
-    	
-    	DocumentType doctype;
-    	NamedNodeMap entities;
-    	Entity entDef;
-    	if (null != (doctype = getOwnerDocument().getDoctype()) && 
-    		null != (entities = doctype.getEntities()) &&
-    		null != (entDef = (Entity)entities.getNamedItem(getNodeName()))
-    		)
-    		haskids=entDef.hasChildNodes();
+  /**
+   * Query the number of children in the entity definition. (A bit more work than asking locally,
+   * but may be able to avoid or defer building the clone subtree.)
+   *
+   * @return org.w3c.dom.NodeList
+   */
+  /***
+   * // revisit: enable editing of Entity
+   * public int getLength() {
+   * int length=0;
+   *
+   * DocumentType doctype;
+   * NamedNodeMap entities;
+   * Entity entDef;
+   * if (null != (doctype = getOwnerDocument().getDoctype()) &&
+   * null != (entities = doctype.getEntities()) &&
+   * null != (entDef = (Entity)entities.getNamedItem(getNodeName()))
+   * )
+   * length=entDef.getChildNodes().getLength();
+   *
+   * return length;
+   * }
+   * /***/
 
-    	return haskids;
-    }
-    /***/
+  /**
+   * Query the presence of children in the entity definition. (A bit more work than asking locally,
+   * but may be able to avoid or defer building the clone subtree.)
+   *
+   * @return boolean
+   */
+  /***
+   * // revisit: enable editing of Entity
+   * public boolean hasChildNodes() {
+   * boolean haskids=false;
+   *
+   * DocumentType doctype;
+   * NamedNodeMap entities;
+   * Entity entDef;
+   * if (null != (doctype = getOwnerDocument().getDoctype()) &&
+   * null != (entities = doctype.getEntities()) &&
+   * null != (entDef = (Entity)entities.getNamedItem(getNodeName()))
+   * )
+   * haskids=entDef.hasChildNodes();
+   *
+   * return haskids;
+   * }
+   * /***/
 
-    /** Returns the node at the given index. */
-    /***
-    // revisit: enable editing of Entity
-    public Node item(int index) {
-    	synchronize();
-    	return super.item(index);
-    }
-    /***/
+  /** Returns the node at the given index. */
+  /***
+   * // revisit: enable editing of Entity
+   * public Node item(int index) {
+   * synchronize();
+   * return super.item(index);
+   * }
+   * /***/
 
-    /**
-     * EntityReferences never have a nodeValue.
-     * @throws DOMException(NO_MODIFICATION_ALLOWED_ERR)
-     */
-    public void setNodeValue(String x) throws DOMException {
-    	throw new DOMExceptionImpl(DOMException.NO_MODIFICATION_ALLOWED_ERR, 
-    	                           "NO_MODIFICATION_ALLOWED_ERR");
-    }
+  /**
+   * EntityReferences never have a nodeValue.
+   *
+   * @throws DOMException(NO_MODIFICATION_ALLOWED_ERR)
+   */
+  public void setNodeValue(String x) throws DOMException {
+    throw new DOMExceptionImpl(
+        DOMException.NO_MODIFICATION_ALLOWED_ERR, "NO_MODIFICATION_ALLOWED_ERR");
+  }
 
-    //
-    // Public methods
-    //
+  //
+  // Public methods
+  //
 
-    /**
-     * EntityRef is already, and must be, a read-only node. Attempts to change
-     * that will throw a NO_MODIFICATION_ALLOWED_ERR DOMException.
-     * <P>
-     * If you want to alter its contents, edit the Entity definition.
-     * 
-     * @param readOnly boolean
-     */
-    /***/
-    public void setReadOnly(boolean readOnly,boolean deep) {
-    	//if(readOnly==false)
-    	//	throw new DOMExceptionImpl(DOMException.NO_MODIFICATION_ALLOWED_ERR,
-    	//                             "NO_MODIFICATION_ALLOWED_ERR");
-    	super.setReadOnly(readOnly,deep);
-    }
-    /***/
-    
-    /**
-     * Enable the synchronize method which may do cloning. This method is enabled
-     * when the parser is done with an EntityReference.
-    /***
-    // revisit: enable editing of Entity
-    public void enableSynchronize(boolean enableSynchronize) {
-        fEnableSynchronize= enableSynchronize;
-    }
-    /***/
+  /**
+   * EntityRef is already, and must be, a read-only node. Attempts to change that will throw a
+   * NO_MODIFICATION_ALLOWED_ERR DOMException.
+   *
+   * <p>If you want to alter its contents, edit the Entity definition.
+   *
+   * @param readOnly boolean
+   */
+  /***/
+  public void setReadOnly(boolean readOnly, boolean deep) {
+    // if(readOnly==false)
+    //	throw new DOMExceptionImpl(DOMException.NO_MODIFICATION_ALLOWED_ERR,
+    //                             "NO_MODIFICATION_ALLOWED_ERR");
+    super.setReadOnly(readOnly, deep);
+  }
+  /***/
 
-    /**
-     * EntityReference's children are a reflection of those defined in the
-     * named Entity. This method updates them if the Entity is changed.
-     * <P>
-     * It is unclear what the least-cost resynch mechanism is.
-     * If we expect the kids to be shallow, and/or expect changes
-     * to the Entity contents to be rare, wiping them all out
-     * and recloning is simplest.
-     * <P>
-     * If we expect them to be deep,
-     * it might be better to first decide which kids (if any)
-     * persist, and keep the ones (if any) that are unchanged
-     * rather than doing all the work of cloning them again.
-     * But that latter gets into having to convolve the two child lists,
-     * insert new information in the right order (and possibly reorder
-     * the existing kids), and a few other complexities that I really
-     * don't want to deal with in this implementation.
-     * <P>
-     * Note that if we decide that we need to update the EntityReference's
-     * contents, we have to turn off the readOnly flag temporarily to do so.
-     * When we get around to adding multitasking support, this whole method
-     * should probably be an atomic operation.
-     * 
-     * @see DocumentTypeImpl
-     * @see EntityImpl
-     */
-     // The Xerces parser invokes callbacks for startEnityReference
-     // the parsed value of the entity EACH TIME, so it is actually 
-     // easier to create the nodes through the callbacks rather than
-     // clone the Entity.
-    /***
-    // revisit: enable editing of Entity
-    private void synchronize() {
-        if (!fEnableSynchronize) {
-            return;
-        }
-    	DocumentType doctype;
-    	NamedNodeMap entities;
-    	EntityImpl entDef;
-    	if (null != (doctype = getOwnerDocument().getDoctype()) && 
-    		null != (entities = doctype.getEntities())) {
-            
-    		entDef = (EntityImpl)entities.getNamedItem(getNodeName());
+  /**
+   * Enable the synchronize method which may do cloning. This method is enabled when the parser is
+   * done with an EntityReference. /*** // revisit: enable editing of Entity public void
+   * enableSynchronize(boolean enableSynchronize) { fEnableSynchronize= enableSynchronize; } /**
+   */
 
-    		// No Entity by this name. If we had a change count, reset it.
-    		if(null==entDef)
-    			entityChanges=-1;
+  /**
+   * EntityReference's children are a reflection of those defined in the named Entity. This method
+   * updates them if the Entity is changed.
+   *
+   * <p>It is unclear what the least-cost resynch mechanism is. If we expect the kids to be shallow,
+   * and/or expect changes to the Entity contents to be rare, wiping them all out and recloning is
+   * simplest.
+   *
+   * <p>If we expect them to be deep, it might be better to first decide which kids (if any)
+   * persist, and keep the ones (if any) that are unchanged rather than doing all the work of
+   * cloning them again. But that latter gets into having to convolve the two child lists, insert
+   * new information in the right order (and possibly reorder the existing kids), and a few other
+   * complexities that I really don't want to deal with in this implementation.
+   *
+   * <p>Note that if we decide that we need to update the EntityReference's contents, we have to
+   * turn off the readOnly flag temporarily to do so. When we get around to adding multitasking
+   * support, this whole method should probably be an atomic operation.
+   *
+   * @see DocumentTypeImpl
+   * @see EntityImpl
+   */
+  // The Xerces parser invokes callbacks for startEnityReference
+  // the parsed value of the entity EACH TIME, so it is actually
+  // easier to create the nodes through the callbacks rather than
+  // clone the Entity.
+  /***
+   * // revisit: enable editing of Entity
+   * private void synchronize() {
+   * if (!fEnableSynchronize) {
+   * return;
+   * }
+   * DocumentType doctype;
+   * NamedNodeMap entities;
+   * EntityImpl entDef;
+   * if (null != (doctype = getOwnerDocument().getDoctype()) &&
+   * null != (entities = doctype.getEntities())) {
+   *
+   * entDef = (EntityImpl)entities.getNamedItem(getNodeName());
+   *
+   * // No Entity by this name. If we had a change count, reset it.
+   * if(null==entDef)
+   * entityChanges=-1;
+   *
+   * // If no kids availalble, wipe any pre-existing children.
+   * // (See discussion above.)
+   * // Note that we have to use the superclass to avoid recursion
+   * // through Synchronize.
+   * readOnly=false;
+   * if(null==entDef || !entDef.hasChildNodes())
+   * for(Node kid=super.getFirstChild();
+   * kid!=null;
+   * kid=super.getFirstChild())
+   * removeChild(kid);
+   *
+   * // If entity's definition changed, clone its kids
+   * // (See discussion above.)
+   * if(null!=entDef && entDef.changes!=entityChanges) {
+   * for(Node defkid=entDef.getFirstChild();
+   * defkid!=null;
+   * defkid=defkid.getNextSibling()) {
+   *
+   * NodeImpl newkid=(NodeImpl) defkid.cloneNode(true);
+   * newkid.setReadOnly(true,true);
+   * insertBefore(newkid,null);
+   * }
+   * entityChanges=entDef.changes;
+   * }
+   * readOnly=true;
+   * }
+   * }
+   * /***/
 
-    		// If no kids availalble, wipe any pre-existing children.
-    		// (See discussion above.)
-    		// Note that we have to use the superclass to avoid recursion
-    		// through Synchronize.
-    		readOnly=false;
-    		if(null==entDef || !entDef.hasChildNodes())
-    			for(Node kid=super.getFirstChild();
-    				kid!=null;
-    				kid=super.getFirstChild())
-    				removeChild(kid);
-
-    		// If entity's definition changed, clone its kids
-    		// (See discussion above.)
-    		if(null!=entDef && entDef.changes!=entityChanges) {
-    			for(Node defkid=entDef.getFirstChild();
-    				defkid!=null;
-    				defkid=defkid.getNextSibling()) {
-                    
-    				NodeImpl newkid=(NodeImpl) defkid.cloneNode(true);
-    				newkid.setReadOnly(true,true);
-    				insertBefore(newkid,null);
-    			}
-    			entityChanges=entDef.changes;
-    		}
-    		readOnly=true;
-    	}
-    }
-     /***/
-    
 } // class EntityReferenceImpl

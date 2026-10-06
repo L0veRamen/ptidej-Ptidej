@@ -22,37 +22,29 @@
 // CALIFORNIA HAS NO OBLIGATIONS TO PROVIDE MAINTENANCE, SUPPORT,
 // UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
-
 package org.argouml.ui.cmd;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.JFrame;
-
 import org.argouml.ui.AboutBox;
 import org.argouml.ui.ProjectBrowser;
 import org.argouml.uml.ui.UMLAction;
 
-
-/**
- * The action to show the About ArgoUML dialog.
- */
+/** The action to show the About ArgoUML dialog. */
 class ActionAboutArgoUML extends UMLAction {
 
-    public ActionAboutArgoUML() {
-        super("action.about-argouml", HAS_ICON);
-    }
+  public ActionAboutArgoUML() {
+    super("action.about-argouml", HAS_ICON);
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-	JFrame jframe = ((JFrame) (ProjectBrowser.getInstance()));
-	AboutBox box = new AboutBox(jframe, true);
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    JFrame jframe = ((JFrame) (ProjectBrowser.getInstance()));
+    AboutBox box = new AboutBox(jframe, true);
 
-	box.setLocationRelativeTo(jframe);
-	box.setVisible(true);
-    }
-
-
+    box.setLocationRelativeTo(jframe);
+    box.setVisible(true);
+  }
 } /* end class ActionAboutArgoUML */

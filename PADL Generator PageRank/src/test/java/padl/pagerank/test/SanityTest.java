@@ -4,69 +4,63 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
 package padl.pagerank.test;
 
 import java.io.StringWriter;
-
-import org.junit.Assert;
-
 import junit.framework.TestCase;
+import org.junit.Assert;
 import padl.pagerank.helper.PageRankCallerWithNoParameters;
 import padl.pagerank.utils.InputDataGeneratorWith9RelationsForCPP;
 
 public class SanityTest extends TestCase {
-	private static InputDataGeneratorWith9RelationsForCPP Generator;
+  private static InputDataGeneratorWith9RelationsForCPP Generator;
 
-	public SanityTest(final String name) {
-		super(name);
-	}
+  public SanityTest(final String name) {
+    super(name);
+  }
 
-	protected void setUp() throws Exception {
-		super.setUp();
+  protected void setUp() throws Exception {
+    super.setUp();
 
-		if (SanityTest.Generator == null) {
-			SanityTest.Generator = new InputDataGeneratorWith9RelationsForCPP(
-					true, true);
-			final StringWriter writer = new StringWriter();
-			PageRankCallerWithNoParameters.callForSomeCPPFiles("Simple",
-					"../PADL Generator PageRank/target/test-classes/Simple/",
-					SanityTest.Generator, writer);
-			writer.close();
-		}
-	}
+    if (SanityTest.Generator == null) {
+      SanityTest.Generator = new InputDataGeneratorWith9RelationsForCPP(true, true);
+      final StringWriter writer = new StringWriter();
+      PageRankCallerWithNoParameters.callForSomeCPPFiles(
+          "Simple",
+          "../PADL Generator PageRank/target/test-classes/Simple/",
+          SanityTest.Generator,
+          writer);
+      writer.close();
+    }
+  }
 
-	public void testType4() {
-		// Called methods
-		// TODO Shouldn't it be 4?
-		Assert.assertEquals(0,
-				SanityTest.Generator.getRelationsType4CalledMethods().size());
-	}
+  public void testType4() {
+    // Called methods
+    // TODO Shouldn't it be 4?
+    Assert.assertEquals(0, SanityTest.Generator.getRelationsType4CalledMethods().size());
+  }
 
-	public void testType5() {
-		// Field accesses
-		Assert.assertEquals(0,
-				SanityTest.Generator.getRelationsType5FieldAccesses().size());
-	}
+  public void testType5() {
+    // Field accesses
+    Assert.assertEquals(0, SanityTest.Generator.getRelationsType5FieldAccesses().size());
+  }
 
-	public void testType6() {
-		// Types of fields
-		Assert.assertEquals(1,
-				SanityTest.Generator.getRelationsType6TypesOfFields().size());
-	}
+  public void testType6() {
+    // Types of fields
+    Assert.assertEquals(1, SanityTest.Generator.getRelationsType6TypesOfFields().size());
+  }
 
-	public void testType7() {
-		// Return types of methods
-		Assert.assertEquals(0, SanityTest.Generator
-				.getRelationsType7ReturnTypesOfMethods().size());
-	}
+  public void testType7() {
+    // Return types of methods
+    Assert.assertEquals(0, SanityTest.Generator.getRelationsType7ReturnTypesOfMethods().size());
+  }
 
-	public void testType8() {
-		// Parameter types of methods
-		Assert.assertEquals(7, SanityTest.Generator
-				.getRelationsType8ParameterTypesOfMethods().size());
-	}
+  public void testType8() {
+    // Parameter types of methods
+    Assert.assertEquals(7, SanityTest.Generator.getRelationsType8ParameterTypesOfMethods().size());
+  }
 }

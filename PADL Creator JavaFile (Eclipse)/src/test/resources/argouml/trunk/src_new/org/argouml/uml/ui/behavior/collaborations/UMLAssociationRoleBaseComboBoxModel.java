@@ -27,109 +27,100 @@ package org.argouml.uml.ui.behavior.collaborations;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLComboBoxModel2;
 
 /**
- * The combo box model for the base of an association-role.
- * The base is clearable, since the UML standard indicates multiplicity 0..1.
- * 
+ * The combo box model for the base of an association-role. The base is clearable, since the UML
+ * standard indicates multiplicity 0..1.
+ *
  * @since Oct 4, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
 public class UMLAssociationRoleBaseComboBoxModel extends UMLComboBoxModel2 {
 
-    private Collection others = new ArrayList();
+  private Collection others = new ArrayList();
 
-    /**
-     * Constructor for UMLAssociationRoleBaseComboBoxModel.
-     */
-    public UMLAssociationRoleBaseComboBoxModel() {
-        super("base", true);
+  /** Constructor for UMLAssociationRoleBaseComboBoxModel. */
+  public UMLAssociationRoleBaseComboBoxModel() {
+    super("base", true);
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    removeAllElements();
+    Object ar = getTarget();
+    Object base = Model.getFacade().getBase(ar);
+    if (Model.getFacade().isAAssociationRole(ar)) {
+      setElements(Model.getCollaborationsHelper().getAllPossibleBases(ar));
     }
+    if (base != null) addElement(base);
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        removeAllElements();
-        Object ar = getTarget();
-        Object base = Model.getFacade().getBase(ar);
-        if (Model.getFacade().isAAssociationRole(ar)) {
-            setElements(
-                    Model.getCollaborationsHelper().getAllPossibleBases(ar));
-        }
-        if (base != null) addElement(base);
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
+   */
+  protected Object getSelectedModelElement() {
+    Object ar = getTarget();
+    if (Model.getFacade().isAAssociationRole(ar)) {
+      Object base = Model.getFacade().getBase(ar);
+      if (base != null) return base;
     }
+    return null;
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
-     */
-    protected Object getSelectedModelElement() {
-        Object ar = getTarget();
-        if (Model.getFacade().isAAssociationRole(ar)) {
-            Object base = Model.getFacade().getBase(ar);
-            if (base != null) return base;
-        }
-        return null;
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    Object ar = getTarget();
+    if (Model.getFacade().isAAssociationRole(ar)) {
+      Object base = Model.getFacade().getBase(ar);
+      if (element == base) return true;
+      Collection b = Model.getCollaborationsHelper().getAllPossibleBases(ar);
+      return b.contains(element);
     }
+    return false;
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        Object ar = getTarget();
-        if (Model.getFacade().isAAssociationRole(ar)) {
-            Object base = Model.getFacade().getBase(ar);
-            if (element == base) return true;
-            Collection b = 
-                Model.getCollaborationsHelper().getAllPossibleBases(ar);
-            return b.contains(element);
-        }
-        return false;
+  /**
+   * TODO: Prove that this works. The TestUMLAssociationRoleBaseComboBoxModel does not cut it.
+   *
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#addOtherModelEventListeners(java.lang.Object)
+   */
+  protected void addOtherModelEventListeners(Object newTarget) {
+    super.addOtherModelEventListeners(newTarget);
+    Collection connections = Model.getFacade().getConnections(newTarget);
+    Collection types = new ArrayList();
+    Iterator it = connections.iterator();
+    while (it.hasNext()) {
+      Object conn = it.next();
+      types.add(Model.getFacade().getType(conn));
     }
-
-    /**
-     * TODO: Prove that this works. 
-     * The TestUMLAssociationRoleBaseComboBoxModel does not cut it. 
-     * 
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#addOtherModelEventListeners(java.lang.Object)
-     */
-    protected void addOtherModelEventListeners(Object newTarget) {
-        super.addOtherModelEventListeners(newTarget);
-        Collection connections = Model.getFacade().getConnections(newTarget);
-        Collection types = new ArrayList();
-        Iterator it = connections.iterator();
-        while (it.hasNext()) {
-            Object conn = it.next();
-            types.add(Model.getFacade().getType(conn));
-        }
-        it = types.iterator();
-        while (it.hasNext()) {
-            Object classifierRole = it.next();
-            others.addAll(Model.getFacade().getBases(classifierRole));
-        }
-        it = others.iterator();
-        while (it.hasNext()) {
-            Object classifier = it.next();
-            Model.getPump().addModelEventListener(this, 
-                    classifier, "feature");
-        }
+    it = types.iterator();
+    while (it.hasNext()) {
+      Object classifierRole = it.next();
+      others.addAll(Model.getFacade().getBases(classifierRole));
     }
-
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#removeOtherModelEventListeners(java.lang.Object)
-     */
-    protected void removeOtherModelEventListeners(Object oldTarget) {
-        super.removeOtherModelEventListeners(oldTarget);
-        Iterator i = others.iterator();
-        while (i.hasNext()) {
-            Object classifier = i.next();
-            Model.getPump().removeModelEventListener(this, 
-                    classifier, "feature");
-        }
-        others.clear();
+    it = others.iterator();
+    while (it.hasNext()) {
+      Object classifier = it.next();
+      Model.getPump().addModelEventListener(this, classifier, "feature");
     }
+  }
 
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#removeOtherModelEventListeners(java.lang.Object)
+   */
+  protected void removeOtherModelEventListeners(Object oldTarget) {
+    super.removeOtherModelEventListeners(oldTarget);
+    Iterator i = others.iterator();
+    while (i.hasNext()) {
+      Object classifier = i.next();
+      Model.getPump().removeModelEventListener(this, classifier, "feature");
+    }
+    others.clear();
+  }
 }

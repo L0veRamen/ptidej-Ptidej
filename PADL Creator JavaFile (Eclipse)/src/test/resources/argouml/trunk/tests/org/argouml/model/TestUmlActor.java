@@ -28,39 +28,34 @@ package org.argouml.model;
  * @author Thierry Lach
  */
 public class TestUmlActor extends GenericUmlObjectTestFixture {
-    /**
-     * Constructor.
-     *
-     * @param arg0 test name
-     */
-    public TestUmlActor(String arg0) {
-	super(arg0, Model.getMetaTypes().getActor());
-	validateTestClassIsGeneric(this);
-    }
+  /**
+   * Constructor.
+   *
+   * @param arg0 test name
+   */
+  public TestUmlActor(String arg0) {
+    super(arg0, Model.getMetaTypes().getActor());
+    validateTestClassIsGeneric(this);
+  }
 
-    /**
-     * Test the creation of an actor.
-     */
-    public void testActor() {
-	Object o =
-	    Model.getUmlFactory().buildNode(Model.getMetaTypes().getActor());
-	assertNotNull("Didn't create object", o);
-	assertTrue("Should be a model element", Model.getFacade()
-                .isAModelElement(o));
-	assertTrue("Should be a actor", Model.getFacade().isAActor(o));
-	runTruthTests(o);
-    }
+  /** Test the creation of an actor. */
+  public void testActor() {
+    Object o = Model.getUmlFactory().buildNode(Model.getMetaTypes().getActor());
+    assertNotNull("Didn't create object", o);
+    assertTrue("Should be a model element", Model.getFacade().isAModelElement(o));
+    assertTrue("Should be a actor", Model.getFacade().isAActor(o));
+    runTruthTests(o);
+  }
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        setTruth(Model.getMetaTypes().getModelElement(), true);
-        setTruth(Model.getMetaTypes().getGeneralizableElement(), true);
-        setTruth(Model.getMetaTypes().getClassifier(), true);
-        setTruth(Model.getMetaTypes().getNamespace(), true);
-        setTruth(Model.getMetaTypes().getActor(), true);
-    }
-
+  /**
+   * @see junit.framework.TestCase#setUp()
+   */
+  protected void setUp() throws Exception {
+    super.setUp();
+    setTruth(Model.getMetaTypes().getModelElement(), true);
+    setTruth(Model.getMetaTypes().getGeneralizableElement(), true);
+    setTruth(Model.getMetaTypes().getClassifier(), true);
+    setTruth(Model.getMetaTypes().getNamespace(), true);
+    setTruth(Model.getMetaTypes().getActor(), true);
+  }
 }

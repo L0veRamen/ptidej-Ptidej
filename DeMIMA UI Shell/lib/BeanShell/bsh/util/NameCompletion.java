@@ -7,7 +7,7 @@
  *                                                                           *
  *  The contents of this file are subject to the Sun Public License Version  *
  *  1.0 (the "License"); you may not use this file except in compliance with *
- *  the License. A copy of the License is available at http://www.sun.com    * 
+ *  the License. A copy of the License is available at http://www.sun.com    *
  *                                                                           *
  *  The Original Code is BeanShell. The Initial Developer of the Original    *
  *  Code is Pat Niemeyer. Portions created by Pat Niemeyer are Copyright     *
@@ -35,23 +35,14 @@ package bsh.util;
 
 import java.util.*;
 
-/**
-	The interface for name completion.
-*/
-public interface NameCompletion 
-{
-	/**
-		Return an array containing a string element of the maximum 
-		unambiguous namespace completion or, if there is no common prefix, 
-		return the list of ambiguous names.
-		e.g. 
-			input: "java.l"
-			output: [ "java.lang." ]
-			input: "java.lang."
-			output: [ "java.lang.Thread", "java.lang.Integer", ... ]
-
-		Note: Alternatively, make a NameCompletionResult object someday...
-	*/
-	public String [] completeName( String part );
-
+/** The interface for name completion. */
+public interface NameCompletion {
+  /**
+   * Return an array containing a string element of the maximum unambiguous namespace completion or,
+   * if there is no common prefix, return the list of ambiguous names. e.g. input: "java.l" output:
+   * [ "java.lang." ] input: "java.lang." output: [ "java.lang.Thread", "java.lang.Integer", ... ]
+   *
+   * <p>Note: Alternatively, make a NameCompletionResult object someday...
+   */
+  public String[] completeName(String part);
 }

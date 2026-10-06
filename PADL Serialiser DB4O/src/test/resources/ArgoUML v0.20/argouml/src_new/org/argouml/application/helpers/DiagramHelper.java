@@ -25,9 +25,7 @@
 package org.argouml.application.helpers;
 
 import java.util.Vector;
-
 import javax.swing.JMenuItem;
-
 import org.argouml.application.api.PluggableDiagram;
 import org.argouml.i18n.Translator;
 import org.argouml.ui.ArgoDiagram;
@@ -38,64 +36,66 @@ import org.argouml.ui.ArgoDiagram;
  * @author Thomas Neustupny
  * @since 0.9.5
  */
-public abstract class DiagramHelper extends ArgoDiagram
-    implements PluggableDiagram {
+public abstract class DiagramHelper extends ArgoDiagram implements PluggableDiagram {
 
-    /**
-     * Default localization key for diagrams.
-     */
-    public static final String DIAGRAM_BUNDLE = "DiagramType";
+  /** Default localization key for diagrams. */
+  public static final String DIAGRAM_BUNDLE = "DiagramType";
 
-    /**
-     * The constructor.
-     *
-     */
-    public DiagramHelper() {
-    }
+  /** The constructor. */
+  public DiagramHelper() {}
 
-    /**
-     * @see org.argouml.application.api.ArgoModule#setModuleEnabled(boolean)
-     */
-    public void setModuleEnabled(boolean v) { }
+  /**
+   * @see org.argouml.application.api.ArgoModule#setModuleEnabled(boolean)
+   */
+  public void setModuleEnabled(boolean v) {}
 
-    /**
-     * @see org.argouml.application.api.ArgoModule#initializeModule()
-     */
-    public boolean initializeModule() { return true; }
+  /**
+   * @see org.argouml.application.api.ArgoModule#initializeModule()
+   */
+  public boolean initializeModule() {
+    return true;
+  }
 
-    /**
-     * @see org.argouml.application.api.Pluggable#inContext(java.lang.Object[])
-     */
-    public boolean inContext(Object[] o) { return true; }
+  /**
+   * @see org.argouml.application.api.Pluggable#inContext(java.lang.Object[])
+   */
+  public boolean inContext(Object[] o) {
+    return true;
+  }
 
-    /**
-     * @see org.argouml.application.api.ArgoModule#isModuleEnabled()
-     */
-    public boolean isModuleEnabled() { return true; }
+  /**
+   * @see org.argouml.application.api.ArgoModule#isModuleEnabled()
+   */
+  public boolean isModuleEnabled() {
+    return true;
+  }
 
-    /**
-     * @see org.argouml.application.api.ArgoModule#getModulePopUpActions(
-     * java.util.Vector, java.lang.Object)
-     */
-    public Vector getModulePopUpActions(Vector v, Object o) { return null; }
+  /**
+   * @see org.argouml.application.api.ArgoModule#getModulePopUpActions( java.util.Vector,
+   *     java.lang.Object)
+   */
+  public Vector getModulePopUpActions(Vector v, Object o) {
+    return null;
+  }
 
-    /**
-     * @see org.argouml.application.api.ArgoModule#shutdownModule()
-     */
-    public boolean shutdownModule() { return true; }
+  /**
+   * @see org.argouml.application.api.ArgoModule#shutdownModule()
+   */
+  public boolean shutdownModule() {
+    return true;
+  }
 
-    /**
-     * @see org.argouml.application.api.PluggableDiagram#getDiagramMenuItem()
-     */
-    public JMenuItem getDiagramMenuItem() {
-	return new JMenuItem(Translator.localize("menu.item.diagram-type"));
-    } // add icon if desired
+  /**
+   * @see org.argouml.application.api.PluggableDiagram#getDiagramMenuItem()
+   */
+  public JMenuItem getDiagramMenuItem() {
+    return new JMenuItem(Translator.localize("menu.item.diagram-type"));
+  } // add icon if desired
 
-    /**
-     * @return the default localization key for diagrams
-     */
-    public String getDiagramResourceBundleKey() {
-        return DIAGRAM_BUNDLE;
-    }
+  /**
+   * @return the default localization key for diagrams
+   */
+  public String getDiagramResourceBundleKey() {
+    return DIAGRAM_BUNDLE;
+  }
 }
-

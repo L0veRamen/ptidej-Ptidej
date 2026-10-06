@@ -28,19 +28,18 @@ import org.argouml.model.Model;
 
 public class TestCrTooManyOper extends AbstractTestCrTooMany {
 
-    public TestCrTooManyOper(String arg0) {
-        super(arg0);
-        // TODO Auto-generated constructor stub
-    }
+  public TestCrTooManyOper(String arg0) {
+    super(arg0);
+    // TODO Auto-generated constructor stub
+  }
 
-    protected void setUp() throws Exception {
-        super.setUp();
-        cr = new CrTooManyOper();
-        dm = Model.getCoreFactory().createClass();
-    }
+  protected void setUp() throws Exception {
+    super.setUp();
+    cr = new CrTooManyOper();
+    dm = Model.getCoreFactory().createClass();
+  }
 
-    protected void createNewModelElement() {
-        Model.getCoreFactory().buildOperation(dm, model, null);
-    }
-
+  protected void createNewModelElement() {
+    Model.getCoreFactory().buildOperation(dm, model, null);
+  }
 }

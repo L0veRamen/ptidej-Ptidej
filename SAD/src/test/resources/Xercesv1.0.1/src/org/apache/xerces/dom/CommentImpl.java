@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xerces" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -63,47 +63,44 @@ import org.w3c.dom.*;
  * Represents an XML (or HTML) comment.
  *
  * @version
- * @since  PR-DOM-Level-1-19980818.
+ * @since PR-DOM-Level-1-19980818.
  */
-public class CommentImpl 
-    extends CharacterDataImpl 
-    implements Comment {
+public class CommentImpl extends CharacterDataImpl implements Comment {
 
-    //
-    // Constants
-    //
+  //
+  // Constants
+  //
 
-    /** Serialization version. */
-    static final long serialVersionUID = -2685736833408134044L;
+  /** Serialization version. */
+  static final long serialVersionUID = -2685736833408134044L;
 
-    //
-    // Constructors
-    //
+  //
+  // Constructors
+  //
 
-    /** Factory constructor. */
-    public CommentImpl(DocumentImpl ownerDoc, String data) {
-    	super(ownerDoc, data);
-    }
-    
-    //
-    // Node methods
-    //
+  /** Factory constructor. */
+  public CommentImpl(DocumentImpl ownerDoc, String data) {
+    super(ownerDoc, data);
+  }
 
-    /** 
-     * A short integer indicating what type of node this is. The named
-     * constants for this value are defined in the org.w3c.dom.Node interface.
-     */
-    public short getNodeType() {
-        return Node.COMMENT_NODE;
-    }
+  //
+  // Node methods
+  //
 
-    /** Returns the node name. */
-    public String getNodeName() {
-        return "#comment";
-    }
+  /**
+   * A short integer indicating what type of node this is. The named constants for this value are
+   * defined in the org.w3c.dom.Node interface.
+   */
+  public short getNodeType() {
+    return Node.COMMENT_NODE;
+  }
 
-    public Node cloneNode(boolean deep) {        
-    	return ownerDocument.createComment(getNodeValue());
-    }
+  /** Returns the node name. */
+  public String getNodeName() {
+    return "#comment";
+  }
 
+  public Node cloneNode(boolean deep) {
+    return ownerDocument.createComment(getNodeValue());
+  }
 } // class CommentImpl

@@ -12,12 +12,13 @@ package choco.integer.search;
 import choco.search.AbstractSearchHeuristic;
 
 public class MaxVal extends AbstractSearchHeuristic implements IValSelector {
-	/**
-	 * selecting the highest value in the domain
-	 * @param x the variable under consideration
-	 * @return what seems the most interesting value for branching
-	 */
-	public int getBestVal(final choco.integer.var.IntDomainVar x) {
-		return x.getSup();
-	}
+  /**
+   * selecting the highest value in the domain
+   *
+   * @param x the variable under consideration
+   * @return what seems the most interesting value for branching
+   */
+  public int getBestVal(final choco.integer.var.IntDomainVar x) {
+    return x.getSup();
+  }
 }

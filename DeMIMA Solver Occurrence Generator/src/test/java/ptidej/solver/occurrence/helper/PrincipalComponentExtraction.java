@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc  and others, see in file; API and its implementation
  ******************************************************************************/
@@ -25,65 +25,63 @@ import util.xml.DOMVisitor;
 import util.xml.DOMVisitorAdapter;
 
 /**
- * @author Yann-Gaël Guéhéneuc 
- * @since  2007/0/07
+ * @author Yann-Gaël Guéhéneuc
+ * @since 2007/0/07
  */
 public class PrincipalComponentExtraction {
-	public static void main(final String[] args) {
-		final PrincipalComponentExtraction extractor =
-			new PrincipalComponentExtraction();
-		PrincipalComponents.print(extractor.xmlExtraction(
-			"../SAD Tests/rsc/Antipatterns in Xerces v2.7.0.xml",
-			new char[][] { "blob".toCharArray() }));
-	}
-	public ReducedOccurrence[] xmlExtraction(
-		final String anXMLFilePath,
-		final char[][] somePrincipalComponents) {
+  public static void main(final String[] args) {
+    final PrincipalComponentExtraction extractor = new PrincipalComponentExtraction();
+    PrincipalComponents.print(
+        extractor.xmlExtraction(
+            "../SAD Tests/rsc/Antipatterns in Xerces v2.7.0.xml",
+            new char[][] {"blob".toCharArray()}));
+  }
 
-		try {
-			final DocumentBuilderFactory factory =
-				DocumentBuilderFactory.newInstance();
-			final DocumentBuilder builder = factory.newDocumentBuilder();
-			final Document document = builder.parse(new File(anXMLFilePath));
+  @SuppressWarnings(
+      "unchecked") // Developer analysis script working on untyped (mixed-key) collections
+  public ReducedOccurrence[] xmlExtraction(
+      final String anXMLFilePath, final char[][] somePrincipalComponents) {
 
-			final SortedSet principalComponents = new TreeSet();
-			new DOMVisitorAdapter(document).accept(new DOMVisitor() {
-				public void open(final Document aDocument) {
-				}
-				public void close(final Document aDocument) {
-				}
-				public void open(final Node aNode) {
-					for (int i = 0; i < somePrincipalComponents.length; i++) {
-						final char[] name = somePrincipalComponents[i];
-						if (Arrays.equals(
-							aNode.getNodeName().toCharArray(),
-							name)) {
-							principalComponents.add(aNode
-								.getFirstChild()
-								.getFirstChild()
-								.getNodeValue());
-						}
-					}
-				}
-				public void close(final Node aNode) {
-				}
-			});
+    try {
+      final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+      final DocumentBuilder builder = factory.newDocumentBuilder();
+      final Document document = builder.parse(new File(anXMLFilePath));
 
-			final ReducedOccurrence[] sortedPrincipalComponents =
-				new ReducedOccurrence[principalComponents.size()];
-			principalComponents.toArray(sortedPrincipalComponents);
-			return sortedPrincipalComponents;
-		}
-		catch (final ParserConfigurationException e) {
-			e.printStackTrace();
-		}
-		catch (final SAXException e) {
-			e.printStackTrace();
-		}
-		catch (final IOException e) {
-			e.printStackTrace();
-		}
+      final SortedSet principalComponents = new TreeSet();
+      new DOMVisitorAdapter(document)
+          .accept(
+              new DOMVisitor() {
+                public void open(final Document aDocument) {}
 
-		return new ReducedOccurrence[0];
-	}
+                public void close(final Document aDocument) {}
+
+                @SuppressWarnings(
+                    "unchecked") // Developer analysis script working on untyped (mixed-key)
+                                 // collections
+                public void open(final Node aNode) {
+                  for (int i = 0; i < somePrincipalComponents.length; i++) {
+                    final char[] name = somePrincipalComponents[i];
+                    if (Arrays.equals(aNode.getNodeName().toCharArray(), name)) {
+                      principalComponents.add(aNode.getFirstChild().getFirstChild().getNodeValue());
+                    }
+                  }
+                }
+
+                public void close(final Node aNode) {}
+              });
+
+      final ReducedOccurrence[] sortedPrincipalComponents =
+          new ReducedOccurrence[principalComponents.size()];
+      principalComponents.toArray(sortedPrincipalComponents);
+      return sortedPrincipalComponents;
+    } catch (final ParserConfigurationException e) {
+      e.printStackTrace();
+    } catch (final SAXException e) {
+      e.printStackTrace();
+    } catch (final IOException e) {
+      e.printStackTrace();
+    }
+
+    return new ReducedOccurrence[0];
+  }
 }

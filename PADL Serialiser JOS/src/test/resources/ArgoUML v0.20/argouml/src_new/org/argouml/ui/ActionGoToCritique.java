@@ -27,32 +27,27 @@
 package org.argouml.ui;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.cognitive.ToDoItem;
 import org.argouml.uml.ui.UMLAction;
 
-/**
- * Action to display the todo pane.
- *
- */
+/** Action to display the todo pane. */
 public class ActionGoToCritique extends UMLAction {
-    private ToDoItem item = null;
+  private ToDoItem item = null;
 
-    /**
-     * Constructor.
-     *
-     * @param theItem The item that we go to.
-     */
-    public ActionGoToCritique(ToDoItem theItem) {
-	super(theItem.getHeadline(), NO_ICON);
-	item = theItem;
-    }
+  /**
+   * Constructor.
+   *
+   * @param theItem The item that we go to.
+   */
+  public ActionGoToCritique(ToDoItem theItem) {
+    super(theItem.getHeadline(), NO_ICON);
+    item = theItem;
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-	ProjectBrowser.getInstance().getTodoPane().selectItem(item);
-    }
-
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    ProjectBrowser.getInstance().getTodoPane().selectItem(item);
+  }
 } /* end class ActionGoToCritique */

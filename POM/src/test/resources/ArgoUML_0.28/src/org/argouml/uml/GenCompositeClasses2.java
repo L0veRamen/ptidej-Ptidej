@@ -25,36 +25,29 @@
 package org.argouml.uml;
 
 import java.util.Iterator;
-
 import org.argouml.util.ChildGenerator;
 
 /**
- * Utility class to generate a list of the "children" of a class which are the
- * other classes that are associated with the parent class, and that Association
- * has a COMPOSITE end at the parent. This is used in one of the critics.
- * 
+ * Utility class to generate a list of the "children" of a class which are the other classes that
+ * are associated with the parent class, and that Association has a COMPOSITE end at the parent.
+ * This is used in one of the critics.
+ *
  * @see org.argouml.uml.cognitive.critics.CrCircularComposition
  * @stereotype singleton
  */
-public class GenCompositeClasses2 extends GenCompositeClasses implements
-        ChildGenerator {
+public class GenCompositeClasses2 extends GenCompositeClasses implements ChildGenerator {
 
-    /**
-     * This SINGLETON is used in CrCircularComposition.
-     *
-     */
-    private static final GenCompositeClasses2 SINGLETON =
-        new GenCompositeClasses2();
+  /** This SINGLETON is used in CrCircularComposition. */
+  private static final GenCompositeClasses2 SINGLETON = new GenCompositeClasses2();
 
-    /**
-     * @return Return the singleton
-     */
-    public static GenCompositeClasses2 getInstance() {
-        return SINGLETON;
-    }
-    
-    public Iterator childIterator(Object parent) {
-        return collectChildren(parent).iterator();
-    }
+  /**
+   * @return Return the singleton
+   */
+  public static GenCompositeClasses2 getInstance() {
+    return SINGLETON;
+  }
 
+  public Iterator childIterator(Object parent) {
+    return collectChildren(parent).iterator();
+  }
 }

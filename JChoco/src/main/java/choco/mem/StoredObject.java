@@ -8,5 +8,4 @@ package choco.mem;
 // *     for Research and Education                 *
 // **************************************************
 
-public class StoredObject {
-}
+public class StoredObject {}

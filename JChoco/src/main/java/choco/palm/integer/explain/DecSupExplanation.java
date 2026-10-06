@@ -10,30 +10,29 @@
 
 package choco.palm.integer.explain;
 
-import java.util.BitSet;
 import choco.Constraint;
 import choco.Problem;
 import choco.palm.integer.PalmIntVar;
+import java.util.BitSet;
 
 public class DecSupExplanation extends BoundExplanation {
-	public DecSupExplanation(
-		final Problem pb,
-		final BitSet explanation,
-		final int previousValue,
-		final PalmIntVar variable) {
-		super(pb);
-		this.explanation = explanation;
-		this.previousValue = previousValue;
-		this.variable = variable;
-	}
+  public DecSupExplanation(
+      final Problem pb,
+      final BitSet explanation,
+      final int previousValue,
+      final PalmIntVar variable) {
+    super(pb);
+    this.explanation = explanation;
+    this.previousValue = previousValue;
+    this.variable = variable;
+  }
 
-	public void postUndoRemoval(final Constraint removed) {
-		this.removeDependencies(removed);
-		this.variable.restoreSup(this.previousValue);
-	}
+  public void postUndoRemoval(final Constraint removed) {
+    this.removeDependencies(removed);
+    this.variable.restoreSup(this.previousValue);
+  }
 
-	public String toString() {
-		return this.variable + ".sup < " + this.previousValue + " because "
-				+ super.toString();
-	}
+  public String toString() {
+    return this.variable + ".sup < " + this.previousValue + " because " + super.toString();
+  }
 }

@@ -26,47 +26,43 @@
 package org.argouml.uml.ui;
 
 import java.awt.Color;
-
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 
 /**
- * An UMLList2 that implements 'jump' behaviour. As soon as the user
- * doubleclicks on an element in the list, that element is selected in
- * argouml. <p>
+ * An UMLList2 that implements 'jump' behaviour. As soon as the user doubleclicks on an element in
+ * the list, that element is selected in argouml.
  *
- * Also, it allows showing an icon with the text items in the list.<p>
+ * <p>Also, it allows showing an icon with the text items in the list.
  *
- * And, in case the listed item has no name, a default name is generated.
+ * <p>And, in case the listed item has no name, a default name is generated.
  *
  * @since Oct 2, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
 public class UMLLinkedList extends UMLList2 {
 
-    /**
-     * Constructor for UMLLinkedList.
-     *
-     * @param dataModel the data model
-     * @param showIcon true if an icon should be shown
-     */
-    public UMLLinkedList(ListModel dataModel,
-            boolean showIcon) {
-        super(dataModel, new UMLLinkedListCellRenderer(showIcon));
-        setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        setForeground(Color.blue);
-        setSelectionForeground(Color.blue.darker());
-        UMLLinkMouseListener mouseListener = new UMLLinkMouseListener(this);
-        addMouseListener(mouseListener);
-    }
+  /**
+   * Constructor for UMLLinkedList.
+   *
+   * @param dataModel the data model
+   * @param showIcon true if an icon should be shown
+   */
+  public UMLLinkedList(ListModel dataModel, boolean showIcon) {
+    super(dataModel, new UMLLinkedListCellRenderer(showIcon));
+    setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    setForeground(Color.blue);
+    setSelectionForeground(Color.blue.darker());
+    UMLLinkMouseListener mouseListener = new UMLLinkMouseListener(this);
+    addMouseListener(mouseListener);
+  }
 
-    /**
-     * The constructor.
-     *
-     * @param dataModel the data model
-     */
-    public UMLLinkedList(ListModel dataModel) {
-        this(dataModel, true);
-    }
-
+  /**
+   * The constructor.
+   *
+   * @param dataModel the data model
+   */
+  public UMLLinkedList(ListModel dataModel) {
+    this(dataModel, true);
+  }
 }

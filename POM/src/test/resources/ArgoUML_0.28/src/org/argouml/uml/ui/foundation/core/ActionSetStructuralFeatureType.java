@@ -25,64 +25,59 @@
 package org.argouml.uml.ui.foundation.core;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.Action;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLComboBox2;
 import org.tigris.gef.undo.UndoableAction;
+
 /**
  * @since Nov 3, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
 public class ActionSetStructuralFeatureType extends UndoableAction {
 
-    private static final ActionSetStructuralFeatureType SINGLETON =
-        new ActionSetStructuralFeatureType();
+  private static final ActionSetStructuralFeatureType SINGLETON =
+      new ActionSetStructuralFeatureType();
 
-    /**
-     * Constructor for ActionSetStructuralFeatureType.
-     */
-    protected ActionSetStructuralFeatureType() {
-        super(Translator.localize("Set"), null);
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize("Set"));
+  /** Constructor for ActionSetStructuralFeatureType. */
+  protected ActionSetStructuralFeatureType() {
+    super(Translator.localize("Set"), null);
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize("Set"));
+  }
+
+  /*
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    Object source = e.getSource();
+    Object oldClassifier = null;
+    Object newClassifier = null;
+    Object attr = null;
+    if (source instanceof UMLComboBox2) {
+      UMLComboBox2 box = (UMLComboBox2) source;
+      Object o = box.getTarget();
+      if (Model.getFacade().isAStructuralFeature(o)) {
+        attr = o;
+        oldClassifier = Model.getFacade().getType(attr);
+      }
+      o = box.getSelectedItem();
+      if (Model.getFacade().isAClassifier(o)) {
+        newClassifier = o;
+      }
     }
-
-    /*
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        Object source = e.getSource();
-        Object oldClassifier = null;
-        Object newClassifier = null;
-        Object attr = null;
-        if (source instanceof UMLComboBox2) {
-            UMLComboBox2 box = (UMLComboBox2) source;
-            Object o = box.getTarget();
-            if (Model.getFacade().isAStructuralFeature(o)) {
-                attr = o;
-                oldClassifier = Model.getFacade().getType(attr);
-            }
-            o = box.getSelectedItem();
-            if (Model.getFacade().isAClassifier(o)) {
-                newClassifier = o;
-            }
-        }
-        if (newClassifier != oldClassifier && attr != null) {
-            Model.getCoreHelper().setType(attr, newClassifier);
-        }
+    if (newClassifier != oldClassifier && attr != null) {
+      Model.getCoreHelper().setType(attr, newClassifier);
     }
+  }
 
-    /**
-     * @return Returns the sINGLETON.
-     */
-    public static ActionSetStructuralFeatureType getInstance() {
-        return SINGLETON;
-    }
-
+  /**
+   * @return Returns the sINGLETON.
+   */
+  public static ActionSetStructuralFeatureType getInstance() {
+    return SINGLETON;
+  }
 }

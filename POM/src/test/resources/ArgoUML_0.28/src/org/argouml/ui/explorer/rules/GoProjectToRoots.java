@@ -27,42 +27,36 @@ package org.argouml.ui.explorer.rules;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
-
 import org.argouml.i18n.Translator;
 import org.argouml.kernel.Project;
 
 /**
  * Rule for Project->Root (Top level) Elements.
- * 
- * TODO: As currently implemented it returns all top level elements in 
- * the model repository, not just those in a given project.  Since we
- * only support a single project at a time currently, these are equivalent
- * but this will need to be enhanced with additional bookkeeping in 
- * Project when we support multiple open projects - tfm.
  *
- * TODO: I changed it to get the roots from the project. It was showing
- * the profiles that were loaded but were not applied to the current project
- * - maurelio1234.
- * 
+ * <p>TODO: As currently implemented it returns all top level elements in the model repository, not
+ * just those in a given project. Since we only support a single project at a time currently, these
+ * are equivalent but this will need to be enhanced with additional bookkeeping in Project when we
+ * support multiple open projects - tfm.
+ *
+ * <p>TODO: I changed it to get the roots from the project. It was showing the profiles that were
+ * loaded but were not applied to the current project - maurelio1234.
+ *
  * @author Tom Morris <tfmorris@gmail.com>
  */
 public class GoProjectToRoots extends AbstractPerspectiveRule {
 
-    
-    public String getRuleName() {
-	return Translator.localize("misc.project.roots");
-    }
+  public String getRuleName() {
+    return Translator.localize("misc.project.roots");
+  }
 
-
-    public Collection getChildren(Object parent) {
-        if (parent instanceof Project) {
-            return ((Project) parent).getRoots();
-        }
-	return Collections.EMPTY_SET;
+  public Collection getChildren(Object parent) {
+    if (parent instanceof Project) {
+      return ((Project) parent).getRoots();
     }
+    return Collections.EMPTY_SET;
+  }
 
-    
-    public Set getDependencies(Object parent) {
-	return Collections.EMPTY_SET;
-    }
+  public Set getDependencies(Object parent) {
+    return Collections.EMPTY_SET;
+  }
 }

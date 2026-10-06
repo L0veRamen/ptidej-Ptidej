@@ -41,141 +41,141 @@ import java.awt.event.WindowEvent;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-
 import org.argouml.i18n.Translator;
 
 /**
- * Display System Information (JDK Version, JDK Vendor, etc).
- * A Copy to System Clipboard button is provided to help generate bug reports.
+ * Display System Information (JDK Version, JDK Vendor, etc). A Copy to System Clipboard button is
+ * provided to help generate bug reports.
  *
  * @author Eugenio Alvarez
  */
 public class SystemInfoDialog extends ArgoDialog {
 
-    /** Insets in pixels  */
-    private static final int INSET_PX = 3;
+  /** Insets in pixels */
+  private static final int INSET_PX = 3;
 
-    ////////////////////////////////////////////////////////////////
-    // instance varaibles
+  ////////////////////////////////////////////////////////////////
+  // instance varaibles
 
-    private JTextArea   info = new JTextArea();
-    private JButton     runGCButton = new JButton();
-    private JButton     copyButton = new JButton();
+  private JTextArea info = new JTextArea();
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  private JButton runGCButton = new JButton();
+  private JButton copyButton = new JButton();
 
-    /**
-     * The constructor.
-     *
-     */
-    public SystemInfoDialog() {
-	this((Frame) null, false);
-    }
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    /**
-     * The constructor.
-     *
-     * @param owner the parent frame
-     */
-    public SystemInfoDialog(Frame owner) {
-	this(owner, false);
-    }
+  /** The constructor. */
+  public SystemInfoDialog() {
+    this((Frame) null, false);
+  }
 
-    /**
-     * The constructor.
-     *
-     * @param owner the parent frame
-     * @param modal true if the dialog is modal
-     */
-    public SystemInfoDialog(Frame owner, boolean modal) {
-	super(owner, Translator.localize("dialog.title.system-information"),
-		ArgoDialog.CLOSE_OPTION, modal);
+  /**
+   * The constructor.
+   *
+   * @param owner the parent frame
+   */
+  public SystemInfoDialog(Frame owner) {
+    this(owner, false);
+  }
 
-	info.setEditable(false);
-	info.setMargin(new Insets(INSET_PX, INSET_PX, INSET_PX, INSET_PX));
+  /**
+   * The constructor.
+   *
+   * @param owner the parent frame
+   * @param modal true if the dialog is modal
+   */
+  public SystemInfoDialog(Frame owner, boolean modal) {
+    super(
+        owner,
+        Translator.localize("dialog.title.system-information"),
+        ArgoDialog.CLOSE_OPTION,
+        modal);
 
-	runGCButton.addActionListener(new ActionListener() {
-	    public void actionPerformed(ActionEvent e) {
-		runGCActionPerformed(e);
-	    }
-	});
-	copyButton.addActionListener(new ActionListener() {
-	    public void actionPerformed(ActionEvent e) {
-		copyActionPerformed(e);
-	    }
-	});
+    info.setEditable(false);
+    info.setMargin(new Insets(INSET_PX, INSET_PX, INSET_PX, INSET_PX));
 
-	nameButton(copyButton, "button.copy-to-clipboard");
-	nameButton(runGCButton, "button.run-gc");
-	addButton(copyButton, 0);
-	addButton(runGCButton, 0);
-	setContent(new JScrollPane(info));
-	updateInfo();
-	addWindowListener(new WindowAdapter() {
-	    public void windowActivated(WindowEvent e) {
-		updateInfo();
-	    } // end windowActivated()
-	});
-        pack();
-    } // end SystemInfoDialog()
+    runGCButton.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            runGCActionPerformed(e);
+          }
+        });
+    copyButton.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            copyActionPerformed(e);
+          }
+        });
 
-    /**
-     * @param e the action
-     */
-    private void runGCActionPerformed(ActionEvent e) {
-	Runtime.getRuntime().gc();
-	updateInfo();
-    } // end runGC_actionPerformed()
+    nameButton(copyButton, "button.copy-to-clipboard");
+    nameButton(runGCButton, "button.run-gc");
+    addButton(copyButton, 0);
+    addButton(runGCButton, 0);
+    setContent(new JScrollPane(info));
+    updateInfo();
+    addWindowListener(
+        new WindowAdapter() {
+          public void windowActivated(WindowEvent e) {
+            updateInfo();
+          } // end windowActivated()
+        });
+    pack();
+  } // end SystemInfoDialog()
 
-    /**
-     * @param e the action
-     */
-    private void copyActionPerformed(ActionEvent e) {
-	String infoText = info.getText();
-	StringSelection contents = new StringSelection(infoText);
-	Clipboard clipboard = getToolkit().getSystemClipboard();
-	clipboard.setContents(contents, defaultClipboardOwner);
-    } // end copy_actionPerformed()
+  /**
+   * @param e the action
+   */
+  private void runGCActionPerformed(ActionEvent e) {
+    Runtime.getRuntime().gc();
+    updateInfo();
+  } // end runGC_actionPerformed()
 
-    void updateInfo() {
-	StringBuffer s = new StringBuffer();
-	s.append("Java Version		: ");
-	s.append(System.getProperty("java.version", "") + "\n");
-	s.append("Java Vendor		: ");
-	s.append(System.getProperty("java.vendor", "") + "\n");
-	s.append("Java Vendor URL	: ");
-	s.append(System.getProperty("java.vendor.url", "") + "\n");
-	s.append("Java Home Directory	: ");
-	s.append(System.getProperty("java.home", "") + "\n");
-	s.append("Java Classpath		: ");
-	s.append(System.getProperty("java.class.path", "") + "\n");
-	s.append("Operation System	: ");
-	s.append(System.getProperty("os.name", ""));
-	s.append(", Version ");
-	s.append(System.getProperty("os.version", "") + "\n");
-	s.append("Architecture		: ");
-	s.append(System.getProperty("os.arch", "") + "\n");
-	s.append("User Name		: ");
-	s.append(System.getProperty("user.name", "") + "\n");
-	s.append("User Home Directory	: ");
-	s.append(System.getProperty("user.home", "") + "\n");
-	s.append("Current Directory	: ");
-	s.append(System.getProperty("user.dir", "") + "\n");
-	s.append("JVM Total Memory	: ");
-	s.append(String.valueOf(Runtime.getRuntime().totalMemory()) + "\n");
-	s.append("JVM Free Memory	: ");
-	s.append(String.valueOf(Runtime.getRuntime().freeMemory()) + "\n");
+  /**
+   * @param e the action
+   */
+  private void copyActionPerformed(ActionEvent e) {
+    String infoText = info.getText();
+    StringSelection contents = new StringSelection(infoText);
+    Clipboard clipboard = getToolkit().getSystemClipboard();
+    clipboard.setContents(contents, defaultClipboardOwner);
+  } // end copy_actionPerformed()
 
-	info.setText(s.toString());
-    } //end updateInfo()
+  void updateInfo() {
+    StringBuffer s = new StringBuffer();
+    s.append("Java Version		: ");
+    s.append(System.getProperty("java.version", "") + "\n");
+    s.append("Java Vendor		: ");
+    s.append(System.getProperty("java.vendor", "") + "\n");
+    s.append("Java Vendor URL	: ");
+    s.append(System.getProperty("java.vendor.url", "") + "\n");
+    s.append("Java Home Directory	: ");
+    s.append(System.getProperty("java.home", "") + "\n");
+    s.append("Java Classpath		: ");
+    s.append(System.getProperty("java.class.path", "") + "\n");
+    s.append("Operation System	: ");
+    s.append(System.getProperty("os.name", ""));
+    s.append(", Version ");
+    s.append(System.getProperty("os.version", "") + "\n");
+    s.append("Architecture		: ");
+    s.append(System.getProperty("os.arch", "") + "\n");
+    s.append("User Name		: ");
+    s.append(System.getProperty("user.name", "") + "\n");
+    s.append("User Home Directory	: ");
+    s.append(System.getProperty("user.home", "") + "\n");
+    s.append("Current Directory	: ");
+    s.append(System.getProperty("user.dir", "") + "\n");
+    s.append("JVM Total Memory	: ");
+    s.append(String.valueOf(Runtime.getRuntime().totalMemory()) + "\n");
+    s.append("JVM Free Memory	: ");
+    s.append(String.valueOf(Runtime.getRuntime().freeMemory()) + "\n");
 
-    private static ClipboardOwner defaultClipboardOwner =
-	new ClipboardObserver();
+    info.setText(s.toString());
+  } // end updateInfo()
 
-    static class ClipboardObserver implements ClipboardOwner {
-	public void lostOwnership(Clipboard clipboard, Transferable contents) {
-	}
-    }
+  private static ClipboardOwner defaultClipboardOwner = new ClipboardObserver();
 
+  static class ClipboardObserver implements ClipboardOwner {
+    public void lostOwnership(Clipboard clipboard, Transferable contents) {}
+  }
 } /* end class SystemInfoDialog */

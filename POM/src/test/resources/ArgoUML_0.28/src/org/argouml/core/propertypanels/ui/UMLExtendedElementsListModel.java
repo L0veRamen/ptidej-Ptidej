@@ -29,35 +29,30 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
 
 /**
  * The model for the list of extended elements of a stereotype.
- * 
+ *
  * @author michiel
  */
-class UMLExtendedElementsListModel
-    extends UMLModelElementListModel2 {
-    
-    /**
-     * Constructor for UMLExtendedElementsListModel.
-     */
-    public UMLExtendedElementsListModel() {
-        super("extendedElement");
-    }
-    
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (getTarget() != null) {
-            setAllElements(Model.getFacade().getExtendedElements(getTarget()));
-        }
-    }
-    
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().isAModelElement(element)
-            && Model.getFacade().getExtendedElements(getTarget())
-                .contains(element);
-    }
+class UMLExtendedElementsListModel extends UMLModelElementListModel2 {
 
+  /** Constructor for UMLExtendedElementsListModel. */
+  public UMLExtendedElementsListModel() {
+    super("extendedElement");
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (getTarget() != null) {
+      setAllElements(Model.getFacade().getExtendedElements(getTarget()));
+    }
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().isAModelElement(element)
+        && Model.getFacade().getExtendedElements(getTarget()).contains(element);
+  }
 }

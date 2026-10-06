@@ -25,65 +25,64 @@
 package org.argouml.argoeclipse.internal.ui.exportwizard;
 
 import java.io.File;
-
+import org.argouml.argoeclipse.internal.core.model.ArgoProject;
+import org.argouml.argoeclipse.internal.core.model.Register;
+import org.argouml.argoeclipse.internal.ui.wizard.ExternalResourcePage;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 
-import org.argouml.argoeclipse.internal.core.model.ArgoProject;
-import org.argouml.argoeclipse.internal.core.model.Register;
-import org.argouml.argoeclipse.internal.ui.wizard.ExternalResourcePage;
-
 /**
  * Deals with the export XMI wizard.
- * @author Bogdan Pistol 
+ *
+ * @author Bogdan Pistol
  */
 public class ExportXMI extends Wizard implements IExportWizard {
-    
-    private static final String EXTENSION = "xmi"; //$NON-NLS-1$
 
-    /**
-     * The wizard page.
-     */
-    private ExternalResourcePage page;
-     
-    /*
-     * @see org.eclipse.jface.wizard.Wizard#addPage(org.eclipse.jface.wizard.IWizardPage)
-     */
-    public void addPages() {
-        if (!Register.getInstance().isRegistered(Register.EDITOR)) {
-            MessageDialog.openError(getShell(),
-                    ExportWizardMessages.diagramWarningTitle,
-                    ExportWizardMessages.diagramWarningDescription);
-            return;
-        }
-        page = new ExternalResourcePage(
-                ExportWizardMessages.exportXMITitle,
-                ExportWizardMessages.exportXMIDescription,
-                new String[] {EXTENSION}, ExternalResourcePage.EXPORT_FILE);
-        addPage(page);
+  private static final String EXTENSION = "xmi"; // $NON-NLS-1$
+
+  /** The wizard page. */
+  private ExternalResourcePage page;
+
+  /*
+   * @see org.eclipse.jface.wizard.Wizard#addPage(org.eclipse.jface.wizard.IWizardPage)
+   */
+  public void addPages() {
+    if (!Register.getInstance().isRegistered(Register.EDITOR)) {
+      MessageDialog.openError(
+          getShell(),
+          ExportWizardMessages.diagramWarningTitle,
+          ExportWizardMessages.diagramWarningDescription);
+      return;
     }
+    page =
+        new ExternalResourcePage(
+            ExportWizardMessages.exportXMITitle,
+            ExportWizardMessages.exportXMIDescription,
+            new String[] {EXTENSION},
+            ExternalResourcePage.EXPORT_FILE);
+    addPage(page);
+  }
 
-    /*
-     * @see org.eclipse.jface.wizard.Wizard#performFinish()
-     */
-    public boolean performFinish() {
-        String result = page.getResourcePath();
-        if (result == null) {
-            return false;
-        }
-        ArgoProject.exportXMI(new File(result));
-        page.refreshResource();
-        return true;
+  /*
+   * @see org.eclipse.jface.wizard.Wizard#performFinish()
+   */
+  public boolean performFinish() {
+    String result = page.getResourcePath();
+    if (result == null) {
+      return false;
     }
+    ArgoProject.exportXMI(new File(result));
+    page.refreshResource();
+    return true;
+  }
 
-    /*
-     * @see org.eclipse.ui.IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
-     */
-    public void init(IWorkbench workbench, IStructuredSelection selection) {
-        setWindowTitle(ExportWizardMessages.exportWizardTitle);        
-    }
-
+  /*
+   * @see org.eclipse.ui.IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
+   */
+  public void init(IWorkbench workbench, IStructuredSelection selection) {
+    setWindowTitle(ExportWizardMessages.exportWizardTitle);
+  }
 }

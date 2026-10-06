@@ -24,6 +24,9 @@
 
 package org.argouml.argoeclipse.internal.ui.preferences;
 
+import org.argouml.argoeclipse.internal.ui.Activator;
+import org.argouml.i18n.Translator;
+import org.argouml.notation.Notation;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.PathEditor;
@@ -31,100 +34,90 @@ import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-import org.argouml.argoeclipse.internal.ui.Activator;
-import org.argouml.i18n.Translator;
-import org.argouml.notation.Notation;
-
 /**
- * This class represents a preference page that
- * is contributed to the Preferences dialog. By 
- * subclassing <samp>FieldEditorPreferencePage</samp>, we
- * can use the field support built into JFace that allows
- * us to create a page that is small and knows how to 
- * save, restore and apply itself.
- * <p>
- * This page is used to modify preferences only. They
- * are stored in the preference store that belongs to
- * the main plug-in class. That way, preferences can
- * be accessed directly via the preference store.
+ * This class represents a preference page that is contributed to the Preferences dialog. By
+ * subclassing <samp>FieldEditorPreferencePage</samp>, we can use the field support built into JFace
+ * that allows us to create a page that is small and knows how to save, restore and apply itself.
+ *
+ * <p>This page is used to modify preferences only. They are stored in the preference store that
+ * belongs to the main plug-in class. That way, preferences can be accessed directly via the
+ * preference store.
  */
+public class PreferencePageNotation extends FieldEditorPreferencePage
+    implements IWorkbenchPreferencePage {
 
-public class PreferencePageNotation
-	extends FieldEditorPreferencePage
-	implements IWorkbenchPreferencePage {
+  /** Construct a preference page. */
+  public PreferencePageNotation() {
+    super(GRID);
+    setPreferenceStore(Activator.getDefault().getPreferenceStore());
+    setDescription("ArgoEclipse notation preferences");
+  }
 
-    /**
-     * Construct a preference page.
-     */
-    public PreferencePageNotation() {
-        super(GRID);
-        setPreferenceStore(Activator.getDefault().getPreferenceStore());
-        setDescription("ArgoEclipse notation preferences");
-    }
+  /**
+   * Creates the field editors. Field editors are abstractions of the common GUI blocks needed to
+   * manipulate various types of preferences. Each field editor knows how to save and restore
+   * itself.
+   */
+  public void createFieldEditors() {
 
-    /**
-     * Creates the field editors. Field editors are abstractions of
-     * the common GUI blocks needed to manipulate various types
-     * of preferences. Each field editor knows how to save and
-     * restore itself.
-     */
-    public void createFieldEditors() {
-       
-        // Notations tab settings
-        addField(new RadioGroupFieldEditor(
-                PreferenceConstants.P_NOTATION_LANGUAGE,
-                Translator.localize("label.notation-language"),
-                1,
-                new String[][] {
-                    {"&UML", "uml"}, 
-                    {"&Java", "java"}
-                }, getFieldEditorParent()));
+    // Notations tab settings
+    addField(
+        new RadioGroupFieldEditor(
+            PreferenceConstants.P_NOTATION_LANGUAGE,
+            Translator.localize("label.notation-language"),
+            1,
+            new String[][] {
+              {"&UML", "uml"},
+              {"&Java", "java"}
+            },
+            getFieldEditorParent()));
 
-        addField(
-                new BooleanFieldEditor(
-                        Notation.KEY_USE_GUILLEMOTS.getKey(),
-                        Translator.localize("label.use-guillemots"), //$NON-NLS-1$
-                        getFieldEditorParent()));
-        addField(
-                new BooleanFieldEditor(
-                        Notation.KEY_SHOW_VISIBILITY.getKey(),
-                        Translator.localize("label.show-visibility"), //$NON-NLS-1$
-                        getFieldEditorParent()));
-        addField(
-                new BooleanFieldEditor(
-                        Notation.KEY_SHOW_MULTIPLICITY.getKey(),
-                        Translator.localize("label.show-multiplicity"), //$NON-NLS-1$
-                        getFieldEditorParent()));
-        addField(
-                new BooleanFieldEditor(
-                        Notation.KEY_SHOW_INITIAL_VALUE.getKey(),
-                        Translator.localize("label.show-initialvalue"), //$NON-NLS-1$
-                        getFieldEditorParent()));
-        addField(
-                new BooleanFieldEditor(
-                        Notation.KEY_SHOW_PROPERTIES.getKey(),
-                        Translator.localize("label.show-properties"), //$NON-NLS-1$
-                        getFieldEditorParent()));
-        addField(
-                new BooleanFieldEditor(
-                        Notation.KEY_SHOW_TYPES.getKey(),
-                        Translator.localize("label.show-types"), //$NON-NLS-1$
-                        getFieldEditorParent()));
-        addField(
-                new BooleanFieldEditor(
-                        Notation.KEY_SHOW_STEREOTYPES.getKey(),
-                        Translator.localize("label.show-stereotypes"), //$NON-NLS-1$
-                        getFieldEditorParent()));
-        
-        addField(new PathEditor(PreferenceConstants.P_SEARCH_PATH, 
-                "&Model search list:", "Model directory", 
-                getFieldEditorParent()));
-    }
+    addField(
+        new BooleanFieldEditor(
+            Notation.KEY_USE_GUILLEMOTS.getKey(),
+            Translator.localize("label.use-guillemots"), // $NON-NLS-1$
+            getFieldEditorParent()));
+    addField(
+        new BooleanFieldEditor(
+            Notation.KEY_SHOW_VISIBILITY.getKey(),
+            Translator.localize("label.show-visibility"), // $NON-NLS-1$
+            getFieldEditorParent()));
+    addField(
+        new BooleanFieldEditor(
+            Notation.KEY_SHOW_MULTIPLICITY.getKey(),
+            Translator.localize("label.show-multiplicity"), // $NON-NLS-1$
+            getFieldEditorParent()));
+    addField(
+        new BooleanFieldEditor(
+            Notation.KEY_SHOW_INITIAL_VALUE.getKey(),
+            Translator.localize("label.show-initialvalue"), // $NON-NLS-1$
+            getFieldEditorParent()));
+    addField(
+        new BooleanFieldEditor(
+            Notation.KEY_SHOW_PROPERTIES.getKey(),
+            Translator.localize("label.show-properties"), // $NON-NLS-1$
+            getFieldEditorParent()));
+    addField(
+        new BooleanFieldEditor(
+            Notation.KEY_SHOW_TYPES.getKey(),
+            Translator.localize("label.show-types"), // $NON-NLS-1$
+            getFieldEditorParent()));
+    addField(
+        new BooleanFieldEditor(
+            Notation.KEY_SHOW_STEREOTYPES.getKey(),
+            Translator.localize("label.show-stereotypes"), // $NON-NLS-1$
+            getFieldEditorParent()));
 
-    /**
-     * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
-     */
-    public void init(IWorkbench workbench) {
-    }
+    addField(
+        new PathEditor(
+            PreferenceConstants.P_SEARCH_PATH,
+            "&Model search list:",
+            "Model directory",
+            getFieldEditorParent()));
+  }
 
+  /**
+   * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
+   */
+  public void init(IWorkbench workbench) {}
 }

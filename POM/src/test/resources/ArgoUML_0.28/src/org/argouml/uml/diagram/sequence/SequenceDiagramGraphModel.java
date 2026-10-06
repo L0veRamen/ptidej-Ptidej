@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.List;
-
 import org.apache.log4j.Logger;
 import org.argouml.model.DeleteInstanceEvent;
 import org.argouml.model.Model;
@@ -44,439 +43,388 @@ import org.tigris.gef.base.Mode;
 import org.tigris.gef.base.ModeManager;
 
 /**
- * This class defines a bridge between the UML meta-model
- * representation of the design and the GraphModel interface used by
- * GEF.  This class handles only UML Sequence Diagrams.
+ * This class defines a bridge between the UML meta-model representation of the design and the
+ * GraphModel interface used by GEF. This class handles only UML Sequence Diagrams.
  *
  * @author 5eichler@informatik.uni-hamburg.de
  */
-public class SequenceDiagramGraphModel
-    extends UMLMutableGraphSupport
+public class SequenceDiagramGraphModel extends UMLMutableGraphSupport
     implements VetoableChangeListener, PropertyChangeListener {
-    
-    /**
-     * Logger.
-     */
-    private static final Logger LOG =
-        Logger.getLogger(SequenceDiagramGraphModel.class);
 
-    ////////////////////////////////////////////////////////////////
-    // instance variables
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(SequenceDiagramGraphModel.class);
 
-    /**
-     * The collaboration this sequence diagram belongs too.
-     */
-    private Object collaboration;
+  ////////////////////////////////////////////////////////////////
+  // instance variables
 
-    /**
-     * The interaction that is shown on the sequence diagram.
-     */
-    private Object interaction;
+  /** The collaboration this sequence diagram belongs too. */
+  private Object collaboration;
 
+  /** The interaction that is shown on the sequence diagram. */
+  private Object interaction;
 
-    ////////////////////////////////////////////////////////////////
-    // GraphModel implementation
+  ////////////////////////////////////////////////////////////////
+  // GraphModel implementation
 
-    /**
-     * Default constructor. Constructs a model and a collaboration in
-     * the root of the current project.
-     */
-    public SequenceDiagramGraphModel() {
+  /**
+   * Default constructor. Constructs a model and a collaboration in the root of the current project.
+   */
+  public SequenceDiagramGraphModel() {}
+
+  /*
+   * @see org.tigris.gef.graph.GraphModel#getPorts(java.lang.Object)
+   */
+  public List getPorts(Object nodeOrEdge) {
+    List ports = new ArrayList();
+    if (Model.getFacade().isAClassifierRole(nodeOrEdge)) {
+      ports.addAll(Model.getFacade().getReceivedMessages(nodeOrEdge));
+      ports.addAll(Model.getFacade().getSentMessages(nodeOrEdge));
+    } else if (Model.getFacade().isAMessage(nodeOrEdge)) {
+      ports.add(Model.getFacade().getSender(nodeOrEdge));
+      ports.add(Model.getFacade().getReceiver(nodeOrEdge));
+    }
+    return ports;
+  }
+
+  /*
+   * @see org.tigris.gef.graph.BaseGraphModel#getOwner(java.lang.Object)
+   */
+  public Object getOwner(Object port) {
+    return port;
+  }
+
+  /*
+   * @see org.tigris.gef.graph.GraphModel#getInEdges(java.lang.Object)
+   */
+  public List getInEdges(Object port) {
+    List res = new ArrayList();
+    if (Model.getFacade().isAClassifierRole(port)) {
+      res.addAll(Model.getFacade().getSentMessages(port));
+    }
+    return res;
+  }
+
+  /*
+   * @see org.tigris.gef.graph.GraphModel#getOutEdges(java.lang.Object)
+   */
+  public List getOutEdges(Object port) {
+    List res = new ArrayList();
+    if (Model.getFacade().isAClassifierRole(port)) {
+      res.addAll(Model.getFacade().getReceivedMessages(port));
+    }
+    return res;
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // MutableGraphModel implementation
+
+  /*
+   * @see org.tigris.gef.graph.MutableGraphModel#canAddNode(java.lang.Object)
+   */
+  public boolean canAddNode(Object node) {
+    if (node == null) {
+      return false;
+    }
+    return !getNodes().contains(node)
+        && Model.getFacade().isAModelElement(node)
+        && Model.getFacade().getNamespace(node) == getCollaboration();
+  }
+
+  /*
+   * @see org.tigris.gef.graph.MutableGraphModel#canAddEdge(java.lang.Object)
+   */
+  public boolean canAddEdge(Object edge) {
+    if (edge == null) {
+      return false;
     }
 
-    /*
-     * @see org.tigris.gef.graph.GraphModel#getPorts(java.lang.Object)
-     */
-    public List getPorts(Object nodeOrEdge) {
-        List ports = new ArrayList();
-        if (Model.getFacade().isAClassifierRole(nodeOrEdge)) {
-            ports.addAll(Model.getFacade().getReceivedMessages(nodeOrEdge));
-            ports.addAll(Model.getFacade().getSentMessages(nodeOrEdge));
-        } else if (Model.getFacade().isAMessage(nodeOrEdge)) {
-            ports.add(Model.getFacade().getSender(nodeOrEdge));
-            ports.add(Model.getFacade().getReceiver(nodeOrEdge));
-        }
-        return ports;
+    if (getEdges().contains(edge)) {
+      return false;
     }
 
-    /*
-     * @see org.tigris.gef.graph.BaseGraphModel#getOwner(java.lang.Object)
-     */
-    public Object getOwner(Object port) {
-        return port;
+    Object end0 = null;
+    Object end1 = null;
+
+    if (Model.getFacade().isAMessage(edge)) {
+      end0 = Model.getFacade().getSender(edge);
+      end1 = Model.getFacade().getReceiver(edge);
+    } else if (edge instanceof CommentEdge) {
+      end0 = ((CommentEdge) edge).getSource();
+      end1 = ((CommentEdge) edge).getDestination();
+    } else {
+      return false;
     }
 
-    /*
-     * @see org.tigris.gef.graph.GraphModel#getInEdges(java.lang.Object)
-     */
-    public List getInEdges(Object port) {
-        List res = new ArrayList();
-        if (Model.getFacade().isAClassifierRole(port)) {
-            res.addAll(Model.getFacade().getSentMessages(port));
-        }
-        return res;
+    // Both ends must be defined and nodes that are on the graph already.
+    if (end0 == null || end1 == null) {
+      LOG.error("Edge rejected. Its ends are not attached to anything");
+      return false;
     }
 
-    /*
-     * @see org.tigris.gef.graph.GraphModel#getOutEdges(java.lang.Object)
-     */
-    public List getOutEdges(Object port) {
-        List res = new ArrayList();
-        if (Model.getFacade().isAClassifierRole(port)) {
-            res.addAll(Model.getFacade().getReceivedMessages(port));
-        }
-        return res;
+    if (!containsNode(end0) && !containsEdge(end0)) {
+      LOG.error(
+          "Edge rejected. Its source end is attached to "
+              + end0
+              + " but this is not in the graph model");
+      return false;
+    }
+    if (!containsNode(end1) && !containsEdge(end1)) {
+      LOG.error(
+          "Edge rejected. Its destination end is attached to "
+              + end1
+              + " but this is not in the graph model");
+      return false;
     }
 
-    ////////////////////////////////////////////////////////////////
-    // MutableGraphModel implementation
+    return true;
+  }
 
-    /*
-     * @see org.tigris.gef.graph.MutableGraphModel#canAddNode(java.lang.Object)
-     */
-    public boolean canAddNode(Object node) {
-        if (node == null) {
-            return false;
-        }
-        return !getNodes().contains(node)
-                && Model.getFacade().isAModelElement(node)
-                && Model.getFacade().getNamespace(node) == getCollaboration();
+  /*
+   * @see org.tigris.gef.graph.MutableGraphModel#addNode(java.lang.Object)
+   */
+  public void addNode(Object node) {
+    if (canAddNode(node)) {
+      getNodes().add(node);
+      fireNodeAdded(node);
+    }
+  }
+
+  /*
+   * @see org.tigris.gef.graph.MutableGraphModel#addEdge(java.lang.Object)
+   */
+  public void addEdge(Object edge) {
+    if (canAddEdge(edge)) {
+      getEdges().add(edge);
+      fireEdgeAdded(edge);
+    }
+  }
+
+  /*
+   * @see org.tigris.gef.graph.MutableGraphModel#canConnect( java.lang.Object,
+   *      java.lang.Object)
+   */
+  public boolean canConnect(Object fromP, Object toP, Object edgeType) {
+
+    if (edgeType == CommentEdge.class
+        && (Model.getFacade().isAComment(fromP) || Model.getFacade().isAComment(toP))
+        && !(Model.getFacade().isAComment(fromP) && Model.getFacade().isAComment(toP))) {
+      // We can connect if we get a comment edge and one (only one) node
+      // that is a comment.
+      return true;
     }
 
-    /*
-     * @see org.tigris.gef.graph.MutableGraphModel#canAddEdge(java.lang.Object)
-     */
-    public boolean canAddEdge(Object edge) {
-        if (edge == null) {
-            return false;
-        }
-
-        if (getEdges().contains(edge)) {
-            return false;
-        }
-
-        Object end0 = null;
-        Object end1 = null;
-
-        if (Model.getFacade().isAMessage(edge)) {
-            end0 = Model.getFacade().getSender(edge);
-            end1 = Model.getFacade().getReceiver(edge);
-        } else if (edge instanceof CommentEdge) {
-            end0 = ((CommentEdge) edge).getSource();
-            end1 = ((CommentEdge) edge).getDestination();
-        } else {
-            return false;
-        }
-        
-        // Both ends must be defined and nodes that are on the graph already.
-        if (end0 == null || end1 == null) {
-            LOG.error("Edge rejected. Its ends are not attached to anything");
-            return false;
-        }
-
-        if (!containsNode(end0) && !containsEdge(end0)) {
-            LOG.error("Edge rejected. Its source end is attached to "
-                    + end0
-                    + " but this is not in the graph model");
-            return false;
-        }
-        if (!containsNode(end1) && !containsEdge(end1)) {
-            LOG.error("Edge rejected. Its destination end is attached to "
-                    + end1
-                    + " but this is not in the graph model");
-            return false;
-        }
-
-        return true;
+    if (!(fromP instanceof MessageNode) || !(toP instanceof MessageNode)) {
+      return false;
+    }
+    if (fromP == toP) {
+      return false;
     }
 
-    /*
-     * @see org.tigris.gef.graph.MutableGraphModel#addNode(java.lang.Object)
-     */
-    public void addNode(Object node) {
-        if (canAddNode(node)) {
-            getNodes().add(node);
-            fireNodeAdded(node);
-        }
+    MessageNode nodeFrom = (MessageNode) fromP;
+    MessageNode nodeTo = (MessageNode) toP;
 
-    }
-
-    /*
-     * @see org.tigris.gef.graph.MutableGraphModel#addEdge(java.lang.Object)
-     */
-    public void addEdge(Object edge) {
-        if (canAddEdge(edge)) {
-            getEdges().add(edge);
-            fireEdgeAdded(edge);
-        }
-    }
-
-    /*
-     * @see org.tigris.gef.graph.MutableGraphModel#canConnect( java.lang.Object,
-     *      java.lang.Object)
-     */
-    public boolean canConnect(Object fromP, Object toP, Object edgeType) {
-
-        if (edgeType == CommentEdge.class
-                && (Model.getFacade().isAComment(fromP)
-                        || Model.getFacade().isAComment(toP))
-                && !(Model.getFacade().isAComment(fromP)
-                        && Model.getFacade().isAComment(toP))) {
-            // We can connect if we get a comment edge and one (only one) node
-            // that is a comment.
-            return true;
-        }
-
-
-        if (!(fromP instanceof MessageNode) || !(toP instanceof MessageNode)) {
-            return false;
-        }
-        if (fromP == toP) {
-            return false;
-        }
-
-        MessageNode nodeFrom = (MessageNode) fromP;
-        MessageNode nodeTo = (MessageNode) toP;
-
-        if (nodeFrom.getFigClassifierRole() == nodeTo.getFigClassifierRole()) {
-            FigClassifierRole fig = nodeFrom.getFigClassifierRole();
-            if (fig.getIndexOf(nodeFrom) >= fig.getIndexOf(nodeTo)) {
-                return false;
-            }
-        }
-
-        Editor curEditor = Globals.curEditor();
-        ModeManager modeManager = curEditor.getModeManager();
-        Mode mode = modeManager.top();
-        Hashtable args = mode.getArgs();
-        Object actionType = args.get("action");
-        if (Model.getMetaTypes().getCallAction().equals(actionType)) {
-            return nodeFrom.canCall() && nodeTo.canBeCalled();
-        } else if (Model.getMetaTypes().getReturnAction().equals(actionType)) {
-            return nodeTo.canBeReturnedTo()
-                && nodeFrom.canReturn(nodeTo.getClassifierRole());
-        } else if (Model.getMetaTypes().getCreateAction().equals(actionType)) {
-            if (nodeFrom.getFigClassifierRole()
-                    == nodeTo.getFigClassifierRole()) {
-                return false;
-            }
-            return nodeFrom.canCreate() && nodeTo.canBeCreated();
-        } else if (Model.getMetaTypes().getDestroyAction().equals(actionType)) {
-            return nodeFrom.canDestroy() && nodeTo.canBeDestroyed();
-        }
-        // not supported action
+    if (nodeFrom.getFigClassifierRole() == nodeTo.getFigClassifierRole()) {
+      FigClassifierRole fig = nodeFrom.getFigClassifierRole();
+      if (fig.getIndexOf(nodeFrom) >= fig.getIndexOf(nodeTo)) {
         return false;
+      }
     }
 
-    /**
-     * Creates a link based on the given from and toPort. The fromPort
-     * should always point to a MessageCoordinates instance. The toPort
-     * can point to a MessageCoordinates instance or to a Object
-     * instance. On a sequence diagram you can only draw Messages. So
-     * other edgeClasses then links are not supported.
-     * 
-     * {@inheritDoc}
-     * @see org.tigris.gef.graph.MutableGraphModel#connect(
-     *          Object, Object, Class)
-     */
-    @Override
-    public Object connect(Object fromPort, Object toPort, Object edgeType) {
-        if (!canConnect(fromPort, toPort, edgeType)) {
-            return null;
-        }
-        if (edgeType == CommentEdge.class) {
-            return super.connect(fromPort, toPort, edgeType);
-        }
-        Object edge = null;
-        Object fromObject = null;
-        Object toObject = null;
-        Object action = null;
-        if (Model.getMetaTypes().getMessage().equals(edgeType)) {
-            Editor curEditor = Globals.curEditor();
-            ModeManager modeManager = curEditor.getModeManager();
-            Mode mode = modeManager.top();
-            Hashtable args = mode.getArgs();
-            Object actionType = args.get("action");
-            if (Model.getMetaTypes().getCallAction().equals(actionType)) {
-                if (fromPort instanceof MessageNode
-                    && toPort instanceof MessageNode) {
-                    fromObject = ((MessageNode) fromPort).getClassifierRole();
-                    toObject = ((MessageNode) toPort).getClassifierRole();
+    Editor curEditor = Globals.curEditor();
+    ModeManager modeManager = curEditor.getModeManager();
+    Mode mode = modeManager.top();
+    Hashtable args = mode.getArgs();
+    Object actionType = args.get("action");
+    if (Model.getMetaTypes().getCallAction().equals(actionType)) {
+      return nodeFrom.canCall() && nodeTo.canBeCalled();
+    } else if (Model.getMetaTypes().getReturnAction().equals(actionType)) {
+      return nodeTo.canBeReturnedTo() && nodeFrom.canReturn(nodeTo.getClassifierRole());
+    } else if (Model.getMetaTypes().getCreateAction().equals(actionType)) {
+      if (nodeFrom.getFigClassifierRole() == nodeTo.getFigClassifierRole()) {
+        return false;
+      }
+      return nodeFrom.canCreate() && nodeTo.canBeCreated();
+    } else if (Model.getMetaTypes().getDestroyAction().equals(actionType)) {
+      return nodeFrom.canDestroy() && nodeTo.canBeDestroyed();
+    }
+    // not supported action
+    return false;
+  }
 
-                    action =
-                        Model.getCommonBehaviorFactory()
-                            .createCallAction();
-                }
-            } else if (Model.getMetaTypes().getCreateAction()
-                    .equals(actionType)) {
-                if (fromPort instanceof MessageNode
-                    && toPort instanceof MessageNode) {
-                    fromObject = ((MessageNode) fromPort).getClassifierRole();
-                    toObject = ((MessageNode) toPort).getClassifierRole();
-                    action =
-                        Model.getCommonBehaviorFactory()
-                            .createCreateAction();
-                }
-            } else if (Model.getMetaTypes().getReturnAction()
-                    .equals(actionType)) {
-                if (fromPort instanceof MessageNode
-                    && toPort instanceof MessageNode) {
-                    fromObject = ((MessageNode) fromPort).getClassifierRole();
-                    toObject = ((MessageNode) toPort).getClassifierRole();
-                    action =
-                        Model.getCommonBehaviorFactory()
-                            .createReturnAction();
+  /**
+   * Creates a link based on the given from and toPort. The fromPort should always point to a
+   * MessageCoordinates instance. The toPort can point to a MessageCoordinates instance or to a
+   * Object instance. On a sequence diagram you can only draw Messages. So other edgeClasses then
+   * links are not supported.
+   *
+   * <p>{@inheritDoc}
+   *
+   * @see org.tigris.gef.graph.MutableGraphModel#connect( Object, Object, Class)
+   */
+  @Override
+  public Object connect(Object fromPort, Object toPort, Object edgeType) {
+    if (!canConnect(fromPort, toPort, edgeType)) {
+      return null;
+    }
+    if (edgeType == CommentEdge.class) {
+      return super.connect(fromPort, toPort, edgeType);
+    }
+    Object edge = null;
+    Object fromObject = null;
+    Object toObject = null;
+    Object action = null;
+    if (Model.getMetaTypes().getMessage().equals(edgeType)) {
+      Editor curEditor = Globals.curEditor();
+      ModeManager modeManager = curEditor.getModeManager();
+      Mode mode = modeManager.top();
+      Hashtable args = mode.getArgs();
+      Object actionType = args.get("action");
+      if (Model.getMetaTypes().getCallAction().equals(actionType)) {
+        if (fromPort instanceof MessageNode && toPort instanceof MessageNode) {
+          fromObject = ((MessageNode) fromPort).getClassifierRole();
+          toObject = ((MessageNode) toPort).getClassifierRole();
 
-                }
-            } else if (Model.getMetaTypes().getDestroyAction()
-                    .equals(actionType)) {
-                if (fromPort instanceof MessageNode
-                    && toPort instanceof MessageNode) {
-                    fromObject = ((MessageNode) fromPort).getClassifierRole();
-                    toObject = ((MessageNode) fromPort).getClassifierRole();
-                    action =
-                        Model.getCommonBehaviorFactory()
-                            .createDestroyAction();
-                }
-            } else if (Model.getMetaTypes().getSendAction()
-                    .equals(actionType)) {
-                // no implementation, not of importance to sequence diagrams
-            } else if (Model.getMetaTypes().getTerminateAction()
-                    .equals(actionType)) {
-                // not implemented yet
-            }
+          action = Model.getCommonBehaviorFactory().createCallAction();
         }
-        if (fromObject != null && toObject != null && action != null) {
-            Object associationRole =
-                Model.getCollaborationsHelper().getAssociationRole(
-                    fromObject,
-                    toObject);
-            if (associationRole == null) {
-                associationRole =
-                    Model.getCollaborationsFactory().buildAssociationRole(
-                            fromObject, toObject);
-            }
-
-            Object message =
-                Model.getCollaborationsFactory().buildMessage(
-                    getInteraction(),
-                    associationRole);
-            if (action != null) {
-                Model.getCollaborationsHelper().setAction(message, action);
-                Model.getCoreHelper().setNamespace(action, getCollaboration());
-            }
-            Model.getCollaborationsHelper()
-                .setSender(message, fromObject);
-            Model.getCommonBehaviorHelper()
-                .setReceiver(message, toObject);
-
-            addEdge(message);
-            edge = message;
+      } else if (Model.getMetaTypes().getCreateAction().equals(actionType)) {
+        if (fromPort instanceof MessageNode && toPort instanceof MessageNode) {
+          fromObject = ((MessageNode) fromPort).getClassifierRole();
+          toObject = ((MessageNode) toPort).getClassifierRole();
+          action = Model.getCommonBehaviorFactory().createCreateAction();
         }
-        if (edge == null) {
-            LOG.debug("Incorrect edge");
+      } else if (Model.getMetaTypes().getReturnAction().equals(actionType)) {
+        if (fromPort instanceof MessageNode && toPort instanceof MessageNode) {
+          fromObject = ((MessageNode) fromPort).getClassifierRole();
+          toObject = ((MessageNode) toPort).getClassifierRole();
+          action = Model.getCommonBehaviorFactory().createReturnAction();
         }
-        return edge;
+      } else if (Model.getMetaTypes().getDestroyAction().equals(actionType)) {
+        if (fromPort instanceof MessageNode && toPort instanceof MessageNode) {
+          fromObject = ((MessageNode) fromPort).getClassifierRole();
+          toObject = ((MessageNode) fromPort).getClassifierRole();
+          action = Model.getCommonBehaviorFactory().createDestroyAction();
+        }
+      } else if (Model.getMetaTypes().getSendAction().equals(actionType)) {
+        // no implementation, not of importance to sequence diagrams
+      } else if (Model.getMetaTypes().getTerminateAction().equals(actionType)) {
+        // not implemented yet
+      }
+    }
+    if (fromObject != null && toObject != null && action != null) {
+      Object associationRole =
+          Model.getCollaborationsHelper().getAssociationRole(fromObject, toObject);
+      if (associationRole == null) {
+        associationRole =
+            Model.getCollaborationsFactory().buildAssociationRole(fromObject, toObject);
+      }
 
+      Object message =
+          Model.getCollaborationsFactory().buildMessage(getInteraction(), associationRole);
+      if (action != null) {
+        Model.getCollaborationsHelper().setAction(message, action);
+        Model.getCoreHelper().setNamespace(action, getCollaboration());
+      }
+      Model.getCollaborationsHelper().setSender(message, fromObject);
+      Model.getCommonBehaviorHelper().setReceiver(message, toObject);
+
+      addEdge(message);
+      edge = message;
+    }
+    if (edge == null) {
+      LOG.debug("Incorrect edge");
+    }
+    return edge;
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // VetoableChangeListener implementation
+
+  /*
+   * @see java.beans.VetoableChangeListener#vetoableChange(java.beans.PropertyChangeEvent)
+   */
+  public void vetoableChange(PropertyChangeEvent pce) {
+    // throws PropertyVetoException
+
+    if ("ownedElement".equals(pce.getPropertyName())) {
+      List oldOwned = (List) pce.getOldValue();
+      Object eo = pce.getNewValue();
+      Object me = Model.getFacade().getModelElement(eo);
+      if (oldOwned.contains(eo)) {
+        LOG.debug("model removed " + me);
+        if (Model.getFacade().isAClassifierRole(me)) {
+          removeNode(me);
+        }
+        if (Model.getFacade().isAMessage(me)) {
+          removeEdge(me);
+        }
+      } else {
+        LOG.debug("model added " + me);
+      }
+    }
+  }
+
+  /**
+   * Gets the collaboration that is shown on the sequence diagram.
+   *
+   * <p>
+   *
+   * @return the collaboration of the diagram.
+   */
+  public Object getCollaboration() {
+    if (collaboration == null) {
+      collaboration = Model.getCollaborationsFactory().buildCollaboration(getProject().getRoot());
     }
 
-    ////////////////////////////////////////////////////////////////
-    // VetoableChangeListener implementation
+    return collaboration;
+  }
 
-    /*
-     * @see java.beans.VetoableChangeListener#vetoableChange(java.beans.PropertyChangeEvent)
-     */
-    public void vetoableChange(PropertyChangeEvent pce) {
-        //throws PropertyVetoException
-
-        if ("ownedElement".equals(pce.getPropertyName())) {
-            List oldOwned = (List) pce.getOldValue();
-            Object eo = pce.getNewValue();
-            Object me = Model.getFacade().getModelElement(eo);
-            if (oldOwned.contains(eo)) {
-                LOG.debug("model removed " + me);
-                if (Model.getFacade().isAClassifierRole(me)) {
-                    removeNode(me);
-                }
-                if (Model.getFacade().isAMessage(me)) {
-                    removeEdge(me);
-                }
-            } else {
-                LOG.debug("model added " + me);
-            }
-        }
+  /**
+   * Sets the collaboration that is shown at the sequence diagram.
+   *
+   * @param c the collaboration
+   */
+  public void setCollaboration(Object c) {
+    collaboration = c;
+    Collection interactions = Model.getFacade().getInteractions(c);
+    if (!interactions.isEmpty()) {
+      interaction = interactions.iterator().next();
     }
+  }
 
-    /**
-     * Gets the collaboration that is shown on the sequence diagram.<p>
-     *
-     * @return the collaboration of the diagram.
-     */
-    public Object getCollaboration() {
-        if (collaboration == null) {
-            collaboration =
-                Model.getCollaborationsFactory().buildCollaboration(
-                        getProject().getRoot());
-        }
-
-        return collaboration;
+  private Object getInteraction() {
+    if (interaction == null) {
+      interaction = Model.getCollaborationsFactory().buildInteraction(collaboration);
+      Model.getPump().addModelEventListener(this, interaction);
     }
+    return interaction;
+  }
 
-    /**
-     * Sets the collaboration that is shown at the sequence diagram.
-     *
-     * @param c the collaboration
-     */
-    public void setCollaboration(Object c) {
-        collaboration = c;
-        Collection interactions = Model.getFacade().getInteractions(c);
-        if (!interactions.isEmpty()) {
-            interaction = interactions.iterator().next();
-        }
+  /*
+   * @see org.argouml.uml.diagram.UMLMutableGraphSupport#getHomeModel()
+   */
+  public Object getHomeModel() {
+    return getCollaboration();
+  }
+
+  public void setHomeModel(Object namespace) {
+    if (!Model.getFacade().isANamespace(namespace)) {
+      throw new IllegalArgumentException(
+          "A sequence diagram home model must be a namespace, " + "received a " + namespace);
     }
+    setCollaboration(namespace);
+    super.setHomeModel(namespace);
+  }
 
-    private Object getInteraction() {
-        if (interaction == null) {
-            interaction =
-                Model.getCollaborationsFactory().buildInteraction(
-                    collaboration);
-            Model.getPump().addModelEventListener(this, interaction);
-        }
-        return interaction;
+  /** The UID. */
+  private static final long serialVersionUID = -3799402191353570488L;
+
+  public void propertyChange(PropertyChangeEvent evt) {
+
+    if (evt instanceof DeleteInstanceEvent && evt.getSource() == interaction) {
+      Model.getPump().removeModelEventListener(this, interaction);
+      interaction = null;
     }
+    // TODO Auto-generated method stub
 
-    /*
-     * @see org.argouml.uml.diagram.UMLMutableGraphSupport#getHomeModel()
-     */
-    public Object getHomeModel() {
-        return getCollaboration();
-    }
-
-
-    public void setHomeModel(Object namespace) {
-        if (!Model.getFacade().isANamespace(namespace)) {
-            throw new IllegalArgumentException(
-                    "A sequence diagram home model must be a namespace, "
-                    + "received a "
-                    + namespace);
-        }
-        setCollaboration(namespace);
-        super.setHomeModel(namespace);
-    }
-
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -3799402191353570488L;
-
-    public void propertyChange(PropertyChangeEvent evt) {
-        
-        if (evt instanceof DeleteInstanceEvent
-                && evt.getSource() == interaction) {
-            Model.getPump().removeModelEventListener(this, interaction);
-            interaction = null;
-        }
-        // TODO Auto-generated method stub
-        
-    }
+  }
 }

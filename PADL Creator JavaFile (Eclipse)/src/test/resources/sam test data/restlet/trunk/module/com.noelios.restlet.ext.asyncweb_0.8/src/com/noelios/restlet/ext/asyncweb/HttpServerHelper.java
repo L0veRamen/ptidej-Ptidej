@@ -29,41 +29,35 @@ import org.safehaus.asyncweb.transport.nio.NIOTransport;
 
 /**
  * AsyncWeb HTTP server connector.
- * 
- * This implementation passes by all of AsyncWeb ServiceContainer, 
- * HttpServiceHandler etc. mechanisms and implements a 
- * {@link com.noelios.restlet.http.HttpServerHelper} and a 
- * {@link org.safehaus.asyncweb.container.ServiceContainer} directly. It takes
- * care about setting up a {@link org.safehaus.asyncweb.transport.nio.NIOTransport}.
- * <p>
- * Note: This implementation is not usable inside an AsyncWeb standard 
- * environment because it represents a container and not a handler; it takes
- * full control over the container lifecycle.
- * </p>
- * 
+ *
+ * <p>This implementation passes by all of AsyncWeb ServiceContainer, HttpServiceHandler etc.
+ * mechanisms and implements a {@link com.noelios.restlet.http.HttpServerHelper} and a {@link
+ * org.safehaus.asyncweb.container.ServiceContainer} directly. It takes care about setting up a
+ * {@link org.safehaus.asyncweb.transport.nio.NIOTransport}.
+ *
+ * <p>Note: This implementation is not usable inside an AsyncWeb standard environment because it
+ * represents a container and not a handler; it takes full control over the container lifecycle.
+ *
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  */
-public class HttpServerHelper extends AsyncWebServerHelper
-{
-	/**
-	 * Constructor.
-	 * @param server The server to help.
-	 */
-	public HttpServerHelper(Server server)
-	{
-		super(server);
-		getSupportedProtocols().add(Protocol.HTTP);
-	}
+public class HttpServerHelper extends AsyncWebServerHelper {
+  /**
+   * Constructor.
+   *
+   * @param server The server to help.
+   */
+  public HttpServerHelper(Server server) {
+    super(server);
+    getSupportedProtocols().add(Protocol.HTTP);
+  }
 
-	/** Starts the Connector. */
-	public void start() throws ContainerLifecycleException
-	{
-		NIOTransport nio = new NIOTransport();
-		nio.setPort(getServer().getPort());
-		nio.setServiceContainer(this);
-		nio.setIoWorkerCount(getIoWorkerCount());
-		setTransport(nio);
-		super.start();
-	}
-
+  /** Starts the Connector. */
+  public void start() throws ContainerLifecycleException {
+    NIOTransport nio = new NIOTransport();
+    nio.setPort(getServer().getPort());
+    nio.setServiceContainer(this);
+    nio.setIoWorkerCount(getIoWorkerCount());
+    setTransport(nio);
+    super.start();
+  }
 }

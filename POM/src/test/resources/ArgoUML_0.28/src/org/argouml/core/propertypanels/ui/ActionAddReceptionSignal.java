@@ -27,7 +27,6 @@ package org.argouml.core.propertypanels.ui;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import org.argouml.i18n.Translator;
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.Model;
@@ -35,47 +34,39 @@ import org.argouml.uml.ui.AbstractActionAddModelElement2;
 
 /**
  * This Action adds a Reception to a Signal.
- * 
+ *
  * @author Michiel
  */
 class ActionAddReceptionSignal extends AbstractActionAddModelElement2 {
 
-    /**
-     * Construct an Action which adds a Reception to a Signal.
-     */
-    public ActionAddReceptionSignal() {
-        super();
+  /** Construct an Action which adds a Reception to a Signal. */
+  public ActionAddReceptionSignal() {
+    super();
+  }
+
+  protected List getChoices() {
+    List ret = new ArrayList();
+    Object model = ProjectManager.getManager().getCurrentProject().getModel();
+    if (getTarget() != null) {
+      ret.addAll(
+          Model.getModelManagementHelper()
+              .getAllModelElementsOfKind(model, Model.getMetaTypes().getReception()));
     }
+    return ret;
+  }
 
+  protected List getSelected() {
+    List ret = new ArrayList();
+    ret.addAll(Model.getFacade().getReceptions(getTarget()));
+    return ret;
+  }
 
-    protected List getChoices() {
-        List ret = new ArrayList();
-        Object model =
-            ProjectManager.getManager().getCurrentProject().getModel();
-        if (getTarget() != null) {
-            ret.addAll(Model.getModelManagementHelper()
-                .getAllModelElementsOfKind(model, 
-                    Model.getMetaTypes().getReception()));
-        }
-        return ret;
-    }
+  protected String getDialogTitle() {
+    return Translator.localize("dialog.title.add-receptions");
+  }
 
-
-    protected List getSelected() {
-        List ret = new ArrayList();
-        ret.addAll(Model.getFacade().getReceptions(getTarget()));
-        return ret;
-    }
-
-
-    protected String getDialogTitle() {
-        return Translator.localize("dialog.title.add-receptions");
-    }
-
-
-    @Override
-    protected void doIt(Collection selected) {
-        Model.getCommonBehaviorHelper().setReception(getTarget(), selected);
-    }
-
+  @Override
+  protected void doIt(Collection selected) {
+    Model.getCommonBehaviorHelper().setReception(getTarget(), selected);
+  }
 }

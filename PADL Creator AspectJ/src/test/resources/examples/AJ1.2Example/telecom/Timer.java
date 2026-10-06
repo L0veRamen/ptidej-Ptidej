@@ -6,7 +6,7 @@ Use and copying of this software and preparation of derivative works based
 upon this software are permitted.  Any distribution of this software or
 derivative works must comply with all applicable United States export control
 laws.
- 
+
 This software is made available AS IS, and Xerox Corporation makes no warranty
 about the software, its performance or its conformity to any specification.
 
@@ -17,34 +17,23 @@ about the software, its performance or its conformity to any specification.
 */
 package telecom;
 
-
-/**
- * Simple timer machine used to record elapsed time
- */
+/** Simple timer machine used to record elapsed time */
 public class Timer {
-    public long startTime, stopTime;
+  public long startTime, stopTime;
 
-    /**
-     * set the start time
-     */
-    public void start() {
-        startTime = System.currentTimeMillis();
-        stopTime = startTime;
-    }
+  /** set the start time */
+  public void start() {
+    startTime = System.currentTimeMillis();
+    stopTime = startTime;
+  }
 
-    /**
-     * set the end time
-     */
-    public void stop() {
-        stopTime = System.currentTimeMillis();
-    }
+  /** set the end time */
+  public void stop() {
+    stopTime = System.currentTimeMillis();
+  }
 
-    /**
-     * set how much time passed between last start and stop?
-     */
-    public long getTime() {
-        return stopTime - startTime;
-    }
+  /** set how much time passed between last start and stop? */
+  public long getTime() {
+    return stopTime - startTime;
+  }
 }
-
-

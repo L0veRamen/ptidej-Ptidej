@@ -28,166 +28,166 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 <project default="jct-tools-javadoc">
 
-  <property name="root_dir" value="/home/swoog/docs/boulot/UdeM/Maitrise"/>
-  <property name="util_dir" value="${root_dir}/JCT-Utils"/>
-  <property name="interface_dir" value="${root_dir}/JCT"/>
-  <property name="impl_dir" value="${root_dir}/JCT-Impl"/>
-  <property name="tools_dir" value="${root_dir}/JCT-Tools"/>
-  <property name="doc_dir" value="${interface_dir}/doc"/>
-  <property name="umlgraph_jar" value="/usr/share/UMLGraph/lib/UmlGraph.jar"/>
+    <property name="root_dir" value="/home/swoog/docs/boulot/UdeM/Maitrise"/>
+    <property name="util_dir" value="${root_dir}/JCT-Utils"/>
+    <property name="interface_dir" value="${root_dir}/JCT"/>
+    <property name="impl_dir" value="${root_dir}/JCT-Impl"/>
+    <property name="tools_dir" value="${root_dir}/JCT-Tools"/>
+    <property name="doc_dir" value="${interface_dir}/doc"/>
+    <property name="umlgraph_jar" value="/usr/share/UMLGraph/lib/UmlGraph.jar"/>
 
-  <target name="util-javadoc">
-    <javadoc
-        access="protected"
-        author="true"
-        classpath=".:${tools_dir}/lib/javac.jar"
-        destdir="${doc_dir}/util/"
-        doctitle="JCT JavaDoc"
-        nodeprecated="false"
-        nodeprecatedlist="false"
-        noindex="false"
-        nonavbar="false"
-        notree="false"
-        packagenames="util.*"
-        source="1.6"
-        sourcepath="${interface_dir}/src:${impl_dir}/src:${util_dir}/src:${tools_dir}/src"
-        splitindex="true"
-        use="true"
-        version="true">
-      <doclet name="org.umlgraph.doclet.UmlGraphDoc" path="${umlgraph_jar}">
-        <param name="-qualify" />
-        <param name="-types" />
-        <param name="-visibility" />
-        <param name="-collapsible"/> 
-        <param name="-outputencoding" value="UTF-8"/>
-      </doclet>
-      <link href="http://java.sun.com/javase/6/docs/api/"/>
-      <link href="http://java.sun.com/javase/6/docs/jdk/api/javac/tree"/>
-    </javadoc>
-  </target>
-  <target name="jct-util-javadoc">
-    <javadoc
-        access="protected"
-        author="true"
-        classpath=".:${tools_dir}/lib/javac.jar"
-        destdir="${doc_dir}/jct/util/"
-        doctitle="JCT JavaDoc"
-        nodeprecated="false"
-        nodeprecatedlist="false"
-        noindex="false"
-        nonavbar="false"
-        notree="false"
-        packagenames="jct.util.*"
-        source="1.6"
-        sourcepath="${interface_dir}/src:${impl_dir}/src:${util_dir}/src:${tools_dir}/src"
-        splitindex="true"
-        use="true"
-        version="true">
-      <doclet name="org.umlgraph.doclet.UmlGraphDoc" path="${umlgraph_jar}">
-        <param name="-qualify" />
-        <param name="-types" />
-        <param name="-visibility" />
-        <param name="-collapsible"/> 
-        <param name="-outputencoding" value="UTF-8"/>
-      </doclet>
-      <link href="http://java.sun.com/javase/6/docs/api/"/>
-      <link href="http://java.sun.com/javase/6/docs/jdk/api/javac/tree"/>
-    </javadoc>
-  </target>
-  <target name="jct-tools-javadoc" depends="jct-impl-javadoc">
-    <javadoc
-        access="protected"
-        author="true"
-        classpath=".:${tools_dir}/lib/javac.jar"
-        destdir="${doc_dir}/jct/tools/"
-        doctitle="JCT JavaDoc"
-        nodeprecated="false"
-        nodeprecatedlist="false"
-        noindex="false"
-        nonavbar="false"
-        notree="false"
-        packagenames="jct.tools.*"
-        source="1.6"
-        sourcepath="${interface_dir}/src:${impl_dir}/src:${util_dir}/src:${tools_dir}/src"
-        splitindex="true"
-        use="true"
-        version="true">
-      <doclet name="org.umlgraph.doclet.UmlGraphDoc" path="${umlgraph_jar}">
-        <param name="-qualify" />
-        <param name="-types" />
-        <param name="-visibility" />
-        <param name="-collapsible"/> 
-        <param name="-outputencoding" value="UTF-8"/>
-      </doclet>
-      <link href="http://java.sun.com/javase/6/docs/api/"/>
-      <link href="http://java.sun.com/javase/6/docs/jdk/api/javac/tree"/>
-      <link href="file:///${doc_dir}/jct/impl"/>
-      <link href="file:///${doc_dir}/jct/kernel"/>
-      <link href="file:///${doc_dir}/jct/util"/>
-      <link href="file:///${doc_dir}/util"/>
-    </javadoc>
-  </target>
-  <target name="jct-kernel-javadoc" depends="util-javadoc,jct-util-javadoc">
-    <javadoc
-        access="public"
-        author="true"
-        classpath=".:${tools_dir}/lib/javac.jar"
-        destdir="${doc_dir}/jct/kernel"
-        doctitle="JCT JavaDoc"
-        nodeprecated="false"
-        nodeprecatedlist="false"
-        noindex="false"
-        nonavbar="false"
-        notree="false"
-        packagenames="jct.kernel"
-        source="1.6"
-        sourcepath="${interface_dir}/src:${impl_dir}/src:${util_dir}/src:${tools_dir}/src"
-        splitindex="true"
-        use="true"
-        version="true">
-      <doclet name="org.umlgraph.doclet.UmlGraphDoc" path="${umlgraph_jar}">
-        <param name="-qualify" />
-        <param name="-types" />
-        <param name="-visibility" />
-        <param name="-collapsible"/> 
-        <param name="-outputencoding" value="UTF-8"/>
-      </doclet>
-      <link href="http://java.sun.com/javase/6/docs/api/"/>
-      <link href="http://java.sun.com/javase/6/docs/jdk/api/javac/tree"/>
-      <link href="file:///${doc_dir}/util"/>
-      <link href="file:///${doc_dir}/jct/util"/>
-    </javadoc>
-  </target>
-  <target name="jct-impl-javadoc" depends="jct-kernel-javadoc">
-    <javadoc
-        access="package"
-        author="true"
-        classpath=".:${tools_dir}/lib/javac.jar"
-        destdir="${doc_dir}/jct/impl"
-        doctitle="JCT JavaDoc"
-        nodeprecated="false"
-        nodeprecatedlist="false"
-        noindex="false"
-        nonavbar="false"
-        notree="false"
-        packagenames="jct.kernel.impl"
-        source="1.6"
-        sourcepath="${interface_dir}/src:${impl_dir}/src:${util_dir}/src:${tools_dir}/src"
-        splitindex="true"
-        use="true"
-        version="true">
-      <doclet name="org.umlgraph.doclet.UmlGraphDoc" path="${umlgraph_jar}">
-        <param name="-qualify" />
-        <param name="-types" />
-        <param name="-visibility" />
-        <param name="-collapsible"/> 
-        <param name="-outputencoding" value="UTF-8"/>
-      </doclet>
-      <link href="http://java.sun.com/javase/6/docs/api/"/>
-      <link href="http://java.sun.com/javase/6/docs/jdk/api/javac/tree"/>
-      <link href="file:///${doc_dir}/jct/kernel"/>
-      <link href="file:///${doc_dir}/jct/util"/>
-      <link href="file:///${doc_dir}/util"/>
-    </javadoc>
-  </target>
+    <target name="util-javadoc">
+        <javadoc
+                access="protected"
+                author="true"
+                classpath=".:${tools_dir}/lib/javac.jar"
+                destdir="${doc_dir}/util/"
+                doctitle="JCT JavaDoc"
+                nodeprecated="false"
+                nodeprecatedlist="false"
+                noindex="false"
+                nonavbar="false"
+                notree="false"
+                packagenames="util.*"
+                source="1.6"
+                sourcepath="${interface_dir}/src:${impl_dir}/src:${util_dir}/src:${tools_dir}/src"
+                splitindex="true"
+                use="true"
+                version="true">
+            <doclet name="org.umlgraph.doclet.UmlGraphDoc" path="${umlgraph_jar}">
+                <param name="-qualify"/>
+                <param name="-types"/>
+                <param name="-visibility"/>
+                <param name="-collapsible"/>
+                <param name="-outputencoding" value="UTF-8"/>
+            </doclet>
+            <link href="http://java.sun.com/javase/6/docs/api/"/>
+            <link href="http://java.sun.com/javase/6/docs/jdk/api/javac/tree"/>
+        </javadoc>
+    </target>
+    <target name="jct-util-javadoc">
+        <javadoc
+                access="protected"
+                author="true"
+                classpath=".:${tools_dir}/lib/javac.jar"
+                destdir="${doc_dir}/jct/util/"
+                doctitle="JCT JavaDoc"
+                nodeprecated="false"
+                nodeprecatedlist="false"
+                noindex="false"
+                nonavbar="false"
+                notree="false"
+                packagenames="jct.util.*"
+                source="1.6"
+                sourcepath="${interface_dir}/src:${impl_dir}/src:${util_dir}/src:${tools_dir}/src"
+                splitindex="true"
+                use="true"
+                version="true">
+            <doclet name="org.umlgraph.doclet.UmlGraphDoc" path="${umlgraph_jar}">
+                <param name="-qualify"/>
+                <param name="-types"/>
+                <param name="-visibility"/>
+                <param name="-collapsible"/>
+                <param name="-outputencoding" value="UTF-8"/>
+            </doclet>
+            <link href="http://java.sun.com/javase/6/docs/api/"/>
+            <link href="http://java.sun.com/javase/6/docs/jdk/api/javac/tree"/>
+        </javadoc>
+    </target>
+    <target name="jct-tools-javadoc" depends="jct-impl-javadoc">
+        <javadoc
+                access="protected"
+                author="true"
+                classpath=".:${tools_dir}/lib/javac.jar"
+                destdir="${doc_dir}/jct/tools/"
+                doctitle="JCT JavaDoc"
+                nodeprecated="false"
+                nodeprecatedlist="false"
+                noindex="false"
+                nonavbar="false"
+                notree="false"
+                packagenames="jct.tools.*"
+                source="1.6"
+                sourcepath="${interface_dir}/src:${impl_dir}/src:${util_dir}/src:${tools_dir}/src"
+                splitindex="true"
+                use="true"
+                version="true">
+            <doclet name="org.umlgraph.doclet.UmlGraphDoc" path="${umlgraph_jar}">
+                <param name="-qualify"/>
+                <param name="-types"/>
+                <param name="-visibility"/>
+                <param name="-collapsible"/>
+                <param name="-outputencoding" value="UTF-8"/>
+            </doclet>
+            <link href="http://java.sun.com/javase/6/docs/api/"/>
+            <link href="http://java.sun.com/javase/6/docs/jdk/api/javac/tree"/>
+            <link href="file:///${doc_dir}/jct/impl"/>
+            <link href="file:///${doc_dir}/jct/kernel"/>
+            <link href="file:///${doc_dir}/jct/util"/>
+            <link href="file:///${doc_dir}/util"/>
+        </javadoc>
+    </target>
+    <target name="jct-kernel-javadoc" depends="util-javadoc,jct-util-javadoc">
+        <javadoc
+                access="public"
+                author="true"
+                classpath=".:${tools_dir}/lib/javac.jar"
+                destdir="${doc_dir}/jct/kernel"
+                doctitle="JCT JavaDoc"
+                nodeprecated="false"
+                nodeprecatedlist="false"
+                noindex="false"
+                nonavbar="false"
+                notree="false"
+                packagenames="jct.kernel"
+                source="1.6"
+                sourcepath="${interface_dir}/src:${impl_dir}/src:${util_dir}/src:${tools_dir}/src"
+                splitindex="true"
+                use="true"
+                version="true">
+            <doclet name="org.umlgraph.doclet.UmlGraphDoc" path="${umlgraph_jar}">
+                <param name="-qualify"/>
+                <param name="-types"/>
+                <param name="-visibility"/>
+                <param name="-collapsible"/>
+                <param name="-outputencoding" value="UTF-8"/>
+            </doclet>
+            <link href="http://java.sun.com/javase/6/docs/api/"/>
+            <link href="http://java.sun.com/javase/6/docs/jdk/api/javac/tree"/>
+            <link href="file:///${doc_dir}/util"/>
+            <link href="file:///${doc_dir}/jct/util"/>
+        </javadoc>
+    </target>
+    <target name="jct-impl-javadoc" depends="jct-kernel-javadoc">
+        <javadoc
+                access="package"
+                author="true"
+                classpath=".:${tools_dir}/lib/javac.jar"
+                destdir="${doc_dir}/jct/impl"
+                doctitle="JCT JavaDoc"
+                nodeprecated="false"
+                nodeprecatedlist="false"
+                noindex="false"
+                nonavbar="false"
+                notree="false"
+                packagenames="jct.kernel.impl"
+                source="1.6"
+                sourcepath="${interface_dir}/src:${impl_dir}/src:${util_dir}/src:${tools_dir}/src"
+                splitindex="true"
+                use="true"
+                version="true">
+            <doclet name="org.umlgraph.doclet.UmlGraphDoc" path="${umlgraph_jar}">
+                <param name="-qualify"/>
+                <param name="-types"/>
+                <param name="-visibility"/>
+                <param name="-collapsible"/>
+                <param name="-outputencoding" value="UTF-8"/>
+            </doclet>
+            <link href="http://java.sun.com/javase/6/docs/api/"/>
+            <link href="http://java.sun.com/javase/6/docs/jdk/api/javac/tree"/>
+            <link href="file:///${doc_dir}/jct/kernel"/>
+            <link href="file:///${doc_dir}/jct/util"/>
+            <link href="file:///${doc_dir}/util"/>
+        </javadoc>
+    </target>
 </project>

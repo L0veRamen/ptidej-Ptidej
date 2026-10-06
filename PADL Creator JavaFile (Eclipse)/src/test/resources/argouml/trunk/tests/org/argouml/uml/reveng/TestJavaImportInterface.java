@@ -24,257 +24,237 @@
 
 package org.argouml.uml.reveng;
 
+import antlr.RecognitionException;
+import antlr.TokenStreamException;
+import java.io.StringReader;
 import java.util.Collection;
 import java.util.Iterator;
-import java.io.StringReader;
 import junit.framework.TestCase;
 import org.argouml.model.Model;
 import org.argouml.uml.reveng.java.JavaLexer;
 import org.argouml.uml.reveng.java.JavaRecognizer;
 import org.argouml.uml.reveng.java.Modeller;
 
-import antlr.RecognitionException;
-import antlr.TokenStreamException;
-
 /**
- * Test case to test the import of a Java source file. The content of the Java
- * source file is a private constant at the bottom of the source of this
- * interface. The test methods are specially designed for this Java source
- * constant. Feeding of the diagram subsystem is disabled; only model elements
- * are created and checked. For testing with another Java source file, copy this
- * test case, change the Java source constant and modify the test method (the
- * setUp method need not be changed).<p>
+ * Test case to test the import of a Java source file. The content of the Java source file is a
+ * private constant at the bottom of the source of this interface. The test methods are specially
+ * designed for this Java source constant. Feeding of the diagram subsystem is disabled; only model
+ * elements are created and checked. For testing with another Java source file, copy this test case,
+ * change the Java source constant and modify the test method (the setUp method need not be
+ * changed).
+ *
+ * <p>
  */
 public class TestJavaImportInterface extends TestCase {
-    /**
-     * @see junit.framework.TestCase#TestCase(String)
-     */
-    public TestJavaImportInterface(String str) {
-        super(str);
+  /**
+   * @see junit.framework.TestCase#TestCase(String)
+   */
+  public TestJavaImportInterface(String str) {
+    super(str);
+  }
+
+  /**
+   * @see junit.framework.TestCase#setUp()
+   */
+  protected void setUp() {
+    if (isParsed) {
+      return;
     }
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() {
-        if (isParsed) {
-            return;
-        }
+    JavaLexer lexer = new JavaLexer(new StringReader(PARSERINPUT));
+    assertNotNull("Creation of lexer failed.", lexer);
 
-        JavaLexer lexer = new JavaLexer(new StringReader(PARSERINPUT));
-        assertNotNull("Creation of lexer failed.", lexer);
+    lexer.setTokenObjectClass("org.argouml.uml.reveng.java.ArgoToken");
 
-        lexer.setTokenObjectClass("org.argouml.uml.reveng.java.ArgoToken");
+    JavaRecognizer parser = new JavaRecognizer(lexer);
+    assertNotNull("Creation of parser failed.", parser);
 
-        JavaRecognizer parser = new JavaRecognizer(lexer);
-        assertNotNull("Creation of parser failed.", parser);
+    parsedModel = Model.getModelManagementFactory().createModel();
+    assertNotNull("Creation of model failed.", parsedModel);
 
-        parsedModel = Model.getModelManagementFactory().createModel();
-        assertNotNull("Creation of model failed.", parsedModel);
+    Model.getModelManagementFactory().setRootModel(parsedModel);
 
-        Model.getModelManagementFactory().setRootModel(parsedModel);
+    Modeller modeller = new Modeller(parsedModel, null, null, false, false, "TestInterface.java");
+    assertNotNull("Creation of Modeller instance failed.", modeller);
 
-        Modeller modeller =
-                new Modeller(parsedModel, null, null, false, false,
-                    "TestInterface.java");
-        assertNotNull("Creation of Modeller instance failed.", modeller);
-
-        try {
-            parser.compilationUnit(modeller, lexer);
-            isParsed = true;
-        } catch (RecognitionException e) {
-            fail("Parsing of Java source failed." + e);
-        } catch (TokenStreamException e) {
-            fail("Parsing of Java source failed." + e);
-        }
+    try {
+      parser.compilationUnit(modeller, lexer);
+      isParsed = true;
+    } catch (RecognitionException e) {
+      fail("Parsing of Java source failed." + e);
+    } catch (TokenStreamException e) {
+      fail("Parsing of Java source failed." + e);
     }
+  }
 
-    /**
-     * Test if the package was processed correctly.
-     */
-    public void testPackage() {
-        parsedPackage = Model.getFacade().lookupIn(parsedModel, "testpackage");
-        assertNotNull("No package \"testpackage\" found in model.",
-                parsedPackage);
-        assertEquals("Inconsistent package name.",
-                "testpackage", Model.getFacade().getName(parsedPackage));
-        assertEquals("The namespace of the package should be the model.",
-                parsedModel, Model.getFacade().getNamespace(parsedPackage));
-        assertTrue("The package should be recognized as a package.",
-                Model.getFacade().isAPackage(parsedPackage));
+  /** Test if the package was processed correctly. */
+  public void testPackage() {
+    parsedPackage = Model.getFacade().lookupIn(parsedModel, "testpackage");
+    assertNotNull("No package \"testpackage\" found in model.", parsedPackage);
+    assertEquals(
+        "Inconsistent package name.", "testpackage", Model.getFacade().getName(parsedPackage));
+    assertEquals(
+        "The namespace of the package should be the model.",
+        parsedModel,
+        Model.getFacade().getNamespace(parsedPackage));
+    assertTrue(
+        "The package should be recognized as a package.",
+        Model.getFacade().isAPackage(parsedPackage));
+  }
+
+  /** Test if the import was processed correctly. */
+  public void testImport() {
+    if (parsedPackage == null) {
+      parsedPackage = Model.getFacade().lookupIn(parsedModel, "testpackage");
+      assertNotNull("No package \"testpackage\" found in model.", parsedPackage);
     }
-
-    /**
-     * Test if the import was processed correctly.
-     */
-    public void testImport() {
-        if (parsedPackage == null) {
-            parsedPackage =
-                Model.getFacade().lookupIn(parsedModel, "testpackage");
-            assertNotNull("No package \"testpackage\" found in model.",
-                    parsedPackage);
-        }
-        Collection ownedElements =
-            Model.getFacade().getOwnedElements(parsedPackage);
-        assertNotNull("No elements owned by  \"testpackage\".", ownedElements);
-        Object component = null;
-        Iterator iter = ownedElements.iterator();
-        while (iter.hasNext()) {
-            Object element = iter.next();
-            if (Model.getFacade().isAComponent(element)) {
-                component = element;
-                break;
-            }
-        }
-        assertNotNull("No component found.", component);
-        assertEquals("The component name is wrong.",
-            "TestInterface.java", Model.getFacade().getName(component));
-        Collection dependencies =
-            Model.getFacade().getClientDependencies(component);
-        assertNotNull("No dependencies found for component.", dependencies);
-        Object permission = null;
-        iter = dependencies.iterator();
-        while (iter.hasNext()) {
-            Object element = iter.next();
-            if (Model.getFacade().isAPermission(element)) {
-                permission = element;
-                break;
-            }
-        }
-        assertNotNull("No import found.", permission);
-        assertEquals("The import name is wrong.",
-            "TestInterface.java -> Observer",
-            Model.getFacade().getName(permission));
-        Collection suppliers = Model.getFacade().getSuppliers(permission);
-        assertNotNull("No suppliers found in import.", suppliers);
-        Object supplier = null;
-        iter = suppliers.iterator();
-        if (iter.hasNext()) {
-            supplier = iter.next();
-        }
-        assertNotNull("No supplier found in import.", supplier);
-        assertEquals("The import supplier name is wrong.",
-            "Observer", Model.getFacade().getName(supplier));
-        Object namespace = Model.getFacade().getNamespace(supplier);
-        assertNotNull("The import supplier has no namespace.", namespace);
-        assertEquals("Expected namespace name \"util\".",
-            "util", Model.getFacade().getName(namespace));
-        namespace = Model.getFacade().getNamespace(namespace);
-        assertNotNull("The namespace \"util\" has no namespace.", namespace);
-        assertEquals("Expected namespace name \"java\".",
-            "java", Model.getFacade().getName(namespace));
-        assertEquals("The namespace of \"java\" should be the model.",
-            parsedModel, Model.getFacade().getNamespace(namespace));
+    Collection ownedElements = Model.getFacade().getOwnedElements(parsedPackage);
+    assertNotNull("No elements owned by  \"testpackage\".", ownedElements);
+    Object component = null;
+    Iterator iter = ownedElements.iterator();
+    while (iter.hasNext()) {
+      Object element = iter.next();
+      if (Model.getFacade().isAComponent(element)) {
+        component = element;
+        break;
+      }
     }
-
-    /**
-     * Test if the import was processed correctly.
-     */
-    public void testInterface() {
-        if (parsedPackage == null) {
-            parsedPackage =
-                Model.getFacade().lookupIn(parsedModel, "testpackage");
-            assertNotNull("No package \"testpackage\" found in model.",
-                    parsedPackage);
-        }
-        parsedInterface =
-            Model.getFacade().lookupIn(parsedPackage, "TestInterface");
-        assertNotNull("No interface \"TestInterface\" found.", parsedInterface);
-        assertEquals("Inconsistent interface name.",
-            "TestInterface", Model.getFacade().getName(parsedInterface));
-        assertEquals("The namespace of the interface should be "
-                + "\"testpackage\".",
-            parsedPackage, Model.getFacade().getNamespace(parsedInterface));
-        assertTrue("The interface should be recognized as a interface.",
-                Model.getFacade().isAInterface(parsedInterface));
-        assertTrue("The interface should be public.",
-                Model.getFacade().isPublic(parsedInterface));
-        Collection generalizations =
-            Model.getFacade().getGeneralizations(parsedInterface);
-        assertNotNull("No generalizations found for interface.",
-                generalizations);
-        Object generalization = null;
-        Iterator iter = generalizations.iterator();
-        if (iter.hasNext()) {
-            generalization = iter.next();
-        }
-        assertNotNull("No generalization found for interface.", generalization);
-        assertEquals("The generalization name is wrong.",
-            "TestInterface -> Observer",
-            Model.getFacade().getName(generalization));
-        assertEquals("The child of the generalization should be the interface.",
-            parsedInterface, Model.getFacade().getChild(generalization));
-        assertEquals(
-                "The parent of the generalization should be \"Observer\".",
-                "Observer", Model.getFacade().getName(
-                        Model.getFacade().getParent(generalization)));
+    assertNotNull("No component found.", component);
+    assertEquals(
+        "The component name is wrong.", "TestInterface.java", Model.getFacade().getName(component));
+    Collection dependencies = Model.getFacade().getClientDependencies(component);
+    assertNotNull("No dependencies found for component.", dependencies);
+    Object permission = null;
+    iter = dependencies.iterator();
+    while (iter.hasNext()) {
+      Object element = iter.next();
+      if (Model.getFacade().isAPermission(element)) {
+        permission = element;
+        break;
+      }
     }
-
-    /**
-     * Test if the operations were processed correctly.
-     */
-    public void testOperations() {
-        if (parsedPackage == null) {
-            parsedPackage =
-                Model.getFacade().lookupIn(parsedModel, "testpackage");
-            assertNotNull("No package \"testpackage\" found in model.",
-                    parsedPackage);
-        }
-        if (parsedInterface == null) {
-            parsedInterface =
-                Model.getFacade().lookupIn(parsedPackage, "TestInterface");
-            assertNotNull("No interface \"TestInterface\" found.",
-                    parsedInterface);
-        }
-        Collection operations =
-            Model.getFacade().getOperations(parsedInterface);
-        assertNotNull("No operations found ib interface.", operations);
-        assertEquals("Number of operations is wrong", 2, operations.size());
-        Object operation = null;
-        Object operationForx = null;
-        Object operationFory = null;
-        Iterator iter = operations.iterator();
-        while (iter.hasNext()) {
-            operation = iter.next();
-            assertTrue("The operation should be recognized as an operation.",
-                    Model.getFacade().isAOperation(operation));
-            if ("x".equals(Model.getFacade().getName(operation))) {
-                operationForx = operation;
-            } else if ("y".equals(Model.getFacade().getName(operation))) {
-                operationFory = operation;
-            }
-        }
-        assertTrue("The operations have wrong names.",
-                operationForx != null && operationFory != null);
-        assertTrue("Operation x should be public.",
-                Model.getFacade().isPublic(operationForx));
-        assertTrue("Operation y should be public.",
-                Model.getFacade().isPublic(operationFory));
+    assertNotNull("No import found.", permission);
+    assertEquals(
+        "The import name is wrong.",
+        "TestInterface.java -> Observer",
+        Model.getFacade().getName(permission));
+    Collection suppliers = Model.getFacade().getSuppliers(permission);
+    assertNotNull("No suppliers found in import.", suppliers);
+    Object supplier = null;
+    iter = suppliers.iterator();
+    if (iter.hasNext()) {
+      supplier = iter.next();
     }
+    assertNotNull("No supplier found in import.", supplier);
+    assertEquals(
+        "The import supplier name is wrong.", "Observer", Model.getFacade().getName(supplier));
+    Object namespace = Model.getFacade().getNamespace(supplier);
+    assertNotNull("The import supplier has no namespace.", namespace);
+    assertEquals("Expected namespace name \"util\".", "util", Model.getFacade().getName(namespace));
+    namespace = Model.getFacade().getNamespace(namespace);
+    assertNotNull("The namespace \"util\" has no namespace.", namespace);
+    assertEquals("Expected namespace name \"java\".", "java", Model.getFacade().getName(namespace));
+    assertEquals(
+        "The namespace of \"java\" should be the model.",
+        parsedModel,
+        Model.getFacade().getNamespace(namespace));
+  }
 
-    /**
-     * Flag, if the Java source is parsed already.
-     */
-    private static boolean isParsed;
+  /** Test if the import was processed correctly. */
+  public void testInterface() {
+    if (parsedPackage == null) {
+      parsedPackage = Model.getFacade().lookupIn(parsedModel, "testpackage");
+      assertNotNull("No package \"testpackage\" found in model.", parsedPackage);
+    }
+    parsedInterface = Model.getFacade().lookupIn(parsedPackage, "TestInterface");
+    assertNotNull("No interface \"TestInterface\" found.", parsedInterface);
+    assertEquals(
+        "Inconsistent interface name.",
+        "TestInterface",
+        Model.getFacade().getName(parsedInterface));
+    assertEquals(
+        "The namespace of the interface should be " + "\"testpackage\".",
+        parsedPackage,
+        Model.getFacade().getNamespace(parsedInterface));
+    assertTrue(
+        "The interface should be recognized as a interface.",
+        Model.getFacade().isAInterface(parsedInterface));
+    assertTrue("The interface should be public.", Model.getFacade().isPublic(parsedInterface));
+    Collection generalizations = Model.getFacade().getGeneralizations(parsedInterface);
+    assertNotNull("No generalizations found for interface.", generalizations);
+    Object generalization = null;
+    Iterator iter = generalizations.iterator();
+    if (iter.hasNext()) {
+      generalization = iter.next();
+    }
+    assertNotNull("No generalization found for interface.", generalization);
+    assertEquals(
+        "The generalization name is wrong.",
+        "TestInterface -> Observer",
+        Model.getFacade().getName(generalization));
+    assertEquals(
+        "The child of the generalization should be the interface.",
+        parsedInterface,
+        Model.getFacade().getChild(generalization));
+    assertEquals(
+        "The parent of the generalization should be \"Observer\".",
+        "Observer",
+        Model.getFacade().getName(Model.getFacade().getParent(generalization)));
+  }
 
-    /**
-     * Instances of the model and it's components.
-     */
-    private static Object parsedModel;
-    private static Object parsedPackage;
-    private static Object parsedInterface;
+  /** Test if the operations were processed correctly. */
+  public void testOperations() {
+    if (parsedPackage == null) {
+      parsedPackage = Model.getFacade().lookupIn(parsedModel, "testpackage");
+      assertNotNull("No package \"testpackage\" found in model.", parsedPackage);
+    }
+    if (parsedInterface == null) {
+      parsedInterface = Model.getFacade().lookupIn(parsedPackage, "TestInterface");
+      assertNotNull("No interface \"TestInterface\" found.", parsedInterface);
+    }
+    Collection operations = Model.getFacade().getOperations(parsedInterface);
+    assertNotNull("No operations found ib interface.", operations);
+    assertEquals("Number of operations is wrong", 2, operations.size());
+    Object operation = null;
+    Object operationForx = null;
+    Object operationFory = null;
+    Iterator iter = operations.iterator();
+    while (iter.hasNext()) {
+      operation = iter.next();
+      assertTrue(
+          "The operation should be recognized as an operation.",
+          Model.getFacade().isAOperation(operation));
+      if ("x".equals(Model.getFacade().getName(operation))) {
+        operationForx = operation;
+      } else if ("y".equals(Model.getFacade().getName(operation))) {
+        operationFory = operation;
+      }
+    }
+    assertTrue("The operations have wrong names.", operationForx != null && operationFory != null);
+    assertTrue("Operation x should be public.", Model.getFacade().isPublic(operationForx));
+    assertTrue("Operation y should be public.", Model.getFacade().isPublic(operationFory));
+  }
 
-    /**
-     * Test input for the parser. It's the content of a Java source file. It's
-     * hardcoded here, because this test case strongly depends on this.
-     */
-    private static final String PARSERINPUT =
-              "package testpackage;\n"
-            + "import java.util.Observer;\n"
-            + "/** A Javadoc comment */\n"
-            + "public interface TestInterface extends Observer {\n"
-            + "    /** Another Javadoc comment */\n"
-            + "    public void x(String a);\n"
-            + "    public int y();\n"
-            + "}";
+  /** Flag, if the Java source is parsed already. */
+  private static boolean isParsed;
+
+  /** Instances of the model and it's components. */
+  private static Object parsedModel;
+
+  private static Object parsedPackage;
+  private static Object parsedInterface;
+
+  /**
+   * Test input for the parser. It's the content of a Java source file. It's hardcoded here, because
+   * this test case strongly depends on this.
+   */
+  private static final String PARSERINPUT =
+      "package testpackage;\n"
+          + "import java.util.Observer;\n"
+          + "/** A Javadoc comment */\n"
+          + "public interface TestInterface extends Observer {\n"
+          + "    /** Another Javadoc comment */\n"
+          + "    public void x(String a);\n"
+          + "    public int y();\n"
+          + "}";
 }

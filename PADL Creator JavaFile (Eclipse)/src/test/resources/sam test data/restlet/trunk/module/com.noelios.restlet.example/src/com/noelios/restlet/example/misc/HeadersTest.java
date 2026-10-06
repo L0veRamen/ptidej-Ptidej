@@ -32,48 +32,45 @@ import org.restlet.data.Response;
 
 /**
  * Display the HTTP accept header sent by the Web browsers.
+ *
  * @author Jerome Louvel (contact@noelios.com)
  */
-public class HeadersTest
-{
-	public static void main(String[] args) throws Exception
-	{
-		Restlet restlet = new Restlet()
-		{
-			@Override
-			public void handle(Request request, Response response)
-			{
-				// ------------------------------
-				// Getting an HTTP request header
-				// ------------------------------
-				ParameterList headers = (ParameterList) request.getAttributes().get(
-						"org.restlet.http.headers");
+public class HeadersTest {
+  public static void main(String[] args) throws Exception {
+    Restlet restlet =
+        new Restlet() {
+          @Override
+          public void handle(Request request, Response response) {
+            // ------------------------------
+            // Getting an HTTP request header
+            // ------------------------------
+            ParameterList headers =
+                (ParameterList) request.getAttributes().get("org.restlet.http.headers");
 
-				// The headers list contains all received HTTP headers, in raw format.
-				// Below, we simply display the standard "Accept" HTTP header.
-				response.setEntity("Accept header: " + headers.getFirstValue("accept", true),
-						MediaType.TEXT_PLAIN);
+            // The headers list contains all received HTTP headers, in raw format.
+            // Below, we simply display the standard "Accept" HTTP header.
+            response.setEntity(
+                "Accept header: " + headers.getFirstValue("accept", true), MediaType.TEXT_PLAIN);
 
-				// -----------------------
-				// Adding response headers
-				// -----------------------
-				headers = new ParameterList();
+            // -----------------------
+            // Adding response headers
+            // -----------------------
+            headers = new ParameterList();
 
-				// Non-standard headers are allowed
-				headers.add("X-Test", "Test value");
+            // Non-standard headers are allowed
+            headers.add("X-Test", "Test value");
 
-				// Standard HTTP headers are forbidden. If you happen to add one like the "Location" 
-				// header below, it will be ignored and a warning message will be displayed in the logs.
-				headers.add("Location", "http://www.restlet.org");
+            // Standard HTTP headers are forbidden. If you happen to add one like the "Location"
+            // header below, it will be ignored and a warning message will be displayed in the logs.
+            headers.add("Location", "http://www.restlet.org");
 
-				// Setting the additional headers into the shared call's attribute
-				response.getAttributes().put("org.restlet.http.headers", headers);
-			}
-		};
+            // Setting the additional headers into the shared call's attribute
+            response.getAttributes().put("org.restlet.http.headers", headers);
+          }
+        };
 
-		// Create the HTTP server and listen on port 8182
-		Server server = new Server(Protocol.HTTP, 8182, restlet);
-		server.start();
-	}
-
+    // Create the HTTP server and listen on port 8182
+    Server server = new Server(Protocol.HTTP, 8182, restlet);
+    server.start();
+  }
 }

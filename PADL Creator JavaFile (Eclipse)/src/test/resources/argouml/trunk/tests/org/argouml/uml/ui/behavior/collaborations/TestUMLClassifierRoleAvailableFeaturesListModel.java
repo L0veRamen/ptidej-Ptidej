@@ -34,67 +34,66 @@ import org.argouml.uml.ui.AbstractUMLModelElementListModel2Test;
 public class TestUMLClassifierRoleAvailableFeaturesListModel
     extends AbstractUMLModelElementListModel2Test {
 
-    private Object base;
+  private Object base;
 
-    /**
-     * Constructor for TestUMLClassifierRoleAvailableFeaturesListModel.
-     *
-     * @param arg0 is the name of the test case.
-     */
-    public TestUMLClassifierRoleAvailableFeaturesListModel(String arg0) {
-        super(arg0);
+  /**
+   * Constructor for TestUMLClassifierRoleAvailableFeaturesListModel.
+   *
+   * @param arg0 is the name of the test case.
+   */
+  public TestUMLClassifierRoleAvailableFeaturesListModel(String arg0) {
+    super(arg0);
+  }
+
+  /**
+   * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#buildElement()
+   */
+  protected void buildElement() {
+    setElem(Model.getCollaborationsFactory().createClassifierRole());
+  }
+
+  /**
+   * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#buildModel()
+   */
+  protected void buildModel() {
+    setModel(new UMLClassifierRoleAvailableFeaturesListModel());
+  }
+
+  /**
+   * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#fillModel()
+   */
+  protected Object[] fillModel() {
+    Object[] features = new Object[10];
+    for (int i = 0; i < features.length; i++) {
+      features[i] = Model.getCoreFactory().createOperation();
+      Model.getCoreHelper().addFeature(base, features[i]);
     }
+    return features;
+  }
 
-    /**
-     * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#buildElement()
-     */
-    protected void buildElement() {
-        setElem(Model.getCollaborationsFactory().createClassifierRole());
+  /**
+   * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#removeHalfModel(Object[])
+   */
+  protected void removeHalfModel(Object[] elements) {
+    for (int i = 0; i < 5; i++) {
+      Model.getCoreHelper().removeFeature(base, elements[i]);
     }
+  }
 
-    /**
-     * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#buildModel()
-     */
-    protected void buildModel() {
-        setModel(new UMLClassifierRoleAvailableFeaturesListModel());
-    }
+  /**
+   * @see junit.framework.TestCase#setUp()
+   */
+  protected void setUp() throws Exception {
+    super.setUp();
+    base = Model.getCoreFactory().createClass();
+    Model.getCollaborationsHelper().addBase(getElem(), base);
+  }
 
-    /**
-     * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#fillModel()
-     */
-    protected Object[] fillModel() {
-        Object[] features = new Object[10];
-        for (int i = 0; i < features.length; i++) {
-            features[i] = Model.getCoreFactory().createOperation();
-            Model.getCoreHelper().addFeature(base, features[i]);
-        }
-        return features;
-    }
-
-    /**
-     * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#removeHalfModel(Object[])
-     */
-    protected void removeHalfModel(Object[] elements) {
-        for (int i = 0; i < 5; i++) {
-            Model.getCoreHelper().removeFeature(base, elements[i]);
-        }
-    }
-
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        base = Model.getCoreFactory().createClass();
-        Model.getCollaborationsHelper().addBase(getElem(), base);
-    }
-
-    /**
-     * @see junit.framework.TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        Model.getUmlFactory().delete(base);
-    }
-
+  /**
+   * @see junit.framework.TestCase#tearDown()
+   */
+  protected void tearDown() throws Exception {
+    super.tearDown();
+    Model.getUmlFactory().delete(base);
+  }
 }

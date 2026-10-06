@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
-
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
@@ -46,93 +45,89 @@ import javax.swing.JScrollPane;
  */
 public class TargetManagerPanel extends JPanel implements TargetListener {
 
+  /** The UID. */
+  private static final long serialVersionUID = -4827194145585220207L;
+
+  private DefaultListModel lm = new DefaultListModel();
+  private JList lst;
+  private String lastEvent;
+
+  /** The instance. */
+  private static final TargetManagerPanel INSTANCE = new TargetManagerPanel();
+
+  /**
+   * @return the instance.
+   */
+  public static TargetManagerPanel getInstance() {
+    return INSTANCE;
+  }
+
+  /** The constructor. */
+  public TargetManagerPanel() {
+    setLayout(new BorderLayout());
+
+    lst = new JList(lm);
+    setTarget(TargetManager.getInstance().getTargets());
+    add(new JScrollPane(lst), BorderLayout.CENTER);
+    lst.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
+    TargetManager.getInstance().addTargetListener(this);
+    add(new JButton(new ClearAction("Clear")), BorderLayout.SOUTH);
+  }
+
+  class ClearAction extends AbstractAction {
+
     /**
-     * The UID.
+     * @param name the name
      */
-    private static final long serialVersionUID = -4827194145585220207L;
-
-    private DefaultListModel lm = new DefaultListModel();
-    private JList lst;
-    private String lastEvent;
-
-    /**
-     * The instance.
-     */
-    private static final TargetManagerPanel INSTANCE = new TargetManagerPanel();
-
-    /**
-     * @return the instance.
-     */
-    public static TargetManagerPanel getInstance() {
-        return INSTANCE;
-    }
-
-    /**
-     * The constructor.
-     */
-    public TargetManagerPanel() {
-        setLayout(new BorderLayout());
-
-        lst = new JList(lm);
-        setTarget(TargetManager.getInstance().getTargets());
-        add(new JScrollPane(lst), BorderLayout.CENTER);
-        lst.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
-        TargetManager.getInstance().addTargetListener(this);
-        add(new JButton(new ClearAction("Clear")), BorderLayout.SOUTH);
-    }
-
-    class ClearAction extends AbstractAction {
-
-        /**
-         * @param name the name
-         */
-        public ClearAction(String name) {
-            super(name);
-        }
-
-        /**
-         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-         */
-        public void actionPerformed(ActionEvent e) {
-            lm.clear();
-        }
+    public ClearAction(String name) {
+      super(name);
     }
 
     /**
-     * @see org.argouml.ui.targetmanager.TargetListener#targetAdded(org.argouml.ui.targetmanager.TargetEvent)
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
-    public void targetAdded(TargetEvent e) {
-        lastEvent = "targetAdded";
-        setTarget(e.getNewTargets());
+    public void actionPerformed(ActionEvent e) {
+      lm.clear();
     }
+  }
 
-    /**
-     * @see org.argouml.ui.targetmanager.TargetListener#targetRemoved(org.argouml.ui.targetmanager.TargetEvent)
-     */
-    public void targetRemoved(TargetEvent e) {
-        lastEvent = "targetRemoved";
-        setTarget(e.getNewTargets());
+  /**
+   * @see
+   *     org.argouml.ui.targetmanager.TargetListener#targetAdded(org.argouml.ui.targetmanager.TargetEvent)
+   */
+  public void targetAdded(TargetEvent e) {
+    lastEvent = "targetAdded";
+    setTarget(e.getNewTargets());
+  }
+
+  /**
+   * @see
+   *     org.argouml.ui.targetmanager.TargetListener#targetRemoved(org.argouml.ui.targetmanager.TargetEvent)
+   */
+  public void targetRemoved(TargetEvent e) {
+    lastEvent = "targetRemoved";
+    setTarget(e.getNewTargets());
+  }
+
+  /**
+   * @see
+   *     org.argouml.ui.targetmanager.TargetListener#targetSet(org.argouml.ui.targetmanager.TargetEvent)
+   */
+  public void targetSet(TargetEvent e) {
+    lastEvent = "targetSet";
+    setTarget(e.getNewTargets());
+  }
+
+  private void setTarget(Object[] t) {
+    Collection c = new ArrayList(Arrays.asList(t));
+    setTarget(c);
+  }
+
+  private void setTarget(Collection c) {
+    lm.addElement("***Last event: " + lastEvent);
+    Iterator i = c.iterator();
+    while (i.hasNext()) {
+      lm.addElement(i.next());
     }
-
-    /**
-     * @see org.argouml.ui.targetmanager.TargetListener#targetSet(org.argouml.ui.targetmanager.TargetEvent)
-     */
-    public void targetSet(TargetEvent e) {
-        lastEvent = "targetSet";
-        setTarget(e.getNewTargets());
-    }
-
-    private void setTarget(Object[] t) {
-        Collection c = new ArrayList(Arrays.asList(t));
-        setTarget(c);
-    }
-
-    private void setTarget(Collection c) {
-        lm.addElement("***Last event: " + lastEvent);
-        Iterator i = c.iterator();
-        while (i.hasNext()) {
-            lm.addElement(i.next());
-        }
-    }
-
+  }
 }

@@ -24,10 +24,7 @@
 
 package org.argouml.uml.diagram.state.ui;
 
-
-
 import java.awt.event.ActionEvent;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.i18n.Translator;
 import org.argouml.kernel.ProjectManager;
@@ -37,42 +34,38 @@ import org.tigris.gef.undo.UndoableAction;
 import org.tigris.toolbar.toolbutton.ModalAction;
 
 /**
- *
  * @author Michiel
  */
-abstract class ButtonActionNewEffect extends UndoableAction implements
-        ModalAction {
+abstract class ButtonActionNewEffect extends UndoableAction implements ModalAction {
 
-    public ButtonActionNewEffect() {
-        super();
-        putValue(NAME, getKeyName());
-        putValue(SHORT_DESCRIPTION, Translator.localize(getKeyName()));
-        Object icon = ResourceLoaderWrapper.lookupIconResource(getIconName());
-        putValue(SMALL_ICON, icon);
-//        TargetManager.getInstance().addTargetListener(this);
-    }
+  public ButtonActionNewEffect() {
+    super();
+    putValue(NAME, getKeyName());
+    putValue(SHORT_DESCRIPTION, Translator.localize(getKeyName()));
+    Object icon = ResourceLoaderWrapper.lookupIconResource(getIconName());
+    putValue(SMALL_ICON, icon);
+    //        TargetManager.getInstance().addTargetListener(this);
+  }
 
-    public void actionPerformed(ActionEvent e) {
-        if (!isEnabled()) return;
-        super.actionPerformed(e);
-        Object target = TargetManager.getInstance().getModelTarget();
-        Object model =
-            ProjectManager.getManager().getCurrentProject().getModel();
-        Object ns = Model.getStateMachinesHelper()
-                    .findNamespaceForEvent(target, model);
-        Object event = createEvent(ns);
-        Model.getStateMachinesHelper().setEventAsTrigger(target, event);
-        TargetManager.getInstance().setTarget(event);
-    }
+  public void actionPerformed(ActionEvent e) {
+    if (!isEnabled()) return;
+    super.actionPerformed(e);
+    Object target = TargetManager.getInstance().getModelTarget();
+    Object model = ProjectManager.getManager().getCurrentProject().getModel();
+    Object ns = Model.getStateMachinesHelper().findNamespaceForEvent(target, model);
+    Object event = createEvent(ns);
+    Model.getStateMachinesHelper().setEventAsTrigger(target, event);
+    TargetManager.getInstance().setTarget(event);
+  }
 
-    public boolean isEnabled() {
-        Object target = TargetManager.getInstance().getModelTarget();
-        return Model.getFacade().isATransition(target);
-    }
-    
-    protected abstract Object createEvent(Object ns);
-    
-    protected abstract String getKeyName();
-    protected abstract String getIconName();
+  public boolean isEnabled() {
+    Object target = TargetManager.getInstance().getModelTarget();
+    return Model.getFacade().isATransition(target);
+  }
 
+  protected abstract Object createEvent(Object ns);
+
+  protected abstract String getKeyName();
+
+  protected abstract String getIconName();
 }

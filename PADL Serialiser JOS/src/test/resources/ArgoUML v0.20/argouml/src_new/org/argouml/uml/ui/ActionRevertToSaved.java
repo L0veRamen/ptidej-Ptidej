@@ -27,10 +27,8 @@ package org.argouml.uml.ui;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.text.MessageFormat;
-
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
@@ -43,50 +41,46 @@ import org.argouml.ui.ProjectBrowser;
  */
 public class ActionRevertToSaved extends AbstractAction {
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    /**
-     * Constructor.
-     */
-    public ActionRevertToSaved() {
-        super(Translator.localize("action.revert-to-saved"));
+  /** Constructor. */
+  public ActionRevertToSaved() {
+    super(Translator.localize("action.revert-to-saved"));
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // main methods
+
+  /**
+   * Performs the action.
+   *
+   * @param e an event
+   */
+  public void actionPerformed(ActionEvent e) {
+    ProjectBrowser pb = ProjectBrowser.getInstance();
+    Project p = ProjectManager.getManager().getCurrentProject();
+
+    if (p == null || !ActionSaveProject.getInstance().isEnabled()) {
+      return;
     }
 
-    ////////////////////////////////////////////////////////////////
-    // main methods
+    String message =
+        MessageFormat.format(
+            Translator.localize("optionpane.revert-to-saved-confirm"),
+            new Object[] {
+              p.getName(),
+            });
 
-    /**
-     * Performs the action.
-     *
-     * @param e an event
-     */
-    public void actionPerformed(ActionEvent e) {
-        ProjectBrowser pb = ProjectBrowser.getInstance();
-        Project p = ProjectManager.getManager().getCurrentProject();
+    int response =
+        JOptionPane.showConfirmDialog(
+            pb,
+            message,
+            Translator.localize("optionpane.revert-to-saved-confirm-title"),
+            JOptionPane.YES_NO_OPTION);
 
-        if (p == null || !ActionSaveProject.getInstance().isEnabled()) {
-            return;
-        }
-
-        String message =
-            MessageFormat.format(
-                    Translator.localize(
-                       "optionpane.revert-to-saved-confirm"),
-		    new Object[] {
-			p.getName(),
-		    });
-
-        int response =
-            JOptionPane.showConfirmDialog(
-                  pb,
-                  message,
-                  Translator.localize(
-                      "optionpane.revert-to-saved-confirm-title"),
-                  JOptionPane.YES_NO_OPTION);
-
-        if (response == JOptionPane.YES_OPTION) {
-            ProjectBrowser.getInstance().loadProject(new File(p.getURL().getFile()), true);
-        }
+    if (response == JOptionPane.YES_OPTION) {
+      ProjectBrowser.getInstance().loadProject(new File(p.getURL().getFile()), true);
     }
+  }
 }

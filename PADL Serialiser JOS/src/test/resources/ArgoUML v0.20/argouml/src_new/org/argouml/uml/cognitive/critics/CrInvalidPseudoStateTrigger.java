@@ -35,36 +35,32 @@ import org.argouml.uml.cognitive.UMLDecision;
  */
 public class CrInvalidPseudoStateTrigger extends CrUML {
 
-    /**
-     * The constructor.
-     */
-    public CrInvalidPseudoStateTrigger() {
-        setupHeadAndDesc();
-        addSupportedDecision(UMLDecision.STATE_MACHINES);
-        addTrigger("trigger");
-    }
+  /** The constructor. */
+  public CrInvalidPseudoStateTrigger() {
+    setupHeadAndDesc();
+    addSupportedDecision(UMLDecision.STATE_MACHINES);
+    addTrigger("trigger");
+  }
 
-    /**
-     * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(java.lang.Object,
-     * org.argouml.cognitive.Designer)
-     */
-    public boolean predicate2(Object dm, Designer dsgr) {
-        if (!(Model.getFacade().isATransition(dm))) return NO_PROBLEM;
-        Object tr = /*(MTransition)*/ dm;
-        Object t = Model.getFacade().getTrigger(tr);
-        Object sv = Model.getFacade().getSource(tr);
-        if (!(Model.getFacade().isAPseudostate(sv))) return NO_PROBLEM;
-        Object k = Model.getFacade().getPseudostateKind(sv);
-        //Forks have their own outgoing transitions critic
-        if (Model.getFacade().
-                equalsPseudostateKind(k,
-                        Model.getPseudostateKind().getFork()))
-            return NO_PROBLEM;
-        boolean hasTrigger =
-                (t != null && Model.getFacade().getName(t) != null
-                && Model.getFacade().getName(t).length() > 0);
-        if (hasTrigger) return PROBLEM_FOUND;
-        return NO_PROBLEM;
-    }
-
+  /**
+   * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(java.lang.Object,
+   *     org.argouml.cognitive.Designer)
+   */
+  public boolean predicate2(Object dm, Designer dsgr) {
+    if (!(Model.getFacade().isATransition(dm))) return NO_PROBLEM;
+    Object tr = /*(MTransition)*/ dm;
+    Object t = Model.getFacade().getTrigger(tr);
+    Object sv = Model.getFacade().getSource(tr);
+    if (!(Model.getFacade().isAPseudostate(sv))) return NO_PROBLEM;
+    Object k = Model.getFacade().getPseudostateKind(sv);
+    // Forks have their own outgoing transitions critic
+    if (Model.getFacade().equalsPseudostateKind(k, Model.getPseudostateKind().getFork()))
+      return NO_PROBLEM;
+    boolean hasTrigger =
+        (t != null
+            && Model.getFacade().getName(t) != null
+            && Model.getFacade().getName(t).length() > 0);
+    if (hasTrigger) return PROBLEM_FOUND;
+    return NO_PROBLEM;
+  }
 } /* end class CrInvalidPseudoStateTrigger */

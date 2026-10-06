@@ -25,9 +25,7 @@
 package org.argouml.uml.diagram.static_structure.ui;
 
 import java.awt.event.MouseEvent;
-
 import javax.swing.Icon;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.model.Model;
 import org.argouml.uml.diagram.deployment.DeploymentDiagramGraphModel;
@@ -40,127 +38,116 @@ import org.tigris.gef.presentation.Fig;
  */
 public class SelectionClass extends SelectionNodeClarifiers2 {
 
-    private static Icon inherit =
-        ResourceLoaderWrapper.lookupIconResource("Generalization");
+  private static Icon inherit = ResourceLoaderWrapper.lookupIconResource("Generalization");
 
-    private static Icon assoc =
-        ResourceLoaderWrapper.lookupIconResource("Association");
+  private static Icon assoc = ResourceLoaderWrapper.lookupIconResource("Association");
 
-    private static Icon compos =
-        ResourceLoaderWrapper.lookupIconResource("CompositeAggregation");
+  private static Icon compos = ResourceLoaderWrapper.lookupIconResource("CompositeAggregation");
 
-    private static Icon selfassoc =
-        ResourceLoaderWrapper.lookupIconResource("SelfAssociation");
+  private static Icon selfassoc = ResourceLoaderWrapper.lookupIconResource("SelfAssociation");
 
-    private boolean useComposite;
+  private boolean useComposite;
 
-    private static Icon icons[] = 
-    {inherit,
-     inherit,
-     assoc,
-     assoc,
-     selfassoc,
-    };
-    
-    // TODO: I18N required
-    private static String instructions[] = 
-    {"Add a superclass",
-     "Add a subclass",
-     "Add an associated class",
-     "Add an associated class",
-     "Add a self association",
-     "Move object(s)",
-    };
+  private static Icon icons[] = {
+    inherit, inherit, assoc, assoc, selfassoc,
+  };
 
-    private static Object edgeType[] = 
-    {Model.getMetaTypes().getGeneralization(),
-     Model.getMetaTypes().getGeneralization(),
-     Model.getMetaTypes().getAssociation(),
-     Model.getMetaTypes().getAssociation(),
-     Model.getMetaTypes().getAssociation(),
-    };
+  // TODO: I18N required
+  private static String instructions[] = {
+    "Add a superclass",
+    "Add a subclass",
+    "Add an associated class",
+    "Add an associated class",
+    "Add a self association",
+    "Move object(s)",
+  };
 
-    /**
-     * Construct a new SelectionClass for the given Fig.
-     *
-     * @param f The given Fig.
-     */
-    public SelectionClass(Fig f) { 
-        super(f);
+  private static Object edgeType[] = {
+    Model.getMetaTypes().getGeneralization(),
+    Model.getMetaTypes().getGeneralization(),
+    Model.getMetaTypes().getAssociation(),
+    Model.getMetaTypes().getAssociation(),
+    Model.getMetaTypes().getAssociation(),
+  };
+
+  /**
+   * Construct a new SelectionClass for the given Fig.
+   *
+   * @param f The given Fig.
+   */
+  public SelectionClass(Fig f) {
+    super(f);
+  }
+
+  @Override
+  protected Icon[] getIcons() {
+    Icon workingIcons[] = new Icon[icons.length];
+    System.arraycopy(icons, 0, workingIcons, 0, icons.length);
+
+    // No Generalizations on Deployment Diagram
+    if (Globals.curEditor().getGraphModel() instanceof DeploymentDiagramGraphModel) {
+      workingIcons[TOP - BASE] = null;
+      workingIcons[BOTTOM - BASE] = null;
     }
-
-    @Override
-    protected Icon[] getIcons() {
-        Icon workingIcons[] = new Icon[icons.length];
-        System.arraycopy(icons, 0, workingIcons, 0, icons.length);
-
-        // No Generalizations on Deployment Diagram
-        if (Globals.curEditor().getGraphModel() 
-                instanceof DeploymentDiagramGraphModel) {
-            workingIcons[TOP - BASE] = null;
-            workingIcons[BOTTOM - BASE] = null;
-        }
-        if (useComposite) {
-            workingIcons[LEFT - BASE] = compos;
-            workingIcons[RIGHT - BASE] = compos;
-        } 
-        // Readonly class: no generalization, no association to self
-        if (Model.getModelManagementHelper().isReadOnly(
-                getContent().getOwner())) {
-            return new Icon[] {null, inherit, null, null, null };
-        }
-        return workingIcons;
+    if (useComposite) {
+      workingIcons[LEFT - BASE] = compos;
+      workingIcons[RIGHT - BASE] = compos;
     }
-    
-    @Override
-    protected String getInstructions(int index) {
-        return instructions[index - BASE];
+    // Readonly class: no generalization, no association to self
+    if (Model.getModelManagementHelper().isReadOnly(getContent().getOwner())) {
+      return new Icon[] {null, inherit, null, null, null};
     }
+    return workingIcons;
+  }
 
-    @Override
-    protected Object getNewNodeType(int i) {
-        return Model.getMetaTypes().getUMLClass();
-    }
+  @Override
+  protected String getInstructions(int index) {
+    return instructions[index - BASE];
+  }
 
-    @Override
-    protected Object getNewEdgeType(int i) {
-        if (i == 0) {
-            i = getButton();
-        }
-        return edgeType[i - 10];
-    }
+  @Override
+  protected Object getNewNodeType(int i) {
+    return Model.getMetaTypes().getUMLClass();
+  }
 
-    @Override
-    protected boolean isReverseEdge(int i) {
-        if (i == BOTTOM || i == LEFT) {
-            return true;
-        } 
-        return false;
+  @Override
+  protected Object getNewEdgeType(int i) {
+    if (i == 0) {
+      i = getButton();
     }
-    
-    @Override
-    protected boolean isDraggableHandle(int index) {
-        // Self-association isn't draggable
-        if (index == LOWER_LEFT) {
-            return false;
-        }
-        return true;
-    }
+    return edgeType[i - 10];
+  }
 
-    @Override
-    protected boolean isEdgePostProcessRequested() {
-        return useComposite;
+  @Override
+  protected boolean isReverseEdge(int i) {
+    if (i == BOTTOM || i == LEFT) {
+      return true;
     }
+    return false;
+  }
 
-    @Override
-    public void mouseEntered(MouseEvent me) {
-        super.mouseEntered(me);
-        useComposite = me.isShiftDown();
+  @Override
+  protected boolean isDraggableHandle(int index) {
+    // Self-association isn't draggable
+    if (index == LOWER_LEFT) {
+      return false;
     }
+    return true;
+  }
 
-    @Override
-    protected Object getNewNode(int index) {
-        return Model.getCoreFactory().buildClass();
-    }
+  @Override
+  protected boolean isEdgePostProcessRequested() {
+    return useComposite;
+  }
 
+  @Override
+  public void mouseEntered(MouseEvent me) {
+    super.mouseEntered(me);
+    useComposite = me.isShiftDown();
+  }
+
+  @Override
+  protected Object getNewNode(int index) {
+    return Model.getCoreFactory().buildClass();
+  }
 }

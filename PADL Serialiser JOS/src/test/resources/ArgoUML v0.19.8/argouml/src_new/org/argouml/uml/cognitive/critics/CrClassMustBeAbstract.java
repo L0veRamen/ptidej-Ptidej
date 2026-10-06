@@ -25,45 +25,38 @@
 package org.argouml.uml.cognitive.critics;
 
 import java.util.Iterator;
-
 import org.argouml.cognitive.Designer;
 import org.argouml.cognitive.critics.Critic;
 import org.argouml.model.Model;
 import org.argouml.uml.cognitive.UMLDecision;
 
 /**
- * A critic to detect whether a non abstract class
- * contains abstract operations. 
+ * A critic to detect whether a non abstract class contains abstract operations.
  *
  * @author jrobbins
  */
 public class CrClassMustBeAbstract extends CrUML {
 
-    /**
-     * The constructor.
-     *
-     */
-    public CrClassMustBeAbstract() {
-        setupHeadAndDesc();
-	addSupportedDecision(UMLDecision.INHERITANCE);
-	addSupportedDecision(UMLDecision.METHODS);
-	setKnowledgeTypes(Critic.KT_SEMANTICS);
+  /** The constructor. */
+  public CrClassMustBeAbstract() {
+    setupHeadAndDesc();
+    addSupportedDecision(UMLDecision.INHERITANCE);
+    addSupportedDecision(UMLDecision.METHODS);
+    setKnowledgeTypes(Critic.KT_SEMANTICS);
+  }
+
+  /**
+   * @see org.argouml.uml.cognitive.critics.CrUML#predicate2( java.lang.Object,
+   *     org.argouml.cognitive.Designer)
+   */
+  public boolean predicate2(Object dm, Designer dsgr) {
+    if (!(Model.getFacade().isAClass(dm))) return NO_PROBLEM;
+    if (Model.getFacade().isAbstract(dm)) return NO_PROBLEM;
+
+    Iterator ops = Model.getFacade().getOperations(dm).iterator();
+    while (ops.hasNext()) {
+      if (Model.getFacade().isAbstract(ops.next())) return PROBLEM_FOUND;
     }
-
-    /**
-     * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
-     * java.lang.Object, org.argouml.cognitive.Designer)
-     */
-    public boolean predicate2(Object dm, Designer dsgr) {
-	if (!(Model.getFacade().isAClass(dm))) return NO_PROBLEM;
-	if (Model.getFacade().isAbstract(dm)) return NO_PROBLEM;
-
-	Iterator ops = Model.getFacade().getOperations(dm).iterator();
-	while (ops.hasNext()) {
-	    if (Model.getFacade().isAbstract(ops.next())) return PROBLEM_FOUND;
-	}
-	return NO_PROBLEM;
-    }
-
+    return NO_PROBLEM;
+  }
 } /* end class CrClassMustBeAbstract.java */
-

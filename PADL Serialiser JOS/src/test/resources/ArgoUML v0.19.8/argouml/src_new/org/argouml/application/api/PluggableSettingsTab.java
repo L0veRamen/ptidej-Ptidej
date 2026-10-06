@@ -25,20 +25,16 @@
 package org.argouml.application.api;
 
 /**
- * An module interface which identifies an ArgoUML plug-in used
- * as a tab in the settings dialog.
+ * An module interface which identifies an ArgoUML plug-in used as a tab in the settings dialog.
  *
  * @author Thierry Lach
  * @since 0.9.4
  */
 public interface PluggableSettingsTab extends Pluggable {
-    /**
-     * Returns the settings tab panel for the plugin.
-     * This is found under the edit button.
-     *
-     * @return the setting tab panel.
-     */
-    SettingsTabPanel getSettingsTabPanel();
-
+  /**
+   * Returns the settings tab panel for the plugin. This is found under the edit button.
+   *
+   * @return the setting tab panel.
+   */
+  SettingsTabPanel getSettingsTabPanel();
 } /* End interface PluggableSettingsTab */
-

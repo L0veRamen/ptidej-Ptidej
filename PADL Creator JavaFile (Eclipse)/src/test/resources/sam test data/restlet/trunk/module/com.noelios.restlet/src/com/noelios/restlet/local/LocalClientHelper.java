@@ -22,6 +22,7 @@
 
 package com.noelios.restlet.local;
 
+import com.noelios.restlet.ClientHelper;
 import org.restlet.Application;
 import org.restlet.Client;
 import org.restlet.data.CharacterSet;
@@ -33,11 +34,10 @@ import org.restlet.data.Request;
 import org.restlet.resource.Representation;
 import org.restlet.service.MetadataService;
 
-import com.noelios.restlet.ClientHelper;
-
 /**
- * Connector to the local resources accessible via file system, class loaders and similar mechanisms.
- * Here is the list of parameters that are supported:
+ * Connector to the local resources accessible via file system, class loaders and similar
+ * mechanisms. Here is the list of parameters that are supported:
+ *
  * <table>
  * 	<tr>
  * 		<th>Parameter name</th>
@@ -51,95 +51,83 @@ import com.noelios.restlet.ClientHelper;
  * 		<td>600</td>
  * 		<td>Time to live for a file representation before it expires (in seconds).</td>
  * 	</tr>
- *	</table>
+ * </table>
+ *
  * @see org.restlet.data.LocalReference
  * @author Jerome Louvel (contact@noelios.com)
  * @author Thierry Boileau
  */
-public class LocalClientHelper extends ClientHelper
-{
-	/**
-	 * Constructor. Note that the common list of metadata associations based on extensions is added, see
-	 * the addCommonExtensions() method.
-	 * @param client The client to help.
-	 */
-	public LocalClientHelper(Client client)
-	{
-		super(client);
-	}
+public class LocalClientHelper extends ClientHelper {
+  /**
+   * Constructor. Note that the common list of metadata associations based on extensions is added,
+   * see the addCommonExtensions() method.
+   *
+   * @param client The client to help.
+   */
+  public LocalClientHelper(Client client) {
+    super(client);
+  }
 
-	/**
-	 * Returns the metadata service associated to a request.
-	 * @param request The request to lookup. 
-	 * @return The metadata service associated to a request.
-	 */
-	public MetadataService getMetadataService(Request request)
-	{
-		MetadataService result = null;
-		Application application = (Application) request.getAttributes().get(
-				Application.class.getCanonicalName());
+  /**
+   * Returns the metadata service associated to a request.
+   *
+   * @param request The request to lookup.
+   * @return The metadata service associated to a request.
+   */
+  public MetadataService getMetadataService(Request request) {
+    MetadataService result = null;
+    Application application =
+        (Application) request.getAttributes().get(Application.class.getCanonicalName());
 
-		if (application != null)
-		{
-			result = application.getMetadataService();
-		}
-		else
-		{
-			result = new MetadataService();
-		}
+    if (application != null) {
+      result = application.getMetadataService();
+    } else {
+      result = new MetadataService();
+    }
 
-		return result;
-	}
+    return result;
+  }
 
-	/**
-	 * Updates some representation metadata based on a given entry name with extensions.
-	 * @param metadataService The parent metadata service. 
-	 * @param entryName The entry name with extensions.
-	 * @param representation The representation to update.
-	 */
-	public void updateMetadata(MetadataService metadataService, String entryName,
-			Representation representation)
-	{
-		String[] tokens = entryName.split("\\.");
-		Metadata current;
+  /**
+   * Updates some representation metadata based on a given entry name with extensions.
+   *
+   * @param metadataService The parent metadata service.
+   * @param entryName The entry name with extensions.
+   * @param representation The representation to update.
+   */
+  public void updateMetadata(
+      MetadataService metadataService, String entryName, Representation representation) {
+    String[] tokens = entryName.split("\\.");
+    Metadata current;
 
-		// We found a potential variant
-		for (int j = 1; j < tokens.length; j++)
-		{
-			current = metadataService.getMetadata(tokens[j]);
-			if (current != null)
-			{
-				// Metadata extension detected 
-				if (current instanceof MediaType)
-					representation.setMediaType((MediaType) current);
-				if (current instanceof CharacterSet)
-					representation.setCharacterSet((CharacterSet) current);
-				if (current instanceof Encoding)
-					representation.setEncoding((Encoding) current);
-				if (current instanceof Language)
-					representation.setLanguage((Language) current);
-			}
+    // We found a potential variant
+    for (int j = 1; j < tokens.length; j++) {
+      current = metadataService.getMetadata(tokens[j]);
+      if (current != null) {
+        // Metadata extension detected
+        if (current instanceof MediaType) representation.setMediaType((MediaType) current);
+        if (current instanceof CharacterSet) representation.setCharacterSet((CharacterSet) current);
+        if (current instanceof Encoding) representation.setEncoding((Encoding) current);
+        if (current instanceof Language) representation.setLanguage((Language) current);
+      }
 
-			int dashIndex = tokens[j].indexOf('-');
-			if ((representation != null) && (dashIndex != -1))
-			{
-				// We found a language extension with a region area specified
-				// Try to find a language matching the primary part of the extension
-				String primaryPart = tokens[j].substring(0, dashIndex);
-				current = metadataService.getMetadata(primaryPart);
-				if (current instanceof Language)
-					representation.setLanguage((Language) current);
-			}
-		}
-	}
+      int dashIndex = tokens[j].indexOf('-');
+      if ((representation != null) && (dashIndex != -1)) {
+        // We found a language extension with a region area specified
+        // Try to find a language matching the primary part of the extension
+        String primaryPart = tokens[j].substring(0, dashIndex);
+        current = metadataService.getMetadata(primaryPart);
+        if (current instanceof Language) representation.setLanguage((Language) current);
+      }
+    }
+  }
 
-	/**
-	 * Returns the time to live for a file representation before it expires (in seconds).
-	 * @return The time to live for a file representation before it expires (in seconds).
-	 */
-	public int getTimeToLive()
-	{
-		return Integer.parseInt(getParameters().getFirstValue("timeToLive", "600"));
-	}
-
+  /**
+   * Returns the time to live for a file representation before it expires (in seconds).
+   *
+   * @return The time to live for a file representation before it expires (in seconds).
+   */
+  public int getTimeToLive() {
+    return Integer.parseInt(getParameters().getFirstValue("timeToLive", "600"));
+  }
 }

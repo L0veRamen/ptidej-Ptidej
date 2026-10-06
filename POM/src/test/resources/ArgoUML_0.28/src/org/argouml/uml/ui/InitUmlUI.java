@@ -27,7 +27,6 @@ package org.argouml.uml.ui;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import org.argouml.application.api.AbstractArgoJPanel;
 import org.argouml.application.api.GUISettingsTabInterface;
 import org.argouml.application.api.InitSubsystem;
@@ -39,35 +38,33 @@ import org.argouml.application.api.InitSubsystem;
  */
 public class InitUmlUI implements InitSubsystem {
 
-    public void init() {
-        /* Set up the property panels for UML elements: */
-        PropPanelFactory elementFactory = new ElementPropPanelFactory();
-        PropPanelFactoryManager.addPropPanelFactory(elementFactory);
+  public void init() {
+    /* Set up the property panels for UML elements: */
+    PropPanelFactory elementFactory = new ElementPropPanelFactory();
+    PropPanelFactoryManager.addPropPanelFactory(elementFactory);
 
-        /* Set up the property panels for other UML objects: */
-        PropPanelFactory umlObjectFactory = new UmlObjectPropPanelFactory();
-        PropPanelFactoryManager.addPropPanelFactory(umlObjectFactory);
-    }
+    /* Set up the property panels for other UML objects: */
+    PropPanelFactory umlObjectFactory = new UmlObjectPropPanelFactory();
+    PropPanelFactoryManager.addPropPanelFactory(umlObjectFactory);
+  }
 
-    public List<AbstractArgoJPanel> getDetailsTabs() {
-        List<AbstractArgoJPanel> result = 
-            new ArrayList<AbstractArgoJPanel>();
-        result.add(new TabProps());
-        result.add(new TabDocumentation());
-        result.add(new TabStyle());
-        result.add(new TabSrc());
-        result.add(new TabConstraints());
-        result.add(new TabStereotype());
-        result.add(new TabTaggedValues());
-        return result;
-    }
+  public List<AbstractArgoJPanel> getDetailsTabs() {
+    List<AbstractArgoJPanel> result = new ArrayList<AbstractArgoJPanel>();
+    result.add(new TabProps());
+    result.add(new TabDocumentation());
+    result.add(new TabStyle());
+    result.add(new TabSrc());
+    result.add(new TabConstraints());
+    result.add(new TabStereotype());
+    result.add(new TabTaggedValues());
+    return result;
+  }
 
-    public List<GUISettingsTabInterface> getProjectSettingsTabs() {
-        return Collections.emptyList();
-    }
+  public List<GUISettingsTabInterface> getProjectSettingsTabs() {
+    return Collections.emptyList();
+  }
 
-    public List<GUISettingsTabInterface> getSettingsTabs() {
-        return Collections.emptyList();
-    }
-
+  public List<GUISettingsTabInterface> getSettingsTabs() {
+    return Collections.emptyList();
+  }
 }

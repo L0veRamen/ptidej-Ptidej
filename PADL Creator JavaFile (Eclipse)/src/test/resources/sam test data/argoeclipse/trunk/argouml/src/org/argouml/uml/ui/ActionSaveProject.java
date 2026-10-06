@@ -30,11 +30,9 @@ import java.beans.PropertyChangeListener;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Icon;
-
 import org.apache.log4j.Logger;
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.i18n.Translator;
@@ -47,84 +45,81 @@ import org.argouml.ui.ProjectBrowser;
  * @see ActionOpenProject
  */
 public class ActionSaveProject extends AbstractAction {
-        
-    private static final long serialVersionUID = -5579548202585774293L;
-        /**
-     * Logger.
-     */
-    private static final Logger LOG = Logger.getLogger(ActionSaveProject.class);
-    
-    /**
-     * The listenes that want to know when this action is disabled/enabled.
-     */
-    private Set listeners = new HashSet();
 
-    /**
-     * The constructor.
-     */
-    public ActionSaveProject() {
-        super(Translator.localize("action.save-project"),
-                ResourceLoaderWrapper.lookupIcon("action.save-project"));
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize("action.save-project"));
-        super.setEnabled(false);
-    }
+  private static final long serialVersionUID = -5579548202585774293L;
 
-    /**
-     * The constructor.
-     * @param name the name of the action.
-     * @param icon the icon to represent this action graphically.
-     */
-    protected ActionSaveProject(String name, Icon icon) {
-        super(name, icon);
-    }
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(ActionSaveProject.class);
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        LOG.info("Performing save action");
-        ProjectBrowser.getInstance().trySave(
-                ProjectManager.getManager().getCurrentProject() != null
-                        && ProjectManager.getManager().getCurrentProject()
-                                .getURL() != null);
-    }
+  /** The listenes that want to know when this action is disabled/enabled. */
+  private Set listeners = new HashSet();
 
-    /**
-     * Set the enabled state of the save action.
-     * When we become enabled inform the user by highlighting the title bar
-     * with an asterisk.
-     * @param enabled new state for save command
-     */
-    public void setEnabled(boolean enabled) {
-        if (enabled == this.enabled) {
-            return;
-        }
-        super.setEnabled(enabled);
-        ProjectBrowser.getInstance().showSaveIndicator();
-        for (Iterator iter = listeners.iterator(); iter.hasNext();) {
-            PropertyChangeListener listener = 
-                (PropertyChangeListener) iter.next();
-            listener.propertyChange(new PropertyChangeEvent(this, "save",
-                    Boolean.valueOf(!enabled), Boolean.valueOf(enabled)));
-        }
-    }
-    
-    /**
-     * Registers a listener.
-     * @param listener the one to unregister
-     */
-    public void addListener(PropertyChangeListener listener) {
-        listeners.add(listener);
-    }
-    
-    /**
-     * Unregisters a listener.
-     * @param listener the one to be removed
-     */
-    public void removeListener(PropertyChangeListener listener) {
-        listeners.remove(listener);
-    }
+  /** The constructor. */
+  public ActionSaveProject() {
+    super(
+        Translator.localize("action.save-project"),
+        ResourceLoaderWrapper.lookupIcon("action.save-project"));
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize("action.save-project"));
+    super.setEnabled(false);
+  }
 
+  /**
+   * The constructor.
+   *
+   * @param name the name of the action.
+   * @param icon the icon to represent this action graphically.
+   */
+  protected ActionSaveProject(String name, Icon icon) {
+    super(name, icon);
+  }
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    LOG.info("Performing save action");
+    ProjectBrowser.getInstance()
+        .trySave(
+            ProjectManager.getManager().getCurrentProject() != null
+                && ProjectManager.getManager().getCurrentProject().getURL() != null);
+  }
+
+  /**
+   * Set the enabled state of the save action. When we become enabled inform the user by
+   * highlighting the title bar with an asterisk.
+   *
+   * @param enabled new state for save command
+   */
+  public void setEnabled(boolean enabled) {
+    if (enabled == this.enabled) {
+      return;
+    }
+    super.setEnabled(enabled);
+    ProjectBrowser.getInstance().showSaveIndicator();
+    for (Iterator iter = listeners.iterator(); iter.hasNext(); ) {
+      PropertyChangeListener listener = (PropertyChangeListener) iter.next();
+      listener.propertyChange(
+          new PropertyChangeEvent(
+              this, "save", Boolean.valueOf(!enabled), Boolean.valueOf(enabled)));
+    }
+  }
+
+  /**
+   * Registers a listener.
+   *
+   * @param listener the one to unregister
+   */
+  public void addListener(PropertyChangeListener listener) {
+    listeners.add(listener);
+  }
+
+  /**
+   * Unregisters a listener.
+   *
+   * @param listener the one to be removed
+   */
+  public void removeListener(PropertyChangeListener listener) {
+    listeners.remove(listener);
+  }
 } /* end class ActionSaveProject */

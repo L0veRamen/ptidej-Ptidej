@@ -29,53 +29,49 @@ package org.argouml.ui.explorer.rules;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 
 /**
- * PerspectiveRule to navigate from statemachine to the subvertices of
- * its top state (1 level deep only).
+ * PerspectiveRule to navigate from statemachine to the subvertices of its top state (1 level deep
+ * only).
  *
  * @author jaap.branderhorst@xs4all.nl
  */
 public class GoStateMachineToState extends AbstractPerspectiveRule {
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
-     */
-    public String getRuleName() {
-        return Translator.localize ("misc.state-machine.state");
-    }
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
+   */
+  public String getRuleName() {
+    return Translator.localize("misc.state-machine.state");
+  }
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(
-     *         java.lang.Object)
-     */
-    public Collection getChildren(Object parent) {
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren( java.lang.Object)
+   */
+  public Collection getChildren(Object parent) {
 
-        if (Model.getFacade().isAStateMachine(parent)) {
-            if (Model.getFacade().getTop(parent) != null) {
-                return Model.getFacade().getSubvertices(
-                        Model.getFacade().getTop(parent));
-            }
-        }
-        return null;
+    if (Model.getFacade().isAStateMachine(parent)) {
+      if (Model.getFacade().getTop(parent) != null) {
+        return Model.getFacade().getSubvertices(Model.getFacade().getTop(parent));
+      }
     }
+    return null;
+  }
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(
-     *         java.lang.Object)
-     */
-    public Set getDependencies(Object parent) {
-        if (Model.getFacade().isAStateMachine(parent)) {
-	    Set set = new HashSet();
-	    set.add(parent);
-	    if (Model.getFacade().getTop(parent) != null) {
-                set.add(Model.getFacade().getTop(parent));
-            }
-	    return set;
-	}
-	return null;
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies( java.lang.Object)
+   */
+  public Set getDependencies(Object parent) {
+    if (Model.getFacade().isAStateMachine(parent)) {
+      Set set = new HashSet();
+      set.add(parent);
+      if (Model.getFacade().getTop(parent) != null) {
+        set.add(Model.getFacade().getTop(parent));
+      }
+      return set;
     }
+    return null;
+  }
 }

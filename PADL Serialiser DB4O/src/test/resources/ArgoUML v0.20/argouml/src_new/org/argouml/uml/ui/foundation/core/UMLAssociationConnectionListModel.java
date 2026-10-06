@@ -26,54 +26,48 @@ package org.argouml.uml.ui.foundation.core;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementOrderedListModel2;
 
 /**
- *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 4, 2003
  */
-public class UMLAssociationConnectionListModel
-    extends UMLModelElementOrderedListModel2 {
+public class UMLAssociationConnectionListModel extends UMLModelElementOrderedListModel2 {
 
-    /**
-     * Constructor for UMLModelElementClientDependencyListModel.
-     */
-    public UMLAssociationConnectionListModel() {
-        super("connection");
+  /** Constructor for UMLModelElementClientDependencyListModel. */
+  public UMLAssociationConnectionListModel() {
+    super("connection");
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (getTarget() != null) {
+      setAllElements(Model.getFacade().getConnections(getTarget()));
     }
+  }
 
-     /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (getTarget() != null) {
-            setAllElements(Model.getFacade().getConnections(getTarget()));
-        }
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ o) {
+    return Model.getFacade().isAAssociationEnd(o)
+        && Model.getFacade().getConnections(getTarget()).contains(o);
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ o) {
-        return Model.getFacade().isAAssociationEnd(o)
-            && Model.getFacade().getConnections(getTarget()).contains(o);
-    }
-
-
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementOrderedListModel2#swap(int, int)
-     */
-    public void swap(int index1, int index2) {
-        Object assoc = getTarget();
-        List c = new ArrayList(Model.getFacade().getConnections(assoc));
-        Object mem1 = c.get(index1);
-        Object mem2 = c.get(index2);
-        c.set(index1, mem2);
-        c.set(index2, mem1);
-        Model.getCoreHelper().setConnections(assoc, c);
-        buildModelList();
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementOrderedListModel2#swap(int, int)
+   */
+  public void swap(int index1, int index2) {
+    Object assoc = getTarget();
+    List c = new ArrayList(Model.getFacade().getConnections(assoc));
+    Object mem1 = c.get(index1);
+    Object mem2 = c.get(index2);
+    c.set(index1, mem2);
+    c.set(index2, mem1);
+    Model.getCoreHelper().setConnections(assoc, c);
+    buildModelList();
+  }
 }

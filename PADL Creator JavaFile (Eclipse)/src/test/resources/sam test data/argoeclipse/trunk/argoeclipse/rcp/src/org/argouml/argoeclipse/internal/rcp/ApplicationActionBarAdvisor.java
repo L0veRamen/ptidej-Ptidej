@@ -36,109 +36,106 @@ import org.eclipse.ui.application.IActionBarConfigurer;
 
 /**
  * Configures the action bars.
+ *
  * @author Tom Morris
  */
 public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 
-    private IWorkbenchAction newAction;
-    private IWorkbenchAction printAction;
-    
-    private IWorkbenchAction copyAction;
-    private IWorkbenchAction cutAction;
-    private IWorkbenchAction pasteAction;
-    private IWorkbenchAction undoAction;
+  private IWorkbenchAction newAction;
+  private IWorkbenchAction printAction;
 
-    private IWorkbenchAction perspectiveAction;
-    private IWorkbenchAction viewAction;
+  private IWorkbenchAction copyAction;
+  private IWorkbenchAction cutAction;
+  private IWorkbenchAction pasteAction;
+  private IWorkbenchAction undoAction;
 
-    private IWorkbenchAction aboutAction;
-    private IWorkbenchAction introAction;
-    private IWorkbenchAction helpContentsAction;
-    private IWorkbenchAction helpSearchAction;
-    
-    /**
-     * Constructor
-     * @param configurer special class to configure the base class
-     */
-    public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
-        super(configurer);
-    }
+  private IWorkbenchAction perspectiveAction;
+  private IWorkbenchAction viewAction;
 
-    /*
-     * @see org.eclipse.ui.application.ActionBarAdvisor#makeActions(org.eclipse.ui.IWorkbenchWindow)
-     */
-    protected void makeActions(IWorkbenchWindow window) {
-        newAction = ActionFactory.NEW.create(window);
-        register(newAction);
-        printAction = ActionFactory.PRINT.create(window);
-        register(printAction);
+  private IWorkbenchAction aboutAction;
+  private IWorkbenchAction introAction;
+  private IWorkbenchAction helpContentsAction;
+  private IWorkbenchAction helpSearchAction;
 
-        copyAction = ActionFactory.COPY.create(window);
-        register(copyAction);
-        cutAction = ActionFactory.CUT.create(window);
-        register(cutAction);
-        pasteAction = ActionFactory.PASTE.create(window);
-        register(pasteAction);
-        undoAction = ActionFactory.UNDO.create(window);
-        register(undoAction);
-        
-        perspectiveAction = ActionFactory.OPEN_PERSPECTIVE_DIALOG
-                .create(window);
-        register(perspectiveAction);
-        viewAction = ActionFactory.OPEN_NEW_WINDOW.create(window);
-        register(viewAction);
+  /**
+   * Constructor
+   *
+   * @param configurer special class to configure the base class
+   */
+  public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
+    super(configurer);
+  }
 
-        aboutAction = ActionFactory.ABOUT.create(window);
-        register(aboutAction);
-        introAction = ActionFactory.INTRO.create(window);
-        register(introAction);
-        helpContentsAction = ActionFactory.HELP_CONTENTS.create(window);
-        register(helpContentsAction);
-        helpSearchAction = ActionFactory.HELP_SEARCH.create(window);
-        register(helpSearchAction);
-    }
+  /*
+   * @see org.eclipse.ui.application.ActionBarAdvisor#makeActions(org.eclipse.ui.IWorkbenchWindow)
+   */
+  protected void makeActions(IWorkbenchWindow window) {
+    newAction = ActionFactory.NEW.create(window);
+    register(newAction);
+    printAction = ActionFactory.PRINT.create(window);
+    register(printAction);
 
-    /*
-     * @see org.eclipse.ui.application.ActionBarAdvisor#fillMenuBar(org.eclipse.jface.action.IMenuManager)
-     */
-    protected void fillMenuBar(IMenuManager menuBar) {
-        MenuManager fileMenu = new MenuManager(MessageBundle.fileMenu,
-                IWorkbenchActionConstants.M_FILE);
-        menuBar.add(fileMenu);
+    copyAction = ActionFactory.COPY.create(window);
+    register(copyAction);
+    cutAction = ActionFactory.CUT.create(window);
+    register(cutAction);
+    pasteAction = ActionFactory.PASTE.create(window);
+    register(pasteAction);
+    undoAction = ActionFactory.UNDO.create(window);
+    register(undoAction);
 
-        fileMenu.add(newAction);
-        fileMenu.add(new Separator(IWorkbenchActionConstants.PRINT_EXT));
-        fileMenu.appendToGroup(IWorkbenchActionConstants.PRINT_EXT, 
-                printAction);
-        
-        MenuManager editMenu = new MenuManager(MessageBundle.editMenu,
-                IWorkbenchActionConstants.M_EDIT);
-        menuBar.add(editMenu);
-        editMenu.add(undoAction);
-        editMenu.add(new Separator(IWorkbenchActionConstants.EDIT_START));
-        editMenu.appendToGroup(IWorkbenchActionConstants.EDIT_START, 
-                copyAction);
-        editMenu.appendToGroup(IWorkbenchActionConstants.EDIT_START, cutAction);
-        editMenu.appendToGroup(IWorkbenchActionConstants.EDIT_START, 
-                pasteAction);
-        editMenu.add(new Separator(IWorkbenchActionConstants.EDIT_END));
-        
-        MenuManager windowMenu = new MenuManager(MessageBundle.windowMenu,
-                IWorkbenchActionConstants.M_WINDOW);
-        menuBar.add(windowMenu);
-        windowMenu.add(perspectiveAction);
-        windowMenu.add(viewAction);
+    perspectiveAction = ActionFactory.OPEN_PERSPECTIVE_DIALOG.create(window);
+    register(perspectiveAction);
+    viewAction = ActionFactory.OPEN_NEW_WINDOW.create(window);
+    register(viewAction);
 
-        // Help
-        MenuManager helpMenu = new MenuManager(MessageBundle.helpMenu,
-                IWorkbenchActionConstants.M_HELP);
-        menuBar.add(helpMenu);
-        helpMenu.add(introAction);
-        helpMenu.add(new Separator());
-        helpMenu.add(helpContentsAction);
-        helpMenu.add(helpSearchAction);
-        helpMenu.add(new Separator());
-        helpMenu.add(aboutAction);
-    }
+    aboutAction = ActionFactory.ABOUT.create(window);
+    register(aboutAction);
+    introAction = ActionFactory.INTRO.create(window);
+    register(introAction);
+    helpContentsAction = ActionFactory.HELP_CONTENTS.create(window);
+    register(helpContentsAction);
+    helpSearchAction = ActionFactory.HELP_SEARCH.create(window);
+    register(helpSearchAction);
+  }
 
+  /*
+   * @see org.eclipse.ui.application.ActionBarAdvisor#fillMenuBar(org.eclipse.jface.action.IMenuManager)
+   */
+  protected void fillMenuBar(IMenuManager menuBar) {
+    MenuManager fileMenu =
+        new MenuManager(MessageBundle.fileMenu, IWorkbenchActionConstants.M_FILE);
+    menuBar.add(fileMenu);
+
+    fileMenu.add(newAction);
+    fileMenu.add(new Separator(IWorkbenchActionConstants.PRINT_EXT));
+    fileMenu.appendToGroup(IWorkbenchActionConstants.PRINT_EXT, printAction);
+
+    MenuManager editMenu =
+        new MenuManager(MessageBundle.editMenu, IWorkbenchActionConstants.M_EDIT);
+    menuBar.add(editMenu);
+    editMenu.add(undoAction);
+    editMenu.add(new Separator(IWorkbenchActionConstants.EDIT_START));
+    editMenu.appendToGroup(IWorkbenchActionConstants.EDIT_START, copyAction);
+    editMenu.appendToGroup(IWorkbenchActionConstants.EDIT_START, cutAction);
+    editMenu.appendToGroup(IWorkbenchActionConstants.EDIT_START, pasteAction);
+    editMenu.add(new Separator(IWorkbenchActionConstants.EDIT_END));
+
+    MenuManager windowMenu =
+        new MenuManager(MessageBundle.windowMenu, IWorkbenchActionConstants.M_WINDOW);
+    menuBar.add(windowMenu);
+    windowMenu.add(perspectiveAction);
+    windowMenu.add(viewAction);
+
+    // Help
+    MenuManager helpMenu =
+        new MenuManager(MessageBundle.helpMenu, IWorkbenchActionConstants.M_HELP);
+    menuBar.add(helpMenu);
+    helpMenu.add(introAction);
+    helpMenu.add(new Separator());
+    helpMenu.add(helpContentsAction);
+    helpMenu.add(helpSearchAction);
+    helpMenu.add(new Separator());
+    helpMenu.add(aboutAction);
+  }
 }

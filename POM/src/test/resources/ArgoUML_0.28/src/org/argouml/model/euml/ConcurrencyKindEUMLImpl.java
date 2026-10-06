@@ -31,21 +31,20 @@ import org.eclipse.uml2.uml.CallConcurrencyKind;
 
 /**
  * The Eclipse UML2 implementation for Concurrency Kind.
+ *
  * @author Tom Morris
  */
 class ConcurrencyKindEUMLImpl implements ConcurrencyKind {
 
-    public Object getConcurrent() {
-        return CallConcurrencyKind.CONCURRENT_LITERAL;
-    }
+  public Object getConcurrent() {
+    return CallConcurrencyKind.CONCURRENT_LITERAL;
+  }
 
-    public Object getGuarded() {
-        return CallConcurrencyKind.GUARDED_LITERAL;
-    }
+  public Object getGuarded() {
+    return CallConcurrencyKind.GUARDED_LITERAL;
+  }
 
-    public Object getSequential() {
-        return CallConcurrencyKind.SEQUENTIAL_LITERAL;
-    }
-
-
+  public Object getSequential() {
+    return CallConcurrencyKind.SEQUENTIAL_LITERAL;
+  }
 }

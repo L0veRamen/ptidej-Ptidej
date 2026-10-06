@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -23,22 +23,22 @@ import util.lang.MavenTestGuard;
  * @since 2008/12/04
  */
 public final class TestDeMIMA extends TestSuite {
-	public static TestSuite suite() {
-		final TestDeMIMA suite = new TestDeMIMA();
-		suite.setName(TestDeMIMA.class.getName());
+  public static TestSuite suite() {
+    final TestDeMIMA suite = new TestDeMIMA();
+    suite.setName(TestDeMIMA.class.getName());
 
-		suite.addTest(TestEPI.suite());
-		suite.addTest(TestMoDecSolver.suite());
-		// Yann 24/04/28: Maven and DOS programs
-		// These tests cannot pass because they require executing 
-		// the DOS program PtidejSolver.exe, which is archived into
-		// the DeMIMA Solver 3 JAR, in addition to being a program.
-		if (MavenTestGuard.getInstance().isRunningOutsideMavenTest()) {
-			suite.addTest(TestPtidejSolver3.suite());
-		}
-		suite.addTest(TestPtidejSolver4.suite());
-		suite.addTest(TestPtidejSolverFingerprints.suite());
+    suite.addTest(TestEPI.suite());
+    suite.addTest(TestMoDecSolver.suite());
+    // Yann 24/04/28: Maven and DOS programs
+    // These tests cannot pass because they require executing
+    // the DOS program PtidejSolver.exe, which is archived into
+    // the DeMIMA Solver 3 JAR, in addition to being a program.
+    if (MavenTestGuard.getInstance().isRunningOutsideMavenTest()) {
+      suite.addTest(TestPtidejSolver3.suite());
+    }
+    suite.addTest(TestPtidejSolver4.suite());
+    suite.addTest(TestPtidejSolverFingerprints.suite());
 
-		return suite;
-	}
+    return suite;
+  }
 }

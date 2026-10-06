@@ -26,7 +26,6 @@ package org.argouml.model.mdr;
 
 import java.util.Collection;
 import java.util.Iterator;
-
 import org.argouml.model.CommonBehaviorFactory;
 import org.argouml.model.Model;
 import org.omg.uml.behavioralelements.activitygraphs.ActionState;
@@ -60,661 +59,641 @@ import org.omg.uml.foundation.core.Classifier;
 import org.omg.uml.foundation.core.Operation;
 
 /**
- * Factory to create UML classes for the UML BehaviorialElements::CommonBehavior
- * package.
+ * Factory to create UML classes for the UML BehaviorialElements::CommonBehavior package.
  *
- * TODO: Change visibility to package after reflection problem solved.
+ * <p>TODO: Change visibility to package after reflection problem solved.
+ *
  * <p>
+ *
  * @since ARGO0.19.5
- * @author Ludovic Maître
- * @author Tom Morris
- * Derived from NSUML implementation by: 
+ * @author Ludovic Maï¿½tre
+ * @author Tom Morris Derived from NSUML implementation by:
  * @author Thierry Lach
  */
 public class CommonBehaviorFactoryMDRImpl extends AbstractUmlModelFactoryMDR
-	implements CommonBehaviorFactory {
+    implements CommonBehaviorFactory {
 
-    /**
-     * The model implementation.
-     */
-    private MDRModelImplementation nsmodel;
+  /** The model implementation. */
+  private MDRModelImplementation nsmodel;
 
-    /**
-     * Don't allow instantiation.
-     *
-     * @param implementation
-     *            To get other helpers and factories.
-     */
-    CommonBehaviorFactoryMDRImpl(MDRModelImplementation implementation) {
-        nsmodel = implementation;
+  /**
+   * Don't allow instantiation.
+   *
+   * @param implementation To get other helpers and factories.
+   */
+  CommonBehaviorFactoryMDRImpl(MDRModelImplementation implementation) {
+    nsmodel = implementation;
+  }
+
+  /**
+   * @see org.argouml.model.CommonBehaviorFactory#createActionSequence()
+   */
+  public Object createActionSequence() {
+    ActionSequence myActionSequence =
+        nsmodel.getUmlPackage().getCommonBehavior().getActionSequence().createActionSequence();
+    super.initialize(myActionSequence);
+    return myActionSequence;
+  }
+
+  /**
+   * @see org.argouml.model.CommonBehaviorFactory#createArgument()
+   */
+  public Object createArgument() {
+    Argument myArgument =
+        nsmodel.getUmlPackage().getCommonBehavior().getArgument().createArgument();
+    super.initialize(myArgument);
+    return myArgument;
+  }
+
+  /**
+   * @see org.argouml.model.CommonBehaviorFactory#createAttributeLink()
+   */
+  public Object createAttributeLink() {
+    AttributeLink myAttributeLink =
+        nsmodel.getUmlPackage().getCommonBehavior().getAttributeLink().createAttributeLink();
+    super.initialize(myAttributeLink);
+    return myAttributeLink;
+  }
+
+  /**
+   * @see org.argouml.model.CommonBehaviorFactory#createCallAction()
+   */
+  public Object createCallAction() {
+    CallAction myCallAction =
+        nsmodel.getUmlPackage().getCommonBehavior().getCallAction().createCallAction();
+    super.initialize(myCallAction);
+    return myCallAction;
+  }
+
+  /**
+   * @see org.argouml.model.CommonBehaviorFactory#createComponentInstance()
+   */
+  public Object createComponentInstance() {
+    ComponentInstance myComponentInstance =
+        nsmodel
+            .getUmlPackage()
+            .getCommonBehavior()
+            .getComponentInstance()
+            .createComponentInstance();
+    super.initialize(myComponentInstance);
+    return myComponentInstance;
+  }
+
+  /**
+   * @see org.argouml.model.CommonBehaviorFactory#createCreateAction()
+   */
+  public Object createCreateAction() {
+    CreateAction myCreateAction =
+        nsmodel.getUmlPackage().getCommonBehavior().getCreateAction().createCreateAction();
+    super.initialize(myCreateAction);
+    return myCreateAction;
+  }
+
+  /**
+   * Create an empty but initialized instance of a UML DataValue.
+   *
+   * <p>TODO: This method is not part of the interface, but it is invoked directly by tests using
+   * reflection.
+   *
+   * @return an initialized UML DataValue instance.
+   */
+  public DataValue createDataValue() {
+    DataValue myDataValue =
+        nsmodel.getUmlPackage().getCommonBehavior().getDataValue().createDataValue();
+    super.initialize(myDataValue);
+    return myDataValue;
+  }
+
+  /**
+   * @see org.argouml.model.CommonBehaviorFactory#createDestroyAction()
+   */
+  public Object createDestroyAction() {
+    DestroyAction myDestroyAction =
+        nsmodel.getUmlPackage().getCommonBehavior().getDestroyAction().createDestroyAction();
+    super.initialize(myDestroyAction);
+    return myDestroyAction;
+  }
+
+  /**
+   * @see org.argouml.model.CommonBehaviorFactory#createException()
+   */
+  public Object createException() {
+    UmlException myUmlException =
+        nsmodel.getUmlPackage().getCommonBehavior().getUmlException().createUmlException();
+    super.initialize(myUmlException);
+    return myUmlException;
+  }
+
+  /**
+   * @see org.argouml.model.CommonBehaviorFactory#createLink()
+   */
+  public Object createLink() {
+    Link myLink = nsmodel.getUmlPackage().getCommonBehavior().getLink().createLink();
+    super.initialize(myLink);
+    return myLink;
+  }
+
+  /**
+   * @see org.argouml.model.CommonBehaviorFactory#createLinkEnd()
+   */
+  public Object createLinkEnd() {
+    LinkEnd myLinkEnd = nsmodel.getUmlPackage().getCommonBehavior().getLinkEnd().createLinkEnd();
+    super.initialize(myLinkEnd);
+    return myLinkEnd;
+  }
+
+  /**
+   * @see org.argouml.model.CommonBehaviorFactory#createLinkObject()
+   */
+  public Object createLinkObject() {
+    LinkObject myLinkObject =
+        nsmodel.getUmlPackage().getCommonBehavior().getLinkObject().createLinkObject();
+    super.initialize(myLinkObject);
+    return myLinkObject;
+  }
+
+  /**
+   * @see org.argouml.model.CommonBehaviorFactory#createNodeInstance()
+   */
+  public Object createNodeInstance() {
+    NodeInstance myNodeInstance =
+        nsmodel.getUmlPackage().getCommonBehavior().getNodeInstance().createNodeInstance();
+    super.initialize(myNodeInstance);
+
+    return myNodeInstance;
+  }
+
+  /**
+   * @see org.argouml.model.CommonBehaviorFactory#createObject()
+   */
+  public Object createObject() {
+    org.omg.uml.behavioralelements.commonbehavior.Object myObject =
+        nsmodel.getUmlPackage().getCommonBehavior().getObject().createObject();
+    super.initialize(myObject);
+    return myObject;
+  }
+
+  /**
+   * @see org.argouml.model.CommonBehaviorFactory#createReception()
+   */
+  public Object createReception() {
+    Reception myReception =
+        nsmodel.getUmlPackage().getCommonBehavior().getReception().createReception();
+    super.initialize(myReception);
+    return myReception;
+  }
+
+  /**
+   * @see org.argouml.model.CommonBehaviorFactory#createReturnAction()
+   */
+  public Object createReturnAction() {
+    ReturnAction myReturnAction =
+        nsmodel.getUmlPackage().getCommonBehavior().getReturnAction().createReturnAction();
+    super.initialize(myReturnAction);
+    return myReturnAction;
+  }
+
+  /**
+   * @see org.argouml.model.CommonBehaviorFactory#createSendAction()
+   */
+  public Object createSendAction() {
+    SendAction mySendAction =
+        nsmodel.getUmlPackage().getCommonBehavior().getSendAction().createSendAction();
+    super.initialize(mySendAction);
+    return mySendAction;
+  }
+
+  /**
+   * @see org.argouml.model.CommonBehaviorFactory#createSignal()
+   */
+  public Object createSignal() {
+    Signal mySignal = nsmodel.getUmlPackage().getCommonBehavior().getSignal().createSignal();
+    super.initialize(mySignal);
+    return mySignal;
+  }
+
+  /**
+   * @see org.argouml.model.CommonBehaviorFactory#createStimulus()
+   */
+  public Object createStimulus() {
+    Stimulus myStimulus =
+        nsmodel.getUmlPackage().getCommonBehavior().getStimulus().createStimulus();
+    super.initialize(myStimulus);
+    return myStimulus;
+  }
+
+  /**
+   * @see org.argouml.model.CommonBehaviorFactory#createTerminateAction()
+   */
+  public Object createTerminateAction() {
+    TerminateAction myTerminateAction =
+        nsmodel.getUmlPackage().getCommonBehavior().getTerminateAction().createTerminateAction();
+    super.initialize(myTerminateAction);
+    return myTerminateAction;
+  }
+
+  /**
+   * @see org.argouml.model.CommonBehaviorFactory#createUninterpretedAction()
+   */
+  public Object createUninterpretedAction() {
+    UninterpretedAction myUninterpretedAction =
+        nsmodel
+            .getUmlPackage()
+            .getCommonBehavior()
+            .getUninterpretedAction()
+            .createUninterpretedAction();
+    super.initialize(myUninterpretedAction);
+    return myUninterpretedAction;
+  }
+
+  /**
+   * @see org.argouml.model.CommonBehaviorFactory#buildCallAction(java.lang.Object,
+   *     java.lang.String)
+   */
+  public Object buildCallAction(Object oper, String name) {
+    if (!(oper instanceof Operation)) {
+      throw new IllegalArgumentException("There should be an operation" + " with a callaction.");
+    }
+    Object action = createCallAction();
+    nsmodel.getCoreHelper().setName(action, name);
+    nsmodel.getCommonBehaviorHelper().setOperation(action, oper);
+    return action;
+  }
+
+  /**
+   * @see org.argouml.model.CommonBehaviorFactory#buildUninterpretedAction(java.lang.Object)
+   */
+  public Object buildUninterpretedAction(Object actionState) {
+    Object action = createUninterpretedAction();
+    if (actionState instanceof ActionState) {
+      nsmodel.getStateMachinesHelper().setEntry(actionState, action);
+    }
+    return action;
+  }
+
+  /**
+   * @see org.argouml.model.CommonBehaviorFactory#buildLink(java.lang.Object, java.lang.Object)
+   */
+  public Object buildLink(Object fromInstance, Object toInstance) {
+    Object link = nsmodel.getCommonBehaviorFactory().createLink();
+    Object /* MLinkEnd */ le0 = nsmodel.getCommonBehaviorFactory().createLinkEnd();
+    nsmodel.getCommonBehaviorHelper().setInstance(le0, fromInstance);
+    Object /* MLinkEnd */ le1 = nsmodel.getCommonBehaviorFactory().createLinkEnd();
+    nsmodel.getCommonBehaviorHelper().setInstance(le1, toInstance);
+    nsmodel.getCoreHelper().addConnection(link, le0);
+    nsmodel.getCoreHelper().addConnection(link, le1);
+    return link;
+  }
+
+  /**
+   * @see org.argouml.model.CommonBehaviorFactory#buildAction(java.lang.Object)
+   */
+  public Object buildAction(Object message) {
+    Object action = createCallAction();
+    nsmodel.getCoreHelper().setName(action, "action");
+    nsmodel.getCollaborationsHelper().setAction(message, action);
+    Object interaction = nsmodel.getFacade().getInteraction(message);
+    if (interaction != null && nsmodel.getFacade().getContext(interaction) != null) {
+      nsmodel.getCoreHelper().setNamespace(action, nsmodel.getFacade().getContext(interaction));
+    } else {
+      throw new IllegalStateException(
+          "In buildaction: message does not "
+              + "have an interaction or the "
+              + "interaction does not have "
+              + "a context");
+    }
+    return action;
+  }
+
+  /**
+   * @see org.argouml.model.CommonBehaviorFactory#buildSignal(java.lang.Object)
+   */
+  public Object buildSignal(Object feature) {
+    if (!(feature instanceof BehavioralFeature)) {
+      return null;
     }
 
-    /**
-     * @see org.argouml.model.CommonBehaviorFactory#createActionSequence()
-     */
-    public Object createActionSequence() {
-        ActionSequence myActionSequence = nsmodel.getUmlPackage()
-                .getCommonBehavior().getActionSequence().createActionSequence();
-        super.initialize(myActionSequence);
-        return myActionSequence;
+    Signal signal = (Signal) createSignal();
+    nsmodel
+        .getUmlPackage()
+        .getCommonBehavior()
+        .getAContextRaisedSignal()
+        .add((BehavioralFeature) feature, signal);
+    return signal;
+  }
+
+  /**
+   * @see org.argouml.model.CommonBehaviorFactory#buildStimulus(java.lang.Object)
+   */
+  public Object buildStimulus(Object link) {
+    if (link instanceof Link
+        && nsmodel.getCoreHelper().getSource(link) != null
+        && nsmodel.getCoreHelper().getDestination(link) != null) {
+
+      Object stimulus = createStimulus();
+      Object sender = nsmodel.getCoreHelper().getSource(link);
+      Object receiver = nsmodel.getCoreHelper().getDestination(link);
+      nsmodel.getCommonBehaviorHelper().setReceiver(stimulus, receiver);
+      nsmodel.getCollaborationsHelper().setSender(stimulus, sender);
+      nsmodel.getCommonBehaviorHelper().setCommunicationLink(stimulus, link);
+      return stimulus;
+    }
+    throw new IllegalArgumentException(
+        "Argument is not a link or " + "does not have " + "a source or " + "destination instance");
+  }
+
+  /**
+   * @see org.argouml.model.CommonBehaviorFactory#buildReception(java.lang.Object)
+   */
+  public Object buildReception(Object aClassifier) {
+    Object reception = createReception();
+    if (aClassifier instanceof Classifier) {
+      nsmodel.getCoreHelper().setOwner(reception, aClassifier);
+    }
+    return reception;
+  }
+
+  /**
+   * @param elem the Action to be deleted
+   */
+  void deleteAction(Object elem) {
+    if (!(elem instanceof Action)) {
+      throw new IllegalArgumentException("elem: " + elem);
+    }
+    // TODO: delete Stimulii which have this as their dispatchAction
+    // TODO: delete Messages which have this as their action
+  }
+
+  /**
+   * @param elem the ActionSequence to be deleted
+   */
+  void deleteActionSequence(Object elem) {
+    if (!(elem instanceof ActionSequence)) {
+      throw new IllegalArgumentException("elem: " + elem);
+    }
+  }
+
+  /**
+   * @param elem the element to be deleted
+   */
+  void deleteArgument(Object elem) {
+    if (!(elem instanceof Argument)) {
+      throw new IllegalArgumentException("elem: " + elem);
+    }
+  }
+
+  /**
+   * @param elem the element to be deleted
+   */
+  void deleteAttributeLink(Object elem) {
+    if (!(elem instanceof AttributeLink)) {
+      throw new IllegalArgumentException("elem: " + elem);
+    }
+  }
+
+  /**
+   * @param elem the element to be deleted
+   */
+  void deleteCallAction(Object elem) {
+    if (!(elem instanceof CallAction)) {
+      throw new IllegalArgumentException("elem: " + elem);
+    }
+  }
+
+  /**
+   * @param elem the element to be deleted
+   */
+  void deleteComponentInstance(Object elem) {
+    if (!(elem instanceof ComponentInstance)) {
+      throw new IllegalArgumentException("elem: " + elem);
+    }
+  }
+
+  /**
+   * @param elem the element to be deleted
+   */
+  void deleteCreateAction(Object elem) {
+    if (!(elem instanceof CreateAction)) {
+      throw new IllegalArgumentException("elem: " + elem);
+    }
+  }
+
+  /**
+   * @param elem the element to be deleted
+   */
+  void deleteDataValue(Object elem) {
+    if (!(elem instanceof DataValue)) {
+      throw new IllegalArgumentException("elem: " + elem);
+    }
+  }
+
+  /**
+   * @param elem the element to be deleted
+   */
+  void deleteDestroyAction(Object elem) {
+    if (!(elem instanceof DestroyAction)) {
+      throw new IllegalArgumentException("elem: " + elem);
+    }
+  }
+
+  /**
+   * @param elem the element to be deleted
+   */
+  void deleteException(Object elem) {
+    if (!(elem instanceof UmlException)) {
+      throw new IllegalArgumentException("elem: " + elem);
+    }
+  }
+
+  /**
+   * When an instance is deleted, delete any LinkEnd, AttributLink that depends on it, as well as
+   * CollaborationInstanceSets where this is the last participatingInstance
+   *
+   * @param elem the element to be deleted
+   */
+  void deleteInstance(Object elem) {
+    if (!(elem instanceof Instance)) {
+      throw new IllegalArgumentException("elem: " + elem);
     }
 
-    /**
-     * @see org.argouml.model.CommonBehaviorFactory#createArgument()
-     */
-    public Object createArgument() {
-        Argument myArgument = nsmodel.getUmlPackage().getCommonBehavior()
-                .getArgument().createArgument();
-        super.initialize(myArgument);
-        return myArgument;
-    }
+    // Delete LinkEnds
+    nsmodel.getUmlHelper().deleteCollection(((Instance) elem).getLinkEnd());
 
-    /**
-     * @see org.argouml.model.CommonBehaviorFactory#createAttributeLink()
-     */
-    public Object createAttributeLink() {
-        AttributeLink myAttributeLink = nsmodel.getUmlPackage()
-                .getCommonBehavior().getAttributeLink().createAttributeLink();
-        super.initialize(myAttributeLink);
-        return myAttributeLink;
-    }
+    // Delete AttributeLinks where this is the value
+    nsmodel
+        .getUmlHelper()
+        .deleteCollection(
+            nsmodel
+                .getUmlPackage()
+                .getCommonBehavior()
+                .getAAttributeLinkValue()
+                .getAttributeLink((Instance) elem));
 
-    /**
-     * @see org.argouml.model.CommonBehaviorFactory#createCallAction()
-     */
-    public Object createCallAction() {
-        CallAction myCallAction = nsmodel.getUmlPackage().getCommonBehavior()
-                .getCallAction().createCallAction();
-        super.initialize(myCallAction);
-        return myCallAction;
-    }
-
-    /**
-     * @see org.argouml.model.CommonBehaviorFactory#createComponentInstance()
-     */
-    public Object createComponentInstance() {
-        ComponentInstance myComponentInstance = nsmodel.getUmlPackage()
-                .getCommonBehavior().getComponentInstance()
-                .createComponentInstance();
-        super.initialize(myComponentInstance);
-        return myComponentInstance;
-    }
-
-    /**
-     * @see org.argouml.model.CommonBehaviorFactory#createCreateAction()
-     */
-    public Object createCreateAction() {
-        CreateAction myCreateAction = nsmodel.getUmlPackage()
-                .getCommonBehavior().getCreateAction().createCreateAction();
-        super.initialize(myCreateAction);
-        return myCreateAction;
-    }
-
-    /**
-     * Create an empty but initialized instance of a UML DataValue.
-     *
-     * TODO: This method is not part of the interface, but it is
-     * invoked directly by tests using reflection.  
-     * 
-     * @return an initialized UML DataValue instance.
-     */
-    public DataValue createDataValue() {
-        DataValue myDataValue = nsmodel.getUmlPackage().getCommonBehavior()
-                .getDataValue().createDataValue();
-        super.initialize(myDataValue);
-        return myDataValue;
-    }
-
-    /**
-     * @see org.argouml.model.CommonBehaviorFactory#createDestroyAction()
-     */
-    public Object createDestroyAction() {
-        DestroyAction myDestroyAction = nsmodel.getUmlPackage()
-                .getCommonBehavior().getDestroyAction().createDestroyAction();
-        super.initialize(myDestroyAction);
-        return myDestroyAction;
-    }
-
-    /**
-     * @see org.argouml.model.CommonBehaviorFactory#createException()
-     */
-    public Object createException() {
-        UmlException myUmlException = nsmodel.getUmlPackage()
-                .getCommonBehavior().getUmlException().createUmlException();
-        super.initialize(myUmlException);
-        return myUmlException;
-    }
-
-    /**
-     * @see org.argouml.model.CommonBehaviorFactory#createLink()
-     */
-    public Object createLink() {
-        Link myLink = nsmodel.getUmlPackage().getCommonBehavior().getLink()
-                .createLink();
-        super.initialize(myLink);
-        return myLink;
-    }
-
-    /**
-     * @see org.argouml.model.CommonBehaviorFactory#createLinkEnd()
-     */
-    public Object createLinkEnd() {
-        LinkEnd myLinkEnd = nsmodel.getUmlPackage().getCommonBehavior()
-                .getLinkEnd().createLinkEnd();
-        super.initialize(myLinkEnd);
-        return myLinkEnd;
-    }
-
-    /**
-     * @see org.argouml.model.CommonBehaviorFactory#createLinkObject()
-     */
-    public Object createLinkObject() {
-        LinkObject myLinkObject = nsmodel.getUmlPackage().getCommonBehavior()
-                .getLinkObject().createLinkObject();
-        super.initialize(myLinkObject);
-        return myLinkObject;
-    }
-
-    /**
-     * @see org.argouml.model.CommonBehaviorFactory#createNodeInstance()
-     */
-    public Object createNodeInstance() {
-        NodeInstance myNodeInstance = nsmodel.getUmlPackage()
-                .getCommonBehavior().getNodeInstance().createNodeInstance();
-        super.initialize(myNodeInstance);
-
-        return myNodeInstance;
-    }
-
-    /**
-     * @see org.argouml.model.CommonBehaviorFactory#createObject()
-     */
-    public Object createObject() {
-        org.omg.uml.behavioralelements.commonbehavior.Object myObject = nsmodel
-                .getUmlPackage().getCommonBehavior().getObject().createObject();
-        super.initialize(myObject);
-        return myObject;
-    }
-
-    /**
-     * @see org.argouml.model.CommonBehaviorFactory#createReception()
-     */
-    public Object createReception() {
-        Reception myReception = nsmodel.getUmlPackage().getCommonBehavior()
-                .getReception().createReception();
-        super.initialize(myReception);
-        return myReception;
-    }
-
-    /**
-     * @see org.argouml.model.CommonBehaviorFactory#createReturnAction()
-     */
-    public Object createReturnAction() {
-        ReturnAction myReturnAction = nsmodel.getUmlPackage()
-                .getCommonBehavior().getReturnAction().createReturnAction();
-        super.initialize(myReturnAction);
-        return myReturnAction;
-    }
-
-    /**
-     * @see org.argouml.model.CommonBehaviorFactory#createSendAction()
-     */
-    public Object createSendAction() {
-        SendAction mySendAction = nsmodel.getUmlPackage().getCommonBehavior()
-                .getSendAction().createSendAction();
-        super.initialize(mySendAction);
-        return mySendAction;
-    }
-
-    /**
-     * @see org.argouml.model.CommonBehaviorFactory#createSignal()
-     */
-    public Object createSignal() {
-        Signal mySignal = nsmodel.getUmlPackage().getCommonBehavior()
-                .getSignal().createSignal();
-        super.initialize(mySignal);
-        return mySignal;
-    }
-
-    /**
-     * @see org.argouml.model.CommonBehaviorFactory#createStimulus()
-     */
-    public Object createStimulus() {
-        Stimulus myStimulus = nsmodel.getUmlPackage().getCommonBehavior()
-                .getStimulus().createStimulus();
-        super.initialize(myStimulus);
-        return myStimulus;
-    }
-
-    /**
-     * @see org.argouml.model.CommonBehaviorFactory#createTerminateAction()
-     */
-    public Object createTerminateAction() {
-        TerminateAction myTerminateAction = nsmodel.getUmlPackage()
-                .getCommonBehavior().getTerminateAction()
-                .createTerminateAction();
-        super.initialize(myTerminateAction);
-        return myTerminateAction;
-    }
-
-    /**
-     * @see org.argouml.model.CommonBehaviorFactory#createUninterpretedAction()
-     */
-    public Object createUninterpretedAction() {
-        UninterpretedAction myUninterpretedAction = nsmodel.getUmlPackage()
-                .getCommonBehavior().getUninterpretedAction()
-                .createUninterpretedAction();
-        super.initialize(myUninterpretedAction);
-        return myUninterpretedAction;
-    }
-
-    /**
-     * @see org.argouml.model.CommonBehaviorFactory#buildCallAction(java.lang.Object,
-     *      java.lang.String)
-     */
-    public Object buildCallAction(Object oper, String name) {
-        if (!(oper instanceof Operation)) {
-            throw new IllegalArgumentException("There should be an operation"
-                    + " with a callaction.");
-        }
-        Object action = createCallAction();
-        nsmodel.getCoreHelper().setName(action, name);
-        nsmodel.getCommonBehaviorHelper().setOperation(action, oper);
-        return action;
-    }
-
-    /**
-     * @see org.argouml.model.CommonBehaviorFactory#buildUninterpretedAction(java.lang.Object)
-     */
-    public Object buildUninterpretedAction(Object actionState) {
-        Object action = createUninterpretedAction();
-        if (actionState instanceof ActionState) {
-            nsmodel.getStateMachinesHelper().setEntry(actionState, action);
-        }
-        return action;
-    }
-
-    /**
-     * @see org.argouml.model.CommonBehaviorFactory#buildLink(java.lang.Object,
-     *      java.lang.Object)
-     */
-    public Object buildLink(Object fromInstance, Object toInstance) {
-        Object link = nsmodel.getCommonBehaviorFactory().createLink();
-        Object /* MLinkEnd */le0 = nsmodel.getCommonBehaviorFactory().
-            createLinkEnd();
-        nsmodel.getCommonBehaviorHelper().setInstance(le0, fromInstance);
-        Object /* MLinkEnd */le1 = nsmodel.getCommonBehaviorFactory().
-            createLinkEnd();
-        nsmodel.getCommonBehaviorHelper().setInstance(le1, toInstance);
-        nsmodel.getCoreHelper().addConnection(link, le0);
-        nsmodel.getCoreHelper().addConnection(link, le1);
-        return link;
-    }
-
-    /**
-     * @see org.argouml.model.CommonBehaviorFactory#buildAction(java.lang.Object)
-     */
-    public Object buildAction(Object message) {
-        Object action = createCallAction();
-        nsmodel.getCoreHelper().setName(action, "action");
-        nsmodel.getCollaborationsHelper().setAction(message, action);
-        Object interaction = nsmodel.getFacade().getInteraction(message);
-        if (interaction != null
-            && nsmodel.getFacade().getContext(interaction) != null) {
-            nsmodel.getCoreHelper().setNamespace(action,
-                nsmodel.getFacade().getContext(interaction));
-        } else {
-            throw new IllegalStateException("In buildaction: message does not "
-                    + "have an interaction or the "
-                    + "interaction does not have " + "a context");
-        }
-        return action;
-    }
-
-    /**
-     * @see org.argouml.model.CommonBehaviorFactory#buildSignal(java.lang.Object)
-     */
-    public Object buildSignal(Object feature) {
-        if (!(feature instanceof BehavioralFeature)) {
-            return null;
-        }
-        
-        Signal signal = (Signal) createSignal();
-        nsmodel.getUmlPackage().getCommonBehavior().getAContextRaisedSignal()
-                .add((BehavioralFeature) feature, signal);
-        return signal;
-    }
-
-    /**
-     * @see org.argouml.model.CommonBehaviorFactory#buildStimulus(java.lang.Object)
-     */
-    public Object buildStimulus(Object link) {
-        if (link instanceof Link
-            && nsmodel.getCoreHelper().getSource(link) != null
-            && nsmodel.getCoreHelper().getDestination(link) != null) {
-
-            Object stimulus = createStimulus();
-            Object sender = nsmodel.getCoreHelper().getSource(link);
-            Object receiver = nsmodel.getCoreHelper().getDestination(link);
-            nsmodel.getCommonBehaviorHelper().setReceiver(stimulus, receiver);
-            nsmodel.getCollaborationsHelper().setSender(stimulus, sender);
-            nsmodel.getCommonBehaviorHelper().setCommunicationLink(stimulus,
-                    link);
-            return stimulus;
-        }
-        throw new IllegalArgumentException("Argument is not a link or "
-                + "does not have " + "a source or " + "destination instance");
-
-    }
-
-    /**
-     * @see org.argouml.model.CommonBehaviorFactory#buildReception(java.lang.Object)
-     */
-    public Object buildReception(Object aClassifier) {
-        Object reception = createReception();
-        if (aClassifier instanceof Classifier) {
-            nsmodel.getCoreHelper().setOwner(reception, aClassifier);
-        }
-        return reception;
-    }
-
-    /**
-     * @param elem
-     *            the Action to be deleted
-     */
-    void deleteAction(Object elem) {
-        if (!(elem instanceof Action)) {
-            throw new IllegalArgumentException("elem: " + elem);
-        }
-        // TODO: delete Stimulii which have this as their dispatchAction
-        // TODO: delete Messages which have this as their action
-    }
-
-    /**
-     * @param elem
-     *            the ActionSequence to be deleted
-     */
-    void deleteActionSequence(Object elem) {
-        if (!(elem instanceof ActionSequence)) {
-            throw new IllegalArgumentException("elem: " + elem);
-        }
-
-    }
-
-    /**
-     * @param elem
-     *            the element to be deleted
-     */
-    void deleteArgument(Object elem) {
-        if (!(elem instanceof Argument)) {
-            throw new IllegalArgumentException("elem: " + elem);
-        }
-    }
-
-    /**
-     * @param elem
-     *            the element to be deleted
-     */
-    void deleteAttributeLink(Object elem) {
-        if (!(elem instanceof AttributeLink)) {
-            throw new IllegalArgumentException("elem: " + elem);
-        }
-    }
-
-    /**
-     * @param elem
-     *            the element to be deleted
-     */
-    void deleteCallAction(Object elem) {
-        if (!(elem instanceof CallAction)) {
-            throw new IllegalArgumentException("elem: " + elem);
-        }
-    }
-
-    /**
-     * @param elem
-     *            the element to be deleted
-     */
-    void deleteComponentInstance(Object elem) {
-        if (!(elem instanceof ComponentInstance)) {
-            throw new IllegalArgumentException("elem: " + elem);
-        }
-    }
-
-    /**
-     * @param elem
-     *            the element to be deleted
-     */
-    void deleteCreateAction(Object elem) {
-        if (!(elem instanceof CreateAction)) {
-            throw new IllegalArgumentException("elem: " + elem);
-        }
-    }
-
-    /**
-     * @param elem
-     *            the element to be deleted
-     */
-    void deleteDataValue(Object elem) {
-        if (!(elem instanceof DataValue)) {
-            throw new IllegalArgumentException("elem: " + elem);
-        }
-    }
-
-    /**
-     * @param elem
-     *            the element to be deleted
-     */
-    void deleteDestroyAction(Object elem) {
-        if (!(elem instanceof DestroyAction)) {
-            throw new IllegalArgumentException("elem: " + elem);
-        }
-    }
-
-    /**
-     * @param elem
-     *            the element to be deleted
-     */
-    void deleteException(Object elem) {
-        if (!(elem instanceof UmlException)) {
-            throw new IllegalArgumentException("elem: " + elem);
-        }
-    }
-
-    /**
-     * When an instance is deleted, delete any LinkEnd, AttributLink
-     * that depends on it, as well as CollaborationInstanceSets where
-     * this is the last participatingInstance
-     *
-     * @param elem
-     *            the element to be deleted
-     */
-    void deleteInstance(Object elem) {
-        if (!(elem instanceof Instance)) {
-            throw new IllegalArgumentException("elem: " + elem);
-        }
-
-        // Delete LinkEnds
-        nsmodel.getUmlHelper().deleteCollection(((Instance) elem).getLinkEnd());
-
-        // Delete AttributeLinks where this is the value
-        nsmodel.getUmlHelper().deleteCollection(
-                nsmodel.getUmlPackage().getCommonBehavior()
-                        .getAAttributeLinkValue().getAttributeLink(
-                                (Instance) elem));
-
-        // Delete CollaborationInstanceSets where
-        // this is the last participatingInstance
-        for (Iterator it = nsmodel.getUmlPackage().getCollaborations()
+    // Delete CollaborationInstanceSets where
+    // this is the last participatingInstance
+    for (Iterator it =
+            nsmodel
+                .getUmlPackage()
+                .getCollaborations()
                 .getACollaborationInstanceSetParticipatingInstance()
-                .getCollaborationInstanceSet((Instance) elem).iterator(); it
-                .hasNext();) {
-            CollaborationInstanceSet cis = (CollaborationInstanceSet) it.next();
-            Collection instances = cis.getParticipatingInstance();
-            if (instances.size() == 1 && instances.contains(elem)) {
-                nsmodel.getUmlFactory().delete(it.next());
-            }
-        }
-        
-        // TODO: ?Delete Stimulii where this is the sender or receiver?
-        // (or leave them since they contain other info the user might
-        // want to reuse even though they are temporarily invalid?)
-        
+                .getCollaborationInstanceSet((Instance) elem)
+                .iterator();
+        it.hasNext(); ) {
+      CollaborationInstanceSet cis = (CollaborationInstanceSet) it.next();
+      Collection instances = cis.getParticipatingInstance();
+      if (instances.size() == 1 && instances.contains(elem)) {
+        nsmodel.getUmlFactory().delete(it.next());
+      }
     }
 
-    /**
-     * @param elem
-     *            the element to be deleted
-     */
-    void deleteLink(Object elem) {
-        if (!(elem instanceof Link)) {
-            throw new IllegalArgumentException("elem: " + elem);
-        }
+    // TODO: ?Delete Stimulii where this is the sender or receiver?
+    // (or leave them since they contain other info the user might
+    // want to reuse even though they are temporarily invalid?)
+
+  }
+
+  /**
+   * @param elem the element to be deleted
+   */
+  void deleteLink(Object elem) {
+    if (!(elem instanceof Link)) {
+      throw new IllegalArgumentException("elem: " + elem);
+    }
+  }
+
+  /**
+   * when a linkend is deleted, delete its Links.
+   *
+   * @param elem the element to be deleted
+   */
+  void deleteLinkEnd(Object elem) {
+    if (!(elem instanceof LinkEnd)) {
+      throw new IllegalArgumentException("elem: " + elem);
     }
 
-    /**
-     * when a linkend is deleted, delete its Links.
-     *
-     * @param elem
-     *            the element to be deleted
-     */
-    void deleteLinkEnd(Object elem) {
-        if (!(elem instanceof LinkEnd)) {
-            throw new IllegalArgumentException("elem: " + elem);
-        }
+    Link link = ((LinkEnd) elem).getLink();
+    if (link != null
+        && link.getConnection() != null
+        && link.getConnection().size() == 2) { // binary link
+      nsmodel.getUmlFactory().delete(link);
+    }
+  }
 
-        Link link = ((LinkEnd) elem).getLink();
-        if (link != null && link.getConnection() != null
-            && link.getConnection().size() == 2) { // binary link
-            nsmodel.getUmlFactory().delete(link);
-        }
+  /**
+   * @param elem the element to be deleted
+   */
+  void deleteLinkObject(Object elem) {
+    if (!(elem instanceof LinkObject)) {
+      throw new IllegalArgumentException("elem: " + elem);
+    }
+  }
+
+  /**
+   * @param elem the element to be deleted
+   */
+  void deleteNodeInstance(Object elem) {
+    if (!(elem instanceof NodeInstance)) {
+      throw new IllegalArgumentException("elem: " + elem);
+    }
+  }
+
+  /**
+   * @param elem the element to be deleted
+   */
+  void deleteObject(Object elem) {
+    if (!(Model.getFacade().isAObject(elem))) {
+      throw new IllegalArgumentException("elem: " + elem);
+    }
+  }
+
+  /**
+   * @param elem the element to be deleted
+   */
+  void deleteReception(Object elem) {
+    if (!(elem instanceof Reception)) {
+      throw new IllegalArgumentException("elem: " + elem);
+    }
+  }
+
+  /**
+   * @param elem the element to be deleted
+   */
+  void deleteReturnAction(Object elem) {
+    if (!(elem instanceof ReturnAction)) {
+      throw new IllegalArgumentException("elem: " + elem);
+    }
+  }
+
+  /**
+   * @param elem the element to be deleted
+   */
+  void deleteSendAction(Object elem) {
+    if (!(elem instanceof SendAction)) {
+      throw new IllegalArgumentException("elem: " + elem);
+    }
+  }
+
+  /**
+   * @param elem the element to be deleted
+   */
+  void deleteSignal(Object elem) {
+    if (!(elem instanceof Signal)) {
+      throw new IllegalArgumentException("elem: " + elem);
+    }
+    // TODO: delete all SendActions which have this as signal
+    // TODO: delete all SignalEvents which have this as the signal
+  }
+
+  /**
+   * @param elem the element to be deleted
+   */
+  void deleteStimulus(Object elem) {
+    if (!(elem instanceof Stimulus)) {
+      throw new IllegalArgumentException("elem: " + elem);
     }
 
-    /**
-     * @param elem
-     *            the element to be deleted
-     */
-    void deleteLinkObject(Object elem) {
-        if (!(elem instanceof LinkObject)) {
-            throw new IllegalArgumentException("elem: " + elem);
-        }
-    }
-
-    /**
-     * @param elem
-     *            the element to be deleted
-     */
-    void deleteNodeInstance(Object elem) {
-        if (!(elem instanceof NodeInstance)) {
-            throw new IllegalArgumentException("elem: " + elem);
-        }
-    }
-
-    /**
-     * @param elem
-     *            the element to be deleted
-     */
-    void deleteObject(Object elem) {
-        if (!(Model.getFacade().isAObject(elem))) {
-            throw new IllegalArgumentException("elem: " + elem);
-        }
-
-    }
-
-    /**
-     * @param elem
-     *            the element to be deleted
-     */
-    void deleteReception(Object elem) {
-        if (!(elem instanceof Reception)) {
-            throw new IllegalArgumentException("elem: " + elem);
-        }
-    }
-
-    /**
-     * @param elem
-     *            the element to be deleted
-     */
-    void deleteReturnAction(Object elem) {
-        if (!(elem instanceof ReturnAction)) {
-            throw new IllegalArgumentException("elem: " + elem);
-        }
-    }
-
-    /**
-     * @param elem
-     *            the element to be deleted
-     */
-    void deleteSendAction(Object elem) {
-        if (!(elem instanceof SendAction)) {
-            throw new IllegalArgumentException("elem: " + elem);
-        }
-    }
-
-    /**
-     * @param elem
-     *            the element to be deleted
-     */
-    void deleteSignal(Object elem) {
-        if (!(elem instanceof Signal)) {
-            throw new IllegalArgumentException("elem: " + elem);
-        }
-        // TODO: delete all SendActions which have this as signal
-        // TODO: delete all SignalEvents which have this as the signal
-    }
-
-    /**
-     * @param elem
-     *            the element to be deleted
-     */
-    void deleteStimulus(Object elem) {
-        if (!(elem instanceof Stimulus)) {
-            throw new IllegalArgumentException("elem: " + elem);
-        }
-        
-        // Delete InteractionInstanceSets where
-        // this is the last participatingStimulus
-        for (Iterator it = nsmodel.getUmlPackage().getCollaborations()
+    // Delete InteractionInstanceSets where
+    // this is the last participatingStimulus
+    for (Iterator it =
+            nsmodel
+                .getUmlPackage()
+                .getCollaborations()
                 .getAInteractionInstanceSetParticipatingStimulus()
-                .getInteractionInstanceSet((Stimulus) elem).iterator(); it
-                .hasNext();) {
-            InteractionInstanceSet iis = (InteractionInstanceSet) it.next();
-            Collection instances = iis.getParticipatingStimulus();
-            if (instances.size() == 1 && instances.contains(elem)) {
-                nsmodel.getUmlFactory().delete(it.next());
-            }
-        }
+                .getInteractionInstanceSet((Stimulus) elem)
+                .iterator();
+        it.hasNext(); ) {
+      InteractionInstanceSet iis = (InteractionInstanceSet) it.next();
+      Collection instances = iis.getParticipatingStimulus();
+      if (instances.size() == 1 && instances.contains(elem)) {
+        nsmodel.getUmlFactory().delete(it.next());
+      }
     }
-    
-    /**
-     * @param elem
-     *            the element to be deleted
-     */
-    void deleteSubsystemInstance(Object elem) {
-        if (!(elem instanceof SubsystemInstance)) {
-            throw new IllegalArgumentException("elem: " + elem);
-        }
-    }
+  }
 
-
-    /**
-     * @param elem
-     *            the element to be deleted
-     */
-    void deleteTerminateAction(Object elem) {
-        if (!(elem instanceof TerminateAction)) {
-            throw new IllegalArgumentException("elem: " + elem);
-        }
+  /**
+   * @param elem the element to be deleted
+   */
+  void deleteSubsystemInstance(Object elem) {
+    if (!(elem instanceof SubsystemInstance)) {
+      throw new IllegalArgumentException("elem: " + elem);
     }
+  }
 
-    /**
-     * @param elem
-     *            the element to be deleted
-     */
-    void deleteUninterpretedAction(Object elem) {
-        if (!(elem instanceof UninterpretedAction)) {
-            throw new IllegalArgumentException("elem: " + elem);
-        }
+  /**
+   * @param elem the element to be deleted
+   */
+  void deleteTerminateAction(Object elem) {
+    if (!(elem instanceof TerminateAction)) {
+      throw new IllegalArgumentException("elem: " + elem);
     }
-    
+  }
+
+  /**
+   * @param elem the element to be deleted
+   */
+  void deleteUninterpretedAction(Object elem) {
+    if (!(elem instanceof UninterpretedAction)) {
+      throw new IllegalArgumentException("elem: " + elem);
+    }
+  }
 }

@@ -29,154 +29,148 @@ import org.argouml.model.Model;
 /**
  * @author mkl
  */
-public abstract class UMLExpressionModel2  {
-    private UMLUserInterfaceContainer container;
-    private String propertyName;
-    private Object/*MExpression*/ expression;
-    private boolean mustRefresh;
-    private static final String EMPTYSTRING = "";
+public abstract class UMLExpressionModel2 {
+  private UMLUserInterfaceContainer container;
+  private String propertyName;
+  private Object /*MExpression*/ expression;
+  private boolean mustRefresh;
+  private static final String EMPTYSTRING = "";
 
-    /**
-     * The constructor.
-     *
-     * @param c the container of UML user interface components
-     * @param name the name of the property
-     */
-    public UMLExpressionModel2(UMLUserInterfaceContainer c, String name) {
-        container = c;
-        propertyName = name;
-        mustRefresh = true;
+  /**
+   * The constructor.
+   *
+   * @param c the container of UML user interface components
+   * @param name the name of the property
+   */
+  public UMLExpressionModel2(UMLUserInterfaceContainer c, String name) {
+    container = c;
+    propertyName = name;
+    mustRefresh = true;
+  }
+
+  /** When the target is changed, we must refresh. */
+  public void targetChanged() {
+    mustRefresh = true;
+  }
+
+  //    /**
+  //     * @param event the event
+  //     * @return true if the property is affected
+  //     */
+  //    public boolean propertySet(MElementEvent event) {
+  //        boolean isAffected = false;
+  //        String eventName = event.getName();
+  //        if (eventName != null && eventName.equals(propertyName)) {
+  //            isAffected = true;
+  //            mustRefresh = true;
+  //        }
+  //        return isAffected;
+  //    }
+  //
+  /**
+   * @return the expression
+   */
+  public abstract Object getExpression();
+
+  /**
+   * @param expr the expression
+   */
+  public abstract void setExpression(Object expr);
+
+  /**
+   * @return a new expression
+   */
+  public abstract Object newExpression();
+
+  /**
+   * @return the language of the expression
+   */
+  public String getLanguage() {
+    if (mustRefresh) {
+      getExpression();
     }
-
-    /**
-     * When the target is changed, we must refresh.
-     */
-    public void targetChanged() {
-        mustRefresh = true;
+    if (expression == null) {
+      return EMPTYSTRING;
     }
+    return Model.getDataTypesHelper().getLanguage(expression);
+  }
 
-//    /**
-//     * @param event the event
-//     * @return true if the property is affected
-//     */
-//    public boolean propertySet(MElementEvent event) {
-//        boolean isAffected = false;
-//        String eventName = event.getName();
-//        if (eventName != null && eventName.equals(propertyName)) {
-//            isAffected = true;
-//            mustRefresh = true;
-//        }
-//        return isAffected;
-//    }
-//
-    /**
-     * @return the expression
-     */
-    public abstract Object getExpression();
-
-    /**
-     * @param expr the expression
-     */
-    public abstract void setExpression(Object expr);
-
-    /**
-     * @return a new expression
-     */
-    public abstract Object newExpression();
-
-
-    /**
-     * @return the language of the expression
-     */
-    public String getLanguage() {
-        if (mustRefresh) {
-            getExpression();
-        }
-        if (expression == null) {
-            return EMPTYSTRING;
-        }
-        return Model.getDataTypesHelper().getLanguage(expression);
+  /**
+   * @return The body text of the expression.
+   */
+  public String getBody() {
+    if (mustRefresh) {
+      expression = getExpression();
     }
-
-    /**
-     * @return The body text of the expression.
-     */
-    public String getBody() {
-        if (mustRefresh) {
-            expression = getExpression();
-        }
-        if (expression == null) {
-            return EMPTYSTRING;
-        }
-        return Model.getDataTypesHelper().getBody(expression);
+    if (expression == null) {
+      return EMPTYSTRING;
     }
+    return Model.getDataTypesHelper().getBody(expression);
+  }
 
-    /**
-     * @param lang the language of the expression
-     */
-    public void setLanguage(String lang) {
+  /**
+   * @param lang the language of the expression
+   */
+  public void setLanguage(String lang) {
 
-        boolean mustChange = true;
-        if (expression != null) {
-            String oldValue =
-                Model.getDataTypesHelper().getLanguage(expression);
-            if (oldValue != null && oldValue.equals(lang)) {
-                mustChange = false;
-            }
-        }
-        if (mustChange) {
-            String body = EMPTYSTRING;
-            if (expression != null
-                    && Model.getDataTypesHelper().getBody(expression) != null) {
-                body = Model.getDataTypesHelper().getBody(expression);
-            }
-
-            setExpression(lang, body);
-        }
+    boolean mustChange = true;
+    if (expression != null) {
+      String oldValue = Model.getDataTypesHelper().getLanguage(expression);
+      if (oldValue != null && oldValue.equals(lang)) {
+        mustChange = false;
+      }
     }
+    if (mustChange) {
+      String body = EMPTYSTRING;
+      if (expression != null && Model.getDataTypesHelper().getBody(expression) != null) {
+        body = Model.getDataTypesHelper().getBody(expression);
+      }
 
-    /**
-     * @param body the body text of the expression
-     */
-    public void setBody(String body) {
-        boolean mustChange = true;
-        if (expression != null) {
-            Object oldValue = Model.getDataTypesHelper().getBody(expression);
-            if (oldValue != null && oldValue.equals(body)) {
-                mustChange = false;
-            }
-        }
-        if (mustChange) {
-            String lang = null;
-            if (expression != null) {
-                lang = Model.getDataTypesHelper().getLanguage(expression);
-            }
-            if (lang == null) {
-                lang = EMPTYSTRING;
-            }
-
-            setExpression(lang, body);
-        }
+      setExpression(lang, body);
     }
+  }
 
-    /**
-     * @param lang the language of the expression
-     * @param body the body text of the expression
-     */
-    private void setExpression(String lang, String body) {
-        if (expression == null) {
-            expression = newExpression();
-        }
-        expression = Model.getDataTypesHelper().setLanguage(expression, lang);
-        expression = Model.getDataTypesHelper().setBody(expression, body);
-        setExpression(expression);
+  /**
+   * @param body the body text of the expression
+   */
+  public void setBody(String body) {
+    boolean mustChange = true;
+    if (expression != null) {
+      Object oldValue = Model.getDataTypesHelper().getBody(expression);
+      if (oldValue != null && oldValue.equals(body)) {
+        mustChange = false;
+      }
     }
+    if (mustChange) {
+      String lang = null;
+      if (expression != null) {
+        lang = Model.getDataTypesHelper().getLanguage(expression);
+      }
+      if (lang == null) {
+        lang = EMPTYSTRING;
+      }
 
-    /**
-     * @return the container
-     */
-    protected UMLUserInterfaceContainer getContainer() {
-        return container;
+      setExpression(lang, body);
     }
+  }
 
+  /**
+   * @param lang the language of the expression
+   * @param body the body text of the expression
+   */
+  private void setExpression(String lang, String body) {
+    if (expression == null) {
+      expression = newExpression();
+    }
+    expression = Model.getDataTypesHelper().setLanguage(expression, lang);
+    expression = Model.getDataTypesHelper().setBody(expression, body);
+    setExpression(expression);
+  }
+
+  /**
+   * @return the container
+   */
+  protected UMLUserInterfaceContainer getContainer() {
+    return container;
+  }
 }

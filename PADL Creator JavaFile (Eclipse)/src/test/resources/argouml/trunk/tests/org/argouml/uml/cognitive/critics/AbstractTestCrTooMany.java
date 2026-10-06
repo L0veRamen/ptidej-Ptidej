@@ -25,60 +25,58 @@
 package org.argouml.uml.cognitive.critics;
 
 import junit.framework.TestCase;
-
 import org.argouml.model.Model;
 
 public abstract class AbstractTestCrTooMany extends TestCase {
 
-    protected AbstractCrTooMany cr;
+  protected AbstractCrTooMany cr;
 
-    protected Object model;
+  protected Object model;
 
-    protected Object dm;
+  protected Object dm;
 
-    int threshold;
+  int threshold;
 
-    public AbstractTestCrTooMany(String arg0) {
-        super(arg0);
+  public AbstractTestCrTooMany(String arg0) {
+    super(arg0);
+  }
+
+  protected void setUp() throws Exception {
+    super.setUp();
+    model = Model.getModelManagementFactory().createModel();
+  }
+
+  protected abstract void createNewModelElement();
+
+  public void testNoThresholdPredicate2() {
+    cr.setThreshold(0);
+    // all tests should consider the threshold as inclusive value
+    assertFalse(cr.predicate2(dm, null));
+  }
+
+  public void testPredicate2() {
+    for (int i = 0; i < 5; i++) {
+      createNewModelElement();
     }
+    cr.setThreshold(10);
+    assertFalse(cr.predicate2(dm, null));
+    cr.setThreshold(6);
+    assertFalse(cr.predicate2(dm, null));
+    cr.setThreshold(5);
+    assertFalse(cr.predicate2(dm, null));
+    cr.setThreshold(4);
+    assertTrue(cr.predicate2(dm, null));
+    cr.setThreshold(1);
+    assertTrue(cr.predicate2(dm, null));
+  }
 
-    protected void setUp() throws Exception {
-        super.setUp();
-        model = Model.getModelManagementFactory().createModel();
-    }
+  public void testThreshold() {
+    cr.setThreshold(5);
+    assertTrue(cr.getThreshold() == 5);
+  }
 
-    protected abstract void createNewModelElement();
-
-    public void testNoThresholdPredicate2() {
-        cr.setThreshold(0);
-        // all tests should consider the threshold as inclusive value
-        assertFalse(cr.predicate2(dm, null));
-    }
-
-    public void testPredicate2() {
-        for (int i = 0; i < 5; i++) {
-            createNewModelElement();
-        }
-        cr.setThreshold(10);
-        assertFalse(cr.predicate2(dm, null));
-        cr.setThreshold(6);
-        assertFalse(cr.predicate2(dm, null));
-        cr.setThreshold(5);
-        assertFalse(cr.predicate2(dm, null));
-        cr.setThreshold(4);
-        assertTrue(cr.predicate2(dm, null));
-        cr.setThreshold(1);
-        assertTrue(cr.predicate2(dm, null));
-    }
-
-    public void testThreshold() {
-        cr.setThreshold(5);
-        assertTrue(cr.getThreshold() == 5);
-    }
-
-    // this test is a bit stupid, but nevertheless...
-    public void testGetWizardClass() {
-        assertTrue(cr.getWizardClass(null).equals(WizTooMany.class));
-    }
-
+  // this test is a bit stupid, but nevertheless...
+  public void testGetWizardClass() {
+    assertTrue(cr.getWizardClass(null).equals(WizTooMany.class));
+  }
 }

@@ -25,11 +25,9 @@
 package org.argouml.uml.ui.model_management;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.Action;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
@@ -40,89 +38,71 @@ import org.argouml.uml.ui.UMLLinkedList;
 import org.argouml.uml.ui.foundation.core.UMLClassifierFeatureListModel;
 import org.argouml.util.ConfigLoader;
 
-/**
- * A property panel for UML subsystems.
- */
+/** A property panel for UML subsystems. */
 public class PropPanelSubsystem extends PropPanelPackage {
 
-    private JScrollPane featureScroll;
+  private JScrollPane featureScroll;
 
-    private static UMLClassifierFeatureListModel featureListModel =
-        new UMLClassifierFeatureListModel();
+  private static UMLClassifierFeatureListModel featureListModel =
+      new UMLClassifierFeatureListModel();
 
-    /**
-     * The constructor.
-     *
-     */
-    public PropPanelSubsystem() {
-        super("Subsystem", lookupIcon("Subsystem"),
-                ConfigLoader.getTabPropsOrientation());
+  /** The constructor. */
+  public PropPanelSubsystem() {
+    super("Subsystem", lookupIcon("Subsystem"), ConfigLoader.getTabPropsOrientation());
 
-        addField(Translator.localize("label.available-features"),
-                getFeatureScroll());
+    addField(Translator.localize("label.available-features"), getFeatureScroll());
 
-        addAction(new ActionNewOperation());
+    addAction(new ActionNewOperation());
+  }
+
+  /**
+   * Add a new operation to this classifier.
+   *
+   * @author mvw@tigris.org
+   */
+  private static class ActionNewOperation extends AbstractActionNewModelElement {
+
+    /** The key for the action name. */
+    private static final String ACTION_KEY = "button.new-operation";
+
+    /** The constructor. */
+    public ActionNewOperation() {
+      super(ACTION_KEY);
+      putValue(Action.NAME, Translator.localize(ACTION_KEY));
     }
 
     /**
-     * Add a new operation to this classifier.
-     *
-     * @author mvw@tigris.org
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
-    private static class ActionNewOperation
-        extends AbstractActionNewModelElement {
-
-        /**
-         * The key for the action name.
-         */
-        private static final String ACTION_KEY = "button.new-operation";
-
-        /**
-         * The constructor.
-         */
-        public ActionNewOperation() {
-            super(ACTION_KEY);
-            putValue(Action.NAME, Translator.localize(ACTION_KEY));
-        }
-
-        /**
-         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-         */
-        public void actionPerformed(ActionEvent e) {
-            Object target = TargetManager.getInstance().getModelTarget();
-            if (Model.getFacade().isAClassifier(target)) {
-                Project p = ProjectManager.getManager().getCurrentProject();
-                Object model = p.getModel();
-                Object voidType = p.findType("void");
-                Object newOper =
-                    Model.getCoreFactory()
-                        .buildOperation(target, model, voidType);
-                TargetManager.getInstance().setTarget(newOper);
-                super.actionPerformed(e);
-            }
-        }
-
-        /**
-         * The UID.
-         */
-        private static final long serialVersionUID = -5149342278246959597L;
+    public void actionPerformed(ActionEvent e) {
+      Object target = TargetManager.getInstance().getModelTarget();
+      if (Model.getFacade().isAClassifier(target)) {
+        Project p = ProjectManager.getManager().getCurrentProject();
+        Object model = p.getModel();
+        Object voidType = p.findType("void");
+        Object newOper = Model.getCoreFactory().buildOperation(target, model, voidType);
+        TargetManager.getInstance().setTarget(newOper);
+        super.actionPerformed(e);
+      }
     }
 
-    /**
-     * Returns the featureScroll.
-     *
-     * @return JScrollPane
-     */
-    public JScrollPane getFeatureScroll() {
-        if (featureScroll == null) {
-            JList list = new UMLLinkedList(featureListModel);
-            featureScroll = new JScrollPane(list);
-        }
-        return featureScroll;
-    }
+    /** The UID. */
+    private static final long serialVersionUID = -5149342278246959597L;
+  }
 
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -8616239241648089917L;
+  /**
+   * Returns the featureScroll.
+   *
+   * @return JScrollPane
+   */
+  public JScrollPane getFeatureScroll() {
+    if (featureScroll == null) {
+      JList list = new UMLLinkedList(featureListModel);
+      featureScroll = new JScrollPane(list);
+    }
+    return featureScroll;
+  }
+
+  /** The UID. */
+  private static final long serialVersionUID = -8616239241648089917L;
 } /* end class PropPanelSubsystem */

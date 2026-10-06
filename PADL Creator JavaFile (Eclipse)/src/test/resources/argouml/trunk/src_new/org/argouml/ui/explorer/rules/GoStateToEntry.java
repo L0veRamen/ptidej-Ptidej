@@ -28,7 +28,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 
@@ -40,36 +39,34 @@ import org.argouml.model.Model;
  */
 public class GoStateToEntry extends AbstractPerspectiveRule {
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
-     */
-    public Collection getChildren(Object parent) {
-        if (Model.getFacade().isAState(parent)
-	        && Model.getFacade().getEntry(parent) != null) {
-            Vector children = new Vector();
-            children.add(Model.getFacade().getEntry(parent));
-            return children;
-        }
-        return null;
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
+   */
+  public Collection getChildren(Object parent) {
+    if (Model.getFacade().isAState(parent) && Model.getFacade().getEntry(parent) != null) {
+      Vector children = new Vector();
+      children.add(Model.getFacade().getEntry(parent));
+      return children;
     }
+    return null;
+  }
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
-     */
-    public Set getDependencies(Object parent) {
-        if (Model.getFacade().isAState(parent)) {
-	    Set set = new HashSet();
-	    set.add(parent);
-	    return set;
-	}
-	return null;
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
+   */
+  public Set getDependencies(Object parent) {
+    if (Model.getFacade().isAState(parent)) {
+      Set set = new HashSet();
+      set.add(parent);
+      return set;
     }
+    return null;
+  }
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
-     */
-    public String getRuleName() {
-        return Translator.localize ("misc.state.entry");
-    }
-
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
+   */
+  public String getRuleName() {
+    return Translator.localize("misc.state.entry");
+  }
 }

@@ -25,7 +25,6 @@
 package org.argouml.uml.ui.foundation.core;
 
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.ActionDeleteSingleModelElement;
@@ -37,77 +36,68 @@ import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
 import org.argouml.util.ConfigLoader;
 
 /**
- * Proppanel for comments (notes). <p>
+ * Proppanel for comments (notes).
  *
- * In UML 1.3, the text of the comment is kept
- * in the name of the Comment.<p>
- * 
- * In UML 1.4 and beyond, the Comment has a "body"
- * attribute, to contain the comment string.
+ * <p>In UML 1.3, the text of the comment is kept in the name of the Comment.
+ *
+ * <p>In UML 1.4 and beyond, the Comment has a "body" attribute, to contain the comment string.
  */
 public class PropPanelComment extends PropPanelModelElement {
 
-    /**
-     * Constructor for PropPanelComment.
-     */
-    public PropPanelComment() {
-        super("Comment", ConfigLoader.getTabPropsOrientation());
+  /** Constructor for PropPanelComment. */
+  public PropPanelComment() {
+    super("Comment", ConfigLoader.getTabPropsOrientation());
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        
-        addField(Translator.localize("label.stereotype"),
-                getStereotypeSelector());
+    addField(Translator.localize("label.name"), getNameTextField());
 
-        addField(Translator.localize("label.annotated-elements"),
-            new JScrollPane(new UMLLinkedList(
-                    new UMLCommentAnnotatedElementListModel())));
+    addField(Translator.localize("label.stereotype"), getStereotypeSelector());
 
-        addSeperator();
+    addField(
+        Translator.localize("label.annotated-elements"),
+        new JScrollPane(new UMLLinkedList(new UMLCommentAnnotatedElementListModel())));
 
-        UMLTextArea2 text = new UMLTextArea2(new UMLCommentBodyDocument());
-        text.setLineWrap(true);
-        text.setRows(5);
-        JScrollPane pane = new JScrollPane(text);
-        addField(Translator.localize("label.comment.body"), pane);
+    addSeperator();
 
-        addAction(new ActionNavigateContainerElement());
-        addAction(new ActionNewStereotype());
-        addAction(new ActionDeleteSingleModelElement());
-    }
+    UMLTextArea2 text = new UMLTextArea2(new UMLCommentBodyDocument());
+    text.setLineWrap(true);
+    text.setRows(5);
+    JScrollPane pane = new JScrollPane(text);
+    addField(Translator.localize("label.comment.body"), pane);
+
+    addAction(new ActionNavigateContainerElement());
+    addAction(new ActionNewStereotype());
+    addAction(new ActionDeleteSingleModelElement());
+  }
 }
 
 class UMLCommentBodyDocument extends UMLPlainTextDocument {
 
-        /**
-         * Constructor for UMLModelElementNameDocument.
-         */
-        public UMLCommentBodyDocument() {
-            super("name"); // TODO: this may have to change to "body" for UML 1.4
-            /*
-             * TODO: This is probably not the right location 
-             * for switching off the "filterNewlines". 
-             * The setting gets lost after selecting a different
-             * ModelElement in the diagram. 
-             * BTW, see how it is used in
-             * javax.swing.text.PlainDocument.
-             * See issue 1812.
-             */
-            putProperty("filterNewlines", Boolean.FALSE);
-        }
+  /** Constructor for UMLModelElementNameDocument. */
+  public UMLCommentBodyDocument() {
+    super("name"); // TODO: this may have to change to "body" for UML 1.4
+    /*
+     * TODO: This is probably not the right location
+     * for switching off the "filterNewlines".
+     * The setting gets lost after selecting a different
+     * ModelElement in the diagram.
+     * BTW, see how it is used in
+     * javax.swing.text.PlainDocument.
+     * See issue 1812.
+     */
+    putProperty("filterNewlines", Boolean.FALSE);
+  }
 
-        /**
-         * @see org.argouml.uml.ui.UMLPlainTextDocument#setProperty(java.lang.String)
-         */
-        protected void setProperty(String text) {
-            Model.getCoreHelper().setBody(getTarget(), text);
-        }
+  /**
+   * @see org.argouml.uml.ui.UMLPlainTextDocument#setProperty(java.lang.String)
+   */
+  protected void setProperty(String text) {
+    Model.getCoreHelper().setBody(getTarget(), text);
+  }
 
-        /**
-         * @see org.argouml.uml.ui.UMLPlainTextDocument#getProperty()
-         */
-        protected String getProperty() {
-            return (String) Model.getFacade().getBody(getTarget());
-        }
-
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLPlainTextDocument#getProperty()
+   */
+  protected String getProperty() {
+    return (String) Model.getFacade().getBody(getTarget());
+  }
+}

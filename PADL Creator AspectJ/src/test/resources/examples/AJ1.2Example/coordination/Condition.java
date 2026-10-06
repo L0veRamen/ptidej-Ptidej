@@ -6,7 +6,7 @@ Use and copying of this software and preparation of derivative works based
 upon this software are permitted.  Any distribution of this software or
 derivative works must comply with all applicable United States export control
 laws.
- 
+
 This software is made available AS IS, and Xerox Corporation makes no warranty
 about the software, its performance or its conformity to any specification.
 
@@ -18,20 +18,15 @@ about the software, its performance or its conformity to any specification.
 
 package coordination;
 
-
 /**
- * Interface for pre-conditions that are passed to guardedEntry methods of
- * Coordinator.
- * Conditions should be passed as anonymous classes that simply implement
- * the checkit method.
- *
+ * Interface for pre-conditions that are passed to guardedEntry methods of Coordinator. Conditions
+ * should be passed as anonymous classes that simply implement the checkit method.
  */
 public interface Condition {
 
-    /**
-     * This method is called automatically by Coordinator.guardedEntry(...)
-     * and it's called everytime the coordination state changes.
-     */
-
-    public boolean checkit();
+  /**
+   * This method is called automatically by Coordinator.guardedEntry(...) and it's called everytime
+   * the coordination state changes.
+   */
+  public boolean checkit();
 }

@@ -25,114 +25,88 @@
 package org.argouml.model;
 
 import java.util.Collection;
-
 import junit.framework.TestCase;
 
-/**
- * Test the ExtensionMechanismsFactory class.
- *
- */
+/** Test the ExtensionMechanismsFactory class. */
 public class TestExtensionMechanismsFactory extends TestCase {
-    /**
-     * List of model elements to test.
-     */
-    private static String[] allModelElements = {
-	"Stereotype",
-        "TagDefinition",
-	"TaggedValue",
+  /** List of model elements to test. */
+  private static String[] allModelElements = {
+    "Stereotype", "TagDefinition", "TaggedValue",
+  };
+
+  /**
+   * The constructor.
+   *
+   * @param n the name of the test
+   */
+  public TestExtensionMechanismsFactory(String n) {
+    super(n);
+  }
+
+  /** Test if the ExtensionMechanismsFactory is really a singleton. */
+  public void testSingleton() {
+    Object o1 = Model.getExtensionMechanismsFactory();
+    Object o2 = Model.getExtensionMechanismsFactory();
+    assertTrue("Different singletons", o1 == o2);
+  }
+
+  /** Test creation. */
+  public void testCreates() {
+
+    String[] objs = {
+      "TagDefinition", "TaggedValue", null,
     };
 
-    /**
-     * The constructor.
-     *
-     * @param n the name of the test
-     */
-    public TestExtensionMechanismsFactory(String n) {
-	super(n);
+    CheckUMLModelHelper.createAndRelease(Model.getExtensionMechanismsFactory(), objs);
+
+    ExtensionMechanismsFactory emFactory = Model.getExtensionMechanismsFactory();
+    Object model = Model.getModelManagementFactory().createModel();
+    Object stereo = emFactory.buildStereotype("mystereo", model);
+    try {
+      emFactory.buildTagDefinition("myTD", stereo, model);
+      fail("Illegal buildTagDefinition with both sterotype" + " and model didn't throw exception.");
+    } catch (IllegalArgumentException e) {
+      // Expected
     }
+  }
 
-    /**
-     * Test if the ExtensionMechanismsFactory is really a singleton.
-     */
-    public void testSingleton() {
-	Object o1 = Model.getExtensionMechanismsFactory();
-	Object o2 = Model.getExtensionMechanismsFactory();
-	assertTrue("Different singletons", o1 == o2);
-    }
+  /** Test cascading delete to make sure dependent elements disappear. */
+  public void testDelete() {
+    ExtensionMechanismsFactory emFactory = Model.getExtensionMechanismsFactory();
+    ExtensionMechanismsHelper emHelper = Model.getExtensionMechanismsHelper();
+    Object model = Model.getModelManagementFactory().createModel();
+    Model.getModelManagementFactory().setRootModel(model);
+    Object stereo = emFactory.buildStereotype("mystereo", model);
+    emFactory.buildTagDefinition("myTD", stereo, null);
+    Object tv = emFactory.buildTaggedValue("myTD", "the tag value");
+    Object clazz = Model.getCoreFactory().buildClass("MyClass", model);
+    emHelper.addTaggedValue(clazz, tv);
 
-    /**
-     * Test creation.
-     */
-    public void testCreates() {
+    Collection tvs = Model.getFacade().getTaggedValuesCollection(clazz);
+    assertEquals("Wrong number of TaggedValues returned", 1, tvs.size());
+    assertTrue("TaggedValue not found", tvs.contains(tv));
+    Collection tds =
+        Model.getModelManagementHelper()
+            .getAllModelElementsOfKind(model, Model.getMetaTypes().getTagDefinition());
+    assertEquals("TagDefinition not found", 1, tds.size());
 
-	String[] objs = {
-            "TagDefinition",
-	    "TaggedValue",
-	    null,
-	};
+    // Deleting the stereotype should cascade to the TagDefinition,
+    // then the TaggedValue
+    Model.getUmlFactory().delete(stereo);
+    Model.getPump().flushModelEvents();
 
-	CheckUMLModelHelper.createAndRelease(
-		     Model.getExtensionMechanismsFactory(),
-		     objs);
+    tvs = Model.getFacade().getTaggedValuesCollection(clazz);
+    assertEquals("TaggedValue not deleted", 0, tvs.size());
+    tds =
+        Model.getModelManagementHelper()
+            .getAllModelElementsOfKind(model, Model.getMetaTypes().getTagDefinition());
+    assertEquals("TagDefinition not deleted", 0, tds.size());
+  }
 
-
-        ExtensionMechanismsFactory emFactory =
-            Model.getExtensionMechanismsFactory();
-        Object model = Model.getModelManagementFactory().createModel();
-        Object stereo = emFactory.buildStereotype("mystereo", model);
-        try {
-            emFactory.buildTagDefinition("myTD", stereo, model);
-            fail("Illegal buildTagDefinition with both sterotype"
-                    + " and model didn't throw exception.");
-        } catch (IllegalArgumentException e) {
-            // Expected
-        }
-    }
-
-    /**
-     * Test cascading delete to make sure dependent
-     * elements disappear.
-     */
-    public void testDelete() {
-        ExtensionMechanismsFactory emFactory =
-            Model.getExtensionMechanismsFactory();
-        ExtensionMechanismsHelper emHelper =
-            Model.getExtensionMechanismsHelper();
-        Object model = Model.getModelManagementFactory().createModel();
-        Model.getModelManagementFactory().setRootModel(model);
-        Object stereo = emFactory.buildStereotype("mystereo", model);
-        emFactory.buildTagDefinition("myTD", stereo, null);
-        Object tv = emFactory.buildTaggedValue("myTD", "the tag value");
-        Object clazz = Model.getCoreFactory().buildClass("MyClass", model);
-        emHelper.addTaggedValue(clazz, tv);
-
-        Collection tvs = Model.getFacade().getTaggedValuesCollection(clazz);
-        assertEquals("Wrong number of TaggedValues returned", 1, tvs.size());
-        assertTrue("TaggedValue not found", tvs.contains(tv));
-        Collection tds =
-            Model.getModelManagementHelper()
-                .getAllModelElementsOfKind(model,
-                        Model.getMetaTypes().getTagDefinition());
-        assertEquals("TagDefinition not found", 1, tds.size());
-
-        // Deleting the stereotype should cascade to the TagDefinition,
-        // then the TaggedValue
-        Model.getUmlFactory().delete(stereo);
-        Model.getPump().flushModelEvents();
-
-        tvs = Model.getFacade().getTaggedValuesCollection(clazz);
-        assertEquals("TaggedValue not deleted", 0, tvs.size());
-        tds =
-            Model.getModelManagementHelper()
-                .getAllModelElementsOfKind(model,
-                        Model.getMetaTypes().getTagDefinition());
-        assertEquals("TagDefinition not deleted", 0, tds.size());
-    }
-
-    /**
-     * @return Returns the allModelElements.
-     */
-    static String[] getAllModelElements() {
-        return allModelElements;
-    }
+  /**
+   * @return Returns the allModelElements.
+   */
+  static String[] getAllModelElements() {
+    return allModelElements;
+  }
 }

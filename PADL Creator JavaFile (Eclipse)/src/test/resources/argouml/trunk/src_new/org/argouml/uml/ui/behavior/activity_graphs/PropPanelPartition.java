@@ -22,32 +22,23 @@
 // CALIFORNIA HAS NO OBLIGATIONS TO PROVIDE MAINTENANCE, SUPPORT,
 // UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
-
 package org.argouml.uml.ui.behavior.activity_graphs;
 
 import org.argouml.i18n.Translator;
 import org.argouml.uml.ui.foundation.core.PropPanelModelElement;
 import org.argouml.util.ConfigLoader;
 
-
 /**
  * The properties panel for a Partition (Swimlane).
  *
  * @author mkl
- *
  */
 public class PropPanelPartition extends PropPanelModelElement {
 
+  /** constructor. */
+  public PropPanelPartition() {
+    super("Swimlane", lookupIcon("Partition"), ConfigLoader.getTabPropsOrientation());
 
-
-    /**
-     * constructor.
-     */
-    public PropPanelPartition() {
-        super("Swimlane",  lookupIcon("Partition"),
-      	      ConfigLoader.getTabPropsOrientation());
-
-        addField(Translator.localize("label.name"), getNameTextField());
-    }
-
+    addField(Translator.localize("label.name"), getNameTextField());
+  }
 }

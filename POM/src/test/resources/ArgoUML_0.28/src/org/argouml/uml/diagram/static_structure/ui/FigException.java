@@ -25,59 +25,56 @@
 package org.argouml.uml.diagram.static_structure.ui;
 
 import java.awt.Rectangle;
-
 import org.argouml.uml.diagram.DiagramSettings;
 import org.tigris.gef.base.Selection;
 import org.tigris.gef.graph.GraphModel;
 
 /**
  * Fig representing an Exception.
- * 
+ *
  * @author Tom Morris
  */
 public class FigException extends FigSignal {
 
-    /**
-     * Default constructor.
-     * 
-     * @deprecated for 0.27.3 by tfmorris. Use
-     *             {@link #FigException(Object, Rectangle, DiagramSettings)}.
-     */
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    public FigException() {
-        super();
-    }
+  /**
+   * Default constructor.
+   *
+   * @deprecated for 0.27.3 by tfmorris. Use {@link #FigException(Object, Rectangle,
+   *     DiagramSettings)}.
+   */
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  public FigException() {
+    super();
+  }
 
-    /**
-     * The Constructor.
-     * 
-     * @param gm the GraphModel
-     * @param node the UML object
-     * @deprecated for 0.27.3 by tfmorris. Use
-     *             {@link #FigException(Object, Rectangle, DiagramSettings)}.
-     */
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    public FigException(GraphModel gm, Object node) {
-        super(gm, node);
-    }
+  /**
+   * The Constructor.
+   *
+   * @param gm the GraphModel
+   * @param node the UML object
+   * @deprecated for 0.27.3 by tfmorris. Use {@link #FigException(Object, Rectangle,
+   *     DiagramSettings)}.
+   */
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  public FigException(GraphModel gm, Object node) {
+    super(gm, node);
+  }
 
-    /**
-     * Construct an Exception fig.
-     * 
-     * @param owner owning Exception
-     * @param bounds position and size
-     * @param settings render settings
-     */
-    public FigException(Object owner, Rectangle bounds, 
-            DiagramSettings settings) {
-        super(owner, bounds, settings);
-    }
-    
-    @Override
-    public Selection makeSelection() {
-        return new SelectionException(this);
-    }
+  /**
+   * Construct an Exception fig.
+   *
+   * @param owner owning Exception
+   * @param bounds position and size
+   * @param settings render settings
+   */
+  public FigException(Object owner, Rectangle bounds, DiagramSettings settings) {
+    super(owner, bounds, settings);
+  }
 
+  @Override
+  public Selection makeSelection() {
+    return new SelectionException(this);
+  }
 }

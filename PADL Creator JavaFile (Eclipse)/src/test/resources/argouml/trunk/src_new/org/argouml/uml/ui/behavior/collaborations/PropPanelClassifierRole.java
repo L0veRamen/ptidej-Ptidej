@@ -26,7 +26,6 @@ package org.argouml.uml.ui.behavior.collaborations;
 
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.uml.ui.ActionNavigateContainerElement;
 import org.argouml.uml.ui.UMLComboBox2;
@@ -38,99 +37,76 @@ import org.argouml.uml.ui.foundation.core.PropPanelClassifier;
 import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
 import org.argouml.util.ConfigLoader;
 
-/**
- * TODO: this property panel needs refactoring to remove dependency on
- *       old gui components.
- */
+/** TODO: this property panel needs refactoring to remove dependency on old gui components. */
 public class PropPanelClassifierRole extends PropPanelClassifier {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = -5407549104529347513L;
+  /** The serial version. */
+  private static final long serialVersionUID = -5407549104529347513L;
 
-    /**
-     * The combobox for the multiplicity of this type.
-     */
-    private UMLComboBox2 multiplicityComboBox;
+  /** The combobox for the multiplicity of this type. */
+  private UMLComboBox2 multiplicityComboBox;
 
-    /**
-     * Model for the MultiplicityComboBox
-     */
-    private static UMLMultiplicityComboBoxModel multiplicityComboBoxModel;
+  /** Model for the MultiplicityComboBox */
+  private static UMLMultiplicityComboBoxModel multiplicityComboBoxModel;
 
-    /**
-     * Construct a property panel for a ClassifierRole.
-     */
-    public PropPanelClassifierRole() {
-	super("ClassifierRole", ConfigLoader.getTabPropsOrientation());
+  /** Construct a property panel for a ClassifierRole. */
+  public PropPanelClassifierRole() {
+    super("ClassifierRole", ConfigLoader.getTabPropsOrientation());
 
-	addField(Translator.localize("label.name"),
-	    getNameTextField());
+    addField(Translator.localize("label.name"), getNameTextField());
 
-        addField(Translator.localize("label.namespace"),
-	    getNamespaceScroll());
+    addField(Translator.localize("label.namespace"), getNamespaceScroll());
 
-	addField(Translator.localize("label.multiplicity"),
-            getMultiplicityComboBox());
+    addField(Translator.localize("label.multiplicity"), getMultiplicityComboBox());
 
-	JList baseList =
-	    new UMLMutableLinkedList(new UMLClassifierRoleBaseListModel(),
-		ActionAddClassifierRoleBase.SINGLETON,
-		null,
-		ActionRemoveClassifierRoleBase.getInstance(),
-		true);
-	addField(Translator.localize("label.base"),
-		new JScrollPane(baseList));
+    JList baseList =
+        new UMLMutableLinkedList(
+            new UMLClassifierRoleBaseListModel(),
+            ActionAddClassifierRoleBase.SINGLETON,
+            null,
+            ActionRemoveClassifierRoleBase.getInstance(),
+            true);
+    addField(Translator.localize("label.base"), new JScrollPane(baseList));
 
+    addSeparator();
 
-	addSeparator();
+    addField(Translator.localize("label.generalizations"), getGeneralizationScroll());
+    addField(Translator.localize("label.specializations"), getSpecializationScroll());
+    addField(Translator.localize("label.associationrole-ends"), getAssociationEndScroll());
 
-	addField(Translator.localize("label.generalizations"),
-		 getGeneralizationScroll());
-	addField(Translator.localize("label.specializations"),
-		 getSpecializationScroll());
-	addField(Translator.localize("label.associationrole-ends"),
-		 getAssociationEndScroll());
+    addSeparator();
 
-	addSeparator();
+    JList availableContentsList =
+        new UMLLinkedList(new UMLClassifierRoleAvailableContentsListModel());
+    addField(
+        Translator.localize("label.available-contents"), new JScrollPane(availableContentsList));
 
-	JList availableContentsList =
-	    new UMLLinkedList(
-		    new UMLClassifierRoleAvailableContentsListModel());
-	addField(Translator.localize("label.available-contents"),
-		 new JScrollPane(availableContentsList));
+    JList availableFeaturesList =
+        new UMLLinkedList(new UMLClassifierRoleAvailableFeaturesListModel());
+    addField(
+        Translator.localize("label.available-features"), new JScrollPane(availableFeaturesList));
 
-	JList availableFeaturesList =
-	    new UMLLinkedList(
-		    new UMLClassifierRoleAvailableFeaturesListModel());
-	addField(Translator.localize("label.available-features"),
-		 new JScrollPane(availableFeaturesList));
+    addAction(new ActionNavigateContainerElement());
+    addAction(getActionNewReception());
+    addAction(new ActionNewStereotype());
+    addAction(getDeleteAction());
+  }
 
-	addAction(new ActionNavigateContainerElement());
-	addAction(getActionNewReception());
-	addAction(new ActionNewStereotype());
-	addAction(getDeleteAction());
+  /**
+   * Returns the multiplicityComboBox.
+   *
+   * @return UMLMultiplicityComboBox2
+   */
+  protected UMLComboBox2 getMultiplicityComboBox() {
+    if (multiplicityComboBox == null) {
+      if (multiplicityComboBoxModel == null) {
+        multiplicityComboBoxModel = new UMLClassifierRoleMultiplicityComboBoxModel();
+      }
+      multiplicityComboBox =
+          new UMLMultiplicityComboBox2(
+              multiplicityComboBoxModel, ActionSetClassifierRoleMultiplicity.getInstance());
+      multiplicityComboBox.setEditable(true);
     }
-
-    /**
-     * Returns the multiplicityComboBox.
-     * @return UMLMultiplicityComboBox2
-     */
-    protected UMLComboBox2 getMultiplicityComboBox() {
-	if (multiplicityComboBox == null) {
-	    if (multiplicityComboBoxModel == null) {
-		multiplicityComboBoxModel =
-		    new UMLClassifierRoleMultiplicityComboBoxModel();
-	    }
-	    multiplicityComboBox =
-		new UMLMultiplicityComboBox2(
-		        multiplicityComboBoxModel,
-		        ActionSetClassifierRoleMultiplicity.getInstance());
-	    multiplicityComboBox.setEditable(true);
-	}
-	return multiplicityComboBox;
-    }
-
-
+    return multiplicityComboBox;
+  }
 } /* end class PropPanelClassifierRole */

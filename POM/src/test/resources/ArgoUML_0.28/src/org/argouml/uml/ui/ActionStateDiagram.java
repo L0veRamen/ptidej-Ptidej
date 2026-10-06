@@ -32,71 +32,60 @@ import org.argouml.uml.diagram.ArgoDiagram;
 import org.argouml.uml.diagram.DiagramFactory;
 import org.argouml.uml.diagram.state.ui.UMLStateDiagram;
 
-/**
- * Action to create a new statechart diagram.
- */
+/** Action to create a new statechart diagram. */
 public class ActionStateDiagram extends ActionNewDiagram {
 
-    /**
-     * Constructor.
-     */
-    public ActionStateDiagram() {
-        super("action.state-diagram");
+  /** Constructor. */
+  public ActionStateDiagram() {
+    super("action.state-diagram");
+  }
+
+  /*
+   * @see org.argouml.uml.ui.ActionNewDiagram#createDiagram()
+   */
+  protected ArgoDiagram createDiagram(Object namespace) {
+    Object target = TargetManager.getInstance().getModelTarget();
+    if (Model.getFacade().isAUMLElement(target)
+        && Model.getModelManagementHelper().isReadOnly(target)) {
+      target = namespace;
+    }
+    Object machine = null;
+    if (Model.getStateMachinesHelper().isAddingStatemachineAllowed(target)) {
+      /* The target is a valid context. */
+      machine = Model.getStateMachinesFactory().buildStateMachine(target);
+    } else if (Model.getFacade().isAStateMachine(target) && hasNoDiagramYet(target)) {
+      /* This target is a statemachine,
+       * for which no diagram exists yet,
+       * so, let's use it. */
+      machine = target;
+    } else {
+      /* Let's just build a Statemachine,
+       * and put it in a suitable namespace. */
+      machine = Model.getStateMachinesFactory().createStateMachine();
+      if (Model.getFacade().isANamespace(target)) {
+        namespace = target;
+      }
+      Model.getCoreHelper().setNamespace(machine, namespace);
+      Model.getStateMachinesFactory().buildCompositeStateOnStateMachine(machine);
     }
 
-    /*
-     * @see org.argouml.uml.ui.ActionNewDiagram#createDiagram()
-     */
-    protected ArgoDiagram createDiagram(Object namespace) {
-        Object target = TargetManager.getInstance().getModelTarget();
-        if (Model.getFacade().isAUMLElement(target) 
-                && Model.getModelManagementHelper().isReadOnly(target)) {
-            target = namespace;
-        }
-        Object machine = null;
-        if (Model.getStateMachinesHelper().isAddingStatemachineAllowed(
-              target)) {
-            /* The target is a valid context. */
-            machine = Model.getStateMachinesFactory().buildStateMachine(target);
-        } else if (Model.getFacade().isAStateMachine(target)
-                && hasNoDiagramYet(target)) {
-            /* This target is a statemachine, 
-             * for which no diagram exists yet, 
-             * so, let's use it. */
-            machine = target;
-        } else {
-            /* Let's just build a Statemachine, 
-             * and put it in a suitable namespace. */
-            machine = Model.getStateMachinesFactory().createStateMachine();
-            if (Model.getFacade().isANamespace(target)) {
-                namespace = target;
-            }
-            Model.getCoreHelper().setNamespace(machine, namespace);
-            Model.getStateMachinesFactory()
-                    .buildCompositeStateOnStateMachine(machine);
-        }
-        
-        return DiagramFactory.getInstance().createDiagram(
-                DiagramFactory.DiagramType.State,
-                Model.getFacade().getNamespace(machine),
-                machine);
-    }
-    
-    private boolean hasNoDiagramYet(Object machine) {
-        Project p = ProjectManager.getManager().getCurrentProject();
-        for (ArgoDiagram d : p.getDiagramList()) {
-            if (d instanceof UMLStateDiagram) {
-                if (((UMLStateDiagram) d).getStateMachine() == machine) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
+    return DiagramFactory.getInstance()
+        .createDiagram(
+            DiagramFactory.DiagramType.State, Model.getFacade().getNamespace(machine), machine);
+  }
 
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -5197718695001757808L;
+  private boolean hasNoDiagramYet(Object machine) {
+    Project p = ProjectManager.getManager().getCurrentProject();
+    for (ArgoDiagram d : p.getDiagramList()) {
+      if (d instanceof UMLStateDiagram) {
+        if (((UMLStateDiagram) d).getStateMachine() == machine) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
 
+  /** The UID. */
+  private static final long serialVersionUID = -5197718695001757808L;
 }

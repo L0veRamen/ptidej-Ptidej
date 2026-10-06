@@ -32,147 +32,138 @@ import org.argouml.uml.diagram.ui.PathItemPlacement;
 import org.tigris.gef.presentation.Fig;
 
 /**
- * Class to display graphics for a UML Link in a diagram. <p>
- * 
- * The underlined association name is shown next to the middle of the path.
- * 
- * TODO: Show more notation as described in the standard:
- * "A rolename may be shown at each end of the link. An association 
- * name may be shown near the path. If present, it is underlined
- * to indicate an instance. Links do not have instance names, 
- * they take their identity from the instances that they relate.
- * Multiplicity is not shown for links because they are instances. 
- * Other association adornments (aggregation, composition, 
- * navigation) may be shown on the link ends."
+ * Class to display graphics for a UML Link in a diagram.
+ *
+ * <p>The underlined association name is shown next to the middle of the path.
+ *
+ * <p>TODO: Show more notation as described in the standard: "A rolename may be shown at each end of
+ * the link. An association name may be shown near the path. If present, it is underlined to
+ * indicate an instance. Links do not have instance names, they take their identity from the
+ * instances that they relate. Multiplicity is not shown for links because they are instances. Other
+ * association adornments (aggregation, composition, navigation) may be shown on the link ends."
  */
 public class FigLink extends FigEdgeModelElement {
 
-    /*
-     * Text group to contain name & stereotype
-     */
-    private FigTextGroup middleGroup; 
+  /*
+   * Text group to contain name & stereotype
+   */
+  private FigTextGroup middleGroup;
 
-    /**
-     * Constructor.
-     * 
-     * @deprecated for 0.28 by tfmorris. Use
-     *             {@link #FigLink(Object, DiagramSettings)}.
-     */
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    public FigLink() {
-        middleGroup = new FigTextGroup();
-        initialize();
+  /**
+   * Constructor.
+   *
+   * @deprecated for 0.28 by tfmorris. Use {@link #FigLink(Object, DiagramSettings)}.
+   */
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  public FigLink() {
+    middleGroup = new FigTextGroup();
+    initialize();
+  }
+
+  private void initialize() {
+    middleGroup.addFig(getNameFig());
+    addPathItem(middleGroup, new PathItemPlacement(this, middleGroup, 50, 25));
+    getNameFig().setUnderline(true);
+    getFig().setLineColor(LINE_COLOR);
+    setBetweenNearestPoints(true);
+  }
+
+  /**
+   * Constructor that hooks the Fig to a UML element.
+   *
+   * @param edge the UML element
+   * @deprecated for 0.28 by tfmorris. Use {@link #FigLink(Object, DiagramSettings)}.
+   */
+  @Deprecated
+  public FigLink(Object edge) {
+    this();
+    setOwner(edge);
+  }
+
+  /**
+   * Create a Fig representing a Link
+   *
+   * @param element owning UML element
+   * @param settings render settings
+   */
+  public FigLink(Object element, DiagramSettings settings) {
+    super(element, settings);
+    middleGroup = new FigTextGroup(element, settings);
+    initialize();
+  }
+
+  /*
+   * Nothing is editable, since a Link takes its identity
+   * from the Association.
+   *
+   * @see org.argouml.uml.diagram.ui.FigEdgeModelElement#canEdit(
+   * org.tigris.gef.presentation.Fig)
+   */
+  protected boolean canEdit(Fig f) {
+    return false;
+  }
+
+  /*
+   * Listen also to the association, of which the link is an instantiation,
+   * since we want to update the rendering when
+   * the association name changes.
+   *
+   * @see org.argouml.uml.diagram.ui.FigEdgeModelElement#updateListeners(
+   * java.lang.Object, java.lang.Object)
+   */
+  protected void updateListeners(Object oldOwner, Object newOwner) {
+    if (oldOwner != null) {
+      removeElementListener(oldOwner);
+      Object oldAssociation = Model.getFacade().getAssociation(oldOwner);
+      if (oldAssociation != null) {
+        removeElementListener(oldAssociation);
+      }
     }
-
-    private void initialize() {
-        middleGroup.addFig(getNameFig());
-        addPathItem(middleGroup,
-                new PathItemPlacement(this, middleGroup, 50, 25));
-        getNameFig().setUnderline(true);
-	getFig().setLineColor(LINE_COLOR);
-	setBetweenNearestPoints(true);
+    if (newOwner != null) {
+      addElementListener(newOwner, new String[] {"remove", "name", "association"});
+      Object newAssociation = Model.getFacade().getAssociation(newOwner);
+      if (newAssociation != null) {
+        addElementListener(newAssociation, "name");
+      }
     }
+  }
 
-    /**
-     * Constructor that hooks the Fig to a UML element.
-     *
-     * @param edge the UML element
-     * 
-     * @deprecated for 0.28 by tfmorris. Use
-     *             {@link #FigLink(Object, DiagramSettings)}.
-     */
-    @Deprecated
-    public FigLink(Object edge) {
-        this();
-        setOwner(edge);
+  /** Generate the notation for the modelelement and stuff it into the text Fig */
+  protected void updateNameText() {
+    if (getOwner() == null) {
+      return;
     }
-    
-    /**
-     * Create a Fig representing a Link
-     * 
-     * @param element owning UML element
-     * @param settings render settings
-     */
-    public FigLink(Object element, DiagramSettings settings) {
-        super(element, settings);
-        middleGroup = new FigTextGroup(element, settings);
-        initialize();
+    String nameString = "";
+    Object association = Model.getFacade().getAssociation(getOwner());
+    if (association != null) {
+      nameString = Model.getFacade().getName(association);
+      if (nameString == null) {
+        nameString = "";
+      }
     }
+    getNameFig().setText(nameString);
+    calcBounds();
+    setBounds(getBounds());
+  }
 
-    /*
-     * Nothing is editable, since a Link takes its identity 
-     * from the Association.
-     * 
-     * @see org.argouml.uml.diagram.ui.FigEdgeModelElement#canEdit(
-     * org.tigris.gef.presentation.Fig)
-     */
-    protected boolean canEdit(Fig f) { return false; }
-
-    /*
-     * Listen also to the association, of which the link is an instantiation, 
-     * since we want to update the rendering when 
-     * the association name changes.
-     * 
-     * @see org.argouml.uml.diagram.ui.FigEdgeModelElement#updateListeners(
-     * java.lang.Object, java.lang.Object)
-     */
-    protected void updateListeners(Object oldOwner, Object newOwner) {
-        if (oldOwner != null) {
-            removeElementListener(oldOwner);
-            Object oldAssociation = Model.getFacade().getAssociation(oldOwner);
-            if (oldAssociation != null) {
-                removeElementListener(oldAssociation);
-            }
-        }
-        if (newOwner != null) {
-            addElementListener(newOwner, 
-                    new String[] {"remove", "name", "association"});
-            Object newAssociation = Model.getFacade().getAssociation(newOwner);
-            if (newAssociation != null) {
-                addElementListener(newAssociation, "name");
-            }
-        }
+  /*
+   * @see org.argouml.uml.diagram.ui.FigEdgeModelElement#getDestination()
+   */
+  protected Object getDestination() {
+    if (getOwner() != null) {
+      return Model.getCommonBehaviorHelper().getDestination(getOwner());
     }
+    return null;
+  }
 
-    /**
-     * Generate the notation for the modelelement and stuff it into the text Fig
-     */
-    protected void updateNameText() {
-        if (getOwner() == null) {
-            return;
-        }
-        String nameString = "";
-        Object association = Model.getFacade().getAssociation(getOwner());
-        if (association != null) {
-            nameString = Model.getFacade().getName(association);
-            if (nameString == null) {
-                nameString = "";
-            }
-        }
-        getNameFig().setText(nameString);
-        calcBounds();
-        setBounds(getBounds());
+  /*
+   * @see org.argouml.uml.diagram.ui.FigEdgeModelElement#getSource()
+   */
+  protected Object getSource() {
+    if (getOwner() != null) {
+      return Model.getCommonBehaviorHelper().getSource(getOwner());
     }
-
-    /*
-     * @see org.argouml.uml.diagram.ui.FigEdgeModelElement#getDestination()
-     */
-    protected Object getDestination() {
-        if (getOwner() != null) {
-            return Model.getCommonBehaviorHelper().getDestination(getOwner());
-        }
-        return null;
-    }
-
-    /*
-     * @see org.argouml.uml.diagram.ui.FigEdgeModelElement#getSource()
-     */
-    protected Object getSource() {
-        if (getOwner() != null) {
-            return Model.getCommonBehaviorHelper().getSource(getOwner());
-        }
-        return null;
-    }
-
+    return null;
+  }
 } /* end class FigLink */

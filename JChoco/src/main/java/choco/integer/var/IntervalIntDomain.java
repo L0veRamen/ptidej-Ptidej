@@ -19,136 +19,120 @@ import choco.util.IntIterator;
 // Last Contributor:   $Author: guehene $
 
 public class IntervalIntDomain extends AbstractIntDomain {
-	/**
-	 * The backtrackable minimal value of the variable.
-	 */
+  /** The backtrackable minimal value of the variable. */
+  protected final StoredInt inf;
 
-	protected final StoredInt inf;
+  /** The backtrackable maximal value of the variable. */
+  protected final StoredInt sup;
 
-	/**
-	 * The backtrackable maximal value of the variable.
-	 */
+  public IntervalIntDomain(final choco.integer.var.IntDomainVar v, final int a, final int b) {
+    this.variable = v;
+    this.problem = v.getProblem();
+    final Environment env = this.problem.getEnvironment();
+    this.inf = (StoredInt) env.makeInt(a);
+    this.sup = (StoredInt) env.makeInt(b);
+  }
 
-	protected final StoredInt sup;
+  protected boolean _removeVal(final int x) throws ContradictionException {
+    final int infv = this.getInf(), supv = this.getSup();
+    if (x == infv) {
+      this._updateInf(x + 1);
+      if (this.getInf() == supv) {
+        this._instantiate(supv);
+      }
+      return true;
+    } else if (x == supv) {
+      this._updateSup(x - 1);
+      if (this.getSup() == infv) {
+        this._instantiate(infv);
+      }
+      return true;
+    } else {
+      return false;
+    }
+  }
 
-	public IntervalIntDomain(
-		final choco.integer.var.IntDomainVar v,
-		final int a,
-		final int b) {
-		this.variable = v;
-		this.problem = v.getProblem();
-		final Environment env = this.problem.getEnvironment();
-		this.inf = (StoredInt) env.makeInt(a);
-		this.sup = (StoredInt) env.makeInt(b);
-	}
+  public boolean contains(final int x) {
+    return x >= this.getInf() && x <= this.getSup();
+  }
 
-	protected boolean _removeVal(final int x) throws ContradictionException {
-		final int infv = this.getInf(), supv = this.getSup();
-		if (x == infv) {
-			this._updateInf(x + 1);
-			if (this.getInf() == supv) {
-				this._instantiate(supv);
-			}
-			return true;
-		}
-		else if (x == supv) {
-			this._updateSup(x - 1);
-			if (this.getSup() == infv) {
-				this._instantiate(infv);
-			}
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
+  public IntIterator getDeltaIterator() {
+    return null;
+  }
 
-	public boolean contains(final int x) {
-		return x >= this.getInf() && x <= this.getSup();
-	}
+  public int getInf() {
+    return this.inf.get();
+  }
 
-	public IntIterator getDeltaIterator() {
-		return null;
-	}
+  public IntIterator getIterator() {
+    return new AbstractIntDomain.IntDomainIterator(this);
+  }
 
-	public int getInf() {
-		return this.inf.get();
-	}
+  public int getNextValue(final int x) {
+    if (x < this.getInf()) {
+      return this.getInf();
+    } else if (x < this.getSup()) {
+      return x + 1;
+    } else {
+      return Integer.MAX_VALUE;
+    }
+  }
 
-	public IntIterator getIterator() {
-		return new AbstractIntDomain.IntDomainIterator(this);
-	}
+  public int getPrevValue(final int x) {
+    if (x > this.getSup()) {
+      return this.getSup();
+    } else if (x > this.getInf()) {
+      return x - 1;
+    } else {
+      return Integer.MIN_VALUE;
+    }
+  }
 
-	public int getNextValue(final int x) {
-		if (x < this.getInf()) {
-			return this.getInf();
-		}
-		else if (x < this.getSup()) {
-			return x + 1;
-		}
-		else {
-			return Integer.MAX_VALUE;
-		}
-	}
+  public int getRandomValue() {
+    // TODO
+    return 0;
+  }
 
-	public int getPrevValue(final int x) {
-		if (x > this.getSup()) {
-			return this.getSup();
-		}
-		else if (x > this.getInf()) {
-			return x - 1;
-		}
-		else {
-			return Integer.MIN_VALUE;
-		}
-	}
+  public int getSize() {
+    return this.getSup() - this.getInf() + 1;
+  }
 
-	public int getRandomValue() {
-		// TODO
-		return 0;
-	}
+  public int getSup() {
+    return this.sup.get();
+  }
 
-	public int getSize() {
-		return this.getSup() - this.getInf() + 1;
-	}
+  public boolean hasNextValue(final int x) {
+    return x < this.getSup();
+  }
 
-	public int getSup() {
-		return this.sup.get();
-	}
+  public boolean hasPrevValue(final int x) {
+    return x > this.getInf();
+  }
 
-	public boolean hasNextValue(final int x) {
-		return x < this.getSup();
-	}
+  public boolean isEnumerated() {
+    return false;
+  }
 
-	public boolean hasPrevValue(final int x) {
-		return x > this.getInf();
-	}
+  public String pretty() {
+    return "[" + this.getInf() + ", " + this.getSup() + "]";
+  }
 
-	public boolean isEnumerated() {
-		return false;
-	}
+  public boolean remove(final int x) {
+    return false;
+  }
 
-	public String pretty() {
-		return "[" + this.getInf() + ", " + this.getSup() + "]";
-	}
+  public void restrict(final int x) {
+    this.inf.set(x);
+    this.sup.set(x);
+  }
 
-	public boolean remove(final int x) {
-		return false;
-	}
+  public int updateInf(final int x) {
+    this.inf.set(x);
+    return x;
+  }
 
-	public void restrict(final int x) {
-		this.inf.set(x);
-		this.sup.set(x);
-	}
-
-	public int updateInf(final int x) {
-		this.inf.set(x);
-		return x;
-	}
-
-	public int updateSup(final int x) {
-		this.sup.set(x);
-		return x;
-	}
-
+  public int updateSup(final int x) {
+    this.sup.set(x);
+    return x;
+  }
 }

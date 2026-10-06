@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -22,19 +22,18 @@ import padl.kernel.cpp.antlr.impl.CPPFactoryANTLR;
  * @author robidose
  */
 public class TestCreatorCPPFileUsingANTLR extends TestSuite {
-	public static TestSuite suite() {
-		// TODO Remove and move to the tests
-		CppPrimitive
-				.setFactory((ICPPFactoryANTLR) CPPFactoryANTLR.getInstance());
+  public static TestSuite suite() {
+    // TODO Remove and move to the tests
+    CppPrimitive.setFactory((ICPPFactoryANTLR) CPPFactoryANTLR.getInstance());
 
-		final TestCreatorCPPFileUsingANTLR suite = new TestCreatorCPPFileUsingANTLR();
-		suite.setName(TestCreatorCPPFileUsingANTLR.class.getName());
+    final TestCreatorCPPFileUsingANTLR suite = new TestCreatorCPPFileUsingANTLR();
+    suite.setName(TestCreatorCPPFileUsingANTLR.class.getName());
 
-		suite.addTestSuite(WorldTest.class);
-		suite.addTestSuite(InheritanceTest.class);
-		suite.addTestSuite(CpointTest.class);
-		suite.addTestSuite(Csegment2Test.class);
+    suite.addTestSuite(WorldTest.class);
+    suite.addTestSuite(InheritanceTest.class);
+    suite.addTestSuite(CpointTest.class);
+    suite.addTestSuite(Csegment2Test.class);
 
-		return suite;
-	}
+    return suite;
+  }
 }

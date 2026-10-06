@@ -34,34 +34,19 @@ import org.argouml.util.ConfigLoader;
  */
 public class PropPanelFinalState extends AbstractPropPanelState {
 
-    /**
-     * The constructor.
-     *
-     */
-    public PropPanelFinalState() {
-        super("Final State", lookupIcon("FinalState"),
-                ConfigLoader.getTabPropsOrientation());
+  /** The constructor. */
+  public PropPanelFinalState() {
+    super("Final State", lookupIcon("FinalState"), ConfigLoader.getTabPropsOrientation());
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.stereotype"),
-                getStereotypeSelector());
-        addField(Translator.localize("label.container"),
-                getContainerScroll());
-        addField(Translator.localize("label.entry"),
-                getEntryScroll());
-        // TODO: maybe we should add a doactivity
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.stereotype"), getStereotypeSelector());
+    addField(Translator.localize("label.container"), getContainerScroll());
+    addField(Translator.localize("label.entry"), getEntryScroll());
+    // TODO: maybe we should add a doactivity
 
-        addSeperator();
+    addSeperator();
 
-        addField(Translator.localize("label.incoming"),
-                getIncomingScroll());
-        addField(Translator.localize("label.internal-transitions"),
-                getInternalTransitionsScroll());
-
-    }
-
+    addField(Translator.localize("label.incoming"), getIncomingScroll());
+    addField(Translator.localize("label.internal-transitions"), getInternalTransitionsScroll());
+  }
 } /* end class PropPanelFinalState */
-
-
-

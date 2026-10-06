@@ -27,157 +27,118 @@ package org.argouml.argoeclipse.internal.ui.preferences;
 import org.argouml.application.api.Configuration;
 import org.argouml.application.api.ConfigurationKey;
 
-/**
- * Constant definitions for plug-in preferences
- */
-
+/** Constant definitions for plug-in preferences */
 public class PreferenceConstants {
 
-    /**
-     * File containing the profile to use.
-     */
-    public static final String P_PROFILE = "profilePreference"; //$NON-NLS-1$
+  /** File containing the profile to use. */
+  public static final String P_PROFILE = "profilePreference"; // $NON-NLS-1$
 
-    /**
-     * Preference setting which controls whether initialization is deferred.
-     */
-    public static final String P_DEFER_INIT = 
-        "deferInitializationPreference"; //$NON-NLS-1$
+  /** Preference setting which controls whether initialization is deferred. */
+  public static final String P_DEFER_INIT = "deferInitializationPreference"; // $NON-NLS-1$
 
-    /**
-     * Preference setting for fill color.
-     */
-    public static final String P_COLOR_FILL = 
-        "fillColorPreference"; //$NON-NLS-1$
+  /** Preference setting for fill color. */
+  public static final String P_COLOR_FILL = "fillColorPreference"; // $NON-NLS-1$
 
-    /**
-     * Preference setting for font.
-     */
-    public static final String P_FONT = "fontPreference"; //$NON-NLS-1$
-    
-    /**
-     * Preference setting containing search path for external references.
-     */
-    public static final String P_SEARCH_PATH = 
-        "searchPathPreference"; //$NON-NLS-1$
-    
-    /**
-     * Default notation language for a new project.
-     */
-    public static final String P_NOTATION_LANGUAGE = 
-        "notationLanguage"; //$NON-NLS-1$
-    
-    /**
-     * Key for default startup directory.
-     */
-    public static final ConfigurationKey KEY_STARTUP_DIR =
-        Configuration.makeKey(
-                "default",  //$NON-NLS-1$
-                "user",  //$NON-NLS-1$
-                "dir");   //$NON-NLS-1$
+  /** Preference setting for font. */
+  public static final String P_FONT = "fontPreference"; // $NON-NLS-1$
 
-    /**
-     * Key to show splash screen.
-     */
-    public static final ConfigurationKey KEY_SPLASH =
-        Configuration.makeKey("init", "splash");  //$NON-NLS-1$//$NON-NLS-2$
+  /** Preference setting containing search path for external references. */
+  public static final String P_SEARCH_PATH = "searchPathPreference"; // $NON-NLS-1$
 
-    /**
-     * Key to preload classes.
-     */
-    public static final ConfigurationKey KEY_PRELOAD =
-        Configuration.makeKey("init", "preload");  //$NON-NLS-1$//$NON-NLS-2$
+  /** Default notation language for a new project. */
+  public static final String P_NOTATION_LANGUAGE = "notationLanguage"; // $NON-NLS-1$
 
-    /**
-     * Key to report usage statistics.
-     */
-    public static final ConfigurationKey KEY_EDEM =
-        Configuration.makeKey("init", "edem");  //$NON-NLS-1$//$NON-NLS-2$
+  /** Key for default startup directory. */
+  public static final ConfigurationKey KEY_STARTUP_DIR =
+      Configuration.makeKey(
+          "default", //$NON-NLS-1$
+          "user", //$NON-NLS-1$
+          "dir"); //$NON-NLS-1$
 
-    /**
-     * Key for last saved project URL.
-     */
-    public static final ConfigurationKey KEY_MOST_RECENT_PROJECT_FILE =
-        Configuration.makeKey(
-                "project",  //$NON-NLS-1$
-                "mostrecent",  //$NON-NLS-1$
-                "file"); //$NON-NLS-1$
+  /** Key to show splash screen. */
+  public static final ConfigurationKey KEY_SPLASH =
+      Configuration.makeKey("init", "splash"); // $NON-NLS-1$//$NON-NLS-2$
 
-    /**
-     * Key to reload last saved project on startup.
-     */
-    public static final ConfigurationKey KEY_RELOAD_RECENT_PROJECT =
-        Configuration.makeKey(
-                "init",  //$NON-NLS-1$
-                "project",  //$NON-NLS-1$
-                "loadmostrecent"); //$NON-NLS-1$
+  /** Key to preload classes. */
+  public static final ConfigurationKey KEY_PRELOAD =
+      Configuration.makeKey("init", "preload"); // $NON-NLS-1$//$NON-NLS-2$
 
-    /**
-     * Key for number of last recently used file entries in menu list.
-     */
-    public static final ConfigurationKey KEY_NUMBER_LAST_RECENT_USED =
-        Configuration.makeKey("project",  //$NON-NLS-1$
-                "mostrecent", "maxNumber");  //$NON-NLS-1$//$NON-NLS-2$
+  /** Key to report usage statistics. */
+  public static final ConfigurationKey KEY_EDEM =
+      Configuration.makeKey("init", "edem"); // $NON-NLS-1$//$NON-NLS-2$
 
-    /**
-     * Key for theme.
-     */
-    public static final ConfigurationKey KEY_SCREEN_THEME =
-        Configuration.makeKey("screen", "theme");  //$NON-NLS-1$//$NON-NLS-2$
+  /** Key for last saved project URL. */
+  public static final ConfigurationKey KEY_MOST_RECENT_PROJECT_FILE =
+      Configuration.makeKey(
+          "project", //$NON-NLS-1$
+          "mostrecent", //$NON-NLS-1$
+          "file"); //$NON-NLS-1$
 
-    /**
-     * Key for look and feel class name.
-     */
-    public static final ConfigurationKey KEY_LOOK_AND_FEEL_CLASS =
-        Configuration.makeKey("screen",  //$NON-NLS-1$
-                "lookAndFeelClass"); //$NON-NLS-1$
+  /** Key to reload last saved project on startup. */
+  public static final ConfigurationKey KEY_RELOAD_RECENT_PROJECT =
+      Configuration.makeKey(
+          "init", //$NON-NLS-1$
+          "project", //$NON-NLS-1$
+          "loadmostrecent"); //$NON-NLS-1$
 
-    /**
-     * Key for theme class name.
-     */
-    public static final ConfigurationKey KEY_THEME_CLASS =
-        Configuration.makeKey("screen",  //$NON-NLS-1$
-                "themeClass");  //$NON-NLS-1$
+  /** Key for number of last recently used file entries in menu list. */
+  public static final ConfigurationKey KEY_NUMBER_LAST_RECENT_USED =
+      Configuration.makeKey(
+          "project", //$NON-NLS-1$
+          "mostrecent",
+          "maxNumber"); //$NON-NLS-1$//$NON-NLS-2$
 
-    /**
-     * Key to enable smooth edges of diagram text and lines (anti-aliasing).
-     */
-    public static final ConfigurationKey KEY_SMOOTH_EDGES =
-        Configuration.makeKey("screen",  //$NON-NLS-1$
-                "diagram-antialiasing"); //$NON-NLS-1$
+  /** Key for theme. */
+  public static final ConfigurationKey KEY_SCREEN_THEME =
+      Configuration.makeKey("screen", "theme"); // $NON-NLS-1$//$NON-NLS-2$
 
+  /** Key for look and feel class name. */
+  public static final ConfigurationKey KEY_LOOK_AND_FEEL_CLASS =
+      Configuration.makeKey(
+          "screen", //$NON-NLS-1$
+          "lookAndFeelClass"); //$NON-NLS-1$
 
-    /**
-     * Key for user java reverse engineering classpath.
-     */
-    public static final ConfigurationKey KEY_USER_IMPORT_CLASSPATH =
-        Configuration.makeKey("import",  //$NON-NLS-1$
-                "clazzpath");  //$NON-NLS-1$
+  /** Key for theme class name. */
+  public static final ConfigurationKey KEY_THEME_CLASS =
+      Configuration.makeKey(
+          "screen", //$NON-NLS-1$
+          "themeClass"); //$NON-NLS-1$
 
-    public static final ConfigurationKey KEY_INPUT_SOURCE_ENCODING =
-        Configuration.makeKey("import",  //$NON-NLS-1$
-                "file", "encoding");  //$NON-NLS-1$//$NON-NLS-2$
-    
-    public static final ConfigurationKey KEY_XMI_STRIP_DIAGRAMS =
-        Configuration.makeKey("import",  //$NON-NLS-1$
-                "xmi", "stripDiagrams");  //$NON-NLS-1$//$NON-NLS-2$
+  /** Key to enable smooth edges of diagram text and lines (anti-aliasing). */
+  public static final ConfigurationKey KEY_SMOOTH_EDGES =
+      Configuration.makeKey(
+          "screen", //$NON-NLS-1$
+          "diagram-antialiasing"); //$NON-NLS-1$
 
-    public static final ConfigurationKey KEY_DEFAULT_MODEL =
-        Configuration.makeKey("defaultModel"); //$NON-NLS-1$
+  /** Key for user java reverse engineering classpath. */
+  public static final ConfigurationKey KEY_USER_IMPORT_CLASSPATH =
+      Configuration.makeKey(
+          "import", //$NON-NLS-1$
+          "clazzpath"); //$NON-NLS-1$
 
-    public static final ConfigurationKey KEY_USER_EXPLORER_PERSPECTIVES =
-        Configuration.makeKey("explorer",  //$NON-NLS-1$
-                "perspectives"); //$NON-NLS-1$
+  public static final ConfigurationKey KEY_INPUT_SOURCE_ENCODING =
+      Configuration.makeKey(
+          "import", //$NON-NLS-1$
+          "file",
+          "encoding"); //$NON-NLS-1$//$NON-NLS-2$
 
-    public static final ConfigurationKey KEY_LOCALE =
-        Configuration.makeKey("locale"); //$NON-NLS-1$
+  public static final ConfigurationKey KEY_XMI_STRIP_DIAGRAMS =
+      Configuration.makeKey(
+          "import", //$NON-NLS-1$
+          "xmi",
+          "stripDiagrams"); //$NON-NLS-1$//$NON-NLS-2$
 
-    public static final String CONSOLE_LOG = 
-        "argo.console.log"; //$NON-NLS-1$
-    public static final String ARGO_CONSOLE_SUPPRESS = 
-        "argo.console.suppress"; //$NON-NLS-1$
-    public static final String ARGO_CONSOLE_PREFIX = 
-        "argo.console.prefix"; //$NON-NLS-1$
+  public static final ConfigurationKey KEY_DEFAULT_MODEL =
+      Configuration.makeKey("defaultModel"); // $NON-NLS-1$
 
+  public static final ConfigurationKey KEY_USER_EXPLORER_PERSPECTIVES =
+      Configuration.makeKey(
+          "explorer", //$NON-NLS-1$
+          "perspectives"); //$NON-NLS-1$
 
+  public static final ConfigurationKey KEY_LOCALE = Configuration.makeKey("locale"); // $NON-NLS-1$
+
+  public static final String CONSOLE_LOG = "argo.console.log"; // $NON-NLS-1$
+  public static final String ARGO_CONSOLE_SUPPRESS = "argo.console.suppress"; // $NON-NLS-1$
+  public static final String ARGO_CONSOLE_PREFIX = "argo.console.prefix"; // $NON-NLS-1$
 }

@@ -19,26 +19,31 @@ about the software, its performance or its conformity to any specification.
 
 package spacewar;
 
-
-/**
- * Pilot is the abstract superclass of Player and Robot.
- *
- */
-
+/** Pilot is the abstract superclass of Player and Robot. */
 abstract class Pilot {
-    private Game game;
-    private int  number;
-    protected Ship ship = null;
+  private Game game;
+  private int number;
+  protected Ship ship = null;
 
-    Game getGame()   { return game; }
-    int  getNumber() { return number; }
-    Ship getShip()   { return ship; }
+  Game getGame() {
+    return game;
+  }
 
-    void setShip(Ship s) { ship = s; }
+  int getNumber() {
+    return number;
+  }
 
-    Pilot (Game g, int n) {
-        super();
-        game   = g;
-        number = n;
-    }
+  Ship getShip() {
+    return ship;
+  }
+
+  void setShip(Ship s) {
+    ship = s;
+  }
+
+  Pilot(Game g, int n) {
+    super();
+    game = g;
+    number = n;
+  }
 }

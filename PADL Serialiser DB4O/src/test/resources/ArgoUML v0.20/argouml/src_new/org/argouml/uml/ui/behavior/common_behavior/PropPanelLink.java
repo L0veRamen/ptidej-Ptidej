@@ -29,11 +29,9 @@ import java.beans.PropertyChangeEvent;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-
 import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.ActionDeleteSingleModelElement;
@@ -47,186 +45,160 @@ import org.argouml.uml.ui.foundation.core.PropPanelModelElement;
 import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
 import org.argouml.util.ConfigLoader;
 
-/**
- * The properties panel for a Link.
- *
- */
+/** The properties panel for a Link. */
 public class PropPanelLink extends PropPanelModelElement {
 
-    private JComponent associationSelector;
-    private UMLLinkAssociationComboBoxModel associationComboBoxModel =
-        new UMLLinkAssociationComboBoxModel();
+  private JComponent associationSelector;
+  private UMLLinkAssociationComboBoxModel associationComboBoxModel =
+      new UMLLinkAssociationComboBoxModel();
 
-    /**
-     * The constructor.
-     *
-     */
-    public PropPanelLink() {
-        super("Link", lookupIcon("Link"),
-                ConfigLoader.getTabPropsOrientation());
+  /** The constructor. */
+  public PropPanelLink() {
+    super("Link", lookupIcon("Link"), ConfigLoader.getTabPropsOrientation());
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.stereotype"),
-                getStereotypeSelector());
-        addField(Translator.localize("label.namespace"),
-                getNamespaceSelector());
-        addField(Translator.localize("label.association"),
-                getAssociationSelector());
-        addSeperator();
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.stereotype"), getStereotypeSelector());
+    addField(Translator.localize("label.namespace"), getNamespaceSelector());
+    addField(Translator.localize("label.association"), getAssociationSelector());
+    addSeperator();
 
-        JList connectionList =
-            new UMLLinkedList(new UMLLinkConnectionListModel());
-        JScrollPane connectionScroll = new JScrollPane(connectionList);
-        addField(Translator.localize("label.connections"),
-                connectionScroll);
+    JList connectionList = new UMLLinkedList(new UMLLinkConnectionListModel());
+    JScrollPane connectionScroll = new JScrollPane(connectionList);
+    addField(Translator.localize("label.connections"), connectionScroll);
 
-        addAction(new ActionNavigateNamespace());
-        addAction(new ActionNewStereotype());
-        addAction(new ActionDeleteSingleModelElement());
+    addAction(new ActionNavigateNamespace());
+    addAction(new ActionNewStereotype());
+    addAction(new ActionDeleteSingleModelElement());
+  }
 
+  /**
+   * Returns the namespace selecter. This is a component which allows the user to select a single
+   * item as the namespace.
+   *
+   * @return a component for selecting the namespace
+   */
+  protected JComponent getAssociationSelector() {
+    if (associationSelector == null) {
+      associationSelector =
+          new UMLSearchableComboBox(associationComboBoxModel, new ActionSetLinkAssociation(), true);
     }
-
-    /**
-     * Returns the namespace selecter. This is a component which allows the
-     * user to select a single item as the namespace.
-     *
-     * @return a component for selecting the namespace
-     */
-    protected JComponent getAssociationSelector() {
-        if (associationSelector == null) {
-            associationSelector = new UMLSearchableComboBox(
-                    associationComboBoxModel,
-                    new ActionSetLinkAssociation(), true);
-        }
-        return associationSelector;
-
-    }
+    return associationSelector;
+  }
 } /* end class PropPanelLink */
 
 /**
  * The model for the combobox to show the Association of the Link.
- * 
+ *
  * @author Michiel
  */
 class UMLLinkAssociationComboBoxModel extends UMLComboBoxModel2 {
-    
-    /**
-     * Constructor for UMLModelElementNamespaceComboBoxModel.
-     */
-    public UMLLinkAssociationComboBoxModel() {
-        super("assocation", true);
-    }
 
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object o) {
-        return Model.getFacade().isAAssociation(o);
-    }
+  /** Constructor for UMLModelElementNamespaceComboBoxModel. */
+  public UMLLinkAssociationComboBoxModel() {
+    super("assocation", true);
+  }
 
-    /**
-     * To simplify implementation, we list all associations 
-     * found with any of the Classifiers 
-     * represented by the linked Instances. <p>
-     * 
-     * TODO: Make a foolproof algorithm that only allows selecting associations
-     * that create a correct model. Also take into account n-ary associations 
-     * and associationclasses. This algo best goes in the model subsystem, e.g.
-     * in a method getAllPossibleAssociationsForALink().
-     * 
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        Collection linkEnds;
-        Collection associations = new HashSet();
-        Object t = getTarget();
-        if (Model.getFacade().isALink(t)) { 
-            linkEnds = Model.getFacade().getConnections(t);
-            Iterator ile = linkEnds.iterator();
-            while (ile.hasNext()) {
-                Object instance = Model.getFacade().getInstance(ile.next());
-                Collection c = Model.getFacade().getClassifiers(instance);
-                Iterator ic = c.iterator();
-                while (ic.hasNext()) {
-                    Object classifier = ic.next();
-                    Collection ae = Model.getFacade().getAssociationEnds(classifier);
-                    Iterator iae = ae.iterator();
-                    while (iae.hasNext()) {
-                        Object associationEnd = iae.next();
-                        Object association = 
-                            Model.getFacade().getAssociation(associationEnd);
-                        associations.add(association);
-                    }
-                }
-            }
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object o) {
+    return Model.getFacade().isAAssociation(o);
+  }
+
+  /**
+   * To simplify implementation, we list all associations found with any of the Classifiers
+   * represented by the linked Instances.
+   *
+   * <p>TODO: Make a foolproof algorithm that only allows selecting associations that create a
+   * correct model. Also take into account n-ary associations and associationclasses. This algo best
+   * goes in the model subsystem, e.g. in a method getAllPossibleAssociationsForALink().
+   *
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    Collection linkEnds;
+    Collection associations = new HashSet();
+    Object t = getTarget();
+    if (Model.getFacade().isALink(t)) {
+      linkEnds = Model.getFacade().getConnections(t);
+      Iterator ile = linkEnds.iterator();
+      while (ile.hasNext()) {
+        Object instance = Model.getFacade().getInstance(ile.next());
+        Collection c = Model.getFacade().getClassifiers(instance);
+        Iterator ic = c.iterator();
+        while (ic.hasNext()) {
+          Object classifier = ic.next();
+          Collection ae = Model.getFacade().getAssociationEnds(classifier);
+          Iterator iae = ae.iterator();
+          while (iae.hasNext()) {
+            Object associationEnd = iae.next();
+            Object association = Model.getFacade().getAssociation(associationEnd);
+            associations.add(association);
+          }
         }
-        setElements(associations);
+      }
     }
+    setElements(associations);
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
+   */
+  protected Object getSelectedModelElement() {
+    if (Model.getFacade().isALink(getTarget())) {
+      return Model.getFacade().getAssociation(getTarget());
+    }
+    return null;
+  }
+
+  /**
+   * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+   */
+  public void propertyChange(PropertyChangeEvent evt) {
+    /*
+     * Rebuild the list from scratch to be sure it's correct.
      */
-    protected Object getSelectedModelElement() {
-        if (Model.getFacade().isALink(getTarget())) {
-            return Model.getFacade().getAssociation(getTarget());
-        }
-        return null;
+    Object t = getTarget();
+    if (t != null && evt.getSource() == t && evt.getNewValue() != null) {
+      buildModelList();
+      /* In some cases (se issue 3780) the list remains the same, but
+       * the selected item differs. Without the next step,
+       * the combo would not be refreshed.*/
+      setSelectedItem(getSelectedModelElement());
     }
-
-    /**
-    * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
-    */
-    public void propertyChange(PropertyChangeEvent evt) {
-        /*
-         * Rebuild the list from scratch to be sure it's correct.
-         */
-        Object t = getTarget();
-        if (t != null 
-                && evt.getSource() == t
-                && evt.getNewValue() != null) {
-            buildModelList();
-            /* In some cases (se issue 3780) the list remains the same, but
-             * the selected item differs. Without the next step, 
-             * the combo would not be refreshed.*/
-            setSelectedItem(getSelectedModelElement());
-        }
-    }
+  }
 }
 
 class ActionSetLinkAssociation extends UMLAction {
 
-    /**
-     * Constructor for ActionSetModelElementNamespace.
-     */
-    public ActionSetLinkAssociation() {
-        super("Set", NO_ICON);
-    }
+  /** Constructor for ActionSetModelElementNamespace. */
+  public ActionSetLinkAssociation() {
+    super("Set", NO_ICON);
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        Object source = e.getSource();
-        Object oldAssoc = null;
-        Object newAssoc = null;
-        Object link = null;
-        if (source instanceof UMLComboBox2) {
-            UMLComboBox2 box = (UMLComboBox2) source;
-            Object o = box.getTarget();
-            if (Model.getFacade().isALink(o)) {
-                link = o;
-                oldAssoc = Model.getFacade().getAssociation(o);
-            }
-            Object n = box.getSelectedItem();
-            if (Model.getFacade().isAAssociation(n)) {
-                newAssoc = n;
-            }
-        }
-        if (newAssoc != oldAssoc && link != null && newAssoc != null) {
-            Model.getCoreHelper().setAssociation(link, newAssoc);
-            super.actionPerformed(e);
-        }
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    Object source = e.getSource();
+    Object oldAssoc = null;
+    Object newAssoc = null;
+    Object link = null;
+    if (source instanceof UMLComboBox2) {
+      UMLComboBox2 box = (UMLComboBox2) source;
+      Object o = box.getTarget();
+      if (Model.getFacade().isALink(o)) {
+        link = o;
+        oldAssoc = Model.getFacade().getAssociation(o);
+      }
+      Object n = box.getSelectedItem();
+      if (Model.getFacade().isAAssociation(n)) {
+        newAssoc = n;
+      }
     }
-
+    if (newAssoc != oldAssoc && link != null && newAssoc != null) {
+      Model.getCoreHelper().setAssociation(link, newAssoc);
+      super.actionPerformed(e);
+    }
+  }
 }

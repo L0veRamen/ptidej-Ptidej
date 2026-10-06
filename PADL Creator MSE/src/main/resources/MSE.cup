@@ -104,6 +104,9 @@ root 				::= elementNode
 					  | LPAREN elementNodes RPAREN
 					  	{:
 					  		if (MSEParser.DEBUG) { System.err.println("LPAREN elementNodes RPAREN"); }
+					  		final Element[] elements = new Element[this.parser.elements.size()];
+					  		this.parser.elements.toArray(elements);
+					  		RESULT = elements;
 					  	:}
 					  ; 
 elementNodes		::= elementNode 

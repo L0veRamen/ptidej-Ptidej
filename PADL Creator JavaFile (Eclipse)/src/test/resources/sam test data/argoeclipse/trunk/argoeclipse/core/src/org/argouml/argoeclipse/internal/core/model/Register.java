@@ -30,126 +30,121 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Only one editor or view can be opened at a time, so this class will
- * handle the registered objects (the objects that first asked for an editor
- * or view), and report if someone is already registered for an editor/view.
- * 
+ * Only one editor or view can be opened at a time, so this class will handle the registered objects
+ * (the objects that first asked for an editor or view), and report if someone is already registered
+ * for an editor/view.
+ *
  * @author Bogdan Pistol
  */
 public class Register {
-    
-    /**
-     * The diagram editor.
-     */
-    public static final Integer EDITOR = Integer.valueOf(1);
-    
-    /**
-     * The ToDo view.
-     */
-    public static final Integer TODO = Integer.valueOf(2);
-    
-    /**
-     * The project browser view.
-     */
-    public static final Integer EXPLORER = Integer.valueOf(3);
-    
-    /**
-     * The details view.
-     */
-    public static final Integer DETAILS = Integer.valueOf(4);
-    
-    private Map register = new HashMap();
-    
-    private static Register instance;
-    
-    private Register() {
-    }
-    
-    /**
-     * Factory method.
-     * @return the instance
-     */
-    public static Register getInstance() {
-        if (instance == null) {
-            instance = new Register();
-        }
-        return instance;
-    }
-    
-    /**
-     * Determines if the candidate is registered for the specified pane.
-     * @param pane the pane for wich the candidate is tested
-     * @param candidate the object to test
-     * @return true if it's registered or false
-     */
-    public boolean isRegistered(Integer pane, Object candidate) {
-        if (pane != null && candidate != null) {
-            Object o = register.get(pane);
-            return o != null && o.equals(candidate);            
-        }
-        return false;
-    }
-    
-    /**
-     * Determines if some object is registered for the specified pane.
-     * @param pane the pane for wich the candidate is tested
-     * @return true if it's registered or false
-     */
-    public boolean isRegistered(Integer pane) {
-        if (pane == null) {
-            return false;
-        }
-        return register.containsKey(pane);
-    }
-    
-    /**
-     * Tries to register a candidate object with the pane.
-     * @param pane the desired pane
-     * @param candidate the object to register
-     */
-    public void register(Integer pane, Object candidate) {
-        if (pane != EDITOR && pane != TODO && pane != DETAILS
-                && pane != EXPLORER) {
-            return; 
-        }
-        if (candidate == null) {
-            return;
-        }
-        if (isRegistered(pane)) {
-            return;
-        }
-        register.put(pane, candidate);
-    }
-    
-    /**
-     * Unregisters an object that was registered.
-     * @param candidate the object to unregister
-     */
-    public void unregister(Object candidate) {
-        if (candidate == null) {
-            return;
-        }
-        if (!register.containsValue(candidate)) {
-            return;
-        }
-        Set set = register.entrySet();
-        Iterator it = set.iterator();
-        while (it.hasNext()) {
-            Map.Entry entry = (Map.Entry) it.next();
-            if (entry.getValue().equals(candidate)) {
-                it.remove();
-                break;
-            }
-        }
-    }
-    
-    /**
-     * Returns the current registered object.
-     * @param pane the type of editor/view registered
-     * @return the registered object or null
-     */
-    public Object getRegistered(Integer pane) {
-        return register.get(pane);
-    }
 
+  /** The diagram editor. */
+  public static final Integer EDITOR = Integer.valueOf(1);
+
+  /** The ToDo view. */
+  public static final Integer TODO = Integer.valueOf(2);
+
+  /** The project browser view. */
+  public static final Integer EXPLORER = Integer.valueOf(3);
+
+  /** The details view. */
+  public static final Integer DETAILS = Integer.valueOf(4);
+
+  private Map register = new HashMap();
+
+  private static Register instance;
+
+  private Register() {}
+
+  /**
+   * Factory method.
+   *
+   * @return the instance
+   */
+  public static Register getInstance() {
+    if (instance == null) {
+      instance = new Register();
+    }
+    return instance;
+  }
+
+  /**
+   * Determines if the candidate is registered for the specified pane.
+   *
+   * @param pane the pane for wich the candidate is tested
+   * @param candidate the object to test
+   * @return true if it's registered or false
+   */
+  public boolean isRegistered(Integer pane, Object candidate) {
+    if (pane != null && candidate != null) {
+      Object o = register.get(pane);
+      return o != null && o.equals(candidate);
+    }
+    return false;
+  }
+
+  /**
+   * Determines if some object is registered for the specified pane.
+   *
+   * @param pane the pane for wich the candidate is tested
+   * @return true if it's registered or false
+   */
+  public boolean isRegistered(Integer pane) {
+    if (pane == null) {
+      return false;
+    }
+    return register.containsKey(pane);
+  }
+
+  /**
+   * Tries to register a candidate object with the pane.
+   *
+   * @param pane the desired pane
+   * @param candidate the object to register
+   */
+  public void register(Integer pane, Object candidate) {
+    if (pane != EDITOR && pane != TODO && pane != DETAILS && pane != EXPLORER) {
+      return;
+    }
+    if (candidate == null) {
+      return;
+    }
+    if (isRegistered(pane)) {
+      return;
+    }
+    register.put(pane, candidate);
+  }
+
+  /**
+   * Unregisters an object that was registered.
+   *
+   * @param candidate the object to unregister
+   */
+  public void unregister(Object candidate) {
+    if (candidate == null) {
+      return;
+    }
+    if (!register.containsValue(candidate)) {
+      return;
+    }
+    Set set = register.entrySet();
+    Iterator it = set.iterator();
+    while (it.hasNext()) {
+      Map.Entry entry = (Map.Entry) it.next();
+      if (entry.getValue().equals(candidate)) {
+        it.remove();
+        break;
+      }
+    }
+  }
+
+  /**
+   * Returns the current registered object.
+   *
+   * @param pane the type of editor/view registered
+   * @return the registered object or null
+   */
+  public Object getRegistered(Integer pane) {
+    return register.get(pane);
+  }
 }

@@ -27,130 +27,130 @@ package org.argouml.uml.ui;
 
 import java.awt.event.ActionEvent;
 import java.util.Vector;
-
 import javax.swing.JOptionPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.ui.ProjectBrowser;
 
 /**
- * Abstract action that is the parent to all add actions that add the
- * modelelements via the UMLAddDialog.
+ * Abstract action that is the parent to all add actions that add the modelelements via the
+ * UMLAddDialog.
+ *
  * @since Oct 2, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
 public abstract class AbstractActionAddModelElement extends UMLAction {
 
-    private Object/*MModelElement*/ target;
-    private boolean multiSelect = true;
-    private boolean exclusive = true;
+  private Object /*MModelElement*/ target;
+  private boolean multiSelect = true;
+  private boolean exclusive = true;
 
-    /**
-     * The constructor.
-     */
-    protected AbstractActionAddModelElement() {
-        super(Translator.localize("menu.popup.add-modelelement"), false,
-                NO_ICON);
+  /** The constructor. */
+  protected AbstractActionAddModelElement() {
+    super(Translator.localize("menu.popup.add-modelelement"), false, NO_ICON);
+  }
+
+  /**
+   * Returns the target.
+   *
+   * @return MModelElement
+   */
+  protected Object /*MModelElement*/ getTarget() {
+    return target;
+  }
+
+  /**
+   * Sets the target.
+   *
+   * @param theTarget The target to set
+   */
+  public void setTarget(Object /*MModelElement*/ theTarget) {
+    target = theTarget;
+  }
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    UMLAddDialog dialog =
+        new UMLAddDialog(
+            getChoices(), getSelected(), getDialogTitle(), isMultiSelect(), isExclusive());
+    int result = dialog.showDialog(ProjectBrowser.getInstance());
+    if (result == JOptionPane.OK_OPTION) {
+      doIt(dialog.getSelected());
     }
+  }
 
+  /**
+   * Returns the choices the user has in the UMLAddDialog. The choices are depicted on the left side
+   * of the UMLAddDialog (sorry Arabic users) and can be moved via the buttons on the dialog to the
+   * right side. On the right side are the selected modelelements.
+   *
+   * @return Vector
+   */
+  protected abstract Vector getChoices();
 
-    /**
-     * Returns the target.
-     * @return MModelElement
-     */
-    protected Object/*MModelElement*/ getTarget() {
-        return target;
-    }
+  /**
+   * The modelelements allready selected BEFORE the dialog is shown.
+   *
+   * @return Vector
+   */
+  protected abstract Vector getSelected();
 
-    /**
-     * Sets the target.
-     * @param theTarget The target to set
-     */
-    public void setTarget(Object/*MModelElement*/ theTarget) {
-        target = theTarget;
-    }
+  /**
+   * Returns the title of the dialog.
+   *
+   * @return String
+   */
+  protected abstract String getDialogTitle();
 
-    /**
-     * @see
-     * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        UMLAddDialog dialog =
-	    new UMLAddDialog(getChoices(), getSelected(), getDialogTitle(),
-			     isMultiSelect(),
-			     isExclusive());
-        int result = dialog.showDialog(ProjectBrowser.getInstance());
-        if (result == JOptionPane.OK_OPTION) {
-            doIt(dialog.getSelected());
-        }
-    }
+  /**
+   * The action that has to be done by Argouml after the user clicks ok in the UMLAddDialog.
+   *
+   * @param selected The choices the user has selected in the UMLAddDialog
+   */
+  protected abstract void doIt(Vector selected);
 
-    /**
-     * Returns the choices the user has in the UMLAddDialog. The choices are
-     * depicted on the left side of the UMLAddDialog (sorry Arabic users) and
-     * can be moved via the buttons on the dialog to the right side. On the
-     * right side are the selected modelelements.
-     * @return Vector
-     */
-    protected abstract Vector getChoices();
+  /**
+   * Returns the exclusive.
+   *
+   * @return boolean
+   */
+  public boolean isExclusive() {
+    return exclusive;
+  }
 
-    /**
-     * The modelelements allready selected BEFORE the dialog is shown.
-     * @return Vector
-     */
-    protected abstract Vector getSelected();
+  /**
+   * Returns the multiSelect.
+   *
+   * @return boolean
+   */
+  public boolean isMultiSelect() {
+    return multiSelect;
+  }
 
-    /**
-     * Returns the title of the dialog.
-     * @return String
-     */
-    protected abstract String getDialogTitle();
+  /**
+   * Sets the exclusive.
+   *
+   * @param theExclusive The exclusive to set
+   */
+  public void setExclusive(boolean theExclusive) {
+    exclusive = theExclusive;
+  }
 
-    /**
-     * The action that has to be done by Argouml after the user clicks ok in the
-     * UMLAddDialog.
-     * @param selected The choices the user has selected in the UMLAddDialog
-     */
-    protected abstract void doIt(Vector selected);
+  /**
+   * Sets the multiSelect.
+   *
+   * @param theMultiSelect The multiSelect to set
+   */
+  public void setMultiSelect(boolean theMultiSelect) {
+    multiSelect = theMultiSelect;
+  }
 
-    /**
-     * Returns the exclusive.
-     * @return boolean
-     */
-    public boolean isExclusive() {
-        return exclusive;
-    }
-
-    /**
-     * Returns the multiSelect.
-     * @return boolean
-     */
-    public boolean isMultiSelect() {
-        return multiSelect;
-    }
-
-    /**
-     * Sets the exclusive.
-     * @param theExclusive The exclusive to set
-     */
-    public void setExclusive(boolean theExclusive) {
-        exclusive = theExclusive;
-    }
-
-    /**
-     * Sets the multiSelect.
-     * @param theMultiSelect The multiSelect to set
-     */
-    public void setMultiSelect(boolean theMultiSelect) {
-        multiSelect = theMultiSelect;
-    }
-
-    /**
-     * @see javax.swing.Action#isEnabled()
-     */
-    public boolean isEnabled() {
-         return !getChoices().isEmpty();
-    }
-
+  /**
+   * @see javax.swing.Action#isEnabled()
+   */
+  public boolean isEnabled() {
+    return !getChoices().isEmpty();
+  }
 }

@@ -25,48 +25,43 @@
 package org.argouml.notation.providers.uml;
 
 import java.util.Map;
-
 import org.apache.log4j.Logger;
 import org.argouml.notation.NotationSettings;
 
 /**
- * The UML notation for a message, as shown on a collaboration diagram. 
- * 
+ * The UML notation for a message, as shown on a collaboration diagram.
+ *
  * @author michiel
  */
 public class MessageNotationUml extends AbstractMessageNotationUml {
 
-    /**
-     * The standard error etc. logger
-     */
-    static final Logger LOG =
-        Logger.getLogger(MessageNotationUml.class);
+  /** The standard error etc. logger */
+  static final Logger LOG = Logger.getLogger(MessageNotationUml.class);
 
-    /**
-     * The constructor.
-     *
-     * @param message the UML object
-     */
-    public MessageNotationUml(Object message) {
-        super(message);
-    }
+  /**
+   * The constructor.
+   *
+   * @param message the UML object
+   */
+  public MessageNotationUml(Object message) {
+    super(message);
+  }
 
-    @Override
-    public String toString(Object modelElement, NotationSettings settings) {
-        return toString(modelElement, true);
-    }
+  @Override
+  public String toString(Object modelElement, NotationSettings settings) {
+    return toString(modelElement, true);
+  }
 
-    /*
-     * Generate a textual description for a Message m.
-     *
-     * @see org.argouml.notation.NotationProvider#toString(java.lang.Object, 
-     * java.util.Map)
-     * @deprecated
-     */
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    public String toString(final Object modelElement, final Map args) {
-        return toString(modelElement, true);
-    }
-
+  /*
+   * Generate a textual description for a Message m.
+   *
+   * @see org.argouml.notation.NotationProvider#toString(java.lang.Object,
+   * java.util.Map)
+   * @deprecated
+   */
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  public String toString(final Object modelElement, final Map args) {
+    return toString(modelElement, true);
+  }
 }

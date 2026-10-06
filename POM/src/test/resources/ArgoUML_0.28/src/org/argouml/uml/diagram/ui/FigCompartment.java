@@ -27,7 +27,6 @@ package org.argouml.uml.diagram.ui;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.util.Collection;
-
 import org.argouml.uml.diagram.DiagramSettings;
 import org.tigris.gef.presentation.Fig;
 import org.tigris.gef.presentation.FigRect;
@@ -37,107 +36,102 @@ import org.tigris.gef.presentation.FigRect;
  */
 public abstract class FigCompartment extends ArgoFigGroup {
 
-    private Fig bigPort;
+  private Fig bigPort;
 
-    /**
-     * The constructor.
-     *
-     * @param x x
-     * @param y y
-     * @param w width
-     * @param h height
-     * @deprecated for 0.27.3 by tfmorris.  Use 
-     * {@link #FigCompartment(Object, Rectangle, DiagramSettings)}.
-     */
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    public FigCompartment(int x, int y, int w, int h) {
-        constructFigs(x, y, w, h);
-    }
+  /**
+   * The constructor.
+   *
+   * @param x x
+   * @param y y
+   * @param w width
+   * @param h height
+   * @deprecated for 0.27.3 by tfmorris. Use {@link #FigCompartment(Object, Rectangle,
+   *     DiagramSettings)}.
+   */
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  public FigCompartment(int x, int y, int w, int h) {
+    constructFigs(x, y, w, h);
+  }
 
-    private void constructFigs(int x, int y, int w, int h) {
-        bigPort = new FigRect(x, y, w, h, LINE_COLOR, FILL_COLOR);
-        bigPort.setFilled(true);
-        setFilled(true);
+  private void constructFigs(int x, int y, int w, int h) {
+    bigPort = new FigRect(x, y, w, h, LINE_COLOR, FILL_COLOR);
+    bigPort.setFilled(true);
+    setFilled(true);
 
-        bigPort.setLineWidth(0);
-        setLineWidth(0);
-        addFig(bigPort);
-    }
-    
-    /**
-     * Construct a new FigCompartment.
-     * 
-     * @param owner owning UML element
-     * @param bounds rectangle describing bounds of compartment
-     * @param settings render settings
-     */
-    public FigCompartment(Object owner, Rectangle bounds,
-            DiagramSettings settings) {
-        super(owner, settings);
-        constructFigs(bounds.x, bounds.y, bounds.width, bounds.height);
-    }
+    bigPort.setLineWidth(0);
+    setLineWidth(0);
+    addFig(bigPort);
+  }
 
-    /**
-     * @return the bigport
-     */
-    public Fig getBigPort() {
-        return bigPort;
-    }
+  /**
+   * Construct a new FigCompartment.
+   *
+   * @param owner owning UML element
+   * @param bounds rectangle describing bounds of compartment
+   * @param settings render settings
+   */
+  public FigCompartment(Object owner, Rectangle bounds, DiagramSettings settings) {
+    super(owner, settings);
+    constructFigs(bounds.x, bounds.y, bounds.width, bounds.height);
+  }
 
-    /**
-     * The minimum width is the minimum width of the child with the widest
-     * miniumum width.
-     * The minimum height is the total minimum height of all child figs plus a
-     * 2 pixel padding.
-     * @return the minimum width
-     */
-    @Override
-    public Dimension getMinimumSize() {
-        int minWidth = 0;
-        int minHeight = 0;
-        for (Fig fig : (Collection<Fig>) getFigs()) {
-            if (fig.isVisible() && fig != getBigPort()) {
-                int fw = fig.getMinimumSize().width;
-                if (fw > minWidth) {
-                    minWidth = fw;
-                }
-                minHeight += fig.getMinimumSize().height;
-            }
+  /**
+   * @return the bigport
+   */
+  public Fig getBigPort() {
+    return bigPort;
+  }
+
+  /**
+   * The minimum width is the minimum width of the child with the widest miniumum width. The minimum
+   * height is the total minimum height of all child figs plus a 2 pixel padding.
+   *
+   * @return the minimum width
+   */
+  @Override
+  public Dimension getMinimumSize() {
+    int minWidth = 0;
+    int minHeight = 0;
+    for (Fig fig : (Collection<Fig>) getFigs()) {
+      if (fig.isVisible() && fig != getBigPort()) {
+        int fw = fig.getMinimumSize().width;
+        if (fw > minWidth) {
+          minWidth = fw;
         }
-
-        minHeight += 2; // 2 Pixel padding after compartment
-        return new Dimension(minWidth, minHeight);
+        minHeight += fig.getMinimumSize().height;
+      }
     }
 
-    /*
-     * @see org.tigris.gef.presentation.Fig#setBoundsImpl(int, int, int, int)
-     */
-    @Override
-    protected void setBoundsImpl(int x, int y, int w, int h) {
-        int newW = w;
-        int newH = h;
+    minHeight += 2; // 2 Pixel padding after compartment
+    return new Dimension(minWidth, minHeight);
+  }
 
-        int fw;
-        int yy = y;
-        for  (Fig fig : (Collection<Fig>) getFigs()) {
-            if (fig.isVisible() && fig != getBigPort()) {
-                fw = fig.getMinimumSize().width;
-                //set new bounds for all included figs
-                fig.setBounds(x + 1, yy + 1, fw, fig.getMinimumSize().height);
-                if (newW < fw + 2) {
-                    newW = fw + 2;
-                }
-                yy += fig.getMinimumSize().height;
-            }
+  /*
+   * @see org.tigris.gef.presentation.Fig#setBoundsImpl(int, int, int, int)
+   */
+  @Override
+  protected void setBoundsImpl(int x, int y, int w, int h) {
+    int newW = w;
+    int newH = h;
+
+    int fw;
+    int yy = y;
+    for (Fig fig : (Collection<Fig>) getFigs()) {
+      if (fig.isVisible() && fig != getBigPort()) {
+        fw = fig.getMinimumSize().width;
+        // set new bounds for all included figs
+        fig.setBounds(x + 1, yy + 1, fw, fig.getMinimumSize().height);
+        if (newW < fw + 2) {
+          newW = fw + 2;
         }
-        getBigPort().setBounds(x, y, newW, newH);
-        calcBounds();
+        yy += fig.getMinimumSize().height;
+      }
     }
-    
-    /**
-     * Create a new model element for the compartment.
-     */
-    protected abstract void createModelElement();
-    
+    getBigPort().setBounds(x, y, newW, newH);
+    calcBounds();
+  }
+
+  /** Create a new model element for the compartment. */
+  protected abstract void createModelElement();
 }

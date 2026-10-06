@@ -27,34 +27,26 @@ package org.argouml.uml.ui.behavior.common_behavior;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
-/**
- * The model for instances of a classifier.
- *
- */
-public class UMLInstanceClassifierListModel
-    extends UMLModelElementListModel2 {
+/** The model for instances of a classifier. */
+public class UMLInstanceClassifierListModel extends UMLModelElementListModel2 {
 
+  /** build default listmodel with unlimited size and allowed elements CLASSIFIER */
+  public UMLInstanceClassifierListModel() {
+    super("classifier");
+  }
 
-    /** build default listmodel with unlimited size and
-     * allowed elements CLASSIFIER */
-    public UMLInstanceClassifierListModel() {
-        super("classifier");
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (getTarget() != null) setAllElements(Model.getFacade().getClassifiers(getTarget()));
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (getTarget() != null)
-            setAllElements(Model.getFacade().getClassifiers(getTarget()));
-    }
-
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object o) {
-        return Model.getFacade().isAClassifier(o)
-            && Model.getFacade().getClassifiers(getTarget()).contains(o);
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object o) {
+    return Model.getFacade().isAClassifier(o)
+        && Model.getFacade().getClassifiers(getTarget()).contains(o);
+  }
 }

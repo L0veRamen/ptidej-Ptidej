@@ -24,129 +24,124 @@
 
 package org.argouml.uml.ui.behavior.use_cases;
 
-import javax.swing.JList;
 
 import org.argouml.model.Model;
 import org.argouml.uml.ui.ActionNavigateNamespace;
-import org.argouml.uml.ui.UMLLinkedList;
 import org.argouml.uml.ui.foundation.core.PropPanelRelationship;
 import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
 
 /**
- * Builds the property panel for an Include relationship.<p>
+ * Builds the property panel for an Include relationship.
+ *
+ * <p>
  *
  * @author Jeremy Bennett
  */
 public class PropPanelInclude extends PropPanelRelationship {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = -8235207258195445477L;
+  /** The serial version. */
+  private static final long serialVersionUID = -8235207258195445477L;
 
+  /** Construct a property panel for Include model elements. */
+  public PropPanelInclude() {
+    super("label.include", lookupIcon("Include"));
 
-    /**
-     * Construct a property panel for Include model elements.
-     */
-    public PropPanelInclude() {
-        super("label.include", lookupIcon("Include"));
+    addField("label.name", getNameTextField());
+    addField("label.namespace", getNamespaceSelector());
 
-        addField("label.name", getNameTextField());
-        addField("label.namespace", getNamespaceSelector());
+    addSeparator();
 
-        addSeparator();
+    addField("label.usecase-base", getSingleRowScroll(new UMLIncludeBaseListModel()));
 
-        addField("label.usecase-base",
-		 getSingleRowScroll(new UMLIncludeBaseListModel()));
+    addField("label.addition", getSingleRowScroll(new UMLIncludeAdditionListModel()));
 
-        addField("label.addition",
-		 getSingleRowScroll(new UMLIncludeAdditionListModel()));
+    // Add the toolbar buttons:
+    addAction(new ActionNavigateNamespace());
+    addAction(new ActionNewStereotype());
+    addAction(getDeleteAction());
+  }
 
-        // Add the toolbar buttons:
-        addAction(new ActionNavigateNamespace());
-        addAction(new ActionNewStereotype());
-        addAction(getDeleteAction());
+  /**
+   * Get the current base use case of the include relationship.
+   *
+   * <p>
+   *
+   * @return The UseCase that is the base of this include relationship or <code>null</code> if there
+   *     is none.
+   */
+  public Object getBase() {
+    Object base = null;
+    Object target = getTarget();
+
+    if (Model.getFacade().isAInclude(target)) {
+      base = Model.getFacade().getBase(target);
+    }
+    return base;
+  }
+
+  /**
+   * Set the base use case of the include relationship.
+   *
+   * <p>
+   *
+   * @param base The UseCase to set as the base of this include relationship.
+   */
+  public void setBase(Object /*MUseCase*/ base) {
+    Object target = getTarget();
+
+    if (Model.getFacade().isAInclude(target)) {
+      Model.getUseCasesHelper().setBase(target, base);
+    }
+  }
+
+  /**
+   * Get the current addition use case of the include relationship.
+   *
+   * <p>
+   *
+   * @return The UseCase that is the addition of this include relationship or <code>null</code> if
+   *     there is none.
+   */
+  public Object getAddition() {
+    Object addition = null;
+    Object target = getTarget();
+
+    if (Model.getFacade().isAInclude(target)) {
+      addition = Model.getFacade().getAddition(target);
     }
 
-    /**
-     * Get the current base use case of the include relationship.<p>
-     * @return The UseCase that is the base of this include relationship or
-     * <code>null</code> if there is none.
-     */
-    public Object getBase() {
-        Object base   = null;
-        Object      target = getTarget();
+    return addition;
+  }
 
-        if (Model.getFacade().isAInclude(target)) {
-            base = Model.getFacade().getBase(target);
-        }
-        return base;
+  /**
+   * Set the addition use case of the include relationship.
+   *
+   * <p>
+   *
+   * @param addition The UseCase to set as the addition of this include relationship.
+   */
+  public void setAddition(Object /*MUseCase*/ addition) {
+    Object target = getTarget();
+
+    if (Model.getFacade().isAInclude(target)) {
+      Model.getUseCasesHelper().setAddition(target, addition);
     }
+  }
 
-    /**
-     * Set the base use case of the include relationship.<p>
-     * @param base The UseCase to set as the base of this include relationship.
-     */
-    public void setBase(Object/*MUseCase*/ base) {
-        Object target = getTarget();
+  /**
+   * Predicate to test if a model element may appear in the list of potential use cases.
+   *
+   * <p><em>Note</em>. We don't try to prevent the user setting up circular include relationships.
+   * This may be necessary temporarily, for example while reversing a relationship. It is up to a
+   * critic to track this.
+   *
+   * <p>
+   *
+   * @param modElem the ModelElement to test.
+   * @return <code>true</code> if modElem is a use case, <code>false</code> otherwise.
+   */
+  public boolean isAcceptableUseCase(Object /*MModelElement*/ modElem) {
 
-        if (Model.getFacade().isAInclude(target)) {
-            Model.getUseCasesHelper().setBase(target, base);
-        }
-    }
-
-    /**
-     * Get the current addition use case of the include relationship.<p>
-     *
-     *
-     * @return The UseCase that is the addition of this include
-     * relationship or <code>null</code> if there is none.
-     */
-    public Object getAddition() {
-        Object addition   = null;
-        Object target = getTarget();
-
-        if (Model.getFacade().isAInclude(target)) {
-            addition = Model.getFacade().getAddition(target);
-        }
-
-        return addition;
-    }
-
-    /**
-     * Set the addition use case of the include relationship.<p>
-     *
-     *
-     * @param addition The UseCase to set as the addition of this
-     * include relationship.
-     */
-    public void setAddition(Object/*MUseCase*/ addition) {
-        Object target = getTarget();
-
-        if (Model.getFacade().isAInclude(target)) {
-            Model.getUseCasesHelper().setAddition(target, addition);
-        }
-    }
-
-
-    /**
-     * Predicate to test if a model element may appear in the list of
-     * potential use cases.<p>
-     *
-     * <em>Note</em>. We don't try to prevent the user setting up
-     * circular include relationships. This may be necessary
-     * temporarily, for example while reversing a relationship. It is
-     * up to a critic to track this.<p>
-     *
-     * @param modElem the ModelElement to test.
-     *
-     * @return <code>true</code> if modElem is a use case,
-     * <code>false</code> otherwise.
-     */
-    public boolean isAcceptableUseCase(Object/*MModelElement*/ modElem) {
-
-        return Model.getFacade().isAUseCase(modElem);
-    }
-
-
-} 
+    return Model.getFacade().isAUseCase(modElem);
+  }
+}

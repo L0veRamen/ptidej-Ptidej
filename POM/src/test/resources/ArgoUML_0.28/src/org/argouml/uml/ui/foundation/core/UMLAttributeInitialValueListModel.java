@@ -31,31 +31,27 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  * @author jaap.branderhorst@xs4all.nl
  * @since 29 jan 2003
  */
-public class UMLAttributeInitialValueListModel
-	extends UMLModelElementListModel2 {
+public class UMLAttributeInitialValueListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLDependencySupplierListModel.
-     */
-    public UMLAttributeInitialValueListModel() {
-	super("initialValue");
+  /** Constructor for UMLDependencySupplierListModel. */
+  public UMLAttributeInitialValueListModel() {
+    super("initialValue");
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (getTarget() != null) {
+      removeAllElements();
+      addElement(Model.getFacade().getInitialValue(getTarget()));
     }
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-	if (getTarget() != null) {
-	    removeAllElements();
-	    addElement(Model.getFacade().getInitialValue(getTarget()));
-	}
-    }
-
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-	return Model.getFacade().getInitialValue(getTarget()) == element;
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().getInitialValue(getTarget()) == element;
+  }
 }

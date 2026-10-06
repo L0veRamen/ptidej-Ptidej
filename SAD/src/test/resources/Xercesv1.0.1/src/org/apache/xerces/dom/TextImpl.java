@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xerces" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -60,145 +60,123 @@ package org.apache.xerces.dom;
 import org.w3c.dom.*;
 
 /**
- * Text nodes hold the non-markup, non-Entity content of
- * an Element or Attribute.
- * <P>
- * When a document is first made available to the DOM, there is only
- * one Text object for each block of adjacent plain-text. Users (ie,
- * applications) may create multiple adjacent Texts during editing --
- * see {@link Element#normalize} for discussion.
- * <P>
- * Note that CDATASection is a subclass of Text. This is conceptually
- * valid, since they're really just two different ways of quoting
- * characters when they're written out as part of an XML stream.
+ * Text nodes hold the non-markup, non-Entity content of an Element or Attribute.
+ *
+ * <p>When a document is first made available to the DOM, there is only one Text object for each
+ * block of adjacent plain-text. Users (ie, applications) may create multiple adjacent Texts during
+ * editing -- see {@link Element#normalize} for discussion.
+ *
+ * <p>Note that CDATASection is a subclass of Text. This is conceptually valid, since they're really
+ * just two different ways of quoting characters when they're written out as part of an XML stream.
  *
  * @version
- * @since  PR-DOM-Level-1-19980818.
+ * @since PR-DOM-Level-1-19980818.
  */
-public class TextImpl 
-    extends CharacterDataImpl 
-    implements Text {
+public class TextImpl extends CharacterDataImpl implements Text {
 
-    //
-    // Constants
-    //
+  //
+  // Constants
+  //
 
-    /** Serialization version. */
-    static final long serialVersionUID = -5294980852957403469L;
-    
-    //
-    // Data
-    //
+  /** Serialization version. */
+  static final long serialVersionUID = -5294980852957403469L;
 
-    /** Ignorable whitespace. */
-    protected boolean ignorableWhitespace;
+  //
+  // Data
+  //
 
-    //
-    // Constructors
-    //
+  /** Ignorable whitespace. */
+  protected boolean ignorableWhitespace;
 
-    /** Factory constructor. */
-    public TextImpl(DocumentImpl ownerDoc, String data) {
-        super(ownerDoc, data);
-    }  
-    
-    //
-    // Node methods
-    //
+  //
+  // Constructors
+  //
 
-    /** 
-     * A short integer indicating what type of node this is. The named
-     * constants for this value are defined in the org.w3c.dom.Node interface.
-     */
-    public short getNodeType() {
-        return Node.TEXT_NODE;
+  /** Factory constructor. */
+  public TextImpl(DocumentImpl ownerDoc, String data) {
+    super(ownerDoc, data);
+  }
+
+  //
+  // Node methods
+  //
+
+  /**
+   * A short integer indicating what type of node this is. The named constants for this value are
+   * defined in the org.w3c.dom.Node interface.
+   */
+  public short getNodeType() {
+    return Node.TEXT_NODE;
+  }
+
+  /** Returns the node name. */
+  public String getNodeName() {
+    return "#text";
+  }
+
+  /** Clones this node. */
+  public Node cloneNode(boolean deep) {
+    return ownerDocument.createTextNode(getNodeValue());
+  }
+
+  /** NON-DOM: Set whether this Text is ignorable whitespace. */
+  public void setIgnorableWhitespace(boolean ignore) {
+
+    if (syncData) {
+      synchronizeData();
     }
 
-    /** Returns the node name. */
-    public String getNodeName() {
-        return "#text";
+    ignorableWhitespace = ignore;
+  } // setIgnorableWhitespace(boolean)
+
+  /** NON-DOM: Returns whether this Text is ignorable whitespace. */
+  public boolean isIgnorableWhitespace() {
+
+    if (syncData) {
+      synchronizeData();
     }
-    
-    /** Clones this node. */
-    public Node cloneNode(boolean deep) {
-        return ownerDocument.createTextNode(getNodeValue());
-    }  
 
-    /**
-     * NON-DOM: Set whether this Text is ignorable whitespace.
-     */
-    public void setIgnorableWhitespace(boolean ignore) {
+    return ignorableWhitespace;
+  } // isIgnorableWhitespace():boolean
 
-        if (syncData) {
-            synchronizeData();
-        }
+  //
+  // Text methods
+  //
 
-        ignorableWhitespace = ignore;
+  /**
+   * Break a text node into two sibling nodes. (Note that if the current node has no parent, they
+   * won't wind up as "siblings" -- they'll both be orphans.)
+   *
+   * @param offset The offset at which to split. If offset is at the end of the available data, the
+   *     second node will be empty.
+   * @returns A reference to the new node (containing data after the offset point). The original
+   *     node will contain data up to that point.
+   * @throws DOMException(INDEX_SIZE_ERR) if offset is <0 or >length.
+   * @throws DOMException(NO_MODIFICATION_ALLOWED_ERR) if node is read-only.
+   */
+  public Text splitText(int offset) throws DOMException {
 
-    } // setIgnorableWhitespace(boolean)
-    
+    if (readOnly) {
+      throw new DOMExceptionImpl(
+          DOMException.NO_MODIFICATION_ALLOWED_ERR, "NO_MODIFICATION_ALLOWED_ERR");
+    }
 
-    /**
-     * NON-DOM: Returns whether this Text is ignorable whitespace.
-     */
-    public boolean isIgnorableWhitespace() {
+    if (syncData) {
+      synchronizeData();
+    }
+    if (offset < 0 || offset > value.length() - 1) {
+      throw new DOMExceptionImpl(DOMException.INDEX_SIZE_ERR, "INDEX_SIZE_ERR");
+    }
 
-        if (syncData) {
-            synchronizeData();
-        }
+    // split text into two separate nodes
+    Text newText = ownerDocument.createTextNode(value.substring(offset));
+    setNodeValue(value.substring(0, offset));
 
-        return ignorableWhitespace;
+    // insert new text node
+    if (parentNode != null) {
+      parentNode.insertBefore(newText, nextSibling);
+    }
 
-    } // isIgnorableWhitespace():boolean
-    
-    //
-    // Text methods
-    //
-
-    /** 
-     * Break a text node into two sibling nodes.  (Note that if the
-     * current node has no parent, they won't wind up as "siblings" --
-     * they'll both be orphans.)
-     *
-     * @param offset The offset at which to split. If offset is at the
-     * end of the available data, the second node will be empty.
-     *
-     * @returns A reference to the new node (containing data after the
-     * offset point). The original node will contain data up to that
-     * point.
-     *
-     * @throws DOMException(INDEX_SIZE_ERR) if offset is <0 or >length.
-     *
-     * @throws DOMException(NO_MODIFICATION_ALLOWED_ERR) if node is read-only.
-     */
-    public Text splitText(int offset) 
-        throws DOMException {
-
-    	if (readOnly) {
-    		throw new DOMExceptionImpl(
-    			DOMException.NO_MODIFICATION_ALLOWED_ERR, 
-    			"NO_MODIFICATION_ALLOWED_ERR");
-        }
-
-        if (syncData) {
-            synchronizeData();
-        }
-    	if (offset < 0 || offset > value.length() - 1) {
-    		throw new DOMExceptionImpl(DOMException.INDEX_SIZE_ERR, 
-    		                           "INDEX_SIZE_ERR");
-        }
-    		
-        // split text into two separate nodes
-    	Text newText = ownerDocument.createTextNode(value.substring(offset));
-    	setNodeValue(value.substring(0, offset));
-
-        // insert new text node
-    	if (parentNode != null) {
-    		parentNode.insertBefore(newText, nextSibling);
-        }
-
-    	return newText;
-
-    } // splitText(int):Text
-
+    return newText;
+  } // splitText(int):Text
 } // class TextImpl

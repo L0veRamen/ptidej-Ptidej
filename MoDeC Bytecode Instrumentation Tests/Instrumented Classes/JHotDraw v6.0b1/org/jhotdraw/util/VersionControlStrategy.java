@@ -12,13 +12,10 @@
 package org.jhotdraw.util;
 
 /**
- * @author  Wolfram Kaiser <mrfloppy@sourceforge.net>
+ * @author Wolfram Kaiser <mrfloppy@sourceforge.net>
  * @version <$CURRENT_VERSION$>
  */
 public interface VersionControlStrategy {
-	/**
-	 * Define a strategy how to select those versions of JHotDraw
-	 * with which they are compatible.
-	 */
-	public void assertCompatibleVersion();
+  /** Define a strategy how to select those versions of JHotDraw with which they are compatible. */
+  public void assertCompatibleVersion();
 }

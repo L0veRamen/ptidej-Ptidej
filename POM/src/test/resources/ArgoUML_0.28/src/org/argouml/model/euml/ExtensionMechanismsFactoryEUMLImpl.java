@@ -27,98 +27,90 @@
 package org.argouml.model.euml;
 
 import java.util.Collection;
-
 import org.argouml.model.AbstractModelFactory;
 import org.argouml.model.ExtensionMechanismsFactory;
 import org.eclipse.uml2.uml.UMLFactory;
 
-/**
- * The implementation of the ExtensionMechanismsFactory for EUML2.
- */
-class ExtensionMechanismsFactoryEUMLImpl implements
-        ExtensionMechanismsFactory, AbstractModelFactory {
+/** The implementation of the ExtensionMechanismsFactory for EUML2. */
+class ExtensionMechanismsFactoryEUMLImpl
+    implements ExtensionMechanismsFactory, AbstractModelFactory {
 
-    /**
-     * The model implementation.
-     */
-    private EUMLModelImplementation modelImpl;
+  /** The model implementation. */
+  private EUMLModelImplementation modelImpl;
 
-    /**
-     * Constructor.
-     * 
-     * @param implementation
-     *            The ModelImplementation.
-     */
-    public ExtensionMechanismsFactoryEUMLImpl(
-            EUMLModelImplementation implementation) {
-        modelImpl = implementation;
-    }
+  /**
+   * Constructor.
+   *
+   * @param implementation The ModelImplementation.
+   */
+  public ExtensionMechanismsFactoryEUMLImpl(EUMLModelImplementation implementation) {
+    modelImpl = implementation;
+  }
 
-    public Object buildStereotype(Object theModelElementObject, Object theName,
-            Object theNamespaceObject) {
-        // TODO: Auto-generated method stub
-        return null;
-    }
+  public Object buildStereotype(
+      Object theModelElementObject, Object theName, Object theNamespaceObject) {
+    // TODO: Auto-generated method stub
+    return null;
+  }
 
-    public Object buildStereotype(Object theModelElementObject, String theName,
-            Object model, Collection models) {
-        // TODO: Auto-generated method stub
-        return null;
-    }
+  public Object buildStereotype(
+      Object theModelElementObject, String theName, Object model, Collection models) {
+    // TODO: Auto-generated method stub
+    return null;
+  }
 
-    public Object buildStereotype(String text, Object ns) {
-        // TODO: Auto-generated method stub
-        return null;
-    }
+  public Object buildStereotype(String text, Object ns) {
+    // TODO: Auto-generated method stub
+    return null;
+  }
 
-    public Object buildTagDefinition(String name, Object stereotype, Object ns) {
-        // TODO: Auto-generated method stub
-        return null;
-    }
-    
-    public Object buildTagDefinition(String name, Object stereotype, 
-            Object namespace, String tagType) {
-        // TODO: Auto-generated method stub
-        return null;
-    }
+  public Object buildTagDefinition(String name, Object stereotype, Object ns) {
+    // TODO: Auto-generated method stub
+    return null;
+  }
 
-    public Object buildTaggedValue(String tag, String value) {
-        // TODO: Auto-generated method stub
-        return null;
-    }
-    
-    public Object buildTaggedValue(Object type, String[] value) {
-        // TODO: Auto-generated method stub
-        return null;
-    }
+  public Object buildTagDefinition(
+      String name, Object stereotype, Object namespace, String tagType) {
+    // TODO: Auto-generated method stub
+    return null;
+  }
 
-    public Object copyStereotype(Object source, Object ns) {
-        // TODO: Auto-generated method stub
-        return null;
-    }
+  public Object buildTaggedValue(String tag, String value) {
+    // TODO: Auto-generated method stub
+    return null;
+  }
 
-    public Object copyTagDefinition(Object aTd, Object aNs) {
-        // TODO: Auto-generated method stub
-        return null;
-    }
+  public Object buildTaggedValue(Object type, String[] value) {
+    // TODO: Auto-generated method stub
+    return null;
+  }
 
-    public void copyTaggedValues(Object source, Object target) {
-        // TODO: Auto-generated method stub
+  public Object copyStereotype(Object source, Object ns) {
+    // TODO: Auto-generated method stub
+    return null;
+  }
 
-    }
+  public Object copyTagDefinition(Object aTd, Object aNs) {
+    // TODO: Auto-generated method stub
+    return null;
+  }
 
-    public Object createStereotype() {
-        return UMLFactory.eINSTANCE.createStereotype();
-    }
+  public void copyTaggedValues(Object source, Object target) {
+    // TODO: Auto-generated method stub
 
-    public Object createTagDefinition() {
-        // TODO: Auto-generated method stub
-        return null;
-    }
+  }
 
-    public Object createTaggedValue() {
-        // TODO: Auto-generated method stub
-        return null;
-    }
+  public Object createStereotype() {
+    return UMLFactory.eINSTANCE.createStereotype();
+  }
 
+  public Object createTagDefinition() {
+    // TODO: Auto-generated method stub
+    return null;
+  }
+
+  public Object createTaggedValue() {
+    // TODO: Auto-generated method stub
+    return null;
+  }
 }

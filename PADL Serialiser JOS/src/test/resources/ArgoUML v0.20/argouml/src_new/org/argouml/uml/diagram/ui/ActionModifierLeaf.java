@@ -27,27 +27,29 @@ package org.argouml.uml.diagram.ui;
 import org.argouml.model.Model;
 
 class ActionModifierLeaf extends AbstractActionCheckBoxMenuItem {
-    /**
-     * The constructor.
-     *
-     * @param o the target
-     */
-    public ActionModifierLeaf(Object o) {
-        super("checkbox.final-uc", NO_ICON);
-        putValue("SELECTED", new Boolean(valueOfTarget(o)));
-    }
+  /**
+   * The constructor.
+   *
+   * @param o the target
+   */
+  public ActionModifierLeaf(Object o) {
+    super("checkbox.final-uc", NO_ICON);
+    putValue("SELECTED", new Boolean(valueOfTarget(o)));
+  }
 
-    /**
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement.AbstractActionCheckBoxMenuItem#toggleValueOfTarget(java.lang.Object)
-     */
-    void toggleValueOfTarget(Object t) {
-        Model.getCoreHelper().setLeaf(t, !Model.getFacade().isLeaf(t));
-    }
+  /**
+   * @see
+   *     org.argouml.uml.diagram.ui.FigNodeModelElement.AbstractActionCheckBoxMenuItem#toggleValueOfTarget(java.lang.Object)
+   */
+  void toggleValueOfTarget(Object t) {
+    Model.getCoreHelper().setLeaf(t, !Model.getFacade().isLeaf(t));
+  }
 
-    /**
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement.AbstractActionCheckBoxMenuItem#valueOfTarget(java.lang.Object)
-     */
-    boolean valueOfTarget(Object t) {
-        return Model.getFacade().isLeaf(t);
-    }
+  /**
+   * @see
+   *     org.argouml.uml.diagram.ui.FigNodeModelElement.AbstractActionCheckBoxMenuItem#valueOfTarget(java.lang.Object)
+   */
+  boolean valueOfTarget(Object t) {
+    return Model.getFacade().isLeaf(t);
+  }
 }

@@ -28,37 +28,31 @@ import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLPlainTextDocument;
 
 /**
- *
  * @author mkl
- *
  */
 public class UMLReceptionSpecificationDocument extends UMLPlainTextDocument {
 
-    /**
-     * Constructor.
-     */
-    public UMLReceptionSpecificationDocument() {
-        super("specification");
+  /** Constructor. */
+  public UMLReceptionSpecificationDocument() {
+    super("specification");
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLPlainTextDocument#setProperty(java.lang.String)
+   */
+  protected void setProperty(String text) {
+    if (Model.getFacade().isAReception(getTarget())) {
+      Model.getCommonBehaviorHelper().setSpecification(getTarget(), text);
     }
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLPlainTextDocument#setProperty(java.lang.String)
-     */
-    protected void setProperty(String text) {
-        if (Model.getFacade().isAReception(getTarget())) {
-            Model.getCommonBehaviorHelper().setSpecification(getTarget(), text);
-        }
-
+  /*
+   * @see org.argouml.uml.ui.UMLPlainTextDocument#getProperty()
+   */
+  protected String getProperty() {
+    if (Model.getFacade().isAReception(getTarget())) {
+      return Model.getFacade().getSpecification(getTarget());
     }
-
-    /*
-     * @see org.argouml.uml.ui.UMLPlainTextDocument#getProperty()
-     */
-    protected String getProperty() {
-        if (Model.getFacade().isAReception(getTarget())) {
-            return Model.getFacade().getSpecification(getTarget());
-        }
-        return null;
-    }
-
+    return null;
+  }
 }

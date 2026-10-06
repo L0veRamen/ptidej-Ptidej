@@ -31,31 +31,27 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  * @since Jan 29, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class UMLParameterBehavioralFeatListModel
-    extends UMLModelElementListModel2 {
+public class UMLParameterBehavioralFeatListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLParameterBehavioralFeatListModel
-     */
-    public UMLParameterBehavioralFeatListModel() {
-	super("behavioralFeature");
+  /** Constructor for UMLParameterBehavioralFeatListModel */
+  public UMLParameterBehavioralFeatListModel() {
+    super("behavioralFeature");
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (getTarget() != null) {
+      removeAllElements();
+      addElement(Model.getFacade().getBehavioralFeature(getTarget()));
     }
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-	if (getTarget() != null) {
-	    removeAllElements();
-	    addElement(Model.getFacade().getBehavioralFeature(getTarget()));
-	}
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ o) {
-	return Model.getFacade().getBehavioralFeature(getTarget()) == o;
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ o) {
+    return Model.getFacade().getBehavioralFeature(getTarget()) == o;
+  }
 }

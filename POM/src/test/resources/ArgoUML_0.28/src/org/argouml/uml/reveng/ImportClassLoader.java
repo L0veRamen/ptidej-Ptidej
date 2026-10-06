@@ -24,23 +24,22 @@
 
 package org.argouml.uml.reveng;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
-import java.net.URLClassLoader;
-import java.net.URL;
-import java.net.MalformedURLException;
-import java.io.File;
-
 import org.apache.log4j.Logger;
 import org.argouml.application.api.Argo;
 import org.argouml.configuration.Configuration;
 
 /**
- * Class to help users reverse engineer class information from arbitrary
- * .jar/.class file resources, like an import classpath.<p>
+ * Class to help users reverse engineer class information from arbitrary .jar/.class file resources,
+ * like an import classpath.
  *
- * can be used as follows:
+ * <p>can be used as follows:
  *
  * <pre>
  * <code>
@@ -58,11 +57,11 @@ import org.argouml.configuration.Configuration;
  * </code>
  * </pre>
  *
- * It supports adding and removing Files from the import classpath.
- * And saving and loading the path to/from the users properties file.<p>
+ * It supports adding and removing Files from the import classpath. And saving and loading the path
+ * to/from the users properties file.
  *
- * It should be possible to make this the system class loader, but
- * I haven't got this to work yet:
+ * <p>It should be possible to make this the system class loader, but I haven't got this to work
+ * yet:
  *
  * <pre>
  * <code>
@@ -86,190 +85,178 @@ import org.argouml.configuration.Configuration;
  */
 public final class ImportClassLoader extends URLClassLoader {
 
-    /**
-     * Logger.
-     */
-    private static final Logger LOG = Logger.getLogger(ImportClassLoader.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(ImportClassLoader.class);
 
-    private static ImportClassLoader instance;
+  private static ImportClassLoader instance;
 
-    /**
-     * The constructor.
-     *
-     * @param urls An array of urls.
-     */
-    private ImportClassLoader(URL[] urls) {
-        super(urls);
+  /**
+   * The constructor.
+   *
+   * @param urls An array of urls.
+   */
+  private ImportClassLoader(URL[] urls) {
+    super(urls);
+  }
+
+  /**
+   * Try and return the existing instance if one exists.
+   *
+   * @return the instance
+   * @throws MalformedURLException when the url is bad
+   */
+  public static ImportClassLoader getInstance() throws MalformedURLException {
+
+    if (instance == null) {
+      String path =
+          Configuration.getString(Argo.KEY_USER_IMPORT_CLASSPATH, System.getProperty("user.dir"));
+      return getInstance(getURLs(path));
+    } else {
+      return instance;
+    }
+  }
+
+  /**
+   * There is no default constructor for URLClassloader, so we should provide urls when creating the
+   * instance. We create a new instance in this method.
+   *
+   * @param urls the URLs
+   * @return the instance of this class
+   * @throws MalformedURLException when the URL is bad
+   */
+  public static ImportClassLoader getInstance(URL[] urls) throws MalformedURLException {
+    instance = new ImportClassLoader(urls);
+    return instance;
+  }
+
+  /**
+   * @param f the file to be added
+   * @throws MalformedURLException when the URL is bad
+   */
+  public void addFile(File f) throws MalformedURLException {
+    addURL(f.toURI().toURL());
+  }
+
+  /**
+   * Remove the given file. But we can't remove the last file.
+   *
+   * @param f the file to be removed
+   */
+  public void removeFile(File f) {
+
+    URL url = null;
+    try {
+      url = f.toURI().toURL();
+    } catch (MalformedURLException e) {
+      LOG.warn("could not remove file ", e);
+      return;
     }
 
-    /**
-     * Try and return the existing instance if one exists.
-     *
-     * @return the instance
-     * @throws MalformedURLException when the url is bad
-     */
-    public static ImportClassLoader getInstance()
-	throws MalformedURLException {
-
-        if (instance == null) {
-            String path =
-                Configuration.getString(Argo.KEY_USER_IMPORT_CLASSPATH,
-                    System.getProperty("user.dir"));
-            return getInstance(getURLs(path));
-        } else {
-            return instance;
-        }
+    List<URL> urls = new ArrayList<URL>();
+    for (URL u : getURLs()) {
+      if (!url.equals(u)) {
+        urls.add(u);
+      }
     }
 
-    /**
-     * There is no default constructor for URLClassloader, so we should provide
-     * urls when creating the instance.
-     * We create a new instance in this method.
-     *
-     * @param urls the URLs
-     * @return the instance of this class
-     * @throws MalformedURLException when the URL is bad
-     */
-    public static ImportClassLoader getInstance(URL[] urls)
-	throws MalformedURLException {
-	instance = new ImportClassLoader(urls);
-	return instance;
+    // can't remove the last file
+    if (urls.size() == 0) {
+      return;
     }
 
-    /**
-     * @param f the file to be added
-     * @throws MalformedURLException when the URL is bad
-     */
-    public void addFile(File f) throws MalformedURLException {
-        addURL(f.toURI().toURL());
+    // can't remove from existing one so create new one.
+    instance = new ImportClassLoader((URL[]) urls.toArray());
+  }
+
+  /**
+   * Add the file for which a path is given.
+   *
+   * @param path the path in String format
+   */
+  public void setPath(String path) {
+
+    StringTokenizer st = new StringTokenizer(path, ";");
+    st.countTokens();
+    while (st.hasMoreTokens()) {
+
+      String token = st.nextToken();
+
+      try {
+        this.addFile(new File(token));
+      } catch (MalformedURLException e) {
+        LOG.warn("could not set path ", e);
+      }
+    }
+  }
+
+  /**
+   * Add the files for which the paths are given, and return in URL format.
+   *
+   * @param path the paths in String format
+   * @return the URLs
+   */
+  public static URL[] getURLs(String path) {
+
+    java.util.List<URL> urlList = new ArrayList<URL>();
+
+    StringTokenizer st = new StringTokenizer(path, ";");
+    while (st.hasMoreTokens()) {
+
+      String token = st.nextToken();
+
+      try {
+        urlList.add(new File(token).toURI().toURL());
+      } catch (MalformedURLException e) {
+        LOG.error(e);
+      }
     }
 
-    /**
-     * Remove the given file.
-     * But we can't remove the last file.
-     *
-     * @param f the file to be removed
-     */
-    public void removeFile(File f) {
-
-        URL url = null;
-        try {
-            url = f.toURI().toURL();
-        } catch (MalformedURLException e) {
-	    LOG.warn("could not remove file ", e);
-            return;
-	}
-
-        List<URL> urls = new ArrayList<URL>();
-        for (URL u : getURLs()) {
-            if (!url.equals(u)) {
-                urls.add(u);
-            }
-        }
-
-        // can't remove the last file
-        if (urls.size() == 0) {
-            return;
-	}
-
-        // can't remove from existing one so create new one.
-        instance = new ImportClassLoader((URL[]) urls.toArray());
+    URL[] urls = new URL[urlList.size()];
+    for (int i = 0; i < urls.length; i++) {
+      urls[i] = urlList.get(i);
     }
 
-    /**
-     * Add the file for which a path is given.
-     *
-     * @param path the path in String format
-     */
-    public void setPath(String path) {
+    return urls;
+  }
 
-        StringTokenizer st = new StringTokenizer(path, ";");
-        st.countTokens();
-        while (st.hasMoreTokens()) {
+  /**
+   * @param paths the paths to the files to be added
+   */
+  public void setPath(Object[] paths) {
 
-            String token = st.nextToken();
+    for (int i = 0; i < paths.length; i++) {
 
-            try {
-		this.addFile(new File(token));
-            } catch (MalformedURLException e) {
-		LOG.warn("could not set path ", e);
-	    }
-        }
+      try {
+        this.addFile(new File(paths[i].toString()));
+      } catch (Exception e) {
+        LOG.warn("could not set path ", e);
+      }
+    }
+  }
+
+  /** Get the user-configured path. */
+  public void loadUserPath() {
+    setPath(Configuration.getString(Argo.KEY_USER_IMPORT_CLASSPATH, ""));
+  }
+
+  /** Store the user-configured path. */
+  public void saveUserPath() {
+    Configuration.setString(Argo.KEY_USER_IMPORT_CLASSPATH, this.toString());
+  }
+
+  @Override
+  public String toString() {
+
+    URL[] urls = this.getURLs();
+    StringBuilder path = new StringBuilder();
+
+    for (int i = 0; i < urls.length; i++) {
+      path.append(urls[i].getFile());
+      if (i < urls.length - 1) {
+        path.append(";");
+      }
     }
 
-    /**
-     * Add the files for which the paths are given, and return in URL format.
-     * @param path the paths in String format
-     * @return the URLs
-     */
-    public static URL[] getURLs(String path) {
-
-        java.util.List<URL> urlList = new ArrayList<URL>();
-
-        StringTokenizer st = new StringTokenizer(path, ";");
-        while (st.hasMoreTokens()) {
-
-            String token = st.nextToken();
-
-            try {
-		urlList.add(new File(token).toURI().toURL());
-            } catch (MalformedURLException e) {
-		LOG.error(e);
-	    }
-        }
-
-        URL[] urls = new URL[urlList.size()];
-        for (int i = 0; i < urls.length; i++) {
-            urls[i] = urlList.get(i);
-        }
-
-        return urls;
-    }
-
-    /**
-     * @param paths the paths to the files to be added
-     */
-    public void setPath(Object[] paths) {
-
-        for (int i = 0; i < paths.length; i++) {
-
-            try {
-		this.addFile(new File(paths[i].toString()));
-            } catch (Exception e) {
-		LOG.warn("could not set path ", e);
-	    }
-        }
-    }
-
-    /**
-     * Get the user-configured path.
-     */
-    public void loadUserPath() {
-        setPath(Configuration.getString(Argo.KEY_USER_IMPORT_CLASSPATH, ""));
-    }
-
-    /**
-     * Store the user-configured path.
-     */
-    public void saveUserPath() {
-	Configuration.setString(Argo.KEY_USER_IMPORT_CLASSPATH,
-				this.toString());
-    }
-
-    @Override
-    public String toString() {
-
-        URL[] urls = this.getURLs();
-        StringBuilder path = new StringBuilder();
-
-        for (int i = 0; i < urls.length; i++) {
-            path.append(urls[i].getFile());
-            if (i < urls.length - 1) {
-                path.append(";");
-	    }
-        }
-
-        return path.toString();
-    }
+    return path.toString();
+  }
 }
-

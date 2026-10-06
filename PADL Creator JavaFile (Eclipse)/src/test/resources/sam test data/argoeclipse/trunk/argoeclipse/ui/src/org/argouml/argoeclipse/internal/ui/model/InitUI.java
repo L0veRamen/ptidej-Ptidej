@@ -25,7 +25,12 @@
 package org.argouml.argoeclipse.internal.ui.model;
 
 import java.lang.reflect.InvocationTargetException;
-
+import org.argouml.application.api.ProgressMonitor;
+import org.argouml.argoeclipse.internal.core.model.Init;
+import org.argouml.argoeclipse.internal.core.model.ModelMessages;
+import org.argouml.argoeclipse.internal.ui.Activator;
+import org.argouml.argoeclipse.internal.ui.util.InformationDialog;
+import org.argouml.persistence.ProgressEvent;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -34,134 +39,131 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.WorkbenchJob;
 
-import org.argouml.application.api.ProgressMonitor;
-import org.argouml.argoeclipse.internal.core.model.Init;
-import org.argouml.argoeclipse.internal.core.model.ModelMessages;
-import org.argouml.argoeclipse.internal.ui.Activator;
-import org.argouml.argoeclipse.internal.ui.util.InformationDialog;
-import org.argouml.persistence.ProgressEvent;
-
 /**
  * Calls the Init from argoeclipse-core with additional UI stuff.
  *
  * @author Bogdan Pistol
  */
 public class InitUI {
-    
-    private static boolean initialized = false;
-    
-    /**
-     * Tests the initializer status.
-     * @return true if it's initialized or false otherwise
-     */
-    public static boolean isInitialized() {
-        return initialized;
+
+  private static boolean initialized = false;
+
+  /**
+   * Tests the initializer status.
+   *
+   * @return true if it's initialized or false otherwise
+   */
+  public static boolean isInitialized() {
+    return initialized;
+  }
+
+  /**
+   * Starts the {@link org.argouml.argoeclipse.internal.core.model.Init#initialize(
+   * ProgressMonitor)} with additional GUI stuff.
+   */
+  public static void initialize() {
+    if (initialized) {
+      return;
     }
+    final boolean fork =
+        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage() != null;
 
-    /**
-     * Starts the
-     * {@link org.argouml.argoeclipse.internal.core.model.Init#initialize(
-     *          ProgressMonitor)}
-     * with additional GUI stuff.
-     */
-    public static void initialize() {
-        if (initialized) {
-            return;
-        }
-        final boolean fork = PlatformUI.getWorkbench()
-            .getActiveWorkbenchWindow().getActivePage() != null;
-        
-        Display.getDefault().syncExec(new Runnable() {
+    Display.getDefault()
+        .syncExec(
+            new Runnable() {
 
-            public void run() {
+              public void run() {
                 try {
-                    Activator.getDefault().getWorkbench()
-                        .getProgressService().run(fork, false,
-                            getRunnableWithProgress());
+                  Activator.getDefault()
+                      .getWorkbench()
+                      .getProgressService()
+                      .run(fork, false, getRunnableWithProgress());
                 } catch (InvocationTargetException e) {
-                    e.printStackTrace();
+                  e.printStackTrace();
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                  e.printStackTrace();
                 }
-            }
+              }
+            });
 
-        });
-        
-        // Create an Eclipse system job for the critics and schedule it
-        WorkbenchJob job = new WorkbenchJob(ModelMessages.argoCritics) {
-            public IStatus runInUIThread(IProgressMonitor monitor) {
-                Init.initCritics();
-                return Status.OK_STATUS;
-            }
+    // Create an Eclipse system job for the critics and schedule it
+    WorkbenchJob job =
+        new WorkbenchJob(ModelMessages.argoCritics) {
+          public IStatus runInUIThread(IProgressMonitor monitor) {
+            Init.initCritics();
+            return Status.OK_STATUS;
+          }
         };
-        job.setSystem(true);
-        job.schedule();
-        
-        initialized = true;
-    }
-    
-    private static IRunnableWithProgress getRunnableWithProgress() {
-        return new IRunnableWithProgress() {
+    job.setSystem(true);
+    job.schedule();
 
-            private int currentProgress;
+    initialized = true;
+  }
 
-            public void run(final IProgressMonitor monitor)
-                throws InvocationTargetException, InterruptedException {
-                
-                Init.initialize(new ProgressMonitor() {
+  private static IRunnableWithProgress getRunnableWithProgress() {
+    return new IRunnableWithProgress() {
 
-                    public void notifyMessage(final String title,
-                            final String introduction,
-                            final String problem) {
-                        Display.getDefault().syncExec(new Runnable() {
+      private int currentProgress;
 
-                            public void run() {
-                                new InformationDialog(
-                                        Activator.getDefault().getWorkbench()
-                                        .getActiveWorkbenchWindow().getShell(),
-                                        title, introduction, problem).open();
-                            }
-                            
+      public void run(final IProgressMonitor monitor)
+          throws InvocationTargetException, InterruptedException {
+
+        Init.initialize(
+            new ProgressMonitor() {
+
+              public void notifyMessage(
+                  final String title, final String introduction, final String problem) {
+                Display.getDefault()
+                    .syncExec(
+                        new Runnable() {
+
+                          public void run() {
+                            new InformationDialog(
+                                    Activator.getDefault()
+                                        .getWorkbench()
+                                        .getActiveWorkbenchWindow()
+                                        .getShell(),
+                                    title,
+                                    introduction,
+                                    problem)
+                                .open();
+                          }
                         });
-                    }
+              }
 
-                    public void setMaximumProgress(int max) {
-                        monitor.beginTask("", max); //$NON-NLS-1$
-                    }
+              public void setMaximumProgress(int max) {
+                monitor.beginTask("", max); // $NON-NLS-1$
+              }
 
-                    public void updateProgress(int progress) {
-                        monitor.worked(progress - currentProgress);
-                        currentProgress = progress;
-                    }
+              public void updateProgress(int progress) {
+                monitor.worked(progress - currentProgress);
+                currentProgress = progress;
+              }
 
-                    public void progress(ProgressEvent event)
-                            throws InterruptedException {
-                        updateProgress((int) event.getPosition());
-                    }
+              public void progress(ProgressEvent event) throws InterruptedException {
+                updateProgress((int) event.getPosition());
+              }
 
-                    public void updateSubTask(String action) {
-                        monitor.subTask(action);
-                    }
+              public void updateSubTask(String action) {
+                monitor.subTask(action);
+              }
 
-                    public boolean isCanceled() {
-                        return monitor.isCanceled();
-                    }
+              public boolean isCanceled() {
+                return monitor.isCanceled();
+              }
 
-                    public void updateMainTask(String task) {
-                        monitor.setTaskName(task);
-                    }
+              public void updateMainTask(String task) {
+                monitor.setTaskName(task);
+              }
 
-                    public void notifyNullAction() {
-                    }
+              public void notifyNullAction() {}
 
-                    public void close() {
-                        monitor.done();
-                    }
-                });
+              public void close() {
                 monitor.done();
-            }
-
-        };
-    }
-    
+              }
+            });
+        monitor.done();
+      }
+    };
+  }
 }

@@ -26,7 +26,6 @@ package org.argouml.uml.ui.behavior.common_behavior;
 
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.uml.ui.ActionDeleteSingleModelElement;
 import org.argouml.uml.ui.ActionNavigateNamespace;
@@ -35,38 +34,24 @@ import org.argouml.uml.ui.foundation.core.PropPanelModelElement;
 import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
 import org.argouml.util.ConfigLoader;
 
-/**
- * The properties panel for a Link.
- *
- */
+/** The properties panel for a Link. */
 public class PropPanelLink extends PropPanelModelElement {
 
-    /**
-     * The constructor.
-     *
-     */
-    public PropPanelLink() {
-        super("Link", lookupIcon("Link"),
-                ConfigLoader.getTabPropsOrientation());
+  /** The constructor. */
+  public PropPanelLink() {
+    super("Link", lookupIcon("Link"), ConfigLoader.getTabPropsOrientation());
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.stereotype"),
-                getStereotypeSelector());
-        addField(Translator.localize("label.namespace"),
-                getNamespaceSelector());
-        addSeperator();
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.stereotype"), getStereotypeSelector());
+    addField(Translator.localize("label.namespace"), getNamespaceSelector());
+    addSeperator();
 
-        JList connectionList =
-            new UMLLinkedList(new UMLLinkConnectionListModel());
-        JScrollPane connectionScroll = new JScrollPane(connectionList);
-        addField(Translator.localize("label.connections"),
-                connectionScroll);
+    JList connectionList = new UMLLinkedList(new UMLLinkConnectionListModel());
+    JScrollPane connectionScroll = new JScrollPane(connectionList);
+    addField(Translator.localize("label.connections"), connectionScroll);
 
-        addAction(new ActionNavigateNamespace());
-        addAction(new ActionNewStereotype());
-        addAction(new ActionDeleteSingleModelElement());
-
-    }
-
+    addAction(new ActionNavigateNamespace());
+    addAction(new ActionNewStereotype());
+    addAction(new ActionDeleteSingleModelElement());
+  }
 } /* end class PropPanelLink */

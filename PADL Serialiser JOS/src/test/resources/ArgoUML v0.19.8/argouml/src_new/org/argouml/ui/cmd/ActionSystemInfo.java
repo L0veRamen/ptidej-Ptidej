@@ -26,40 +26,34 @@ package org.argouml.ui.cmd;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-
 import javax.swing.JFrame;
-
-import org.tigris.swidgets.ActionUtilities;
 import org.argouml.ui.SystemInfoDialog;
 import org.argouml.uml.ui.UMLAction;
+import org.tigris.swidgets.ActionUtilities;
 
-/**
- * System information dialog.
- */
+/** System information dialog. */
 class ActionSystemInfo extends UMLAction {
 
-    public ActionSystemInfo() {
-        super("action.system-information", HAS_ICON);
+  public ActionSystemInfo() {
+    super("action.system-information", HAS_ICON);
+  }
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    JFrame jFrame = (JFrame) ActionUtilities.getActionRoot(ae);
+    SystemInfoDialog sysInfoDialog = new SystemInfoDialog(jFrame, true);
+    Dimension siDim = sysInfoDialog.getSize();
+    Dimension pbDim = jFrame.getSize();
+
+    if (siDim.width > pbDim.width / 2) {
+      sysInfoDialog.setSize(pbDim.width / 2, siDim.height + 45);
+    } else {
+      sysInfoDialog.setSize(siDim.width, siDim.height + 45);
     }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-	JFrame jFrame = (JFrame) ActionUtilities.getActionRoot(ae);
-	SystemInfoDialog sysInfoDialog = new SystemInfoDialog(jFrame, true);
-	Dimension siDim = sysInfoDialog.getSize();
-	Dimension pbDim = jFrame.getSize();
-
-	if (siDim.width > pbDim.width / 2) {
-	    sysInfoDialog.setSize(pbDim.width / 2, siDim.height + 45);
-	} else {
-	    sysInfoDialog.setSize(siDim.width, siDim.height + 45);
-	}
-
-	sysInfoDialog.setLocationRelativeTo(jFrame);
-	sysInfoDialog.setVisible(true);
-    }
-
+    sysInfoDialog.setLocationRelativeTo(jFrame);
+    sysInfoDialog.setVisible(true);
+  }
 } /* end class ActionSystemInfo */
-

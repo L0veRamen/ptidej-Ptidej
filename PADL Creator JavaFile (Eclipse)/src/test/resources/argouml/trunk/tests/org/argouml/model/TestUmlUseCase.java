@@ -24,45 +24,38 @@
 
 package org.argouml.model;
 
-
-
 /**
  * @author Thierry Lach
  */
 public class TestUmlUseCase extends GenericUmlObjectTestFixture {
-    /**
-     * Constructor.
-     *
-     * @param arg0 test name
-     */
-    public TestUmlUseCase(String arg0) {
-	super(arg0, Model.getMetaTypes().getUseCase());
-	validateTestClassIsGeneric(this);
-    }
+  /**
+   * Constructor.
+   *
+   * @param arg0 test name
+   */
+  public TestUmlUseCase(String arg0) {
+    super(arg0, Model.getMetaTypes().getUseCase());
+    validateTestClassIsGeneric(this);
+  }
 
-    /**
-     * Test creating a usecase.
-     */
-    public void testUseCase() {
-	Object o =
-	    Model.getUmlFactory().buildNode(Model.getMetaTypes().getUseCase());
-	assertNotNull("Didn't create object", o);
-	assertTrue("Should be a model element", 
-                Model.getFacade().isAModelElement(o));
-	assertTrue("Should be a use case", Model.getFacade().isAUseCase(o));
-	runTruthTests(o);
-    }
+  /** Test creating a usecase. */
+  public void testUseCase() {
+    Object o = Model.getUmlFactory().buildNode(Model.getMetaTypes().getUseCase());
+    assertNotNull("Didn't create object", o);
+    assertTrue("Should be a model element", Model.getFacade().isAModelElement(o));
+    assertTrue("Should be a use case", Model.getFacade().isAUseCase(o));
+    runTruthTests(o);
+  }
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        setTruth(Model.getMetaTypes().getModelElement(), true);
-        setTruth(Model.getMetaTypes().getGeneralizableElement(), true);
-        setTruth(Model.getMetaTypes().getNamespace(), true);
-        setTruth(Model.getMetaTypes().getClassifier(), true);
-        setTruth(Model.getMetaTypes().getUseCase(), true);
-    }
-
+  /**
+   * @see junit.framework.TestCase#setUp()
+   */
+  protected void setUp() throws Exception {
+    super.setUp();
+    setTruth(Model.getMetaTypes().getModelElement(), true);
+    setTruth(Model.getMetaTypes().getGeneralizableElement(), true);
+    setTruth(Model.getMetaTypes().getNamespace(), true);
+    setTruth(Model.getMetaTypes().getClassifier(), true);
+    setTruth(Model.getMetaTypes().getUseCase(), true);
+  }
 }

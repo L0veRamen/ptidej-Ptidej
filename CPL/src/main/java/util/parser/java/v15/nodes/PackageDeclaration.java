@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -14,42 +14,35 @@
 
 package util.parser.java.v15.nodes;
 
-/**
- * Grammar production:
- * f0 -> Modifiers()
- * f1 -> "package"
- * f2 -> Name()
- * f3 -> ";"
- */
+/** Grammar production: f0 -> Modifiers() f1 -> "package" f2 -> Name() f3 -> ";" */
 public class PackageDeclaration implements Node {
-   /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-public Modifiers f0;
-   public NodeToken f1;
-   public Name f2;
-   public NodeToken f3;
+  /** */
+  private static final long serialVersionUID = 1L;
 
-   public PackageDeclaration(Modifiers n0, NodeToken n1, Name n2, NodeToken n3) {
-      this.f0 = n0;
-      this.f1 = n1;
-      this.f2 = n2;
-      this.f3 = n3;
-   }
+  public Modifiers f0;
+  public NodeToken f1;
+  public Name f2;
+  public NodeToken f3;
 
-   public PackageDeclaration(Modifiers n0, Name n1) {
-      this.f0 = n0;
-      this.f1 = new NodeToken("package");
-      this.f2 = n1;
-      this.f3 = new NodeToken(";");
-   }
+  public PackageDeclaration(Modifiers n0, NodeToken n1, Name n2, NodeToken n3) {
+    this.f0 = n0;
+    this.f1 = n1;
+    this.f2 = n2;
+    this.f3 = n3;
+  }
 
-   public void accept(util.parser.java.v15.visitors.Visitor v) {
-      v.visit(this);
-   }
-   public Object accept(util.parser.java.v15.visitors.ObjectVisitor v, Object argu) {
-      return v.visit(this,argu);
-   }
+  public PackageDeclaration(Modifiers n0, Name n1) {
+    this.f0 = n0;
+    this.f1 = new NodeToken("package");
+    this.f2 = n1;
+    this.f3 = new NodeToken(";");
+  }
+
+  public void accept(util.parser.java.v15.visitors.Visitor v) {
+    v.visit(this);
+  }
+
+  public Object accept(util.parser.java.v15.visitors.ObjectVisitor v, Object argu) {
+    return v.visit(this, argu);
+  }
 }
-

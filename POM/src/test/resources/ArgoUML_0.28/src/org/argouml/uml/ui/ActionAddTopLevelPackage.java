@@ -25,9 +25,7 @@
 package org.argouml.uml.ui;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.Action;
-
 import org.argouml.i18n.Translator;
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
@@ -35,37 +33,31 @@ import org.argouml.model.Model;
 import org.tigris.gef.undo.UndoableAction;
 
 /**
- * Add a new package at the top level, i.e. a model.<p>
+ * Add a new package at the top level, i.e. a model.
  *
- * TODO: ArgoUML currently only supports one model.
+ * <p>TODO: ArgoUML currently only supports one model.
  */
 public class ActionAddTopLevelPackage extends UndoableAction {
 
-    /**
-     *  The constructor.
-     */
-    public ActionAddTopLevelPackage() {
-        super(Translator.localize("action.add-top-level-package"), null);
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize("action.add-top-level-package"));
-    }
+  /** The constructor. */
+  public ActionAddTopLevelPackage() {
+    super(Translator.localize("action.add-top-level-package"), null);
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize("action.add-top-level-package"));
+  }
 
-
-    /*
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-    	super.actionPerformed(ae);
-	Project p = ProjectManager.getManager().getCurrentProject();
-        int numPacks = p.getUserDefinedModelList().size();
-        String nameStr = "package_" + (numPacks + 1);
-        Object model = Model.getModelManagementFactory().createModel();
-        Model.getCoreHelper().setName(model, nameStr);
-        p.addMember(model);
-        super.actionPerformed(ae);
-        new ActionClassDiagram().actionPerformed(ae);
-
-
-    }
+  /*
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    super.actionPerformed(ae);
+    Project p = ProjectManager.getManager().getCurrentProject();
+    int numPacks = p.getUserDefinedModelList().size();
+    String nameStr = "package_" + (numPacks + 1);
+    Object model = Model.getModelManagementFactory().createModel();
+    Model.getCoreHelper().setName(model, nameStr);
+    p.addMember(model);
+    super.actionPerformed(ae);
+    new ActionClassDiagram().actionPerformed(ae);
+  }
 }

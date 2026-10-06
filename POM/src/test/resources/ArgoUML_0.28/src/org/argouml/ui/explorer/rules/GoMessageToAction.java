@@ -30,7 +30,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 
@@ -41,41 +40,41 @@ import org.argouml.model.Model;
  */
 public class GoMessageToAction extends AbstractPerspectiveRule {
 
-    /*
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
-     */
-    public String getRuleName() {
-	return Translator.localize("misc.message.action");
+  /*
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
+   */
+  public String getRuleName() {
+    return Translator.localize("misc.message.action");
+  }
+
+  /*
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(
+   *         java.lang.Object)
+   */
+  public Collection getChildren(Object parent) {
+    if (Model.getFacade().isAMessage(parent)) {
+      Object action = Model.getFacade().getAction(parent);
+
+      if (action != null) {
+        List children = new ArrayList();
+        children.add(action);
+        return children;
+      }
     }
 
-    /*
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(
-     *         java.lang.Object)
-     */
-    public Collection getChildren(Object parent) {
-	if (Model.getFacade().isAMessage(parent)) {
-	    Object action = Model.getFacade().getAction(parent);
+    return Collections.EMPTY_SET;
+  }
 
-	    if (action != null) {
-		List children = new ArrayList();
-		children.add(action);
-		return children;
-	    }
-	}
-
-	return Collections.EMPTY_SET;
+  /*
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(
+   *         java.lang.Object)
+   */
+  public Set getDependencies(Object parent) {
+    if (Model.getFacade().isAMessage(parent)) {
+      Set set = new HashSet();
+      set.add(parent);
+      return set;
     }
-
-    /*
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(
-     *         java.lang.Object)
-     */
-    public Set getDependencies(Object parent) {
-        if (Model.getFacade().isAMessage(parent)) {
-	    Set set = new HashSet();
-	    set.add(parent);
-	    return set;
-	}
-	return Collections.EMPTY_SET;
-    }
+    return Collections.EMPTY_SET;
+  }
 }

@@ -28,7 +28,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.argouml.i18n.Translator;
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
@@ -37,54 +36,51 @@ import org.argouml.uml.diagram.ArgoDiagram;
 import org.argouml.uml.diagram.collaboration.ui.UMLCollaborationDiagram;
 import org.argouml.uml.diagram.sequence.ui.UMLSequenceDiagram;
 
-/**
- * Rule for Collaboration->Diagram.
- *
- */
+/** Rule for Collaboration->Diagram. */
 public class GoCollaborationToDiagram extends AbstractPerspectiveRule {
 
-    /*
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
-     */
-    public String getRuleName() {
-        return Translator.localize("misc.collaboration.diagram");
+  /*
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
+   */
+  public String getRuleName() {
+    return Translator.localize("misc.collaboration.diagram");
+  }
+
+  /*
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
+   */
+  public Collection getChildren(Object parent) {
+    if (!Model.getFacade().isACollaboration(parent)) {
+      return Collections.EMPTY_SET;
     }
 
-    /*
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
-     */
-    public Collection getChildren(Object parent) {
-        if (!Model.getFacade().isACollaboration(parent)) {
-            return Collections.EMPTY_SET;
-        }
-
-        Project p = ProjectManager.getManager().getCurrentProject();
-        if (p == null) {
-            return Collections.EMPTY_SET;
-        }
-
-        Set<ArgoDiagram> res = new HashSet<ArgoDiagram>();
-        for (ArgoDiagram d : p.getDiagramList()) {
-            if (d instanceof UMLCollaborationDiagram
-                    && ((UMLCollaborationDiagram) d).getNamespace() == parent) {
-                res.add(d);
-            }
-            /* Also show unattached sequence diagrams: */
-            if ((d instanceof UMLSequenceDiagram)
-                    && (Model.getFacade().getRepresentedClassifier(parent) == null)
-                    && (Model.getFacade().getRepresentedOperation(parent) == null)
-                    && (parent == ((UMLSequenceDiagram) d).getNamespace())) {
-                res.add(d);
-            }
-        }
-        return res;
+    Project p = ProjectManager.getManager().getCurrentProject();
+    if (p == null) {
+      return Collections.EMPTY_SET;
     }
 
-    /*
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
-     */
-    public Set getDependencies(Object parent) {
-        // TODO: What?
-	return Collections.EMPTY_SET;
+    Set<ArgoDiagram> res = new HashSet<ArgoDiagram>();
+    for (ArgoDiagram d : p.getDiagramList()) {
+      if (d instanceof UMLCollaborationDiagram
+          && ((UMLCollaborationDiagram) d).getNamespace() == parent) {
+        res.add(d);
+      }
+      /* Also show unattached sequence diagrams: */
+      if ((d instanceof UMLSequenceDiagram)
+          && (Model.getFacade().getRepresentedClassifier(parent) == null)
+          && (Model.getFacade().getRepresentedOperation(parent) == null)
+          && (parent == ((UMLSequenceDiagram) d).getNamespace())) {
+        res.add(d);
+      }
     }
+    return res;
+  }
+
+  /*
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
+   */
+  public Set getDependencies(Object parent) {
+    // TODO: What?
+    return Collections.EMPTY_SET;
+  }
 }

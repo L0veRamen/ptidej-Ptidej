@@ -21,29 +21,27 @@ import org.jhotdraw.framework.*;
  */
 public class ToggleGridCommand extends AbstractCommand {
 
-	private Point fGrid;
+  private Point fGrid;
 
-   /**
-	* Constructs a toggle grid command.
-	* @param name the command name
-	* @param newDrawingEditor editor
-	* @param grid the grid size. A grid size of 1,1 turns grid snapping off.
-	*/
-	public ToggleGridCommand(String name, DrawingEditor newDrawingEditor, Point grid) {
-		super(name, newDrawingEditor);
-		fGrid = new Point(grid.x, grid.y);
-	}
+  /**
+   * Constructs a toggle grid command.
+   *
+   * @param name the command name
+   * @param newDrawingEditor editor
+   * @param grid the grid size. A grid size of 1,1 turns grid snapping off.
+   */
+  public ToggleGridCommand(String name, DrawingEditor newDrawingEditor, Point grid) {
+    super(name, newDrawingEditor);
+    fGrid = new Point(grid.x, grid.y);
+  }
 
-	public void execute() {
-		super.execute();
-		PointConstrainer grid = view().getConstrainer();
-		if (grid != null) {
-			view().setConstrainer(null);
-		}
-		else {
-			view().setConstrainer(new GridConstrainer(fGrid.x, fGrid.y));
-		}
-	}
+  public void execute() {
+    super.execute();
+    PointConstrainer grid = view().getConstrainer();
+    if (grid != null) {
+      view().setConstrainer(null);
+    } else {
+      view().setConstrainer(new GridConstrainer(fGrid.x, fGrid.y));
+    }
+  }
 }
-
-

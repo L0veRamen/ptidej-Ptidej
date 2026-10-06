@@ -21,45 +21,40 @@ import java.util.EventObject;
  */
 public class FigureChangeEvent extends EventObject {
 
-	private Rectangle myRectangle;
-	private FigureChangeEvent myNestedEvent;
+  private Rectangle myRectangle;
+  private FigureChangeEvent myNestedEvent;
 
-	private static final Rectangle EMPTY_RECTANGLE = new Rectangle(0, 0, 0, 0);
+  private static final Rectangle EMPTY_RECTANGLE = new Rectangle(0, 0, 0, 0);
 
-   /**
-	* Constructs an event for the given source Figure. The rectangle is the
-	* area to be invalvidated.
-	*/
-	public FigureChangeEvent(Figure newSource, Rectangle newRect) {
-		super(newSource);
-		myRectangle = newRect;
-	}
+  /**
+   * Constructs an event for the given source Figure. The rectangle is the area to be invalvidated.
+   */
+  public FigureChangeEvent(Figure newSource, Rectangle newRect) {
+    super(newSource);
+    myRectangle = newRect;
+  }
 
-	public FigureChangeEvent(Figure newSource) {
-		super(newSource);
-		myRectangle = EMPTY_RECTANGLE;
-	}
+  public FigureChangeEvent(Figure newSource) {
+    super(newSource);
+    myRectangle = EMPTY_RECTANGLE;
+  }
 
-	public FigureChangeEvent(Figure newSource, Rectangle newRect, FigureChangeEvent nestedEvent) {
-		this(newSource, newRect);
-		myNestedEvent = nestedEvent;
-	}
+  public FigureChangeEvent(Figure newSource, Rectangle newRect, FigureChangeEvent nestedEvent) {
+    this(newSource, newRect);
+    myNestedEvent = nestedEvent;
+  }
 
-	/**
-	 *  Gets the changed figure
-	 */
-	public Figure getFigure() {
-		return (Figure)getSource();
-	}
+  /** Gets the changed figure */
+  public Figure getFigure() {
+    return (Figure) getSource();
+  }
 
-	/**
-	 *  Gets the changed rectangle
-	 */
-	public Rectangle getInvalidatedRectangle() {
-		return myRectangle;
-	}
+  /** Gets the changed rectangle */
+  public Rectangle getInvalidatedRectangle() {
+    return myRectangle;
+  }
 
-	public FigureChangeEvent getNestedEvent() {
-		return myNestedEvent;
-	}
+  public FigureChangeEvent getNestedEvent() {
+    return myNestedEvent;
+  }
 }

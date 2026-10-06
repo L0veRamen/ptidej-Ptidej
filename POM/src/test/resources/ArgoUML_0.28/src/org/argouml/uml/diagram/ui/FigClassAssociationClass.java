@@ -25,76 +25,72 @@
 package org.argouml.uml.diagram.ui;
 
 import java.awt.Rectangle;
-
 import org.argouml.uml.diagram.DiagramSettings;
 import org.argouml.uml.diagram.static_structure.ui.FigClass;
 import org.tigris.gef.presentation.Fig;
 
 /**
- * Class to display the Class box fig piece of an Association Class.
- * <em>NOTE:</em> It must be used only from a FigAssociationClass
+ * Class to display the Class box fig piece of an Association Class. <em>NOTE:</em> It must be used
+ * only from a FigAssociationClass
  *
  * @author pepargouml
  */
 public class FigClassAssociationClass extends FigClass {
 
-    private static final long serialVersionUID = -4101337246957593739L;
-    
-    /**
-     * The constructor.
-     *
-     * @param owner the UML object
-     * @param x the x of the initial location
-     * @param y the y of the initial location
-     * @param w the initial width
-     * @param h the initial height
-     * @deprecated for 0.27.3 by tfmorris.  Use 
-     * {@link #FigClassAssociationClass(Object, Rectangle, DiagramSettings)}.
-     */
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    public FigClassAssociationClass(Object owner, int x, int y, int w, int h) {
-        super(owner, x, y, w, h);
-        enableSizeChecking(true);
-    }
+  private static final long serialVersionUID = -4101337246957593739L;
 
-    /**
-     * The constructor.
-     *
-     * @param owner the owner UML object
-     * @deprecated for 0.27.3 by tfmorris.  Use 
-     * {@link #FigClassAssociationClass(Object, Rectangle, DiagramSettings)}.
-     */
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    public FigClassAssociationClass(Object owner) {
-        super(null, owner);
-    }
-    
-    /**
-     * Construct the Class box piece of a complex association class fig.
-     * 
-     * @param owner owning model element
-     * @param bounds position and size
-     * @param settings rendering settings
-     */
-    public FigClassAssociationClass(Object owner, Rectangle bounds, 
-            DiagramSettings settings) {
-        super(owner, bounds, settings);
-        enableSizeChecking(true);
-    }
-    
-    protected Fig getRemoveDelegate() {
-        // Look for the dashed edge
-        for (Object fig : getFigEdges()) {
-            if (fig instanceof FigEdgeAssociationClass) {
-                // We have the dashed edge now find the opposite FigNode
-                FigEdgeAssociationClass dashedEdge =
-                    (FigEdgeAssociationClass) fig;
-                return dashedEdge.getRemoveDelegate();
-            }
-        }
-        return null;
-    }
+  /**
+   * The constructor.
+   *
+   * @param owner the UML object
+   * @param x the x of the initial location
+   * @param y the y of the initial location
+   * @param w the initial width
+   * @param h the initial height
+   * @deprecated for 0.27.3 by tfmorris. Use {@link #FigClassAssociationClass(Object, Rectangle,
+   *     DiagramSettings)}.
+   */
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  public FigClassAssociationClass(Object owner, int x, int y, int w, int h) {
+    super(owner, x, y, w, h);
+    enableSizeChecking(true);
+  }
 
+  /**
+   * The constructor.
+   *
+   * @param owner the owner UML object
+   * @deprecated for 0.27.3 by tfmorris. Use {@link #FigClassAssociationClass(Object, Rectangle,
+   *     DiagramSettings)}.
+   */
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  public FigClassAssociationClass(Object owner) {
+    super(null, owner);
+  }
+
+  /**
+   * Construct the Class box piece of a complex association class fig.
+   *
+   * @param owner owning model element
+   * @param bounds position and size
+   * @param settings rendering settings
+   */
+  public FigClassAssociationClass(Object owner, Rectangle bounds, DiagramSettings settings) {
+    super(owner, bounds, settings);
+    enableSizeChecking(true);
+  }
+
+  protected Fig getRemoveDelegate() {
+    // Look for the dashed edge
+    for (Object fig : getFigEdges()) {
+      if (fig instanceof FigEdgeAssociationClass) {
+        // We have the dashed edge now find the opposite FigNode
+        FigEdgeAssociationClass dashedEdge = (FigEdgeAssociationClass) fig;
+        return dashedEdge.getRemoveDelegate();
+      }
+    }
+    return null;
+  }
 }

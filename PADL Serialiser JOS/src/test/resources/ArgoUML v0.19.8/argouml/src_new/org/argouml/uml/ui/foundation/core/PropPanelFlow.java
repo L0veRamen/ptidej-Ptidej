@@ -35,24 +35,18 @@ import org.argouml.util.ConfigLoader;
  */
 public class PropPanelFlow extends PropPanelRelationship {
 
-    /**
-     * Constructor for PropPanelFlow.
-     */
-    public PropPanelFlow() {
-        super("Flow", ConfigLoader.getTabPropsOrientation());
-        initialize();
-    }
+  /** Constructor for PropPanelFlow. */
+  public PropPanelFlow() {
+    super("Flow", ConfigLoader.getTabPropsOrientation());
+    initialize();
+  }
 
-    private void initialize() {
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.stereotype"),
-                getStereotypeSelector());
-        addField(Translator.localize("label.namespace"),
-                getNamespaceScroll());
-        addField(Translator.localize("label.constraints"),
-                getConstraintScroll());
+  private void initialize() {
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.stereotype"), getStereotypeSelector());
+    addField(Translator.localize("label.namespace"), getNamespaceScroll());
+    addField(Translator.localize("label.constraints"), getConstraintScroll());
 
-        addSeperator();
-    }
+    addSeperator();
+  }
 }

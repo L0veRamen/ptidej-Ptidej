@@ -28,7 +28,6 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import org.argouml.model.Model;
 import org.argouml.uml.diagram.DiagramSettings;
 import org.tigris.gef.base.Selection;
@@ -38,254 +37,235 @@ import org.tigris.gef.presentation.FigGroup;
 import org.tigris.gef.presentation.FigText;
 
 /**
- * Class to display graphics for a UML Class in a diagram.<p>
- * 
- * A Class may show compartments for stereotypes,
- * attributes and operations.
+ * Class to display graphics for a UML Class in a diagram.
+ *
+ * <p>A Class may show compartments for stereotypes, attributes and operations.
  */
 public class FigClass extends FigClassifierBoxWithAttributes {
 
+  /**
+   * Constructor for a {@link FigClass} during file load.
+   *
+   * <p>Parent {@link org.argouml.uml.diagram.ui.FigNodeModelElement} will have created the main box
+   * {@link #getBigPort()} and its name {@link #getNameFig()} and stereotype (@link
+   * #getStereotypeFig()}. This constructor creates a box for the attributes and operations.
+   *
+   * <p>The properties of all these graphic elements are adjusted appropriately. The main boxes are
+   * all filled and have outlines.
+   *
+   * <p><em>Warning</em>. Much of the graphics positioning is hard coded. The overall figure is
+   * placed at location (10,10). The stereotype compartment is created 15 pixels high in the parent,
+   * but we change it to 19 pixels, 1 more than ({@link #STEREOHEIGHT} here. The attribute and
+   * operations boxes are created at 19 pixels, 2 more than {@link #ROWHEIGHT}.
+   *
+   * <p>
+   *
+   * @param modelElement model element to be represented by this fig.
+   * @param x x-position
+   * @param y y-position
+   * @param w width
+   * @param h height
+   * @deprecated for 0.27.3 by tfmorris. Use {@link #FigClass(Object, Rectangle, DiagramSettings)}.
+   */
+  @Deprecated
+  public FigClass(Object modelElement, int x, int y, int w, int h) {
+    this(null, modelElement);
+    setBounds(x, y, w, h);
+  }
 
-    /**
-     * Constructor for a {@link FigClass} during file load.<p>
-     *
-     * Parent {@link org.argouml.uml.diagram.ui.FigNodeModelElement}
-     * will have created the main box {@link #getBigPort()} and its
-     * name {@link #getNameFig()} and stereotype
-     * (@link #getStereotypeFig()}. This constructor
-     * creates a box for the attributes and operations.<p>
-     *
-     * The properties of all these graphic elements are adjusted
-     * appropriately. The main boxes are all filled and have
-     * outlines.<p>
-     *
-     * <em>Warning</em>. Much of the graphics positioning is hard
-     * coded. The overall figure is placed at location (10,10). 
-     * The stereotype compartment is created 15 pixels
-     * high in the parent, but we change it to 19 pixels, 1 more than
-     * ({@link #STEREOHEIGHT} here. The attribute and operations boxes
-     * are created at 19 pixels, 2 more than {@link #ROWHEIGHT}.<p>
-     * 
-     * @param modelElement model element to be represented by this fig.
-     * @param x x-position
-     * @param y y-position
-     * @param w width
-     * @param h height
-     * @deprecated for 0.27.3 by tfmorris.  Use 
-     * {@link #FigClass(Object, Rectangle, DiagramSettings)}.
-     */
-    @Deprecated
-    public FigClass(Object modelElement, int x, int y, int w, int h) {
-        this(null, modelElement);
-        setBounds(x, y, w, h);
-    }
+  /**
+   * Constructor for a {@link FigClass} by diagram interaction.
+   *
+   * <p>Parent {@link org.argouml.uml.diagram.ui.FigNodeModelElement} will have created the main box
+   * {@link #getBigPort()} and its name {@link #getNameFig()} and stereotype (@link
+   * #getStereotypeFig()}. This constructor creates a box for the attributes and operations.
+   *
+   * <p>The properties of all these graphic elements are adjusted appropriately. The main boxes are
+   * all filled and have outlines.
+   *
+   * <p><em>Warning</em>. Much of the graphics positioning is hard coded. The overall figure is
+   * placed at location (10,10). The stereotype compartment is created 15 pixels high in the parent,
+   * but we change it to 19 pixels, 1 more than ({@link #STEREOHEIGHT} here. The attribute and
+   * operations boxes are created at 19 pixels, 2 more than {@link #ROWHEIGHT}.
+   *
+   * <p>
+   *
+   * @param gm Not actually used in the current implementation
+   * @param node The UML object being placed.
+   * @deprecated for 0.27.3 by tfmorris. Use {@link #FigClass(Object, Rectangle, DiagramSettings)}.
+   */
+  @Deprecated
+  public FigClass(GraphModel gm, Object node) {
+    super();
+    setOwner(node);
+    constructFigs();
+  }
 
-    /**
-     * Constructor for a {@link FigClass} by diagram interaction.<p>
-     *
-     * Parent {@link org.argouml.uml.diagram.ui.FigNodeModelElement}
-     * will have created the main box {@link #getBigPort()} and its
-     * name {@link #getNameFig()} and stereotype
-     * (@link #getStereotypeFig()}. This constructor
-     * creates a box for the attributes and operations.<p>
-     *
-     * The properties of all these graphic elements are adjusted
-     * appropriately. The main boxes are all filled and have
-     * outlines.<p>
-     *
-     * <em>Warning</em>. Much of the graphics positioning is hard
-     * coded. The overall figure is placed at location (10,10). 
-     * The stereotype compartment is created 15 pixels
-     * high in the parent, but we change it to 19 pixels, 1 more than
-     * ({@link #STEREOHEIGHT} here. The attribute and operations boxes
-     * are created at 19 pixels, 2 more than {@link #ROWHEIGHT}.<p>
-     *
-     * @param gm   Not actually used in the current implementation
-     * @param node The UML object being placed.
-     * @deprecated for 0.27.3 by tfmorris.  Use 
-     * {@link #FigClass(Object, Rectangle, DiagramSettings)}.
-     */
-    @Deprecated
-    public FigClass(GraphModel gm, Object node) {
-        super();
-        setOwner(node);
-        constructFigs();
-    }
+  private void constructFigs() {
+    addFig(getBigPort());
+    addFig(getStereotypeFig());
+    addFig(getNameFig());
+    addFig(getOperationsFig());
+    addFig(getAttributesFig());
+    addFig(borderFig);
+  }
 
-    private void constructFigs() {
-        addFig(getBigPort());
-        addFig(getStereotypeFig());
-        addFig(getNameFig());
-        addFig(getOperationsFig());
-        addFig(getAttributesFig());
-        addFig(borderFig);
-    }
-    
-    /**
-     * Constructor for a {@link FigClass} during file load.<p>
-     *
-     * Parent {@link org.argouml.uml.diagram.ui.FigNodeModelElement}
-     * will have created the main box {@link #getBigPort()} and its
-     * name {@link #getNameFig()} and stereotype
-     * (@link #getStereotypeFig()}. This constructor
-     * creates a box for the attributes and operations.<p>
-     *
-     * The properties of all these graphic elements are adjusted
-     * appropriately. The main boxes are all filled and have
-     * outlines.<p>
-     *
-     * <em>Warning</em>. Much of the graphics positioning is hard
-     * coded. The overall figure is placed at location (10,10). 
-     * The stereotype compartment is created 15 pixels
-     * high in the parent, but we change it to 19 pixels, 1 more than
-     * ({@link #STEREOHEIGHT} here. The attribute and operations boxes
-     * are created at 19 pixels, 2 more than {@link #ROWHEIGHT}.<p>
-     * 
-     * @param element model element to be represented by this fig.
-     * @param bounds rectangle describing bounds
-     * @param settings rendering settings
-     */
-    public FigClass(Object element, Rectangle bounds, 
-            DiagramSettings settings) {
-        super(element, bounds, settings);
-        constructFigs();
-        Rectangle r = getBounds();
-        setStandardBounds(r.x, r.y, r.width, r.height);
-    }
+  /**
+   * Constructor for a {@link FigClass} during file load.
+   *
+   * <p>Parent {@link org.argouml.uml.diagram.ui.FigNodeModelElement} will have created the main box
+   * {@link #getBigPort()} and its name {@link #getNameFig()} and stereotype (@link
+   * #getStereotypeFig()}. This constructor creates a box for the attributes and operations.
+   *
+   * <p>The properties of all these graphic elements are adjusted appropriately. The main boxes are
+   * all filled and have outlines.
+   *
+   * <p><em>Warning</em>. Much of the graphics positioning is hard coded. The overall figure is
+   * placed at location (10,10). The stereotype compartment is created 15 pixels high in the parent,
+   * but we change it to 19 pixels, 1 more than ({@link #STEREOHEIGHT} here. The attribute and
+   * operations boxes are created at 19 pixels, 2 more than {@link #ROWHEIGHT}.
+   *
+   * <p>
+   *
+   * @param element model element to be represented by this fig.
+   * @param bounds rectangle describing bounds
+   * @param settings rendering settings
+   */
+  public FigClass(Object element, Rectangle bounds, DiagramSettings settings) {
+    super(element, bounds, settings);
+    constructFigs();
+    Rectangle r = getBounds();
+    setStandardBounds(r.x, r.y, r.width, r.height);
+  }
 
-    /*
-     * @see java.lang.Object#clone()
-     */
-    @Override
-    public Object clone() {
-        FigClass figClone = (FigClass) super.clone();
-        Iterator thisIter = this.getFigs().iterator();
-        Iterator cloneIter = figClone.getFigs().iterator();
-        while (thisIter.hasNext()) {
-            Fig thisFig = (Fig) thisIter.next();
-            Fig cloneFig = (Fig) cloneIter.next();
-            if (thisFig == borderFig) {
-                figClone.borderFig = thisFig;
-            }
+  /*
+   * @see java.lang.Object#clone()
+   */
+  @Override
+  public Object clone() {
+    FigClass figClone = (FigClass) super.clone();
+    Iterator thisIter = this.getFigs().iterator();
+    Iterator cloneIter = figClone.getFigs().iterator();
+    while (thisIter.hasNext()) {
+      Fig thisFig = (Fig) thisIter.next();
+      Fig cloneFig = (Fig) cloneIter.next();
+      if (thisFig == borderFig) {
+        figClone.borderFig = thisFig;
+      }
+    }
+    return figClone;
+  }
+
+  /*
+   * @see org.tigris.gef.presentation.Fig#makeSelection()
+   */
+  public Selection makeSelection() {
+    return new SelectionClass(this);
+  }
+
+  protected Object buildModifierPopUp() {
+    return buildModifierPopUp(ABSTRACT | LEAF | ROOT | ACTIVE);
+  }
+
+  /*
+   * @see org.tigris.gef.presentation.Fig#getLineWidth()
+   */
+  public int getLineWidth() {
+    return borderFig.getLineWidth();
+  }
+
+  /**
+   * @param fgVec the FigGroup
+   * @param ft the Figtext
+   * @param i get the fig before fig i
+   * @return the FigText
+   */
+  protected FigText getPreviousVisibleFeature(FigGroup fgVec, FigText ft, int i) {
+    if (fgVec == null || i < 1) {
+      return null;
+    }
+    FigText ft2 = null;
+    List figs = fgVec.getFigs();
+    if (i >= figs.size() || !((FigText) figs.get(i)).isVisible()) {
+      return null;
+    }
+    do {
+      i--;
+      while (i < 1) {
+        if (fgVec == getAttributesFig()) {
+          fgVec = getOperationsFig();
+        } else {
+          fgVec = getAttributesFig();
         }
-        return figClone;
-    }
+        figs = fgVec.getFigs();
+        i = figs.size() - 1;
+      }
+      ft2 = (FigText) figs.get(i);
+      if (!ft2.isVisible()) {
+        ft2 = null;
+      }
+    } while (ft2 == null);
+    return ft2;
+  }
 
-    /*
-     * @see org.tigris.gef.presentation.Fig#makeSelection()
-     */
-    public Selection makeSelection() {
-        return new SelectionClass(this);
+  /**
+   * @param fgVec the FigGroup
+   * @param ft the Figtext
+   * @param i get the fig after fig i
+   * @return the FigText
+   */
+  protected FigText getNextVisibleFeature(FigGroup fgVec, FigText ft, int i) {
+    if (fgVec == null || i < 1) {
+      return null;
     }
-
-    protected Object buildModifierPopUp() {
-        return buildModifierPopUp(ABSTRACT | LEAF | ROOT | ACTIVE);
+    FigText ft2 = null;
+    List v = fgVec.getFigs();
+    if (i >= v.size() || !((FigText) v.get(i)).isVisible()) {
+      return null;
     }
+    do {
+      i++;
+      while (i >= v.size()) {
+        if (fgVec == getAttributesFig()) {
+          fgVec = getOperationsFig();
+        } else {
+          fgVec = getAttributesFig();
+        }
+        v = new ArrayList(fgVec.getFigs());
+        i = 1;
+      }
+      ft2 = (FigText) v.get(i);
+      if (!ft2.isVisible()) {
+        ft2 = null;
+      }
+    } while (ft2 == null);
+    return ft2;
+  }
 
-    /*
-     * @see org.tigris.gef.presentation.Fig#getLineWidth()
-     */
-    public int getLineWidth() {
-        return borderFig.getLineWidth();
+  public void setEnclosingFig(Fig encloser) {
+    if (encloser == getEncloser()) {
+      return;
     }
-
-    /**
-     * @param fgVec the FigGroup
-     * @param ft    the Figtext
-     * @param i     get the fig before fig i
-     * @return the FigText
-     */
-    protected FigText getPreviousVisibleFeature(FigGroup fgVec,
-						FigText ft, int i) {
-        if (fgVec == null || i < 1) {
-            return null;
-        }
-        FigText ft2 = null;
-        List figs = fgVec.getFigs();
-        if (i >= figs.size() || !((FigText) figs.get(i)).isVisible()) {
-            return null;
-        }
-        do {
-            i--;
-            while (i < 1) {
-                if (fgVec == getAttributesFig()) {
-                    fgVec = getOperationsFig();
-                } else {
-                    fgVec = getAttributesFig();
-                }
-                figs = fgVec.getFigs();
-                i = figs.size() - 1;
-            }
-            ft2 = (FigText) figs.get(i);
-            if (!ft2.isVisible()) {
-                ft2 = null;
-            }
-        } while (ft2 == null);
-        return ft2;
+    if (encloser == null
+        || (encloser != null && !Model.getFacade().isAInstance(encloser.getOwner()))) {
+      super.setEnclosingFig(encloser);
     }
-
-    /**
-     * @param fgVec the FigGroup
-     * @param ft    the Figtext
-     * @param i     get the fig after fig i
-     * @return the FigText
-     */
-    protected FigText getNextVisibleFeature(FigGroup fgVec, FigText ft, int i) {
-        if (fgVec == null || i < 1) {
-            return null;
-        }
-        FigText ft2 = null;
-        List v = fgVec.getFigs();
-        if (i >= v.size() || !((FigText) v.get(i)).isVisible()) {
-            return null;
-        }
-        do {
-            i++;
-            while (i >= v.size()) {
-                if (fgVec == getAttributesFig()) {
-                    fgVec = getOperationsFig();
-                } else {
-                    fgVec = getAttributesFig();
-                }
-                v = new ArrayList(fgVec.getFigs());
-                i = 1;
-            }
-            ft2 = (FigText) v.get(i);
-            if (!ft2.isVisible()) {
-                ft2 = null;
-            }
-        } while (ft2 == null);
-        return ft2;
+    if (!(Model.getFacade().isAUMLElement(getOwner()))) {
+      return;
     }
-
-    public void setEnclosingFig(Fig encloser) {
-        if (encloser == getEncloser()) {
-            return;
-        }
-        if (encloser == null
-                || (encloser != null
-                && !Model.getFacade().isAInstance(encloser.getOwner()))) {
-            super.setEnclosingFig(encloser);
-        }
-        if (!(Model.getFacade().isAUMLElement(getOwner()))) {
-            return;
-        }
-        if (encloser != null
-                && (Model.getFacade().isAComponent(encloser.getOwner()))) {
-            moveIntoComponent(encloser);
-            super.setEnclosingFig(encloser);
-        }
-
+    if (encloser != null && (Model.getFacade().isAComponent(encloser.getOwner()))) {
+      moveIntoComponent(encloser);
+      super.setEnclosingFig(encloser);
     }
+  }
 
-    /*
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement#updateNameText()
-     */
-    @Override
-    protected void updateNameText() {
-        super.updateNameText();
-        calcBounds();
-        setBounds(getBounds());
-    }
-    
+  /*
+   * @see org.argouml.uml.diagram.ui.FigNodeModelElement#updateNameText()
+   */
+  @Override
+  protected void updateNameText() {
+    super.updateNameText();
+    calcBounds();
+    setBounds(getBounds());
+  }
 }

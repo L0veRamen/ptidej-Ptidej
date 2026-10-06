@@ -31,34 +31,29 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  * ListModel for the stimuli an instance sends.
  *
  * @author mkl
- *
  */
-public class UMLInstanceSenderStimulusListModel
-    extends UMLModelElementListModel2 {
+public class UMLInstanceSenderStimulusListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor.
-     */
-    public UMLInstanceSenderStimulusListModel() {
-        // TODO: Not sure this is the right event name.  It was "stimuli3"
-        // which was left over from UML 1.3 and definitely won't work - tfm
-        // 20061108
-        super("stimulus");
-    }
+  /** Constructor. */
+  public UMLInstanceSenderStimulusListModel() {
+    // TODO: Not sure this is the right event name.  It was "stimuli3"
+    // which was left over from UML 1.3 and definitely won't work - tfm
+    // 20061108
+    super("stimulus");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        removeAllElements();
-        addElement(Model.getFacade().getSentStimuli(getTarget()));
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    removeAllElements();
+    addElement(Model.getFacade().getSentStimuli(getTarget()));
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().getSentStimuli(getTarget()).contains(element);
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().getSentStimuli(getTarget()).contains(element);
+  }
 }

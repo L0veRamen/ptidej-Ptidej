@@ -1,10 +1,9 @@
-//package src.OBSERVER;
+// package src.OBSERVER;
 // CONCRETE OBSERVER
-import java.awt.*;
-import javax.swing.*;
-import java.util.*;
 import com.sun.java.swing.plaf.windows.*;
-
+import java.awt.*;
+import java.util.*;
+import javax.swing.*;
 
 public class MonthlyReport extends JFrame implements Observer {
   public static final String newline = "\n";
@@ -14,9 +13,7 @@ public class MonthlyReport extends JFrame implements Observer {
   private JTextArea taTransactions;
   private ReportManager objReportManager;
 
-
-  public MonthlyReport(ReportManager inp_objReportManager)
-  throws Exception {
+  public MonthlyReport(ReportManager inp_objReportManager) throws Exception {
     super("Observer Pattern - Example");
     objReportManager = inp_objReportManager;
 
@@ -27,11 +24,10 @@ public class MonthlyReport extends JFrame implements Observer {
     taTransactions.setLineWrap(true);
     taTransactions.setWrapStyleWord(true);
 
-    //Create Labels
-    lblTransactions =
-      new JLabel("Current Month Transactions");
+    // Create Labels
+    lblTransactions = new JLabel("Current Month Transactions");
 
-    //For layout purposes, put the buttons in a separate panel
+    // For layout purposes, put the buttons in a separate panel
     JPanel buttonPanel = new JPanel();
 
     buttonPanel.add(lblTransactions);
@@ -41,8 +37,7 @@ public class MonthlyReport extends JFrame implements Observer {
     contentPane.add(buttonPanel, BorderLayout.CENTER);
     try {
       UIManager.setLookAndFeel(new WindowsLookAndFeel());
-      SwingUtilities.updateComponentTreeUI(
-        MonthlyReport.this);
+      SwingUtilities.updateComponentTreeUI(MonthlyReport.this);
     } catch (Exception ex) {
       System.out.println(ex);
     }
@@ -50,34 +45,29 @@ public class MonthlyReport extends JFrame implements Observer {
     setSize(400, 300);
     setVisible(true);
     objReportManager.register(this);
-
   }
 
   public void refreshData(Observable subject) {
     if (subject == objReportManager) {
-      //get subject's state
+      // get subject's state
       String department = objReportManager.getDepartment();
 
-      lblTransactions.setText(
-        "Current Month Transactions - " +
-        department);
-      Vector trnList =
-        getCurrentMonthTransactions(department);
+      lblTransactions.setText("Current Month Transactions - " + department);
+      Vector trnList = getCurrentMonthTransactions(department);
       String content = "";
       for (int i = 0; i < trnList.size(); i++) {
-        content = content +
-                  trnList.elementAt(i).toString() + "\n";
+        content = content + trnList.elementAt(i).toString() + "\n";
       }
       taTransactions.setText(content);
     }
   }
-  private Vector getCurrentMonthTransactions(String department
-                                             ) {
+
+  private Vector getCurrentMonthTransactions(String department) {
     Vector v = new Vector();
     FileUtil futil = new FileUtil();
     Vector allRows = futil.fileToVector("Data/Transactions.dat");
 
-    //current month
+    // current month
     Calendar cal = Calendar.getInstance();
     cal.setTime(new Date());
     int month = cal.get(Calendar.MONTH) + 1;
@@ -88,18 +78,25 @@ public class MonthlyReport extends JFrame implements Observer {
       String str = (String) allRows.elementAt(i);
       if (str.indexOf(searchStr) > -1) {
 
-        StringTokenizer st =
-          new StringTokenizer(str, ",");
-        st.nextToken();//bypass the department
-        str = "   " + j + ". " + st.nextToken() + "/" +
-              st.nextToken() + "~~~" +
-              st.nextToken() + "Items" + "~~~" +
-              st.nextToken() + " Dollars";
+        StringTokenizer st = new StringTokenizer(str, ",");
+        st.nextToken(); // bypass the department
+        str =
+            "   "
+                + j
+                + ". "
+                + st.nextToken()
+                + "/"
+                + st.nextToken()
+                + "~~~"
+                + st.nextToken()
+                + "Items"
+                + "~~~"
+                + st.nextToken()
+                + " Dollars";
         j++;
         v.addElement(str);
       }
     }
     return v;
   }
-}// end of class
-
+} // end of class

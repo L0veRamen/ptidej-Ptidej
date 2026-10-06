@@ -26,16 +26,17 @@ package org.argouml.persistence;
 
 /**
  * Exception indicating unsupported file version.
- * 
+ *
  * @author Bob Tarling
  */
 public class VersionException extends OpenException {
 
-    /**
-     * Construct the exception the version information found.
-     * @param message the message
-     */
-    public VersionException(String message) {
-        super(message);
-    }
+  /**
+   * Construct the exception the version information found.
+   *
+   * @param message the message
+   */
+  public VersionException(String message) {
+    super(message);
+  }
 }

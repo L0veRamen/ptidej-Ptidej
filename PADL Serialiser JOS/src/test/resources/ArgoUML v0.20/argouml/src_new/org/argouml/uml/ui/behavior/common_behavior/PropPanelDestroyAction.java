@@ -24,21 +24,15 @@
 
 package org.argouml.uml.ui.behavior.common_behavior;
 
-
 /**
  * The properties panel for a DestroyAction.
  *
- * TODO: this property panel needs refactoring to remove dependency on
- *       old gui components.
+ * <p>TODO: this property panel needs refactoring to remove dependency on old gui components.
  */
 public class PropPanelDestroyAction extends PropPanelAction {
 
-    /**
-     * The constructor.
-     *
-     */
-    public PropPanelDestroyAction() {
-        super("DestroyAction", lookupIcon("DestroyAction"));
-    }
-
+  /** The constructor. */
+  public PropPanelDestroyAction() {
+    super("DestroyAction", lookupIcon("DestroyAction"));
+  }
 }

@@ -29,9 +29,7 @@ import java.awt.Rectangle;
 import java.beans.PropertyChangeEvent;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.swing.Action;
-
 import org.argouml.model.AssociationChangeEvent;
 import org.argouml.model.AttributeChangeEvent;
 import org.argouml.model.Model;
@@ -44,302 +42,273 @@ import org.tigris.gef.base.Selection;
 import org.tigris.gef.graph.GraphModel;
 
 /**
- * Class to display graphics for a UML Enumeration in a diagram.
- * It depends on FigDataType for most of its behavior.<p>
- * 
+ * Class to display graphics for a UML Enumeration in a diagram. It depends on FigDataType for most
+ * of its behavior.
+ *
+ * <p>
  */
-public class FigEnumeration extends FigDataType 
-    implements EnumLiteralsCompartmentContainer {
+public class FigEnumeration extends FigDataType implements EnumLiteralsCompartmentContainer {
 
-    /**
-     * Serial version (generated)
-     */
-    private static final long serialVersionUID = 3333154292883077250L;
+  /** Serial version (generated) */
+  private static final long serialVersionUID = 3333154292883077250L;
 
-    /**
-     * The Fig that represents the literals compartment.
-     */
-    private FigEnumLiteralsCompartment literalsCompartment;
+  /** The Fig that represents the literals compartment. */
+  private FigEnumLiteralsCompartment literalsCompartment;
 
-    /**
-     * Main constructor for a {@link FigEnumeration}.
-     * @deprecated by for 0.27.4 by tfmorris. Use
-     *             {@link #FigEnumeration(Object, Rectangle, DiagramSettings)}.
-     */
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    public FigEnumeration() {
-        super();
+  /**
+   * Main constructor for a {@link FigEnumeration}.
+   *
+   * @deprecated by for 0.27.4 by tfmorris. Use {@link #FigEnumeration(Object, Rectangle,
+   *     DiagramSettings)}.
+   */
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  public FigEnumeration() {
+    super();
 
-        enableSizeChecking(true);
-        setSuppressCalcBounds(false);
+    enableSizeChecking(true);
+    setSuppressCalcBounds(false);
 
-        addFig(getLiteralsCompartment()); // This creates the compartment.
-        setBounds(getBounds());
+    addFig(getLiteralsCompartment()); // This creates the compartment.
+    setBounds(getBounds());
+  }
+
+  /**
+   * Constructor for use if this figure is created for an existing interface node in the metamodel.
+   *
+   * @param gm Not actually used in the current implementation
+   * @param node The UML object being placed.
+   * @deprecated by for 0.27.4 by tfmorris. Use {@link #FigEnumeration(Object, Rectangle,
+   *     DiagramSettings)}.
+   */
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  public FigEnumeration(@SuppressWarnings("unused") GraphModel gm, Object node) {
+    this();
+    enableSizeChecking(true);
+    setEnumLiteralsVisible(true);
+    setOwner(node);
+    literalsCompartment.populate();
+    setBounds(getBounds());
+  }
+
+  /**
+   * Construct a new AbstractFigComponent.
+   *
+   * @param owner owning UML element
+   * @param bounds position and size
+   * @param settings render settings
+   */
+  public FigEnumeration(Object owner, Rectangle bounds, DiagramSettings settings) {
+    super(owner, bounds, settings);
+
+    enableSizeChecking(true);
+    setSuppressCalcBounds(false);
+
+    addFig(getLiteralsCompartment()); // This creates the compartment.
+    setEnumLiteralsVisible(true);
+    literalsCompartment.populate();
+
+    setBounds(getBounds());
+  }
+
+  @Override
+  protected String getKeyword() {
+    return "enumeration";
+  }
+
+  /*
+   * @see org.argouml.uml.diagram.static_structure.ui.FigDataType#makeSelection()
+   */
+  @Override
+  public Selection makeSelection() {
+    return new SelectionEnumeration(this);
+  }
+
+  @Override
+  public Object clone() {
+    FigEnumeration clone = (FigEnumeration) super.clone();
+    clone.literalsCompartment = (FigEnumLiteralsCompartment) literalsCompartment.clone();
+    return clone;
+  }
+
+  /*
+   * @see org.argouml.uml.diagram.static_structure.ui.FigClassifierBox#buildAddMenu()
+   */
+  @Override
+  protected ArgoJMenu buildAddMenu() {
+    ArgoJMenu addMenu = super.buildAddMenu();
+
+    Action addEnumerationLiteral = new ActionAddEnumerationLiteral();
+    addEnumerationLiteral.setEnabled(isSingleTarget());
+    addMenu.add(addEnumerationLiteral);
+    return addMenu;
+  }
+
+  /*
+   * @see org.argouml.uml.diagram.ui.FigNodeModelElement#modelChanged(java.beans.PropertyChangeEvent)
+   */
+  @Override
+  protected void modelChanged(PropertyChangeEvent mee) {
+    super.modelChanged(mee);
+    if (mee instanceof AssociationChangeEvent || mee instanceof AttributeChangeEvent) {
+      renderingChanged();
+      updateListeners(getOwner(), getOwner());
     }
+  }
 
-
-    /**
-     * Constructor for use if this figure is created for an existing interface
-     * node in the metamodel.
-     * 
-     * @param gm Not actually used in the current implementation
-     * @param node The UML object being placed.
-     * @deprecated by for 0.27.4 by tfmorris. Use
-     *             {@link #FigEnumeration(Object, Rectangle, DiagramSettings)}.
-     */
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    public FigEnumeration(@SuppressWarnings("unused") GraphModel gm, 
-            Object node) {
-        this();
-        enableSizeChecking(true);
-        setEnumLiteralsVisible(true);
-        setOwner(node);
-        literalsCompartment.populate();
-        setBounds(getBounds());
+  /*
+   * @see org.argouml.uml.diagram.ui.FigNodeModelElement#renderingChanged()
+   */
+  @Override
+  public void renderingChanged() {
+    super.renderingChanged();
+    if (getOwner() != null) {
+      updateEnumLiterals();
     }
+  }
 
-
-    /**
-     * Construct a new AbstractFigComponent.
-     * 
-     * @param owner owning UML element
-     * @param bounds position and size
-     * @param settings render settings
-     */
-    public FigEnumeration(Object owner, Rectangle bounds,
-            DiagramSettings settings) {
-        super(owner, bounds, settings);
-
-        enableSizeChecking(true);
-        setSuppressCalcBounds(false);
-
-        addFig(getLiteralsCompartment()); // This creates the compartment.
-        setEnumLiteralsVisible(true);
-        literalsCompartment.populate();
-
-        setBounds(getBounds());
-    }
-
-    @Override
-    protected String getKeyword() {
-        return "enumeration";
-    }
-    
-    /*
-     * @see org.argouml.uml.diagram.static_structure.ui.FigDataType#makeSelection()
-     */
-    @Override
-    public Selection makeSelection() {
-        return new SelectionEnumeration(this);
-    }
-
-    @Override
-    public Object clone() {
-        FigEnumeration clone = (FigEnumeration) super.clone();
-        clone.literalsCompartment = 
-            (FigEnumLiteralsCompartment) literalsCompartment.clone();
-        return clone;
-    }
-
-    /*
-     * @see org.argouml.uml.diagram.static_structure.ui.FigClassifierBox#buildAddMenu()
-     */
-    @Override
-    protected ArgoJMenu buildAddMenu() {
-        ArgoJMenu addMenu = super.buildAddMenu();
-        
-        Action addEnumerationLiteral = new ActionAddEnumerationLiteral();
-        addEnumerationLiteral.setEnabled(isSingleTarget());
-        addMenu.add(addEnumerationLiteral);
-        return addMenu;
-    }
-
-    /*
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement#modelChanged(java.beans.PropertyChangeEvent)
-     */
-    @Override
-    protected void modelChanged(PropertyChangeEvent mee) {
-        super.modelChanged(mee);
-        if (mee instanceof AssociationChangeEvent 
-                || mee instanceof AttributeChangeEvent) {
-            renderingChanged();
-            updateListeners(getOwner(), getOwner());
+  /*
+   * @see org.argouml.uml.diagram.ui.FigNodeModelElement#updateListeners(java.lang.Object)
+   */
+  @Override
+  protected void updateListeners(Object oldOwner, Object newOwner) {
+    Set<Object[]> l = new HashSet<Object[]>();
+    if (newOwner != null) {
+      // add the listeners to the newOwner
+      l.add(new Object[] {newOwner, null});
+      // and its stereotypes
+      for (Object stereo : Model.getFacade().getStereotypes(newOwner)) {
+        l.add(new Object[] {stereo, null});
+      }
+      // and its features
+      for (Object feat : Model.getFacade().getFeatures(newOwner)) {
+        l.add(new Object[] {feat, null});
+        // and the stereotypes of its features
+        for (Object stereo : Model.getFacade().getStereotypes(feat)) {
+          l.add(new Object[] {stereo, null});
         }
+      }
+      // and its enumerationLiterals
+      for (Object literal : Model.getFacade().getEnumerationLiterals(newOwner)) {
+        l.add(new Object[] {literal, null});
+      }
+    }
+    // And now add listeners to them all:
+    updateElementListeners(l);
+  }
+
+  /** Update (i.e. redraw) the compartment with the literals. */
+  protected void updateEnumLiterals() {
+    if (!literalsCompartment.isVisible()) {
+      return;
+    }
+    literalsCompartment.populate();
+
+    // TODO: make setBounds, calcBounds and updateBounds consistent
+    setBounds(getBounds());
+  }
+
+  /*
+   * @see org.argouml.uml.diagram.static_structure.ui.FigDataType#getMinimumSize()
+   */
+  @Override
+  public Dimension getMinimumSize() {
+    // Start with the minimum for our parent
+    Dimension aSize = super.getMinimumSize();
+
+    if (literalsCompartment != null) {
+      aSize = addChildDimensions(aSize, literalsCompartment);
     }
 
-    /*
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement#renderingChanged()
-     */
-    @Override
-    public void renderingChanged() {
-        super.renderingChanged();
-        if (getOwner() != null) {
-            updateEnumLiterals();
-        }
-    }
-    
-    /*
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement#updateListeners(java.lang.Object)
-     */
-    @Override
-    protected void updateListeners(Object oldOwner, Object newOwner) {
-        Set<Object[]> l = new HashSet<Object[]>();
-        if (newOwner != null) {
-            // add the listeners to the newOwner
-            l.add(new Object[] {newOwner, null});
-            // and its stereotypes
-            for (Object stereo : Model.getFacade().getStereotypes(newOwner)) {
-                l.add(new Object[] {stereo, null});                
-            }
-            // and its features
-            for (Object feat : Model.getFacade().getFeatures(newOwner)) {
-                l.add(new Object[] {feat, null});
-                // and the stereotypes of its features
-                for (Object stereo : Model.getFacade().getStereotypes(feat)) {
-                    l.add(new Object[] {stereo, null});
-                }
-            }
-            // and its enumerationLiterals
-            for (Object literal : Model.getFacade().getEnumerationLiterals(
-                    newOwner)) {
-                l.add(new Object[] {literal, null});
-            }
-        }
-        // And now add listeners to them all:
-        updateElementListeners(l);
+    return aSize;
+  }
 
+  /*
+   * @see org.tigris.gef.presentation.Fig#setBoundsImpl(int, int, int, int)
+   */
+  @Override
+  protected void setStandardBounds(final int x, final int y, final int width, final int height) {
+
+    // Save our old boundaries so it can be used in property message later
+    Rectangle oldBounds = getBounds();
+
+    int w = Math.max(width, getMinimumSize().width);
+    int h = Math.max(height, getMinimumSize().height);
+
+    // set bounds of big box
+    getBigPort().setBounds(x, y, w, h);
+    borderFig.setBounds(x, y, w, h);
+
+    int currentHeight = 0;
+
+    if (getStereotypeFig().isVisible()) {
+      int stereotypeHeight = getStereotypeFig().getMinimumSize().height;
+      getStereotypeFig().setBounds(x, y, w, stereotypeHeight);
+      currentHeight += stereotypeHeight;
     }
 
-    /**
-     * Update (i.e. redraw) the compartment with the literals.
-     */
-    protected void updateEnumLiterals() {
-        if (!literalsCompartment.isVisible()) {
-            return;
-        }
-        literalsCompartment.populate();
+    int nameHeight = getNameFig().getMinimumSize().height;
+    getNameFig().setBounds(x, y + currentHeight, w, nameHeight);
+    currentHeight += nameHeight;
 
-        // TODO: make setBounds, calcBounds and updateBounds consistent
-        setBounds(getBounds());
+    int visibleCompartments = getOperationsFig().isVisible() ? 1 : 0;
+    if (getLiteralsCompartment().isVisible()) {
+      visibleCompartments++;
+      int literalsHeight = getLiteralsCompartment().getMinimumSize().height;
+      literalsHeight = Math.max(literalsHeight, (h - currentHeight) / visibleCompartments);
+      getLiteralsCompartment()
+          .setBounds(x + LINE_WIDTH, y + currentHeight, w - LINE_WIDTH, literalsHeight);
+      currentHeight += literalsHeight;
     }
 
-    /*
-     * @see org.argouml.uml.diagram.static_structure.ui.FigDataType#getMinimumSize()
-     */
-    @Override
-    public Dimension getMinimumSize() {
-        // Start with the minimum for our parent
-        Dimension aSize = super.getMinimumSize();
-
-        if (literalsCompartment != null) {
-            aSize = addChildDimensions(aSize, literalsCompartment);
-        }
-        
-        return aSize;
-    }
-    
-    /*
-     * @see org.tigris.gef.presentation.Fig#setBoundsImpl(int, int, int, int)
-     */
-    @Override
-    protected void setStandardBounds(final int x, final int y, final int width,
-            final int height) {
-
-        // Save our old boundaries so it can be used in property message later
-        Rectangle oldBounds = getBounds();
-
-        int w = Math.max(width, getMinimumSize().width);
-        int h = Math.max(height, getMinimumSize().height);
-        
-        // set bounds of big box
-        getBigPort().setBounds(x, y, w, h);
-        borderFig.setBounds(x, y, w, h);
-        
-        int currentHeight = 0;
-
-        if (getStereotypeFig().isVisible()) {
-            int stereotypeHeight = getStereotypeFig().getMinimumSize().height;
-            getStereotypeFig().setBounds(
-                    x,
-                    y,
-                    w,
-                    stereotypeHeight);
-            currentHeight += stereotypeHeight;
-        }
-
-        int nameHeight = getNameFig().getMinimumSize().height;
-        getNameFig().setBounds(x, y + currentHeight, w, nameHeight);
-        currentHeight += nameHeight;
-
-        int visibleCompartments = getOperationsFig().isVisible() ? 1 : 0;
-        if (getLiteralsCompartment().isVisible()) {
-            visibleCompartments++;
-            int literalsHeight = 
-                getLiteralsCompartment().getMinimumSize().height;
-            literalsHeight = Math.max(literalsHeight, 
-                    (h - currentHeight) / visibleCompartments);
-            getLiteralsCompartment().setBounds(
-                    x + LINE_WIDTH,
-                    y + currentHeight,
-                    w - LINE_WIDTH,
-                    literalsHeight);
-            currentHeight += literalsHeight;
-        }
-        
-        if (getOperationsFig().isVisible()) {
-            int operationsHeight = getOperationsFig().getMinimumSize().height;
-            operationsHeight = Math.max(operationsHeight, h - currentHeight);
-            getOperationsFig().setBounds(
-                    x,
-                    y + currentHeight,
-                    w,
-                    operationsHeight);
-            currentHeight += operationsHeight;
-        }
-
-        // Now force calculation of the bounds of the figure, update the edges
-        // and trigger anyone who's listening to see if the "bounds" property
-        // has changed.
-
-        calcBounds();
-        updateEdges();
-        firePropChange("bounds", oldBounds, getBounds());
+    if (getOperationsFig().isVisible()) {
+      int operationsHeight = getOperationsFig().getMinimumSize().height;
+      operationsHeight = Math.max(operationsHeight, h - currentHeight);
+      getOperationsFig().setBounds(x, y + currentHeight, w, operationsHeight);
+      currentHeight += operationsHeight;
     }
 
-    /**
-     * @return the Fig for the EnumerationLiterals compartment
-     */
-    public FigEnumLiteralsCompartment getLiteralsCompartment() {
-        // Set bounds will be called from our superclass constructor before
-        // our constructor has run, so make sure this gets set up if needed.
-        if (literalsCompartment == null) {
-            literalsCompartment = new FigEnumLiteralsCompartment(getOwner(),
-                    DEFAULT_COMPARTMENT_BOUNDS, getSettings());
-        }
-        return literalsCompartment;
-    }
-    
-    /**
-     * @return true if the literals compartment is visible
-     */
-    public boolean isEnumLiteralsVisible() {
-        return literalsCompartment.isVisible();
-    }
+    // Now force calculation of the bounds of the figure, update the edges
+    // and trigger anyone who's listening to see if the "bounds" property
+    // has changed.
 
-    /**
-     * @param isVisible true will show the enumeration literal compartment
-     */
-    public void setEnumLiteralsVisible(boolean isVisible) {
-        setCompartmentVisible(literalsCompartment, isVisible);
+    calcBounds();
+    updateEdges();
+    firePropChange("bounds", oldBounds, getBounds());
+  }
+
+  /**
+   * @return the Fig for the EnumerationLiterals compartment
+   */
+  public FigEnumLiteralsCompartment getLiteralsCompartment() {
+    // Set bounds will be called from our superclass constructor before
+    // our constructor has run, so make sure this gets set up if needed.
+    if (literalsCompartment == null) {
+      literalsCompartment =
+          new FigEnumLiteralsCompartment(getOwner(), DEFAULT_COMPARTMENT_BOUNDS, getSettings());
     }
-    
-    /**
-     * @return the bounds of the EnumerationLiterals compartment
-     */
-    public Rectangle getEnumLiteralsBounds() {
-        return literalsCompartment.getBounds();
-    }
-    
-} 
+    return literalsCompartment;
+  }
+
+  /**
+   * @return true if the literals compartment is visible
+   */
+  public boolean isEnumLiteralsVisible() {
+    return literalsCompartment.isVisible();
+  }
+
+  /**
+   * @param isVisible true will show the enumeration literal compartment
+   */
+  public void setEnumLiteralsVisible(boolean isVisible) {
+    setCompartmentVisible(literalsCompartment, isVisible);
+  }
+
+  /**
+   * @return the bounds of the EnumerationLiterals compartment
+   */
+  public Rectangle getEnumLiteralsBounds() {
+    return literalsCompartment.getBounds();
+  }
+}

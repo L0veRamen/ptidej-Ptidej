@@ -25,9 +25,7 @@
 package org.argouml.ui.targetmanager;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.Action;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.i18n.Translator;
 import org.argouml.kernel.Project;
@@ -35,57 +33,48 @@ import org.argouml.kernel.ProjectManager;
 import org.argouml.model.Model;
 import org.tigris.gef.undo.UndoableAction;
 
-/**
- * Action to add an operation to a classifier.
- */
+/** Action to add an operation to a classifier. */
 class ActionAddOperation extends UndoableAction {
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    /**
-     * The constructor.
-     */
-    ActionAddOperation() {
-        super(Translator.localize("button.new-operation"),
-                ResourceLoaderWrapper.lookupIcon("button.new-operation"));
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize("button.new-operation"));
+  /** The constructor. */
+  ActionAddOperation() {
+    super(
+        Translator.localize("button.new-operation"),
+        ResourceLoaderWrapper.lookupIcon("button.new-operation"));
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize("button.new-operation"));
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // main methods
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+
+    super.actionPerformed(ae);
+
+    Project project = ProjectManager.getManager().getCurrentProject();
+    Object target = TargetManager.getInstance().getModelTarget();
+    Object classifier = null;
+
+    if (Model.getFacade().isAClassifier(target)) {
+      classifier = target;
+    } else if (Model.getFacade().isAFeature(target)) {
+      classifier = Model.getFacade().getOwner(target);
+    } else {
+      return;
     }
 
-    ////////////////////////////////////////////////////////////////
-    // main methods
+    Object model = project.getModel();
+    Object voidType = project.findType("void");
+    Object oper = Model.getCoreFactory().buildOperation(classifier, model, voidType);
+    TargetManager.getInstance().setTarget(oper);
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-
-        super.actionPerformed(ae);
-
-        Project project = ProjectManager.getManager().getCurrentProject();
-        Object target =  TargetManager.getInstance().getModelTarget();
-        Object classifier = null;
-
-        if (Model.getFacade().isAClassifier(target)) {
-            classifier = target;
-        } else if (Model.getFacade().isAFeature(target)) {
-            classifier = Model.getFacade().getOwner(target);
-        } else {
-            return;
-        }
-
-        Object model = project.getModel();
-        Object voidType = project.findType("void");
-        Object oper =
-            Model.getCoreFactory().buildOperation(
-                classifier, model, voidType);
-        TargetManager.getInstance().setTarget(oper);
-
-    }
-
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -1383845502957256177L;
+  /** The UID. */
+  private static final long serialVersionUID = -1383845502957256177L;
 } /* end class ActionAddOperation */

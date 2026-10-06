@@ -26,7 +26,6 @@ package org.argouml.argoeclipse.internal.ui.actionSet;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
@@ -38,103 +37,94 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowPulldownDelegate2;
 
 /**
- * This class is the base class for all the dynamic pulldown menus in 
- * the actionSet that activates when a diagram editor is opened.
+ * This class is the base class for all the dynamic pulldown menus in the actionSet that activates
+ * when a diagram editor is opened.
+ *
  * @author Bogdan Pistol
  */
 public abstract class PulldownMenu implements IWorkbenchWindowPulldownDelegate2 {
-    
-    /**
-     * The menu created by this action
-     */
-    private Menu menu;
-    
-    /**
-     * The action used to render this delegate.
-     */
-    private IAction action;
-    
-    private static List instances = new ArrayList();
-    
-    private String menuName = ""; //$NON-NLS-1$
-    
-    protected IAction getActionDelegate() {
-        return action;
-    }
-    
-    protected Menu getMenu() {
-        return menu;
-    }
-    
-    public PulldownMenu(String name) {
-        menuName = name;
-        instances.add(this);
-    }
 
-    public Menu getMenu(Menu parent) {
-        setMenu(new Menu(parent));
-        return menu;
-    }
+  /** The menu created by this action */
+  private Menu menu;
 
-    public Menu getMenu(Control parent) {
-        setMenu(new Menu(parent));
-        return menu;
-    }
-    
-    private void setMenu(Menu m) {
-        if (menu != null) {
-            menu.dispose();
-        }
-        menu = m;
-    }
-    
-    /**
-     * Adds the given action to the specified menu.
-     * @param menu the menu to add the action to
-     * @param action the action to add
-     */
-    protected void addToMenu(Menu menu, IAction action) {
-        ActionContributionItem item = new ActionContributionItem(action);
-        item.fill(menu, -1);
-    }
-    
-    /**
-     * Adds a separator to the given menu
-     * @param m the menu
-     */
-    protected void addSeparator(Menu m) {
-        new MenuItem(m, SWT.SEPARATOR);
-    }
-    
-    /**
-     * Initialize the menus. This should be done after ArgoEclipse plugin is
-     * loaded.
-     */
-    public static void initMenus() {
-        for (int i = 0; i < instances.size(); i++) {
-            ((PulldownMenu) instances.get(i)).initMenu();
-        }
-    }
-    
-    /**
-     * Init this menu.
-     */
-    protected abstract void initMenu();
+  /** The action used to render this delegate. */
+  private IAction action;
 
-    public void dispose() {
-        setMenu(null);
-        instances.remove(this);
-    }
+  private static List instances = new ArrayList();
 
-    public void init(IWorkbenchWindow window) {
-    }
+  private String menuName = ""; // $NON-NLS-1$
 
-    public void run(IAction action) {
-    }
+  protected IAction getActionDelegate() {
+    return action;
+  }
 
-    public void selectionChanged(IAction newAction, ISelection selection) {
-        action = newAction;
-        action.setText(menuName);
-    }
+  protected Menu getMenu() {
+    return menu;
+  }
 
+  public PulldownMenu(String name) {
+    menuName = name;
+    instances.add(this);
+  }
+
+  public Menu getMenu(Menu parent) {
+    setMenu(new Menu(parent));
+    return menu;
+  }
+
+  public Menu getMenu(Control parent) {
+    setMenu(new Menu(parent));
+    return menu;
+  }
+
+  private void setMenu(Menu m) {
+    if (menu != null) {
+      menu.dispose();
+    }
+    menu = m;
+  }
+
+  /**
+   * Adds the given action to the specified menu.
+   *
+   * @param menu the menu to add the action to
+   * @param action the action to add
+   */
+  protected void addToMenu(Menu menu, IAction action) {
+    ActionContributionItem item = new ActionContributionItem(action);
+    item.fill(menu, -1);
+  }
+
+  /**
+   * Adds a separator to the given menu
+   *
+   * @param m the menu
+   */
+  protected void addSeparator(Menu m) {
+    new MenuItem(m, SWT.SEPARATOR);
+  }
+
+  /** Initialize the menus. This should be done after ArgoEclipse plugin is loaded. */
+  public static void initMenus() {
+    for (int i = 0; i < instances.size(); i++) {
+      ((PulldownMenu) instances.get(i)).initMenu();
+    }
+  }
+
+  /** Init this menu. */
+  protected abstract void initMenu();
+
+  public void dispose() {
+    setMenu(null);
+    instances.remove(this);
+  }
+
+  public void init(IWorkbenchWindow window) {}
+
+  public void run(IAction action) {}
+
+  public void selectionChanged(IAction newAction, ISelection selection) {
+    action = newAction;
+    action.setText(menuName);
+  }
 }

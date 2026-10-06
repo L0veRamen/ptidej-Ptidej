@@ -25,7 +25,6 @@
 package org.argouml.uml.ui.behavior.use_cases;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.model.Model;
 import org.argouml.uml.ui.AbstractActionNewModelElement;
 
@@ -34,29 +33,24 @@ import org.argouml.uml.ui.AbstractActionNewModelElement;
  * @author jaap.branderhorst@xs4all.nl
  * @stereotype singleton
  */
-public class ActionNewUseCaseExtensionPoint
-    extends AbstractActionNewModelElement {
+public class ActionNewUseCaseExtensionPoint extends AbstractActionNewModelElement {
 
-    /**
-     * The singleton.
-     */
-    public static final ActionNewUseCaseExtensionPoint SINGLETON =
-        new ActionNewUseCaseExtensionPoint();
+  /** The singleton. */
+  public static final ActionNewUseCaseExtensionPoint SINGLETON =
+      new ActionNewUseCaseExtensionPoint();
 
-    /**
-     * Constructor for ActionNewUseCaseExtensionPoint.
-     */
-    protected ActionNewUseCaseExtensionPoint() {
-        super();
+  /** Constructor for ActionNewUseCaseExtensionPoint. */
+  protected ActionNewUseCaseExtensionPoint() {
+    super();
+  }
+
+  /*
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    if (Model.getFacade().isAUseCase(getTarget())) {
+      Model.getUseCasesFactory().buildExtensionPoint(getTarget());
     }
-
-    /*
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        if (Model.getFacade().isAUseCase(getTarget())) {
-            Model.getUseCasesFactory().buildExtensionPoint(getTarget());
-        }
-    }
+  }
 }

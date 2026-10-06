@@ -32,29 +32,24 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  *
  * @author Michiel
  */
-class UMLActivityGraphPartitionListModel
-    extends UMLModelElementListModel2 {
+class UMLActivityGraphPartitionListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLActivityGraphPartiitionListModel.
-     */
-    public UMLActivityGraphPartitionListModel() {
-        super("partition");
-    }
+  /** Constructor for UMLActivityGraphPartiitionListModel. */
+  public UMLActivityGraphPartitionListModel() {
+    super("partition");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        setAllElements(Model.getFacade().getPartitions(getTarget()));
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    setAllElements(Model.getFacade().getPartitions(getTarget()));
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().getPartitions(getTarget())
-            .contains(element);
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().getPartitions(getTarget()).contains(element);
+  }
 }

@@ -13,14 +13,9 @@
 
 package choco.util;
 
-/**
- * Specifies an object with a priority.
- */
+/** Specifies an object with a priority. */
 public interface IPrioritizable {
 
-	/**
-	 * Returns the priority of the object.
-	 */
-
-	public int getPriority();
+  /** Returns the priority of the object. */
+  public int getPriority();
 }

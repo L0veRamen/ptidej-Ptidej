@@ -26,7 +26,6 @@
 package org.argouml.uml.ui.behavior.common_behavior;
 
 import javax.swing.Action;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 
@@ -36,31 +35,25 @@ import org.argouml.model.Model;
  */
 public class ActionNewDestroyAction extends ActionNewAction {
 
-    private static final ActionNewDestroyAction SINGLETON =
-        new ActionNewDestroyAction();
+  private static final ActionNewDestroyAction SINGLETON = new ActionNewDestroyAction();
 
-    /**
-     * Constructor for ActionNewDestroyAction.
-     */
-    protected ActionNewDestroyAction() {
-        super();
-        putValue(Action.NAME, Translator.localize("button.new-destroyaction"));
-    }
+  /** Constructor for ActionNewDestroyAction. */
+  protected ActionNewDestroyAction() {
+    super();
+    putValue(Action.NAME, Translator.localize("button.new-destroyaction"));
+  }
 
+  /**
+   * @see org.argouml.uml.ui.behavior.common_behavior.ActionNewAction#createAction()
+   */
+  protected Object createAction() {
+    return Model.getCommonBehaviorFactory().createDestroyAction();
+  }
 
-    /**
-     * @see org.argouml.uml.ui.behavior.common_behavior.ActionNewAction#createAction()
-     */
-    protected Object createAction() {
-        return Model.getCommonBehaviorFactory().createDestroyAction();
-    }
-
-
-    /**
-     * @return Returns the SINGLETON.
-     */
-    public static ActionNewDestroyAction getiNSTANCE() {
-        return SINGLETON;
-    }
-
+  /**
+   * @return Returns the SINGLETON.
+   */
+  public static ActionNewDestroyAction getiNSTANCE() {
+    return SINGLETON;
+  }
 }

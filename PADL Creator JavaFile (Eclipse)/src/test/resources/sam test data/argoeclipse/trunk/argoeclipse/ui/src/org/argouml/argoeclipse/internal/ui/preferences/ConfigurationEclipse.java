@@ -26,143 +26,124 @@ package org.argouml.argoeclipse.internal.ui.preferences;
 
 import java.io.File;
 import java.net.URL;
-
-import org.eclipse.jface.preference.IPreferenceStore;
-
 import org.argouml.application.configuration.ConfigurationHandler;
 import org.argouml.argoeclipse.internal.ui.Activator;
+import org.eclipse.jface.preference.IPreferenceStore;
 
 /**
- * An ArgoUML configuration handler which uses the Eclipse preference store.
- * This acts as an adapter for the interface that the main ArgoUML code
- * expects.
- * 
+ * An ArgoUML configuration handler which uses the Eclipse preference store. This acts as an adapter
+ * for the interface that the main ArgoUML code expects.
+ *
  * @author Tom Morris
  */
 class ConfigurationEclipse extends ConfigurationHandler {
 
-    /**
-     * Our preference store.
-     */
-    private IPreferenceStore store;
-    
-    /**
-     * The path to the file that we loaded preferences from.
-     */
-    private String preferenceLoadPath = getDefaultPath();
-    
-    /**
-     * Anonymous constructor.
-     */
-    ConfigurationEclipse() {
-	super(true); // config is changeable
+  /** Our preference store. */
+  private IPreferenceStore store;
+
+  /** The path to the file that we loaded preferences from. */
+  private String preferenceLoadPath = getDefaultPath();
+
+  /** Anonymous constructor. */
+  ConfigurationEclipse() {
+    super(true); // config is changeable
+  }
+
+  /**
+   * Returns the default configuration path. Always returns the empty string for this
+   * implementation.
+   *
+   * @return the empty string.
+   */
+  public String getDefaultPath() {
+    return ""; //$NON-NLS-1$
+  }
+
+  /**
+   * Load the configuration from a specified location.
+   *
+   * @param file the path to load the configuration from.
+   * @return true if the load was successful, false if not.
+   */
+  public boolean loadFile(File file) {
+    // TODO: Do we want to allow anything other than the default? - tfm
+    if (!(getDefaultPath().equals(file.getPath()))) {
+      //            store = new PreferenceStore(file.getPath());
+      //            preferenceLoadPath = file.getPath();
+      return false;
+    } else {
+      store = Activator.getDefault().getPreferenceStore();
+      preferenceLoadPath = file.getPath();
+      return true;
     }
+  }
 
-    /**
-     * Returns the default configuration path.  Always returns the 
-     * empty string for this implementation.
-     *
-     * @return the empty string.
-     */
-    public String getDefaultPath() {
-        return ""; //$NON-NLS-1$
+  /**
+   * Save the configuration to a specified location.
+   *
+   * @param file the path to save the configuration at.
+   * @return true if the save was successful, false if not.
+   */
+  public boolean saveFile(File file) {
+    // We only allow saving to the place we loaded from
+    if (!preferenceLoadPath.equals(file.getPath())) {
+      return false;
     }
+    Activator.getDefault().savePluginPreferences();
+    return true;
+  }
 
+  /**
+   * Load the configuration from a URL. Throws an UnsupportedOperationException.
+   *
+   * @param url the path to load the configuration from.
+   * @return true if the load was successful, false if not.
+   */
+  public boolean loadURL(URL url) {
+    throw new UnsupportedOperationException();
+  }
 
-    /**
-     * Load the configuration from a specified location.
-     *
-     * @param file  the path to load the configuration from.
-     *
-     * @return true if the load was successful, false if not.
-     */
-    public boolean loadFile(File file) {
-        // TODO: Do we want to allow anything other than the default? - tfm
-        if (!(getDefaultPath().equals(file.getPath()))) {
-//            store = new PreferenceStore(file.getPath());
-//            preferenceLoadPath = file.getPath();
-            return false;
-        } else {
-            store = Activator.getDefault().getPreferenceStore();
-            preferenceLoadPath = file.getPath();
-            return true;
-        }
-    }
+  /**
+   * Save the configuration to a specified location. Throws an UnsupportedOperationException.
+   *
+   * @param url the path to save the configuration at.
+   * @return true if the save was successful, false if not.
+   */
+  public boolean saveURL(URL url) {
+    throw new UnsupportedOperationException();
+  }
 
-    /**
-     * Save the configuration to a specified location.
-     *
-     * @param file  the path to save the configuration at.
-     *
-     * @return true if the save was successful, false if not.
-     */
-    public boolean saveFile(File file) {
-        // We only allow saving to the place we loaded from
-        if (!preferenceLoadPath.equals(file.getPath())) {
-            return false;
-        }
-        Activator.getDefault().savePluginPreferences();
-        return true;
-    }
+  /**
+   * Returns the string value of a configuration property.
+   *
+   * @param key the key to return the value of.
+   * @param defaultValue the value to return if the key was not found.
+   * @return the string value of the key if found, otherwise null;
+   */
+  public String getValue(String key, String defaultValue) {
+    // The semantics are slightly different between the ArgoUML
+    // and Eclipse models, but this is pretty close.
+    store.setDefault(key, defaultValue);
+    return store.getString(key);
+  }
 
-    /**
-     * Load the configuration from a URL.  
-     * Throws an UnsupportedOperationException.
-     *
-     * @param url  the path to load the configuration from.
-     *
-     * @return true if the load was successful, false if not.
-     */
-    public boolean loadURL(URL url) {
-        throw new UnsupportedOperationException();
-    }
+  /**
+   * Sets the string value of a configuration property.
+   *
+   * @param key the key to set.
+   * @param value the value to set the key to.
+   */
+  public void setValue(String key, String value) {
+    store.setValue(key, value);
+  }
 
-    /**
-     * Save the configuration to a specified location.
-     * Throws an UnsupportedOperationException.
-     * 
-     * @param url  the path to save the configuration at.
-     *
-     * @return true if the save was successful, false if not.
-     */
-    public boolean saveURL(URL url) {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Returns the string value of a configuration property.
-     *
-     * @param key the key to return the value of.
-     * @param defaultValue the value to return if the key was not found.
-     *
-     * @return the string value of the key if found, otherwise null;
-     */
-    public String getValue(String key, String defaultValue) {
-        // The semantics are slightly different between the ArgoUML
-        // and Eclipse models, but this is pretty close.
-        store.setDefault(key, defaultValue);
-        return store.getString(key);
-    }
-
-    /**
-     * Sets the string value of a configuration property.
-     *
-     * @param key the key to set.
-     * @param value the value to set the key to.
-     */
-    public void setValue(String key, String value) {
-        store.setValue(key, value);
-    }
-
-    /**
-     * Remove a property.
-     *
-     * @param key The property to remove.
-     */
-    public void remove(String key) {
-        // TODO: Should we throw an unsupported exception here?
-        setValue(key, null);
-    }
-
+  /**
+   * Remove a property.
+   *
+   * @param key The property to remove.
+   */
+  public void remove(String key) {
+    // TODO: Should we throw an unsupported exception here?
+    setValue(key, null);
+  }
 }
-

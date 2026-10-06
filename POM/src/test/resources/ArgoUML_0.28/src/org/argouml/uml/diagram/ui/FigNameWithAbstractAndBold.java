@@ -26,59 +26,52 @@ package org.argouml.uml.diagram.ui;
 
 import java.awt.Font;
 import java.awt.Rectangle;
-
 import org.argouml.uml.diagram.DiagramSettings;
 
-
 /**
- * A FigSingleLineText that represents the name of 
- * a node type of modelelement,
- * which handles cases where the projectsettings 
- * indicate that the node name should be in bold. <p>
- * 
- * Since this Fig follows the setting "Show name of NODES in bold font",
- * it would be wise to use it for nodes only. See issue 5013.
+ * A FigSingleLineText that represents the name of a node type of modelelement, which handles cases
+ * where the projectsettings indicate that the node name should be in bold.
+ *
+ * <p>Since this Fig follows the setting "Show name of NODES in bold font", it would be wise to use
+ * it for nodes only. See issue 5013.
  *
  * @author Michiel
  */
 class FigNameWithAbstractAndBold extends FigNameWithAbstract {
 
-    /**
-     * @param x location x
-     * @param y location y
-     * @param w width
-     * @param h height
-     * @param expandOnly true if fig should never contract
-     * @deprecated for 0.27.3 by tfmorris. Use
-     *             {@link #FigNameWithAbstractAndBold(Object, Rectangle, 
-     *             DiagramSettings, boolean)}
-     */
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    public FigNameWithAbstractAndBold(int x, int y, int w, int h,
-            boolean expandOnly) {
-        super(x, y, w, h, expandOnly);
-    }
-    
-    /**
-     * Construct a name Fig that shows whether associated item is abstract
-     * (italics) or bold.
-     * 
-     * @param owner owning UML element
-     * @param bounds position and size
-     * @param settings rendering settings
-     * @param expandOnly true if fig should never contract
-     */
-    public FigNameWithAbstractAndBold(Object owner, Rectangle bounds,
-            DiagramSettings settings, boolean expandOnly) {
-        super(owner, bounds, settings, expandOnly);
-    }
+  /**
+   * @param x location x
+   * @param y location y
+   * @param w width
+   * @param h height
+   * @param expandOnly true if fig should never contract
+   * @deprecated for 0.27.3 by tfmorris. Use {@link #FigNameWithAbstractAndBold(Object, Rectangle,
+   *     DiagramSettings, boolean)}
+   */
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  public FigNameWithAbstractAndBold(int x, int y, int w, int h, boolean expandOnly) {
+    super(x, y, w, h, expandOnly);
+  }
 
-    @Override
-    protected int getFigFontStyle() {
-        boolean showBoldName = getSettings().isShowBoldNames();
-        int boldStyle =  showBoldName ? Font.BOLD : Font.PLAIN;
+  /**
+   * Construct a name Fig that shows whether associated item is abstract (italics) or bold.
+   *
+   * @param owner owning UML element
+   * @param bounds position and size
+   * @param settings rendering settings
+   * @param expandOnly true if fig should never contract
+   */
+  public FigNameWithAbstractAndBold(
+      Object owner, Rectangle bounds, DiagramSettings settings, boolean expandOnly) {
+    super(owner, bounds, settings, expandOnly);
+  }
 
-        return super.getFigFontStyle() | boldStyle;
-    }
+  @Override
+  protected int getFigFontStyle() {
+    boolean showBoldName = getSettings().isShowBoldNames();
+    int boldStyle = showBoldName ? Font.BOLD : Font.PLAIN;
+
+    return super.getFigFontStyle() | boldStyle;
+  }
 }

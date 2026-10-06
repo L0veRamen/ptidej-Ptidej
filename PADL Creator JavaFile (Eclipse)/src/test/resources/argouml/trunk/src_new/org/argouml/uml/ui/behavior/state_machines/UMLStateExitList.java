@@ -26,7 +26,6 @@
 package org.argouml.uml.ui.behavior.state_machines;
 
 import javax.swing.JPopupMenu;
-
 import org.argouml.uml.ui.UMLModelElementListModel2;
 import org.argouml.uml.ui.UMLMutableLinkedList;
 import org.argouml.uml.ui.behavior.common_behavior.ActionNewAction;
@@ -38,19 +37,19 @@ import org.argouml.uml.ui.behavior.common_behavior.PopupMenuNewAction;
  */
 public class UMLStateExitList extends UMLMutableLinkedList {
 
-    /**
-     * Constructor for UMLStateEntryList.
-     * @param dataModel the model
-     */
-    public UMLStateExitList(
-        UMLModelElementListModel2 dataModel) {
-        super(dataModel);
-    }
+  /**
+   * Constructor for UMLStateEntryList.
+   *
+   * @param dataModel the model
+   */
+  public UMLStateExitList(UMLModelElementListModel2 dataModel) {
+    super(dataModel);
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLMutableLinkedList#getPopupMenu()
-     */
-    public JPopupMenu getPopupMenu() {
-        return new PopupMenuNewAction(ActionNewAction.Roles.EXIT, this);
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLMutableLinkedList#getPopupMenu()
+   */
+  public JPopupMenu getPopupMenu() {
+    return new PopupMenuNewAction(ActionNewAction.Roles.EXIT, this);
+  }
 }

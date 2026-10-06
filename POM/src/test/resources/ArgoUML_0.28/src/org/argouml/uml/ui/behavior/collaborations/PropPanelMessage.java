@@ -25,11 +25,9 @@
 package org.argouml.uml.ui.behavior.collaborations;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JScrollPane;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
@@ -41,87 +39,78 @@ import org.argouml.uml.ui.UMLSingleRowSelector;
 import org.argouml.uml.ui.foundation.core.PropPanelModelElement;
 import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
 
-/**
- * Properties panel for a Message.
- */
+/** Properties panel for a Message. */
 public class PropPanelMessage extends PropPanelModelElement {
 
-    /**
-     * Construct a new property panel for a Message.
-     */
-    public PropPanelMessage() {
-        super("label.message", lookupIcon("Message"));
+  /** Construct a new property panel for a Message. */
+  public PropPanelMessage() {
+    super("label.message", lookupIcon("Message"));
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        
-        addField(Translator.localize("label.interaction"),
-       	        new UMLSingleRowSelector(new UMLMessageInteractionListModel()));
+    addField(Translator.localize("label.name"), getNameTextField());
 
-        addField(Translator.localize("label.sender"),
-       	        new UMLSingleRowSelector(new UMLMessageSenderListModel()));
+    addField(
+        Translator.localize("label.interaction"),
+        new UMLSingleRowSelector(new UMLMessageInteractionListModel()));
 
-        addField(Translator.localize("label.receiver"),
-       	        new UMLSingleRowSelector(new UMLMessageReceiverListModel()));
+    addField(
+        Translator.localize("label.sender"),
+        new UMLSingleRowSelector(new UMLMessageSenderListModel()));
 
-        addSeparator();
+    addField(
+        Translator.localize("label.receiver"),
+        new UMLSingleRowSelector(new UMLMessageReceiverListModel()));
 
-        addField(Translator.localize("label.activator"),
-        	 new UMLMessageActivatorComboBox(this,
-        		 new UMLMessageActivatorComboBoxModel()));
+    addSeparator();
 
-        addField(Translator.localize("label.action"),
-       	        new UMLSingleRowSelector(new UMLMessageActionListModel()));
+    addField(
+        Translator.localize("label.activator"),
+        new UMLMessageActivatorComboBox(this, new UMLMessageActivatorComboBoxModel()));
 
+    addField(
+        Translator.localize("label.action"),
+        new UMLSingleRowSelector(new UMLMessageActionListModel()));
 
-        JScrollPane predecessorScroll =
-                new JScrollPane(
-                new UMLMutableLinkedList(new UMLMessagePredecessorListModel(),
-                        ActionAddMessagePredecessor.getInstance(),
-                        null));
-        addField(Translator.localize("label.predecessor"),
-        	 predecessorScroll);
+    JScrollPane predecessorScroll =
+        new JScrollPane(
+            new UMLMutableLinkedList(
+                new UMLMessagePredecessorListModel(),
+                ActionAddMessagePredecessor.getInstance(),
+                null));
+    addField(Translator.localize("label.predecessor"), predecessorScroll);
 
-        addAction(new ActionNavigateContainerElement());
-        addAction(new ActionToolNewAction());
-        addAction(new ActionNewStereotype());
-        addAction(getDeleteAction());
+    addAction(new ActionNavigateContainerElement());
+    addAction(new ActionToolNewAction());
+    addAction(new ActionNewStereotype());
+    addAction(getDeleteAction());
+  }
+
+  private static class ActionToolNewAction extends AbstractActionNewModelElement {
+
+    /** Construct an action to add a new UML Action to the Message. */
+    public ActionToolNewAction() {
+      super("button.new-action");
+      putValue(Action.NAME, Translator.localize("button.new-action"));
+      Icon icon = ResourceLoaderWrapper.lookupIcon("CallAction");
+      putValue(Action.SMALL_ICON, icon);
     }
 
-    private static class ActionToolNewAction
-        extends AbstractActionNewModelElement {
-
-        /**
-         * Construct an action to add a new UML Action to the Message.
-         */
-        public ActionToolNewAction() {
-            super("button.new-action");
-            putValue(Action.NAME, Translator.localize("button.new-action"));
-            Icon icon = ResourceLoaderWrapper.lookupIcon("CallAction");
-            putValue(Action.SMALL_ICON, icon);
-        }
-
-        /*
-         * @see java.awt.event.ActionListener#actionPerformed(
-         *         java.awt.event.ActionEvent)
-         */
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            Object target = TargetManager.getInstance().getModelTarget();
-            if (Model.getFacade().isAMessage(target)) {
-                Model.getCommonBehaviorFactory().buildAction(target);
-                super.actionPerformed(e);
-            }
-        }
-
-        /**
-         * The UID.
-         */
-        private static final long serialVersionUID = -6588197204256288453L;
+    /*
+     * @see java.awt.event.ActionListener#actionPerformed(
+     *         java.awt.event.ActionEvent)
+     */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      Object target = TargetManager.getInstance().getModelTarget();
+      if (Model.getFacade().isAMessage(target)) {
+        Model.getCommonBehaviorFactory().buildAction(target);
+        super.actionPerformed(e);
+      }
     }
 
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -8433911715875762175L;
+    /** The UID. */
+    private static final long serialVersionUID = -6588197204256288453L;
+  }
+
+  /** The UID. */
+  private static final long serialVersionUID = -8433911715875762175L;
 }

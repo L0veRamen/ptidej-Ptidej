@@ -35,193 +35,162 @@ import org.omg.uml.modelmanagement.Subsystem;
 import org.omg.uml.modelmanagement.UmlPackage;
 
 /**
- * The ModelManagementFactory.<p>
+ * The ModelManagementFactory.
+ *
+ * <p>
  *
  * @since ARGO0.19.5
  * @author Ludovic Ma&icirc;tre
- * @author Tom Morris
- * derived from NSUML implementation by:
+ * @author Tom Morris derived from NSUML implementation by:
  * @author Linus Tolke
  */
-final class ModelManagementFactoryMDRImpl extends
-        AbstractUmlModelFactoryMDR implements ModelManagementFactory {
+final class ModelManagementFactoryMDRImpl extends AbstractUmlModelFactoryMDR
+    implements ModelManagementFactory {
 
-    /**
-     * Logger.
-     */
-    private static final Logger LOG =
-        Logger.getLogger(ModelManagementFactoryMDRImpl.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(ModelManagementFactoryMDRImpl.class);
 
-    /**
-     * The model.
-     */
-    private Object theRootModel;
+  /** The model. */
+  private Object theRootModel;
 
-    /**
-     * The model implementation.
-     */
-    private MDRModelImplementation modelImpl;
+  /** The model implementation. */
+  private MDRModelImplementation modelImpl;
 
-    /**
-     * Constructor.
-     *
-     * @param mi
-     *            The MDRModelImplementation.
-     */
-    public ModelManagementFactoryMDRImpl(MDRModelImplementation mi) {
-        modelImpl = mi;
+  /**
+   * Constructor.
+   *
+   * @param mi The MDRModelImplementation.
+   */
+  public ModelManagementFactoryMDRImpl(MDRModelImplementation mi) {
+    modelImpl = mi;
+  }
+
+  public Model createModel() {
+    ModelManagementPackage mmp = getModelManagementPackage();
+    if (mmp == null) {
+      // Normally the extent should exist already, but in the case of
+      // making an empty project, we may not have an extent yet, so
+      // create a default extent
+      modelImpl.createDefaultExtent();
+    }
+    Model myModel = getModelManagementPackage().getModel().createModel();
+    super.initialize(myModel);
+    return myModel;
+  }
+
+  private ModelManagementPackage getModelManagementPackage() {
+    org.omg.uml.UmlPackage umlPackage = modelImpl.getUmlPackage();
+    if (umlPackage == null) {
+      return null;
+    }
+    return umlPackage.getModelManagement();
+  }
+
+  public void setRootModel(Object rootModel) {
+    if (rootModel != null && !(rootModel instanceof Model)) {
+      throw new IllegalArgumentException(
+          "The rootModel supplied must be a Model. Got a " + rootModel.getClass().getName());
+    }
+    theRootModel = rootModel;
+  }
+
+  public Object getRootModel() {
+    return theRootModel;
+  }
+
+  public ElementImport createElementImport() {
+    ElementImport myElementImport =
+        getModelManagementPackage().getElementImport().createElementImport();
+    super.initialize(myElementImport);
+    return myElementImport;
+  }
+
+  public ElementImport buildElementImport(Object pack, Object me) {
+    if (pack instanceof UmlPackage && me instanceof ModelElement) {
+      ElementImport ei = createElementImport();
+      ei.setImportedElement((ModelElement) me);
+      ei.setUmlPackage((UmlPackage) pack);
+      return ei;
+    }
+    throw new IllegalArgumentException(
+        "To build an ElementImport we need a " + "Package and a ModelElement.");
+  }
+
+  public UmlPackage createPackage() {
+    UmlPackage myUmlPackage = getModelManagementPackage().getUmlPackage().createUmlPackage();
+    super.initialize(myUmlPackage);
+    return myUmlPackage;
+  }
+
+  public Object buildPackage(String name) {
+    UmlPackage pkg = createPackage();
+    pkg.setName(name);
+    return pkg;
+  }
+
+  public Object createSubsystem() {
+    Subsystem mySubsystem = getModelManagementPackage().getSubsystem().createSubsystem();
+    super.initialize(mySubsystem);
+    return mySubsystem;
+  }
+
+  public Object copyPackage(Object source, Object ns) {
+    if (!(source instanceof UmlPackage)) {
+      throw new IllegalArgumentException("source");
+    }
+    if (!(ns instanceof Namespace)) {
+      throw new IllegalArgumentException("namespace");
     }
 
+    UmlPackage p = createPackage();
+    ((Namespace) ns).getOwnedElement().add(p);
+    doCopyPackage((UmlPackage) source, p);
+    return p;
+  }
 
-    public Model createModel() {
-        ModelManagementPackage mmp = getModelManagementPackage();
-        if (mmp == null) {
-            // Normally the extent should exist already, but in the case of
-            // making an empty project, we may not have an extent yet, so 
-            // create a default extent
-            modelImpl.createDefaultExtent();
-        }
-        Model myModel = getModelManagementPackage().getModel().createModel();
-        super.initialize(myModel);
-        return myModel;
+  /**
+   * Used by the copy functions. Do not call this function directly.
+   *
+   * @param source The source package.
+   * @param target The target package.
+   */
+  private void doCopyPackage(UmlPackage source, UmlPackage target) {
+    ((CoreFactoryMDRImpl) modelImpl.getCoreFactory()).doCopyNamespace(source, target);
+  }
+
+  /**
+   * @param elem to be deleted
+   */
+  void deleteElementImport(Object elem) {
+    if (!(elem instanceof ElementImport)) {
+      throw new IllegalArgumentException();
     }
+  }
 
-    private ModelManagementPackage getModelManagementPackage() {
-        org.omg.uml.UmlPackage umlPackage = modelImpl.getUmlPackage();
-        if (umlPackage == null) {
-            return null;
-        }
-        return umlPackage.getModelManagement();
+  /**
+   * @param elem to be deleted
+   */
+  void deleteModel(Object elem) {
+    if (!(elem instanceof Model)) {
+      throw new IllegalArgumentException();
     }
-    
-    public void setRootModel(Object rootModel) {
-        if (rootModel != null && !(rootModel instanceof Model)) {
-            throw new IllegalArgumentException(
-                    "The rootModel supplied must be a Model. Got a "
-                            + rootModel.getClass().getName());
-        }
-        theRootModel = rootModel;
+  }
+
+  /**
+   * @param elem to be deleted
+   */
+  void deletePackage(Object elem) {
+    if (!(elem instanceof UmlPackage)) {
+      throw new IllegalArgumentException();
     }
+  }
 
-
-    public Object getRootModel() {
-        return theRootModel;
+  /**
+   * @param elem to be deleted
+   */
+  void deleteSubsystem(Object elem) {
+    if (!(elem instanceof Subsystem)) {
+      throw new IllegalArgumentException();
     }
-
-
-    public ElementImport createElementImport() {
-        ElementImport myElementImport =
-            getModelManagementPackage().getElementImport().createElementImport();
-        super.initialize(myElementImport);
-        return myElementImport;
-    }
-
-
-    public ElementImport buildElementImport(Object pack, Object me) {
-        if (pack instanceof UmlPackage && me instanceof ModelElement) {
-            ElementImport ei = createElementImport();
-            ei.setImportedElement((ModelElement) me);
-            ei.setUmlPackage((UmlPackage) pack);
-            return ei;
-        }
-        throw new IllegalArgumentException(
-                "To build an ElementImport we need a "
-                + "Package and a ModelElement.");
-    }
-
-
-    public UmlPackage createPackage() {
-        UmlPackage myUmlPackage =
-            getModelManagementPackage().getUmlPackage().createUmlPackage();
-        super.initialize(myUmlPackage);
-        return myUmlPackage;
-    }
-
-
-    public Object buildPackage(String name) {
-        UmlPackage pkg = createPackage();
-        pkg.setName(name);
-        return pkg;
-    }
-    
-
-    public Object createSubsystem() {
-        Subsystem mySubsystem =
-            getModelManagementPackage().getSubsystem().createSubsystem();
-        super.initialize(mySubsystem);
-        return mySubsystem;
-    }
-
-
-    public Object copyPackage(Object source, Object ns) {
-        if (!(source instanceof UmlPackage)) {
-            throw new IllegalArgumentException("source");
-        }
-        if (!(ns instanceof Namespace)) {
-            throw new IllegalArgumentException("namespace");
-        }
-
-        UmlPackage p = createPackage();
-        ((Namespace) ns).getOwnedElement().add(p);
-        doCopyPackage((UmlPackage) source, p);
-        return p;
-    }
-
-    /**
-     * Used by the copy functions. Do not call this function directly.
-     *
-     * @param source
-     *            The source package.
-     * @param target
-     *            The target package.
-     */
-    private void doCopyPackage(UmlPackage source, UmlPackage target) {
-        ((CoreFactoryMDRImpl) modelImpl.getCoreFactory())
-            .doCopyNamespace(source, target);
-    }
-
-    /**
-     * @param elem
-     *            to be deleted
-     */
-    void deleteElementImport(Object elem) {
-        if (!(elem instanceof ElementImport)) {
-            throw new IllegalArgumentException();
-        }
-
-    }
-
-    /**
-     * @param elem
-     *            to be deleted
-     */
-    void deleteModel(Object elem) {
-        if (!(elem instanceof Model)) {
-            throw new IllegalArgumentException();
-        }
-
-    }
-
-    /**
-     * @param elem
-     *            to be deleted
-     */
-    void deletePackage(Object elem) {
-        if (!(elem instanceof UmlPackage)) {
-            throw new IllegalArgumentException();
-        }
-
-    }
-
-    /**
-     * @param elem
-     *            to be deleted
-     */
-    void deleteSubsystem(Object elem) {
-        if (!(elem instanceof Subsystem)) {
-            throw new IllegalArgumentException();
-        }
-
-    }
-
+  }
 }

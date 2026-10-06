@@ -25,7 +25,6 @@
 package org.argouml.model.uml;
 
 import java.io.Writer;
-
 import org.argouml.model.ActivityGraphsFactory;
 import org.argouml.model.ActivityGraphsHelper;
 import org.argouml.model.AggregationKind;
@@ -66,327 +65,311 @@ import org.argouml.model.VisibilityKind;
 import org.argouml.model.XmiReader;
 import org.argouml.model.XmiWriter;
 
-/**
- * The handle to find all helper and factories.
- */
+/** The handle to find all helper and factories. */
 public class NSUMLModelImplementation implements ModelImplementation {
-    private Facade theFacade = new NSUMLModelFacade(this);
+  private Facade theFacade = new NSUMLModelFacade(this);
 
-    private ActivityGraphsFactory theActivityGraphsFactory =
-        new ActivityGraphsFactoryImpl(this);
-    private ActivityGraphsHelper theActivityGraphsHelper =
-        new ActivityGraphsHelperImpl(this);
-    private CollaborationsFactory theCollaborationsFactory =
-        new CollaborationsFactoryImpl(this);
-    private CollaborationsHelper theCollaborationsHelper =
-        new CollaborationsHelperImpl(this);
-    private CommonBehaviorFactory theCommonBehaviorFactory =
-        new CommonBehaviorFactoryImpl(this);
-    private CommonBehaviorHelper theCommonBehaviorHelper =
-        new CommonBehaviorHelperImpl(this);
-    private CopyHelper theCopyHelper = new CopyHelperImpl(this);
-    private CoreFactory theCoreFactory = new CoreFactoryImpl(this);
-    private CoreHelper theCoreHelper = new CoreHelperImpl(this);
-    private DataTypesFactory theDataTypesFactory =
-        new DataTypesFactoryImpl(this);
-    private DataTypesHelper theDataTypesHelper = new DataTypesHelperImpl(this);
-    private ExtensionMechanismsFactory theExtensionMechanismsFactory =
-        new ExtensionMechanismsFactoryImpl(this);
-    private ExtensionMechanismsHelper theExtensionMechanismsHelper =
-        new ExtensionMechanismsHelperImpl(this);
-    private ModelManagementFactory theModelManagementFactory =
-        new ModelManagementFactoryImpl(this);
-    private ModelManagementHelper theModelManagementHelper =
-        new ModelManagementHelperImpl(this);
-    private StateMachinesFactory theStateMachinesFactory =
-        new StateMachinesFactoryImpl(this);
-    private StateMachinesHelper theStateMachinesHelper =
-        new StateMachinesHelperImpl(this);
-    private UmlFactory theUmlFactory;
-    private UmlHelper theUmlHelper = new UmlHelperImpl(this);
-    private UseCasesFactory theUseCasesFactory = new UseCasesFactoryImpl(this);
-    private UseCasesHelper theUseCasesHelper = new UseCasesHelperImpl(this);
-    private ModelEventPump theModelEventPump = new NSUMLModelEventPump(this);
-    private MetaTypesImpl theMetaTypesObject = new MetaTypesImpl();
-    private EventAdapter theEventAdapter = new ExplorerNSUMLEventAdaptor();
+  private ActivityGraphsFactory theActivityGraphsFactory = new ActivityGraphsFactoryImpl(this);
+  private ActivityGraphsHelper theActivityGraphsHelper = new ActivityGraphsHelperImpl(this);
+  private CollaborationsFactory theCollaborationsFactory = new CollaborationsFactoryImpl(this);
+  private CollaborationsHelper theCollaborationsHelper = new CollaborationsHelperImpl(this);
+  private CommonBehaviorFactory theCommonBehaviorFactory = new CommonBehaviorFactoryImpl(this);
+  private CommonBehaviorHelper theCommonBehaviorHelper = new CommonBehaviorHelperImpl(this);
+  private CopyHelper theCopyHelper = new CopyHelperImpl(this);
+  private CoreFactory theCoreFactory = new CoreFactoryImpl(this);
+  private CoreHelper theCoreHelper = new CoreHelperImpl(this);
+  private DataTypesFactory theDataTypesFactory = new DataTypesFactoryImpl(this);
+  private DataTypesHelper theDataTypesHelper = new DataTypesHelperImpl(this);
+  private ExtensionMechanismsFactory theExtensionMechanismsFactory =
+      new ExtensionMechanismsFactoryImpl(this);
+  private ExtensionMechanismsHelper theExtensionMechanismsHelper =
+      new ExtensionMechanismsHelperImpl(this);
+  private ModelManagementFactory theModelManagementFactory = new ModelManagementFactoryImpl(this);
+  private ModelManagementHelper theModelManagementHelper = new ModelManagementHelperImpl(this);
+  private StateMachinesFactory theStateMachinesFactory = new StateMachinesFactoryImpl(this);
+  private StateMachinesHelper theStateMachinesHelper = new StateMachinesHelperImpl(this);
+  private UmlFactory theUmlFactory;
+  private UmlHelper theUmlHelper = new UmlHelperImpl(this);
+  private UseCasesFactory theUseCasesFactory = new UseCasesFactoryImpl(this);
+  private UseCasesHelper theUseCasesHelper = new UseCasesHelperImpl(this);
+  private ModelEventPump theModelEventPump = new NSUMLModelEventPump(this);
+  private MetaTypesImpl theMetaTypesObject = new MetaTypesImpl();
+  private EventAdapter theEventAdapter = new ExplorerNSUMLEventAdaptor();
 
-    private KindsImpl theKindsObject = new KindsImpl();
+  private KindsImpl theKindsObject = new KindsImpl();
 
-    private MementoCreationObserver mementoCreationObserver;
+  private MementoCreationObserver mementoCreationObserver;
 
-    /**
-     * @see org.argouml.model.ModelImplementation#getFacade()
-     */
-    public Facade getFacade() {
-        return theFacade;
+  /**
+   * @see org.argouml.model.ModelImplementation#getFacade()
+   */
+  public Facade getFacade() {
+    return theFacade;
+  }
+
+  /**
+   * @see org.argouml.model.ModelImplementation#getDiagramInterchangeModel() This implementation
+   *     returns null as NSUML is not aware of the OMG DI model.
+   */
+  public DiagramInterchangeModel getDiagramInterchangeModel() {
+    return null;
+  }
+
+  /**
+   * @see org.argouml.model.ModelImplementation#getModelEventPump()
+   */
+  public ModelEventPump getModelEventPump() {
+    return theModelEventPump;
+  }
+
+  /**
+   * @see org.argouml.model.ModelImplementation#getActivityGraphsFactory()
+   */
+  public ActivityGraphsFactory getActivityGraphsFactory() {
+    return theActivityGraphsFactory;
+  }
+
+  /**
+   * @see org.argouml.model.ModelImplementation#getActivityGraphsHelper()
+   */
+  public ActivityGraphsHelper getActivityGraphsHelper() {
+    return theActivityGraphsHelper;
+  }
+
+  /**
+   * @see org.argouml.model.ModelImplementation#getCollaborationsFactory()
+   */
+  public CollaborationsFactory getCollaborationsFactory() {
+    return theCollaborationsFactory;
+  }
+
+  /**
+   * @see org.argouml.model.ModelImplementation#getCollaborationsHelper()
+   */
+  public CollaborationsHelper getCollaborationsHelper() {
+    return theCollaborationsHelper;
+  }
+
+  /**
+   * @see org.argouml.model.ModelImplementation#getCommonBehaviorFactory()
+   */
+  public CommonBehaviorFactory getCommonBehaviorFactory() {
+    return theCommonBehaviorFactory;
+  }
+
+  /**
+   * @see org.argouml.model.ModelImplementation#getCommonBehaviorHelper()
+   */
+  public CommonBehaviorHelper getCommonBehaviorHelper() {
+    return theCommonBehaviorHelper;
+  }
+
+  /**
+   * @return The Copy helper.
+   */
+  public CopyHelper getCopyHelper() {
+    return theCopyHelper;
+  }
+
+  /**
+   * @see org.argouml.model.ModelImplementation#getCoreFactory()
+   */
+  public CoreFactory getCoreFactory() {
+    return theCoreFactory;
+  }
+
+  /**
+   * @see org.argouml.model.ModelImplementation#getCoreHelper()
+   */
+  public CoreHelper getCoreHelper() {
+    return theCoreHelper;
+  }
+
+  /**
+   * @see org.argouml.model.ModelImplementation#getDataTypesFactory()
+   */
+  public DataTypesFactory getDataTypesFactory() {
+    return theDataTypesFactory;
+  }
+
+  /**
+   * @see org.argouml.model.ModelImplementation#getDataTypesHelper()
+   */
+  public DataTypesHelper getDataTypesHelper() {
+    return theDataTypesHelper;
+  }
+
+  /**
+   * @see org.argouml.model.ModelImplementation#getExtensionMechanismsFactory()
+   */
+  public ExtensionMechanismsFactory getExtensionMechanismsFactory() {
+    return theExtensionMechanismsFactory;
+  }
+
+  /**
+   * @see org.argouml.model.ModelImplementation#getExtensionMechanismsHelper()
+   */
+  public ExtensionMechanismsHelper getExtensionMechanismsHelper() {
+    return theExtensionMechanismsHelper;
+  }
+
+  /**
+   * @see org.argouml.model.ModelImplementation#getEventAdapter()
+   */
+  public EventAdapter getEventAdapter() {
+    return theEventAdapter;
+  }
+
+  /**
+   * @see org.argouml.model.ModelImplementation#getModelManagementFactory()
+   */
+  public ModelManagementFactory getModelManagementFactory() {
+    return theModelManagementFactory;
+  }
+
+  /**
+   * @see org.argouml.model.ModelImplementation#getModelManagementHelper()
+   */
+  public ModelManagementHelper getModelManagementHelper() {
+    return theModelManagementHelper;
+  }
+
+  /**
+   * @see org.argouml.model.ModelImplementation#getStateMachinesFactory()
+   */
+  public StateMachinesFactory getStateMachinesFactory() {
+    return theStateMachinesFactory;
+  }
+
+  /**
+   * @see org.argouml.model.ModelImplementation#getStateMachinesHelper()
+   */
+  public StateMachinesHelper getStateMachinesHelper() {
+    return theStateMachinesHelper;
+  }
+
+  /**
+   * @see org.argouml.model.ModelImplementation#getUmlFactory()
+   */
+  public synchronized UmlFactory getUmlFactory() {
+    if (theUmlFactory == null) {
+      theUmlFactory = new UmlFactoryImpl(this);
     }
+    return theUmlFactory;
+  }
 
-    /**
-     * @see org.argouml.model.ModelImplementation#getDiagramInterchangeModel()
-     * This implementation returns null as NSUML is not aware of the OMG DI
-     * model.
-     */
-    public DiagramInterchangeModel getDiagramInterchangeModel() {
-        return null;
-    }
+  /**
+   * @see org.argouml.model.ModelImplementation#getUmlHelper()
+   */
+  public UmlHelper getUmlHelper() {
+    return theUmlHelper;
+  }
 
-    /**
-     * @see org.argouml.model.ModelImplementation#getModelEventPump()
-     */
-    public ModelEventPump getModelEventPump() {
-        return theModelEventPump;
-    }
+  /**
+   * @see org.argouml.model.ModelImplementation#getUseCasesFactory()
+   */
+  public UseCasesFactory getUseCasesFactory() {
+    return theUseCasesFactory;
+  }
 
-    /**
-     * @see org.argouml.model.ModelImplementation#getActivityGraphsFactory()
-     */
-    public ActivityGraphsFactory getActivityGraphsFactory() {
-        return theActivityGraphsFactory;
-    }
+  /**
+   * @see org.argouml.model.ModelImplementation#getUseCasesHelper()
+   */
+  public UseCasesHelper getUseCasesHelper() {
+    return theUseCasesHelper;
+  }
 
-    /**
-     * @see org.argouml.model.ModelImplementation#getActivityGraphsHelper()
-     */
-    public ActivityGraphsHelper getActivityGraphsHelper() {
-        return theActivityGraphsHelper;
-    }
+  /**
+   * Getter for the MetaTypes object.
+   *
+   * @return The MetaTypes object.
+   */
+  public MetaTypes getMetaTypes() {
+    return theMetaTypesObject;
+  }
 
-    /**
-     * @see org.argouml.model.ModelImplementation#getCollaborationsFactory()
-     */
-    public CollaborationsFactory getCollaborationsFactory() {
-        return theCollaborationsFactory;
-    }
+  /**
+   * @see org.argouml.model.ModelImplementation#getChangeableKind()
+   */
+  public ChangeableKind getChangeableKind() {
+    return theKindsObject;
+  }
 
-    /**
-     * @see org.argouml.model.ModelImplementation#getCollaborationsHelper()
-     */
-    public CollaborationsHelper getCollaborationsHelper() {
-        return theCollaborationsHelper;
-    }
+  /**
+   * @see org.argouml.model.ModelImplementation#getAggregationKind()
+   */
+  public AggregationKind getAggregationKind() {
+    return theKindsObject;
+  }
 
-    /**
-     * @see org.argouml.model.ModelImplementation#getCommonBehaviorFactory()
-     */
-    public CommonBehaviorFactory getCommonBehaviorFactory() {
-        return theCommonBehaviorFactory;
-    }
+  /**
+   * @see org.argouml.model.ModelImplementation#getPseudostateKind()
+   */
+  public PseudostateKind getPseudostateKind() {
+    return theKindsObject;
+  }
 
-    /**
-     * @see org.argouml.model.ModelImplementation#getCommonBehaviorHelper()
-     */
-    public CommonBehaviorHelper getCommonBehaviorHelper() {
-        return theCommonBehaviorHelper;
-    }
+  /**
+   * @see org.argouml.model.ModelImplementation#getScopeKind()
+   */
+  public ScopeKind getScopeKind() {
+    return theKindsObject;
+  }
 
-    /**
-     * @return The Copy helper.
-     */
-    public CopyHelper getCopyHelper() {
-        return theCopyHelper;
-    }
+  /**
+   * @see org.argouml.model.ModelImplementation#getConcurrencyKind()
+   */
+  public ConcurrencyKind getConcurrencyKind() {
+    return theKindsObject;
+  }
 
-    /**
-     * @see org.argouml.model.ModelImplementation#getCoreFactory()
-     */
-    public CoreFactory getCoreFactory() {
-        return theCoreFactory;
-    }
+  /**
+   * @see org.argouml.model.ModelImplementation#getDirectionKind()
+   */
+  public DirectionKind getDirectionKind() {
+    return theKindsObject;
+  }
 
-    /**
-     * @see org.argouml.model.ModelImplementation#getCoreHelper()
-     */
-    public CoreHelper getCoreHelper() {
-        return theCoreHelper;
-    }
+  /**
+   * @see org.argouml.model.ModelImplementation#getOrderingKind()
+   */
+  public OrderingKind getOrderingKind() {
+    return theKindsObject;
+  }
 
-    /**
-     * @see org.argouml.model.ModelImplementation#getDataTypesFactory()
-     */
-    public DataTypesFactory getDataTypesFactory() {
-        return theDataTypesFactory;
-    }
+  /**
+   * @see org.argouml.model.ModelImplementation#getVisibilityKind()
+   */
+  public VisibilityKind getVisibilityKind() {
+    return theKindsObject;
+  }
 
-    /**
-     * @see org.argouml.model.ModelImplementation#getDataTypesHelper()
-     */
-    public DataTypesHelper getDataTypesHelper() {
-        return theDataTypesHelper;
-    }
+  /**
+   * @see org.argouml.model.ModelImplementation#getXmiReader()
+   */
+  public XmiReader getXmiReader() throws UmlException {
+    return new XmiReaderImpl();
+  }
 
-    /**
-     * @see org.argouml.model.ModelImplementation#getExtensionMechanismsFactory()
-     */
-    public ExtensionMechanismsFactory getExtensionMechanismsFactory() {
-        return theExtensionMechanismsFactory;
-    }
+  /**
+   * @see org.argouml.model.ModelImplementation#getXmiWriter( java.lang.Object, java.io.Writer)
+   */
+  public XmiWriter getXmiWriter(Object model, Writer writer) throws UmlException {
+    return new XmiWriterImpl(model, writer);
+  }
 
-    /**
-     * @see org.argouml.model.ModelImplementation#getExtensionMechanismsHelper()
-     */
-    public ExtensionMechanismsHelper getExtensionMechanismsHelper() {
-        return theExtensionMechanismsHelper;
-    }
+  /**
+   * @see org.argouml.model.ModelImplementation#setMementoCreationObserver(
+   *     org.argouml.model.MementoCreationObserver)
+   */
+  public void setMementoCreationObserver(MementoCreationObserver observer) {
+    mementoCreationObserver = observer;
+  }
 
-    /**
-     * @see org.argouml.model.ModelImplementation#getEventAdapter()
-     */
-    public EventAdapter getEventAdapter() {
-        return theEventAdapter;
-    }
-
-    /**
-     * @see org.argouml.model.ModelImplementation#getModelManagementFactory()
-     */
-    public ModelManagementFactory getModelManagementFactory() {
-        return theModelManagementFactory;
-    }
-
-    /**
-     * @see org.argouml.model.ModelImplementation#getModelManagementHelper()
-     */
-    public ModelManagementHelper getModelManagementHelper() {
-        return theModelManagementHelper;
-    }
-
-    /**
-     * @see org.argouml.model.ModelImplementation#getStateMachinesFactory()
-     */
-    public StateMachinesFactory getStateMachinesFactory() {
-        return theStateMachinesFactory;
-    }
-
-    /**
-     * @see org.argouml.model.ModelImplementation#getStateMachinesHelper()
-     */
-    public StateMachinesHelper getStateMachinesHelper() {
-        return theStateMachinesHelper;
-    }
-
-    /**
-     * @see org.argouml.model.ModelImplementation#getUmlFactory()
-     */
-    public synchronized UmlFactory getUmlFactory() {
-        if (theUmlFactory == null) {
-            theUmlFactory = new UmlFactoryImpl(this);
-        }
-        return theUmlFactory;
-    }
-
-    /**
-     * @see org.argouml.model.ModelImplementation#getUmlHelper()
-     */
-    public UmlHelper getUmlHelper() {
-        return theUmlHelper;
-    }
-
-    /**
-     * @see org.argouml.model.ModelImplementation#getUseCasesFactory()
-     */
-    public UseCasesFactory getUseCasesFactory() {
-        return theUseCasesFactory;
-    }
-
-    /**
-     * @see org.argouml.model.ModelImplementation#getUseCasesHelper()
-     */
-    public UseCasesHelper getUseCasesHelper() {
-        return theUseCasesHelper;
-    }
-
-    /**
-     * Getter for the MetaTypes object.
-     *
-     * @return The MetaTypes object.
-     */
-    public MetaTypes getMetaTypes() {
-        return theMetaTypesObject;
-    }
-
-    /**
-     * @see org.argouml.model.ModelImplementation#getChangeableKind()
-     */
-    public ChangeableKind getChangeableKind() {
-        return theKindsObject;
-    }
-
-    /**
-     * @see org.argouml.model.ModelImplementation#getAggregationKind()
-     */
-    public AggregationKind getAggregationKind() {
-        return theKindsObject;
-    }
-
-    /**
-     * @see org.argouml.model.ModelImplementation#getPseudostateKind()
-     */
-    public PseudostateKind getPseudostateKind() {
-        return theKindsObject;
-    }
-
-    /**
-     * @see org.argouml.model.ModelImplementation#getScopeKind()
-     */
-    public ScopeKind getScopeKind() {
-        return theKindsObject;
-    }
-
-    /**
-     * @see org.argouml.model.ModelImplementation#getConcurrencyKind()
-     */
-    public ConcurrencyKind getConcurrencyKind() {
-        return theKindsObject;
-    }
-
-    /**
-     * @see org.argouml.model.ModelImplementation#getDirectionKind()
-     */
-    public DirectionKind getDirectionKind() {
-        return theKindsObject;
-    }
-
-    /**
-     * @see org.argouml.model.ModelImplementation#getOrderingKind()
-     */
-    public OrderingKind getOrderingKind() {
-        return theKindsObject;
-    }
-
-    /**
-     * @see org.argouml.model.ModelImplementation#getVisibilityKind()
-     */
-    public VisibilityKind getVisibilityKind() {
-        return theKindsObject;
-    }
-
-    /**
-     * @see org.argouml.model.ModelImplementation#getXmiReader()
-     */
-    public XmiReader getXmiReader() throws UmlException {
-        return new XmiReaderImpl();
-    }
-
-    /**
-     * @see org.argouml.model.ModelImplementation#getXmiWriter(
-     *         java.lang.Object, java.io.Writer)
-     */
-    public XmiWriter getXmiWriter(Object model, Writer writer)
-        throws UmlException {
-        return new XmiWriterImpl(model, writer);
-    }
-
-    /**
-     * @see org.argouml.model.ModelImplementation#setMementoCreationObserver(
-     *         org.argouml.model.MementoCreationObserver)
-     */
-    public void setMementoCreationObserver(MementoCreationObserver observer) {
-        mementoCreationObserver = observer;
-    }
-
-    /**
-     * @see org.argouml.model.ModelImplementation#getMementoCreationObserver()
-     */
-    public MementoCreationObserver getMementoCreationObserver() {
-        return mementoCreationObserver;
-    }
+  /**
+   * @see org.argouml.model.ModelImplementation#getMementoCreationObserver()
+   */
+  public MementoCreationObserver getMementoCreationObserver() {
+    return mementoCreationObserver;
+  }
 }

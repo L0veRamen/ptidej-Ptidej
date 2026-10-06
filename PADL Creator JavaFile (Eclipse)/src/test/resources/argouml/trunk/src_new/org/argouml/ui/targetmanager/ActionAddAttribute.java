@@ -25,9 +25,7 @@
 package org.argouml.ui.targetmanager;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.Action;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.i18n.Translator;
 import org.argouml.kernel.Project;
@@ -36,55 +34,48 @@ import org.argouml.model.Model;
 import org.tigris.gef.undo.UndoableAction;
 
 /**
- * Action to add an attribute to a classifier.<p>
+ * Action to add an attribute to a classifier.
+ *
+ * <p>
  *
  * @stereotype singleton
  */
 class ActionAddAttribute extends UndoableAction {
-    /**
-     * The constructor for this class.
-     */
-    ActionAddAttribute() {
-        super(Translator.localize("button.new-attribute"),
-                ResourceLoaderWrapper.lookupIcon("button.new-attribute"));
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize("button.new-attribute"));
+  /** The constructor for this class. */
+  ActionAddAttribute() {
+    super(
+        Translator.localize("button.new-attribute"),
+        ResourceLoaderWrapper.lookupIcon("button.new-attribute"));
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize("button.new-attribute"));
+  }
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+
+    super.actionPerformed(ae);
+
+    Object target = TargetManager.getInstance().getModelTarget();
+    Object classifier = null;
+
+    if (Model.getFacade().isAClassifier(target) || Model.getFacade().isAAssociationEnd(target)) {
+      classifier = target;
+    } else if (Model.getFacade().isAAttribute(target)) {
+      classifier = Model.getFacade().getOwner(target);
+    } else {
+      return;
     }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
+    Project project = ProjectManager.getManager().getCurrentProject();
 
-        super.actionPerformed(ae);
+    Object intType = project.findType("int");
+    Object model = project.getModel();
+    Object attr = Model.getCoreFactory().buildAttribute(classifier, model, intType);
+    TargetManager.getInstance().setTarget(attr);
+  }
 
-        Object target = TargetManager.getInstance().getModelTarget();
-        Object classifier = null;
-
-        if (Model.getFacade().isAClassifier(target)
-                || Model.getFacade().isAAssociationEnd(target)) {
-            classifier = target;
-        } else if (Model.getFacade().isAAttribute(target)) {
-            classifier = Model.getFacade().getOwner(target);
-        } else {
-            return;
-        }
-
-        Project project = ProjectManager.getManager().getCurrentProject();
-
-        Object intType = project.findType("int");
-        Object model = project.getModel();
-        Object attr =
-            Model.getCoreFactory().buildAttribute(
-                classifier,
-                model,
-                intType);
-        TargetManager.getInstance().setTarget(attr);
-    }
-
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -111785878370086329L;
+  /** The UID. */
+  private static final long serialVersionUID = -111785878370086329L;
 } /* end class ActionAddAttribute */

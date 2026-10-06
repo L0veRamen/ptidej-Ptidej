@@ -27,25 +27,22 @@ package org.argouml.application.api;
 import javax.swing.JPanel;
 
 /**
- * An interface which must be implemented as the UI for
- * tabs used on the about panel.
+ * An interface which must be implemented as the UI for tabs used on the about panel.
  *
  * @author Andreas Rueckert
  * @since 0.13.2
  */
 public interface AboutTabPanel {
 
-    // Methods
+  // Methods
 
-    /**
-     * @return the unlocalized settings tab name.
-     */
-    String getTabKey();
+  /**
+   * @return the unlocalized settings tab name.
+   */
+  String getTabKey();
 
-    /**
-     * @return the JPanel which implements the tab.
-     */
-    JPanel getTabPanel();
-
+  /**
+   * @return the JPanel which implements the tab.
+   */
+  JPanel getTabPanel();
 } /* End interface AboutTabPanel */
-

@@ -25,7 +25,6 @@
 package org.argouml.core.propertypanels.ui;
 
 import javax.swing.DefaultListModel;
-
 import org.argouml.model.Model;
 import org.argouml.ui.targetmanager.TargetEvent;
 import org.argouml.ui.targetmanager.TargetListener;
@@ -38,40 +37,38 @@ import org.argouml.ui.targetmanager.TargetManager;
  */
 class EnumerationListModel extends DefaultListModel implements TargetListener {
 
-    /**
-     * Constructor for EnumerationListModel.
-     */
-    public EnumerationListModel() {
-        super();
-        setTarget(TargetManager.getInstance().getModelTarget());
-        TargetManager.getInstance().addTargetListener(this);
-    }
+  /** Constructor for EnumerationListModel. */
+  public EnumerationListModel() {
+    super();
+    setTarget(TargetManager.getInstance().getModelTarget());
+    TargetManager.getInstance().addTargetListener(this);
+  }
 
-    /*
-     * @see TargetListener#targetAdded(TargetEvent)
-     */
-    public void targetAdded(TargetEvent e) {
-        setTarget(e.getNewTarget());
-    }
+  /*
+   * @see TargetListener#targetAdded(TargetEvent)
+   */
+  public void targetAdded(TargetEvent e) {
+    setTarget(e.getNewTarget());
+  }
 
-    /*
-     * @see TargetListener#targetRemoved(TargetEvent)
-     */
-    public void targetRemoved(TargetEvent e) {
-        setTarget(e.getNewTarget());
-    }
+  /*
+   * @see TargetListener#targetRemoved(TargetEvent)
+   */
+  public void targetRemoved(TargetEvent e) {
+    setTarget(e.getNewTarget());
+  }
 
-    /*
-     * @see TargetListener#targetSet(TargetEvent)
-     */
-    public void targetSet(TargetEvent e) {
-        setTarget(e.getNewTarget());
-    }
+  /*
+   * @see TargetListener#targetSet(TargetEvent)
+   */
+  public void targetSet(TargetEvent e) {
+    setTarget(e.getNewTarget());
+  }
 
-    public void setTarget(Object t) {
-        removeAllElements();
-        if (Model.getFacade().isAEnumerationLiteral(t)) {
-            addElement(Model.getFacade().getEnumeration(t));
-        }
+  public void setTarget(Object t) {
+    removeAllElements();
+    if (Model.getFacade().isAEnumerationLiteral(t)) {
+      addElement(Model.getFacade().getEnumeration(t));
     }
+  }
 }

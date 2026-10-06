@@ -27,35 +27,34 @@ package org.argouml.uml.diagram.ui;
 import org.argouml.model.Model;
 
 class ActionVisibilityPrivate extends AbstractActionRadioMenuItem {
-    /**
-     * The constructor.
-     *
-     * @param o the target
-     * @param element TODO:
-     */
-    public ActionVisibilityPrivate(Object o) {
-        super("checkbox.visibility.private-uc", NO_ICON);
-        putValue("SELECTED", new Boolean(
-            Model.getVisibilityKind().getPrivate()
-                .equals(valueOfTarget(o))));
-    }
-    
-    /**
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement.AbstractActionRadioMenuItem#toggleValueOfTarget(java.lang.Object)
-     */
-    void toggleValueOfTarget(Object t) {
-        Model.getCoreHelper().setVisibility(t,
-            Model.getVisibilityKind().getPrivate());
-    }
-    
-    /**
-     * Make use of the default visibility, which is public...
-     * TODO: centralise this knowledge.
-     * 
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement.AbstractActionRadioMenuItem#valueOfTarget(java.lang.Object)
-     */
-    Object valueOfTarget(Object t) {
-        Object v = Model.getFacade().getVisibility(t);
-        return v == null ? Model.getVisibilityKind().getPublic() : v;
-    }
+  /**
+   * The constructor.
+   *
+   * @param o the target
+   * @param element TODO:
+   */
+  public ActionVisibilityPrivate(Object o) {
+    super("checkbox.visibility.private-uc", NO_ICON);
+    putValue(
+        "SELECTED", new Boolean(Model.getVisibilityKind().getPrivate().equals(valueOfTarget(o))));
+  }
+
+  /**
+   * @see
+   *     org.argouml.uml.diagram.ui.FigNodeModelElement.AbstractActionRadioMenuItem#toggleValueOfTarget(java.lang.Object)
+   */
+  void toggleValueOfTarget(Object t) {
+    Model.getCoreHelper().setVisibility(t, Model.getVisibilityKind().getPrivate());
+  }
+
+  /**
+   * Make use of the default visibility, which is public... TODO: centralise this knowledge.
+   *
+   * @see
+   *     org.argouml.uml.diagram.ui.FigNodeModelElement.AbstractActionRadioMenuItem#valueOfTarget(java.lang.Object)
+   */
+  Object valueOfTarget(Object t) {
+    Object v = Model.getFacade().getVisibility(t);
+    return v == null ? Model.getVisibilityKind().getPublic() : v;
+  }
 }

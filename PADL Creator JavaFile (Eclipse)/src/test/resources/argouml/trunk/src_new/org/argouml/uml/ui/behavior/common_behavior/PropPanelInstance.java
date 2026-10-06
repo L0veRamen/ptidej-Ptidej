@@ -27,7 +27,6 @@ package org.argouml.uml.ui.behavior.common_behavior;
 import javax.swing.ImageIcon;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-
 import org.argouml.uml.ui.UMLLinkedList;
 import org.argouml.uml.ui.foundation.core.PropPanelModelElement;
 import org.tigris.swidgets.Orientation;
@@ -39,50 +38,48 @@ import org.tigris.swidgets.Orientation;
  */
 public abstract class PropPanelInstance extends PropPanelModelElement {
 
-    private JScrollPane stimuliSenderScroll;
+  private JScrollPane stimuliSenderScroll;
 
-    private JScrollPane stimuliReceiverScroll;
+  private JScrollPane stimuliReceiverScroll;
 
-    private static UMLInstanceSenderStimulusListModel
-        stimuliSenderListModel = new UMLInstanceSenderStimulusListModel();
+  private static UMLInstanceSenderStimulusListModel stimuliSenderListModel =
+      new UMLInstanceSenderStimulusListModel();
 
-    private static UMLInstanceReceiverStimulusListModel
-        stimuliReceiverListModel = new UMLInstanceReceiverStimulusListModel();
+  private static UMLInstanceReceiverStimulusListModel stimuliReceiverListModel =
+      new UMLInstanceReceiverStimulusListModel();
 
-    /**
-     * The constructor.
-     *
-     * @param name the name for the properties panel
-     * @param icon the icon shown next to the name
-     * @param orientation the orientation
-     */
-    public PropPanelInstance(String name, ImageIcon icon,
-            Orientation orientation) {
-        super(name, icon, orientation);
+  /**
+   * The constructor.
+   *
+   * @param name the name for the properties panel
+   * @param icon the icon shown next to the name
+   * @param orientation the orientation
+   */
+  public PropPanelInstance(String name, ImageIcon icon, Orientation orientation) {
+    super(name, icon, orientation);
+  }
+
+  /**
+   * @return the scrollpane for stimuli sender
+   */
+  protected JScrollPane getStimuliSenderScroll() {
+    if (stimuliSenderScroll == null) {
+      JList stimuliSenderList = new UMLLinkedList(stimuliSenderListModel);
+      stimuliSenderList.setVisibleRowCount(1);
+      stimuliSenderScroll = new JScrollPane(stimuliSenderList);
     }
+    return stimuliSenderScroll;
+  }
 
-    /**
-     * @return the scrollpane for stimuli sender
-     */
-    protected JScrollPane getStimuliSenderScroll() {
-        if (stimuliSenderScroll == null) {
-            JList stimuliSenderList = new UMLLinkedList(stimuliSenderListModel);
-            stimuliSenderList.setVisibleRowCount(1);
-            stimuliSenderScroll = new JScrollPane(stimuliSenderList);
-        }
-        return stimuliSenderScroll;
+  /**
+   * @return the scrollpane for stimuli receiver
+   */
+  protected JScrollPane getStimuliReceiverScroll() {
+    if (stimuliReceiverScroll == null) {
+      JList stimuliReceiverList = new UMLLinkedList(stimuliReceiverListModel);
+      stimuliReceiverList.setVisibleRowCount(1);
+      stimuliReceiverScroll = new JScrollPane(stimuliReceiverList);
     }
-
-    /**
-     * @return the scrollpane for stimuli receiver
-     */
-    protected JScrollPane getStimuliReceiverScroll() {
-        if (stimuliReceiverScroll == null) {
-            JList stimuliReceiverList = new UMLLinkedList(
-                    stimuliReceiverListModel);
-            stimuliReceiverList.setVisibleRowCount(1);
-            stimuliReceiverScroll = new JScrollPane(stimuliReceiverList);
-        }
-        return stimuliReceiverScroll;
-    }
+    return stimuliReceiverScroll;
+  }
 } /* end class PropPanelInstance */

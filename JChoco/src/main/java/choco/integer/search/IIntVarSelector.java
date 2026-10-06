@@ -16,9 +16,10 @@ import choco.search.IVarSelector;
  * an interface for objects controlling the selection of an search variable (for heuristic purposes)
  */
 public interface IIntVarSelector extends IVarSelector {
-	/**
-	 * the IIntVarSelector can be asked to return an {@link choco.integer.var.IntDomainVar}
-	 * @return a non instantiated search variable
-	 */
-	public choco.integer.var.IntDomainVar selectIntVar();
+  /**
+   * the IIntVarSelector can be asked to return an {@link choco.integer.var.IntDomainVar}
+   *
+   * @return a non instantiated search variable
+   */
+  public choco.integer.var.IntDomainVar selectIntVar();
 }

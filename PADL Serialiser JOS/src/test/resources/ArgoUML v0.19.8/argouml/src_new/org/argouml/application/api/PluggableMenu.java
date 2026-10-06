@@ -23,87 +23,66 @@
 // UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 package org.argouml.application.api;
+
 import javax.swing.JMenuItem;
 
 /**
- * An interface which identifies an ArgoUML plug-in to the menu.
- * Plug-ins are replacements or additions to standard Argo classes.
+ * An interface which identifies an ArgoUML plug-in to the menu. Plug-ins are replacements or
+ * additions to standard Argo classes.
  *
- * PluggableMenu require two criteria.  The first is a JMenuItem.  The
- * second is an unlocalized string which identifies the menu
- * requesting the plugin, such as "File" or "Edit".
+ * <p>PluggableMenu require two criteria. The first is a JMenuItem. The second is an unlocalized
+ * string which identifies the menu requesting the plugin, such as "File" or "Edit".
  *
  * @author Thierry Lach
  * @since 0.9.4
  */
 public interface PluggableMenu extends Pluggable {
 
-    /* NOTE: Don't make the KEY_ strings final since the string
-       gets optimized into referring source code at compile time then.
-       We DO want to use THIS instance of the string in case we want to
-       change it in the future.
-     */
+  /* NOTE: Don't make the KEY_ strings final since the string
+    gets optimized into referring source code at compile time then.
+    We DO want to use THIS instance of the string in case we want to
+    change it in the future.
+  */
 
-    /**
-     * Key looked for in ProjectBrowser for File Import submenu.
-     */
-    String KEY_FILE_IMPORT = "File:Import";
+  /** Key looked for in ProjectBrowser for File Import submenu. */
+  String KEY_FILE_IMPORT = "File:Import";
 
-    /**
-     * Key looked for in ProjectBrowser for View menu.
-     */
-    String KEY_VIEW = "View";
+  /** Key looked for in ProjectBrowser for View menu. */
+  String KEY_VIEW = "View";
 
-    /**
-     * Key looked for in ProjectBrowser for Create Diagram menu.
-     */
-    String KEY_CREATE_DIAGRAMS = "Create Diagrams";
+  /** Key looked for in ProjectBrowser for Create Diagram menu. */
+  String KEY_CREATE_DIAGRAMS = "Create Diagrams";
 
-    /**
-     * Key looked for in ProjectBrowser for Arrange menu.
-     */
-    String KEY_ARRANGE = "Arrange";
+  /** Key looked for in ProjectBrowser for Arrange menu. */
+  String KEY_ARRANGE = "Arrange";
 
-    /**
-     * Key looked for in ProjectBrowser for Generate menu.
-     */
-    String KEY_GENERATE = "Generate";
+  /** Key looked for in ProjectBrowser for Generate menu. */
+  String KEY_GENERATE = "Generate";
 
-    /**
-     * Key looked for in ProjectBrowser for Tools menu.
-     */
-    String KEY_TOOLS = "Tools";
+  /** Key looked for in ProjectBrowser for Tools menu. */
+  String KEY_TOOLS = "Tools";
 
-    /**
-     * Key looked for in ProjectBrowser for Help menu.
-     */
-    String KEY_HELP = "Help";
+  /** Key looked for in ProjectBrowser for Help menu. */
+  String KEY_HELP = "Help";
 
+  /**
+   * Return the JMenuItem controlled by the plugin under the specific context. One menu plugin may
+   * control multiple menu items.
+   *
+   * @param context array of objects as created by {@link #buildContext(JMenuItem, String) }.
+   * @return A JMenuItem object controlled by the plug-in.
+   * @since ARGO0.11.3
+   * @author Thierry Lach
+   */
+  JMenuItem getMenuItem(Object[] context);
 
-    /**
-     * Return the JMenuItem controlled by the plugin under the
-     * specific context.  One menu plugin may control multiple menu
-     * items.
-     *
-     * @param context array of objects
-     *            as created by {@link #buildContext(JMenuItem, String) }.
-     *
-     * @return A JMenuItem object controlled by the plug-in.
-     *
-     * @since ARGO0.11.3
-     * @author Thierry Lach
-     */
-    JMenuItem getMenuItem(Object[] context);
-
-    /**
-     * Helper to create a context recognized by
-     * {@link org.argouml.application.api.Pluggable#inContext(Object[])}.
-     *
-     * @param parentMenuItem menu item
-     * @param menuType menu name
-     * @return the proper context array.
-     */
-    Object[] buildContext(JMenuItem parentMenuItem, String menuType);
-
+  /**
+   * Helper to create a context recognized by {@link
+   * org.argouml.application.api.Pluggable#inContext(Object[])}.
+   *
+   * @param parentMenuItem menu item
+   * @param menuType menu name
+   * @return the proper context array.
+   */
+  Object[] buildContext(JMenuItem parentMenuItem, String menuType);
 } /* End interface PluggableMenu */
-

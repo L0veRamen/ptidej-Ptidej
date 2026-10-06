@@ -27,24 +27,21 @@ package org.argouml.uml.notation;
 import org.argouml.model.Model;
 
 /**
- * This abstract class forms the basis of all Notation providers
- * for the name of an association-role.
- * Subclass this for all languages.
- * 
+ * This abstract class forms the basis of all Notation providers for the name of an
+ * association-role. Subclass this for all languages.
+ *
  * @author michiel
  */
 public abstract class AssociationRoleNotation extends NotationProvider {
-    
-    /**
-     * The constructor.
-     *
-     * @param role the given associationRole
-     */
-    public AssociationRoleNotation(Object role) {
-        if (!Model.getFacade().isAAssociationRole(role)) {
-            throw new IllegalArgumentException(
-                    "This is not an AssociationRole.");
-        }
-    }
 
+  /**
+   * The constructor.
+   *
+   * @param role the given associationRole
+   */
+  public AssociationRoleNotation(Object role) {
+    if (!Model.getFacade().isAAssociationRole(role)) {
+      throw new IllegalArgumentException("This is not an AssociationRole.");
+    }
+  }
 }

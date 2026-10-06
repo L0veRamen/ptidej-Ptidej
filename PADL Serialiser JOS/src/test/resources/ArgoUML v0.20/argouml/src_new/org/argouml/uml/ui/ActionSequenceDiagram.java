@@ -25,7 +25,6 @@
 package org.argouml.uml.ui;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.Model;
 import org.argouml.ui.explorer.ExplorerEventAdaptor;
@@ -35,71 +34,63 @@ import org.argouml.uml.diagram.sequence.ui.UMLSequenceDiagram;
 import org.argouml.uml.diagram.ui.UMLDiagram;
 
 /**
- * Action to add a new sequence diagram.<p>
+ * Action to add a new sequence diagram.
  *
- * Fully rebuild starting 1-8-2003<p>
+ * <p>Fully rebuild starting 1-8-2003
  *
- * This action is subclassed from UMLChangeAction and not
- * ActionAddDiagram since the namespace stuff in ActionAddDiagram
- * should be refactored out.<p>
+ * <p>This action is subclassed from UMLChangeAction and not ActionAddDiagram since the namespace
+ * stuff in ActionAddDiagram should be refactored out.
+ *
+ * <p>
  *
  * @author jaap.branderhorst@xs4all.nl
  */
 public final class ActionSequenceDiagram extends UMLAction {
 
-    ////////////////////////////////////////////////////////////////
-    // static variables
+  ////////////////////////////////////////////////////////////////
+  // static variables
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    /**
-     * Constructor.
-     */
-    public ActionSequenceDiagram() {
-        super("action.sequence-diagram", true, true);
+  /** Constructor. */
+  public ActionSequenceDiagram() {
+    super("action.sequence-diagram", true, true);
+  }
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    Object target = TargetManager.getInstance().getModelTarget();
+    Object owner = null;
+    if (Model.getFacade().isAClassifier(target)) {
+      owner = Model.getFacade().getNamespace(target);
+    } else if (Model.getFacade().isAOperation(target)) {
+      owner = Model.getFacade().getOwner(target);
+    }
+    if (owner == null) return; // The UML allows for this. We don't.
+    Object collaboration = Model.getCollaborationsFactory().buildCollaboration(owner, target);
+    UMLDiagram diagram =
+        (UMLDiagram)
+            DiagramFactory.getInstance()
+                .createDiagram(UMLSequenceDiagram.class, collaboration, null);
+
+    ProjectManager.getManager().getCurrentProject().addMember(diagram);
+    TargetManager.getInstance().setTarget(diagram);
+    ExplorerEventAdaptor.getInstance().modelElementChanged(owner);
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLAction#shouldBeEnabled()
+   */
+  public boolean shouldBeEnabled() {
+    Object target = TargetManager.getInstance().getModelTarget();
+    if (Model.getFacade().isAClassifier(target) || Model.getFacade().isAOperation(target)) {
+      return true;
     }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        Object target = TargetManager.getInstance().getModelTarget();
-        Object owner = null;
-        if (Model.getFacade().isAClassifier(target)) {
-            owner = Model.getFacade().getNamespace(target);
-        } else if (Model.getFacade().isAOperation(target)) {
-            owner = Model.getFacade().getOwner(target);
-        }
-        if (owner == null) return; // The UML allows for this. We don't.
-        Object collaboration =
-            Model.getCollaborationsFactory().buildCollaboration(
-                owner,
-                target);
-        UMLDiagram diagram =
-            (UMLDiagram)DiagramFactory.getInstance().createDiagram(
-                UMLSequenceDiagram.class,
-                collaboration,
-                null);
-
-        ProjectManager.getManager().getCurrentProject().addMember(diagram);
-        TargetManager.getInstance().setTarget(diagram);
-        ExplorerEventAdaptor.getInstance().modelElementChanged(owner);
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLAction#shouldBeEnabled()
-     */
-    public boolean shouldBeEnabled() {
-        Object target = TargetManager.getInstance().getModelTarget();
-        if (Model.getFacade().isAClassifier(target)
-                || Model.getFacade().isAOperation(target)) {
-            return true;
-        }
-
-        return false;
-    }
-
-
+    return false;
+  }
 } /* end class ActionSequenceDiagram */

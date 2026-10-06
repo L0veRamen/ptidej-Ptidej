@@ -1,39 +1,30 @@
 package net.intensicode.idea.config;
 
+import java.util.List;
+import javax.swing.Icon;
 import net.intensicode.idea.syntax.RecognizedToken;
 
-import java.util.List;
+/** TODO: Describe this! */
+public interface InstanceConfiguration {
+  Icon getIcon();
 
-import javax.swing.Icon;
+  String getName();
 
+  String getDescription();
 
+  String getExampleCode();
 
-/**
- * TODO: Describe this!
- */
-public interface InstanceConfiguration
-{
-    Icon getIcon();
+  boolean isVisibleToken(String aTokenId);
 
-    String getName();
+  List<RecognizedToken> getRecognizedTokens();
 
-    String getDescription();
+  String getTokenAttributes(String aTokenID);
 
-    String getExampleCode();
+  String getTokenDescription(String aTokenID);
 
+  BracesConfiguration getBracesConfiguration();
 
-    boolean isVisibleToken( String aTokenId );
+  CommentConfiguration getCommentConfiguration();
 
-    List<RecognizedToken> getRecognizedTokens();
-
-    String getTokenAttributes( String aTokenID );
-
-    String getTokenDescription( String aTokenID );
-
-
-    BracesConfiguration getBracesConfiguration();
-
-    CommentConfiguration getCommentConfiguration();
-
-    FileTypeConfiguration getFileTypeConfiguration();
+  FileTypeConfiguration getFileTypeConfiguration();
 }

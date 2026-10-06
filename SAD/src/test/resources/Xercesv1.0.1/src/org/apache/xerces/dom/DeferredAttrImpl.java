@@ -57,146 +57,130 @@
 
 package org.apache.xerces.dom;
 
+import org.apache.xerces.utils.StringPool;
 import org.w3c.dom.*;
 
-import org.apache.xerces.utils.StringPool;
-
 /**
- * Attribute represents an XML-style attribute of an
- * Element. Typically, the allowable values are controlled by its
- * declaration in the Document Type Definition (DTD) governing this
- * kind of document.
- * <P>
- * If the attribute has not been explicitly assigned a value, but has
- * been declared in the DTD, it will exist and have that default. Only
- * if neither the document nor the DTD specifies a value will the
- * Attribute really be considered absent and have no value; in that
- * case, querying the attribute will return null.
- * <P>
- * Attributes may have multiple children that contain their data. (XML
- * allows attributes to contain entity references, and tokenized
- * attribute types such as NMTOKENS may have a child for each token.)
- * For convenience, the Attribute object's getValue() method returns
- * the string version of the attribute's value.
- * <P>
- * Attributes are not children of the Elements they belong to, in the
- * usual sense, and have no valid Parent reference. However, the spec
- * says they _do_ belong to a specific Element, and an INUSE exception
- * is to be thrown if the user attempts to explicitly share them
- * between elements.
- * <P>
- * Note that Elements do not permit attributes to appear to be shared
- * (see the INUSE exception), so this object's mutability is
- * officially not an issue.
+ * Attribute represents an XML-style attribute of an Element. Typically, the allowable values are
+ * controlled by its declaration in the Document Type Definition (DTD) governing this kind of
+ * document.
+ *
+ * <p>If the attribute has not been explicitly assigned a value, but has been declared in the DTD,
+ * it will exist and have that default. Only if neither the document nor the DTD specifies a value
+ * will the Attribute really be considered absent and have no value; in that case, querying the
+ * attribute will return null.
+ *
+ * <p>Attributes may have multiple children that contain their data. (XML allows attributes to
+ * contain entity references, and tokenized attribute types such as NMTOKENS may have a child for
+ * each token.) For convenience, the Attribute object's getValue() method returns the string version
+ * of the attribute's value.
+ *
+ * <p>Attributes are not children of the Elements they belong to, in the usual sense, and have no
+ * valid Parent reference. However, the spec says they _do_ belong to a specific Element, and an
+ * INUSE exception is to be thrown if the user attempts to explicitly share them between elements.
+ *
+ * <p>Note that Elements do not permit attributes to appear to be shared (see the INUSE exception),
+ * so this object's mutability is officially not an issue.
  *
  * @version
- * @since  PR-DOM-Level-1-19980818.
+ * @since PR-DOM-Level-1-19980818.
  */
-public final class DeferredAttrImpl
-    extends AttrImpl
-    implements DeferredNode {
+public final class DeferredAttrImpl extends AttrImpl implements DeferredNode {
 
-    //
-    // Constants
-    //
+  //
+  // Constants
+  //
 
-    /** Serialization version. */
-    static final long serialVersionUID = 8793967374959140933L;
+  /** Serialization version. */
+  static final long serialVersionUID = 8793967374959140933L;
 
-    //
-    // Data
-    //
+  //
+  // Data
+  //
 
-    /** Node index. */
-    protected transient int fNodeIndex;
+  /** Node index. */
+  protected transient int fNodeIndex;
 
-    //
-    // Constructors
-    //
+  //
+  // Constructors
+  //
 
-    /**
-     * This is the deferred constructor. Only the fNodeIndex is given here.
-     * All other data, can be requested from the ownerDocument via the index.
-     */
-    DeferredAttrImpl(DeferredDocumentImpl ownerDocument, int nodeIndex) {
-        super(ownerDocument, null);
+  /**
+   * This is the deferred constructor. Only the fNodeIndex is given here. All other data, can be
+   * requested from the ownerDocument via the index.
+   */
+  DeferredAttrImpl(DeferredDocumentImpl ownerDocument, int nodeIndex) {
+    super(ownerDocument, null);
 
-        fNodeIndex = nodeIndex;
-        syncData = true;
-        syncChildren = true;
+    fNodeIndex = nodeIndex;
+    syncData = true;
+    syncChildren = true;
+  } // <init>(DeferredDocumentImpl,int)
 
-    } // <init>(DeferredDocumentImpl,int)
+  //
+  // DeferredNode methods
+  //
 
-    //
-    // DeferredNode methods
-    //
+  /** Returns the node index. */
+  public int getNodeIndex() {
+    return fNodeIndex;
+  }
 
-    /** Returns the node index. */
-    public int getNodeIndex() {
-        return fNodeIndex;
+  //
+  // Protected methods
+  //
+
+  /** Synchronizes the data (name and value) for fast nodes. */
+  protected void synchronizeData() {
+
+    // no need to sync in the future
+    syncData = false;
+
+    // fluff data
+    DeferredDocumentImpl ownerDocument = (DeferredDocumentImpl) this.ownerDocument;
+    int elementTypeName = ownerDocument.getNodeName(fNodeIndex);
+    StringPool pool = ownerDocument.getStringPool();
+    name = pool.toString(elementTypeName);
+    specified = ownerDocument.getNodeValue(fNodeIndex) == 1;
+
+    if (ownerDocument.fNamespacesEnabled) {
+      prefix = pool.toString(pool.getPrefixForQName(elementTypeName));
+      namespaceURI = pool.toString(pool.getURIForQName(elementTypeName));
+      localName = pool.toString(pool.getLocalPartForQName(elementTypeName));
+    } else {
+      localName = name;
     }
+  } // synchronizeData()
 
-    //
-    // Protected methods
-    //
+  /**
+   * Synchronizes the node's children with the internal structure. Fluffing the children at once
+   * solves a lot of work to keep the two structures in sync. The problem gets worse when editing
+   * the tree -- this makes it a lot easier.
+   */
+  protected void synchronizeChildren() {
 
-    /** Synchronizes the data (name and value) for fast nodes. */
-    protected void synchronizeData() {
+    // no need to sync in the future
+    syncChildren = false;
 
-        // no need to sync in the future
-        syncData = false;
+    // create children and link them as siblings
+    DeferredDocumentImpl ownerDocument = (DeferredDocumentImpl) this.ownerDocument;
+    NodeImpl last = null;
+    for (int index = ownerDocument.getFirstChild(fNodeIndex);
+        index != -1;
+        index = ownerDocument.getNextSibling(index)) {
 
-        // fluff data
-        DeferredDocumentImpl ownerDocument = (DeferredDocumentImpl)this.ownerDocument;
-        int elementTypeName = ownerDocument.getNodeName(fNodeIndex);
-        StringPool pool = ownerDocument.getStringPool();
-        name = pool.toString(elementTypeName);
-        specified = ownerDocument.getNodeValue(fNodeIndex) == 1;
-
-        if (ownerDocument.fNamespacesEnabled) {
-            prefix = pool.toString(pool.getPrefixForQName(elementTypeName));
-            namespaceURI = pool.toString(pool.getURIForQName(elementTypeName));
-            localName = pool.toString(pool.getLocalPartForQName(elementTypeName));
-        }
-		else {
-			localName = name;
-		}
-
-    } // synchronizeData()
-
-    /**
-     * Synchronizes the node's children with the internal structure.
-     * Fluffing the children at once solves a lot of work to keep
-     * the two structures in sync. The problem gets worse when
-     * editing the tree -- this makes it a lot easier.
-     */
-    protected void synchronizeChildren() {
-
-        // no need to sync in the future
-        syncChildren = false;
-
-        // create children and link them as siblings
-        DeferredDocumentImpl ownerDocument = (DeferredDocumentImpl)this.ownerDocument;
-        NodeImpl last = null;
-        for (int index = ownerDocument.getFirstChild(fNodeIndex);
-             index != -1;
-             index = ownerDocument.getNextSibling(index)) {
-
-            NodeImpl node = (NodeImpl)ownerDocument.getNodeObject(index);
-            if (last == null) {
-                firstChild = node;
-            }
-            else {
-                last.nextSibling = node;
-            }
-            node.parentNode = this;
-            node.previousSibling = last;
-            last = node;
-        }
-        if (last != null) {
-            lastChild = last;
-        }
-
-    } // synchronizeChildren()
-
+      NodeImpl node = (NodeImpl) ownerDocument.getNodeObject(index);
+      if (last == null) {
+        firstChild = node;
+      } else {
+        last.nextSibling = node;
+      }
+      node.parentNode = this;
+      node.previousSibling = last;
+      last = node;
+    }
+    if (last != null) {
+      lastChild = last;
+    }
+  } // synchronizeChildren()
 } // class DeferredAttrImpl

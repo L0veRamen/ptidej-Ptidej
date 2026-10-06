@@ -8,18 +8,18 @@ import com.sdmetrics.model.ModelElement;
 
 public class BooleanOperationXOR extends BooleanOperation {
 
-	@Override
-	public boolean calculateValue(ModelElement element, ExpressionNode node,
-			Variables vars) throws SDMetricsException {
+  @Override
+  public boolean calculateValue(ModelElement element, ExpressionNode node, Variables vars)
+      throws SDMetricsException {
 
-		int trueConditions = 0;
-		int index = 0;
-		while (index < node.getOperandCount() && trueConditions <= 1) {
-			if (evalBooleanExpression(element, node.getOperand(index), vars)) {
-				trueConditions++;
-			}
-			index++;
-		}
-		return trueConditions == 1;
-	}
+    int trueConditions = 0;
+    int index = 0;
+    while (index < node.getOperandCount() && trueConditions <= 1) {
+      if (evalBooleanExpression(element, node.getOperand(index), vars)) {
+        trueConditions++;
+      }
+      index++;
+    }
+    return trueConditions == 1;
+  }
 }

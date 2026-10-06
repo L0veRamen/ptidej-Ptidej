@@ -29,6 +29,4 @@ package org.argouml.model;
  *
  * @author Bob Tarling
  */
-public interface UseCaseDiagram extends DiDiagram {
-
-}
+public interface UseCaseDiagram extends DiDiagram {}

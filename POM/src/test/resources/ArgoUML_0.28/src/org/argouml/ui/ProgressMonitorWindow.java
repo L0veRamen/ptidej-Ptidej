@@ -29,144 +29,134 @@ import javax.swing.JFrame;
 import javax.swing.ProgressMonitor;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-
 import org.argouml.i18n.Translator;
 import org.argouml.taskmgmt.ProgressEvent;
 import org.argouml.util.ArgoFrame;
 
 /**
  * Manages a ProgressMonitor dialog.
- * 
- * NOTE: Users of this class should use the type of the interface
- * {@link org.argouml.taskmgmt.ProgressMonitor} wherever possible to
- * maintain GUI independence.
- * 
+ *
+ * <p>NOTE: Users of this class should use the type of the interface {@link
+ * org.argouml.taskmgmt.ProgressMonitor} wherever possible to maintain GUI independence.
+ *
  * @author andrea_nironi@tigris.org
  */
-public class ProgressMonitorWindow implements
-        org.argouml.taskmgmt.ProgressMonitor {
-    
-    private ProgressMonitor pbar;
+public class ProgressMonitorWindow implements org.argouml.taskmgmt.ProgressMonitor {
 
-    /**
-     * initializes a ProgressMonitor
-     * 
-     * @param parent	the Component to be set as parent
-     * @param title     the (internationalized) title of the ProgressMonitor
-     */
-    public ProgressMonitorWindow(JFrame parent, String title) {
-        pbar = new ProgressMonitor(parent, 
-                title,
-                null, 0, 100);
-        pbar.setMillisToDecideToPopup(250);       
-        pbar.setMillisToPopup(500);
-        parent.repaint();
-        updateProgress(5);
-        
-    }
-    
-    /*
-     * Report a progress to the ProgressMonitor window.
-     * @see org.argouml.persistence.ProgressListener#progress(org.argouml.persistence.ProgressEvent)
-     */
-    public void progress(final ProgressEvent event) {
-        final int progress = (int) event.getPosition();
-        if (pbar != null) {
-            // File load/save gets done on a background thread, so we'll 
-            // probably have to queue this to the Swing event thread
-            if (!SwingUtilities.isEventDispatchThread()) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        updateProgress(progress);                        
-                    }
-                });
-            } else {
+  private ProgressMonitor pbar;
+
+  /**
+   * initializes a ProgressMonitor
+   *
+   * @param parent the Component to be set as parent
+   * @param title the (internationalized) title of the ProgressMonitor
+   */
+  public ProgressMonitorWindow(JFrame parent, String title) {
+    pbar = new ProgressMonitor(parent, title, null, 0, 100);
+    pbar.setMillisToDecideToPopup(250);
+    pbar.setMillisToPopup(500);
+    parent.repaint();
+    updateProgress(5);
+  }
+
+  /*
+   * Report a progress to the ProgressMonitor window.
+   * @see org.argouml.persistence.ProgressListener#progress(org.argouml.persistence.ProgressEvent)
+   */
+  public void progress(final ProgressEvent event) {
+    final int progress = (int) event.getPosition();
+    if (pbar != null) {
+      // File load/save gets done on a background thread, so we'll
+      // probably have to queue this to the Swing event thread
+      if (!SwingUtilities.isEventDispatchThread()) {
+        SwingUtilities.invokeLater(
+            new Runnable() {
+              public void run() {
                 updateProgress(progress);
-            }
-        }
+              }
+            });
+      } else {
+        updateProgress(progress);
+      }
     }
-    
-    /*
-     * Report a progress to the ProgressMonitor window.
-     * @see org.argouml.application.api.ProgressMonitor#updateProgress(int)
-     */
-    public void updateProgress(final int progress) {
-        if (pbar != null) {
-            pbar.setProgress(progress);
-            Object[] args = new Object[] {String.valueOf(progress)};
-            pbar.setNote(Translator.localize("dialog.progress.note", args));
-        }
-    }
+  }
 
-    
-    /*
-     * @see org.argouml.application.api.ProgressMonitor#isCanceled()
-     */
-    public boolean isCanceled() {
-        return (pbar != null) && pbar.isCanceled();
+  /*
+   * Report a progress to the ProgressMonitor window.
+   * @see org.argouml.application.api.ProgressMonitor#updateProgress(int)
+   */
+  public void updateProgress(final int progress) {
+    if (pbar != null) {
+      pbar.setProgress(progress);
+      Object[] args = new Object[] {String.valueOf(progress)};
+      pbar.setNote(Translator.localize("dialog.progress.note", args));
     }
+  }
 
-    /*
-     * @see org.argouml.application.api.ProgressMonitor#close()
-     */
-    public void close() {
-        // Queue to event thread to prevent race during close
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                pbar.close();
-                pbar = null; 
-            }
+  /*
+   * @see org.argouml.application.api.ProgressMonitor#isCanceled()
+   */
+  public boolean isCanceled() {
+    return (pbar != null) && pbar.isCanceled();
+  }
+
+  /*
+   * @see org.argouml.application.api.ProgressMonitor#close()
+   */
+  public void close() {
+    // Queue to event thread to prevent race during close
+    SwingUtilities.invokeLater(
+        new Runnable() {
+          public void run() {
+            pbar.close();
+            pbar = null;
+          }
         });
+  }
 
-    }
-    
-    // these settings are needed to make the ProgressMonitor pop up early
-    static {
-        UIManager.put("ProgressBar.repaintInterval", Integer.valueOf(150));
-        UIManager.put("ProgressBar.cycleTime", Integer.valueOf(1050));        
-    }
+  // these settings are needed to make the ProgressMonitor pop up early
+  static {
+    UIManager.put("ProgressBar.repaintInterval", Integer.valueOf(150));
+    UIManager.put("ProgressBar.cycleTime", Integer.valueOf(1050));
+  }
 
-    /*
-     * @see org.argouml.application.api.ProgressMonitor#notifyMessage(java.lang.String, java.lang.String, java.lang.String)
-     */
-    public void notifyMessage(final String title, final String introduction, 
-            final String message) {
-        final String messageString = introduction + " : " + message; 
-        pbar.setNote(messageString);
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                JDialog dialog =
-                    new ExceptionDialog(
-                            ArgoFrame.getInstance(),
-                            title,
-                            introduction,
-                            message);
-                dialog.setVisible(true);
-            }
+  /*
+   * @see org.argouml.application.api.ProgressMonitor#notifyMessage(java.lang.String, java.lang.String, java.lang.String)
+   */
+  public void notifyMessage(final String title, final String introduction, final String message) {
+    final String messageString = introduction + " : " + message;
+    pbar.setNote(messageString);
+    SwingUtilities.invokeLater(
+        new Runnable() {
+          public void run() {
+            JDialog dialog =
+                new ExceptionDialog(ArgoFrame.getInstance(), title, introduction, message);
+            dialog.setVisible(true);
+          }
         });
-    }
+  }
 
-    /*
-     * @see org.argouml.application.api.ProgressMonitor#notifyNullAction()
-     */
-    public void notifyNullAction() {
-        // ignored
-    }
+  /*
+   * @see org.argouml.application.api.ProgressMonitor#notifyNullAction()
+   */
+  public void notifyNullAction() {
+    // ignored
+  }
 
-    /*
-     * @see org.argouml.application.api.ProgressMonitor#setMaximumProgress(int)
-     */
-    public void setMaximumProgress(int max) {
-        pbar.setMaximum(max);
-    }
+  /*
+   * @see org.argouml.application.api.ProgressMonitor#setMaximumProgress(int)
+   */
+  public void setMaximumProgress(int max) {
+    pbar.setMaximum(max);
+  }
 
-    public void updateSubTask(String action) {
-        // TODO: concatenate? - tfm
-        // overwrite for now
-        pbar.setNote(action);
-    }
+  public void updateSubTask(String action) {
+    // TODO: concatenate? - tfm
+    // overwrite for now
+    pbar.setNote(action);
+  }
 
-    public void updateMainTask(String name) {
-        pbar.setNote(name);
-    }
+  public void updateMainTask(String name) {
+    pbar.setNote(name);
+  }
 }

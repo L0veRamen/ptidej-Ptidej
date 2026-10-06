@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -24,30 +24,28 @@ import pom.metrics.IUnaryMetric;
  * @since 2008//08/04
  */
 public class NPrM extends AbstractMetric implements IMetric, IUnaryMetric {
-	public String getDefinition() {
-		final String def = "Number protected members of an entity.";
-		return def;
-	}
-	protected double concretelyCompute(
-		final IAbstractModel anAbstractModel,
-		final IFirstClassEntity firstClassEntity) {
+  public String getDefinition() {
+    final String def = "Number protected members of an entity.";
+    return def;
+  }
 
-		int cpt = 0;
+  protected double concretelyCompute(
+      final IAbstractModel anAbstractModel, final IFirstClassEntity firstClassEntity) {
 
-		final List protectedMembers = new ArrayList();
-		protectedMembers.addAll(super.classPrimitives
-			.listOfImplementedFields(firstClassEntity));
-		protectedMembers.addAll(super.classPrimitives
-			.listOfDeclaredMethods(firstClassEntity));
+    int cpt = 0;
 
-		final Iterator iterator = protectedMembers.iterator();
-		while (iterator.hasNext()) {
-			final IConstituent c = (IConstituent) iterator.next();
-			if (c.isProtected()) {
-				cpt++;
-			}
-		}
+    final List<Object> protectedMembers = new ArrayList<>();
+    protectedMembers.addAll(super.classPrimitives.listOfImplementedFields(firstClassEntity));
+    protectedMembers.addAll(super.classPrimitives.listOfDeclaredMethods(firstClassEntity));
 
-		return cpt;
-	}
+    final Iterator iterator = protectedMembers.iterator();
+    while (iterator.hasNext()) {
+      final IConstituent c = (IConstituent) iterator.next();
+      if (c.isProtected()) {
+        cpt++;
+      }
+    }
+
+    return cpt;
+  }
 }

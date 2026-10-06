@@ -24,7 +24,6 @@
 package org.argouml.ui.targetmanager;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.uml.ui.UMLAction;
 
 /**
@@ -34,38 +33,35 @@ import org.argouml.uml.ui.UMLAction;
  */
 public class NavigateTargetForwardAction extends UMLAction {
 
-    private static NavigateTargetForwardAction instance;
+  private static NavigateTargetForwardAction instance;
 
-    /**
-     * @return the instance (singleton)
-     */
-    public static NavigateTargetForwardAction getInstance() {
-        if (instance == null) {
-            instance = new NavigateTargetForwardAction();
-        }
-        return instance;
+  /**
+   * @return the instance (singleton)
+   */
+  public static NavigateTargetForwardAction getInstance() {
+    if (instance == null) {
+      instance = new NavigateTargetForwardAction();
     }
+    return instance;
+  }
 
-    private NavigateTargetForwardAction() {
-        super("action.navigate-forward", true, HAS_ICON);
-    }
+  private NavigateTargetForwardAction() {
+    super("action.navigate-forward", true, HAS_ICON);
+  }
 
-    /**
-     * @see
-     * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        TargetManager.getInstance().navigateForward();
-    }
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    TargetManager.getInstance().navigateForward();
+  }
 
-    /**
-     * Action is possible only if navigateForwardPossible on targetManager
-     * returns true.
-     * @see org.argouml.uml.ui.UMLAction#shouldBeEnabled()
-     */
-    public boolean shouldBeEnabled() {
-        return super.shouldBeEnabled()
-            && TargetManager.getInstance().navigateForwardPossible();
-    }
-
+  /**
+   * Action is possible only if navigateForwardPossible on targetManager returns true.
+   *
+   * @see org.argouml.uml.ui.UMLAction#shouldBeEnabled()
+   */
+  public boolean shouldBeEnabled() {
+    return super.shouldBeEnabled() && TargetManager.getInstance().navigateForwardPossible();
+  }
 }

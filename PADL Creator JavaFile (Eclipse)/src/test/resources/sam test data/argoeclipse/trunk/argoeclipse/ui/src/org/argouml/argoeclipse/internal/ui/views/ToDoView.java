@@ -25,23 +25,21 @@
 package org.argouml.argoeclipse.internal.ui.views;
 
 import javax.swing.JPanel;
-
 import org.argouml.argoeclipse.internal.core.model.Register;
 import org.argouml.argoeclipse.internal.ui.model.Panels;
 
 /**
  * The view that wrapps the ToDo Pane.
- * 
+ *
  * @author Bogdan Pistol
  */
 public class ToDoView extends View {
 
-    public ToDoView() {
-        super(Register.TODO);
-    }
-    
-    public JPanel getPanel() {
-        return Panels.getToDoPanel();
-    }
-        
+  public ToDoView() {
+    super(Register.TODO);
+  }
+
+  public JPanel getPanel() {
+    return Panels.getToDoPanel();
+  }
 }

@@ -26,7 +26,6 @@ package org.argouml.uml.diagram.deployment.ui;
 
 import java.util.Collection;
 import java.util.Map;
-
 import org.apache.log4j.Logger;
 import org.argouml.model.Model;
 import org.argouml.uml.diagram.UmlDiagramRenderer;
@@ -47,139 +46,116 @@ import org.tigris.gef.graph.GraphModel;
 import org.tigris.gef.presentation.FigEdge;
 import org.tigris.gef.presentation.FigNode;
 
-/**
- * This class defines a renderer object for UML Deployment Diagrams.
- *
- */
+/** This class defines a renderer object for UML Deployment Diagrams. */
 public class DeploymentDiagramRenderer extends UmlDiagramRenderer {
-    /**
-     * Logger.
-     */
-    private static final Logger LOG =
-        Logger.getLogger(DeploymentDiagramRenderer.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(DeploymentDiagramRenderer.class);
 
-    /**
-     * Return a Fig that can be used to represent the given node.
-     *
-     * @see org.tigris.gef.graph.GraphNodeRenderer#getFigNodeFor(
-     *         org.tigris.gef.graph.GraphModel, org.tigris.gef.base.Layer,
-     *         java.lang.Object, java.util.Map)
-     */
-    public FigNode getFigNodeFor(
-            GraphModel gm,
-            Layer lay,
-            Object node,
-            Map styleAttributes) {
-        if (Model.getFacade().isANode(node)) {
-            return new FigMNode(gm, node);
-        } else if (Model.getFacade().isAAssociation(node)) {
-            return new FigNodeAssociation(gm, node);
-        } else if (Model.getFacade().isANodeInstance(node)) {
-            return new FigMNodeInstance(gm, node);
-        } else if (Model.getFacade().isAComponent(node)) {
-            return new FigComponent(gm, node);
-        } else if (Model.getFacade().isAComponentInstance(node)) {
-            return new FigComponentInstance(gm, node);
-        } else if (Model.getFacade().isAClass(node)) {
-            return new FigClass(gm, node);
-        } else if (Model.getFacade().isAInterface(node)) {
-            return new FigInterface(gm, node);
-        } else if (Model.getFacade().isAObject(node)) {
-            return new FigObject(gm, node);
-        } else if (Model.getFacade().isAComment(node)) {
-            return new FigComment(gm, node);
-        }
-        LOG.debug("TODO: DeploymentDiagramRenderer getFigNodeFor");
-        return null;
+  /**
+   * Return a Fig that can be used to represent the given node.
+   *
+   * @see org.tigris.gef.graph.GraphNodeRenderer#getFigNodeFor( org.tigris.gef.graph.GraphModel,
+   *     org.tigris.gef.base.Layer, java.lang.Object, java.util.Map)
+   */
+  public FigNode getFigNodeFor(GraphModel gm, Layer lay, Object node, Map styleAttributes) {
+    if (Model.getFacade().isANode(node)) {
+      return new FigMNode(gm, node);
+    } else if (Model.getFacade().isAAssociation(node)) {
+      return new FigNodeAssociation(gm, node);
+    } else if (Model.getFacade().isANodeInstance(node)) {
+      return new FigMNodeInstance(gm, node);
+    } else if (Model.getFacade().isAComponent(node)) {
+      return new FigComponent(gm, node);
+    } else if (Model.getFacade().isAComponentInstance(node)) {
+      return new FigComponentInstance(gm, node);
+    } else if (Model.getFacade().isAClass(node)) {
+      return new FigClass(gm, node);
+    } else if (Model.getFacade().isAInterface(node)) {
+      return new FigInterface(gm, node);
+    } else if (Model.getFacade().isAObject(node)) {
+      return new FigObject(gm, node);
+    } else if (Model.getFacade().isAComment(node)) {
+      return new FigComment(gm, node);
+    }
+    LOG.debug("TODO: DeploymentDiagramRenderer getFigNodeFor");
+    return null;
+  }
+
+  /**
+   * Return a Fig that can be used to represent the given edge.
+   *
+   * @see org.tigris.gef.graph.GraphEdgeRenderer#getFigEdgeFor( org.tigris.gef.graph.GraphModel,
+   *     org.tigris.gef.base.Layer, java.lang.Object, java.util.Map)
+   */
+  public FigEdge getFigEdgeFor(GraphModel gm, Layer lay, Object edge, Map styleAttributes) {
+    if (Model.getFacade().isAAssociationClass(edge)) {
+      FigAssociationClass ascCFig = new FigAssociationClass(edge, lay);
+      return ascCFig;
+    } else if (Model.getFacade().isAAssociation(edge)) {
+      Object asc = /*(MAssociation)*/ edge;
+      FigAssociation ascFig = new FigAssociation(asc, lay);
+      return ascFig;
+    } else if (Model.getFacade().isAAssociationEnd(edge)) {
+      FigAssociationEnd asend = new FigAssociationEnd(edge, lay);
+      Model.getFacade().getAssociation(edge);
+      FigNode associationFN = (FigNode) lay.presentationFor(Model.getFacade().getAssociation(edge));
+      FigNode classifierFN = (FigNode) lay.presentationFor(Model.getFacade().getType(edge));
+
+      asend.setSourcePortFig(associationFN);
+      asend.setSourceFigNode(associationFN);
+      asend.setDestPortFig(classifierFN);
+      asend.setDestFigNode(classifierFN);
+      return asend;
     }
 
-    /**
-     * Return a Fig that can be used to represent the given edge.
-     *
-     * @see org.tigris.gef.graph.GraphEdgeRenderer#getFigEdgeFor(
-     *         org.tigris.gef.graph.GraphModel, org.tigris.gef.base.Layer,
-     *         java.lang.Object, java.util.Map)
-     */
-    public FigEdge getFigEdgeFor(
-            GraphModel gm,
-            Layer lay,
-            Object edge,
-            Map styleAttributes) {
-        if (Model.getFacade().isAAssociationClass(edge)) {
-            FigAssociationClass ascCFig = new FigAssociationClass(edge, lay);
-            return ascCFig;
-        } else if (Model.getFacade().isAAssociation(edge)) {
-            Object asc = /*(MAssociation)*/ edge;
-            FigAssociation ascFig = new FigAssociation(asc, lay);
-            return ascFig;
-        } else if (Model.getFacade().isAAssociationEnd(edge)) {
-            FigAssociationEnd asend = new FigAssociationEnd(edge, lay);
-            Model.getFacade().getAssociation(edge);
-            FigNode associationFN =
-                    (FigNode) lay.presentationFor(Model
-                            .getFacade().getAssociation(edge));
-            FigNode classifierFN =
-                    (FigNode) lay.presentationFor(Model
-                            .getFacade().getType(edge));
+    if (Model.getFacade().isALink(edge)) {
+      Object lnk = /*(MLink)*/ edge;
+      FigLink lnkFig = new FigLink(lnk);
+      Collection linkEnds = Model.getFacade().getConnections(lnk);
+      if (linkEnds == null) {
+        LOG.debug("null linkRoles....");
+      }
+      Object[] leArray = linkEnds.toArray();
+      Object fromEnd = leArray[0];
+      Object fromInst = Model.getFacade().getInstance(fromEnd);
+      Object toEnd = leArray[1];
+      Object toInst = Model.getFacade().getInstance(toEnd);
+      FigNode fromFN = (FigNode) lay.presentationFor(fromInst);
+      FigNode toFN = (FigNode) lay.presentationFor(toInst);
+      lnkFig.setSourcePortFig(fromFN);
+      lnkFig.setSourceFigNode(fromFN);
+      lnkFig.setDestPortFig(toFN);
+      lnkFig.setDestFigNode(toFN);
+      return lnkFig;
+    }
+    if (Model.getFacade().isADependency(edge)) {
+      Object dep = /*(MDependency)*/ edge;
+      FigDependency depFig = new FigDependency(dep);
 
-            asend.setSourcePortFig(associationFN);
-            asend.setSourceFigNode(associationFN);
-            asend.setDestPortFig(classifierFN);
-            asend.setDestFigNode(classifierFN);
-            return asend;
-        }
+      Object supplier = ((Model.getFacade().getSuppliers(dep).toArray())[0]);
+      Object client = ((Model.getFacade().getClients(dep).toArray())[0]);
 
-        if (Model.getFacade().isALink(edge)) {
-            Object lnk = /*(MLink)*/ edge;
-            FigLink lnkFig = new FigLink(lnk);
-            Collection linkEnds = Model.getFacade().getConnections(lnk);
-            if (linkEnds == null) {
-		LOG.debug("null linkRoles....");
-	    }
-            Object[] leArray = linkEnds.toArray();
-            Object fromEnd = leArray[0];
-            Object fromInst = Model.getFacade().getInstance(fromEnd);
-            Object toEnd = leArray[1];
-            Object toInst = Model.getFacade().getInstance(toEnd);
-            FigNode fromFN = (FigNode) lay.presentationFor(fromInst);
-            FigNode toFN = (FigNode) lay.presentationFor(toInst);
-            lnkFig.setSourcePortFig(fromFN);
-            lnkFig.setSourceFigNode(fromFN);
-            lnkFig.setDestPortFig(toFN);
-            lnkFig.setDestFigNode(toFN);
-            return lnkFig;
-        }
-        if (Model.getFacade().isADependency(edge)) {
-            Object dep = /*(MDependency)*/ edge;
-            FigDependency depFig = new FigDependency(dep);
+      FigNode supFN = (FigNode) lay.presentationFor(supplier);
+      FigNode cliFN = (FigNode) lay.presentationFor(client);
 
-            Object supplier =
-        	 ((Model.getFacade().getSuppliers(dep).toArray())[0]);
-            Object client =
-        	 ((Model.getFacade().getClients(dep).toArray())[0]);
-
-            FigNode supFN = (FigNode) lay.presentationFor(supplier);
-            FigNode cliFN = (FigNode) lay.presentationFor(client);
-
-            depFig.setSourcePortFig(cliFN);
-            depFig.setSourceFigNode(cliFN);
-            depFig.setDestPortFig(supFN);
-            depFig.setDestFigNode(supFN);
-            depFig.getFig().setDashed(true);
-            return depFig;
-        }
-        if (Model.getFacade().isAGeneralization(edge)) {
-            Object gen = /*(MGeneralization)*/ edge;
-            FigGeneralization genFig = new FigGeneralization(gen, lay);
-            return genFig;
-        }
-        if (edge instanceof CommentEdge) {
-            return new FigEdgeNote(edge, lay);
-        }
-
-        return null;
+      depFig.setSourcePortFig(cliFN);
+      depFig.setSourceFigNode(cliFN);
+      depFig.setDestPortFig(supFN);
+      depFig.setDestFigNode(supFN);
+      depFig.getFig().setDashed(true);
+      return depFig;
+    }
+    if (Model.getFacade().isAGeneralization(edge)) {
+      Object gen = /*(MGeneralization)*/ edge;
+      FigGeneralization genFig = new FigGeneralization(gen, lay);
+      return genFig;
+    }
+    if (edge instanceof CommentEdge) {
+      return new FigEdgeNote(edge, lay);
     }
 
-    static final long serialVersionUID = 8002278834226522224L;
+    return null;
+  }
 
+  static final long serialVersionUID = 8002278834226522224L;
 }

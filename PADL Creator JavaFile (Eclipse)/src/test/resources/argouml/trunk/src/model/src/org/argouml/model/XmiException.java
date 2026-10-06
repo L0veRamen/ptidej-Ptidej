@@ -26,38 +26,36 @@ package org.argouml.model;
 
 /**
  * Exception for problems with XMI files.
- * 
+ *
  * @author Tom Morris
  */
 public class XmiException extends UmlException {
 
-    /**
-     * Construct an XmiException with the given message.
-     * 
-     * @param message the message
-     */
-    public XmiException(String message) {
-        super(message);
-    }
+  /**
+   * Construct an XmiException with the given message.
+   *
+   * @param message the message
+   */
+  public XmiException(String message) {
+    super(message);
+  }
 
-    /**
-     * Construct an exception with a message and a causing exception.
-     *
-     * @param message the message
-     * @param c the cause of the exception
-     */
-    public XmiException(String message, Throwable c) {
-        super(message, c);
-    }
+  /**
+   * Construct an exception with a message and a causing exception.
+   *
+   * @param message the message
+   * @param c the cause of the exception
+   */
+  public XmiException(String message, Throwable c) {
+    super(message, c);
+  }
 
-    /**
-     * Construct an exception with a causing exception.
-     *
-     * @param c the cause of the exception
-     */
-    public XmiException(Throwable c) {
-        super(c);
-    }
-
-
+  /**
+   * Construct an exception with a causing exception.
+   *
+   * @param c the cause of the exception
+   */
+  public XmiException(Throwable c) {
+    super(c);
+  }
 }

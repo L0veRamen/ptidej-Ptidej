@@ -26,9 +26,7 @@ package org.argouml.uml.ui.foundation.core;
 
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
-import org.argouml.model.Model;
 import org.argouml.uml.ui.ActionDeleteSingleModelElement;
 import org.argouml.uml.ui.ActionNavigateContainerElement;
 import org.argouml.uml.ui.UMLComboBox2;
@@ -37,68 +35,58 @@ import org.argouml.uml.ui.UMLLinkedList;
 import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
 import org.argouml.util.ConfigLoader;
 
-/**
- * The property panel for parameters.
- */
+/** The property panel for parameters. */
 public class PropPanelParameter extends PropPanelModelElement {
 
-    private JScrollPane behFeatureScroll;
+  private JScrollPane behFeatureScroll;
 
-    private static UMLParameterBehavioralFeatListModel behFeatureModel;
+  private static UMLParameterBehavioralFeatListModel behFeatureModel;
 
-    /**
-     * The constructor.
-     *
-     */
-    public PropPanelParameter() {
-        super(
-	      "Parameter",
-	      lookupIcon("Parameter"),
-	      ConfigLoader.getTabPropsOrientation());
+  /** The constructor. */
+  public PropPanelParameter() {
+    super("Parameter", lookupIcon("Parameter"), ConfigLoader.getTabPropsOrientation());
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
+    addField(Translator.localize("label.name"), getNameTextField());
 
-        addField(Translator.localize("label.stereotype"),
-                getStereotypeSelector());
+    addField(Translator.localize("label.stereotype"), getStereotypeSelector());
 
-        addField(Translator.localize("label.owner"),
-                getBehavioralFeatureScroll());
+    addField(Translator.localize("label.owner"), getBehavioralFeatureScroll());
 
-        addSeperator();
+    addSeperator();
 
-        addField(Translator.localize("label.type"),
-                new UMLComboBox2(new UMLParameterTypeComboBoxModel(),
-                        ActionSetParameterType.getInstance()));
+    addField(
+        Translator.localize("label.type"),
+        new UMLComboBox2(
+            new UMLParameterTypeComboBoxModel(), ActionSetParameterType.getInstance()));
 
-        addField(Translator.localize("label.parameter.default-value"),
-                 new UMLInitialValueComboBox(this));
+    addField(
+        Translator.localize("label.parameter.default-value"), new UMLInitialValueComboBox(this));
 
-        add(new UMLParameterDirectionKindRadioButtonPanel(
-                Translator.localize("label.parameter.kind"), true));
+    add(
+        new UMLParameterDirectionKindRadioButtonPanel(
+            Translator.localize("label.parameter.kind"), true));
 
-        addAction(new ActionNavigateContainerElement());
-        addAction(new ActionAddParameter());
-        addAction(new ActionAddDataType());
-        addAction(new ActionNewStereotype());
-        addAction(new ActionDeleteSingleModelElement());
+    addAction(new ActionNavigateContainerElement());
+    addAction(new ActionAddParameter());
+    addAction(new ActionAddDataType());
+    addAction(new ActionNewStereotype());
+    addAction(new ActionDeleteSingleModelElement());
+  }
+
+  /**
+   * Returns the behavioral Feature Scroll.
+   *
+   * @return JScrollPane
+   */
+  public JScrollPane getBehavioralFeatureScroll() {
+    if (behFeatureScroll == null) {
+      if (behFeatureModel == null) {
+        behFeatureModel = new UMLParameterBehavioralFeatListModel();
+      }
+      JList list = new UMLLinkedList(behFeatureModel);
+      list.setVisibleRowCount(1);
+      behFeatureScroll = new JScrollPane(list);
     }
-
-    /**
-     * Returns the behavioral Feature Scroll.
-     *
-     * @return JScrollPane
-     */
-    public JScrollPane getBehavioralFeatureScroll() {
-        if (behFeatureScroll == null) {
-            if (behFeatureModel == null) {
-                behFeatureModel = new UMLParameterBehavioralFeatListModel();
-            }
-            JList list = new UMLLinkedList(behFeatureModel);
-            list.setVisibleRowCount(1);
-            behFeatureScroll = new JScrollPane(list);
-        }
-        return behFeatureScroll;
-    }
-
+    return behFeatureScroll;
+  }
 } /* end class PropPanelParameter */

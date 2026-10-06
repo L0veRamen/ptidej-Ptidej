@@ -30,60 +30,53 @@ import org.restlet.data.Response;
 
 /**
  * Application dispatcher.
+ *
  * @author Jerome Louvel (contact@noelios.com)
  */
-public class ApplicationDispatcher extends Dispatcher
-{
-	/** The parent context. */
-	private ApplicationContext applicationContext;
+public class ApplicationDispatcher extends Dispatcher {
+  /** The parent context. */
+  private ApplicationContext applicationContext;
 
-	/**
-	 * Constructor.
-	 * @param applicationContext The parent application context.
-	 */
-	public ApplicationDispatcher(ApplicationContext applicationContext)
-	{
-		this.applicationContext = applicationContext;
-	}
+  /**
+   * Constructor.
+   *
+   * @param applicationContext The parent application context.
+   */
+  public ApplicationDispatcher(ApplicationContext applicationContext) {
+    this.applicationContext = applicationContext;
+  }
 
-	/**
-	 * Handles a call.
-	 * @param request The request to handle.
-	 * @param response The response to update.
-	 */
-	public void handle(Request request, Response response)
-	{
-		Protocol protocol = request.getProtocol();
-		if (protocol == null)
-		{
-			// Attempt to guess the protocol to use
-			// from the target reference scheme
-			protocol = request.getResourceRef().getSchemeProtocol();
-		}
+  /**
+   * Handles a call.
+   *
+   * @param request The request to handle.
+   * @param response The response to update.
+   */
+  public void handle(Request request, Response response) {
+    Protocol protocol = request.getProtocol();
+    if (protocol == null) {
+      // Attempt to guess the protocol to use
+      // from the target reference scheme
+      protocol = request.getResourceRef().getSchemeProtocol();
+    }
 
-		if (protocol == null)
-		{
-			throw new UnsupportedOperationException(
-					"Unable to determine the protocol to use for this call.");
-		}
-		else
-		{
-			// Add the application in request and response attributes 
-			request.getAttributes().put(Application.class.getCanonicalName(),
-					this.applicationContext.getApplication());
-			response.getAttributes().put(Application.class.getCanonicalName(),
-					this.applicationContext.getApplication());
+    if (protocol == null) {
+      throw new UnsupportedOperationException(
+          "Unable to determine the protocol to use for this call.");
+    } else {
+      // Add the application in request and response attributes
+      request
+          .getAttributes()
+          .put(Application.class.getCanonicalName(), this.applicationContext.getApplication());
+      response
+          .getAttributes()
+          .put(Application.class.getCanonicalName(), this.applicationContext.getApplication());
 
-			if (protocol.equals(Protocol.WAR))
-			{
-				this.applicationContext.getWarClient().handle(request, response);
-			}
-			else
-			{
-				this.applicationContext.getParentContext().getDispatcher().handle(request,
-						response);
-			}
-		}
-	}
-
+      if (protocol.equals(Protocol.WAR)) {
+        this.applicationContext.getWarClient().handle(request, response);
+      } else {
+        this.applicationContext.getParentContext().getDispatcher().handle(request, response);
+      }
+    }
+  }
 }

@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -43,249 +43,159 @@ import util.io.ProxyConsole;
 
 public class PADLGhostPrinter implements IWalker {
 
-	@Override
-	public void close(final IAbstractModel anAbstractModel) {
+  @Override
+  public void close(final IAbstractModel anAbstractModel) {}
 
-	}
+  @Override
+  public void close(final IClass aClass) {}
 
-	@Override
-	public void close(final IClass aClass) {
+  @Override
+  public void close(final IConstructor aConstructor) {}
 
-	}
+  @Override
+  public void close(final IDelegatingMethod aDelegatingMethod) {}
 
-	@Override
-	public void close(final IConstructor aConstructor) {
+  @Override
+  public void close(final IGetter aGetter) {}
 
-	}
+  @Override
+  public void close(final IGhost aGhost) {}
 
-	@Override
-	public void close(final IDelegatingMethod aDelegatingMethod) {
+  @Override
+  public void close(final IInterface anInterface) {}
 
-	}
+  @Override
+  public void close(final IMemberClass aMemberClass) {}
 
-	@Override
-	public void close(final IGetter aGetter) {
+  @Override
+  public void close(final IMemberGhost aMemberGhost) {}
 
-	}
+  @Override
+  public void close(final IMemberInterface aMemberInterface) {}
 
-	@Override
-	public void close(final IGhost aGhost) {
+  @Override
+  public void close(final IMethod aMethod) {}
 
-	}
+  @Override
+  public void close(final IPackage aPackage) {}
 
-	@Override
-	public void close(final IInterface anInterface) {
+  @Override
+  public void close(final IPackageDefault aPackage) {}
 
-	}
+  @Override
+  public void close(final IPackageGhost aPackageGhost) {}
 
-	@Override
-	public void close(final IMemberClass aMemberClass) {
+  @Override
+  public void close(final ISetter aSetter) {}
 
-	}
+  @Override
+  public String getName() {
 
-	@Override
-	public void close(final IMemberGhost aMemberGhost) {
+    return null;
+  }
 
-	}
+  @Override
+  public Object getResult() {
+    // TODO Auto-generated method stub
+    return null;
+  }
 
-	@Override
-	public void close(final IMemberInterface aMemberInterface) {
+  @Override
+  public void open(final IAbstractModel anAbstractModel) {}
 
-	}
+  @Override
+  public void open(final IClass aClass) {}
 
-	@Override
-	public void close(final IMethod aMethod) {
+  @Override
+  public void open(final IConstructor aConstructor) {}
 
-	}
+  @Override
+  public void open(final IDelegatingMethod aDelegatingMethod) {}
 
-	@Override
-	public void close(final IPackage aPackage) {
+  @Override
+  public void open(final IGetter aGetter) {}
 
-	}
+  @Override
+  public void open(final IGhost aGhost) {
+    // Print the model by the generator
+    final JavaGenerator javaGenerator = new JavaGenerator();
+    aGhost.accept(javaGenerator);
+  }
 
-	@Override
-	public void close(final IPackageDefault aPackage) {
+  @Override
+  public void open(final IInterface anInterface) {}
 
-	}
+  @Override
+  public void open(final IMemberClass aMemberClass) {}
 
-	@Override
-	public void close(final IPackageGhost aPackageGhost) {
+  @Override
+  public void open(final IMemberGhost aMemberGhost) {}
 
-	}
+  @Override
+  public void open(final IMemberInterface aMemberInterface) {}
 
-	@Override
-	public void close(final ISetter aSetter) {
+  @Override
+  public void open(final IMethod aMethod) {}
 
-	}
+  @Override
+  public void open(final IPackage aPackage) {}
 
-	@Override
-	public String getName() {
+  @Override
+  public void open(final IPackageDefault aPackage) {}
 
-		return null;
-	}
+  @Override
+  public void open(final IPackageGhost aPackageGhost) {}
 
-	@Override
-	public Object getResult() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+  @Override
+  public void open(final ISetter aSetter) {}
 
-	@Override
-	public void open(final IAbstractModel anAbstractModel) {
+  @Override
+  public void reset() {}
 
-	}
+  @Override
+  public final void unknownConstituentHandler(
+      final String aCalledMethodName, final IConstituent aConstituent) {
 
-	@Override
-	public void open(final IClass aClass) {
+    ProxyConsole.getInstance().debugOutput().print(this.getClass().getName());
+    ProxyConsole.getInstance().debugOutput().print(" does not know what to do for \"");
+    ProxyConsole.getInstance().debugOutput().print(aCalledMethodName);
+    ProxyConsole.getInstance().debugOutput().print("\" (");
+    ProxyConsole.getInstance().debugOutput().print(aConstituent.getDisplayID());
+    ProxyConsole.getInstance().debugOutput().println(')');
+  }
 
-	}
+  @Override
+  public void visit(final IAggregation anAggregation) {}
 
-	@Override
-	public void open(final IConstructor aConstructor) {
+  @Override
+  public void visit(final IAssociation anAssociation) {}
 
-	}
+  @Override
+  public void visit(final IComposition aComposition) {}
 
-	@Override
-	public void open(final IDelegatingMethod aDelegatingMethod) {
+  @Override
+  public void visit(final IContainerAggregation aContainerAggregation) {}
 
-	}
+  @Override
+  public void visit(final IContainerComposition aContainerComposition) {}
 
-	@Override
-	public void open(final IGetter aGetter) {
+  @Override
+  public void visit(final ICreation aCreation) {}
 
-	}
+  @Override
+  public void visit(final IField aField) {}
 
-	@Override
-	public void open(final IGhost aGhost) {
-		//Print the model by the generator
-		final JavaGenerator javaGenerator = new JavaGenerator();
-		aGhost.accept(javaGenerator);
-	}
+  @Override
+  public void visit(final IMethodInvocation aMethodInvocation) {}
 
-	@Override
-	public void open(final IInterface anInterface) {
+  @Override
+  public void visit(final IParameter aParameter) {}
 
-	}
+  @Override
+  public void visit(final IPrimitiveEntity aPrimitiveEntity) {
+    // Do nothing for uninteresting primitive types.
+  }
 
-	@Override
-	public void open(final IMemberClass aMemberClass) {
-
-	}
-
-	@Override
-	public void open(final IMemberGhost aMemberGhost) {
-
-	}
-
-	@Override
-	public void open(final IMemberInterface aMemberInterface) {
-
-	}
-
-	@Override
-	public void open(final IMethod aMethod) {
-
-	}
-
-	@Override
-	public void open(final IPackage aPackage) {
-
-	}
-
-	@Override
-	public void open(final IPackageDefault aPackage) {
-
-	}
-
-	@Override
-	public void open(final IPackageGhost aPackageGhost) {
-
-	}
-
-	@Override
-	public void open(final ISetter aSetter) {
-
-	}
-
-	@Override
-	public void reset() {
-
-	}
-
-	@Override
-	public final void unknownConstituentHandler(
-		final String aCalledMethodName,
-		final IConstituent aConstituent) {
-
-		ProxyConsole
-			.getInstance()
-			.debugOutput()
-			.print(this.getClass().getName());
-		ProxyConsole
-			.getInstance()
-			.debugOutput()
-			.print(" does not know what to do for \"");
-		ProxyConsole.getInstance().debugOutput().print(aCalledMethodName);
-		ProxyConsole.getInstance().debugOutput().print("\" (");
-		ProxyConsole
-			.getInstance()
-			.debugOutput()
-			.print(aConstituent.getDisplayID());
-		ProxyConsole.getInstance().debugOutput().println(')');
-	}
-
-	@Override
-	public void visit(final IAggregation anAggregation) {
-
-	}
-
-	@Override
-	public void visit(final IAssociation anAssociation) {
-
-	}
-
-	@Override
-	public void visit(final IComposition aComposition) {
-
-	}
-
-	@Override
-	public void visit(final IContainerAggregation aContainerAggregation) {
-
-	}
-
-	@Override
-	public void visit(final IContainerComposition aContainerComposition) {
-
-	}
-
-	@Override
-	public void visit(final ICreation aCreation) {
-
-	}
-
-	@Override
-	public void visit(final IField aField) {
-
-	}
-
-	@Override
-	public void visit(final IMethodInvocation aMethodInvocation) {
-
-	}
-
-	@Override
-	public void visit(final IParameter aParameter) {
-
-	}
-
-	@Override
-	public void visit(final IPrimitiveEntity aPrimitiveEntity) {
-		// Do nothing for uninteresting primitive types.
-	}
-
-	@Override
-	public void visit(final IUseRelationship aUse) {
-
-	}
+  @Override
+  public void visit(final IUseRelationship aUse) {}
 }

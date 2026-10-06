@@ -26,120 +26,113 @@ package org.argouml.model;
 
 import junit.framework.TestCase;
 
-
 /**
  * Tests for the UmlFactory.
  *
  * @author Linus Tolke
  */
 public class TestUmlFactory extends TestCase {
-    /**
-     * Constructor.
-     *
-     * @param arg0 is the test name.
-     */
-    public TestUmlFactory(String arg0) {
-        super(arg0);
-    }
+  /**
+   * Constructor.
+   *
+   * @param arg0 is the test name.
+   */
+  public TestUmlFactory(String arg0) {
+    super(arg0);
+  }
 
-    /**
-     * The UmlFactory for these tests.
-     */
-    private UmlFactory fy;
+  /** The UmlFactory for these tests. */
+  private UmlFactory fy;
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    public void setUp() {
-	fy = Model.getUmlFactory();
-    }
+  /**
+   * @see junit.framework.TestCase#setUp()
+   */
+  public void setUp() {
+    fy = Model.getUmlFactory();
+  }
 
-    /**
-     * Testing the delete method for Core.<p>
-     *
-     * Reasoning: Everything that is created is supposed to be able to be
-     * deleted.
-     */
-    public void testDeleteCore() {
-	//	fy.delete(Model.getCoreFactory().
-	fy.delete(Model.getCoreFactory().createAssociationEnd());
-	fy.delete(Model.getCoreFactory().createAttribute());
-	fy.delete(Model.getCoreFactory().createBinding());
-	fy.delete(Model.getCoreFactory().createClass());
-	fy.delete(Model.getCoreFactory().createComment());
-	fy.delete(Model.getCoreFactory().createComponent());
-	fy.delete(Model.getCoreFactory().createConstraint());
-	fy.delete(Model.getCoreFactory().createDataType());
-	fy.delete(Model.getCoreFactory().createElementResidence());
-	fy.delete(Model.getCoreFactory().createFlow());
-	fy.delete(Model.getCoreFactory().createInterface());
-	fy.delete(Model.getCoreFactory().createMethod());
-	fy.delete(Model.getCoreFactory().createNode());
-	fy.delete(Model.getCoreFactory().createOperation());
-	fy.delete(Model.getCoreFactory().createParameter());
-	fy.delete(Model.getCoreFactory().createPermission());
-	fy.delete(Model.getCoreFactory().createTemplateParameter());
-	fy.delete(Model.getCoreFactory().createUsage());
-    }
+  /**
+   * Testing the delete method for Core.
+   *
+   * <p>Reasoning: Everything that is created is supposed to be able to be deleted.
+   */
+  public void testDeleteCore() {
+    //	fy.delete(Model.getCoreFactory().
+    fy.delete(Model.getCoreFactory().createAssociationEnd());
+    fy.delete(Model.getCoreFactory().createAttribute());
+    fy.delete(Model.getCoreFactory().createBinding());
+    fy.delete(Model.getCoreFactory().createClass());
+    fy.delete(Model.getCoreFactory().createComment());
+    fy.delete(Model.getCoreFactory().createComponent());
+    fy.delete(Model.getCoreFactory().createConstraint());
+    fy.delete(Model.getCoreFactory().createDataType());
+    fy.delete(Model.getCoreFactory().createElementResidence());
+    fy.delete(Model.getCoreFactory().createFlow());
+    fy.delete(Model.getCoreFactory().createInterface());
+    fy.delete(Model.getCoreFactory().createMethod());
+    fy.delete(Model.getCoreFactory().createNode());
+    fy.delete(Model.getCoreFactory().createOperation());
+    fy.delete(Model.getCoreFactory().createParameter());
+    fy.delete(Model.getCoreFactory().createPermission());
+    fy.delete(Model.getCoreFactory().createTemplateParameter());
+    fy.delete(Model.getCoreFactory().createUsage());
+  }
 
-    /**
-     * Testing the delete method for ActivityGraphs.<p>
-     *
-     * Reasoning: Everything that is created is supposed to be able to be
-     * deleted.
-     */
-    public void testDeleteActivityGraphs() {
-	fy.delete(Model.getActivityGraphsFactory().createActionState());
-	fy.delete(Model.getActivityGraphsFactory().createActivityGraph());
-	fy.delete(Model.getActivityGraphsFactory().createCallState());
-	fy.delete(Model.getActivityGraphsFactory().createClassifierInState());
-	fy.delete(Model.getActivityGraphsFactory().createObjectFlowState());
-	fy.delete(Model.getActivityGraphsFactory().createPartition());
-	fy.delete(Model.getActivityGraphsFactory().createSubactivityState());
-    }
+  /**
+   * Testing the delete method for ActivityGraphs.
+   *
+   * <p>Reasoning: Everything that is created is supposed to be able to be deleted.
+   */
+  public void testDeleteActivityGraphs() {
+    fy.delete(Model.getActivityGraphsFactory().createActionState());
+    fy.delete(Model.getActivityGraphsFactory().createActivityGraph());
+    fy.delete(Model.getActivityGraphsFactory().createCallState());
+    fy.delete(Model.getActivityGraphsFactory().createClassifierInState());
+    fy.delete(Model.getActivityGraphsFactory().createObjectFlowState());
+    fy.delete(Model.getActivityGraphsFactory().createPartition());
+    fy.delete(Model.getActivityGraphsFactory().createSubactivityState());
+  }
 
-    /**
-     * Testing the delete method for UseCases.<p>
-     *
-     * Reasoning: Everything that is created is supposed to be able to be
-     * deleted.
-     */
-    public void testDeleteUseCases() {
-	fy.delete(Model.getUseCasesFactory().createExtend());
-	fy.delete(Model.getUseCasesFactory().createExtensionPoint());
-	fy.delete(Model.getUseCasesFactory().createActor());
-	fy.delete(Model.getUseCasesFactory().createInclude());
-	fy.delete(Model.getUseCasesFactory().createUseCase());
-	fy.delete(Model.getUseCasesFactory().createUseCaseInstance());
-    }
+  /**
+   * Testing the delete method for UseCases.
+   *
+   * <p>Reasoning: Everything that is created is supposed to be able to be deleted.
+   */
+  public void testDeleteUseCases() {
+    fy.delete(Model.getUseCasesFactory().createExtend());
+    fy.delete(Model.getUseCasesFactory().createExtensionPoint());
+    fy.delete(Model.getUseCasesFactory().createActor());
+    fy.delete(Model.getUseCasesFactory().createInclude());
+    fy.delete(Model.getUseCasesFactory().createUseCase());
+    fy.delete(Model.getUseCasesFactory().createUseCaseInstance());
+  }
 
-    /**
-     * Testing the delete method for StateMachines.<p>
-     *
-     * Reasoning: Everything that is created is supposed to be able to be
-     * deleted.
-     */
-    public void testDeleteStateMachines() {
-	fy.delete(Model.getStateMachinesFactory().createCallEvent());
-	fy.delete(Model.getStateMachinesFactory().createChangeEvent());
-	fy.delete(Model.getStateMachinesFactory().createCompositeState());
-	fy.delete(Model.getStateMachinesFactory().createFinalState());
-	fy.delete(Model.getStateMachinesFactory().createGuard());
-	fy.delete(Model.getStateMachinesFactory().createPseudostate());
-	fy.delete(Model.getStateMachinesFactory().createSignalEvent());
-	fy.delete(Model.getStateMachinesFactory().createSimpleState());
-	fy.delete(Model.getStateMachinesFactory().createStateMachine());
-	fy.delete(Model.getStateMachinesFactory().createStubState());
-	fy.delete(Model.getStateMachinesFactory().createSubmachineState());
-	fy.delete(Model.getStateMachinesFactory().createSynchState());
-	fy.delete(Model.getStateMachinesFactory().createTimeEvent());
-	fy.delete(Model.getStateMachinesFactory().createTransition());
-    }
+  /**
+   * Testing the delete method for StateMachines.
+   *
+   * <p>Reasoning: Everything that is created is supposed to be able to be deleted.
+   */
+  public void testDeleteStateMachines() {
+    fy.delete(Model.getStateMachinesFactory().createCallEvent());
+    fy.delete(Model.getStateMachinesFactory().createChangeEvent());
+    fy.delete(Model.getStateMachinesFactory().createCompositeState());
+    fy.delete(Model.getStateMachinesFactory().createFinalState());
+    fy.delete(Model.getStateMachinesFactory().createGuard());
+    fy.delete(Model.getStateMachinesFactory().createPseudostate());
+    fy.delete(Model.getStateMachinesFactory().createSignalEvent());
+    fy.delete(Model.getStateMachinesFactory().createSimpleState());
+    fy.delete(Model.getStateMachinesFactory().createStateMachine());
+    fy.delete(Model.getStateMachinesFactory().createStubState());
+    fy.delete(Model.getStateMachinesFactory().createSubmachineState());
+    fy.delete(Model.getStateMachinesFactory().createSynchState());
+    fy.delete(Model.getStateMachinesFactory().createTimeEvent());
+    fy.delete(Model.getStateMachinesFactory().createTransition());
+  }
 
-    // TODO:
-    // CollaborationsFactory
-    // CommonBehaviorFactory
-    // DataTypesFactory
-    // ExtensionMechanismsFactory
-    // ModelManagementFactory
+  // TODO:
+  // CollaborationsFactory
+  // CommonBehaviorFactory
+  // DataTypesFactory
+  // ExtensionMechanismsFactory
+  // ModelManagementFactory
 }

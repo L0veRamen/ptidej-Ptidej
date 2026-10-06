@@ -26,7 +26,6 @@
 package org.argouml.kernel;
 
 import junit.framework.TestCase;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 
@@ -36,22 +35,20 @@ import org.argouml.model.Model;
  */
 public class TestProjectManager extends TestCase {
 
-    /**
-     * Constructor for TestProjectManager.
-     *
-     * @param arg0 is the name of the test case.
-     */
-    public TestProjectManager(String arg0) {
-	super(arg0);
-    }
+  /**
+   * Constructor for TestProjectManager.
+   *
+   * @param arg0 is the name of the test case.
+   */
+  public TestProjectManager(String arg0) {
+    super(arg0);
+  }
 
-    /**
-     * Test the makeEmptyProject() function.
-     */
-    public void testMakeEmptyProject() {
-	Project p = ProjectManager.getManager().makeEmptyProject();
-	assertEquals(2, p.getDiagrams().size());
-        assertEquals(Translator.localize("misc.untitled-model"), 
-                Model.getFacade().getName(p.getModel()));
-    }
+  /** Test the makeEmptyProject() function. */
+  public void testMakeEmptyProject() {
+    Project p = ProjectManager.getManager().makeEmptyProject();
+    assertEquals(2, p.getDiagrams().size());
+    assertEquals(
+        Translator.localize("misc.untitled-model"), Model.getFacade().getName(p.getModel()));
+  }
 }

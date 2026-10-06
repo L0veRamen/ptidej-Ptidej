@@ -26,66 +26,62 @@ package org.argouml.uml.cognitive.critics;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import org.argouml.cognitive.Critic;
 import org.argouml.profile.Profile;
 
 /**
- * Profile which contains the critics that define optional good practices for
- * general UML models
- * 
+ * Profile which contains the critics that define optional good practices for general UML models
+ *
  * @author maurelio1234
  */
 public class ProfileGoodPractices extends Profile {
 
-    private Set<Critic>  critics = new HashSet<Critic>();
+  private Set<Critic> critics = new HashSet<Critic>();
 
-    private CrMissingClassName crMissingClassName = new CrMissingClassName();
-    
-    /**
-     * Default Constructor 
-     */
-    public ProfileGoodPractices() {
-        
-        // general
-        critics.add(new CrEmptyPackage());
-        critics.add(new CrNodesOverlap());
-        critics.add(new CrZeroLengthEdge());
-        critics.add(new CrCircularComposition());
-        critics.add(new CrMissingAttrName());
-        critics.add(crMissingClassName);
-        critics.add(new CrMissingStateName());
-        critics.add(new CrMissingOperName());
-        critics.add(new CrNonAggDataType());
-        critics.add(new CrSubclassReference());
-        critics.add(new CrTooManyAssoc());
-        critics.add(new CrTooManyAttr());
-        critics.add(new CrTooManyOper());
-        critics.add(new CrTooManyTransitions());
-        critics.add(new CrTooManyStates());
-        critics.add(new CrTooManyClasses());
-        critics.add(new CrWrongLinkEnds());
-        critics.add(new CrUtilityViolated());
+  private CrMissingClassName crMissingClassName = new CrMissingClassName();
 
-        this.setCritics(critics);
-    }
-    
-    @Override
-    public String getDisplayName() {
-        return "Critics for Good Practices";
-    }
+  /** Default Constructor */
+  public ProfileGoodPractices() {
 
-   /*
-    * @see org.argouml.profile.Profile#getProfileIdentifier()
-    */
-    public String getProfileIdentifier() {
-        return "GoodPractices";
-    }
+    // general
+    critics.add(new CrEmptyPackage());
+    critics.add(new CrNodesOverlap());
+    critics.add(new CrZeroLengthEdge());
+    critics.add(new CrCircularComposition());
+    critics.add(new CrMissingAttrName());
+    critics.add(crMissingClassName);
+    critics.add(new CrMissingStateName());
+    critics.add(new CrMissingOperName());
+    critics.add(new CrNonAggDataType());
+    critics.add(new CrSubclassReference());
+    critics.add(new CrTooManyAssoc());
+    critics.add(new CrTooManyAttr());
+    critics.add(new CrTooManyOper());
+    critics.add(new CrTooManyTransitions());
+    critics.add(new CrTooManyStates());
+    critics.add(new CrTooManyClasses());
+    critics.add(new CrWrongLinkEnds());
+    critics.add(new CrUtilityViolated());
 
-    /**
-     * @return the missing class name critic
-     */
-    public Critic getCrMissingClassName() {
-        return crMissingClassName;
-    }
+    this.setCritics(critics);
+  }
+
+  @Override
+  public String getDisplayName() {
+    return "Critics for Good Practices";
+  }
+
+  /*
+   * @see org.argouml.profile.Profile#getProfileIdentifier()
+   */
+  public String getProfileIdentifier() {
+    return "GoodPractices";
+  }
+
+  /**
+   * @return the missing class name critic
+   */
+  public Critic getCrMissingClassName() {
+    return crMissingClassName;
+  }
 }

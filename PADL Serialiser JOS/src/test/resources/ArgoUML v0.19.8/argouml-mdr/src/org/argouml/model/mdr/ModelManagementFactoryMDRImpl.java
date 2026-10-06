@@ -37,210 +37,178 @@ import org.omg.uml.modelmanagement.UmlPackage;
 
 /**
  * The ModelManagementFactory.
- * 
+ *
+ * <p>Emulates synchronous event delivery as implemented in NSUML library. Any methods which call
+ * org.omg.uml or NetBeans MDR methods that generate events must call flushModelEvents() before
+ * returning. 'Get' methods do not needed to be handled specially.
+ *
  * <p>
- * Emulates synchronous event delivery as implemented in NSUML library.
- * Any methods which call org.omg.uml or NetBeans MDR methods that generate
- * events must call flushModelEvents() before returning.  'Get' methods do
- * not needed to be handled specially.
- * <p>
- * 
+ *
  * @since ARGO0.19.5
- * @author Ludovic Maître
- * @author Tom Morris
- * derived from NSUML implementation by:
+ * @author Ludovic Maï¿½tre
+ * @author Tom Morris derived from NSUML implementation by:
  * @author Linus Tolke
  */
-public final class ModelManagementFactoryMDRImpl extends
-        AbstractUmlModelFactoryMDR implements ModelManagementFactory {
+public final class ModelManagementFactoryMDRImpl extends AbstractUmlModelFactoryMDR
+    implements ModelManagementFactory {
 
-    /**
-     * Logger.
-     */
-    private static final Logger LOG = Logger.
-            getLogger(ModelManagementFactoryMDRImpl.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(ModelManagementFactoryMDRImpl.class);
 
-    /**
-     * The model.
-     */
-    private Object theRootModel;
+  /** The model. */
+  private Object theRootModel;
 
-    /**
-     * The ModelManagement package.
-     */
-    private ModelManagementPackage modelManagementPackage;
+  /** The ModelManagement package. */
+  private ModelManagementPackage modelManagementPackage;
 
-    /**
-     * The model implementation.
-     */
-    private ModelImplementation nsmodel;
+  /** The model implementation. */
+  private ModelImplementation nsmodel;
 
-    /**
-     * The model event pump.
-     */
-    private ModelEventPump eventPump;
-    
-    /**
-     * Constructor.
-     * 
-     * @param mi
-     *            The MDRModelImplementation.
-     */
-    public ModelManagementFactoryMDRImpl(MDRModelImplementation mi) {
-        modelManagementPackage = mi.getUmlPackage().getModelManagement();
-        nsmodel = mi;
-        eventPump = nsmodel.getModelEventPump();
+  /** The model event pump. */
+  private ModelEventPump eventPump;
+
+  /**
+   * Constructor.
+   *
+   * @param mi The MDRModelImplementation.
+   */
+  public ModelManagementFactoryMDRImpl(MDRModelImplementation mi) {
+    modelManagementPackage = mi.getUmlPackage().getModelManagement();
+    nsmodel = mi;
+    eventPump = nsmodel.getModelEventPump();
+  }
+
+  /**
+   * @see org.argouml.model.ModelManagementFactory#createModel()
+   */
+  public Object createModel() {
+    Model myModel = modelManagementPackage.getModel().createModel();
+    super.initialize(myModel);
+    eventPump.flushModelEvents();
+    return myModel;
+  }
+
+  /**
+   * @see org.argouml.model.ModelManagementFactory#setRootModel(java.lang.Object)
+   */
+  public void setRootModel(Object rootModel) {
+    if (rootModel != null && !(rootModel instanceof Model)) {
+      throw new IllegalArgumentException(
+          "The rootModel supplied must be a Model. Got a " + rootModel.getClass().getName());
+    }
+    theRootModel = rootModel;
+  }
+
+  /**
+   * @see org.argouml.model.ModelManagementFactory#getRootModel()
+   */
+  public Object getRootModel() {
+    return theRootModel;
+  }
+
+  /**
+   * @see org.argouml.model.ModelManagementFactory#createElementImport()
+   */
+  public Object createElementImport() {
+    ElementImport myElementImport = modelManagementPackage.getElementImport().createElementImport();
+    super.initialize(myElementImport);
+    eventPump.flushModelEvents();
+    return myElementImport;
+  }
+
+  /**
+   * @see org.argouml.model.ModelManagementFactory#createPackage()
+   */
+  public Object createPackage() {
+    UmlPackage myUmlPackage = modelManagementPackage.getUmlPackage().createUmlPackage();
+    super.initialize(myUmlPackage);
+    eventPump.flushModelEvents();
+    return myUmlPackage;
+  }
+
+  /**
+   * @see org.argouml.model.ModelManagementFactory#buildPackage( java.lang.String, java.lang.String)
+   */
+  public Object buildPackage(String name, String uuid) {
+    UmlPackage pkg = (UmlPackage) createPackage();
+    pkg.setName(name);
+    LOG.warn("UUID [" + uuid + "] ignored - what to do with it?");
+    eventPump.flushModelEvents();
+    return pkg;
+  }
+
+  /**
+   * @see org.argouml.model.ModelManagementFactory#createSubsystem()
+   */
+  public Object createSubsystem() {
+    Subsystem mySubsystem = modelManagementPackage.getSubsystem().createSubsystem();
+    super.initialize(mySubsystem);
+    eventPump.flushModelEvents();
+    return mySubsystem;
+  }
+
+  /**
+   * @see org.argouml.model.ModelManagementFactory#copyPackage( java.lang.Object, java.lang.Object)
+   */
+  public Object copyPackage(Object source, Object ns) {
+    if (!(source instanceof UmlPackage)) {
+      throw new IllegalArgumentException("source");
+    }
+    if (!(ns instanceof Namespace)) {
+      throw new IllegalArgumentException("namespace");
     }
 
-    /**
-     * @see org.argouml.model.ModelManagementFactory#createModel()
-     */
-    public Object createModel() {
-        Model myModel = modelManagementPackage.getModel().createModel();
-        super.initialize(myModel);
-        eventPump.flushModelEvents();
-        return myModel;
+    UmlPackage p = (UmlPackage) createPackage();
+    ((Namespace) ns).getOwnedElement().add(p);
+    doCopyPackage((UmlPackage) source, p);
+    eventPump.flushModelEvents();
+    return p;
+  }
+
+  /**
+   * Used by the copy functions. Do not call this function directly.
+   *
+   * @param source The source package.
+   * @param target The target package.
+   */
+  private void doCopyPackage(UmlPackage source, UmlPackage target) {
+    ((CoreFactoryMDRImpl) nsmodel.getCoreFactory()).doCopyNamespace(source, target);
+    eventPump.flushModelEvents();
+  }
+
+  /**
+   * @param elem to be deleted
+   */
+  void deleteElementImport(Object elem) {
+    if (!(elem instanceof ElementImport)) {
+      throw new IllegalArgumentException();
     }
+  }
 
-    /**
-     * @see org.argouml.model.ModelManagementFactory#setRootModel(java.lang.Object)
-     */
-    public void setRootModel(Object rootModel) {
-        if (rootModel != null && !(rootModel instanceof Model)) {
-            throw new IllegalArgumentException(
-                    "The rootModel supplied must be a Model. Got a "
-                            + rootModel.getClass().getName());
-        }
-        theRootModel = rootModel;
+  /**
+   * @param elem to be deleted
+   */
+  void deleteModel(Object elem) {
+    if (!(elem instanceof Model)) {
+      throw new IllegalArgumentException();
     }
+  }
 
-    /**
-     * @see org.argouml.model.ModelManagementFactory#getRootModel()
-     */
-    public Object getRootModel() {
-        return theRootModel;
+  /**
+   * @param elem to be deleted
+   */
+  void deletePackage(Object elem) {
+    if (!(elem instanceof UmlPackage)) {
+      throw new IllegalArgumentException();
     }
+  }
 
-    /**
-     * @see org.argouml.model.ModelManagementFactory#createElementImport()
-     */
-    public Object createElementImport() {
-        ElementImport myElementImport = modelManagementPackage.
-                getElementImport().createElementImport();
-        super.initialize(myElementImport);
-        eventPump.flushModelEvents();
-        return myElementImport;
+  /**
+   * @param elem to be deleted
+   */
+  void deleteSubsystem(Object elem) {
+    if (!(elem instanceof Subsystem)) {
+      throw new IllegalArgumentException();
     }
-
-    /**
-     * @see org.argouml.model.ModelManagementFactory#createPackage()
-     */
-    public Object createPackage() {
-        UmlPackage myUmlPackage = modelManagementPackage.getUmlPackage().
-                createUmlPackage();
-        super.initialize(myUmlPackage);
-        eventPump.flushModelEvents();
-        return myUmlPackage;
-    }
-
-    /**
-     * @see org.argouml.model.ModelManagementFactory#buildPackage(
-     *      java.lang.String, java.lang.String)
-     */
-    public Object buildPackage(String name, String uuid) {
-        UmlPackage pkg = (UmlPackage) createPackage();
-        pkg.setName(name);
-        LOG.warn("UUID [" + uuid + "] ignored - what to do with it?");
-        eventPump.flushModelEvents();
-        return pkg;
-    }
-
-    /**
-     * @see org.argouml.model.ModelManagementFactory#createSubsystem()
-     */
-    public Object createSubsystem() {
-        Subsystem mySubsystem = modelManagementPackage.getSubsystem().
-                createSubsystem();
-        super.initialize(mySubsystem);
-        eventPump.flushModelEvents();
-        return mySubsystem;
-    }
-
-    /**
-     * @see org.argouml.model.ModelManagementFactory#copyPackage(
-     *      java.lang.Object, java.lang.Object)
-     */
-    public Object copyPackage(Object source, Object ns) {
-        if (!(source instanceof UmlPackage)) {
-            throw new IllegalArgumentException("source");
-        }
-        if (!(ns instanceof Namespace)) {
-            throw new IllegalArgumentException("namespace");
-        }
-
-        UmlPackage p = (UmlPackage) createPackage();
-        ((Namespace) ns).getOwnedElement().add(p);
-        doCopyPackage((UmlPackage) source, p);
-        eventPump.flushModelEvents();
-        return p;
-    }
-
-    /**
-     * Used by the copy functions. Do not call this function directly.
-     * 
-     * @param source
-     *            The source package.
-     * @param target
-     *            The target package.
-     */
-    private void doCopyPackage(UmlPackage source, UmlPackage target) {
-        ((CoreFactoryMDRImpl) nsmodel.getCoreFactory())
-            .doCopyNamespace(source, target);
-        eventPump.flushModelEvents();
-    }
-
-    /**
-     * @param elem
-     *            to be deleted
-     */
-    void deleteElementImport(Object elem) {
-        if (!(elem instanceof ElementImport)) {
-            throw new IllegalArgumentException();
-        }
-
-    }
-
-    /**
-     * @param elem
-     *            to be deleted
-     */
-    void deleteModel(Object elem) {
-        if (!(elem instanceof Model)) {
-            throw new IllegalArgumentException();
-        }
-
-    }
-
-    /**
-     * @param elem
-     *            to be deleted
-     */
-    void deletePackage(Object elem) {
-        if (!(elem instanceof UmlPackage)) {
-            throw new IllegalArgumentException();
-        }
-
-    }
-
-    /**
-     * @param elem
-     *            to be deleted
-     */
-    void deleteSubsystem(Object elem) {
-        if (!(elem instanceof Subsystem)) {
-            throw new IllegalArgumentException();
-        }
-
-    }
-
+  }
 }

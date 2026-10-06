@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -17,38 +17,45 @@ package util.parser.java.v15.nodes;
 import java.util.*;
 
 /**
- * Represents a sequence of nodes nested within a choice, list,
- * optional list, or optional, e.g. ( A B )+ or [ C D E ]
+ * Represents a sequence of nodes nested within a choice, list, optional list, or optional, e.g. ( A
+ * B )+ or [ C D E ]
  */
 public class NodeSequence implements NodeListInterface {
-   /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+  /** */
+  private static final long serialVersionUID = 1L;
 
-public NodeSequence(int n) {
-      this.nodes = new Vector<Node>(n);
-   }
+  public NodeSequence(int n) {
+    this.nodes = new Vector<Node>(n);
+  }
 
-   public NodeSequence(Node firstNode) {
-      this.nodes = new Vector<Node>();
-      addNode(firstNode);
-   }
+  public NodeSequence(Node firstNode) {
+    this.nodes = new Vector<Node>();
+    addNode(firstNode);
+  }
 
-   public void addNode(Node n) {
-      this.nodes.addElement(n);
-   }
+  public void addNode(Node n) {
+    this.nodes.addElement(n);
+  }
 
-   public Node elementAt(int i)  { return (Node)this.nodes.elementAt(i); }
-   public Enumeration<Node> elements() { return this.nodes.elements(); }
-   public int size()             { return this.nodes.size(); }
-   public void accept(util.parser.java.v15.visitors.Visitor v) {
-      v.visit(this);
-   }
-   public Object accept(util.parser.java.v15.visitors.ObjectVisitor v, Object argu) {
-      return v.visit(this,argu);
-   }
+  public Node elementAt(int i) {
+    return (Node) this.nodes.elementAt(i);
+  }
 
-   public Vector<Node> nodes;
+  public Enumeration<Node> elements() {
+    return this.nodes.elements();
+  }
+
+  public int size() {
+    return this.nodes.size();
+  }
+
+  public void accept(util.parser.java.v15.visitors.Visitor v) {
+    v.visit(this);
+  }
+
+  public Object accept(util.parser.java.v15.visitors.ObjectVisitor v, Object argu) {
+    return v.visit(this, argu);
+  }
+
+  public Vector<Node> nodes;
 }
-

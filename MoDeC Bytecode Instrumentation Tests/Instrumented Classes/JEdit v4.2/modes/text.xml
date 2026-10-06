@@ -5,7 +5,7 @@
 <!DOCTYPE MODE SYSTEM "xmode.dtd">
 
 <MODE>
-	<RULES>
-		<TERMINATE AT_CHAR="0" />
-	</RULES>
+    <RULES>
+        <TERMINATE AT_CHAR="0"/>
+    </RULES>
 </MODE>

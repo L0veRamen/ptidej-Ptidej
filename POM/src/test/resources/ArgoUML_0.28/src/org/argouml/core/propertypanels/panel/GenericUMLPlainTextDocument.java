@@ -28,37 +28,35 @@ import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLPlainTextDocument;
 
 /**
- * Generic document for the plain text properties of the
- * UML elements.
+ * Generic document for the plain text properties of the UML elements.
  *
  * @author penyaskito
  */
 public class GenericUMLPlainTextDocument extends UMLPlainTextDocument {
 
-    private String fieldName = null;
-    
-    public GenericUMLPlainTextDocument(String theFieldName) {
-        super(theFieldName);
-        this.fieldName = theFieldName;
-    }
-    
-    @Override
-    protected String getProperty() {
-        Object target = getTarget();
-        // TODO: This can be a mess... There are any better solution?
-        if ("name".equals(fieldName)) {
-            return Model.getFacade().getName(target);
-        }
-        return null;
-    }
+  private String fieldName = null;
 
-    @Override
-    protected void setProperty(String text) {
-        Object target = getTarget();
-        // TODO: This can be a mess... There are any better solution?        
-        if ("name".equals(fieldName)) {
-            Model.getCoreHelper().setName(target, text);
-        }
-    }
+  public GenericUMLPlainTextDocument(String theFieldName) {
+    super(theFieldName);
+    this.fieldName = theFieldName;
+  }
 
+  @Override
+  protected String getProperty() {
+    Object target = getTarget();
+    // TODO: This can be a mess... There are any better solution?
+    if ("name".equals(fieldName)) {
+      return Model.getFacade().getName(target);
+    }
+    return null;
+  }
+
+  @Override
+  protected void setProperty(String text) {
+    Object target = getTarget();
+    // TODO: This can be a mess... There are any better solution?
+    if ("name".equals(fieldName)) {
+      Model.getCoreHelper().setName(target, text);
+    }
+  }
 }

@@ -23,67 +23,62 @@
 // UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 package org.argouml.core.propertypanels.ui;
+
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-
 import org.argouml.i18n.Translator;
 import org.argouml.ui.LookAndFeelMgr;
 
-/**
- * This text field shows the language of a UML expression.
- */
-class UMLExpressionLanguageField extends JTextField implements
-        DocumentListener {
+/** This text field shows the language of a UML expression. */
+class UMLExpressionLanguageField extends JTextField implements DocumentListener {
 
-    private UMLExpressionModel model;
-    private boolean notifyModel;
+  private UMLExpressionModel model;
+  private boolean notifyModel;
 
-    /**
-     * Creates a new field that selects the language for an expression.
-     *
-     * @param m Expression model, should be shared between
-     * Language and Body fields
-     * @param n Only one of Language and Body fields should
-     * forward events to model
-     */
-    public UMLExpressionLanguageField(UMLExpressionModel m, boolean n) {
-        model = m;
-        notifyModel = n;
-        getDocument().addDocumentListener(this);
-        setToolTipText(Translator.localize("label.language.tooltip"));
-        setFont(LookAndFeelMgr.getInstance().getStandardFont());
-        update();
+  /**
+   * Creates a new field that selects the language for an expression.
+   *
+   * @param m Expression model, should be shared between Language and Body fields
+   * @param n Only one of Language and Body fields should forward events to model
+   */
+  public UMLExpressionLanguageField(UMLExpressionModel m, boolean n) {
+    model = m;
+    notifyModel = n;
+    getDocument().addDocumentListener(this);
+    setToolTipText(Translator.localize("label.language.tooltip"));
+    setFont(LookAndFeelMgr.getInstance().getStandardFont());
+    update();
+  }
+
+  private void update() {
+    String oldText = getText();
+    String newText = model.getLanguage();
+    if (oldText == null || newText == null || !oldText.equals(newText)) {
+      if (oldText != newText) {
+        setText(newText);
+      }
     }
+  }
 
-    private void update() {
-        String oldText = getText();
-        String newText = model.getLanguage();
-        if (oldText == null || newText == null || !oldText.equals(newText)) {
-            if (oldText != newText) {
-                setText(newText);
-            }
-        }
-    }
+  /*
+   * @see javax.swing.event.DocumentListener#changedUpdate(javax.swing.event.DocumentEvent)
+   */
+  public void changedUpdate(final DocumentEvent p1) {
+    model.setLanguage(getText());
+  }
 
-    /*
-     * @see javax.swing.event.DocumentListener#changedUpdate(javax.swing.event.DocumentEvent)
-     */
-    public void changedUpdate(final DocumentEvent p1) {
-        model.setLanguage(getText());
-    }
+  /*
+   * @see javax.swing.event.DocumentListener#removeUpdate(javax.swing.event.DocumentEvent)
+   */
+  public void removeUpdate(final DocumentEvent p1) {
+    model.setLanguage(getText());
+  }
 
-    /*
-     * @see javax.swing.event.DocumentListener#removeUpdate(javax.swing.event.DocumentEvent)
-     */
-    public void removeUpdate(final DocumentEvent p1) {
-        model.setLanguage(getText());
-    }
-
-    /*
-     * @see javax.swing.event.DocumentListener#insertUpdate(javax.swing.event.DocumentEvent)
-     */
-    public void insertUpdate(final DocumentEvent p1) {
-        model.setLanguage(getText());
-    }
+  /*
+   * @see javax.swing.event.DocumentListener#insertUpdate(javax.swing.event.DocumentEvent)
+   */
+  public void insertUpdate(final DocumentEvent p1) {
+    model.setLanguage(getText());
+  }
 }

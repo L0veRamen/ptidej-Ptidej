@@ -28,7 +28,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.argouml.i18n.Translator;
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
@@ -44,42 +43,42 @@ import org.argouml.uml.diagram.sequence.ui.UMLSequenceDiagram;
  */
 public class GoClassifierToSequenceDiagram extends AbstractPerspectiveRule {
 
-    /*
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
-     */
-    public String getRuleName() {
-        return Translator.localize("misc.classifier.sequence-diagram");
+  /*
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
+   */
+  public String getRuleName() {
+    return Translator.localize("misc.classifier.sequence-diagram");
+  }
+
+  /*
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
+   */
+  public Collection getChildren(Object parent) {
+    if (Model.getFacade().isAClassifier(parent)) {
+      Collection col = Model.getFacade().getCollaborations(parent);
+      Set<ArgoDiagram> ret = new HashSet<ArgoDiagram>();
+      Project p = ProjectManager.getManager().getCurrentProject();
+
+      for (ArgoDiagram diagram : p.getDiagramList()) {
+        if (diagram instanceof UMLSequenceDiagram
+            && col.contains(
+                ((SequenceDiagramGraphModel) ((UMLSequenceDiagram) diagram).getGraphModel())
+                    .getCollaboration())) {
+          ret.add(diagram);
+        }
+      }
+
+      return ret;
     }
 
-    /*
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
-     */
-    public Collection getChildren(Object parent) {
-	if (Model.getFacade().isAClassifier(parent)) {
-	    Collection col = Model.getFacade().getCollaborations(parent);
-	    Set<ArgoDiagram> ret = new HashSet<ArgoDiagram>();
-	    Project p = ProjectManager.getManager().getCurrentProject();
-            
-            for (ArgoDiagram diagram : p.getDiagramList()) {
-		if (diagram instanceof UMLSequenceDiagram
-		    && col.contains(((SequenceDiagramGraphModel)
-		            ((UMLSequenceDiagram) diagram).getGraphModel())
-		                            .getCollaboration())) {
-		    ret.add(diagram);
-		}
-	    }
+    return Collections.EMPTY_SET;
+  }
 
-	    return ret;
-	}
-
-	return Collections.EMPTY_SET;
-    }
-
-    /*
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
-     */
-    public Set getDependencies(Object parent) {
-        // TODO: What?
-	return Collections.EMPTY_SET;
-    }
+  /*
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
+   */
+  public Set getDependencies(Object parent) {
+    // TODO: What?
+    return Collections.EMPTY_SET;
+  }
 }

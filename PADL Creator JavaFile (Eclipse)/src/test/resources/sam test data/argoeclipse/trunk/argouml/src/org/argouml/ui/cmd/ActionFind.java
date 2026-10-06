@@ -25,10 +25,8 @@
 package org.argouml.ui.cmd;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.Action;
 import javax.swing.Icon;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.i18n.Translator;
 import org.argouml.ui.FindDialog;
@@ -38,38 +36,34 @@ import org.tigris.gef.undo.UndoableAction;
 // items on view menu
 
 /**
- * This action starts the Find dialog. <p>
- * 
- * It is present in the View menu, 
- * and has a tool on the toolbar. <p>
- * 
- * The Find function is never downlighted.
- * 
+ * This action starts the Find dialog.
+ *
+ * <p>It is present in the View menu, and has a tool on the toolbar.
+ *
+ * <p>The Find function is never downlighted.
+ *
  * @author michiel
  */
 public class ActionFind extends UndoableAction {
 
-    private String name;
-    
-    /**
-     * The constructor.
-     */
-    public ActionFind() {
-        // Set the name:
-        super(Translator.localize("action.find"));
-        name = "action.find";
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, Translator.localize(name));
-        // Set the icon:
-        Icon icon = ResourceLoaderWrapper.lookupIcon(name);
-        putValue(Action.SMALL_ICON, icon);
-    }
+  private String name;
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-	FindDialog.getInstance().setVisible(true);
-    }
+  /** The constructor. */
+  public ActionFind() {
+    // Set the name:
+    super(Translator.localize("action.find"));
+    name = "action.find";
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize(name));
+    // Set the icon:
+    Icon icon = ResourceLoaderWrapper.lookupIcon(name);
+    putValue(Action.SMALL_ICON, icon);
+  }
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    FindDialog.getInstance().setVisible(true);
+  }
 } /* end class ActionFind */
-

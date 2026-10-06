@@ -25,73 +25,68 @@
 package org.argouml.uml.ui.foundation.core;
 
 import java.util.HashMap;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLRadioButtonPanel;
 
 /**
- *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 4, 2003
  */
-public class UMLModelElementVisibilityRadioButtonPanel
-    extends UMLRadioButtonPanel {
+public class UMLModelElementVisibilityRadioButtonPanel extends UMLRadioButtonPanel {
 
-    private static HashMap labelTextsAndActionCommands = new HashMap();
+  private static HashMap labelTextsAndActionCommands = new HashMap();
 
-    // TODO: The buttons should be order of reducing visibility, but
-    // they get ordered by natural order of the keys (hash order?)
-    static {
-        labelTextsAndActionCommands.put(Translator.localize(
-                "label.visibility-public"),
-                ActionSetModelElementVisibility.PUBLIC_COMMAND);
-        labelTextsAndActionCommands.put(Translator.localize(
-                "label.visibility-package"),
-                ActionSetModelElementVisibility.PACKAGE_COMMAND);
-        labelTextsAndActionCommands.put(Translator.localize(
-                "label.visibility-protected"),
-                ActionSetModelElementVisibility.PROTECTED_COMMAND);
-        labelTextsAndActionCommands.put(Translator.localize(
-                "label.visibility-private"),
-                ActionSetModelElementVisibility.PRIVATE_COMMAND);
+  // TODO: The buttons should be order of reducing visibility, but
+  // they get ordered by natural order of the keys (hash order?)
+  static {
+    labelTextsAndActionCommands.put(
+        Translator.localize("label.visibility-public"),
+        ActionSetModelElementVisibility.PUBLIC_COMMAND);
+    labelTextsAndActionCommands.put(
+        Translator.localize("label.visibility-package"),
+        ActionSetModelElementVisibility.PACKAGE_COMMAND);
+    labelTextsAndActionCommands.put(
+        Translator.localize("label.visibility-protected"),
+        ActionSetModelElementVisibility.PROTECTED_COMMAND);
+    labelTextsAndActionCommands.put(
+        Translator.localize("label.visibility-private"),
+        ActionSetModelElementVisibility.PRIVATE_COMMAND);
+  }
+
+  /**
+   * Constructor for UMLAssociationEndChangeabilityRadioButtonPanel.
+   *
+   * @param title the title for the panel
+   * @param horizontal determines the orientation
+   */
+  public UMLModelElementVisibilityRadioButtonPanel(String title, boolean horizontal) {
+    super(
+        title,
+        labelTextsAndActionCommands,
+        "visibility",
+        ActionSetModelElementVisibility.getInstance(),
+        horizontal);
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLRadioButtonPanel#buildModel()
+   */
+  public void buildModel() {
+    if (getTarget() != null) {
+      Object target = /*(MModelElement)*/ getTarget();
+      Object kind = Model.getFacade().getVisibility(target);
+      if (kind == null || kind.equals(Model.getVisibilityKind().getPublic())) {
+        setSelected(ActionSetModelElementVisibility.PUBLIC_COMMAND);
+      } else if (kind.equals(Model.getVisibilityKind().getPackage())) {
+        setSelected(ActionSetModelElementVisibility.PACKAGE_COMMAND);
+      } else if (kind.equals(Model.getVisibilityKind().getProtected())) {
+        setSelected(ActionSetModelElementVisibility.PROTECTED_COMMAND);
+      } else if (kind.equals(Model.getVisibilityKind().getPrivate())) {
+        setSelected(ActionSetModelElementVisibility.PRIVATE_COMMAND);
+      } else {
+        setSelected(ActionSetModelElementVisibility.PUBLIC_COMMAND);
+      }
     }
-
-    /**
-     * Constructor for UMLAssociationEndChangeabilityRadioButtonPanel.
-     * @param title the title for the panel
-     * @param horizontal determines the orientation
-     */
-    public UMLModelElementVisibilityRadioButtonPanel(
-            String title, boolean horizontal) {
-        super(title, labelTextsAndActionCommands, "visibility",
-                ActionSetModelElementVisibility.getInstance(), horizontal);
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLRadioButtonPanel#buildModel()
-     */
-    public void buildModel() {
-        if (getTarget() != null) {
-            Object target = /*(MModelElement)*/ getTarget();
-            Object kind = Model.getFacade().getVisibility(target);
-            if (kind == null
-                    || kind.equals(
-                            Model.getVisibilityKind().getPublic())) {
-                setSelected(ActionSetModelElementVisibility.PUBLIC_COMMAND);
-            } else if (kind.equals(
-                    Model.getVisibilityKind().getPackage())) {
-                setSelected(ActionSetModelElementVisibility.PACKAGE_COMMAND);
-            } else if (kind.equals(
-                    Model.getVisibilityKind().getProtected())) {
-                setSelected(ActionSetModelElementVisibility.PROTECTED_COMMAND);
-            } else if (kind.equals(
-                    Model.getVisibilityKind().getPrivate())) {
-                setSelected(ActionSetModelElementVisibility.PRIVATE_COMMAND);
-            } else {
-                setSelected(ActionSetModelElementVisibility.PUBLIC_COMMAND);
-            }
-        }
-    }
-
+  }
 }

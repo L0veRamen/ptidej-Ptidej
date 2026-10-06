@@ -1,7 +1,7 @@
 package org.ogre4j;
 
-abstract public class ParamCommand {
-    abstract public String doGet(Object target);
+public abstract class ParamCommand {
+  public abstract String doGet(Object target);
 
-    abstract public void doSet(Object target, String val);
+  public abstract void doSet(Object target, String val);
 }

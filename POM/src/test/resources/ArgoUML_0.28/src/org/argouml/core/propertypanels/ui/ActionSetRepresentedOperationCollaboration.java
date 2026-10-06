@@ -25,7 +25,6 @@
 package org.argouml.core.propertypanels.ui;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
@@ -33,41 +32,34 @@ import org.argouml.uml.ui.UMLComboBox2;
 import org.tigris.gef.undo.UndoableAction;
 
 /**
- * This Action sets the represented operation 
- * of a collaboration.
- * 
+ * This Action sets the represented operation of a collaboration.
+ *
  * @author michiel
  */
 class ActionSetRepresentedOperationCollaboration extends UndoableAction {
 
-    /**
-     * Constructor.
-     */
-    ActionSetRepresentedOperationCollaboration() {
-        super(Translator.localize("action.set"),
-                ResourceLoaderWrapper.lookupIcon("action.set"));
-    }
+  /** Constructor. */
+  ActionSetRepresentedOperationCollaboration() {
+    super(Translator.localize("action.set"), ResourceLoaderWrapper.lookupIcon("action.set"));
+  }
 
-    /*
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        if (e.getSource() instanceof UMLComboBox2) {
-            UMLComboBox2 source = (UMLComboBox2) e.getSource();
-            Object target = source.getTarget();
-            Object newValue = source.getSelectedItem();
-            /* The selected value may be "" to 
-             * clear the represented operation. */
-            if (!Model.getFacade().isAOperation(newValue)) {
-                newValue = null;
-            }
-            if (Model.getFacade().getRepresentedOperation(target)
-                    != newValue) {
-                Model.getCollaborationsHelper().setRepresentedOperation(
-                        target, newValue);
-            }
-        }
+  /*
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    if (e.getSource() instanceof UMLComboBox2) {
+      UMLComboBox2 source = (UMLComboBox2) e.getSource();
+      Object target = source.getTarget();
+      Object newValue = source.getSelectedItem();
+      /* The selected value may be "" to
+       * clear the represented operation. */
+      if (!Model.getFacade().isAOperation(newValue)) {
+        newValue = null;
+      }
+      if (Model.getFacade().getRepresentedOperation(target) != newValue) {
+        Model.getCollaborationsHelper().setRepresentedOperation(target, newValue);
+      }
     }
-
+  }
 }

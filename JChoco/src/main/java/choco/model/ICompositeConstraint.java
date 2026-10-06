@@ -15,8 +15,5 @@ package choco.model;
 
 import choco.Constraint;
 
-/**
- * An interface for all implementations of listeners using search variables.
- */
-public interface ICompositeConstraint extends Constraint, IVarListener {
-}
+/** An interface for all implementations of listeners using search variables. */
+public interface ICompositeConstraint extends Constraint, IVarListener {}

@@ -28,24 +28,23 @@ import org.argouml.model.Model;
 
 public class TestCrTooManyAssoc extends AbstractTestCrTooMany {
 
-    Object dm2;
+  Object dm2;
 
-    public TestCrTooManyAssoc(String arg0) {
-        super(arg0);
-        // TODO Auto-generated constructor stub
-    }
+  public TestCrTooManyAssoc(String arg0) {
+    super(arg0);
+    // TODO Auto-generated constructor stub
+  }
 
-    protected void setUp() throws Exception {
-        super.setUp();
-        cr = new CrTooManyAssoc();
-        dm = Model.getCoreFactory().createClass();
-        Model.getCoreHelper().setNamespace(dm, model);
-        dm2 = Model.getCoreFactory().createClass();
-        Model.getCoreHelper().setNamespace(dm2, model);
-    }
+  protected void setUp() throws Exception {
+    super.setUp();
+    cr = new CrTooManyAssoc();
+    dm = Model.getCoreFactory().createClass();
+    Model.getCoreHelper().setNamespace(dm, model);
+    dm2 = Model.getCoreFactory().createClass();
+    Model.getCoreHelper().setNamespace(dm2, model);
+  }
 
-    protected void createNewModelElement() {
-        Model.getCoreFactory().buildAssociation(dm, dm2);
-    }
-
+  protected void createNewModelElement() {
+    Model.getCoreFactory().buildAssociation(dm, dm2);
+  }
 }

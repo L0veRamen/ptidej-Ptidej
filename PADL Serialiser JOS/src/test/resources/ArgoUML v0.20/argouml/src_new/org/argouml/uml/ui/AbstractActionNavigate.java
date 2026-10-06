@@ -25,77 +25,69 @@
 package org.argouml.uml.ui;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.Action;
 import javax.swing.Icon;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.model.Model;
 import org.argouml.ui.targetmanager.TargetManager;
 
 /**
- *
  * @author mkl
- *
  */
 public abstract class AbstractActionNavigate extends UMLAction {
 
-    /**
-     * The constructor.
-     */
-    public AbstractActionNavigate() {
-        this("button.go-up", true);
-    }
+  /** The constructor. */
+  public AbstractActionNavigate() {
+    this("button.go-up", true);
+  }
 
-    /**
-     * @param key The key (to be localized) of the name of the action.
-     * @param hasIcon true if there is an icon for this action
-     */
-    public AbstractActionNavigate(String key, boolean hasIcon) {
-        super(key, hasIcon);
-        putValue(Action.SMALL_ICON,
-                 ResourceLoaderWrapper.lookupIconResource("NavigateUp"));
-    }
+  /**
+   * @param key The key (to be localized) of the name of the action.
+   * @param hasIcon true if there is an icon for this action
+   */
+  public AbstractActionNavigate(String key, boolean hasIcon) {
+    super(key, hasIcon);
+    putValue(Action.SMALL_ICON, ResourceLoaderWrapper.lookupIconResource("NavigateUp"));
+  }
 
-    /**
-     * @param newIcon the icon for this action
-     * @return this action
-     */
-    public AbstractActionNavigate setIcon(Icon newIcon) {
-        putValue(Action.SMALL_ICON, newIcon);
-        return this;
-    }
-    /**
-     * Abstract method to do the navigation. The actual navigation is performed
-     * by actionPerformed.
-     *
-     * @param source
-     *            the object to navigate from
-     * @return the object to navigate to
-     */
-    protected abstract Object navigateTo(Object source);
+  /**
+   * @param newIcon the icon for this action
+   * @return this action
+   */
+  public AbstractActionNavigate setIcon(Icon newIcon) {
+    putValue(Action.SMALL_ICON, newIcon);
+    return this;
+  }
 
-    /**
-     * @see javax.swing.Action#isEnabled()
-     */
-    public boolean isEnabled() {
-        Object target = TargetManager.getInstance().getModelTarget();
-        return ((target != null) && (navigateTo(target) != null));
-    }
+  /**
+   * Abstract method to do the navigation. The actual navigation is performed by actionPerformed.
+   *
+   * @param source the object to navigate from
+   * @return the object to navigate to
+   */
+  protected abstract Object navigateTo(Object source);
 
-    /**
-     * Perform the work the action is supposed to do.
-     *
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        Object target = TargetManager.getInstance().getModelTarget();
-        if (Model.getFacade().isAModelElement(target)) {
-            Object elem = /* (MModelElement) */target;
-            Object nav = navigateTo(elem);
-            if (nav != null) {
-                TargetManager.getInstance().setTarget(nav);
-            }
-        }
+  /**
+   * @see javax.swing.Action#isEnabled()
+   */
+  public boolean isEnabled() {
+    Object target = TargetManager.getInstance().getModelTarget();
+    return ((target != null) && (navigateTo(target) != null));
+  }
+
+  /**
+   * Perform the work the action is supposed to do.
+   *
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    Object target = TargetManager.getInstance().getModelTarget();
+    if (Model.getFacade().isAModelElement(target)) {
+      Object elem = /* (MModelElement) */ target;
+      Object nav = navigateTo(elem);
+      if (nav != null) {
+        TargetManager.getInstance().setTarget(nav);
+      }
     }
+  }
 }

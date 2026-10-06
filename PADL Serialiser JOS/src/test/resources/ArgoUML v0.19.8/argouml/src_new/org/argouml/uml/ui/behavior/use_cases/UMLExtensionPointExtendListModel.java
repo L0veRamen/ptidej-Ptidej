@@ -31,29 +31,24 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  * @since Oct 6, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class UMLExtensionPointExtendListModel
-    extends UMLModelElementListModel2 {
+public class UMLExtensionPointExtendListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLExtensionPointExtendListModel.
-     */
-    public UMLExtensionPointExtendListModel() {
-        super("extend");
-    }
+  /** Constructor for UMLExtensionPointExtendListModel. */
+  public UMLExtensionPointExtendListModel() {
+    super("extend");
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        setAllElements(Model.getFacade().getExtends(getTarget()));
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    setAllElements(Model.getFacade().getExtends(getTarget()));
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ o) {
-        return Model.getFacade().isAExtend(o)
-            && Model.getFacade().getExtends(getTarget()).contains(o);
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ o) {
+    return Model.getFacade().isAExtend(o) && Model.getFacade().getExtends(getTarget()).contains(o);
+  }
 }

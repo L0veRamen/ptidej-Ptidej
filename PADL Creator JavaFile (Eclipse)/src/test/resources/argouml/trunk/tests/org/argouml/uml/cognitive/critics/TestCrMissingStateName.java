@@ -28,14 +28,13 @@ import org.argouml.model.Model;
 
 public class TestCrMissingStateName extends AbstractTestMissingName {
 
-    public TestCrMissingStateName(String arg0) {
-        super(arg0);
-    }
+  public TestCrMissingStateName(String arg0) {
+    super(arg0);
+  }
 
-    protected void setUp() throws Exception {
-        super.setUp();
-        critic = new CrMissingStateName();
-        me = Model.getStateMachinesFactory().createSimpleState();
-    }
-
+  protected void setUp() throws Exception {
+    super.setUp();
+    critic = new CrMissingStateName();
+    me = Model.getStateMachinesFactory().createSimpleState();
+  }
 }

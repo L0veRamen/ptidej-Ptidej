@@ -27,24 +27,21 @@ package org.argouml.uml.notation;
 import org.argouml.model.Model;
 
 /**
- * This abstract class forms the basis of all Notation providers
- * for the text shown in the Fig that represents the CallState.
- * Subclass this for all languages.
+ * This abstract class forms the basis of all Notation providers for the text shown in the Fig that
+ * represents the CallState. Subclass this for all languages.
  *
  * @author mvw@tigris.org
  */
 public abstract class CallStateNotation extends NotationProvider {
 
-    /**
-     * The constructor.
-     *
-     * @param callState the UML element
-     */
-    public CallStateNotation(Object callState) {
-        if (!Model.getFacade().isACallState(callState)) {
-            throw new IllegalArgumentException("This is not an CallState.");
-        }
+  /**
+   * The constructor.
+   *
+   * @param callState the UML element
+   */
+  public CallStateNotation(Object callState) {
+    if (!Model.getFacade().isACallState(callState)) {
+      throw new IllegalArgumentException("This is not an CallState.");
     }
-
+  }
 }
-

@@ -25,7 +25,6 @@
 package org.argouml.uml.ui.behavior.collaborations;
 
 import junit.framework.TestCase;
-
 import org.argouml.model.Model;
 import org.argouml.uml.ui.MockUMLUserInterfaceContainer;
 
@@ -35,62 +34,56 @@ import org.argouml.uml.ui.MockUMLUserInterfaceContainer;
  */
 public class TestUMLMessageReceiverListModel extends TestCase {
 
-    private UMLMessageReceiverListModel model;
-    private Object elem;
+  private UMLMessageReceiverListModel model;
+  private Object elem;
 
-    /**
-     * Constructor for TestUMLMessageReceiverListModel.
-     * @param arg0 is the name of the test case.
-     */
-    public TestUMLMessageReceiverListModel(String arg0) {
-        super(arg0);
-    }
+  /**
+   * Constructor for TestUMLMessageReceiverListModel.
+   *
+   * @param arg0 is the name of the test case.
+   */
+  public TestUMLMessageReceiverListModel(String arg0) {
+    super(arg0);
+  }
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        elem = Model.getCollaborationsFactory().createMessage();
-        MockUMLUserInterfaceContainer cont =
-            new MockUMLUserInterfaceContainer();
-        cont.setTarget(elem);
-        model = new UMLMessageReceiverListModel();
-        model.setTarget(elem);
-        Model.getPump().flushModelEvents();
-    }
+  /**
+   * @see junit.framework.TestCase#setUp()
+   */
+  protected void setUp() throws Exception {
+    super.setUp();
+    elem = Model.getCollaborationsFactory().createMessage();
+    MockUMLUserInterfaceContainer cont = new MockUMLUserInterfaceContainer();
+    cont.setTarget(elem);
+    model = new UMLMessageReceiverListModel();
+    model.setTarget(elem);
+    Model.getPump().flushModelEvents();
+  }
 
-    /**
-     * @see junit.framework.TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        Model.getUmlFactory().delete(elem);
-        model = null;
-    }
+  /**
+   * @see junit.framework.TestCase#tearDown()
+   */
+  protected void tearDown() throws Exception {
+    super.tearDown();
+    Model.getUmlFactory().delete(elem);
+    model = null;
+  }
 
-    /**
-     * Test setReceiver().
-     */
-    public void testSetReceiver() {
-        Object role =
-            Model.getCollaborationsFactory().createClassifierRole();
-        Model.getCommonBehaviorHelper().setReceiver(elem, role);
-        Model.getPump().flushModelEvents();
-        assertEquals(1, model.getSize());
-        assertEquals(role, model.getElementAt(0));
-    }
+  /** Test setReceiver(). */
+  public void testSetReceiver() {
+    Object role = Model.getCollaborationsFactory().createClassifierRole();
+    Model.getCommonBehaviorHelper().setReceiver(elem, role);
+    Model.getPump().flushModelEvents();
+    assertEquals(1, model.getSize());
+    assertEquals(role, model.getElementAt(0));
+  }
 
-    /**
-     * Test setReceiver() with null argument.
-     */
-    public void testRemoveReceiver() {
-        Object role =
-            Model.getCollaborationsFactory().createClassifierRole();
-        Model.getCommonBehaviorHelper().setReceiver(elem, role);
-        Model.getCommonBehaviorHelper().setReceiver(elem, null);
-        Model.getPump().flushModelEvents();
-        assertEquals(0, model.getSize());
-        assertTrue(model.isEmpty());
-    }
+  /** Test setReceiver() with null argument. */
+  public void testRemoveReceiver() {
+    Object role = Model.getCollaborationsFactory().createClassifierRole();
+    Model.getCommonBehaviorHelper().setReceiver(elem, role);
+    Model.getCommonBehaviorHelper().setReceiver(elem, null);
+    Model.getPump().flushModelEvents();
+    assertEquals(0, model.getSize());
+    assertTrue(model.isEmpty());
+  }
 }

@@ -28,27 +28,23 @@ import org.tigris.gef.presentation.ArrowHeadGreater;
 
 /**
  * @author Jaap
- *
  * @author jaap.branderhorst
  */
 public class FigDestroyActionMessage extends FigMessage {
 
-    private static final long serialVersionUID = 8246653379767368449L;
+  private static final long serialVersionUID = 8246653379767368449L;
 
-    /**
-     * @param owner the owner object
-     */
-    public FigDestroyActionMessage(Object owner) {
-        super(owner);
-        setDestArrowHead(new ArrowHeadGreater());
-        setDashed(false);
-    }
+  /**
+   * @param owner the owner object
+   */
+  public FigDestroyActionMessage(Object owner) {
+    super(owner);
+    setDestArrowHead(new ArrowHeadGreater());
+    setDashed(false);
+  }
 
-    /**
-     * The constructor.
-     *
-     */
-    public FigDestroyActionMessage() {
-        this(null);
-    }
+  /** The constructor. */
+  public FigDestroyActionMessage() {
+    this(null);
+  }
 }

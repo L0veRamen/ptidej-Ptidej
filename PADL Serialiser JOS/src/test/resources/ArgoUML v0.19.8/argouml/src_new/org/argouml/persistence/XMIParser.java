@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-
 import org.apache.log4j.Logger;
 import org.argouml.kernel.Project;
 import org.argouml.model.Facade;
@@ -41,148 +40,148 @@ import org.argouml.uml.diagram.state.ui.UMLStateDiagram;
 import org.xml.sax.InputSource;
 
 /**
- * XMI is an XML based exchange format between UML tools.
- * ArgoUML uses this as standard saving mechanism so that easy interchange
- * with other tools and compliance with open standards are secured.
- * XMI version 1.0 for UML 1.3 is used. To convert older models in XMI
- * (Argo 0.7 used XMI 1.0 for UML1.1) to the latest version,
- * Meta Integration provides a free key to their Model Bridge.
- * This also permits you to convert Rational Rose models to ArgoUML!
- * This currently only includes model information, but no graphical
- * information (like layout of diagrams).
- *
+ * XMI is an XML based exchange format between UML tools. ArgoUML uses this as standard saving
+ * mechanism so that easy interchange with other tools and compliance with open standards are
+ * secured. XMI version 1.0 for UML 1.3 is used. To convert older models in XMI (Argo 0.7 used XMI
+ * 1.0 for UML1.1) to the latest version, Meta Integration provides a free key to their Model
+ * Bridge. This also permits you to convert Rational Rose models to ArgoUML! This currently only
+ * includes model information, but no graphical information (like layout of diagrams).
  */
 public class XMIParser {
 
-    ////////////////////////////////////////////////////////////////
-    // static variables
+  ////////////////////////////////////////////////////////////////
+  // static variables
 
-    /** logger */
-    private static final Logger LOG = Logger.getLogger(XMIParser.class);
+  /** logger */
+  private static final Logger LOG = Logger.getLogger(XMIParser.class);
 
-    private static XMIParser singleton = new XMIParser();
+  private static XMIParser singleton = new XMIParser();
 
-    ////////////////////////////////////////////////////////////////
-    // instance variables
+  ////////////////////////////////////////////////////////////////
+  // instance variables
 
-    private Object curModel = null;
-    private Project proj = null;
-    private HashMap uUIDRefs = null;
+  private Object curModel = null;
 
-    /**
-     * The constructor.
-     *
-     */
-    protected XMIParser() { /* super(); */
+  private Project proj = null;
+  private HashMap uUIDRefs = null;
+
+  /** The constructor. */
+  protected XMIParser() {
+    /* super(); */
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // accessors
+
+  /**
+   * @return the current model
+   */
+  public Object /*MModel*/ getCurModel() {
+    return curModel;
+  }
+
+  /**
+   * @param p the project
+   */
+  public void setProject(Project p) {
+    proj = p;
+  }
+
+  /**
+   * @return the UUID
+   */
+  public HashMap getUUIDRefs() {
+    return uUIDRefs;
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // main parsing methods
+
+  /**
+   * The main parsing method.
+   *
+   * @param p the project
+   * @param url the URL
+   * @throws OpenException when there is an IO error
+   */
+  public synchronized void readModels(Project p, URL url) throws OpenException {
+
+    proj = p;
+
+    LOG.info("=======================================");
+    LOG.info("== READING MODEL " + url);
+    try {
+      XmiReader reader = Model.getXmiReader();
+      InputSource source = new InputSource(url.openStream());
+      source.setSystemId(url.toString());
+      Collection elements = reader.parse(source);
+      registerModelAndDiagrams(elements);
+      uUIDRefs = new HashMap(reader.getXMIUUIDToObjectMap());
+    } catch (Exception ex) {
+      throw new OpenException(ex);
     }
+    LOG.info("=======================================");
+  }
 
-    ////////////////////////////////////////////////////////////////
-    // accessors
-
-    /**
-     * @return the current model
-     */
-    public Object/*MModel*/ getCurModel() {
-        return curModel;
-    }
-
-    /**
-     * @param p the project
-     */
-    public void setProject(Project p) {
-        proj = p;
-    }
-
-    /**
-     * @return the UUID
-     */
-    public HashMap getUUIDRefs() {
-        return uUIDRefs;
-    }
-
-    ////////////////////////////////////////////////////////////////
-    // main parsing methods
-
-    /**
-     * The main parsing method.
-     *
-     * @param p the project
-     * @param url the URL
-     * @throws OpenException when there is an IO error
-     */
-    public synchronized void readModels(Project p, URL url) 
-        throws OpenException {
-
-        proj = p;
-
-        LOG.info("=======================================");
-        LOG.info("== READING MODEL " + url);
-        try {
-            XmiReader reader = Model.getXmiReader();
-            InputSource source = new InputSource(url.openStream());
-            source.setSystemId(url.toString());
-            Collection elements = reader.parse(source);
-            registerModelAndDiagrams(elements);
-            uUIDRefs = new HashMap(reader.getXMIUUIDToObjectMap());
-        } catch (Exception ex) {
-            throw new OpenException(ex);
+  protected void registerModelAndDiagrams(Collection elements) {
+    Facade facade = Model.getFacade();
+    Collection diagramsElement = new ArrayList();
+    Iterator it = elements.iterator();
+    while (it.hasNext()) {
+      Object element = it.next();
+      if (facade.isAModel(element)) {
+        proj.addModel(element);
+        curModel = element;
+        diagramsElement.addAll(
+            Model.getModelManagementHelper()
+                .getAllModelElementsOfKind(element, Model.getMetaTypes().getStateMachine()));
+        Collection ownedElements = Model.getFacade().getOwnedElements(element);
+        Iterator oeIterator = ownedElements.iterator();
+        while (oeIterator.hasNext()) {
+          Object me = oeIterator.next();
+          if (Model.getFacade().getName(me) == null) Model.getCoreHelper().setName(me, "");
         }
-        LOG.info("=======================================");
-
-
+      } else if (facade.isAStateMachine(element)) {
+        diagramsElement.add(element);
+      }
     }
+    //
+    it = diagramsElement.iterator();
+    while (it.hasNext()) {
+      Object element = it.next();
+      Object namespace = null;
+      if (facade.getNamespace(element) == null) {
+        namespace = facade.getContext(element);
+        Model.getCoreHelper().setNamespace(element, namespace);
+      } else {
+        namespace = facade.getNamespace(element);
+      }
+      ArgoDiagram diagram = null;
+      if (facade.isAActivityGraph(element)) {
+        LOG.info(
+            "Creating activity diagram for "
+                + facade.getUMLClassName(element)
+                + "<<"
+                + facade.getName(element)
+                + ">>");
+        diagram = new UMLActivityDiagram(namespace, element);
+      } else {
+        LOG.info(
+            "Creating state diagram for "
+                + facade.getUMLClassName(element)
+                + "<<"
+                + facade.getName(element)
+                + ">>");
+        diagram = new UMLStateDiagram(namespace, element);
+      }
+      if (diagram != null) proj.addMember(diagram);
+    }
+  }
 
-    protected void registerModelAndDiagrams(Collection elements) {
-        Facade facade = Model.getFacade();
-        Collection diagramsElement = new ArrayList();
-        Iterator it = elements.iterator();
-        while (it.hasNext()) {
-            Object element = it.next();
-            if (facade.isAModel(element)) {
-                proj.addModel(element);
-                curModel = element;
-                diagramsElement.addAll(Model.getModelManagementHelper().
-                        getAllModelElementsOfKind(element,
-                                Model.getMetaTypes().getStateMachine()));
-                Collection ownedElements = Model.getFacade().getOwnedElements(element);
-                Iterator oeIterator = ownedElements.iterator();
-                while (oeIterator.hasNext()) {
-                    Object me = oeIterator.next();
-                    if (Model.getFacade().getName(me) == null)
-                        Model.getCoreHelper().setName(me, "");
-                }
-            } else if (facade.isAStateMachine(element)) {
-                diagramsElement.add(element);
-            }
-        }
-        //
-        it = diagramsElement.iterator();
-        while (it.hasNext()) {
-            Object element = it.next();
-            Object namespace = null;
-            if (facade.getNamespace(element) == null) {
-                namespace = facade.getContext(element);
-                Model.getCoreHelper().setNamespace(element,namespace);
-            } else {
-                namespace = facade.getNamespace(element);
-            }
-            ArgoDiagram diagram = null;
-            if (facade.isAActivityGraph(element)){
-                LOG.info("Creating activity diagram for "+facade.getUMLClassName(element)+"<<"+facade.getName(element)+">>");
-                diagram = new UMLActivityDiagram( namespace , element );
-            } else {
-                LOG.info("Creating state diagram for "+facade.getUMLClassName(element)+"<<"+facade.getName(element)+">>");                
-                diagram = new UMLStateDiagram( namespace , element );
-            }                    
-            if (diagram!=null)
-                proj.addMember(diagram);
-        }
-    }
-    
-    /**
-     * @return Returns the singleton.
-     */
-    public static XMIParser getSingleton() {
-        return singleton;
-    }
+  /**
+   * @return Returns the singleton.
+   */
+  public static XMIParser getSingleton() {
+    return singleton;
+  }
 } /* end class XMIParser */

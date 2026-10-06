@@ -27,32 +27,28 @@ package org.argouml.uml.notation;
 import org.argouml.model.Model;
 
 /**
- * This abstract class forms the basis of all Notation providers 
- * for the text shown in the body of a state. Subclass this for all languages.
- * 
+ * This abstract class forms the basis of all Notation providers for the text shown in the body of a
+ * state. Subclass this for all languages.
+ *
  * @author mvw@tigris.org
  */
 public abstract class StateBodyNotation extends ValueHandler {
-    
-    protected Object myState;
-    
-    /**
-     * The constructor.
-     */
-    public StateBodyNotation(Object state) {
-        if (!Model.getFacade().isAState(state)) {
-            throw new IllegalArgumentException();
-        }
-        myState = state;
-    }
 
-    /**
-     * @see org.argouml.notation.NotationProvider4#putValue(java.lang.String, java.lang.Object)
-     */
-    public void putValue(String key, Object newValue) {
-        // TODO: Auto-generated method stub
-        
-    }
+  protected Object myState;
 
-    
+  /** The constructor. */
+  public StateBodyNotation(Object state) {
+    if (!Model.getFacade().isAState(state)) {
+      throw new IllegalArgumentException();
+    }
+    myState = state;
+  }
+
+  /**
+   * @see org.argouml.notation.NotationProvider4#putValue(java.lang.String, java.lang.Object)
+   */
+  public void putValue(String key, Object newValue) {
+    // TODO: Auto-generated method stub
+
+  }
 }

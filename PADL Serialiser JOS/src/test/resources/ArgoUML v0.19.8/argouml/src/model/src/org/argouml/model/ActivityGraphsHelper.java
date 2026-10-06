@@ -25,59 +25,56 @@
 package org.argouml.model;
 
 /**
- * The interface for the helper for ActivityGraphs.<p>
+ * The interface for the helper for ActivityGraphs.
  *
- * Created from the old ActivityGraphsHelper.
+ * <p>Created from the old ActivityGraphsHelper.
  */
 public interface ActivityGraphsHelper {
-    /**
-     * Finds the Classifier to which a given ObjectFlowState
-     * refers by its given name. This function may be used for when the user
-     * types the name of a classifier in the diagram, in an ObjectFlowState.
-     *
-     * @author MVW
-     * @param ofs the given ObjectFlowState
-     * @param s   the given String that represents
-     *            the name of the "type" Classifier
-     * @return    the found classifier or null
-     */
-    Object findClassifierByName(Object ofs, String s);
+  /**
+   * Finds the Classifier to which a given ObjectFlowState refers by its given name. This function
+   * may be used for when the user types the name of a classifier in the diagram, in an
+   * ObjectFlowState.
+   *
+   * @author MVW
+   * @param ofs the given ObjectFlowState
+   * @param s the given String that represents the name of the "type" Classifier
+   * @return the found classifier or null
+   */
+  Object findClassifierByName(Object ofs, String s);
 
-    /**
-     * Find a state of a Classifier by its name.
-     * This routine is used to make the connection between
-     * a ClassifierInState and its State.
-     *
-     * @author mvw
-     * @param c the Classifier. If this is not a Classifier, then
-     *          IllegalArgumentException is thrown.
-     * @param s the string that represents the name of
-     *          the state we are looking for. If "" or null, then
-     *          null is returned straight away.
-     * @return  the State (as Object) or null, if not found.
-     */
-    Object findStateByName(Object c, String s);
+  /**
+   * Find a state of a Classifier by its name. This routine is used to make the connection between a
+   * ClassifierInState and its State.
+   *
+   * @author mvw
+   * @param c the Classifier. If this is not a Classifier, then IllegalArgumentException is thrown.
+   * @param s the string that represents the name of the state we are looking for. If "" or null,
+   *     then null is returned straight away.
+   * @return the State (as Object) or null, if not found.
+   */
+  Object findStateByName(Object c, String s);
 
-    /**
-     * Returns true if an activitygraph may be added to the given
-     * context. To decouple ArgoUML as much as possible from the NSUML
-     * model, the parameter of the method is of type Object.<p>
-     *
-     * An ActivityGraph specifies the dynamics of<ol>
-     * <li> a Package, or
-     * <li> a Classifier (including UseCase), or
-     * <li> a BehavioralFeature.
-     * </ol>
-     *
-     * @param context the given context
-     * @return boolean true if an activitygraph may be added
-     */
-    boolean isAddingActivityGraphAllowed(Object context);
+  /**
+   * Returns true if an activitygraph may be added to the given context. To decouple ArgoUML as much
+   * as possible from the NSUML model, the parameter of the method is of type Object.
+   *
+   * <p>An ActivityGraph specifies the dynamics of
+   *
+   * <ol>
+   *   <li>a Package, or
+   *   <li>a Classifier (including UseCase), or
+   *   <li>a BehavioralFeature.
+   * </ol>
+   *
+   * @param context the given context
+   * @return boolean true if an activitygraph may be added
+   */
+  boolean isAddingActivityGraphAllowed(Object context);
 
-    /**
-     * @author mvw
-     * @param classifierInState the classifierInState
-     * @param state the state that will be linked
-     */
-    void addInState(Object classifierInState, Object state);
+  /**
+   * @author mvw
+   * @param classifierInState the classifierInState
+   * @param state the state that will be linked
+   */
+  void addInState(Object classifierInState, Object state);
 }

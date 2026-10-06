@@ -27,7 +27,6 @@ package org.argouml.core.propertypanels.ui;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.AbstractActionAddModelElement2;
@@ -37,41 +36,40 @@ import org.argouml.uml.ui.AbstractActionAddModelElement2;
  */
 public class ActionAddPartitionContent extends AbstractActionAddModelElement2 {
 
-    public ActionAddPartitionContent() {
-        super();
-        setMultiSelect(true);
-    }
+  public ActionAddPartitionContent() {
+    super();
+    setMultiSelect(true);
+  }
 
-    @Override
-    protected void doIt(Collection selected) {
-        Object partition = getTarget();
-        if (Model.getFacade().isAPartition(partition)) {
-            Model.getActivityGraphsHelper().setContents(
-                    partition, selected);
-        }
+  @Override
+  protected void doIt(Collection selected) {
+    Object partition = getTarget();
+    if (Model.getFacade().isAPartition(partition)) {
+      Model.getActivityGraphsHelper().setContents(partition, selected);
     }
+  }
 
-    protected List getChoices() {
-        List ret = new ArrayList();
-        if (Model.getFacade().isAPartition(getTarget())) {
-            Object partition = getTarget();
-            Object ag = Model.getFacade().getActivityGraph(partition);
-            if (ag != null) {
-                Object top = Model.getFacade().getTop(ag);
-                /* There are no composite states, so this will work: */
-                ret.addAll(Model.getFacade().getSubvertices(top));
-            }
-        }
-        return ret;
+  protected List getChoices() {
+    List ret = new ArrayList();
+    if (Model.getFacade().isAPartition(getTarget())) {
+      Object partition = getTarget();
+      Object ag = Model.getFacade().getActivityGraph(partition);
+      if (ag != null) {
+        Object top = Model.getFacade().getTop(ag);
+        /* There are no composite states, so this will work: */
+        ret.addAll(Model.getFacade().getSubvertices(top));
+      }
     }
+    return ret;
+  }
 
-    protected String getDialogTitle() {
-        return Translator.localize("dialog.title.add-contents");
-    }
+  protected String getDialogTitle() {
+    return Translator.localize("dialog.title.add-contents");
+  }
 
-    protected List getSelected() {
-        List ret = new ArrayList();
-        ret.addAll(Model.getFacade().getContents(getTarget()));
-        return ret;
-    }
+  protected List getSelected() {
+    List ret = new ArrayList();
+    ret.addAll(Model.getFacade().getContents(getTarget()));
+    return ret;
+  }
 }

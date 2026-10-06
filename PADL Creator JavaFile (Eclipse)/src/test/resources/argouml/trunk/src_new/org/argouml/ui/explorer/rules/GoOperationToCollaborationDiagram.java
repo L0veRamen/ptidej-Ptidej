@@ -29,7 +29,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
-
 import org.argouml.i18n.Translator;
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
@@ -45,44 +44,41 @@ import org.argouml.uml.diagram.collaboration.ui.UMLCollaborationDiagram;
  */
 public class GoOperationToCollaborationDiagram extends AbstractPerspectiveRule {
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
-     */
-    public Collection getChildren(Object parent) {
-        if (Model.getFacade().isAOperation(parent)) {
-            Object operation = parent; //MOperation
-            Collection col = Model.getFacade().getCollaborations(operation);
-            Vector ret = new Vector();
-            Project p = ProjectManager.getManager().getCurrentProject();
-            Vector diagrams = p.getDiagrams();
-            Iterator it = diagrams.iterator();
-            while (it.hasNext()) {
-                ArgoDiagram diagram = (ArgoDiagram) it.next();
-                if (diagram instanceof UMLCollaborationDiagram
-		    && col.contains(((UMLCollaborationDiagram) diagram)
-				    .getNamespace())) {
-                    ret.add(diagram);
-                }
-
-            }
-            return ret;
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
+   */
+  public Collection getChildren(Object parent) {
+    if (Model.getFacade().isAOperation(parent)) {
+      Object operation = parent; // MOperation
+      Collection col = Model.getFacade().getCollaborations(operation);
+      Vector ret = new Vector();
+      Project p = ProjectManager.getManager().getCurrentProject();
+      Vector diagrams = p.getDiagrams();
+      Iterator it = diagrams.iterator();
+      while (it.hasNext()) {
+        ArgoDiagram diagram = (ArgoDiagram) it.next();
+        if (diagram instanceof UMLCollaborationDiagram
+            && col.contains(((UMLCollaborationDiagram) diagram).getNamespace())) {
+          ret.add(diagram);
         }
-        return null;
+      }
+      return ret;
     }
+    return null;
+  }
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
-     */
-    public Set getDependencies(Object parent) {
-        // TODO: What?
-	return null;
-    }
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
+   */
+  public Set getDependencies(Object parent) {
+    // TODO: What?
+    return null;
+  }
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
-     */
-    public String getRuleName() {
-        return Translator.localize ("misc.operation.collaboration-diagram");
-    }
-
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
+   */
+  public String getRuleName() {
+    return Translator.localize("misc.operation.collaboration-diagram");
+  }
 }

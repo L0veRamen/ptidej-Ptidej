@@ -28,47 +28,47 @@ import org.eclipse.osgi.util.NLS;
 
 /**
  * Editor message bundle.
+ *
  * @author Bogdan Pistol
  */
 public class ImportWizardMessages extends NLS {
 
-    private static final String BUNDLE_NAME = 
-        "org.argouml.argoeclipse.internal.ui." //$NON-NLS-1$
-        + "importwizard.ImportWizardMessages"; //$NON-NLS-1$
-    
-    public static String pathError;
-    public static String editorWarningTitle;
-    public static String editorWarningMsg;
-    public static String genericImport;
-    public static String importWorkspaceDescription;
-    public static String importFilesystemDescription;
-    public static String browseButton;
-    public static String addPathButton;
-    public static String browseFiles;
-    public static String browseFolders;
-    public static String browseFilesTitle;
-    public static String browseFoldersTitle;
-    public static String addFilePath;
-    public static String addFolderPath;
-    public static String setClasspath;
-    public static String importSourcesTitle;
-    public static String firstPageDescription;
-    public static String workspaceRadio;
-    public static String filesystemRadio;
-    public static String sourcePath;
-    public static String classpath;
-    public static String removeClasspath;
-    public static String addClasspathWarningTitle;
-    public static String addClasspathWarningDescription;
-    public static String noLanguageError;
-    public static String noProperInput;
-    public static String importXMITitle;
-    public static String importXMIDescription;
-    public static String confirmOverwiteTitle;
-    public static String confirmOverwiteDescription;
-    
-    static {
-        NLS.initializeMessages(BUNDLE_NAME, ImportWizardMessages.class);
-    }
-    
+  private static final String BUNDLE_NAME =
+      "org.argouml.argoeclipse.internal.ui." //$NON-NLS-1$
+          + "importwizard.ImportWizardMessages"; //$NON-NLS-1$
+
+  public static String pathError;
+  public static String editorWarningTitle;
+  public static String editorWarningMsg;
+  public static String genericImport;
+  public static String importWorkspaceDescription;
+  public static String importFilesystemDescription;
+  public static String browseButton;
+  public static String addPathButton;
+  public static String browseFiles;
+  public static String browseFolders;
+  public static String browseFilesTitle;
+  public static String browseFoldersTitle;
+  public static String addFilePath;
+  public static String addFolderPath;
+  public static String setClasspath;
+  public static String importSourcesTitle;
+  public static String firstPageDescription;
+  public static String workspaceRadio;
+  public static String filesystemRadio;
+  public static String sourcePath;
+  public static String classpath;
+  public static String removeClasspath;
+  public static String addClasspathWarningTitle;
+  public static String addClasspathWarningDescription;
+  public static String noLanguageError;
+  public static String noProperInput;
+  public static String importXMITitle;
+  public static String importXMIDescription;
+  public static String confirmOverwiteTitle;
+  public static String confirmOverwiteDescription;
+
+  static {
+    NLS.initializeMessages(BUNDLE_NAME, ImportWizardMessages.class);
+  }
 }

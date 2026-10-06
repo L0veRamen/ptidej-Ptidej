@@ -25,28 +25,26 @@
 package org.argouml.cognitive.critics;
 
 import java.util.Hashtable;
-
 import junit.framework.TestCase;
 
 public class TestCritic extends TestCase {
 
-    private Critic cr;
+  private Critic cr;
 
-    public TestCritic(String arg0) {
-        super(arg0);
-    }
+  public TestCritic(String arg0) {
+    super(arg0);
+  }
 
-    protected void setUp() throws Exception {
-        super.setUp();
-        cr = new Critic();
-    }
+  protected void setUp() throws Exception {
+    super.setUp();
+    cr = new Critic();
+  }
 
-    public void testArgs() {
-        Hashtable t = new Hashtable();
-        t.put("threshold", Integer.valueOf(5));
-        t.put("param1", "XYZ");
-        cr.setArgs(t);
-        assertSame(t, cr.getArgs());
-    }
-
+  public void testArgs() {
+    Hashtable t = new Hashtable();
+    t.put("threshold", Integer.valueOf(5));
+    t.put("param1", "XYZ");
+    cr.setArgs(t);
+    assertSame(t, cr.getArgs());
+  }
 }

@@ -20,10 +20,8 @@
 package cx.ring.interfaces;
 
 public interface AccountsInterface {
-    
-    public void accountsChanged();
 
-    public void accountStateChanged(String accoundID, String state, int code);
+  public void accountsChanged();
 
-
+  public void accountStateChanged(String accoundID, String state, int code);
 }

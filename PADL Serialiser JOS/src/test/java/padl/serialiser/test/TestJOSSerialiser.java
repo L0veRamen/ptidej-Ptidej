@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -13,21 +13,20 @@ package padl.serialiser.test;
 import junit.framework.TestSuite;
 
 /**
- * @author Yann 
- * since   2009/03/21
+ * @author Yann since 2009/03/21
  */
 public class TestJOSSerialiser extends TestSuite {
-	public static TestSuite suite() {
-		final TestJOSSerialiser suite = new TestJOSSerialiser();
-		suite.setName(TestJOSSerialiser.class.getName());
+  public static TestSuite suite() {
+    final TestJOSSerialiser suite = new TestJOSSerialiser();
+    suite.setName(TestJOSSerialiser.class.getName());
 
-		suite.addTestSuite(CompositeTest.class);
-		suite.addTestSuite(JHotDrawTest.class);
-		// ArgoUML v0.19.8 is a very large integration case, takes long, not so useful.
-		//	suite.addTestSuite(ArgoUML0198Test.class);
-		// ArgoUML v0.20 is a very large integration case, takes long, not so useful.
-		//	suite.addTestSuite(ArgoUML020Test.class);
+    suite.addTestSuite(CompositeTest.class);
+    suite.addTestSuite(JHotDrawTest.class);
+    // ArgoUML v0.19.8 is a very large integration case, takes long, not so useful.
+    //	suite.addTestSuite(ArgoUML0198Test.class);
+    // ArgoUML v0.20 is a very large integration case, takes long, not so useful.
+    //	suite.addTestSuite(ArgoUML020Test.class);
 
-		return suite;
-	}
+    return suite;
+  }
 }

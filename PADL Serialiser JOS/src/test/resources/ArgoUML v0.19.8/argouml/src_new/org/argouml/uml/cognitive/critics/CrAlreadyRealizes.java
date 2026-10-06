@@ -27,48 +27,41 @@ package org.argouml.uml.cognitive.critics;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.argouml.cognitive.Designer;
 import org.argouml.cognitive.critics.Critic;
 import org.argouml.model.Model;
 import org.argouml.uml.cognitive.UMLDecision;
 
 /**
- * Critic to detect whether a class implements unneedded realizations through
- * inheritance.
+ * Critic to detect whether a class implements unneedded realizations through inheritance.
  *
  * @author jrobbins
  */
 public class CrAlreadyRealizes extends CrUML {
 
-    /**
-     * Constructor.
-     */
-    public CrAlreadyRealizes() {
-        setupHeadAndDesc();
-	addSupportedDecision(UMLDecision.INHERITANCE);
-	setKnowledgeTypes(Critic.KT_SEMANTICS, Critic.KT_PRESENTATION);
-	addTrigger("genealization"); //TODO: typo?
-	addTrigger("realization");
-    }
+  /** Constructor. */
+  public CrAlreadyRealizes() {
+    setupHeadAndDesc();
+    addSupportedDecision(UMLDecision.INHERITANCE);
+    setKnowledgeTypes(Critic.KT_SEMANTICS, Critic.KT_PRESENTATION);
+    addTrigger("genealization"); // TODO: typo?
+    addTrigger("realization");
+  }
 
-    /**
-     * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
-     * java.lang.Object, org.argouml.cognitive.Designer)
-     */
-    public boolean predicate2(Object dm, Designer dsgr) {
-	boolean problem = NO_PROBLEM;
-	if (Model.getFacade().isAClass(dm)) {
-	    Collection col =
-		Model.getCoreHelper().getAllRealizedInterfaces(dm);
-	    Set set = new HashSet();
-	    set.addAll(col);
-	    if (set.size() < col.size()) {
-		problem = PROBLEM_FOUND;
-	    }
-	}
-	return problem;
+  /**
+   * @see org.argouml.uml.cognitive.critics.CrUML#predicate2( java.lang.Object,
+   *     org.argouml.cognitive.Designer)
+   */
+  public boolean predicate2(Object dm, Designer dsgr) {
+    boolean problem = NO_PROBLEM;
+    if (Model.getFacade().isAClass(dm)) {
+      Collection col = Model.getCoreHelper().getAllRealizedInterfaces(dm);
+      Set set = new HashSet();
+      set.addAll(col);
+      if (set.size() < col.size()) {
+        problem = PROBLEM_FOUND;
+      }
     }
-
+    return problem;
+  }
 } /* end class CrAlreadyRealizes */
-

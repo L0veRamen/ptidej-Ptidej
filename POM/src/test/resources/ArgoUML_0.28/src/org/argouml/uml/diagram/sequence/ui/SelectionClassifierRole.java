@@ -25,72 +25,68 @@
 package org.argouml.uml.diagram.sequence.ui;
 
 import javax.swing.Icon;
-
 import org.argouml.uml.diagram.ui.SelectionNodeClarifiers2;
 import org.tigris.gef.presentation.Fig;
 import org.tigris.gef.presentation.Handle;
 
 /**
- * A custom select object to handle the special requirements of reshaping
- * a classifier role.
+ * A custom select object to handle the special requirements of reshaping a classifier role.
  *
  * @author Bob Tarling
  */
 public class SelectionClassifierRole extends SelectionNodeClarifiers2 {
 
-    /**
-     * The constructor.
-     *
-     * @param f the fig
-     */
-    public SelectionClassifierRole(Fig f) {
-        super(f);
+  /**
+   * The constructor.
+   *
+   * @param f the fig
+   */
+  public SelectionClassifierRole(Fig f) {
+    super(f);
+  }
+
+  /**
+   * Make sure that the north facing handles cannot be dragged as part of a resize. {@inheritDoc}
+   */
+  public void dragHandle(int mX, int mY, int anX, int anY, Handle hand) {
+
+    if (!getContent().isResizable()) {
+      return;
     }
 
-    /**
-     * Make sure that the north facing handles cannot be dragged as part of a
-     * resize.
-     * {@inheritDoc}
-     */
-    public void dragHandle(int mX, int mY, int anX, int anY, Handle hand) {
-
-        if (!getContent().isResizable()) {
-            return;
-        }
-
-        switch (hand.index) {
-	case Handle.NORTHWEST :
-	case Handle.NORTH :
-	case Handle.NORTHEAST :
-	    return;
-	default:
-        }
-
-        super.dragHandle(mX, mY, anX, anY, hand);
+    switch (hand.index) {
+      case Handle.NORTHWEST:
+      case Handle.NORTH:
+      case Handle.NORTHEAST:
+        return;
+      default:
     }
 
-    @Override
-    protected Object getNewNode(int index) {
-        return null;
-    }
+    super.dragHandle(mX, mY, anX, anY, hand);
+  }
 
-    @Override
-    protected Icon[] getIcons() {
-        return null;
-    }
+  @Override
+  protected Object getNewNode(int index) {
+    return null;
+  }
 
-    @Override
-    protected String getInstructions(int index) {
-        return null;
-    }
+  @Override
+  protected Icon[] getIcons() {
+    return null;
+  }
 
-    @Override
-    protected Object getNewEdgeType(int index) {
-        return null;
-    }
+  @Override
+  protected String getInstructions(int index) {
+    return null;
+  }
 
-    @Override
-    protected Object getNewNodeType(int index) {
-        return null;
-    }
+  @Override
+  protected Object getNewEdgeType(int index) {
+    return null;
+  }
+
+  @Override
+  protected Object getNewNodeType(int index) {
+    return null;
+  }
 }

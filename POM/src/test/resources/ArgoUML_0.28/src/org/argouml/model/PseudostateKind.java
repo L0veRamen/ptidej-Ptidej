@@ -24,61 +24,59 @@
 
 package org.argouml.model;
 
-/**
- * Encapsulation of the enumeration PseudostateKind.
- */
+/** Encapsulation of the enumeration PseudostateKind. */
 public interface PseudostateKind {
-    /**
-     * @return Returns the Choice (Branch in UML 1.3) PseudostateKind.
-     * @since UML 1.4
-     */
-    Object getChoice();
+  /**
+   * @return Returns the Choice (Branch in UML 1.3) PseudostateKind.
+   * @since UML 1.4
+   */
+  Object getChoice();
 
-    /**
-     * @return Returns the DeepHistory PseudostateKind.
-     */
-    Object getDeepHistory();
+  /**
+   * @return Returns the DeepHistory PseudostateKind.
+   */
+  Object getDeepHistory();
 
-    /**
-     * @return Returns the Fork PseudostateKind.
-     */
-    Object getFork();
+  /**
+   * @return Returns the Fork PseudostateKind.
+   */
+  Object getFork();
 
-    /**
-     * @return Returns the Initial PseudostateKind.
-     */
-    Object getInitial();
+  /**
+   * @return Returns the Initial PseudostateKind.
+   */
+  Object getInitial();
 
-    /**
-     * @return Returns the Join PseudostateKind.
-     */
-    Object getJoin();
+  /**
+   * @return Returns the Join PseudostateKind.
+   */
+  Object getJoin();
 
-    /**
-     * @return Returns the Junction PseudostateKind.
-     */
-    Object getJunction();
+  /**
+   * @return Returns the Junction PseudostateKind.
+   */
+  Object getJunction();
 
-    /**
-     * @return Returns the ShallowHistory PseudostateKind.
-     */
-    Object getShallowHistory();
-    
-    /**
-     * @return the EntryPoint kind.
-     * @since 0.25.4 UML 2.x only
-     */
-    public Object getEntryPoint();
+  /**
+   * @return Returns the ShallowHistory PseudostateKind.
+   */
+  Object getShallowHistory();
 
-    /**
-     * @return the ExitPoint kind.
-     * @since 0.25.4 UML 2.x only
-     */
-    public Object getExitPoint();
-    
-    /**
-     * @return the Terminate kind.
-     * @since 0.25.4 UML 2.x only
-     */
-    public Object getTerminate();
+  /**
+   * @return the EntryPoint kind.
+   * @since 0.25.4 UML 2.x only
+   */
+  public Object getEntryPoint();
+
+  /**
+   * @return the ExitPoint kind.
+   * @since 0.25.4 UML 2.x only
+   */
+  public Object getExitPoint();
+
+  /**
+   * @return the Terminate kind.
+   * @since 0.25.4 UML 2.x only
+   */
+  public Object getTerminate();
 }

@@ -22,11 +22,9 @@
 // CALIFORNIA HAS NO OBLIGATIONS TO PROVIDE MAINTENANCE, SUPPORT,
 // UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
-
 package org.argouml.uml.diagram.ui;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.kernel.ProjectManager;
 import org.argouml.ui.ArgoDiagram;
 import org.argouml.ui.targetmanager.TargetManager;
@@ -34,47 +32,43 @@ import org.tigris.gef.graph.MutableGraphModel;
 import org.tigris.gef.undo.UndoableAction;
 
 /**
-* ActionAddExistingNode enables pasting of an existing node into a Diagram.
-*
-* @author Eugenio Alvarez
-* Data Access Technologies.
-*/
+ * ActionAddExistingNode enables pasting of an existing node into a Diagram.
+ *
+ * @author Eugenio Alvarez Data Access Technologies.
+ */
 public class ActionAddExistingNode extends UndoableAction {
 
-    /**
-     * The UML object to be added to the diagram.
-     */
-    private Object object;
+  /** The UML object to be added to the diagram. */
+  private Object object;
 
-    /**
-     * The Constructor.
-     *
-     * @param name the localized name of the action
-     * @param o the node UML object to be added
-     */
-    public ActionAddExistingNode(String name, Object o) {
-        super(name);
-        object = o;
-    }
+  /**
+   * The Constructor.
+   *
+   * @param name the localized name of the action
+   * @param o the node UML object to be added
+   */
+  public ActionAddExistingNode(String name, Object o) {
+    super(name);
+    object = o;
+  }
 
-    /**
-     * @see javax.swing.Action#isEnabled()
-     */
-    public boolean isEnabled() {
-        Object target = TargetManager.getInstance().getTarget();
-        ArgoDiagram dia = ProjectManager.getManager().
-            getCurrentProject().getActiveDiagram();
-        if (dia == null) return false;
-        MutableGraphModel gm = (MutableGraphModel) dia.getGraphModel();
-        return gm.canAddNode(target);
-    }
+  /**
+   * @see javax.swing.Action#isEnabled()
+   */
+  public boolean isEnabled() {
+    Object target = TargetManager.getInstance().getTarget();
+    ArgoDiagram dia = ProjectManager.getManager().getCurrentProject().getActiveDiagram();
+    if (dia == null) return false;
+    MutableGraphModel gm = (MutableGraphModel) dia.getGraphModel();
+    return gm.canAddNode(target);
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-        super.actionPerformed(ae);
-        AddExistingNodeCommand cmd = new AddExistingNodeCommand(object);
-        cmd.execute();
-    }
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    super.actionPerformed(ae);
+    AddExistingNodeCommand cmd = new AddExistingNodeCommand(object);
+    cmd.execute();
+  }
 } /* end class ActionAddExistingNode */

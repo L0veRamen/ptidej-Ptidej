@@ -30,47 +30,42 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 
-/**
- * Rule for Statemachine->Top State.
- *
- */
+/** Rule for Statemachine->Top State. */
 public class GoStateMachineToTop extends AbstractPerspectiveRule {
 
-    /*
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
-     */
-    public String getRuleName() {
-        return Translator.localize("misc.state-machine.top-state");
-    }
+  /*
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
+   */
+  public String getRuleName() {
+    return Translator.localize("misc.state-machine.top-state");
+  }
 
-    /*
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(
-     *         java.lang.Object)
-     */
-    public Collection getChildren(Object parent) {
-	if (Model.getFacade().isAStateMachine(parent)) {
-            List list = new ArrayList();
-            list.add(Model.getFacade().getTop(parent));
-	    return list;
-	}
-	return Collections.EMPTY_SET;
+  /*
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(
+   *         java.lang.Object)
+   */
+  public Collection getChildren(Object parent) {
+    if (Model.getFacade().isAStateMachine(parent)) {
+      List list = new ArrayList();
+      list.add(Model.getFacade().getTop(parent));
+      return list;
     }
+    return Collections.EMPTY_SET;
+  }
 
-    /*
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(
-     *         java.lang.Object)
-     */
-    public Set getDependencies(Object parent) {
-        if (Model.getFacade().isAStateMachine(parent)) {
-	    Set set = new HashSet();
-	    set.add(parent);
-	    return set;
-	}
-	return Collections.EMPTY_SET;
+  /*
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(
+   *         java.lang.Object)
+   */
+  public Set getDependencies(Object parent) {
+    if (Model.getFacade().isAStateMachine(parent)) {
+      Set set = new HashSet();
+      set.add(parent);
+      return set;
     }
-
+    return Collections.EMPTY_SET;
+  }
 }

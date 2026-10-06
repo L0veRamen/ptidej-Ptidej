@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -15,23 +15,21 @@ import ptidej.ui.primitive.IPrimitive;
 import ptidej.ui.primitive.IPrimitiveFactory;
 
 public final class Implementation extends AbstractInheritance {
-	public Implementation(
-		final IPrimitiveFactory primitiveFactory,
-		final Entity origin,
-		final Entity target) {
+  public Implementation(
+      final IPrimitiveFactory primitiveFactory, final Entity origin, final Entity target) {
 
-		super(primitiveFactory, origin, target);
-	}
-	protected IPrimitive getLine() {
-		final IPrimitive line =
-			this.getPrimitiveFactory().createDottedDoubleSquareLine(
-				this.getPosition(),
-				this.dimensionWithoutIntermediaryPoints,
-				this.getColor());
+    super(primitiveFactory, origin, target);
+  }
 
-		((IDoubleSquareLine) line).setEdgeList(this.intermediaryPoints);
-		((IDoubleSquareLine) line).setSplitter(this.splitter);
+  protected IPrimitive getLine() {
+    final IPrimitive line =
+        this.getPrimitiveFactory()
+            .createDottedDoubleSquareLine(
+                this.getPosition(), this.dimensionWithoutIntermediaryPoints, this.getColor());
 
-		return line;
-	}
+    ((IDoubleSquareLine) line).setEdgeList(this.intermediaryPoints);
+    ((IDoubleSquareLine) line).setSplitter(this.splitter);
+
+    return line;
+  }
 }

@@ -26,18 +26,11 @@ package org.argouml.uml.ui.model_management;
 
 import org.argouml.util.ConfigLoader;
 
-/**
- * A Propertypanel for a model.
- */
-public class PropPanelModel extends PropPanelPackage  {
+/** A Propertypanel for a model. */
+public class PropPanelModel extends PropPanelPackage {
 
-    /**
-     * The constructor.
-     *
-     */
-    public PropPanelModel() {
-        super("Model", lookupIcon("Model"),
-                ConfigLoader.getTabPropsOrientation());
-    }
-
+  /** The constructor. */
+  public PropPanelModel() {
+    super("Model", lookupIcon("Model"), ConfigLoader.getTabPropsOrientation());
+  }
 } /* end class PropPanelModel */

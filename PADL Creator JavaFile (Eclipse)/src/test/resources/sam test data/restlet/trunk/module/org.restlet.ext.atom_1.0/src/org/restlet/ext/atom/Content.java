@@ -28,99 +28,95 @@ import org.restlet.resource.Representation;
 
 /**
  * Either contains or links to the content of the entry.
+ *
  * @author Jerome Louvel (contact@noelios.com)
  */
-public class Content
-{
-	/** Representation for inline content. */
-	private Representation inlineContent;
+public class Content {
+  /** Representation for inline content. */
+  private Representation inlineContent;
 
-	/** Reference to the external representation. */
-	private Reference externalRef;
+  /** Reference to the external representation. */
+  private Reference externalRef;
 
-	/** Expected media type of the external content. */
-	private MediaType externalType;
+  /** Expected media type of the external content. */
+  private MediaType externalType;
 
-	/**
-	 * Constructor.
-	 */
-	public Content()
-	{
-		this.inlineContent = null;
-		this.externalRef = null;
-		this.externalType = null;
-	}
+  /** Constructor. */
+  public Content() {
+    this.inlineContent = null;
+    this.externalRef = null;
+    this.externalType = null;
+  }
 
-	/**
-	 * Indicates if the content is available inline.
-	 * @return True if the content is available inline.
-	 */
-	public boolean isInline()
-	{
-		return (this.inlineContent != null);
-	}
+  /**
+   * Indicates if the content is available inline.
+   *
+   * @return True if the content is available inline.
+   */
+  public boolean isInline() {
+    return (this.inlineContent != null);
+  }
 
-	/**
-	 * Indicates if the content is available externally.
-	 * @return True if the content is available externally.
-	 */
-	public boolean isExternal()
-	{
-		return (this.externalRef != null);
-	}
+  /**
+   * Indicates if the content is available externally.
+   *
+   * @return True if the content is available externally.
+   */
+  public boolean isExternal() {
+    return (this.externalRef != null);
+  }
 
-	/** 
-	 * Returns the representation for inline content.
-	 * @return The representation for inline content.
-	 */
-	public Representation getInlineContent()
-	{
-		return this.inlineContent;
-	}
+  /**
+   * Returns the representation for inline content.
+   *
+   * @return The representation for inline content.
+   */
+  public Representation getInlineContent() {
+    return this.inlineContent;
+  }
 
-	/** 
-	 * Sets the representation for inline content.
-	 * @param inlineContent The representation for inline content.
-	 */
-	public void setInlineContent(Representation inlineContent)
-	{
-		this.inlineContent = inlineContent;
-	}
+  /**
+   * Sets the representation for inline content.
+   *
+   * @param inlineContent The representation for inline content.
+   */
+  public void setInlineContent(Representation inlineContent) {
+    this.inlineContent = inlineContent;
+  }
 
-	/** 
-	 * Returns the reference to the external representation.
-	 * @return The reference to the external representation.
-	 */
-	public Reference getExternalRef()
-	{
-		return this.externalRef;
-	}
+  /**
+   * Returns the reference to the external representation.
+   *
+   * @return The reference to the external representation.
+   */
+  public Reference getExternalRef() {
+    return this.externalRef;
+  }
 
-	/** 
-	 * Sets the reference to the external representation.
-	 * @param externalRef The reference to the external representation.
-	 */
-	public void setExternalRef(Reference externalRef)
-	{
-		this.externalRef = externalRef;
-	}
+  /**
+   * Sets the reference to the external representation.
+   *
+   * @param externalRef The reference to the external representation.
+   */
+  public void setExternalRef(Reference externalRef) {
+    this.externalRef = externalRef;
+  }
 
-	/** 
-	 * Returns the expected media type of the external content.
-	 * @return The expected media type of the external content.
-	 */
-	public MediaType getExternalType()
-	{
-		return this.externalType;
-	}
+  /**
+   * Returns the expected media type of the external content.
+   *
+   * @return The expected media type of the external content.
+   */
+  public MediaType getExternalType() {
+    return this.externalType;
+  }
 
-	/** 
-	 * Sets the expected media type of the external content.
-	 * @param externalType The expected media type of the external content.
-	 */
-	public void setExternalType(MediaType externalType)
-	{
-		this.externalType = externalType;
-	}
-
+  /**
+   * Sets the expected media type of the external content.
+   *
+   * @param externalType The expected media type of the external content.
+   */
+  public void setExternalType(MediaType externalType) {
+    this.externalType = externalType;
+  }
 }

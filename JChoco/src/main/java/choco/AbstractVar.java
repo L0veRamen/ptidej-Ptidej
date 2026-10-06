@@ -1,167 +1,116 @@
-/** -------------------------------------------------
- *                   J-CHOCO
- *   Copyright (C) F. Laburthe, 1999-2003
- * --------------------------------------------------
- *    an open-source Constraint Programming Kernel
- *          for Research and Education
- * --------------------------------------------------
+/**
+ * ------------------------------------------------- J-CHOCO Copyright (C) F. Laburthe, 1999-2003
+ * -------------------------------------------------- an open-source Constraint Programming Kernel
+ * for Research and Education --------------------------------------------------
  *
- * file: choco.AbstractVar.java
- * last modified by Francois 28 aoet 2003:14:59:09
+ * <p>file: choco.AbstractVar.java last modified by Francois 28 aoet 2003:14:59:09
  */
 package choco;
 
-import java.util.ArrayList;
 import choco.prop.VarEvent;
+import java.util.ArrayList;
 
-/**
- * An abstract class for all implementations of domain variables
- */
+/** An abstract class for all implementations of domain variables */
 public abstract class AbstractVar extends AbstractEntity implements Var {
 
-	/**
-	 * A name may be associated to each variable
-	 */
+  /** A name may be associated to each variable */
+  protected String name;
 
-	protected String name;
+  /** The variable var associated to this variable. */
+  protected VarEvent event;
 
-	/**
-	 * The variable var associated to this variable.
-	 */
+  /** The list of constraints (listeners) observing the variable. */
+  protected ArrayList<Constraint> constraints;
 
-	protected VarEvent event;
+  /**
+   * List of indices encoding the constraint network: <i>v.indices[i]=j</i> means that v is the j-th
+   * variable of its i-th constraint.
+   */
+  protected ArrayList<Integer> indices;
 
-	/**
-	 * The list of constraints (listeners) observing the variable.
-	 */
+  /** Initializes a new variable. */
+  public AbstractVar() {
+    this.constraints = new ArrayList<>();
+    this.indices = new ArrayList<>();
+  }
 
-	protected ArrayList constraints;
+  /** Makes a listener active. */
+  public void activateConstraint(final int constraintIdx) {
+    this.event.activateListener(constraintIdx);
+  }
 
-	/**
-	 * List of indices encoding the constraint network:
-	 * <i>v.indices[i]=j</i> means that v is the j-th variable
-	 * of its i-th constraint.
-	 */
+  /** Adds a new constraints, and makes it active if needed. */
+  // TODO: this needs to become backtrackable
+  public int addConstraint(final Constraint c, final int varIdx, final boolean active) {
+    this.constraints.add(c);
+    this.indices.add(Integer.valueOf(varIdx));
 
-	protected ArrayList indices;
+    final int constraintIdx = this.constraints.size() - 1;
 
-	/**
-	 * Initializes a new variable.
-	 */
+    this.event.addListener(constraintIdx, active);
 
-	public AbstractVar() {
-		this.constraints = new ArrayList();
-		this.indices = new ArrayList();
-	}
+    return constraintIdx;
+  }
 
-	/**
-	 * Makes a listener active.
-	 */
+  /** Makes a listener passive. */
+  public void deactivateConstraint(final int constraintIdx) {
+    this.event.deactivateListener(constraintIdx);
+  }
 
-	public void activateConstraint(final int constraintIdx) {
-		this.event.activateListener(constraintIdx);
-	}
+  /**
+   * removes (permanently) a constraint from the list of constraints connected to the variable
+   *
+   * @param constraintIdx
+   */
+  public void eraseConstraint(final int constraintIdx) {
+    this.constraints.set(constraintIdx, null);
+  }
 
-	/**
-	 * Adds a new constraints, and makes it active if needed.
-	 */
-	// TODO: this needs to become backtrackable
-	public int addConstraint(
-		final Constraint c,
-		final int varIdx,
-		final boolean active) {
-		this.constraints.add(c);
-		this.indices.add(Integer.valueOf(varIdx));
+  /** Retrieve the i-th constraint involving the variable. */
+  public Constraint getConstraint(final int i) {
+    return (Constraint) this.constraints.get(i);
+  }
 
-		final int constraintIdx = this.constraints.size() - 1;
+  /** Gets an array with all the constraints of the variable. */
+  public Constraint[] getConstraints() {
+    final Constraint[] tab = new Constraint[this.constraints.size()];
+    return (Constraint[]) this.constraints.toArray(tab);
+  }
 
-		this.event.addListener(constraintIdx, active);
+  /** Returns the variable var. */
+  public VarEvent getEvent() {
+    return this.event;
+  }
 
-		return constraintIdx;
-	}
+  /** Gets an array with all the indices. */
+  public Integer[] getIndices() {
+    final Integer[] tab = new Integer[this.constraints.size()];
+    return (Integer[]) this.indices.toArray(tab);
+  }
 
-	/**
-	 * Makes a listener passive.
-	 */
+  // ============================================
+  // Managing Listeners.
+  // ============================================
 
-	public void deactivateConstraint(final int constraintIdx) {
-		this.event.deactivateListener(constraintIdx);
-	}
+  /** Returns the number of constraints involving the variable. */
+  public int getNbConstraints() {
+    return this.constraints.size();
+  }
 
-	/**
-	 * removes (permanently) a constraint from the list of constraints connected to the variable
-	 * @param constraintIdx
-	 */
-	public void eraseConstraint(final int constraintIdx) {
-		this.constraints.set(constraintIdx, null);
-	}
+  // Si besoin de plus de precision, on pourra faire des methodes dediees
+  // a differents types de Listener : I_IncInfListener....
+  // soit addNewIncInfListener, etc. Chaque contrainte pourra alors choisir
+  // entre appeler la methode par defaut qui modifie tout le monde pareil
+  // (il faudra juste la modifier pour lexecuter sur chaque evenement) ou
+  // appeler la methode specialisee...
 
-	/**
-	 * Retrieve the i-th constraint involving the variable.
-	 */
+  /** Checks if the var associated with the <code>idx</code>th constraint is active. */
+  public boolean isActive(final int idx1) {
+    return this.event.isActive(idx1);
+  }
 
-	public Constraint getConstraint(final int i) {
-		return (Constraint) this.constraints.get(i);
-	}
-
-	/**
-	 * Gets an array with all the constraints of the variable.
-	 */
-
-	public Constraint[] getConstraints() {
-		final Constraint[] tab = new Constraint[this.constraints.size()];
-		return (Constraint[]) this.constraints.toArray(tab);
-	}
-
-	/**
-	 * Returns the variable var.
-	 */
-
-	public VarEvent getEvent() {
-		return this.event;
-	}
-
-	/**
-	 * Gets an array with all the indices.
-	 */
-
-	public Integer[] getIndices() {
-		final Integer[] tab = new Integer[this.constraints.size()];
-		return (Integer[]) this.indices.toArray(tab);
-	}
-
-	// ============================================
-	// Managing Listeners.
-	// ============================================
-
-	/**
-	 * Returns the number of constraints involving the variable.
-	 */
-
-	public int getNbConstraints() {
-		return this.constraints.size();
-	}
-
-	// Si besoin de plus de precision, on pourra faire des methodes dediees
-	// a differents types de Listener : I_IncInfListener....
-	// soit addNewIncInfListener, etc. Chaque contrainte pourra alors choisir
-	// entre appeler la methode par defaut qui modifie tout le monde pareil
-	// (il faudra juste la modifier pour lexecuter sur chaque evenement) ou
-	// appeler la methode specialisee...
-
-	/**
-	 * Checks if the var associated with the <code>idx</code>th constraint
-	 * is active.
-	 */
-
-	public boolean isActive(final int idx1) {
-		return this.event.isActive(idx1);
-	}
-
-	/**
-	 * useful for debugging
-	 */
-	public String toString() {
-		return this.name;
-	}
+  /** useful for debugging */
+  public String toString() {
+    return this.name;
+  }
 }

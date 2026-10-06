@@ -25,10 +25,8 @@
 package org.argouml.ui;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.i18n.Translator;
 
@@ -39,30 +37,25 @@ import org.argouml.i18n.Translator;
  */
 public class ActionProjectSettings extends AbstractAction {
 
-    /**
-     * The settings dialog.
-     */
-    private static ProjectSettingsDialog dialog;
+  /** The settings dialog. */
+  private static ProjectSettingsDialog dialog;
 
-    /**
-     * Constructor.
-     */
-    public ActionProjectSettings() {
-        super(Translator.localize("action.properties"),
-                ResourceLoaderWrapper.lookupIcon("action.properties"));
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize("action.properties"));
+  /** Constructor. */
+  public ActionProjectSettings() {
+    super(
+        Translator.localize("action.properties"),
+        ResourceLoaderWrapper.lookupIcon("action.properties"));
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize("action.properties"));
+  }
+
+  /*
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    if (dialog == null) {
+      dialog = new ProjectSettingsDialog();
     }
-
-    /*
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        if (dialog == null) {
-            dialog = new ProjectSettingsDialog();
-        }
-        dialog.showDialog();
-    }
-
+    dialog.showDialog();
+  }
 }

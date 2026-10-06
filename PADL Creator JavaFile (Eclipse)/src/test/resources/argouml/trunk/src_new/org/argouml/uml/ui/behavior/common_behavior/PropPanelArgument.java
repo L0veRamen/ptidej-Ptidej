@@ -26,7 +26,6 @@ package org.argouml.uml.ui.behavior.common_behavior;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-
 import org.argouml.i18n.Translator;
 import org.argouml.ui.LookAndFeelMgr;
 import org.argouml.uml.ui.ActionNavigateAction;
@@ -38,42 +37,33 @@ import org.argouml.uml.ui.foundation.core.PropPanelModelElement;
 import org.argouml.util.ConfigLoader;
 
 /**
- *
  * @since aug 10, 2003
- * @author Decki, Endi, Yayan. Polytechnic of Bandung Indonesia, Computer
- *         Engineering Departement
+ * @author Decki, Endi, Yayan. Polytechnic of Bandung Indonesia, Computer Engineering Departement
  */
 public class PropPanelArgument extends PropPanelModelElement {
 
-    // //////////////////////////////////////////////////////////////
-    // contructors
-    /**
-     * Constructor.
-     */
-    public PropPanelArgument() {
+  // //////////////////////////////////////////////////////////////
+  // contructors
+  /** Constructor. */
+  public PropPanelArgument() {
 
-        super("Argument", ConfigLoader.getTabPropsOrientation());
+    super("Argument", ConfigLoader.getTabPropsOrientation());
 
-        addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.name"), getNameTextField());
 
-        UMLExpressionModel2 expressionModel =
-            new UMLExpressionExpressionModel(
-                this, "expression");
-        JTextArea ebf = new UMLExpressionBodyField(expressionModel, true);
-        ebf.setFont(LookAndFeelMgr.getInstance().getStandardFont());
-        ebf.setRows(3); // make it take up all remaining height
-        addField(Translator.localize("label.value"),
-                new JScrollPane(ebf));
-        addField(Translator.localize("label.language"),
-                new UMLExpressionLanguageField(expressionModel, true));
+    UMLExpressionModel2 expressionModel = new UMLExpressionExpressionModel(this, "expression");
+    JTextArea ebf = new UMLExpressionBodyField(expressionModel, true);
+    ebf.setFont(LookAndFeelMgr.getInstance().getStandardFont());
+    ebf.setRows(3); // make it take up all remaining height
+    addField(Translator.localize("label.value"), new JScrollPane(ebf));
+    addField(
+        Translator.localize("label.language"),
+        new UMLExpressionLanguageField(expressionModel, true));
 
-        addAction(new ActionNavigateAction());
-        addAction(getDeleteAction());
+    addAction(new ActionNavigateAction());
+    addAction(getDeleteAction());
+  }
 
-    }
-
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = 6737211630130267264L;
+  /** The UID. */
+  private static final long serialVersionUID = 6737211630130267264L;
 }

@@ -21,13 +21,6 @@
 
 package cx.ring.adapters;
 
-import java.util.ArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import cx.ring.R;
-import cx.ring.model.CallContact;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,61 +28,67 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import cx.ring.R;
+import cx.ring.model.CallContact;
+import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class StarredContactsAdapter extends BaseAdapter {
 
-    private ExecutorService infos_fetcher = Executors.newCachedThreadPool();
-    private ArrayList<CallContact> dataset;
-    Context mContext;
+  private ExecutorService infos_fetcher = Executors.newCachedThreadPool();
+  private ArrayList<CallContact> dataset;
+  Context mContext;
 
-//    private static final String TAG = ContactsAdapter.class.getSimpleName();
+  //    private static final String TAG = ContactsAdapter.class.getSimpleName();
 
-    public StarredContactsAdapter(Context context) {
-        super();
-        mContext = context;
-        dataset = new ArrayList<>();
+  public StarredContactsAdapter(Context context) {
+    super();
+    mContext = context;
+    dataset = new ArrayList<>();
+  }
+
+  public void setData(ArrayList<CallContact> contacts) {
+    dataset = contacts;
+    notifyDataSetChanged();
+  }
+
+  @Override
+  public int getCount() {
+    return dataset.size();
+  }
+
+  @Override
+  public CallContact getItem(int index) {
+    return dataset.get(index);
+  }
+
+  @Override
+  public long getItemId(int index) {
+    return dataset.get(index).getId();
+  }
+
+  @Override
+  public View getView(int pos, View convView, ViewGroup parent) {
+
+    View v = convView;
+    LayoutInflater inflater =
+        (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+    if (v == null) {
+      v = inflater.inflate(R.layout.item_contact_starred, parent, false);
     }
 
-    public void setData(ArrayList<CallContact> contacts) {
-        dataset = contacts;
-        notifyDataSetChanged();
+    CallContact item = dataset.get(pos);
+
+    ((TextView) v.findViewById(R.id.display_name)).setText(item.getDisplayName());
+    ImageView photo_view = (ImageView) v.findViewById(R.id.photo);
+
+    if (item.hasPhoto()) {
+      photo_view.setImageBitmap(item.getPhoto());
+    } else {
+      infos_fetcher.execute(new ContactPictureTask(mContext, photo_view, item));
     }
-
-    @Override
-    public int getCount() {
-        return dataset.size();
-    }
-
-    @Override
-    public CallContact getItem(int index) {
-        return dataset.get(index);
-    }
-
-    @Override
-    public long getItemId(int index) {
-        return dataset.get(index).getId();
-    }
-
-    @Override
-    public View getView(int pos, View convView, ViewGroup parent) {
-
-        View v = convView;
-        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        if (v == null) {
-            v = inflater.inflate(R.layout.item_contact_starred, parent, false);
-        }
-
-        CallContact item = dataset.get(pos);
-
-        ((TextView) v.findViewById(R.id.display_name)).setText(item.getDisplayName());
-        ImageView photo_view = (ImageView) v.findViewById(R.id.photo);
-
-        if(item.hasPhoto()){
-            photo_view.setImageBitmap(item.getPhoto());
-        } else {
-            infos_fetcher.execute(new ContactPictureTask(mContext, photo_view, item));
-        }
-        return v;
-    }
+    return v;
+  }
 }

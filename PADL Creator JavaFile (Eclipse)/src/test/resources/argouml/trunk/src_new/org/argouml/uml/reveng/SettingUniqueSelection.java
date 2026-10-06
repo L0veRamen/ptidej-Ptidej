@@ -27,103 +27,91 @@ package org.argouml.uml.reveng;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * Implementation of the {@link SettingsTypes.UniqueSelection}.
- * 
+ *
  * @see SettingsTypes.UniqueSelection
  * @author Bogdan Pistol
  */
-class SettingUniqueSelection extends Setting implements
-        SettingsTypes.UniqueSelection {
+class SettingUniqueSelection extends Setting implements SettingsTypes.UniqueSelection {
 
-    /**
-     * The list of String options
-     */
-    private List options;
-    
-    /**
-     * Default selection is UNDEFINED
-     */
-    private int defaultSelection = UNDEFINED_SELECTION;
-    
-    /**
-     * The selection is UNDEFINED
-     */
-    private int selection = UNDEFINED_SELECTION;
-    
-    /**
-     * Constructor (package access)
-     * 
-     * @param label the user visible string to associate with this setting
-     * @param variants
-     *            the list of String options
-     * @param defaultVariant
-     *            the default selection or UNDEFINED_SELECTION
-     */
-    SettingUniqueSelection(String label, List variants, int defaultVariant) {
-        super(label);
-        options = variants;
-        if (isOption(defaultVariant)) {
-            defaultSelection = defaultVariant;
-        }
-    }
+  /** The list of String options */
+  private List options;
 
-    /**
-     * Tests if this is a valid option.
-     * 
-     * @param opt
-     *            the option to test
-     * @return true if it's OK and false otherwise
-     */
-    private boolean isOption(int opt) {
-        if (options == null) {
-            return false;
-        }
-        return opt >= 0 && opt < options.size() ? true : false;        
-    }
+  /** Default selection is UNDEFINED */
+  private int defaultSelection = UNDEFINED_SELECTION;
 
-    /*
-     * @see org.argouml.uml.reveng.ImportSettingTypes.UniqueSelection#getDefaultSelection()
-     */
-    public int getDefaultSelection() {
-        return defaultSelection;
-    }
+  /** The selection is UNDEFINED */
+  private int selection = UNDEFINED_SELECTION;
 
-    /**
-     * We return a new List with the options instead of the options themself
-     * because we don't want the user to be able to change the options.
-     * 
-     * @see org.argouml.uml.reveng.SettingsTypes.UniqueSelection#getOptions()
-     */
-    public List getOptions() {
-        return new ArrayList(options);
+  /**
+   * Constructor (package access)
+   *
+   * @param label the user visible string to associate with this setting
+   * @param variants the list of String options
+   * @param defaultVariant the default selection or UNDEFINED_SELECTION
+   */
+  SettingUniqueSelection(String label, List variants, int defaultVariant) {
+    super(label);
+    options = variants;
+    if (isOption(defaultVariant)) {
+      defaultSelection = defaultVariant;
     }
+  }
 
-    /*
-     * @see org.argouml.uml.reveng.ImportSettingTypes.UniqueSelection#setSelection(int)
-     */
-    public boolean setSelection(int sel) {
-        if (isOption(sel)) {
-            selection = sel;
-            return true;
-        } else {
-            return false;
-        }
+  /**
+   * Tests if this is a valid option.
+   *
+   * @param opt the option to test
+   * @return true if it's OK and false otherwise
+   */
+  private boolean isOption(int opt) {
+    if (options == null) {
+      return false;
     }
-    
-    /**
-     * This method (package access) determines the selected option.
-     * 
-     * @return the 0-based index of the selected option or the default option if
-     *         no other option was selected
-     */
-    int getSelection() {
-        if (selection == UNDEFINED_SELECTION) {
-            return defaultSelection;
-        } else {
-            return selection;
-        }
-    }
+    return opt >= 0 && opt < options.size() ? true : false;
+  }
 
+  /*
+   * @see org.argouml.uml.reveng.ImportSettingTypes.UniqueSelection#getDefaultSelection()
+   */
+  public int getDefaultSelection() {
+    return defaultSelection;
+  }
+
+  /**
+   * We return a new List with the options instead of the options themself because we don't want the
+   * user to be able to change the options.
+   *
+   * @see org.argouml.uml.reveng.SettingsTypes.UniqueSelection#getOptions()
+   */
+  public List getOptions() {
+    return new ArrayList(options);
+  }
+
+  /*
+   * @see org.argouml.uml.reveng.ImportSettingTypes.UniqueSelection#setSelection(int)
+   */
+  public boolean setSelection(int sel) {
+    if (isOption(sel)) {
+      selection = sel;
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  /**
+   * This method (package access) determines the selected option.
+   *
+   * @return the 0-based index of the selected option or the default option if no other option was
+   *     selected
+   */
+  int getSelection() {
+    if (selection == UNDEFINED_SELECTION) {
+      return defaultSelection;
+    } else {
+      return selection;
+    }
+  }
 }

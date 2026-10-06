@@ -26,7 +26,6 @@ package org.argouml.uml.diagram.ui;
 
 import java.awt.event.ActionEvent;
 import java.util.Iterator;
-
 import org.argouml.model.Model;
 import org.argouml.uml.diagram.static_structure.ui.UMLClassDiagram;
 import org.argouml.uml.reveng.DiagramInterface;
@@ -34,77 +33,66 @@ import org.argouml.uml.ui.UMLAction;
 import org.tigris.gef.base.Globals;
 
 /**
- * ActionAddAllClassesFromModel enables pasting of an existing node into a
- * Diagram.
+ * ActionAddAllClassesFromModel enables pasting of an existing node into a Diagram.
  *
- * @author Timothy M. Lebo (Oct 2003)
- * Smart Information Flow Technologies.
+ * @author Timothy M. Lebo (Oct 2003) Smart Information Flow Technologies.
  */
 public class ActionAddAllClassesFromModel extends UMLAction {
 
-    // Instance Variables
-    private String tabName;
-    private Object object;
+  // Instance Variables
+  private String tabName;
+  private Object object;
 
-    /**
-     * Constructor
-     *
-     * @param name the name of the action
-     * @param o the Diagram
-     */
-    public ActionAddAllClassesFromModel(String name, Object o) {
-        super(name, true, NO_ICON);
-        tabName = name;
-        object = o;
+  /**
+   * Constructor
+   *
+   * @param name the name of the action
+   * @param o the Diagram
+   */
+  public ActionAddAllClassesFromModel(String name, Object o) {
+    super(name, true, NO_ICON);
+    tabName = name;
+    object = o;
+  }
+
+  /**
+   * shouldBeEnabled
+   *
+   * <p>Returns true if this popup menu item should be enabled, false if it should be grayed out.
+   *
+   * @author Timothy M. Lebo (Oct 2003) Smart Information Flow Technologies.
+   * @see org.argouml.uml.ui.UMLAction#shouldBeEnabled()
+   */
+  public boolean shouldBeEnabled() {
+    return object instanceof UMLClassDiagram;
+  }
+
+  /**
+   * actionPerformed
+   *
+   * <p>Finds all of the classes within the same namespace as the UMLClassDiagram that was given to
+   * me in my constructor and adds them to the UMLClassDiagram.
+   *
+   * @param ae - the ActionEvent
+   * @author Timothy M. Lebo (Oct 2003) Smart Information Flow Technologies.
+   */
+  public void actionPerformed(ActionEvent ae) {
+
+    if (object instanceof UMLClassDiagram) {
+
+      // Use DiagramInterface to add classes to diagram
+      DiagramInterface diagram = new DiagramInterface(Globals.curEditor());
+      diagram.setCurrentDiagram((UMLClassDiagram) object);
+
+      Object namespace = ((UMLClassDiagram) object).getNamespace();
+      Iterator elements = Model.getFacade().getOwnedElements(namespace).iterator();
+      while (elements.hasNext()) {
+        Object element = elements.next();
+        if (Model.getFacade().isAClass(element)
+            && !Model.getFacade().isAAssociationClass(element)) {
+          diagram.addClass(element, false);
+        }
+      }
     }
-
-    /**
-     * shouldBeEnabled
-     *
-     * Returns true if this popup menu item should be enabled, false
-     * if it should be grayed out.
-     *
-     * @author Timothy M. Lebo (Oct 2003)
-     * Smart Information Flow Technologies.
-     *
-     * @see org.argouml.uml.ui.UMLAction#shouldBeEnabled()
-     */
-    public boolean shouldBeEnabled() {
-	return object instanceof UMLClassDiagram;
-    }
-
-    /**
-     * actionPerformed
-     *
-     * Finds all of the classes within the same namespace as the
-     * UMLClassDiagram that was given to me in my constructor and adds
-     * them to the UMLClassDiagram.
-     *
-     * @param ae - the ActionEvent
-     *
-     * @author Timothy M. Lebo (Oct 2003)
-     * Smart Information Flow Technologies.
-     */
-    public void actionPerformed(ActionEvent ae) {
-
-	if (object instanceof UMLClassDiagram) {
-
-	    // Use DiagramInterface to add classes to diagram
-	    DiagramInterface diagram =
-		new DiagramInterface(Globals.curEditor());
-	    diagram.setCurrentDiagram((UMLClassDiagram) object);
-
-	    Object namespace = ((UMLClassDiagram) object).getNamespace();
-	    Iterator elements =
-		Model.getFacade().getOwnedElements(namespace).iterator();
-	    while (elements.hasNext()) {
-		Object element = elements.next();
-		if (Model.getFacade().isAClass(element)
-		    && !Model.getFacade().isAAssociationClass(element)) {
-		    diagram.addClass(element, false);
-		}
-	    }
-	}
-    }
-
+  }
 } // ActionAddAllClassesFromModel

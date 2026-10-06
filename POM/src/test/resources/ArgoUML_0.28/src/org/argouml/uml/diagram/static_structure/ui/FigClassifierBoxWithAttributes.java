@@ -28,9 +28,7 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.swing.Action;
-
 import org.apache.log4j.Logger;
 import org.argouml.model.AddAssociationEvent;
 import org.argouml.model.AssociationChangeEvent;
@@ -49,322 +47,297 @@ import org.argouml.uml.ui.foundation.core.ActionAddAttribute;
  *
  * @author Michiel
  */
-public class FigClassifierBoxWithAttributes extends FigClassifierBox 
+public class FigClassifierBoxWithAttributes extends FigClassifierBox
     implements AttributesCompartmentContainer {
 
-    private static final Logger LOG = 
-        Logger.getLogger(FigClassifierBoxWithAttributes.class);
-    
-    private FigAttributesCompartment attributesFigCompartment;
+  private static final Logger LOG = Logger.getLogger(FigClassifierBoxWithAttributes.class);
 
-    /**
-     * The constructor.
-     * 
-     * @deprecated for 0.27.3 by tfmorris. Use
-     * {@link #FigClassifierBoxWithAttributes(Object,Rectangle,DiagramSettings)}
-     */
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    public FigClassifierBoxWithAttributes() {
-        super();
-        attributesFigCompartment = new FigAttributesCompartment(
-                DEFAULT_COMPARTMENT_BOUNDS.x, 
-                DEFAULT_COMPARTMENT_BOUNDS.y,
-                DEFAULT_COMPARTMENT_BOUNDS.width, 
-                DEFAULT_COMPARTMENT_BOUNDS.height);
-    }
+  private FigAttributesCompartment attributesFigCompartment;
 
-    
-    /**
-     * Construct a Fig with owner, bounds, and settings.
-     * 
-     * @param owner the model element that owns this fig
-     * @param bounds the rectangle defining the bounds
-     * @param settings the rendering settings
-     */
-    public FigClassifierBoxWithAttributes(Object owner, Rectangle bounds,
-            DiagramSettings settings) {
-        super(owner, bounds, settings);
-        attributesFigCompartment = new FigAttributesCompartment(owner,
-                DEFAULT_COMPARTMENT_BOUNDS, settings);
-    }
+  /**
+   * The constructor.
+   *
+   * @deprecated for 0.27.3 by tfmorris. Use {@link
+   *     #FigClassifierBoxWithAttributes(Object,Rectangle,DiagramSettings)}
+   */
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  public FigClassifierBoxWithAttributes() {
+    super();
+    attributesFigCompartment =
+        new FigAttributesCompartment(
+            DEFAULT_COMPARTMENT_BOUNDS.x,
+            DEFAULT_COMPARTMENT_BOUNDS.y,
+            DEFAULT_COMPARTMENT_BOUNDS.width,
+            DEFAULT_COMPARTMENT_BOUNDS.height);
+  }
 
-    /**
-     * @return The vector of graphics for the uml attributes (if any).
-     * First one is the rectangle for the entire operations box.
-     */
-    protected FigAttributesCompartment getAttributesFig() {
-        return attributesFigCompartment;
-    }
-    
-    public Rectangle getAttributesBounds() {
-        return attributesFigCompartment.getBounds();
-    }
+  /**
+   * Construct a Fig with owner, bounds, and settings.
+   *
+   * @param owner the model element that owns this fig
+   * @param bounds the rectangle defining the bounds
+   * @param settings the rendering settings
+   */
+  public FigClassifierBoxWithAttributes(Object owner, Rectangle bounds, DiagramSettings settings) {
+    super(owner, bounds, settings);
+    attributesFigCompartment =
+        new FigAttributesCompartment(owner, DEFAULT_COMPARTMENT_BOUNDS, settings);
+  }
 
-    public boolean isAttributesVisible() {
-        return attributesFigCompartment != null 
-            && attributesFigCompartment.isVisible();
-    }
-    
-    /*
-     * Insert an Add Attribute entry before the default menu.
-     * 
-     * @see org.argouml.uml.diagram.static_structure.ui.FigClassifierBox#buildAddMenu()
-     */
-    @Override
-    protected ArgoJMenu buildAddMenu() {
-        ArgoJMenu addMenu = super.buildAddMenu();
-        Action addAttribute = new ActionAddAttribute();
-        addAttribute.setEnabled(isSingleTarget());
-        addMenu.insert(addAttribute, 0);
-        return addMenu;
-    }
-    
-    /**
-     * USED BY PGML.tee.
-     * @return the class name and bounds together with compartment
-     * visibility.
-     */
-    @Override
-    public String classNameAndBounds() {
-        return super.classNameAndBounds()
-            + "attributesVisible=" + isAttributesVisible() + ";";
-    }
+  /**
+   * @return The vector of graphics for the uml attributes (if any). First one is the rectangle for
+   *     the entire operations box.
+   */
+  protected FigAttributesCompartment getAttributesFig() {
+    return attributesFigCompartment;
+  }
 
-    @Override
-    protected void updateListeners(Object oldOwner, Object newOwner) {
-        Set<Object[]> listeners = new HashSet<Object[]>();
+  public Rectangle getAttributesBounds() {
+    return attributesFigCompartment.getBounds();
+  }
 
-        // Collect the set of model elements that we want to listen to
-        if (newOwner != null) {
-            // TODO: Because we get called on each and every change event, when
-            // the model is in a state of flux, we'll often get an
-            // InvalidElementException before we finish this collection. The
-            // only saving grace is that we're called SO many times that on the
-            // last time, things should be stable again and we'll get a good set
-            // of elements for the final update.  We need a better mechanism.
-            
-            // add the listeners to the newOwner
-            listeners.add(new Object[] {newOwner, null});
-            
-            // and its stereotypes
-            // TODO: Aren't stereotypes handled elsewhere?
-            for (Object stereotype 
-                    : Model.getFacade().getStereotypes(newOwner)) {
-                listeners.add(new Object[] {stereotype, null});
-            }
+  public boolean isAttributesVisible() {
+    return attributesFigCompartment != null && attributesFigCompartment.isVisible();
+  }
 
-            // and its features
-            for (Object feat : Model.getFacade().getFeatures(newOwner)) {
-                listeners.add(new Object[] {feat, null});
-                // and the stereotypes of its features
-                for (Object stereotype 
-                        : Model.getFacade().getStereotypes(feat)) {
-                    listeners.add(new Object[] {stereotype, null});
-                }
-                // and the parameter of its operations
-                if (Model.getFacade().isAOperation(feat)) {
-                    for (Object param : Model.getFacade().getParameters(feat)) {
-                        listeners.add(new Object[] {param, null});
-                    }
-                }
-            }
+  /*
+   * Insert an Add Attribute entry before the default menu.
+   *
+   * @see org.argouml.uml.diagram.static_structure.ui.FigClassifierBox#buildAddMenu()
+   */
+  @Override
+  protected ArgoJMenu buildAddMenu() {
+    ArgoJMenu addMenu = super.buildAddMenu();
+    Action addAttribute = new ActionAddAttribute();
+    addAttribute.setEnabled(isSingleTarget());
+    addMenu.insert(addAttribute, 0);
+    return addMenu;
+  }
+
+  /**
+   * USED BY PGML.tee.
+   *
+   * @return the class name and bounds together with compartment visibility.
+   */
+  @Override
+  public String classNameAndBounds() {
+    return super.classNameAndBounds() + "attributesVisible=" + isAttributesVisible() + ";";
+  }
+
+  @Override
+  protected void updateListeners(Object oldOwner, Object newOwner) {
+    Set<Object[]> listeners = new HashSet<Object[]>();
+
+    // Collect the set of model elements that we want to listen to
+    if (newOwner != null) {
+      // TODO: Because we get called on each and every change event, when
+      // the model is in a state of flux, we'll often get an
+      // InvalidElementException before we finish this collection. The
+      // only saving grace is that we're called SO many times that on the
+      // last time, things should be stable again and we'll get a good set
+      // of elements for the final update.  We need a better mechanism.
+
+      // add the listeners to the newOwner
+      listeners.add(new Object[] {newOwner, null});
+
+      // and its stereotypes
+      // TODO: Aren't stereotypes handled elsewhere?
+      for (Object stereotype : Model.getFacade().getStereotypes(newOwner)) {
+        listeners.add(new Object[] {stereotype, null});
+      }
+
+      // and its features
+      for (Object feat : Model.getFacade().getFeatures(newOwner)) {
+        listeners.add(new Object[] {feat, null});
+        // and the stereotypes of its features
+        for (Object stereotype : Model.getFacade().getStereotypes(feat)) {
+          listeners.add(new Object[] {stereotype, null});
         }
-        
-        // Update the listeners to match the desired set using the minimal
-        // update facility
-        updateElementListeners(listeners);
-    }
-    
-    @Override
-    public void renderingChanged() {
-        super.renderingChanged();
-        if (getOwner() != null) {
-            // TODO: We shouldn't actually have to do all this work
-            updateAttributes();
+        // and the parameter of its operations
+        if (Model.getFacade().isAOperation(feat)) {
+          for (Object param : Model.getFacade().getParameters(feat)) {
+            listeners.add(new Object[] {param, null});
+          }
         }
-    }
-    
-    /*
-     * TODO: Based on my comments below, with that work done,
-     * this method can be removed - Bob.
-     */
-    @Override
-    protected void updateLayout(UmlChangeEvent event) {
-        super.updateLayout(event);
-
-        if (event instanceof AttributeChangeEvent) {
-            Object source = event.getSource();
-            if (Model.getFacade().isAAttribute(source)) {
-                // TODO: We just need to get someone to rerender a single line
-                // of text which represents the element here, but I'm not sure
-                // how to do that. - tfm
-                // TODO: Bob replies - we shouldn't be interested in this event
-                // here. The FigFeature (or its notation) should be listen for
-                // change and the FigFeature should be update from that.
-                updateAttributes();
-            }
-        } else if (event instanceof AssociationChangeEvent 
-                && getOwner().equals(event.getSource())) {
-            Object o = null;
-            if (event instanceof AddAssociationEvent) {
-                o = event.getNewValue();
-            } else if (event instanceof RemoveAssociationEvent) {
-                o = event.getOldValue();
-            }
-            if (Model.getFacade().isAAttribute(o)) {
-                // TODO: Bob says - we should not be listening here for
-                // addition and removal of attributes. This should be done in
-                // FigAttributesCompartment.
-                updateAttributes();
-            }
-        }
+      }
     }
 
-    /**
-     * Updates the attributes in the fig. Called from modelchanged if there is
-     * a modelevent effecting the attributes and from renderingChanged in all
-     * cases.
-     * TODO: Looks like this should be private - Bob.
-     */
-    protected void updateAttributes() {
-        if (!isAttributesVisible()) {
-            return;
-        }
-        attributesFigCompartment.populate();
+    // Update the listeners to match the desired set using the minimal
+    // update facility
+    updateElementListeners(listeners);
+  }
 
-        // TODO: make setBounds, calcBounds and updateBounds consistent
-        setBounds(getBounds());
+  @Override
+  public void renderingChanged() {
+    super.renderingChanged();
+    if (getOwner() != null) {
+      // TODO: We shouldn't actually have to do all this work
+      updateAttributes();
     }
-    
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    @Override
-    public void setOwner(Object owner) {
-        attributesFigCompartment.setOwner(owner);
-        super.setOwner(owner);
+  }
+
+  /*
+   * TODO: Based on my comments below, with that work done,
+   * this method can be removed - Bob.
+   */
+  @Override
+  protected void updateLayout(UmlChangeEvent event) {
+    super.updateLayout(event);
+
+    if (event instanceof AttributeChangeEvent) {
+      Object source = event.getSource();
+      if (Model.getFacade().isAAttribute(source)) {
+        // TODO: We just need to get someone to rerender a single line
+        // of text which represents the element here, but I'm not sure
+        // how to do that. - tfm
+        // TODO: Bob replies - we shouldn't be interested in this event
+        // here. The FigFeature (or its notation) should be listen for
+        // change and the FigFeature should be update from that.
+        updateAttributes();
+      }
+    } else if (event instanceof AssociationChangeEvent && getOwner().equals(event.getSource())) {
+      Object o = null;
+      if (event instanceof AddAssociationEvent) {
+        o = event.getNewValue();
+      } else if (event instanceof RemoveAssociationEvent) {
+        o = event.getOldValue();
+      }
+      if (Model.getFacade().isAAttribute(o)) {
+        // TODO: Bob says - we should not be listening here for
+        // addition and removal of attributes. This should be done in
+        // FigAttributesCompartment.
+        updateAttributes();
+      }
     }
-    
-    /**
-     * @param isVisible true if the attribute compartment is visible
-     *
-     * @see org.argouml.uml.diagram.AttributesCompartmentContainer#setAttributesVisible(boolean)
-     */
-    public void setAttributesVisible(boolean isVisible) {
-        setCompartmentVisible(attributesFigCompartment, isVisible);
+  }
+
+  /**
+   * Updates the attributes in the fig. Called from modelchanged if there is a modelevent effecting
+   * the attributes and from renderingChanged in all cases. TODO: Looks like this should be private
+   * - Bob.
+   */
+  protected void updateAttributes() {
+    if (!isAttributesVisible()) {
+      return;
     }
-    @Override
-    public Dimension getMinimumSize() {
-        // Use "aSize" to build up the minimum size. Start with the size of the
-        // name compartment and build up.
+    attributesFigCompartment.populate();
 
-        Dimension aSize = getNameFig().getMinimumSize();
-        aSize.height += NAME_V_PADDING * 2;
-        aSize.height = Math.max(NAME_FIG_HEIGHT, aSize.height);
+    // TODO: make setBounds, calcBounds and updateBounds consistent
+    setBounds(getBounds());
+  }
 
-        aSize = addChildDimensions(aSize, getStereotypeFig());
-        aSize = addChildDimensions(aSize, getAttributesFig());
-        aSize = addChildDimensions(aSize, getOperationsFig());
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  @Override
+  public void setOwner(Object owner) {
+    attributesFigCompartment.setOwner(owner);
+    super.setOwner(owner);
+  }
 
-        aSize.width = Math.max(WIDTH, aSize.width);
+  /**
+   * @param isVisible true if the attribute compartment is visible
+   * @see org.argouml.uml.diagram.AttributesCompartmentContainer#setAttributesVisible(boolean)
+   */
+  public void setAttributesVisible(boolean isVisible) {
+    setCompartmentVisible(attributesFigCompartment, isVisible);
+  }
 
-        return aSize;
-    }
+  @Override
+  public Dimension getMinimumSize() {
+    // Use "aSize" to build up the minimum size. Start with the size of the
+    // name compartment and build up.
 
-    /**
-     * Sets the bounds, but the size will be at least the one returned by
-     * {@link #getMinimumSize()}, unless checking of size is disabled.<p>
-     *
-     * If the required height is bigger, then the additional height is
-     * equally distributed among all figs (i.e. compartments), such that the
-     * cumulated height of all visible figs equals the demanded height<p>.
-     *
-     * Some of this has "magic numbers" hardcoded in.<p>
-     *
-     * @param x  Desired X coordinate of upper left corner
-     *
-     * @param y  Desired Y coordinate of upper left corner
-     *
-     * @param width  Desired width of the FigClass
-     *
-     * @param height  Desired height of the FigClass
-     * 
-     * @see org.tigris.gef.presentation.Fig#setBoundsImpl(int, int, int, int)
-     */
-    @Override
-    protected void setStandardBounds(final int x, final int y, final int width,
-            final int height) {
+    Dimension aSize = getNameFig().getMinimumSize();
+    aSize.height += NAME_V_PADDING * 2;
+    aSize.height = Math.max(NAME_FIG_HEIGHT, aSize.height);
 
-        // Save our old boundaries so it can be used in property message later
-        Rectangle oldBounds = getBounds();
+    aSize = addChildDimensions(aSize, getStereotypeFig());
+    aSize = addChildDimensions(aSize, getAttributesFig());
+    aSize = addChildDimensions(aSize, getOperationsFig());
 
-        // Make sure we don't try to set things smaller than the minimum
-        int w = Math.max(width, getMinimumSize().width);
-        int h = Math.max(height, getMinimumSize().height);
-        
-        // set bounds of big box
-        getBigPort().setBounds(x, y, w, h);
-        if (borderFig != null) {
-            borderFig.setBounds(x, y, w, h);
-        }
-        
-        // Extra space to be distributed among compartments is the difference
-        // between the actual size and the min. size
-        final int whitespace = h - getMinimumSize().height;
-        
-        int currentHeight = 0;
+    aSize.width = Math.max(WIDTH, aSize.width);
 
-        if (getStereotypeFig().isVisible()) {
-            int stereotypeHeight = getStereotypeFig().getMinimumSize().height;
-            getStereotypeFig().setBounds(
-                    x,
-                    y,
-                    w,
-                    stereotypeHeight);
-            currentHeight += stereotypeHeight;
-        }
+    return aSize;
+  }
 
-        int nameHeight = getNameFig().getMinimumSize().height;
-        getNameFig().setBounds(x, y + currentHeight, w, nameHeight);
-        currentHeight += nameHeight;
+  /**
+   * Sets the bounds, but the size will be at least the one returned by {@link #getMinimumSize()},
+   * unless checking of size is disabled.
+   *
+   * <p>If the required height is bigger, then the additional height is equally distributed among
+   * all figs (i.e. compartments), such that the cumulated height of all visible figs equals the
+   * demanded height
+   *
+   * <p>.
+   *
+   * <p>Some of this has "magic numbers" hardcoded in.
+   *
+   * <p>
+   *
+   * @param x Desired X coordinate of upper left corner
+   * @param y Desired Y coordinate of upper left corner
+   * @param width Desired width of the FigClass
+   * @param height Desired height of the FigClass
+   * @see org.tigris.gef.presentation.Fig#setBoundsImpl(int, int, int, int)
+   */
+  @Override
+  protected void setStandardBounds(final int x, final int y, final int width, final int height) {
 
-        if (isAttributesVisible()) {
-            int attributesHeight = 
-                attributesFigCompartment.getMinimumSize().height;
-            if (isOperationsVisible()) {
-                attributesHeight += whitespace / 2;
-            }
-            attributesFigCompartment.setBounds(
-                    x,
-                    y + currentHeight,
-                    w,
-                    attributesHeight);
-            currentHeight += attributesHeight;
-        }
+    // Save our old boundaries so it can be used in property message later
+    Rectangle oldBounds = getBounds();
 
-        if (isOperationsVisible()) {
-            int operationsY = y + currentHeight;
-            int operationsHeight = (h + y) - operationsY - LINE_WIDTH;
-            if (operationsHeight < getOperationsFig().getMinimumSize().height) {
-                operationsHeight = getOperationsFig().getMinimumSize().height;
-            }
-            getOperationsFig().setBounds(
-                    x,
-                    operationsY,
-                    w,
-                    operationsHeight);
-        }
+    // Make sure we don't try to set things smaller than the minimum
+    int w = Math.max(width, getMinimumSize().width);
+    int h = Math.max(height, getMinimumSize().height);
 
-        // Now force calculation of the bounds of the figure, update the edges
-        // and trigger anyone who's listening to see if the "bounds" property
-        // has changed.
-
-        calcBounds();
-        updateEdges();
-        LOG.debug("Bounds change : old - " + oldBounds + ", new - " 
-                + getBounds());
-        firePropChange("bounds", oldBounds, getBounds());
+    // set bounds of big box
+    getBigPort().setBounds(x, y, w, h);
+    if (borderFig != null) {
+      borderFig.setBounds(x, y, w, h);
     }
 
+    // Extra space to be distributed among compartments is the difference
+    // between the actual size and the min. size
+    final int whitespace = h - getMinimumSize().height;
 
+    int currentHeight = 0;
+
+    if (getStereotypeFig().isVisible()) {
+      int stereotypeHeight = getStereotypeFig().getMinimumSize().height;
+      getStereotypeFig().setBounds(x, y, w, stereotypeHeight);
+      currentHeight += stereotypeHeight;
+    }
+
+    int nameHeight = getNameFig().getMinimumSize().height;
+    getNameFig().setBounds(x, y + currentHeight, w, nameHeight);
+    currentHeight += nameHeight;
+
+    if (isAttributesVisible()) {
+      int attributesHeight = attributesFigCompartment.getMinimumSize().height;
+      if (isOperationsVisible()) {
+        attributesHeight += whitespace / 2;
+      }
+      attributesFigCompartment.setBounds(x, y + currentHeight, w, attributesHeight);
+      currentHeight += attributesHeight;
+    }
+
+    if (isOperationsVisible()) {
+      int operationsY = y + currentHeight;
+      int operationsHeight = (h + y) - operationsY - LINE_WIDTH;
+      if (operationsHeight < getOperationsFig().getMinimumSize().height) {
+        operationsHeight = getOperationsFig().getMinimumSize().height;
+      }
+      getOperationsFig().setBounds(x, operationsY, w, operationsHeight);
+    }
+
+    // Now force calculation of the bounds of the figure, update the edges
+    // and trigger anyone who's listening to see if the "bounds" property
+    // has changed.
+
+    calcBounds();
+    updateEdges();
+    LOG.debug("Bounds change : old - " + oldBounds + ", new - " + getBounds());
+    firePropChange("bounds", oldBounds, getBounds());
+  }
 }

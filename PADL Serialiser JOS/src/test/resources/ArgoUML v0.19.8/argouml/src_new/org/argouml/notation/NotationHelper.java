@@ -27,30 +27,23 @@ package org.argouml.notation;
 import org.argouml.application.api.Configuration;
 
 /**
- * A helper for notation related functions. Currently, it only contains 
- * 2 functions to obtain the guillemet characters or 
- * their double bracket alternative, 
- * based on the choice made by the user in the Settings menu.
+ * A helper for notation related functions. Currently, it only contains 2 functions to obtain the
+ * guillemet characters or their double bracket alternative, based on the choice made by the user in
+ * the Settings menu.
  */
 public class NotationHelper {
 
-    /**
-     * @return the left pointing guillemot, i.e. << or the one-character symbol
-     */
-    public static String getLeftGuillemot() {
-	return (Configuration.getBoolean(Notation.KEY_USE_GUILLEMOTS, false))
-	    ? "\u00ab"
-	    : "<<";
+  /**
+   * @return the left pointing guillemot, i.e. << or the one-character symbol
+   */
+  public static String getLeftGuillemot() {
+    return (Configuration.getBoolean(Notation.KEY_USE_GUILLEMOTS, false)) ? "\u00ab" : "<<";
+  }
 
-    }
-
-    /**
-     * @return the right pointing guillemot, i.e. >> or the one-character symbol
-     */
-    public static String getRightGuillemot() {
-	return (Configuration.getBoolean(Notation.KEY_USE_GUILLEMOTS, false))
-	    ? "\u00bb"
-	    : ">>";
-    }
-
+  /**
+   * @return the right pointing guillemot, i.e. >> or the one-character symbol
+   */
+  public static String getRightGuillemot() {
+    return (Configuration.getBoolean(Notation.KEY_USE_GUILLEMOTS, false)) ? "\u00bb" : ">>";
+  }
 } /* end class NotationHelper */

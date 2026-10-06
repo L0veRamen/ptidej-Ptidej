@@ -25,7 +25,6 @@
 package org.argouml.ui.cmd;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.ui.FindDialog;
 import org.argouml.uml.ui.UMLAction;
 
@@ -34,16 +33,15 @@ import org.argouml.uml.ui.UMLAction;
 
 class ActionFind extends UMLAction {
 
-    public ActionFind() {
-        // this is not a "global" action, since it is never downlighted...
-        super("action.find", HAS_ICON);
-    }
+  public ActionFind() {
+    // this is not a "global" action, since it is never downlighted...
+    super("action.find", HAS_ICON);
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-	FindDialog.getInstance().setVisible(true);
-    }
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    FindDialog.getInstance().setVisible(true);
+  }
 } /* end class ActionFind */
-

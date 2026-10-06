@@ -26,9 +26,7 @@ package org.argouml.uml.cognitive.critics;
 
 import java.util.Collection;
 import java.util.Iterator;
-
 import javax.swing.Icon;
-
 import org.argouml.cognitive.Designer;
 import org.argouml.cognitive.critics.Critic;
 import org.argouml.model.Model;
@@ -41,56 +39,52 @@ import org.argouml.uml.cognitive.UMLDecision;
  */
 public class CrDisambigStateName extends CrUML {
 
-    /**
-     * The constructor.
-     */
-    public CrDisambigStateName() {
-        setupHeadAndDesc();
-	addSupportedDecision(UMLDecision.NAMING);
-	setKnowledgeTypes(Critic.KT_SYNTAX);
-	addTrigger("name");
-	addTrigger("parent");
-    }
+  /** The constructor. */
+  public CrDisambigStateName() {
+    setupHeadAndDesc();
+    addSupportedDecision(UMLDecision.NAMING);
+    setKnowledgeTypes(Critic.KT_SYNTAX);
+    addTrigger("name");
+    addTrigger("parent");
+  }
 
-    /**
-     * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
-     * java.lang.Object, org.argouml.cognitive.Designer)
-     */
-    public boolean predicate2(Object dm, Designer dsgr) {
-	if (!(Model.getFacade().isAState(dm))) return NO_PROBLEM;
-	String myName = Model.getFacade().getName(dm);
-	// TODO: should define a CompoundCritic
-	if (myName == null || myName.equals("")) return NO_PROBLEM;
-	String myNameString = myName;
-	if (myNameString.length() == 0) return NO_PROBLEM;
-	Collection pkgs = Model.getFacade().getElementImports2(dm);
-	if (pkgs == null) return NO_PROBLEM;
-	for (Iterator iter = pkgs.iterator(); iter.hasNext();) {
-	    Object imp = /*(MElementImport)*/ iter.next();
-	    Object ns = Model.getFacade().getPackage(imp);
-	    if (ns == null) return NO_PROBLEM;
-	    Collection oes = Model.getFacade().getOwnedElements(ns);
-	    if (oes == null) return NO_PROBLEM;
-	    Iterator elems = oes.iterator();
-	    while (elems.hasNext()) {
-		Object eo = /*(MElementImport)*/ elems.next();
-		Object me = /*(MModelElement)*/ 
-		    Model.getFacade().getModelElement(eo);
-		if (!(Model.getFacade().isAClassifier(me))) continue;
-		if (me == dm) continue;
-		String meName = Model.getFacade().getName(me);
-		if (meName == null || meName.equals("")) continue;
-		if (meName.equals(myNameString)) return PROBLEM_FOUND;
-	    }
-	}
-	return NO_PROBLEM;
+  /**
+   * @see org.argouml.uml.cognitive.critics.CrUML#predicate2( java.lang.Object,
+   *     org.argouml.cognitive.Designer)
+   */
+  public boolean predicate2(Object dm, Designer dsgr) {
+    if (!(Model.getFacade().isAState(dm))) return NO_PROBLEM;
+    String myName = Model.getFacade().getName(dm);
+    // TODO: should define a CompoundCritic
+    if (myName == null || myName.equals("")) return NO_PROBLEM;
+    String myNameString = myName;
+    if (myNameString.length() == 0) return NO_PROBLEM;
+    Collection pkgs = Model.getFacade().getElementImports2(dm);
+    if (pkgs == null) return NO_PROBLEM;
+    for (Iterator iter = pkgs.iterator(); iter.hasNext(); ) {
+      Object imp = /*(MElementImport)*/ iter.next();
+      Object ns = Model.getFacade().getPackage(imp);
+      if (ns == null) return NO_PROBLEM;
+      Collection oes = Model.getFacade().getOwnedElements(ns);
+      if (oes == null) return NO_PROBLEM;
+      Iterator elems = oes.iterator();
+      while (elems.hasNext()) {
+        Object eo = /*(MElementImport)*/ elems.next();
+        Object me = /*(MModelElement)*/ Model.getFacade().getModelElement(eo);
+        if (!(Model.getFacade().isAClassifier(me))) continue;
+        if (me == dm) continue;
+        String meName = Model.getFacade().getName(me);
+        if (meName == null || meName.equals("")) continue;
+        if (meName.equals(myNameString)) return PROBLEM_FOUND;
+      }
     }
+    return NO_PROBLEM;
+  }
 
-    /**
-     * @see org.argouml.cognitive.Poster#getClarifier()
-     */
-    public Icon getClarifier() {
-	return ClClassName.getTheInstance();
-    }
-
+  /**
+   * @see org.argouml.cognitive.Poster#getClarifier()
+   */
+  public Icon getClarifier() {
+    return ClClassName.getTheInstance();
+  }
 } /* end class CrDisambigStateName */

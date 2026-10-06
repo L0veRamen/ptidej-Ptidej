@@ -27,11 +27,9 @@ package org.argouml.ui;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
-
 import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
-
 import org.apache.log4j.Logger;
 import org.argouml.application.api.Configuration;
 import org.argouml.i18n.Translator;
@@ -45,100 +43,85 @@ import org.argouml.ui.cmd.GenericArgoMenuBar;
  * This Action allows import of a XMI file.
  *
  * @author mvw@tigris.org
-  */
+ */
 public class ActionImportXMI extends AbstractAction {
 
-    /**
-     * Logger.
-     */
-    private static final Logger LOG = Logger.getLogger(ActionImportXMI.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(ActionImportXMI.class);
 
-    /**
-     * The constructor.
-     */
-    public ActionImportXMI() {
-        super(Translator.localize("action.import-xmi"));
+  /** The constructor. */
+  public ActionImportXMI() {
+    super(Translator.localize("action.import-xmi"));
+  }
+
+  /**
+   * Most of this code originates from ActionOpenProject.
+   *
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    ProjectBrowser pb = ProjectBrowser.getInstance();
+    Project p = ProjectManager.getManager().getCurrentProject();
+    PersistenceManager pm = PersistenceManager.getInstance();
+
+    if (!ProjectBrowser.getInstance().askConfirmationAndSave()) {
+      return;
     }
 
-    /**
-     * Most of this code originates from ActionOpenProject.
-     *
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        ProjectBrowser pb = ProjectBrowser.getInstance();
-        Project p = ProjectManager.getManager().getCurrentProject();
-        PersistenceManager pm = PersistenceManager.getInstance();
-
-        if (!ProjectBrowser.getInstance().askConfirmationAndSave()) {
-            return;
+    try {
+      JFileChooser chooser = null;
+      if (p != null && p.getURL() != null) {
+        File file = new File(p.getURL().getFile());
+        if (file.getParentFile() != null) {
+          chooser = new JFileChooser(file.getParent());
         }
+      } else {
+        chooser = new JFileChooser();
+      }
 
-        try {
-            JFileChooser chooser = null;
-            if (p != null && p.getURL() != null) {
-                File file = new File(p.getURL().getFile());
-                if (file.getParentFile() != null) {
-                    chooser = new JFileChooser(file.getParent());
-                }
-            } else {
-                chooser = new JFileChooser();
+      if (chooser == null) {
+        chooser = new JFileChooser();
+      }
+
+      chooser.setDialogTitle(Translator.localize("filechooser.import-xmi"));
+
+      chooser.setAcceptAllFileFilterUsed(true);
+
+      pm.setXmiFileChooserFilter(chooser);
+
+      String fn = Configuration.getString(PersistenceManager.KEY_IMPORT_XMI_PATH);
+      if (fn.length() > 0) {
+        chooser.setSelectedFile(new File(fn));
+      }
+
+      int retval = chooser.showOpenDialog(pb);
+      if (retval == JFileChooser.APPROVE_OPTION) {
+        File theFile = chooser.getSelectedFile();
+
+        if (!theFile.canRead()) {
+          /* Try adding the extension from the chosen filter. */
+          FileFilter ffilter = chooser.getFileFilter();
+          if (ffilter instanceof AbstractFilePersister) {
+            AbstractFilePersister afp = (AbstractFilePersister) ffilter;
+            File m = new File(theFile.getPath() + "." + afp.getExtension());
+            if (m.canRead()) {
+              theFile = m;
             }
-
-            if (chooser == null) {
-                chooser = new JFileChooser();
-            }
-
-            chooser.setDialogTitle(
-                    Translator.localize("filechooser.import-xmi"));
-
-            chooser.setAcceptAllFileFilterUsed(true);
-
-            pm.setXmiFileChooserFilter(chooser);
-
-            String fn =
-                Configuration.getString(
-                    PersistenceManager.KEY_IMPORT_XMI_PATH);
-            if (fn.length() > 0) {
-                chooser.setSelectedFile(new File(fn));
-            }
-
-            int retval = chooser.showOpenDialog(pb);
-            if (retval == JFileChooser.APPROVE_OPTION) {
-                File theFile = chooser.getSelectedFile();
-
-                if (!theFile.canRead()) {
-                    /* Try adding the extension from the chosen filter. */
-                    FileFilter ffilter = chooser.getFileFilter();
-                    if (ffilter instanceof AbstractFilePersister) {
-                        AbstractFilePersister afp =
-                            (AbstractFilePersister) ffilter;
-                        File m =
-                            new File(theFile.getPath() + "."
-                                    + afp.getExtension());
-                        if (m.canRead()) {
-                            theFile = m;
-                        }
-                    }
-                }
-                Configuration.setString(
-                        PersistenceManager.KEY_IMPORT_XMI_PATH,
-                        theFile.getPath());
-
-                if (ProjectBrowser.getInstance().loadProject(theFile, true)) {
-                    // notification of menu bar
-                    GenericArgoMenuBar menuBar =
-                        (GenericArgoMenuBar) pb.getJMenuBar();
-                    menuBar.addFileSaved(theFile.getCanonicalPath());
-                }
-            }
-        } catch (IOException ignore) {
-            LOG.error("got an IOException in ActionOpenProject", ignore);
+          }
         }
+        Configuration.setString(PersistenceManager.KEY_IMPORT_XMI_PATH, theFile.getPath());
+
+        if (ProjectBrowser.getInstance().loadProject(theFile, true)) {
+          // notification of menu bar
+          GenericArgoMenuBar menuBar = (GenericArgoMenuBar) pb.getJMenuBar();
+          menuBar.addFileSaved(theFile.getCanonicalPath());
+        }
+      }
+    } catch (IOException ignore) {
+      LOG.error("got an IOException in ActionOpenProject", ignore);
     }
+  }
 
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -8756142027376622496L;
+  /** The UID. */
+  private static final long serialVersionUID = -8756142027376622496L;
 }

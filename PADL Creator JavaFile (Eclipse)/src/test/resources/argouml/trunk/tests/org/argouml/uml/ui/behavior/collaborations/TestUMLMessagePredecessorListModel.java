@@ -31,51 +31,49 @@ import org.argouml.uml.ui.AbstractUMLModelElementListModel2Test;
  * @since Oct 30, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class TestUMLMessagePredecessorListModel
-    extends AbstractUMLModelElementListModel2Test {
+public class TestUMLMessagePredecessorListModel extends AbstractUMLModelElementListModel2Test {
 
-    /**
-     * Constructor for TestUMLMessagePredecessorListModel.
-     * @param arg0 is the name of the test case.
-     */
-    public TestUMLMessagePredecessorListModel(String arg0) {
-        super(arg0);
+  /**
+   * Constructor for TestUMLMessagePredecessorListModel.
+   *
+   * @param arg0 is the name of the test case.
+   */
+  public TestUMLMessagePredecessorListModel(String arg0) {
+    super(arg0);
+  }
+
+  /**
+   * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#buildElement()
+   */
+  protected void buildElement() {
+    setElem(Model.getCollaborationsFactory().createMessage());
+  }
+
+  /**
+   * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#buildModel()
+   */
+  protected void buildModel() {
+    setModel(new UMLMessagePredecessorListModel());
+  }
+
+  /**
+   * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#fillModel()
+   */
+  protected Object[] fillModel() {
+    Object[] pres = new Object[10];
+    for (int i = 0; i < pres.length; i++) {
+      pres[i] = Model.getCollaborationsFactory().createMessage();
+      Model.getCollaborationsHelper().addPredecessor(getElem(), pres[i]);
     }
+    return pres;
+  }
 
-    /**
-     * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#buildElement()
-     */
-    protected void buildElement() {
-        setElem(Model.getCollaborationsFactory().createMessage());
+  /**
+   * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#removeHalfModel(Object[])
+   */
+  protected void removeHalfModel(Object[] elements) {
+    for (int i = 0; i < 5; i++) {
+      Model.getCollaborationsHelper().removePredecessor(getElem(), elements[i]);
     }
-
-    /**
-     * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#buildModel()
-     */
-    protected void buildModel() {
-        setModel(new UMLMessagePredecessorListModel());
-    }
-
-    /**
-     * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#fillModel()
-     */
-    protected Object[] fillModel() {
-        Object[] pres = new Object[10];
-        for (int i = 0; i < pres.length; i++) {
-            pres[i] = Model.getCollaborationsFactory().createMessage();
-            Model.getCollaborationsHelper().addPredecessor(getElem(), pres[i]);
-        }
-        return pres;
-    }
-
-    /**
-     * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#removeHalfModel(Object[])
-     */
-    protected void removeHalfModel(Object[] elements) {
-	for (int i = 0; i < 5; i++) {
-	    Model.getCollaborationsHelper().removePredecessor(getElem(), 
-                            elements[i]);
-        }
-    }
-
+  }
 }

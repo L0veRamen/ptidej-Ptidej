@@ -26,112 +26,107 @@ package org.argouml.uml.cognitive.critics;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import org.argouml.cognitive.CompoundCritic;
 import org.argouml.cognitive.Critic;
 import org.argouml.profile.Profile;
 
 /**
- * Profile which contains the critics that define stricter good practices for
- * UML models targeted for code generation
- * 
+ * Profile which contains the critics that define stricter good practices for UML models targeted
+ * for code generation
+ *
  * @author maurelio1234
  */
 public class ProfileCodeGeneration extends Profile {
 
-    private Set<Critic>  critics = new HashSet<Critic>();
+  private Set<Critic> critics = new HashSet<Critic>();
 
-    private static Critic crMissingClassName;
-    
-    private static Critic crDisambigClassName = new CrDisambigClassName();
+  private static Critic crMissingClassName;
 
-    private static Critic crNoTransitions = new CrNoTransitions();
+  private static Critic crDisambigClassName = new CrDisambigClassName();
 
-    private static Critic crNoIncomingTransitions =
-        new CrNoIncomingTransitions();
+  private static Critic crNoTransitions = new CrNoTransitions();
 
-    private static Critic crNoOutgoingTransitions =
-        new CrNoOutgoingTransitions();
-        
-    // Compound critics
+  private static Critic crNoIncomingTransitions = new CrNoIncomingTransitions();
 
-    // only classes with name need a constructor
-    private static CompoundCritic crCompoundConstructorNeeded;
+  private static Critic crNoOutgoingTransitions = new CrNoOutgoingTransitions();
 
-    private static CompoundCritic clsNaming;
-    
-    private static CompoundCritic noTrans1 =
-        new CompoundCritic(crNoTransitions, crNoIncomingTransitions);
+  // Compound critics
 
-    private static CompoundCritic noTrans2 =
-        new CompoundCritic(crNoTransitions, crNoOutgoingTransitions);
-        
-    /**
-     * Default Constructor 
-     * 
-     * @param profileGoodPractices the instance of the required profile 
-     */
-    public ProfileCodeGeneration(ProfileGoodPractices profileGoodPractices) {
-        
-        crMissingClassName = profileGoodPractices.getCrMissingClassName();
+  // only classes with name need a constructor
+  private static CompoundCritic crCompoundConstructorNeeded;
 
-        crCompoundConstructorNeeded = new CompoundCritic(
-                crMissingClassName, new CrConstructorNeeded());
+  private static CompoundCritic clsNaming;
 
-        clsNaming = new CompoundCritic(crMissingClassName,
-                crDisambigClassName);
-            
-        critics.add(crCompoundConstructorNeeded);
-        
-        // code generation
-        critics.add(clsNaming);
-        critics.add(new CrDisambigStateName());
-        critics.add(crDisambigClassName);
-        critics.add(new CrIllegalName());
-        critics.add(new CrReservedName());
-        critics.add(new CrNoInitialState());
-        critics.add(new CrNoTriggerOrGuard());
-        critics.add(new CrNoGuard());
-                   
-        critics.add(new CrOperNameConflict());
-        critics.add(new CrNoInstanceVariables());
-        critics.add(new CrNoAssociations());
-        critics.add(new CrNoOperations());
-        critics.add(new CrUselessAbstract());
-        critics.add(new CrUselessInterface());
-        critics.add(new CrNavFromInterface());
-        critics.add(new CrUnnavigableAssoc());
-        critics.add(new CrAlreadyRealizes());
-        critics.add(new CrMultipleInitialStates());
-        critics.add(new CrUnconventionalOperName());
-        critics.add(new CrUnconventionalAttrName());
-        critics.add(new CrUnconventionalClassName());
-        critics.add(new CrUnconventionalPackName());
-        critics.add(new CrNodeInsideElement());
-        critics.add(new CrNodeInstanceInsideElement());
-        critics.add(new CrComponentWithoutNode());
-        critics.add(new CrCompInstanceWithoutNode());
-        critics.add(new CrClassWithoutComponent());
-        critics.add(new CrInterfaceWithoutComponent());
-        critics.add(new CrObjectWithoutComponent());
-        critics.add(new CrInstanceWithoutClassifier());
-        critics.add(noTrans1);
-        critics.add(noTrans2);                                  
-        
-        this.setCritics(critics);
-        
-        addProfileDependency("GoodPractices");
-    }
-    
-    @Override
-    public String getDisplayName() {
-        return "Critics for Code Generation";
-    }
+  private static CompoundCritic noTrans1 =
+      new CompoundCritic(crNoTransitions, crNoIncomingTransitions);
 
-   /*
-    * @see org.argouml.profile.Profile#getProfileIdentifier()
-    */
-    public String getProfileIdentifier() {
-        return "CodeGeneration";
-    }
+  private static CompoundCritic noTrans2 =
+      new CompoundCritic(crNoTransitions, crNoOutgoingTransitions);
+
+  /**
+   * Default Constructor
+   *
+   * @param profileGoodPractices the instance of the required profile
+   */
+  public ProfileCodeGeneration(ProfileGoodPractices profileGoodPractices) {
+
+    crMissingClassName = profileGoodPractices.getCrMissingClassName();
+
+    crCompoundConstructorNeeded = new CompoundCritic(crMissingClassName, new CrConstructorNeeded());
+
+    clsNaming = new CompoundCritic(crMissingClassName, crDisambigClassName);
+
+    critics.add(crCompoundConstructorNeeded);
+
+    // code generation
+    critics.add(clsNaming);
+    critics.add(new CrDisambigStateName());
+    critics.add(crDisambigClassName);
+    critics.add(new CrIllegalName());
+    critics.add(new CrReservedName());
+    critics.add(new CrNoInitialState());
+    critics.add(new CrNoTriggerOrGuard());
+    critics.add(new CrNoGuard());
+
+    critics.add(new CrOperNameConflict());
+    critics.add(new CrNoInstanceVariables());
+    critics.add(new CrNoAssociations());
+    critics.add(new CrNoOperations());
+    critics.add(new CrUselessAbstract());
+    critics.add(new CrUselessInterface());
+    critics.add(new CrNavFromInterface());
+    critics.add(new CrUnnavigableAssoc());
+    critics.add(new CrAlreadyRealizes());
+    critics.add(new CrMultipleInitialStates());
+    critics.add(new CrUnconventionalOperName());
+    critics.add(new CrUnconventionalAttrName());
+    critics.add(new CrUnconventionalClassName());
+    critics.add(new CrUnconventionalPackName());
+    critics.add(new CrNodeInsideElement());
+    critics.add(new CrNodeInstanceInsideElement());
+    critics.add(new CrComponentWithoutNode());
+    critics.add(new CrCompInstanceWithoutNode());
+    critics.add(new CrClassWithoutComponent());
+    critics.add(new CrInterfaceWithoutComponent());
+    critics.add(new CrObjectWithoutComponent());
+    critics.add(new CrInstanceWithoutClassifier());
+    critics.add(noTrans1);
+    critics.add(noTrans2);
+
+    this.setCritics(critics);
+
+    addProfileDependency("GoodPractices");
+  }
+
+  @Override
+  public String getDisplayName() {
+    return "Critics for Code Generation";
+  }
+
+  /*
+   * @see org.argouml.profile.Profile#getProfileIdentifier()
+   */
+  public String getProfileIdentifier() {
+    return "CodeGeneration";
+  }
 }

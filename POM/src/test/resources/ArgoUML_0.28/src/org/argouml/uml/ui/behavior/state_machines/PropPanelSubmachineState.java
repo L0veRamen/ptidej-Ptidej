@@ -27,12 +27,10 @@ package org.argouml.uml.ui.behavior.state_machines;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.uml.ui.UMLComboBox2;
 import org.argouml.uml.ui.UMLComboBoxNavigator;
 import org.argouml.uml.ui.UMLMutableLinkedList;
-import org.tigris.swidgets.Orientation;
 
 /**
  * @since Dec 15, 2002
@@ -40,76 +38,70 @@ import org.tigris.swidgets.Orientation;
  */
 public class PropPanelSubmachineState extends PropPanelCompositeState {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = 2384673708664550264L;
+  /** The serial version. */
+  private static final long serialVersionUID = 2384673708664550264L;
 
+  /**
+   * Construct a property panel for SubmachineState elements with the given params.
+   *
+   * @param name the name of the properties panel
+   * @param icon the icon to be shown next to the name
+   */
+  public PropPanelSubmachineState(final String name, final ImageIcon icon) {
+    super(name, icon);
+    // TODO: Are these constructors organized correctly?  We aren't
+    // providing our own initialize(), so all the work done in the default
+    // constructor will be skipped for
+    // our subclasses (PropPanelSubactivityState) - tfm - 20071119
+    initialize();
+  }
 
-    /**
-     * Construct a property panel for SubmachineState elements with the given
-     * params.
-     *
-     * @param name
-     *            the name of the properties panel
-     * @param icon
-     *            the icon to be shown next to the name
-     */
-    public PropPanelSubmachineState(final String name, final ImageIcon icon) {
-        super(name, icon);
-        // TODO: Are these constructors organized correctly?  We aren't
-        // providing our own initialize(), so all the work done in the default
-        // constructor will be skipped for 
-        // our subclasses (PropPanelSubactivityState) - tfm - 20071119
-        initialize();
-    }
-    
-    /**
-     * Construct a default property panel SubmachineState elements.
-     */
-    public PropPanelSubmachineState() {
-        super("label.submachine-state", lookupIcon("SubmachineState"));
-        addField("label.name", getNameTextField());
-        addField("label.container", getContainerScroll());
-        final JComboBox submachineBox = new UMLComboBox2(
-                new UMLSubmachineStateComboBoxModel(),
-                ActionSetSubmachineStateSubmachine.getInstance());
-        addField("label.submachine",
-                new UMLComboBoxNavigator(Translator.localize(
-                        "tooltip.nav-submachine"), submachineBox));
-        addField("label.entry", getEntryScroll());
-        addField("label.exit", getExitScroll());
-        addField("label.do-activity", getDoScroll());
+  /** Construct a default property panel SubmachineState elements. */
+  public PropPanelSubmachineState() {
+    super("label.submachine-state", lookupIcon("SubmachineState"));
+    addField("label.name", getNameTextField());
+    addField("label.container", getContainerScroll());
+    final JComboBox submachineBox =
+        new UMLComboBox2(
+            new UMLSubmachineStateComboBoxModel(),
+            ActionSetSubmachineStateSubmachine.getInstance());
+    addField(
+        "label.submachine",
+        new UMLComboBoxNavigator(Translator.localize("tooltip.nav-submachine"), submachineBox));
+    addField("label.entry", getEntryScroll());
+    addField("label.exit", getExitScroll());
+    addField("label.do-activity", getDoScroll());
 
-        addSeparator();
+    addSeparator();
 
-        addField("label.incoming", getIncomingScroll());
-        addField("label.outgoing", getOutgoingScroll());
-        addField("label.internal-transitions", getInternalTransitionsScroll());
+    addField("label.incoming", getIncomingScroll());
+    addField("label.outgoing", getOutgoingScroll());
+    addField("label.internal-transitions", getInternalTransitionsScroll());
 
-        addSeparator();
+    addSeparator();
 
-        addField("label.subvertex",
-                new JScrollPane(new UMLMutableLinkedList(
-                        new UMLCompositeStateSubvertexListModel(), null,
-                        ActionNewStubState.getInstance())));
-    }
+    addField(
+        "label.subvertex",
+        new JScrollPane(
+            new UMLMutableLinkedList(
+                new UMLCompositeStateSubvertexListModel(),
+                null,
+                ActionNewStubState.getInstance())));
+  }
 
-    /*
-     * @see org.argouml.uml.ui.behavior.state_machines.PropPanelStateVertex#addExtraButtons()
-     */
-    @Override
-    protected void addExtraButtons() {
-        // Intentionally do nothing.
-    }
+  /*
+   * @see org.argouml.uml.ui.behavior.state_machines.PropPanelStateVertex#addExtraButtons()
+   */
+  @Override
+  protected void addExtraButtons() {
+    // Intentionally do nothing.
+  }
 
-    /*
-     * @see org.argouml.uml.ui.behavior.state_machines.PropPanelCompositeState#updateExtraButtons()
-     */
-    @Override
-    protected void updateExtraButtons() {
-        // Intentionally do nothing.
-    }
-
-
+  /*
+   * @see org.argouml.uml.ui.behavior.state_machines.PropPanelCompositeState#updateExtraButtons()
+   */
+  @Override
+  protected void updateExtraButtons() {
+    // Intentionally do nothing.
+  }
 }

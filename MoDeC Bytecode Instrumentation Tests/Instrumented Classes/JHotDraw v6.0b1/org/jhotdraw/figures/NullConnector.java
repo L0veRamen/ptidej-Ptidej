@@ -11,17 +11,17 @@
 
 package org.jhotdraw.figures;
 
-import org.jhotdraw.standard.AbstractConnector;
 import org.jhotdraw.framework.Figure;
+import org.jhotdraw.standard.AbstractConnector;
 
 public class NullConnector extends AbstractConnector {
-	// AbstractConnector implements already all methods but cannot be instantiated
+  // AbstractConnector implements already all methods but cannot be instantiated
 
-	private NullConnector() {
-		// do nothing: for JDO-compliance only
-	}
+  private NullConnector() {
+    // do nothing: for JDO-compliance only
+  }
 
-	public NullConnector(Figure owner) {
-		super(owner);
-	}
+  public NullConnector(Figure owner) {
+    super(owner);
+  }
 }

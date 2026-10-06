@@ -34,57 +34,52 @@ import org.tigris.gef.base.Layer;
  */
 public class FigUsage extends FigDependency {
 
-    /**
-     * The constructor.
-     * @deprecated for 0.27.3 by tfmorris. Use
-     *             {@link #FigUsage(Object, DiagramSettings)}.
-     */
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    public FigUsage() {
-        super();
-    }
+  /**
+   * The constructor.
+   *
+   * @deprecated for 0.27.3 by tfmorris. Use {@link #FigUsage(Object, DiagramSettings)}.
+   */
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  public FigUsage() {
+    super();
+  }
 
-    /**
-     * The constructor.
-     *
-     * @param edge the owning UML element
-     * @deprecated for 0.27.3 by tfmorris. Use
-     *             {@link #FigUsage(Object, DiagramSettings)}.
-     */
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    public FigUsage(Object edge) {
-        super(edge);
-    }
+  /**
+   * The constructor.
+   *
+   * @param edge the owning UML element
+   * @deprecated for 0.27.3 by tfmorris. Use {@link #FigUsage(Object, DiagramSettings)}.
+   */
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  public FigUsage(Object edge) {
+    super(edge);
+  }
 
-    /**
-     * The constructor.
-     * 
-     * @param edge the owning UML element
-     * @param lay the layer
-     * @deprecated for 0.27.3 by tfmorris. Use
-     *             {@link #FigUsage(Object, DiagramSettings)}.
-     */
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    public FigUsage(Object edge, Layer lay) {
-        super(edge, lay);
-    }
+  /**
+   * The constructor.
+   *
+   * @param edge the owning UML element
+   * @param lay the layer
+   * @deprecated for 0.27.3 by tfmorris. Use {@link #FigUsage(Object, DiagramSettings)}.
+   */
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  public FigUsage(Object edge, Layer lay) {
+    super(edge, lay);
+  }
 
-    /**
-     * Construct a Fig.
-     * 
-     * @param owner owning UML element
-     * @param settings render settings
-     */
-    public FigUsage(Object owner, DiagramSettings settings) {
-        super(owner, settings);
-    }
-    
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -1805275467987372774L;
-} 
+  /**
+   * Construct a Fig.
+   *
+   * @param owner owning UML element
+   * @param settings render settings
+   */
+  public FigUsage(Object owner, DiagramSettings settings) {
+    super(owner, settings);
+  }
 
+  /** The UID. */
+  private static final long serialVersionUID = -1805275467987372774L;
+}

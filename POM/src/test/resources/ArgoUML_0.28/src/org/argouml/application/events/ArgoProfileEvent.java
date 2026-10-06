@@ -25,25 +25,26 @@
 package org.argouml.application.events;
 
 /**
- * ArgoProfileEvent is used to notify interested parties
- * that the profile is changed.
+ * ArgoProfileEvent is used to notify interested parties that the profile is changed.
  *
  * @author Michiel
  */
 public class ArgoProfileEvent extends ArgoEvent {
 
-    /**
-     * @param eT reported by this event
-     * @param src object that caused the event
-     */
-    public ArgoProfileEvent(int eT, Object src) {
-        super(eT, src);
-    }
+  /**
+   * @param eT reported by this event
+   * @param src object that caused the event
+   */
+  public ArgoProfileEvent(int eT, Object src) {
+    super(eT, src);
+  }
 
-    /**
-     * Indicates the start of the 100-digit range for profile events.
-     *
-     * @return the first id reserved for events.
-     */
-    public int getEventStartRange() { return ANY_PROFILE_EVENT; }
+  /**
+   * Indicates the start of the 100-digit range for profile events.
+   *
+   * @return the first id reserved for events.
+   */
+  public int getEventStartRange() {
+    return ANY_PROFILE_EVENT;
+  }
 }

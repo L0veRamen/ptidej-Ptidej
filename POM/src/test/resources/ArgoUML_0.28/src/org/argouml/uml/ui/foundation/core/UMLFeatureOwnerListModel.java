@@ -33,28 +33,25 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  */
 public class UMLFeatureOwnerListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLFeatureOwnerListModel.
-     */
-    public UMLFeatureOwnerListModel() {
-	super("owner");
-    }
+  /** Constructor for UMLFeatureOwnerListModel. */
+  public UMLFeatureOwnerListModel() {
+    super("owner");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-	if (getTarget() != null) {
-	    removeAllElements();
-	    addElement(Model.getFacade().getOwner(getTarget()));
-	}
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (getTarget() != null) {
+      removeAllElements();
+      addElement(Model.getFacade().getOwner(getTarget()));
     }
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object o) {
-	return Model.getFacade().getOwner(getTarget()) == o;
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object o) {
+    return Model.getFacade().getOwner(getTarget()) == o;
+  }
 }

@@ -25,7 +25,6 @@
 package org.argouml.sequence2.diagram;
 
 import java.util.Map;
-
 import org.apache.log4j.Logger;
 import org.argouml.model.Model;
 import org.argouml.uml.CommentEdge;
@@ -42,62 +41,54 @@ import org.tigris.gef.presentation.FigEdge;
 import org.tigris.gef.presentation.FigNode;
 
 /**
- *
  * @author penyaskito
  */
 class SequenceDiagramRenderer extends UmlDiagramRenderer {
-    
-    /**
-     * Logger.
-     */
-    private static final Logger LOG =
-        Logger.getLogger(SequenceDiagramRenderer.class);
 
-    /*
-     * @see org.tigris.gef.graph.GraphNodeRenderer#getFigNodeFor(
-     *         org.tigris.gef.graph.GraphModel, org.tigris.gef.base.Layer,
-     *         java.lang.Object, java.util.Map)
-     */
-    public FigNode getFigNodeFor(GraphModel gm, Layer lay, Object node,
-                                 Map styleAttributes) {
-        FigNode result = null;
-        // Although not generally true for GEF, for Argo we know that the layer
-        // is a LayerPerspective which knows the associated diagram
-        Diagram diag = ((LayerPerspective) lay).getDiagram(); 
-        if (diag instanceof UMLDiagram
-                && ((UMLDiagram) diag).doesAccept(node)) {
-            result = ((UMLDiagram) diag).drop(node, null);
-        } else {
-            return null;
-        }
-        LOG.debug("SequenceDiagramRenderer getFigNodeFor " + result);
-        lay.add(result);
-        return result;       
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(SequenceDiagramRenderer.class);
+
+  /*
+   * @see org.tigris.gef.graph.GraphNodeRenderer#getFigNodeFor(
+   *         org.tigris.gef.graph.GraphModel, org.tigris.gef.base.Layer,
+   *         java.lang.Object, java.util.Map)
+   */
+  public FigNode getFigNodeFor(GraphModel gm, Layer lay, Object node, Map styleAttributes) {
+    FigNode result = null;
+    // Although not generally true for GEF, for Argo we know that the layer
+    // is a LayerPerspective which knows the associated diagram
+    Diagram diag = ((LayerPerspective) lay).getDiagram();
+    if (diag instanceof UMLDiagram && ((UMLDiagram) diag).doesAccept(node)) {
+      result = ((UMLDiagram) diag).drop(node, null);
+    } else {
+      return null;
     }
+    LOG.debug("SequenceDiagramRenderer getFigNodeFor " + result);
+    lay.add(result);
+    return result;
+  }
 
-    /*
-     * @see org.tigris.gef.graph.GraphEdgeRenderer#getFigEdgeFor(
-     *         org.tigris.gef.graph.GraphModel, org.tigris.gef.base.Layer,
-     *         java.lang.Object, java.util.Map)
-     */
-    public FigEdge getFigEdgeFor(GraphModel gm, Layer lay, Object edge,
-                                 Map styleAttributes) {
-        FigEdge figEdge = null;
-        
-        assert lay instanceof LayerPerspective;
-        ArgoDiagram diag = (ArgoDiagram) ((LayerPerspective) lay).getDiagram();
-        DiagramSettings settings = diag.getDiagramSettings();
-        
-        if (edge instanceof CommentEdge) {
-            figEdge = new FigEdgeNote(edge, settings);
-        } else if (Model.getFacade().isAMessage(edge)) {
-            figEdge = new FigMessage(edge, settings);
-        } else {
-            figEdge = getFigEdgeFor(edge, styleAttributes);
-        }       
-        setPorts(lay, figEdge);
-        lay.add(figEdge);
-        return figEdge;
+  /*
+   * @see org.tigris.gef.graph.GraphEdgeRenderer#getFigEdgeFor(
+   *         org.tigris.gef.graph.GraphModel, org.tigris.gef.base.Layer,
+   *         java.lang.Object, java.util.Map)
+   */
+  public FigEdge getFigEdgeFor(GraphModel gm, Layer lay, Object edge, Map styleAttributes) {
+    FigEdge figEdge = null;
+
+    assert lay instanceof LayerPerspective;
+    ArgoDiagram diag = (ArgoDiagram) ((LayerPerspective) lay).getDiagram();
+    DiagramSettings settings = diag.getDiagramSettings();
+
+    if (edge instanceof CommentEdge) {
+      figEdge = new FigEdgeNote(edge, settings);
+    } else if (Model.getFacade().isAMessage(edge)) {
+      figEdge = new FigMessage(edge, settings);
+    } else {
+      figEdge = getFigEdgeFor(edge, styleAttributes);
     }
-
+    setPorts(lay, figEdge);
+    lay.add(figEdge);
+    return figEdge;
+  }
 }

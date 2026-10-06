@@ -27,40 +27,46 @@ package org.argouml.swingext;
 import java.awt.Dimension;
 import javax.swing.JPanel;
 
-/** A Swing panel that displays nothing, but takes up a specified
- *  amount of space.  Used to make panels with GridBagLayouts look
- *  better.
+/**
+ * A Swing panel that displays nothing, but takes up a specified amount of space. Used to make
+ * panels with GridBagLayouts look better.
  */
 public class SpacerPanel extends JPanel {
 
-    private int w = 10, h = 10;
+  private int w = 10, h = 10;
 
-    /**
-     * The constructor.
-     *
-     */
-    public SpacerPanel() { }
+  /** The constructor. */
+  public SpacerPanel() {}
 
-    /**
-     * The constructor.
-     *
-     * @param width the width
-     * @param height the height
-     */
-    public SpacerPanel(int width, int height) { w = width; h = height; }
+  /**
+   * The constructor.
+   *
+   * @param width the width
+   * @param height the height
+   */
+  public SpacerPanel(int width, int height) {
+    w = width;
+    h = height;
+  }
 
-    /**
-     * @see java.awt.Component#getMinimumSize()
-     */
-    public Dimension getMinimumSize() { return new Dimension(w, h); }
+  /**
+   * @see java.awt.Component#getMinimumSize()
+   */
+  public Dimension getMinimumSize() {
+    return new Dimension(w, h);
+  }
 
-    /**
-     * @see java.awt.Component#getPreferredSize()
-     */
-    public Dimension getPreferredSize() { return new Dimension(w, h); }
+  /**
+   * @see java.awt.Component#getPreferredSize()
+   */
+  public Dimension getPreferredSize() {
+    return new Dimension(w, h);
+  }
 
-    /**
-     * @see java.awt.Component#getSize()
-     */
-    public Dimension getSize() { return new Dimension(w, h); }
+  /**
+   * @see java.awt.Component#getSize()
+   */
+  public Dimension getSize() {
+    return new Dimension(w, h);
+  }
 } /* end class SpacerPanel */

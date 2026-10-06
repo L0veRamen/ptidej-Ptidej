@@ -31,24 +31,20 @@ import org.argouml.model.Model;
  * @since Nov 2, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class UMLAssociationEndTypeComboBoxModel
-    extends UMLStructuralFeatureTypeComboBoxModel {
+public class UMLAssociationEndTypeComboBoxModel extends UMLStructuralFeatureTypeComboBoxModel {
 
-    /**
-     * Constructor for UMLAssociationEndTypeComboBoxModel.
-     */
-    public UMLAssociationEndTypeComboBoxModel() {
-        super();
+  /** Constructor for UMLAssociationEndTypeComboBoxModel. */
+  public UMLAssociationEndTypeComboBoxModel() {
+    super();
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
+   */
+  protected Object getSelectedModelElement() {
+    if (getTarget() != null) {
+      return Model.getFacade().getType(getTarget());
     }
-
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
-     */
-    protected Object getSelectedModelElement() {
-	if (getTarget() != null) {
-            return Model.getFacade().getType(getTarget());
-        }
-        return null;
-    }
-
+    return null;
+  }
 }

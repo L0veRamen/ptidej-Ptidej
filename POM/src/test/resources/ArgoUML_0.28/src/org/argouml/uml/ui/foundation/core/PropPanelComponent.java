@@ -26,7 +26,6 @@ package org.argouml.uml.ui.foundation.core;
 
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.uml.ui.ActionNavigateNamespace;
 import org.argouml.uml.ui.UMLLinkedList;
@@ -39,48 +38,32 @@ import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
  */
 public class PropPanelComponent extends PropPanelClassifier {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = 1551050121647608478L;
+  /** The serial version. */
+  private static final long serialVersionUID = 1551050121647608478L;
 
-    /**
-     * Construct a property panel for Component elements.
-     */
-    public PropPanelComponent() {
-        super("label.component", lookupIcon("Component"));
-        addField(Translator.localize("label.name"), getNameTextField());
-        addField(Translator.localize("label.namespace"),
-                getNamespaceSelector());
-        add(getModifiersPanel());
+  /** Construct a property panel for Component elements. */
+  public PropPanelComponent() {
+    super("label.component", lookupIcon("Component"));
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.namespace"), getNamespaceSelector());
+    add(getModifiersPanel());
 
-        addSeparator();
+    addSeparator();
 
-        addField(Translator.localize("label.generalizations"),
-                getGeneralizationScroll());
-        addField(Translator.localize("label.specializations"),
-                getSpecializationScroll());
+    addField(Translator.localize("label.generalizations"), getGeneralizationScroll());
+    addField(Translator.localize("label.specializations"), getSpecializationScroll());
 
-        addSeparator();
+    addSeparator();
 
-        addField(Translator.localize("label.client-dependencies"),
-                getClientDependencyScroll());
-        addField(Translator.localize("label.supplier-dependencies"),
-                getSupplierDependencyScroll());
+    addField(Translator.localize("label.client-dependencies"), getClientDependencyScroll());
+    addField(Translator.localize("label.supplier-dependencies"), getSupplierDependencyScroll());
 
-        JList resList = new UMLLinkedList(new UMLComponentResidentListModel());
-        addField(Translator.localize("label.residents"),
-                new JScrollPane(resList));
+    JList resList = new UMLLinkedList(new UMLComponentResidentListModel());
+    addField(Translator.localize("label.residents"), new JScrollPane(resList));
 
-        addAction(new ActionNavigateNamespace());
-        addAction(getActionNewReception());
-        addAction(new ActionNewStereotype());
-        addAction(getDeleteAction());
-
-    }
-
-
+    addAction(new ActionNavigateNamespace());
+    addAction(getActionNewReception());
+    addAction(new ActionNewStereotype());
+    addAction(getDeleteAction());
+  }
 }
-
-
-

@@ -35,11 +35,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
-
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
-
 import org.argouml.application.api.Configuration;
 import org.argouml.application.api.ConfigurationKey;
 import org.argouml.i18n.Translator;
@@ -47,342 +45,304 @@ import org.argouml.kernel.Project;
 import org.argouml.ui.ProjectBrowser;
 import org.tigris.gef.util.UnexpectedException;
 
-
 /**
- * This class shall be the only one that knows in which file formats
- * ArgoUML is able to save and load. And all that knowledge is
- * concentrated in the constructor... <p>
+ * This class shall be the only one that knows in which file formats ArgoUML is able to save and
+ * load. And all that knowledge is concentrated in the constructor...
  *
- * The PersisterManager manages the list of persisters. <p>
+ * <p>The PersisterManager manages the list of persisters.
  *
- * This class is a singleton, since this allows external modules to
- * add extra persisters to the ArgoUML application.
+ * <p>This class is a singleton, since this allows external modules to add extra persisters to the
+ * ArgoUML application.
  *
  * @author mvw@tigris.org
  */
 public class PersistenceManager {
-    /**
-     * The singleton instance.
-     */
-    private static final PersistenceManager INSTANCE =
-        new PersistenceManager();
+  /** The singleton instance. */
+  private static final PersistenceManager INSTANCE = new PersistenceManager();
 
-    private AbstractFilePersister defaultPersister;
-    private List otherPersisters = new ArrayList();
-    private UmlFilePersister quickViewDump;
-    private XmiFilePersister xmiPersister;
-    private ZipFilePersister zipPersister;
+  private AbstractFilePersister defaultPersister;
+  private List otherPersisters = new ArrayList();
+  private UmlFilePersister quickViewDump;
+  private XmiFilePersister xmiPersister;
+  private ZipFilePersister zipPersister;
 
-    /**
-     * The configuration key for the "save project" file location.
-     */
-    public static final ConfigurationKey KEY_SAVE_PROJECT_PATH =
-        Configuration.makeKey("project", "save", "path");
-    /**
-     * The configuration key for the "open project" file location.
-     */
-    public static final ConfigurationKey KEY_OPEN_PROJECT_PATH =
-        Configuration.makeKey("project", "open", "path");
+  /** The configuration key for the "save project" file location. */
+  public static final ConfigurationKey KEY_SAVE_PROJECT_PATH =
+      Configuration.makeKey("project", "save", "path");
 
-    /**
-     * The configuration key for the "export xmi" file location.
-     */
-    public static final ConfigurationKey KEY_EXPORT_XMI_PATH =
-        Configuration.makeKey("xmi", "export", "path");
+  /** The configuration key for the "open project" file location. */
+  public static final ConfigurationKey KEY_OPEN_PROJECT_PATH =
+      Configuration.makeKey("project", "open", "path");
 
-    /**
-     * The configuration key for the "import xmi" file location.
-     */
-    public static final ConfigurationKey KEY_IMPORT_XMI_PATH =
-        Configuration.makeKey("xmi", "import", "path");
-    
-    /**
-     * Create the default diagram persister.
-     */
-    private DiagramMemberFilePersister diagramMemberFilePersister
-        = new DiagramMemberFilePersister();
+  /** The configuration key for the "export xmi" file location. */
+  public static final ConfigurationKey KEY_EXPORT_XMI_PATH =
+      Configuration.makeKey("xmi", "export", "path");
 
-    /**
-     * @return returns the singleton
-     */
-    public static PersistenceManager getInstance() {
-        return INSTANCE;
+  /** The configuration key for the "import xmi" file location. */
+  public static final ConfigurationKey KEY_IMPORT_XMI_PATH =
+      Configuration.makeKey("xmi", "import", "path");
+
+  /** Create the default diagram persister. */
+  private DiagramMemberFilePersister diagramMemberFilePersister = new DiagramMemberFilePersister();
+
+  /**
+   * @return returns the singleton
+   */
+  public static PersistenceManager getInstance() {
+    return INSTANCE;
+  }
+
+  /** The constructor. */
+  private PersistenceManager() {
+    // These are the file formats I know about:
+    defaultPersister = new ZargoFilePersister();
+    quickViewDump = new UmlFilePersister();
+    otherPersisters.add(quickViewDump);
+    xmiPersister = new XmiFilePersister();
+    zipPersister = new ZipFilePersister();
+    /* Exclude the XMIPersister as an otherPersister,
+     * since it does not retain
+     * the complete project after a save/load cycle.
+     * See issue 3099. */
+    //        otherPersisters.add(xmiPersister);
+  }
+
+  /**
+   * This function allows to add new persisters. This can be done e.g. by plugins/modules.
+   *
+   * @param fp the persister
+   */
+  public void register(AbstractFilePersister fp) {
+    otherPersisters.add(fp);
+  }
+
+  /**
+   * @param name the filename
+   * @return the persister
+   */
+  public AbstractFilePersister getPersisterFromFileName(String name) {
+    if (defaultPersister.isFileExtensionApplicable(name)) {
+      return defaultPersister;
     }
+    if (xmiPersister.isFileExtensionApplicable(name)) {
+      return xmiPersister;
+    }
+    if (zipPersister.isFileExtensionApplicable(name)) {
+      return zipPersister;
+    }
+    Iterator iter = otherPersisters.iterator();
+    while (iter.hasNext()) {
+      AbstractFilePersister persister = (AbstractFilePersister) iter.next();
+      if (persister.isFileExtensionApplicable(name)) {
+        return persister;
+      }
+    }
+    return null;
+  }
 
-    /**
-     * The constructor.
-     */
-    private PersistenceManager() {
-        // These are the file formats I know about:
-        defaultPersister = new ZargoFilePersister();
-        quickViewDump = new UmlFilePersister();
-        otherPersisters.add(quickViewDump);
-        xmiPersister = new XmiFilePersister();
-        zipPersister = new ZipFilePersister();
-        /* Exclude the XMIPersister as an otherPersister, 
-         * since it does not retain 
-         * the complete project after a save/load cycle.
-         * See issue 3099. */
-//        otherPersisters.add(xmiPersister);
+  /**
+   * @param chooser the filechooser of which the filters will be set
+   */
+  public void setSaveFileChooserFilters(JFileChooser chooser) {
+    chooser.addChoosableFileFilter(defaultPersister);
+    Iterator iter = otherPersisters.iterator();
+    while (iter.hasNext()) {
+      chooser.addChoosableFileFilter((AbstractFilePersister) iter.next());
     }
+    chooser.setFileFilter(defaultPersister);
+  }
 
-    /**
-     * This function allows to add new persisters. This can be done e.g.
-     * by plugins/modules.
-     *
-     * @param fp the persister
-     */
-    public void register(AbstractFilePersister fp) {
-        otherPersisters.add(fp);
+  /**
+   * @param chooser the filechooser of which the filters will be set
+   */
+  public void setOpenFileChooserFilter(JFileChooser chooser) {
+    MultitypeFileFilter mf = new MultitypeFileFilter();
+    mf.add(defaultPersister);
+    chooser.addChoosableFileFilter(mf);
+    chooser.addChoosableFileFilter(defaultPersister);
+    Iterator iter = otherPersisters.iterator();
+    while (iter.hasNext()) {
+      AbstractFilePersister ff = (AbstractFilePersister) iter.next();
+      mf.add(ff);
+      chooser.addChoosableFileFilter(ff);
     }
+    chooser.setFileFilter(mf);
+  }
 
-    /**
-     * @param name the filename
-     * @return the persister
-     */
-    public AbstractFilePersister getPersisterFromFileName(String name) {
-        if (defaultPersister.isFileExtensionApplicable(name)) {
-            return defaultPersister;
-        }
-        if (xmiPersister.isFileExtensionApplicable(name)) {
-            return xmiPersister;
-        }
-        if (zipPersister.isFileExtensionApplicable(name)) {
-            return zipPersister;
-        }
-        Iterator iter = otherPersisters.iterator();
-        while (iter.hasNext()) {
-            AbstractFilePersister persister =
-                (AbstractFilePersister) iter.next();
-            if (persister.isFileExtensionApplicable(name)) {
-                return persister;
-            }
-        }
-        return null;
-    }
+  /**
+   * @param chooser the filechooser of which the filters will be set
+   */
+  public void setXmiFileChooserFilter(JFileChooser chooser) {
+    chooser.addChoosableFileFilter(xmiPersister);
+    chooser.setFileFilter(xmiPersister);
+  }
 
-    /**
-     * @param chooser the filechooser of which the filters will be set
-     */
-    public void setSaveFileChooserFilters(JFileChooser chooser) {
-        chooser.addChoosableFileFilter(defaultPersister);
-        Iterator iter = otherPersisters.iterator();
-        while (iter.hasNext()) {
-            chooser.addChoosableFileFilter((AbstractFilePersister) iter.next());
-        }
-        chooser.setFileFilter(defaultPersister);
-    }
+  /**
+   * @return the extension of the default persister (just the text, not the ".")
+   */
+  public String getDefaultExtension() {
+    return defaultPersister.getExtension();
+  }
 
-    /**
-     * @param chooser the filechooser of which the filters will be set
-     */
-    public void setOpenFileChooserFilter(JFileChooser chooser) {
-        MultitypeFileFilter mf = new MultitypeFileFilter();
-        mf.add(defaultPersister);
-        chooser.addChoosableFileFilter(mf);
-        chooser.addChoosableFileFilter(defaultPersister);
-        Iterator iter = otherPersisters.iterator();
-        while (iter.hasNext()) {
-            AbstractFilePersister ff = (AbstractFilePersister) iter.next();
-            mf.add(ff);
-            chooser.addChoosableFileFilter(ff);
-        }
-        chooser.setFileFilter(mf);
-    }
+  /**
+   * @return the extension of the xmi persister (just the text, not the ".")
+   */
+  public String getXmiExtension() {
+    return xmiPersister.getExtension();
+  }
 
-    /**
-     * @param chooser the filechooser of which the filters will be set
-     */
-    public void setXmiFileChooserFilter(JFileChooser chooser) {
-        chooser.addChoosableFileFilter(xmiPersister);
-        chooser.setFileFilter(xmiPersister);
+  /**
+   * @param in the input file or path name which may or may not have a recognised extension
+   * @return the amended file or pathname, guaranteed to have a recognised extension
+   */
+  public String fixExtension(String in) {
+    if (getPersisterFromFileName(in) == null) {
+      in += "." + getDefaultExtension();
     }
+    return in;
+  }
 
-    /**
-     * @return the extension of the default persister
-     *         (just the text, not the ".")
-     */
-    public String getDefaultExtension() {
-        return defaultPersister.getExtension();
+  /**
+   * @param in the input file or path name which may or may not have a "xmi" extension
+   * @return the amended file or pathname, guaranteed to have a "xmi" extension
+   */
+  public String fixXmiExtension(String in) {
+    if (getPersisterFromFileName(in) != xmiPersister) {
+      in += "." + getXmiExtension();
     }
+    return in;
+  }
 
-    /**
-     * @return the extension of the xmi persister
-     *         (just the text, not the ".")
-     */
-    public String getXmiExtension() {
-        return xmiPersister.getExtension();
+  /**
+   * @param in the input url which may or may not have a recognised extension
+   * @return the url with default extension added, if it did not have a valid extension yet
+   */
+  public URL fixUrlExtension(URL in) {
+    URL newUrl;
+    String n = in.toString();
+    n = fixExtension(n);
+    try {
+      newUrl = new URL(n);
+    } catch (java.net.MalformedURLException e) {
+      throw new UnexpectedException(e);
     }
-    
-    /**
-     * @param in the input file or path name which may or may not
-     *           have a recognised extension
-     * @return the amended file or pathname, guaranteed to have
-     *         a recognised extension
-     */
-    public String fixExtension(String in) {
-        if (getPersisterFromFileName(in) == null) {
-            in += "." + getDefaultExtension();
-        }
-        return in;
-    }
+    return newUrl;
+  }
 
-    /**
-     * @param in the input file or path name which may or may not
-     *           have a "xmi" extension
-     * @return the amended file or pathname, guaranteed to have
-     *         a "xmi" extension
-     */
-    public String fixXmiExtension(String in) {
-        if (getPersisterFromFileName(in) != xmiPersister) {
-            in += "." + getXmiExtension();
-        }
-        return in;
+  /**
+   * Find the base name of the given filename.
+   *
+   * <p>This is the name minus any valid file extension. Invalid extensions are left alone.
+   *
+   * @param n the given file name
+   * @return the name (a String) without extension
+   */
+  public String getBaseName(String n) {
+    AbstractFilePersister p = getPersisterFromFileName(n);
+    if (p == null) {
+      return n;
     }
+    int extLength = p.getExtension().length() + 1;
+    return n.substring(0, n.length() - extLength);
+  }
 
-    
-    /**
-     * @param in the input url which may or may not have a recognised extension
-     * @return the url with default extension added,
-     *         if it did not have a valid extension yet
-     */
-    public URL fixUrlExtension(URL in) {
-        URL newUrl;
-        String n = in.toString();
-        n = fixExtension(n);
-        try {
-            newUrl = new URL(n);
-        } catch (java.net.MalformedURLException e) {
-            throw new UnexpectedException(e);
-        }
-        return newUrl;
+  /**
+   * Generates a String dump of the current model for quick viewing.
+   *
+   * @param project The project to generate.
+   * @return The whole model in a String.
+   */
+  public String getQuickViewDump(Project project) {
+    OutputStream stream = new ByteArrayOutputStream();
+    try {
+      quickViewDump.writeProject(project, stream);
+    } catch (SaveException e) {
+      // If anything goes wrong return the stack
+      // trace as a string so that we get some
+      // useful feedback.
+      e.printStackTrace(new PrintStream(stream));
     }
+    return stream.toString();
+  }
 
-    /**
-     * Find the base name of the given filename.<p>
-     *
-     * This is the name minus any valid file extension.
-     * Invalid extensions are left alone.
-     *
-     * @param n the given file name
-     * @return the name (a String) without extension
-     */
-    public String getBaseName(String n) {
-        AbstractFilePersister p = getPersisterFromFileName(n);
-        if (p == null) {
-            return n;
-        }
-        int extLength = p.getExtension().length() + 1;
-        return n.substring(0, n.length() - extLength);
-    }
+  /**
+   * Get the file persister for diagrams.
+   *
+   * @return the diagram file persister.
+   */
+  DiagramMemberFilePersister getDiagramMemberFilePersister() {
+    return diagramMemberFilePersister;
+  }
 
-    /**
-     * Generates a String dump of the current model for quick viewing.
-     *
-     * @param project The project to generate.
-     * @return The whole model in a String.
-     */
-    public String getQuickViewDump(Project project) {
-        OutputStream stream = new ByteArrayOutputStream();
-        try {
-            quickViewDump.writeProject(project, stream);
-        } catch (SaveException e) {
-            // If anything goes wrong return the stack
-            // trace as a string so that we get some
-            // useful feedback.
-            e.printStackTrace(new PrintStream(stream));
-        }
-        return stream.toString();
-    }
+  /**
+   * Set an alternative file persister for diagrams.
+   *
+   * @param persister the persister to use instead of the default
+   */
+  public void setDiagramMemberFilePersister(DiagramMemberFilePersister persister) {
+    diagramMemberFilePersister = persister;
+  }
 
-    /**
-     * Get the file persister for diagrams.
-     *
-     * @return the diagram file persister.
-     */
-    DiagramMemberFilePersister getDiagramMemberFilePersister() {
-    	return diagramMemberFilePersister;
+  /**
+   * Returns true if we are allowed to overwrite the given file.
+   *
+   * @param overwrite if true, then the user is not asked
+   * @param file the given file
+   * @return true if we are allowed to overwrite the given file
+   */
+  public boolean confirmOverwrite(boolean overwrite, File file) {
+    if (file.exists() && !overwrite) {
+      String sConfirm =
+          MessageFormat.format(
+              Translator.localize("optionpane.confirm-overwrite"), new Object[] {file});
+      int nResult =
+          JOptionPane.showConfirmDialog(
+              ProjectBrowser.getInstance(),
+              sConfirm,
+              Translator.localize("optionpane.confirm-overwrite-title"),
+              JOptionPane.YES_NO_OPTION,
+              JOptionPane.QUESTION_MESSAGE);
+      if (nResult != JOptionPane.YES_OPTION) {
+        return false;
+      }
     }
-
-    /**
-     * Set an alternative file persister for diagrams.
-     *
-     * @param persister the persister to use instead of the default
-     */
-    public void setDiagramMemberFilePersister(
-            DiagramMemberFilePersister persister) {
-    	diagramMemberFilePersister = persister;
-    }
-    
-    /**
-     * Returns true if we are allowed to overwrite the given file.
-     * 
-     * @param overwrite if true, then the user is not asked
-     * @param file the given file
-     * @return true if we are allowed to overwrite the given file
-     */
-    public boolean confirmOverwrite(boolean overwrite, File file) {
-        if (file.exists() && !overwrite) {
-            String sConfirm =
-                MessageFormat.format(Translator.localize(
-                "optionpane.confirm-overwrite"),
-                new Object[] {file});
-            int nResult =
-                JOptionPane.showConfirmDialog(
-                        ProjectBrowser.getInstance(), 
-                        sConfirm,
-                        Translator.localize(
-                            "optionpane.confirm-overwrite-title"),
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE);
-            if (nResult != JOptionPane.YES_OPTION) {
-                return false;
-            }
-        }
-        return true;
-    }
+    return true;
+  }
 }
 
-/**
- * Composite file filter which will accept any
- * file type added to it.
- */
+/** Composite file filter which will accept any file type added to it. */
 class MultitypeFileFilter extends FileFilter {
-    Vector filters;
-    String desc;
+  Vector filters;
+  String desc;
 
-    public MultitypeFileFilter() {
-        super();
-        filters = new Vector();
-    }
+  public MultitypeFileFilter() {
+    super();
+    filters = new Vector();
+  }
 
-    public boolean add(AbstractFilePersister filter) {
-        filters.add(filter);
-        desc = ((desc == null) 
-                ? "" 
-                : desc + ", ") 
-            + "*." + filter.getExtension();
-        return false;
-    }
+  public boolean add(AbstractFilePersister filter) {
+    filters.add(filter);
+    desc = ((desc == null) ? "" : desc + ", ") + "*." + filter.getExtension();
+    return false;
+  }
 
-    public Collection getAll() {
-        return filters;
-    }
-    
-    // Accept any file that any of our filters will accept
-    public boolean accept(File arg0) {
-        Iterator it = filters.iterator();
-        while (it.hasNext()) {
-            if ( ((FileFilter)it.next()).accept(arg0) ) {
-                return true;
-            }
-        }
-        return false;
-    }
+  public Collection getAll() {
+    return filters;
+  }
 
-    public String getDescription() {
-        Object[] s = {desc};
-        return Translator.messageFormat("filechooser.all-types-desc", s);
+  // Accept any file that any of our filters will accept
+  public boolean accept(File arg0) {
+    Iterator it = filters.iterator();
+    while (it.hasNext()) {
+      if (((FileFilter) it.next()).accept(arg0)) {
+        return true;
+      }
     }
+    return false;
+  }
 
+  public String getDescription() {
+    Object[] s = {desc};
+    return Translator.messageFormat("filechooser.all-types-desc", s);
+  }
 }

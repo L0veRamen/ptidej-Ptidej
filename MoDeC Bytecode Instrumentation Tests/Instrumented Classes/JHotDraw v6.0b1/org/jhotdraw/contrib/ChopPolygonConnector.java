@@ -16,28 +16,26 @@ import org.jhotdraw.framework.*;
 import org.jhotdraw.standard.*;
 
 /**
- * A ChopPolygonConnector locates a connection point by
- * chopping the connection at the polygon boundary.
+ * A ChopPolygonConnector locates a connection point by chopping the connection at the polygon
+ * boundary.
  *
  * @author Erich Gamma
  * @version <$CURRENT_VERSION$>
  */
 public class ChopPolygonConnector extends ChopBoxConnector {
 
-	/*
-	 * Serialization support.
-	 */
-	private static final long serialVersionUID = -156024908227796826L;
+  /*
+   * Serialization support.
+   */
+  private static final long serialVersionUID = -156024908227796826L;
 
-	public ChopPolygonConnector() {
-	}
+  public ChopPolygonConnector() {}
 
-	public ChopPolygonConnector(Figure owner) {
-		super(owner);
-	}
+  public ChopPolygonConnector(Figure owner) {
+    super(owner);
+  }
 
-	protected Point chop(Figure target, Point from) {
-		return ((PolygonFigure)target).chop(from);
-	}
+  protected Point chop(Figure target, Point from) {
+    return ((PolygonFigure) target).chop(from);
+  }
 }
-

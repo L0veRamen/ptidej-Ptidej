@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -16,25 +16,21 @@ import util.multilingual.MultilingualManager;
 
 /**
  * @author Yann-Gaël Guéhéneuc
- * @since  2004/12/03
+ * @since 2004/12/03
  */
 public class Problem extends ptidej.solver.java.Problem {
-	private static boolean DisplayReleaseData = true;
+  private static boolean DisplayReleaseData = true;
 
-	public Problem(final int maxWeight, final String name) {
-		this(maxWeight, name, new ArrayList());
-	}
-	public Problem(
-		final int maxWeight,
-		final String name,
-		final List allEntities) {
+  public Problem(final int maxWeight, final String name) {
+    this(maxWeight, name, new ArrayList());
+  }
 
-		super(maxWeight, name, allEntities);
-		if (Problem.DisplayReleaseData) {
-			Problem.DisplayReleaseData = false;
-			System.out.println(MultilingualManager.getString(
-				"USING_METRICS",
-				Problem.class));
-		}
-	}
+  public Problem(final int maxWeight, final String name, final List allEntities) {
+
+    super(maxWeight, name, allEntities);
+    if (Problem.DisplayReleaseData) {
+      Problem.DisplayReleaseData = false;
+      System.out.println(MultilingualManager.getString("USING_METRICS", Problem.class));
+    }
+  }
 }

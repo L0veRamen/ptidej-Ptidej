@@ -10,6 +10,14 @@
  ******************************************************************************/
 package ptidej.viewer.extension.repository;
 
+import fr.emn.oadymppac.graph.AdjacencyMatrixRowColumn;
+import fr.emn.oadymppac.graph.GraphLoader;
+import fr.emn.oadymppac.graph.NamedGraphDelegator;
+import fr.emn.oadymppac.graph.RandomGraphLoader;
+import fr.emn.oadymppac.graph.WeightedEdgeWeight;
+import fr.emn.oadymppac.widgets.AdjacencyMatrixControlPanel;
+import fr.emn.oadymppac.widgets.GLAdjacencyMatrix;
+import fr.emn.oadymppac.widgets.JClusterManipulator;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -25,104 +33,96 @@ import ptidej.viewer.extension.IViewerExtension;
 import salvo.jesus.graph.DirectedGraphImpl;
 import util.help.IHelpURL;
 import util.io.ProxyConsole;
-import fr.emn.oadymppac.graph.AdjacencyMatrixRowColumn;
-import fr.emn.oadymppac.graph.GraphLoader;
-import fr.emn.oadymppac.graph.NamedGraphDelegator;
-import fr.emn.oadymppac.graph.RandomGraphLoader;
-import fr.emn.oadymppac.graph.WeightedEdgeWeight;
-import fr.emn.oadymppac.widgets.AdjacencyMatrixControlPanel;
-import fr.emn.oadymppac.widgets.GLAdjacencyMatrix;
-import fr.emn.oadymppac.widgets.JClusterManipulator;
 
-public final class OADymPPaC extends JFrame implements IViewerExtension,
-		IHelpURL {
+public final class OADymPPaC extends JFrame implements IViewerExtension, IHelpURL {
 
-	private static final long serialVersionUID = 1L;
-	public OADymPPaC() {
-		this.addWindowListener(new WindowAdapter() {
-			public void windowClosed(final WindowEvent e) {
-				OADymPPaC.this.setVisible(false);
-			}
-			public void windowClosing(final WindowEvent e) {
-				this.windowClosed(e);
-			}
-		});
-	}
-	private void createFrame(final IRepresentation aRepresentation) {
-		this.setVisible(false);
-		this.setTitle(this.getName());
-		this.getContentPane().removeAll();
+  private static final long serialVersionUID = 1L;
 
-		final NamedGraphDelegator graph =
-			new NamedGraphDelegator(new DirectedGraphImpl());
+  public OADymPPaC() {
+    this.addWindowListener(
+        new WindowAdapter() {
+          public void windowClosed(final WindowEvent e) {
+            OADymPPaC.this.setVisible(false);
+          }
 
-		final IWalker walker = new OADymPPaCGenerator();
-		aRepresentation.getSourceModel().walk(walker);
+          public void windowClosing(final WindowEvent e) {
+            this.windowClosed(e);
+          }
+        });
+  }
 
-		final String path =
-			System.getProperty("user.dir") + File.separatorChar + "Temp.graph";
-		try {
-			// TODO Use ProxyDisk
-			final FileWriter writer = new FileWriter(path);
-			writer.write(walker.getResult().toString());
-			writer.close();
+  private void createFrame(final IRepresentation aRepresentation) {
+    this.setVisible(false);
+    this.setTitle(this.getName());
+    this.getContentPane().removeAll();
 
-			final GraphLoader gl = new RandomGraphLoader();
-			gl.load(new URL("file:" + path), graph);
-		}
-		catch (final IOException ioe) {
-			ioe.printStackTrace(ProxyConsole.getInstance().errorOutput());
-		}
+    final NamedGraphDelegator graph = new NamedGraphDelegator(new DirectedGraphImpl());
 
-		final AdjacencyMatrixRowColumn row =
-			new AdjacencyMatrixRowColumn(graph);
-		row.populateMatrix();
+    final IWalker walker = new OADymPPaCGenerator();
+    aRepresentation.getSourceModel().walk(walker);
 
-		final AdjacencyMatrixRowColumn column =
-			new AdjacencyMatrixRowColumn(graph);
-		column.populateMatrix();
+    final String path = System.getProperty("user.dir") + File.separatorChar + "Temp.graph";
+    try {
+      // TODO Use ProxyDisk
+      final FileWriter writer = new FileWriter(path);
+      writer.write(walker.getResult().toString());
+      writer.close();
 
-		final GLAdjacencyMatrix glmatrix =
-			new GLAdjacencyMatrix(row, column, 600, 800);
-		glmatrix.setWeightGetter(new WeightedEdgeWeight(20));
+      final GraphLoader gl = new RandomGraphLoader();
+      gl.load(new URL("file:" + path), graph);
+    } catch (final IOException ioe) {
+      ioe.printStackTrace(ProxyConsole.getInstance().errorOutput());
+    }
 
-		final AdjacencyMatrixControlPanel control =
-			new AdjacencyMatrixControlPanel(
-				glmatrix,
-				new JClusterManipulator(),
-				new JClusterManipulator());
-		glmatrix.setVisibleEdges(control.getVisibleEdgesModel());
+    final AdjacencyMatrixRowColumn row = new AdjacencyMatrixRowColumn(graph);
+    row.populateMatrix();
 
-		final JSplitPane mainSplitPane =
-			new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-		this.getContentPane().add(mainSplitPane);
-		mainSplitPane.setLeftComponent(glmatrix);
-		mainSplitPane.setContinuousLayout(false);
-		mainSplitPane.setResizeWeight(0.8);
-		mainSplitPane.setRightComponent(control);
-		mainSplitPane.setDividerLocation(600);
-		mainSplitPane.setResizeWeight(1);
-		this.pack();
-		this.setVisible(true);
-	}
-	public String getHelpURL() {
-		return "http://contraintes.inria.fr/OADymPPaC/";
-	}
-	public String getName() {
-		return "Adjacency matrix (OADymPPaC)";
-	}
-	public void invoke(final IRepresentation aRepresentation) {
-		this.createFrame(aRepresentation);
-	}
-	public void sourceModelAvailable(SourceAndGraphModelEvent aViewerEvent) {
-		if (this.isVisible()) {
-			this.createFrame(aViewerEvent.getRepresentation());
-		}
-	}
-	public void sourceModelChanged(final SourceAndGraphModelEvent aViewerEvent) {
-		this.sourceModelAvailable(aViewerEvent);
-	}
-	public void sourceModelUnavailable() {
-		// Nothing to do...
-	}
+    final AdjacencyMatrixRowColumn column = new AdjacencyMatrixRowColumn(graph);
+    column.populateMatrix();
+
+    final GLAdjacencyMatrix glmatrix = new GLAdjacencyMatrix(row, column, 600, 800);
+    glmatrix.setWeightGetter(new WeightedEdgeWeight(20));
+
+    final AdjacencyMatrixControlPanel control =
+        new AdjacencyMatrixControlPanel(
+            glmatrix, new JClusterManipulator(), new JClusterManipulator());
+    glmatrix.setVisibleEdges(control.getVisibleEdgesModel());
+
+    final JSplitPane mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+    this.getContentPane().add(mainSplitPane);
+    mainSplitPane.setLeftComponent(glmatrix);
+    mainSplitPane.setContinuousLayout(false);
+    mainSplitPane.setResizeWeight(0.8);
+    mainSplitPane.setRightComponent(control);
+    mainSplitPane.setDividerLocation(600);
+    mainSplitPane.setResizeWeight(1);
+    this.pack();
+    this.setVisible(true);
+  }
+
+  public String getHelpURL() {
+    return "http://contraintes.inria.fr/OADymPPaC/";
+  }
+
+  public String getName() {
+    return "Adjacency matrix (OADymPPaC)";
+  }
+
+  public void invoke(final IRepresentation aRepresentation) {
+    this.createFrame(aRepresentation);
+  }
+
+  public void sourceModelAvailable(SourceAndGraphModelEvent aViewerEvent) {
+    if (this.isVisible()) {
+      this.createFrame(aViewerEvent.getRepresentation());
+    }
+  }
+
+  public void sourceModelChanged(final SourceAndGraphModelEvent aViewerEvent) {
+    this.sourceModelAvailable(aViewerEvent);
+  }
+
+  public void sourceModelUnavailable() {
+    // Nothing to do...
+  }
 }

@@ -29,30 +29,28 @@ import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLCheckBox2;
 
 /**
- *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 27, 2003
  */
 public class UMLGeneralizableElementRootCheckBox extends UMLCheckBox2 {
 
-    /**
-     * Constructor for UMLGeneralizableElementRootCheckBox.
-     */
-    public UMLGeneralizableElementRootCheckBox() {
-        super(Translator.localize("checkbox.root-lc"),
-                ActionSetGeneralizableElementRoot.getInstance(), "isRoot");
-    }
+  /** Constructor for UMLGeneralizableElementRootCheckBox. */
+  public UMLGeneralizableElementRootCheckBox() {
+    super(
+        Translator.localize("checkbox.root-lc"),
+        ActionSetGeneralizableElementRoot.getInstance(),
+        "isRoot");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLCheckBox2#buildModel()
-     */
-    public void buildModel() {
-        Object target = getTarget();
-        if (target != null && Model.getFacade().isAUMLElement(target)) {
-            setSelected(Model.getFacade().isRoot(target));
-        } else {
-            setSelected(false);
-        }
+  /*
+   * @see org.argouml.uml.ui.UMLCheckBox2#buildModel()
+   */
+  public void buildModel() {
+    Object target = getTarget();
+    if (target != null && Model.getFacade().isAUMLElement(target)) {
+      setSelected(Model.getFacade().isRoot(target));
+    } else {
+      setSelected(false);
     }
-
+  }
 }

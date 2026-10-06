@@ -20,11 +20,9 @@
 
 package cx.ring.fragments;
 
-import android.app.DialogFragment;
-import cx.ring.R;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -34,70 +32,78 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import cx.ring.R;
 
 public class DropActionsChoice extends DialogFragment {
 
-    ListAdapter mAdapter;
-    private Bundle args;
-    public static final int REQUEST_TRANSFER = 10;
-    public static final int REQUEST_CONF = 20;
+  ListAdapter mAdapter;
+  private Bundle args;
+  public static final int REQUEST_TRANSFER = 10;
+  public static final int REQUEST_CONF = 20;
 
-    /**
-     * Create a new instance of CallActionsDFragment
-     */
-    public static DropActionsChoice newInstance() {
-        DropActionsChoice f = new DropActionsChoice();
-        return f;
-    }
+  /** Create a new instance of CallActionsDFragment */
+  public static DropActionsChoice newInstance() {
+    DropActionsChoice f = new DropActionsChoice();
+    return f;
+  }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
 
-        // Pick a style based on the num.
-        int style = DialogFragment.STYLE_NORMAL, theme = 0;
-        setStyle(style, theme);
-    }
+    // Pick a style based on the num.
+    int style = DialogFragment.STYLE_NORMAL, theme = 0;
+    setStyle(style, theme);
+  }
 
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        ListView rootView = new ListView(getActivity());
+  @Override
+  public Dialog onCreateDialog(Bundle savedInstanceState) {
+    ListView rootView = new ListView(getActivity());
 
-        args = getArguments();
-        mAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.drop_actions));
+    args = getArguments();
+    mAdapter =
+        new ArrayAdapter<String>(
+            getActivity(),
+            android.R.layout.simple_list_item_1,
+            getResources().getStringArray(R.array.drop_actions));
 
-        // ListView list = (ListView) rootView.findViewById(R.id.concurrent_calls);
-        rootView.setAdapter(mAdapter);
-        rootView.setOnItemClickListener(new OnItemClickListener() {
+    // ListView list = (ListView) rootView.findViewById(R.id.concurrent_calls);
+    rootView.setAdapter(mAdapter);
+    rootView.setOnItemClickListener(
+        new OnItemClickListener() {
 
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int pos, long arg3) {
-                Intent in = new Intent();
+          @Override
+          public void onItemClick(AdapterView<?> arg0, View arg1, int pos, long arg3) {
+            Intent in = new Intent();
 
-                in.putExtra("transfer", args.getParcelable("call_initial"));
-                in.putExtra("target", args.getParcelable("call_targeted"));
+            in.putExtra("transfer", args.getParcelable("call_initial"));
+            in.putExtra("target", args.getParcelable("call_targeted"));
 
-                switch (pos) {
-                case 0: // Transfer
-                    getTargetFragment().onActivityResult(REQUEST_TRANSFER, 0, in);
-                    break;
-                case 1: // Conference
-                    getTargetFragment().onActivityResult(REQUEST_CONF, 0, in);
-                    break;
-                }
-                dismiss();
-
+            switch (pos) {
+              case 0: // Transfer
+                getTargetFragment().onActivityResult(REQUEST_TRANSFER, 0, in);
+                break;
+              case 1: // Conference
+                getTargetFragment().onActivityResult(REQUEST_CONF, 0, in);
+                break;
             }
+            dismiss();
+          }
         });
 
-        final AlertDialog a = new AlertDialog.Builder(getActivity()).setView(rootView).setTitle("Choose Action")
-                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        dismiss();
-                    }
-                }).create();
+    final AlertDialog a =
+        new AlertDialog.Builder(getActivity())
+            .setView(rootView)
+            .setTitle("Choose Action")
+            .setNegativeButton(
+                android.R.string.no,
+                new DialogInterface.OnClickListener() {
+                  public void onClick(DialogInterface dialog, int whichButton) {
+                    dismiss();
+                  }
+                })
+            .create();
 
-        return a;
-    }
-
+    return a;
+  }
 }

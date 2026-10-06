@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -13,18 +13,17 @@ package padl.serialiser.test;
 import junit.framework.TestSuite;
 
 /**
- * @author Yann 
- * since   2010/04/11
+ * @author Yann since 2010/04/11
  */
 public class TestDB4OSerialiser extends TestSuite {
-	public static TestSuite suite() {
-		final TestDB4OSerialiser suite = new TestDB4OSerialiser();
-		suite.setName(TestDB4OSerialiser.class.getName());
+  public static TestSuite suite() {
+    final TestDB4OSerialiser suite = new TestDB4OSerialiser();
+    suite.setName(TestDB4OSerialiser.class.getName());
 
-		suite.addTestSuite(SanityTest.class);
-		suite.addTestSuite(JHotDraw51Test.class);
-		// suite.addTestSuite(ArgoUML020Test.class);
+    suite.addTestSuite(SanityTest.class);
+    suite.addTestSuite(JHotDraw51Test.class);
+    // suite.addTestSuite(ArgoUML020Test.class);
 
-		return suite;
-	}
+    return suite;
+  }
 }

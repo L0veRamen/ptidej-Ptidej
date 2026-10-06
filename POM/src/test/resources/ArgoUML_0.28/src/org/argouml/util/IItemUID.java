@@ -24,26 +24,24 @@
 
 package org.argouml.util;
 
-
 /**
- * Interface for objects which implement the getItemUID/setItemUID methods. It
- * probably would have been better if ItemUID was defined as an interface to
- * begin with, but that's history now.
- * 
+ * Interface for objects which implement the getItemUID/setItemUID methods. It probably would have
+ * been better if ItemUID was defined as an interface to begin with, but that's history now.
+ *
  * @author Tom Morris <tfmorris@gmail.com>
  * @since 0.25.4
  */
 public interface IItemUID {
 
-    /**
-     * Set the item UID.
-     * 
-     * @param i the new id
-     */
-    public void setItemUID(ItemUID i);
+  /**
+   * Set the item UID.
+   *
+   * @param i the new id
+   */
+  public void setItemUID(ItemUID i);
 
-    /**
-     * @return the item UID
-     */
-    public ItemUID getItemUID();
+  /**
+   * @return the item UID
+   */
+  public ItemUID getItemUID();
 }

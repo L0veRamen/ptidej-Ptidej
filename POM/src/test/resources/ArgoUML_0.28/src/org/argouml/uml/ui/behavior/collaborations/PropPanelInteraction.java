@@ -26,7 +26,6 @@ package org.argouml.uml.ui.behavior.collaborations;
 
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.uml.ui.ActionNavigateContext;
 import org.argouml.uml.ui.UMLLinkedList;
@@ -40,36 +39,28 @@ import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
  */
 public class PropPanelInteraction extends PropPanelModelElement {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = 8965284617441796326L;
+  /** The serial version. */
+  private static final long serialVersionUID = 8965284617441796326L;
 
-    /**
-     * Construct a property panel for an Interaction.
-     */
-    public PropPanelInteraction() {
-        super("label.interaction-title", lookupIcon("Interaction"));
+  /** Construct a property panel for an Interaction. */
+  public PropPanelInteraction() {
+    super("label.interaction-title", lookupIcon("Interaction"));
 
-    	addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.namespace"),
-                getNamespaceSelector());
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.namespace"), getNamespaceSelector());
 
-        addField(Translator.localize("label.context"),
-                getSingleRowScroll(new UMLInteractionContextListModel()));
+    addField(
+        Translator.localize("label.context"),
+        getSingleRowScroll(new UMLInteractionContextListModel()));
 
-        addSeparator();
+    addSeparator();
 
-        JList messagesList =
-	    new UMLLinkedList(new UMLInteractionMessagesListModel());
-      	JScrollPane messagesScroll = new JScrollPane(messagesList);
-        addField(Translator.localize("label.messages"),
-                messagesScroll);
+    JList messagesList = new UMLLinkedList(new UMLInteractionMessagesListModel());
+    JScrollPane messagesScroll = new JScrollPane(messagesList);
+    addField(Translator.localize("label.messages"), messagesScroll);
 
-        addAction(new ActionNavigateContext());
-        addAction(new ActionNewStereotype());
-        addAction(getDeleteAction());
-    }
-
+    addAction(new ActionNavigateContext());
+    addAction(new ActionNewStereotype());
+    addAction(getDeleteAction());
+  }
 }

@@ -34,7 +34,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
 import org.argouml.application.events.ArgoEvent;
 import org.argouml.application.events.ArgoEventPump;
 import org.argouml.model.Model;
@@ -53,411 +52,389 @@ import org.tigris.gef.presentation.Fig;
 import org.tigris.gef.presentation.FigRect;
 import org.tigris.gef.presentation.FigText;
 
-
 /**
- * Class to display graphics for a UML ObjectFlowState in a diagram.<p>
+ * Class to display graphics for a UML ObjectFlowState in a diagram.
  *
- * The Fig of this modelelement may either represent the following UMLelements:
- * <p>
- * (1) an ObjectFlowState with a Classifier as type, or <p>
- * (2) an ObjectFlowState with a ClassifierInState as type. <p>
+ * <p>The Fig of this modelelement may either represent the following UMLelements:
  *
- * In both cases (1) and (2), the Fig shows
- * the underlined name of the Classifier,
- * and in the latter case (2), it shows also the names of the states
- * of the ClassifierInState. <p>
+ * <p>(1) an ObjectFlowState with a Classifier as type, or
  *
- * In the examples in the UML standard, this is written like<pre>
+ * <p>(2) an ObjectFlowState with a ClassifierInState as type.
+ *
+ * <p>In both cases (1) and (2), the Fig shows the underlined name of the Classifier, and in the
+ * latter case (2), it shows also the names of the states of the ClassifierInState.
+ *
+ * <p>In the examples in the UML standard, this is written like
+ *
+ * <pre>
  *      PurchaseOrder
  *       [approved]
  * </pre>
- * i.e. in 2 lines. The first line is underlined,
- * to indicate that it is an instance (object).<p>
  *
- * The fact that the first line is underlined, and the 2nd not, is the
- * reason to implement them in 2 seperate Figs.<p>
+ * i.e. in 2 lines. The first line is underlined, to indicate that it is an instance (object).
  *
- * TODO: Allow stereotypes to be shown.
+ * <p>The fact that the first line is underlined, and the 2nd not, is the reason to implement them
+ * in 2 seperate Figs.
+ *
+ * <p>TODO: Allow stereotypes to be shown.
  *
  * @author mvw
  */
 public class FigObjectFlowState extends FigNodeModelElement {
 
-    private static final int PADDING = 8;
-    private static final int WIDTH = 70;
-    private static final int HEIGHT = 50;
-    private static final int STATE_HEIGHT = NAME_FIG_HEIGHT;
+  private static final int PADDING = 8;
+  private static final int WIDTH = 70;
+  private static final int HEIGHT = 50;
+  private static final int STATE_HEIGHT = NAME_FIG_HEIGHT;
 
-    private NotationProvider notationProviderType;
-    private NotationProvider notationProviderState;
-    
-    private FigRect cover;
-    private FigText state;      // the state name
+  private NotationProvider notationProviderType;
+  private NotationProvider notationProviderState;
 
-    
-    /**
-     * Construct a new FigObjectFlowState.
-     * 
-     * @param owner owning UML element
-     * @param bounds position and size
-     * @param settings rendering settings
-     */
-    public FigObjectFlowState(Object owner, Rectangle bounds,
-            DiagramSettings settings) {
-        super(owner, bounds, settings);
-        state = new FigSingleLineText(owner, new Rectangle(X0, Y0, WIDTH,
-                STATE_HEIGHT), settings, true);
-        initFigs();
+  private FigRect cover;
+  private FigText state; // the state name
+
+  /**
+   * Construct a new FigObjectFlowState.
+   *
+   * @param owner owning UML element
+   * @param bounds position and size
+   * @param settings rendering settings
+   */
+  public FigObjectFlowState(Object owner, Rectangle bounds, DiagramSettings settings) {
+    super(owner, bounds, settings);
+    state =
+        new FigSingleLineText(owner, new Rectangle(X0, Y0, WIDTH, STATE_HEIGHT), settings, true);
+    initFigs();
+  }
+
+  /**
+   * Main Constructor FigObjectFlowState (called from file loading).
+   *
+   * @deprecated for 0.27.4 by tfmorris. Use {@link #FigObjectFlowState(Object, Rectangle,
+   *     DiagramSettings)}.
+   */
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  public FigObjectFlowState() {
+    state = new FigSingleLineText(X0, Y0, WIDTH, STATE_HEIGHT, true);
+    initFigs();
+    ArgoEventPump.addListener(ArgoEvent.ANY_NOTATION_EVENT, this);
+  }
+
+  private void initFigs() {
+    setBigPort(new FigRect(X0, Y0, WIDTH, HEIGHT, DEBUG_COLOR, DEBUG_COLOR));
+    cover = new FigRect(X0, Y0, WIDTH, HEIGHT, LINE_COLOR, FILL_COLOR);
+
+    getNameFig().setUnderline(true);
+    getNameFig().setLineWidth(0);
+
+    // add Figs to the FigNode in back-to-front order
+    addFig(getBigPort());
+    addFig(cover);
+    addFig(getNameFig());
+    addFig(state);
+
+    enableSizeChecking(false);
+    setReadyToEdit(false);
+    Rectangle r = getBounds();
+    setBounds(r.x, r.y, r.width, r.height);
+  }
+
+  /**
+   * Constructor FigObjectFlowState that hooks the Fig into an existing UML model element.
+   *
+   * @param gm ignored!
+   * @param node owner, i.e. the UML element
+   * @deprecated for 0.27.4 by tfmorris. Use {@link #FigObjectFlowState(Object, Rectangle,
+   *     DiagramSettings)}.
+   */
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  public FigObjectFlowState(GraphModel gm, Object node) {
+    this();
+    setOwner(node);
+    enableSizeChecking(true);
+  }
+
+  /*
+   * @see org.argouml.uml.diagram.ui.FigNodeModelElement#initNotationProviders(java.lang.Object)
+   */
+  @Override
+  protected void initNotationProviders(Object own) {
+    super.initNotationProviders(own);
+    if (Model.getFacade().isAModelElement(own)) {
+      NotationName notationName =
+          Notation.findNotation(getNotationSettings().getNotationLanguage());
+      notationProviderType =
+          NotationProviderFactory2.getInstance()
+              .getNotationProvider(
+                  NotationProviderFactory2.TYPE_OBJECTFLOWSTATE_TYPE, own, notationName);
+      notationProviderState =
+          NotationProviderFactory2.getInstance()
+              .getNotationProvider(
+                  NotationProviderFactory2.TYPE_OBJECTFLOWSTATE_STATE, own, notationName);
     }
-    
-    /**
-     * Main Constructor FigObjectFlowState (called from file loading).
-     * @deprecated for 0.27.4 by tfmorris.  Use 
-     * {@link #FigObjectFlowState(Object, Rectangle, DiagramSettings)}.
-     */
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    public FigObjectFlowState() {
-        state = new FigSingleLineText(X0, Y0, WIDTH, STATE_HEIGHT, true);
-        initFigs();
-        ArgoEventPump.addListener(ArgoEvent.ANY_NOTATION_EVENT, this);
-    }
+  }
 
-    private void initFigs() {
-        setBigPort(new FigRect(X0, Y0, WIDTH, HEIGHT,
-                DEBUG_COLOR, DEBUG_COLOR));
-        cover =
-            new FigRect(X0, Y0, WIDTH, HEIGHT,
-                    LINE_COLOR, FILL_COLOR);
+  /*
+   * @see org.argouml.uml.diagram.ui.FigNodeModelElement#modelChanged(java.beans.PropertyChangeEvent)
+   */
+  @Override
+  protected void modelChanged(PropertyChangeEvent mee) {
+    super.modelChanged(mee);
+    renderingChanged();
+    updateListeners(getOwner(), getOwner());
+  }
 
-        getNameFig().setUnderline(true);
-        getNameFig().setLineWidth(0);
+  /*
+   * @see org.argouml.uml.diagram.ui.FigNodeModelElement#updateListeners(java.lang.Object, java.lang.Object)
+   */
+  @Override
+  protected void updateListeners(Object oldOwner, Object newOwner) {
+    Set<Object[]> l = new HashSet<Object[]>();
 
-        // add Figs to the FigNode in back-to-front order
-        addFig(getBigPort());
-        addFig(cover);
-        addFig(getNameFig());
-        addFig(state);
-
-        enableSizeChecking(false);
-        setReadyToEdit(false);
-        Rectangle r = getBounds();
-        setBounds(r.x, r.y, r.width, r.height);
-    }
-
-    /**
-     * Constructor FigObjectFlowState that hooks the Fig into
-     * an existing UML model element.
-     *
-     * @param gm ignored!
-     * @param node owner, i.e. the UML element
-     * @deprecated for 0.27.4 by tfmorris.  Use 
-     * {@link #FigObjectFlowState(Object, Rectangle, DiagramSettings)}.
-     */
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    public FigObjectFlowState(GraphModel gm, Object node) {
-        this();
-        setOwner(node);
-        enableSizeChecking(true);
-    }
-
-
-    /*
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement#initNotationProviders(java.lang.Object)
-     */
-    @Override
-    protected void initNotationProviders(Object own) {
-        super.initNotationProviders(own);
-        if (Model.getFacade().isAModelElement(own)) {
-            NotationName notationName = Notation
-                    .findNotation(getNotationSettings().getNotationLanguage());
-            notationProviderType =
-                NotationProviderFactory2.getInstance().getNotationProvider(
-                        NotationProviderFactory2.TYPE_OBJECTFLOWSTATE_TYPE,
-                        own, notationName);
-            notationProviderState =
-                NotationProviderFactory2.getInstance().getNotationProvider(
-                        NotationProviderFactory2.TYPE_OBJECTFLOWSTATE_STATE,
-                        own, notationName);
+    if (newOwner != null) {
+      /* Don't listen to all property names
+       * We only need to listen to its "type", and "remove". */
+      l.add(new Object[] {newOwner, new String[] {"type", "remove"}});
+      // register for events from the type
+      Object type = Model.getFacade().getType(newOwner);
+      if (Model.getFacade().isAClassifier(type)) {
+        if (Model.getFacade().isAClassifierInState(type)) {
+          Object classifier = Model.getFacade().getType(type);
+          l.add(new Object[] {classifier, "name"});
+          l.add(new Object[] {type, "inState"});
+          Collection states = Model.getFacade().getInStates(type);
+          Iterator i = states.iterator();
+          while (i.hasNext()) {
+            l.add(new Object[] {i.next(), "name"});
+          }
+        } else {
+          l.add(new Object[] {type, "name"});
         }
+      }
     }
 
-    /*
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement#modelChanged(java.beans.PropertyChangeEvent)
-     */
-    @Override
-    protected void modelChanged(PropertyChangeEvent mee) {
-        super.modelChanged(mee);
-        renderingChanged();
-        updateListeners(getOwner(), getOwner());
+    updateElementListeners(l);
+  }
+
+  /*
+   * @see java.lang.Object#clone()
+   */
+  @Override
+  public Object clone() {
+    FigObjectFlowState figClone = (FigObjectFlowState) super.clone();
+    Iterator it = figClone.getFigs().iterator();
+    figClone.setBigPort((FigRect) it.next());
+    figClone.cover = (FigRect) it.next();
+    figClone.setNameFig((FigText) it.next());
+    figClone.state = (FigText) it.next();
+    return figClone;
+  }
+
+  /*
+   * @see org.argouml.uml.diagram.ui.FigNodeModelElement#setEnclosingFig(org.tigris.gef.presentation.Fig)
+   */
+  @Override
+  public void setEnclosingFig(Fig encloser) {
+    LayerPerspective layer = (LayerPerspective) getLayer();
+    // If the layer is null, then most likely we are being deleted.
+    if (layer == null) {
+      return;
     }
 
-    /*
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement#updateListeners(java.lang.Object, java.lang.Object)
-     */
-    @Override
-    protected void updateListeners(Object oldOwner, Object newOwner) {
-        Set<Object[]> l = new HashSet<Object[]>();
+    super.setEnclosingFig(encloser);
+  }
 
-        if (newOwner != null) {
-            /* Don't listen to all property names
-             * We only need to listen to its "type", and "remove". */
-            l.add(new Object[] {newOwner, new String[] {"type", "remove"}});
-            // register for events from the type
-            Object type = Model.getFacade().getType(newOwner);
-            if (Model.getFacade().isAClassifier(type)) {
-                if (Model.getFacade().isAClassifierInState(type)) {
-                    Object classifier = Model.getFacade().getType(type);
-                    l.add(new Object[] {classifier, "name"});
-                    l.add(new Object[] {type, "inState"});
-                    Collection states = Model.getFacade().getInStates(type);
-                    Iterator i = states.iterator();
-                    while (i.hasNext()) {
-                        l.add(new Object[] {i.next(), "name"});
-                    }
-                } else {
-                    l.add(new Object[] {type, "name"});
-                }
-            }
-        }
+  /*
+   * The space between the 2 text figs is: PADDING.
+   * @see org.tigris.gef.presentation.Fig#getMinimumSize()
+   */
+  @Override
+  public Dimension getMinimumSize() {
+    Dimension tempDim = getNameFig().getMinimumSize();
+    int w = tempDim.width + PADDING * 2;
+    int h = tempDim.height + PADDING;
+    tempDim = state.getMinimumSize();
+    w = Math.max(w, tempDim.width + PADDING * 2);
+    h = h + PADDING + tempDim.height + PADDING;
 
-        updateElementListeners(l);
+    return new Dimension(Math.max(w, WIDTH / 2), Math.max(h, HEIGHT / 2));
+  }
+
+  /*
+   * Override setBounds to keep shapes looking right.
+   * The classifier and state Figs are nicely centered vertically,
+   * and stretched out over the full width,
+   * to allow easy selection with the mouse.
+   * The Fig can only be shrunk to half its original size - so that
+   * it is not reduceable to a few pixels only.
+   *
+   * @see org.tigris.gef.presentation.Fig#setBoundsImpl(int, int, int, int)
+   */
+  @Override
+  protected void setStandardBounds(int x, int y, int w, int h) {
+    // if (getNameFig() == null) return;
+    Rectangle oldBounds = getBounds();
+
+    Dimension classDim = getNameFig().getMinimumSize();
+    Dimension stateDim = state.getMinimumSize();
+    /* the height of the blank space above and below the text figs: */
+    int blank = (h - PADDING - classDim.height - stateDim.height) / 2;
+    getNameFig().setBounds(x + PADDING, y + blank, w - PADDING * 2, classDim.height);
+    state.setBounds(
+        x + PADDING, y + blank + classDim.height + PADDING, w - PADDING * 2, stateDim.height);
+
+    getBigPort().setBounds(x, y, w, h);
+    cover.setBounds(x, y, w, h);
+
+    calcBounds();
+    updateEdges();
+    firePropChange("bounds", oldBounds, getBounds());
+  }
+
+  /*
+   * @see org.argouml.uml.diagram.ui.FigNodeModelElement#renderingChanged()
+   */
+  @Override
+  public void renderingChanged() {
+    super.renderingChanged();
+    updateClassifierText();
+    updateStateText();
+    updateBounds();
+    damage();
+  }
+
+  /** Updates the text of the classifier FigText. */
+  private void updateClassifierText() {
+    if (isReadyToEdit()) {
+      if (notationProviderType != null) {
+        getNameFig().setText(notationProviderType.toString(getOwner(), getNotationSettings()));
+      }
     }
+  }
 
-
-    /*
-     * @see java.lang.Object#clone()
-     */
-    @Override
-    public Object clone() {
-        FigObjectFlowState figClone = (FigObjectFlowState) super.clone();
-        Iterator it = figClone.getFigs().iterator();
-        figClone.setBigPort((FigRect) it.next());
-        figClone.cover = (FigRect) it.next();
-        figClone.setNameFig((FigText) it.next());
-        figClone.state = (FigText) it.next();
-        return figClone;
+  /** Updates the text of the state FigText. */
+  private void updateStateText() {
+    if (isReadyToEdit()) {
+      state.setText(notationProviderState.toString(getOwner(), getNotationSettings()));
     }
+  }
 
-    /*
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement#setEnclosingFig(org.tigris.gef.presentation.Fig)
-     */
-    @Override
-    public void setEnclosingFig(Fig encloser) {
-        LayerPerspective layer = (LayerPerspective) getLayer();
-        // If the layer is null, then most likely we are being deleted.
-        if (layer == null) {
-            return;
-        }
+  /*
+   * @see org.tigris.gef.presentation.Fig#setLineColor(java.awt.Color)
+   */
+  @Override
+  public void setLineColor(Color col) {
+    cover.setLineColor(col);
+  }
 
-        super.setEnclosingFig(encloser);
-    }
+  /*
+   * @see org.tigris.gef.presentation.Fig#getLineColor()
+   */
+  @Override
+  public Color getLineColor() {
+    return cover.getLineColor();
+  }
 
-    /*
-     * The space between the 2 text figs is: PADDING.
-     * @see org.tigris.gef.presentation.Fig#getMinimumSize()
-     */
-    @Override
-    public Dimension getMinimumSize() {
-        Dimension tempDim = getNameFig().getMinimumSize();
-        int w = tempDim.width + PADDING * 2;
-        int h = tempDim.height + PADDING;
-        tempDim = state.getMinimumSize();
-        w = Math.max(w, tempDim.width + PADDING * 2);
-        h = h + PADDING + tempDim.height + PADDING;
+  /*
+   * @see org.tigris.gef.presentation.Fig#setFillColor(java.awt.Color)
+   */
+  @Override
+  public void setFillColor(Color col) {
+    cover.setFillColor(col);
+  }
 
-        return new Dimension(Math.max(w, WIDTH / 2), Math.max(h, HEIGHT / 2));
-    }
+  /*
+   * @see org.tigris.gef.presentation.Fig#getFillColor()
+   */
+  @Override
+  public Color getFillColor() {
+    return cover.getFillColor();
+  }
 
-    /*
-     * Override setBounds to keep shapes looking right.
-     * The classifier and state Figs are nicely centered vertically,
-     * and stretched out over the full width,
-     * to allow easy selection with the mouse.
-     * The Fig can only be shrunk to half its original size - so that
-     * it is not reduceable to a few pixels only.
-     *
-     * @see org.tigris.gef.presentation.Fig#setBoundsImpl(int, int, int, int)
-     */
-    @Override
-    protected void setStandardBounds(int x, int y, int w, int h) {
-        //if (getNameFig() == null) return;
-        Rectangle oldBounds = getBounds();
+  /*
+   * @see org.tigris.gef.presentation.Fig#setFilled(boolean)
+   */
+  @Override
+  public void setFilled(boolean f) {
+    cover.setFilled(f);
+  }
 
-        Dimension classDim = getNameFig().getMinimumSize();
-        Dimension stateDim = state.getMinimumSize();
-        /* the height of the blank space above and below the text figs: */
-        int blank = (h - PADDING - classDim.height - stateDim.height) / 2;
-        getNameFig().setBounds(x + PADDING,
-                y + blank,
-                w - PADDING * 2,
-                classDim.height);
-        state.setBounds(x + PADDING,
-                y + blank + classDim.height + PADDING,
-                w - PADDING * 2,
-                stateDim.height);
+  @Override
+  public boolean isFilled() {
+    return cover.isFilled();
+  }
 
-        getBigPort().setBounds(x, y, w, h);
-        cover.setBounds(x, y, w, h);
+  /*
+   * @see org.tigris.gef.presentation.Fig#setLineWidth(int)
+   */
+  @Override
+  public void setLineWidth(int w) {
+    cover.setLineWidth(w);
+  }
 
-        calcBounds();
-        updateEdges();
-        firePropChange("bounds", oldBounds, getBounds());
-    }
+  /*
+   * @see org.tigris.gef.presentation.Fig#getLineWidth()
+   */
+  @Override
+  public int getLineWidth() {
+    return cover.getLineWidth();
+  }
 
-    /*
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement#renderingChanged()
-     */
-    @Override
-    public void renderingChanged() {
-        super.renderingChanged();
+  /*
+   * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
+   */
+  @Override
+  public void keyTyped(KeyEvent ke) {
+    if (!isReadyToEdit()) {
+      if (Model.getFacade().isAModelElement(getOwner())) {
         updateClassifierText();
         updateStateText();
-        updateBounds();
-        damage();
+        setReadyToEdit(true);
+      } else {
+        // LOG.debug("not ready to edit name");
+        return;
+      }
     }
-
-    /**
-     * Updates the text of the classifier FigText.
-     */
-    private void updateClassifierText() {
-        if (isReadyToEdit()) {
-            if (notationProviderType != null) {
-                getNameFig().setText(
-                        notationProviderType.toString(getOwner(), 
-                                getNotationSettings()));
-            }
-        }
+    if (ke.isConsumed() || getOwner() == null) {
+      return;
     }
+    getNameFig().keyTyped(ke);
+  }
 
-    /**
-     * Updates the text of the state FigText.
-     */
-    private void updateStateText() {
-        if (isReadyToEdit()) {
-            state.setText(notationProviderState.toString(getOwner(), 
-                    getNotationSettings()));
-        }
+  /*
+   * @see org.argouml.uml.diagram.ui.FigNodeModelElement#textEdited(org.tigris.gef.presentation.FigText)
+   */
+  @Override
+  protected void textEdited(FigText ft) throws PropertyVetoException {
+    if (ft == getNameFig()) {
+      notationProviderType.parse(getOwner(), ft.getText());
+      ft.setText(notationProviderType.toString(getOwner(), NotationSettings.getDefaultSettings()));
+    } else if (ft == state) {
+      notationProviderState.parse(getOwner(), ft.getText());
+      ft.setText(notationProviderState.toString(getOwner(), NotationSettings.getDefaultSettings()));
     }
+  }
 
-    /*
-     * @see org.tigris.gef.presentation.Fig#setLineColor(java.awt.Color)
-     */
-    @Override
-    public void setLineColor(Color col) {
-        cover.setLineColor(col);
+  /*
+   * @see org.argouml.uml.diagram.ui.FigNodeModelElement#textEditStarted(org.tigris.gef.presentation.FigText)
+   */
+  @Override
+  protected void textEditStarted(FigText ft) {
+    if (ft == getNameFig()) {
+      showHelp(notationProviderType.getParsingHelp());
     }
-
-    /*
-     * @see org.tigris.gef.presentation.Fig#getLineColor()
-     */
-    @Override
-    public Color getLineColor() {
-        return cover.getLineColor();
+    if (ft == state) {
+      showHelp(notationProviderState.getParsingHelp());
     }
+  }
 
-    /*
-     * @see org.tigris.gef.presentation.Fig#setFillColor(java.awt.Color)
-     */
-    @Override
-    public void setFillColor(Color col) {
-        cover.setFillColor(col);
-    }
-
-    /*
-     * @see org.tigris.gef.presentation.Fig#getFillColor()
-     */
-    @Override
-    public Color getFillColor() {
-        return cover.getFillColor();
-    }
-
-    /*
-     * @see org.tigris.gef.presentation.Fig#setFilled(boolean)
-     */
-    @Override
-    public void setFilled(boolean f) {
-        cover.setFilled(f);
-    }
-
-    @Override
-    public boolean isFilled() {
-        return cover.isFilled();
-    }
-
-    /*
-     * @see org.tigris.gef.presentation.Fig#setLineWidth(int)
-     */
-    @Override
-    public void setLineWidth(int w) {
-        cover.setLineWidth(w);
-    }
-
-    /*
-     * @see org.tigris.gef.presentation.Fig#getLineWidth()
-     */
-    @Override
-    public int getLineWidth() {
-        return cover.getLineWidth();
-    }
-
-    /*
-     * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
-     */
-    @Override
-    public void keyTyped(KeyEvent ke) {
-        if (!isReadyToEdit()) {
-            if (Model.getFacade().isAModelElement(getOwner())) {
-                updateClassifierText();
-                updateStateText();
-                setReadyToEdit(true);
-            } else {
-                //LOG.debug("not ready to edit name");
-                return;
-            }
-        }
-        if (ke.isConsumed() || getOwner() == null) {
-            return;
-        }
-        getNameFig().keyTyped(ke);
-    }
-
-    /*
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement#textEdited(org.tigris.gef.presentation.FigText)
-     */
-    @Override
-    protected void textEdited(FigText ft) throws PropertyVetoException {
-        if (ft == getNameFig()) {
-            notationProviderType.parse(getOwner(), ft.getText());
-            ft.setText(notationProviderType.toString(getOwner(),
-                    NotationSettings.getDefaultSettings()));
-        } else if (ft == state) {
-            notationProviderState.parse(getOwner(), ft.getText());
-            ft.setText(notationProviderState.toString(getOwner(),
-                    NotationSettings.getDefaultSettings()));
-        }
-    }
-
-    /*
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement#textEditStarted(org.tigris.gef.presentation.FigText)
-     */
-    @Override
-    protected void textEditStarted(FigText ft) {
-        if (ft == getNameFig()) {
-            showHelp(notationProviderType.getParsingHelp());
-        }
-        if (ft == state) {
-            showHelp(notationProviderState.getParsingHelp());
-        }
-    }
-
-    /*
-     * @see org.tigris.gef.presentation.Fig#makeSelection()
-     */
-    @Override
-    public Selection makeSelection() {
-        return new SelectionActionState(this);
-    }
-
+  /*
+   * @see org.tigris.gef.presentation.Fig#makeSelection()
+   */
+  @Override
+  public Selection makeSelection() {
+    return new SelectionActionState(this);
+  }
 }

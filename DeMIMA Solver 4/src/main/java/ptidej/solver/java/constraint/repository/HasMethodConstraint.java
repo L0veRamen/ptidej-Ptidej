@@ -17,27 +17,26 @@ import ptidej.solver.java.domain.Entity;
 
 /**
  * @author Yann-Gaël Guéhéneuc
- * @since  2007/02/28
+ * @since 2007/02/28
  */
 public class HasMethodConstraint extends UnaryConstraint {
 
-	private final String methodName;
+  private final String methodName;
 
-	public HasMethodConstraint(
-			final String name,
-			final String command,
-			final Variable v0,
-			final String methodName,
-			final int weight,
-			final IApproximations approximations) {
+  public HasMethodConstraint(
+      final String name,
+      final String command,
+      final Variable v0,
+      final String methodName,
+      final int weight,
+      final IApproximations approximations) {
 
-		super(name, command, v0, weight, approximations);
-		this.methodName = methodName;
-	}
+    super(name, command, v0, weight, approximations);
+    this.methodName = methodName;
+  }
 
-	@Override
-	protected boolean getPropagateCondition(Entity entity) {
-		return !entity.getMethodNames().contains(this.methodName);
-	}
-
+  @Override
+  protected boolean getPropagateCondition(Entity entity) {
+    return !entity.getMethodNames().contains(this.methodName);
+  }
 }

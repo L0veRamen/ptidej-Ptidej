@@ -26,7 +26,6 @@ package org.argouml.uml.ui.behavior.use_cases;
 
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.ActionDeleteSingleModelElement;
@@ -37,138 +36,130 @@ import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
 import org.argouml.util.ConfigLoader;
 
 /**
- * Builds the property panel for an Include relationship.<p>
+ * Builds the property panel for an Include relationship.
  *
- * This is a type of Relationship, but, since Relationship has no
- * semantic meaning of its own, we derive directly from
- * PropPanelModelElement (as other children of Relationship do).<p>
+ * <p>This is a type of Relationship, but, since Relationship has no semantic meaning of its own, we
+ * derive directly from PropPanelModelElement (as other children of Relationship do).
+ *
+ * <p>
  *
  * @author Jeremy Bennett
  */
 public class PropPanelInclude extends PropPanelModelElement {
 
-    /**
-     * Constructor. Builds up the various fields required.
-     */
-    public PropPanelInclude() {
-        super("Include",
-                lookupIcon("Include"),
-                ConfigLoader.getTabPropsOrientation());
+  /** Constructor. Builds up the various fields required. */
+  public PropPanelInclude() {
+    super("Include", lookupIcon("Include"), ConfigLoader.getTabPropsOrientation());
 
-        addField(Translator.localize("label.name"),
-		 getNameTextField());
-        addField(Translator.localize("label.stereotype"),
-                getStereotypeSelector());
-        addField(Translator.localize("label.namespace"),
-		 getNamespaceScroll());
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.stereotype"), getStereotypeSelector());
+    addField(Translator.localize("label.namespace"), getNamespaceScroll());
 
-        addSeperator();
+    addSeperator();
 
-        JList baseBox =
-	    new UMLLinkedList(new UMLIncludeBaseListModel());
-        addField(Translator.localize("label.usecase-base"),
-		 getSingleRowScroll(baseBox));
+    JList baseBox = new UMLLinkedList(new UMLIncludeBaseListModel());
+    addField(Translator.localize("label.usecase-base"), getSingleRowScroll(baseBox));
 
-        JList additionBox =
-	    new UMLLinkedList(new UMLIncludeAdditionListModel());
-        addField(Translator.localize("label.addition"),
-		 getSingleRowScroll(additionBox));
+    JList additionBox = new UMLLinkedList(new UMLIncludeAdditionListModel());
+    addField(Translator.localize("label.addition"), getSingleRowScroll(additionBox));
 
-        // Add the toolbar buttons:
-        addAction(new ActionNavigateNamespace());
-        addAction(new ActionNewStereotype());
-        addAction(new ActionDeleteSingleModelElement());
+    // Add the toolbar buttons:
+    addAction(new ActionNavigateNamespace());
+    addAction(new ActionNewStereotype());
+    addAction(new ActionDeleteSingleModelElement());
+  }
+
+  /**
+   * @return a scrollpane with a single row
+   */
+  protected JScrollPane getSingleRowScroll(JList list) {
+    list.setVisibleRowCount(1);
+    JScrollPane scroll = new JScrollPane(list);
+
+    return scroll;
+  }
+
+  /**
+   * Get the current base use case of the include relationship.
+   *
+   * <p>
+   *
+   * @return The UseCase that is the base of this include relationship or <code>null</code> if there
+   *     is none.
+   */
+  public Object getBase() {
+    Object base = null;
+    Object target = getTarget();
+
+    if (Model.getFacade().isAInclude(target)) {
+      base = Model.getFacade().getBase(target);
+    }
+    return base;
+  }
+
+  /**
+   * Set the base use case of the include relationship.
+   *
+   * <p>
+   *
+   * @param base The UseCase to set as the base of this include relationship.
+   */
+  public void setBase(Object /*MUseCase*/ base) {
+    Object target = getTarget();
+
+    if (Model.getFacade().isAInclude(target)) {
+      Model.getUseCasesHelper().setBase(target, base);
+    }
+  }
+
+  /**
+   * Get the current addition use case of the include relationship.
+   *
+   * <p>
+   *
+   * @return The UseCase that is the addition of this include relationship or <code>null</code> if
+   *     there is none.
+   */
+  public Object getAddition() {
+    Object addition = null;
+    Object target = getTarget();
+
+    if (Model.getFacade().isAInclude(target)) {
+      addition = Model.getFacade().getAddition(target);
     }
 
-    /**
-     * @return a scrollpane with a single row
-     */
-    protected JScrollPane getSingleRowScroll(JList list) {
-        list.setVisibleRowCount(1);
-        JScrollPane scroll = new JScrollPane(list);
+    return addition;
+  }
 
-        return scroll;
+  /**
+   * Set the addition use case of the include relationship.
+   *
+   * <p>
+   *
+   * @param addition The UseCase to set as the addition of this include relationship.
+   */
+  public void setAddition(Object /*MUseCase*/ addition) {
+    Object target = getTarget();
+
+    if (Model.getFacade().isAInclude(target)) {
+      Model.getUseCasesHelper().setAddition(target, addition);
     }
+  }
 
-    /**
-     * Get the current base use case of the include relationship.<p>
-     * @return The UseCase that is the base of this include relationship or
-     * <code>null</code> if there is none.
-     */
-    public Object getBase() {
-        Object base   = null;
-        Object      target = getTarget();
+  /**
+   * Predicate to test if a model element may appear in the list of potential use cases.
+   *
+   * <p><em>Note</em>. We don't try to prevent the user setting up circular include relationships.
+   * This may be necessary temporarily, for example while reversing a relationship. It is up to a
+   * critic to track this.
+   *
+   * <p>
+   *
+   * @param modElem the ModelElement to test.
+   * @return <code>true</code> if modElem is a use case, <code>false</code> otherwise.
+   */
+  public boolean isAcceptableUseCase(Object /*MModelElement*/ modElem) {
 
-        if (Model.getFacade().isAInclude(target)) {
-            base = Model.getFacade().getBase(target);
-        }
-        return base;
-    }
-
-    /**
-     * Set the base use case of the include relationship.<p>
-     * @param base The UseCase to set as the base of this include relationship.
-     */
-    public void setBase(Object/*MUseCase*/ base) {
-        Object target = getTarget();
-
-        if (Model.getFacade().isAInclude(target)) {
-            Model.getUseCasesHelper().setBase(target, base);
-        }
-    }
-
-    /**
-     * Get the current addition use case of the include relationship.<p>
-     *
-     *
-     * @return The UseCase that is the addition of this include
-     * relationship or <code>null</code> if there is none.
-     */
-    public Object getAddition() {
-        Object addition   = null;
-        Object target = getTarget();
-
-        if (Model.getFacade().isAInclude(target)) {
-            addition = Model.getFacade().getAddition(target);
-        }
-
-        return addition;
-    }
-
-    /**
-     * Set the addition use case of the include relationship.<p>
-     *
-     *
-     * @param addition The UseCase to set as the addition of this
-     * include relationship.
-     */
-    public void setAddition(Object/*MUseCase*/ addition) {
-        Object target = getTarget();
-
-        if (Model.getFacade().isAInclude(target)) {
-            Model.getUseCasesHelper().setAddition(target, addition);
-        }
-    }
-
-
-    /**
-     * Predicate to test if a model element may appear in the list of
-     * potential use cases.<p>
-     *
-     * <em>Note</em>. We don't try to prevent the user setting up
-     * circular include relationships. This may be necessary
-     * temporarily, for example while reversing a relationship. It is
-     * up to a critic to track this.<p>
-     *
-     * @param modElem the ModelElement to test.
-     *
-     * @return <code>true</code> if modElem is a use case,
-     * <code>false</code> otherwise.
-     */
-    public boolean isAcceptableUseCase(Object/*MModelElement*/ modElem) {
-
-        return Model.getFacade().isAUseCase(modElem);
-    }
-
-
+    return Model.getFacade().isAUseCase(modElem);
+  }
 } /* end class PropPanelInclude */

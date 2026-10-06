@@ -27,23 +27,21 @@ package org.argouml.uml.notation;
 import org.argouml.model.Model;
 
 /**
- * This abstract class forms the basis of all Notation providers
- * for the text shown in the Fig that represents the ClassifierRole.
- * Subclass this for all languages.
- * 
+ * This abstract class forms the basis of all Notation providers for the text shown in the Fig that
+ * represents the ClassifierRole. Subclass this for all languages.
+ *
  * @author Michiel
  */
 public abstract class ClassifierRoleNotation extends NotationProvider {
-    
-    /**
-     * The Constructor. 
-     *
-     * @param classifierRole the UML element
-     */
-    public ClassifierRoleNotation(Object classifierRole) {
-        if (!Model.getFacade().isAClassifierRole(classifierRole)) {
-            throw new IllegalArgumentException("This is not a ClassifierRole.");
-        }
-    }
 
+  /**
+   * The Constructor.
+   *
+   * @param classifierRole the UML element
+   */
+  public ClassifierRoleNotation(Object classifierRole) {
+    if (!Model.getFacade().isAClassifierRole(classifierRole)) {
+      throw new IllegalArgumentException("This is not a ClassifierRole.");
+    }
+  }
 }

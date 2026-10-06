@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -22,174 +22,164 @@ import java.util.TreeSet;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.queryParser.ParseException;
 
 public class MergeResultsFromCsv {
 
-	/**
-	 * @param args
-	 */
-	private static Pattern pattern;
-	private static Matcher matcher;
+  /**
+   * @param args
+   */
+  private static Pattern pattern;
 
-	public static void main(String[] args) throws IOException, ParseException {
-		// TODO Auto-generated method stub
+  private static Matcher matcher;
 
-		/*String path = "D:/Software/Tests Workspace/foutsekh-program-BugDefects/rsc/Results";
-		String fileName = "D:/Software/Tests Workspace/foutsekh-program-BugDefects/rsc/Results/Results of Eclipse.v 3.0.b.csv";
-		indexFiles(path);
-		*/
-		final String t = "org.eclipse(.[a-z]*)+";
-		String path = "D:/Software/Tests Workspace/foutsekh-program-BugDefects/rsc/Bugs/issues/test";
+  public static void main(String[] args) throws IOException, ParseException {
+    // TODO Auto-generated method stub
 
-		printDefectedClasses(path, path, "Eclipse", t);
+    /*String path = "D:/Software/Tests Workspace/foutsekh-program-BugDefects/rsc/Results";
+    String fileName = "D:/Software/Tests Workspace/foutsekh-program-BugDefects/rsc/Results/Results of Eclipse.v 3.0.b.csv";
+    indexFiles(path);
+    */
+    final String t = "org.eclipse(.[a-z]*)+";
+    String path = "D:/Software/Tests Workspace/foutsekh-program-BugDefects/rsc/Bugs/issues/test";
 
-		/*ResultsFileIndexer csvindex = new ResultsFileIndexer(
-			"rsc/Results/index" + getFileVersion(fileName) + ".dat");
-		csvindex.indexFileOrDirectory(fileName);
-		*/
-		//final Directory index = FSDirectory
-		//	.getDirectory("rsc/Results/index0.dat");
-		/*final Analyzer analyser = new StandardAnalyzer();
-		Query q = new QueryParser("class", analyser).parse("org.*");
-		
-		IndexSearcher s = new IndexSearcher(index);
-		
-		Hits hits = s.search(q);
-		System.out.println("Found " + hits.length() + " hits.");
-		for (int i = 0; i < hits.length(); ++i) {
-			System.out.println((i + 1) + ". " + hits.doc(i).get("class"));
-		}
-		s.close();*/
-	}
+    printDefectedClasses(path, path, "Eclipse", t);
 
-	private static String getFileVersion(final String FileName) {
-		final String substring1 = "v";
-		final String substring2 = ".csv";
-		final int begin = FileName.indexOf(substring1);
-		final int end = FileName.indexOf(substring2);
-		final String aFileVersion = FileName
-				.substring(begin + substring1.length(), end);
-		return aFileVersion;
-	}
+    /*ResultsFileIndexer csvindex = new ResultsFileIndexer(
+    	"rsc/Results/index" + getFileVersion(fileName) + ".dat");
+    csvindex.indexFileOrDirectory(fileName);
+    */
+    // final Directory index = FSDirectory
+    //	.getDirectory("rsc/Results/index0.dat");
+    /*final Analyzer analyser = new StandardAnalyzer();
+    Query q = new QueryParser("class", analyser).parse("org.*");
 
-	/*private static void indexFiles(String path) throws IOException,
-		ParseException {
-	
-		final File pathFile = new File(path);
-	
-		final String[] subPaths = pathFile.list();
-		for (int i = 0; i < subPaths.length; i++) {
-			final String fileName = path + "/" + subPaths[i];
-	
-			if (fileName.endsWith(".csv") == true) {
-	
-				ResultsFileIndexer csvindex = new ResultsFileIndexer(
-					"rsc/Results/index" + getFileVersion(fileName) + ".dat");
-				csvindex.indexFileOrDirectory(fileName);
-	
-			}
-		}
-	
-	}
-	*/private static void printDefectedClasses(String path, String outputDir,
-			String progName, String t) throws IOException, ParseException {
+    IndexSearcher s = new IndexSearcher(index);
 
-		TreeSet<String> defectClasses = new TreeSet<String>();
+    Hits hits = s.search(q);
+    System.out.println("Found " + hits.length() + " hits.");
+    for (int i = 0; i < hits.length(); ++i) {
+    	System.out.println((i + 1) + ". " + hits.doc(i).get("class"));
+    }
+    s.close();*/
+  }
 
-		try {
-			FileOutputStream output = new FileOutputStream(outputDir
-					+ "/TotalNbDefectsBugsPerClasses in" + progName + ".csv");
+  private static String getFileVersion(final String FileName) {
+    final String substring1 = "v";
+    final String substring2 = ".csv";
+    final int begin = FileName.indexOf(substring1);
+    final int end = FileName.indexOf(substring2);
+    final String aFileVersion = FileName.substring(begin + substring1.length(), end);
+    return aFileVersion;
+  }
 
-			//			if (!output.exists()) {
-			//				output.createNewFile();
-			//			}
-			System.setOut(new PrintStream(output));
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-			System.exit(0);
-		}
+  /*private static void indexFiles(String path) throws IOException,
+  	ParseException {
 
-		System.out.println("Classes, nb_bug, time");
+  	final File pathFile = new File(path);
 
-		final File pathFile = new File(path);
+  	final String[] subPaths = pathFile.list();
+  	for (int i = 0; i < subPaths.length; i++) {
+  		final String fileName = path + "/" + subPaths[i];
 
-		final String[] subPaths = pathFile.list();
-		for (int i = 0; i < subPaths.length; i++) {
-			final String fileName = path + "/" + subPaths[i];
+  		if (fileName.endsWith(".csv") == true) {
 
-			if (fileName.endsWith(".csv") == true) {
+  			ResultsFileIndexer csvindex = new ResultsFileIndexer(
+  				"rsc/Results/index" + getFileVersion(fileName) + ".dat");
+  			csvindex.indexFileOrDirectory(fileName);
 
-				printFile(fileName, defectClasses, t);
+  		}
+  	}
 
-			}
-		}
-		System.setOut(System.out);
-	}
+  }
+  */ private static void printDefectedClasses(
+      String path, String outputDir, String progName, String t) throws IOException, ParseException {
 
-	/*
-	 * Print defected classes from a file
-	 * 
-	 */
-	public static void printFile(String fileName, TreeSet<String> defectClasses,
-			String t)
-			throws FileNotFoundException, CorruptIndexException, IOException {
+    TreeSet<String> defectClasses = new TreeSet<String>();
 
-		LineNumberReader fr = null;
-		try {
+    try {
+      FileOutputStream output =
+          new FileOutputStream(outputDir + "/TotalNbDefectsBugsPerClasses in" + progName + ".csv");
 
-			// ===================================================
-			// add contents of file
-			// ===================================================
+      //			if (!output.exists()) {
+      //				output.createNewFile();
+      //			}
+      System.setOut(new PrintStream(output));
+    } catch (IOException e) {
+      e.printStackTrace();
+      System.exit(0);
+    }
 
-			final Vector<String> eltFields = new Vector<String>();
+    System.out.println("Classes, nb_bug, time");
 
-			fr = new LineNumberReader(new FileReader(fileName));
-			StringTokenizer st1 = new StringTokenizer(fr.readLine(), ",");
-			while (st1.hasMoreTokens())
-				eltFields.addElement(st1.nextToken());
+    final File pathFile = new File(path);
 
-			String line;
-			while ((line = fr.readLine()) != null) {
+    final String[] subPaths = pathFile.list();
+    for (int i = 0; i < subPaths.length; i++) {
+      final String fileName = path + "/" + subPaths[i];
 
-				String[] ucharFields = line.split(",", eltFields.size());
+      if (fileName.endsWith(".csv") == true) {
 
-				if (!defectClasses.contains(ucharFields[0])) {
+        printFile(fileName, defectClasses, t);
+      }
+    }
+    System.setOut(System.out);
+  }
 
-					// test if the name does contains org.eclipse			
-					StringTokenizer st = new StringTokenizer(ucharFields[0]);
-					while (st.hasMoreTokens()) {
+  /*
+   * Print defected classes from a file
+   *
+   */
+  public static void printFile(String fileName, TreeSet<String> defectClasses, String t)
+      throws FileNotFoundException, CorruptIndexException, IOException {
 
-						pattern = Pattern.compile(t);
-						matcher = pattern.matcher(st.nextToken());
-						if (matcher.find()) {
+    LineNumberReader fr = null;
+    try {
 
-							defectClasses.add(ucharFields[0]);
-							System.out.println(ucharFields[0] + ", "
-									+ ucharFields[3] + ", " + ucharFields[4]);
+      // ===================================================
+      // add contents of file
+      // ===================================================
 
-						}
-					}
-					/*if(Integer.parseInt(ucharFields[3])>0){
-						
-						number_class_bugs=number_class_bugs+1;	
-						
-					}*/
-				}
+      final Vector<String> eltFields = new Vector<String>();
 
-			}
+      fr = new LineNumberReader(new FileReader(fileName));
+      StringTokenizer st1 = new StringTokenizer(fr.readLine(), ",");
+      while (st1.hasMoreTokens()) eltFields.addElement(st1.nextToken());
 
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-		finally {
-			if (fr != null) {
-				fr.close();
-			}
-		}
-	}
+      String line;
+      while ((line = fr.readLine()) != null) {
+
+        String[] ucharFields = line.split(",", eltFields.size());
+
+        if (!defectClasses.contains(ucharFields[0])) {
+
+          // test if the name does contains org.eclipse
+          StringTokenizer st = new StringTokenizer(ucharFields[0]);
+          while (st.hasMoreTokens()) {
+
+            pattern = Pattern.compile(t);
+            matcher = pattern.matcher(st.nextToken());
+            if (matcher.find()) {
+
+              defectClasses.add(ucharFields[0]);
+              System.out.println(ucharFields[0] + ", " + ucharFields[3] + ", " + ucharFields[4]);
+            }
+          }
+          /*if(Integer.parseInt(ucharFields[3])>0){
+
+          	number_class_bugs=number_class_bugs+1;
+
+          }*/
+        }
+      }
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    } finally {
+      if (fr != null) {
+        fr.close();
+      }
+    }
+  }
 }

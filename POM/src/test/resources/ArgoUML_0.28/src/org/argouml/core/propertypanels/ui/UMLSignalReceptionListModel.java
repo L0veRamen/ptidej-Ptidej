@@ -29,38 +29,35 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
 
 /**
  * The model for the listbox showing the receptions of a signal.
- * 
+ *
  * @author Michiel
  */
 class UMLSignalReceptionListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Construct a list model showing the receptions of a signal.
-     */
-    public UMLSignalReceptionListModel() {
-        /*
-         * The event to listen to is "reception", so that model updates
-         * get shown in the list. Reproduce this by adding a new reception,
-         * and see the result displayed in the list.
-         */
-        super("reception");
-    }
-
+  /** Construct a list model showing the receptions of a signal. */
+  public UMLSignalReceptionListModel() {
     /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+     * The event to listen to is "reception", so that model updates
+     * get shown in the list. Reproduce this by adding a new reception,
+     * and see the result displayed in the list.
      */
-    protected void buildModelList() {
-        if (getTarget() != null) {
-            setAllElements(Model.getFacade().getReceptions(getTarget()));
-        }
-    }
+    super("reception");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(java.lang.Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().isAReception(element)
-            && Model.getFacade().getReceptions(getTarget()).contains(element);
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (getTarget() != null) {
+      setAllElements(Model.getFacade().getReceptions(getTarget()));
     }
+  }
 
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(java.lang.Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().isAReception(element)
+        && Model.getFacade().getReceptions(getTarget()).contains(element);
+  }
 }

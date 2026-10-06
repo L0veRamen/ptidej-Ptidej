@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -17,40 +17,35 @@ import ptidej.ui.kernel.builder.Builder;
 import ptidej.ui.primitive.IPrimitiveFactory;
 
 public class Interface extends Entity {
-	public Interface(
-		final IPrimitiveFactory aPrimitiveFactory,
-		final Builder aBuilder,
-		final IInterface anInterface) {
+  public Interface(
+      final IPrimitiveFactory aPrimitiveFactory,
+      final Builder aBuilder,
+      final IInterface anInterface) {
 
-		super(aPrimitiveFactory, aBuilder, anInterface);
-	}
-	protected void computeHierarchies() {
-		super.computeHierarchies();
+    super(aPrimitiveFactory, aBuilder, anInterface);
+  }
 
-		final Iterator iterator =
-			((IInterface) this.getFirstClassEntity())
-				.getIteratorOnInheritedEntities();
-		while (iterator.hasNext()) {
-			final Entity entity =
-				this
-					.getBuilder()
-					.getEntity((IFirstClassEntity) iterator.next());
+  protected void computeHierarchies() {
+    super.computeHierarchies();
 
-			// Yann 2004/12/16: Clean!
-			// Ghosts are taken care of when doint the layout and painting
-			// only, this removes many ugly checks like the following:
-			//	if (!(entity instanceof Ghost
-			//		&& (this.getVisibleElements()
-			//			& IVisibility.GHOST_ENTITIES_DISPLAY)
-			//			== 0)) {
+    final Iterator iterator =
+        ((IInterface) this.getFirstClassEntity()).getIteratorOnInheritedEntities();
+    while (iterator.hasNext()) {
+      final Entity entity = this.getBuilder().getEntity((IFirstClassEntity) iterator.next());
 
-			this.addHierarchy(new Specialisation(
-				this.getPrimitiveFactory(),
-				this,
-				entity));
-		}
-	}
-	protected String getStereotype() {
-		return "<<interface>>\n";
-	}
+      // Yann 2004/12/16: Clean!
+      // Ghosts are taken care of when doint the layout and painting
+      // only, this removes many ugly checks like the following:
+      //	if (!(entity instanceof Ghost
+      //		&& (this.getVisibleElements()
+      //			& IVisibility.GHOST_ENTITIES_DISPLAY)
+      //			== 0)) {
+
+      this.addHierarchy(new Specialisation(this.getPrimitiveFactory(), this, entity));
+    }
+  }
+
+  protected String getStereotype() {
+    return "<<interface>>\n";
+  }
 }

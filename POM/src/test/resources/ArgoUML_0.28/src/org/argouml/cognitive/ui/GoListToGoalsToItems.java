@@ -26,138 +26,125 @@ package org.argouml.cognitive.ui;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreePath;
-
 import org.argouml.cognitive.Designer;
 import org.argouml.cognitive.Goal;
 import org.argouml.cognitive.ToDoItem;
 import org.argouml.cognitive.ToDoList;
 
-
-/**
- * Rule for sorting the ToDo list: Goal -> Item.
- *
- */
+/** Rule for sorting the ToDo list: Goal -> Item. */
 public class GoListToGoalsToItems extends AbstractGoList {
 
-    ////////////////////////////////////////////////////////////////
-    // TreeModel implementation
+  ////////////////////////////////////////////////////////////////
+  // TreeModel implementation
 
-
-    /*
-     * @see javax.swing.tree.TreeModel#getChild(java.lang.Object, int)
-     */
-    public Object getChild(Object parent, int index) {
-	if (parent instanceof ToDoList) {
-	    return getGoalList().get(index);
-	}
-	if (parent instanceof Goal) {
-            Goal g = (Goal) parent;
-            List<ToDoItem> itemList = 
-                Designer.theDesigner().getToDoList().getToDoItemList();
-            synchronized (itemList) {
-                for (ToDoItem item : itemList) {
-                    if (item.getPoster().supports(g)) {
-                        if (index == 0) {
-                            return item;
-                        }
-                        index--;
-                    }
-                }
+  /*
+   * @see javax.swing.tree.TreeModel#getChild(java.lang.Object, int)
+   */
+  public Object getChild(Object parent, int index) {
+    if (parent instanceof ToDoList) {
+      return getGoalList().get(index);
+    }
+    if (parent instanceof Goal) {
+      Goal g = (Goal) parent;
+      List<ToDoItem> itemList = Designer.theDesigner().getToDoList().getToDoItemList();
+      synchronized (itemList) {
+        for (ToDoItem item : itemList) {
+          if (item.getPoster().supports(g)) {
+            if (index == 0) {
+              return item;
             }
-	}
-	throw new IndexOutOfBoundsException("getChild shouldnt get here "
-					    + "GoListToGoalsToItems");
+            index--;
+          }
+        }
+      }
     }
+    throw new IndexOutOfBoundsException("getChild shouldnt get here " + "GoListToGoalsToItems");
+  }
 
-    /*
-     * @see javax.swing.tree.TreeModel#getChildCount(java.lang.Object)
-     */
-    public int getChildCount(Object parent) {
-	if (parent instanceof ToDoList) {
-	    return getGoalList().size();
-	}
-	if (parent instanceof Goal) {
-	    Goal g = (Goal) parent;
-	    int count = 0;
-            List<ToDoItem> itemList = 
-                Designer.theDesigner().getToDoList().getToDoItemList();
-            synchronized (itemList) {
-                for (ToDoItem item : itemList) {
-                    if (item.getPoster().supports(g)) {
-                        count++;
-                    }
-                }
-            }
-	    return count;
-	}
-	return 0;
+  /*
+   * @see javax.swing.tree.TreeModel#getChildCount(java.lang.Object)
+   */
+  public int getChildCount(Object parent) {
+    if (parent instanceof ToDoList) {
+      return getGoalList().size();
     }
-
-    /*
-     * @see javax.swing.tree.TreeModel#getIndexOfChild(
-     * java.lang.Object, java.lang.Object)
-     */
-    public int getIndexOfChild(Object parent, Object child) {
-	if (parent instanceof ToDoList) {
-	    return getGoalList().indexOf(child);
-	}
-	if (parent instanceof Goal) {
-	    // instead of making a new list, decrement index, return when
-	    // found and index == 0
-	    List<ToDoItem> candidates = new ArrayList<ToDoItem>();
-	    Goal g = (Goal) parent;
-            List<ToDoItem> itemList = 
-                Designer.theDesigner().getToDoList().getToDoItemList();
-            synchronized (itemList) {
-                for (ToDoItem item : itemList) {
-                    if (item.getPoster().supports(g)) {
-                        candidates.add(item);
-                    }
-                }
-            }
-	    return candidates.indexOf(child);
-	}
-	return -1;
+    if (parent instanceof Goal) {
+      Goal g = (Goal) parent;
+      int count = 0;
+      List<ToDoItem> itemList = Designer.theDesigner().getToDoList().getToDoItemList();
+      synchronized (itemList) {
+        for (ToDoItem item : itemList) {
+          if (item.getPoster().supports(g)) {
+            count++;
+          }
+        }
+      }
+      return count;
     }
+    return 0;
+  }
 
-    /*
-     * @see javax.swing.tree.TreeModel#isLeaf(java.lang.Object)
-     */
-    public boolean isLeaf(Object node) {
-	if (node instanceof ToDoList) {
-	    return false;
-	}
-	if (node instanceof Goal && getChildCount(node) > 0) {
-	    return false;
-	}
-	return true;
+  /*
+   * @see javax.swing.tree.TreeModel#getIndexOfChild(
+   * java.lang.Object, java.lang.Object)
+   */
+  public int getIndexOfChild(Object parent, Object child) {
+    if (parent instanceof ToDoList) {
+      return getGoalList().indexOf(child);
     }
-
-    /*
-     * @see javax.swing.tree.TreeModel#valueForPathChanged(
-     * javax.swing.tree.TreePath, java.lang.Object)
-     */
-    public void valueForPathChanged(TreePath path, Object newValue) { }
-
-    /*
-     * @see javax.swing.tree.TreeModel#addTreeModelListener(javax.swing.event.TreeModelListener)
-     */
-    public void addTreeModelListener(TreeModelListener l) { }
-
-    /*
-     * @see javax.swing.tree.TreeModel#removeTreeModelListener(javax.swing.event.TreeModelListener)
-     */
-    public void removeTreeModelListener(TreeModelListener l) { }
-
-
-    /**
-     * @return the goals
-     */
-    public List<Goal> getGoalList() {
-        return Designer.theDesigner().getGoalModel().getGoalList();
+    if (parent instanceof Goal) {
+      // instead of making a new list, decrement index, return when
+      // found and index == 0
+      List<ToDoItem> candidates = new ArrayList<ToDoItem>();
+      Goal g = (Goal) parent;
+      List<ToDoItem> itemList = Designer.theDesigner().getToDoList().getToDoItemList();
+      synchronized (itemList) {
+        for (ToDoItem item : itemList) {
+          if (item.getPoster().supports(g)) {
+            candidates.add(item);
+          }
+        }
+      }
+      return candidates.indexOf(child);
     }
-    
+    return -1;
+  }
+
+  /*
+   * @see javax.swing.tree.TreeModel#isLeaf(java.lang.Object)
+   */
+  public boolean isLeaf(Object node) {
+    if (node instanceof ToDoList) {
+      return false;
+    }
+    if (node instanceof Goal && getChildCount(node) > 0) {
+      return false;
+    }
+    return true;
+  }
+
+  /*
+   * @see javax.swing.tree.TreeModel#valueForPathChanged(
+   * javax.swing.tree.TreePath, java.lang.Object)
+   */
+  public void valueForPathChanged(TreePath path, Object newValue) {}
+
+  /*
+   * @see javax.swing.tree.TreeModel#addTreeModelListener(javax.swing.event.TreeModelListener)
+   */
+  public void addTreeModelListener(TreeModelListener l) {}
+
+  /*
+   * @see javax.swing.tree.TreeModel#removeTreeModelListener(javax.swing.event.TreeModelListener)
+   */
+  public void removeTreeModelListener(TreeModelListener l) {}
+
+  /**
+   * @return the goals
+   */
+  public List<Goal> getGoalList() {
+    return Designer.theDesigner().getGoalModel().getGoalList();
+  }
 }

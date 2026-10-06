@@ -26,7 +26,6 @@ package org.argouml.uml.ui.foundation.core;
 
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
-
 import org.argouml.i18n.Translator;
 import org.argouml.uml.diagram.ui.ActionAddAttribute;
 import org.argouml.uml.ui.ActionDeleteSingleModelElement;
@@ -45,57 +44,43 @@ import org.tigris.swidgets.FlexiGridLayout;
  */
 public class PropPanelAttribute extends PropPanelStructuralFeature {
 
-    /**
-     * The constructor.
-     *
-     */
-    public PropPanelAttribute() {
-        super("Attribute", ConfigLoader.getTabPropsOrientation());
+  /** The constructor. */
+  public PropPanelAttribute() {
+    super("Attribute", ConfigLoader.getTabPropsOrientation());
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.stereotype"),
-                getStereotypeSelector());
-        addField(Translator.localize("label.owner"),
-                getOwnerScroll());
-        addField(Translator.localize("label.multiplicity"),
-                getMultiplicityComboBox());
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.stereotype"), getStereotypeSelector());
+    addField(Translator.localize("label.owner"), getOwnerScroll());
+    addField(Translator.localize("label.multiplicity"), getMultiplicityComboBox());
 
-        addSeperator();
+    addSeperator();
 
-        addField(Translator.localize("label.type"),
-                new UMLComboBoxNavigator(
-                        this,
-                        Translator.localize("label.class.navigate.tooltip"),
-                        getTypeComboBox()));
+    addField(
+        Translator.localize("label.type"),
+        new UMLComboBoxNavigator(
+            this, Translator.localize("label.class.navigate.tooltip"), getTypeComboBox()));
 
-        // addField(Translator.localize("label.initial-value"), new
-        // JScrollPane(new UMLLinkedList(new
-        // UMLAttributeInitialValueListModel())));
-        // TODO: The following line is my hack fix for the above line.
-        // this fixes issue 1378 but re-introduces a deprecated class
-        // IMO the initial value should not be a combo or a list
-        // but a simple text field. Bob Tarling 12 Feb 2004.
-        addField(Translator.localize("label.initial-value"),
-                new UMLInitialValueComboBox(this));
+    // addField(Translator.localize("label.initial-value"), new
+    // JScrollPane(new UMLLinkedList(new
+    // UMLAttributeInitialValueListModel())));
+    // TODO: The following line is my hack fix for the above line.
+    // this fixes issue 1378 but re-introduces a deprecated class
+    // IMO the initial value should not be a combo or a list
+    // but a simple text field. Bob Tarling 12 Feb 2004.
+    addField(Translator.localize("label.initial-value"), new UMLInitialValueComboBox(this));
 
-        add(getVisibilityPanel());
-        add(getChangeabilityRadioButtonPanel());
+    add(getVisibilityPanel());
+    add(getChangeabilityRadioButtonPanel());
 
-        JPanel modifiersPanel = new JPanel(new FlexiGridLayout(0, 3,
-                FlexiGridLayout.ROWCOLPREFERRED));
-        modifiersPanel.setBorder(new TitledBorder(
-                Translator.localize("label.modifiers")));
-        modifiersPanel.add(getOwnerScopeCheckbox());
-        add(modifiersPanel);
+    JPanel modifiersPanel = new JPanel(new FlexiGridLayout(0, 3, FlexiGridLayout.ROWCOLPREFERRED));
+    modifiersPanel.setBorder(new TitledBorder(Translator.localize("label.modifiers")));
+    modifiersPanel.add(getOwnerScopeCheckbox());
+    add(modifiersPanel);
 
-
-        addAction(new ActionNavigateContainerElement());
-        addAction(new ActionAddAttribute());
-        addAction(new ActionAddDataType());
-        addAction(new ActionNewStereotype());
-        addAction(new ActionDeleteSingleModelElement());
-    }
-
-
+    addAction(new ActionNavigateContainerElement());
+    addAction(new ActionAddAttribute());
+    addAction(new ActionAddDataType());
+    addAction(new ActionNewStereotype());
+    addAction(new ActionDeleteSingleModelElement());
+  }
 } /* end class PropPanelAttribute */

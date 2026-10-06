@@ -25,99 +25,91 @@
 package org.argouml.ui.explorer;
 
 import java.util.Comparator;
-
 import javax.swing.tree.DefaultMutableTreeNode;
-
+import org.argouml.i18n.Translator;
 import org.argouml.model.InvalidElementException;
 import org.argouml.model.Model;
-import org.argouml.i18n.Translator;
 import org.tigris.gef.base.Diagram;
 
 /**
  * Sorts explorer nodes by their user object name.
  *
- * @author  alexb
+ * @author alexb
  * @since 0.15.2, Created on 28 September 2003, 10:02
  */
-public class NameOrder
-    implements Comparator {
+public class NameOrder implements Comparator {
 
-    /**
-     * Creates a new instance of NameOrder.
-     */
-    public NameOrder() {
+  /** Creates a new instance of NameOrder. */
+  public NameOrder() {}
+
+  /**
+   * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+   */
+  public int compare(Object obj1, Object obj2) {
+    if (obj1 instanceof DefaultMutableTreeNode) {
+      DefaultMutableTreeNode node = (DefaultMutableTreeNode) obj1;
+      obj1 = node.getUserObject();
     }
 
-    /**
-     * @see java.util.Comparator#compare(java.lang.Object,
-     *  java.lang.Object)
-     */
-    public int compare(Object obj1, Object obj2) {
-	if (obj1 instanceof DefaultMutableTreeNode) {
-	    DefaultMutableTreeNode node = (DefaultMutableTreeNode) obj1;
-	    obj1 = node.getUserObject();
-	}
-
-	if (obj2 instanceof DefaultMutableTreeNode) {
-	    DefaultMutableTreeNode node = (DefaultMutableTreeNode) obj2;
-	    obj2 = node.getUserObject();
-	}
-
-        return compareUserObjects(obj1, obj2);
+    if (obj2 instanceof DefaultMutableTreeNode) {
+      DefaultMutableTreeNode node = (DefaultMutableTreeNode) obj2;
+      obj2 = node.getUserObject();
     }
 
-    /**
-     * Alphabetic ordering of user object names instead of type names.
-     *
-     * @param obj Diagram or Base
-     * @param obj1 Diagram or Base
-     * @return 0 if invalid params. 0 if the objects are equally named.
-     *         A positive or negative int if the names differ.
-     */
-    protected int compareUserObjects(Object obj, Object obj1) {
-        if ((obj instanceof Diagram || Model.getFacade().isAModelElement(obj))
-                && (obj1 instanceof Diagram
-                        || Model.getFacade().isAModelElement(obj1))) {
-	    String name = getName(obj);
-	    String name1 = getName(obj1);
-            int ret = name.compareTo(name1);
+    return compareUserObjects(obj1, obj2);
+  }
 
-	    return ret;
-	}
+  /**
+   * Alphabetic ordering of user object names instead of type names.
+   *
+   * @param obj Diagram or Base
+   * @param obj1 Diagram or Base
+   * @return 0 if invalid params. 0 if the objects are equally named. A positive or negative int if
+   *     the names differ.
+   */
+  protected int compareUserObjects(Object obj, Object obj1) {
+    if ((obj instanceof Diagram || Model.getFacade().isAModelElement(obj))
+        && (obj1 instanceof Diagram || Model.getFacade().isAModelElement(obj1))) {
+      String name = getName(obj);
+      String name1 = getName(obj1);
+      int ret = name.compareTo(name1);
 
-	return 0;
+      return ret;
     }
 
-    /**
-     * Get the name of the diagram or model element.
-     *
-     * @param obj the item to fetch name from
-     * @return the name
-     */
-    private String getName(Object obj) {
-        String name;
-        if (obj instanceof Diagram) {
-            name = ((Diagram) obj).getName();
-        } else {
-            if (Model.getFacade().isAModelElement(obj)) { 
-                try {
-                    name = Model.getFacade().getName(obj);
-                } catch (InvalidElementException e) {
-                    name = Translator.localize("misc.name.deleted");
-                }
-            }
-            name = "??";
+    return 0;
+  }
+
+  /**
+   * Get the name of the diagram or model element.
+   *
+   * @param obj the item to fetch name from
+   * @return the name
+   */
+  private String getName(Object obj) {
+    String name;
+    if (obj instanceof Diagram) {
+      name = ((Diagram) obj).getName();
+    } else {
+      if (Model.getFacade().isAModelElement(obj)) {
+        try {
+          name = Model.getFacade().getName(obj);
+        } catch (InvalidElementException e) {
+          name = Translator.localize("misc.name.deleted");
         }
-        if (name == null) {
-            return "";
-        }
-        return name;
+      }
+      name = "??";
     }
+    if (name == null) {
+      return "";
+    }
+    return name;
+  }
 
-    /**
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-        return Translator.localize("combobox.order-by-name");
-    }
+  /**
+   * @see java.lang.Object#toString()
+   */
+  public String toString() {
+    return Translator.localize("combobox.order-by-name");
+  }
 }

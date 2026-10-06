@@ -20,202 +20,204 @@
 package cx.ring.model;
 
 import android.net.Uri;
-
 import cx.ring.history.HistoryText;
 import cx.ring.service.LocalService;
 
 public class TextMessage {
-    private static final String TAG = TextMessage.class.getSimpleName();
-    public static final Uri CONTENT_URI = Uri.withAppendedPath(LocalService.AUTHORITY_URI, "message");
+  private static final String TAG = TextMessage.class.getSimpleName();
+  public static final Uri CONTENT_URI = Uri.withAppendedPath(LocalService.AUTHORITY_URI, "message");
 
-    private long mID = 0;
-    private String mAccount = null;
-    private CallContact mContact = null;
-    private SipUri mNumber = null;
-    private long mTimestamp = 0;
+  private long mID = 0;
+  private String mAccount = null;
+  private CallContact mContact = null;
+  private SipUri mNumber = null;
+  private long mTimestamp = 0;
 
-    private int mType;
-    private Status mState = Status.UNKNOWN;
-    private String mMessage;
-    private String mCallID = "";
+  private int mType;
+  private Status mState = Status.UNKNOWN;
+  private String mMessage;
+  private String mCallID = "";
 
-    private boolean mRead = false;
-    private boolean mNotified = false;
+  private boolean mRead = false;
+  private boolean mNotified = false;
 
-    public Status getStatus() {
-        return mState;
+  public Status getStatus() {
+    return mState;
+  }
+
+  public enum Status {
+    UNKNOWN(0),
+    SENDING(1),
+    SENT(2),
+    READ(3),
+    FAILURE(4);
+
+    private final int s;
+
+    Status(int n) {
+      s = n;
     }
 
-    public enum Status {
-        UNKNOWN(0), SENDING(1), SENT(2), READ(3), FAILURE(4);
-
-        private final int s;
-
-        Status(int n) {
-            s = n;
-        }
-
-        public int toInt() {
-            return s;
-        }
-
-        private static final Status[] values = Status.values();
-
-        static Status fromString(String str) {
-            switch (str) {
-                case "SENDING":
-                    return SENDING;
-                case "SENT":
-                    return SENT;
-                case "READ":
-                    return READ;
-                case "FAILURE":
-                    return FAILURE;
-                case "UNKNOWN":
-                default:
-                    return UNKNOWN;
-            }
-        }
-
-        static Status fromInt(int n) {
-            return values[n];
-        }
+    public int toInt() {
+      return s;
     }
 
-    public TextMessage(boolean in, String message, SipUri number, String callid, String account) {
-        mAccount = account;
-        mNumber = number;
-        mMessage = message;
-        mTimestamp = System.currentTimeMillis();
-        mCallID = callid;
-        mType = in ? direction.INCOMING : direction.OUTGOING;
+    private static final Status[] values = Status.values();
+
+    static Status fromString(String str) {
+      switch (str) {
+        case "SENDING":
+          return SENDING;
+        case "SENT":
+          return SENT;
+        case "READ":
+          return READ;
+        case "FAILURE":
+          return FAILURE;
+        case "UNKNOWN":
+        default:
+          return UNKNOWN;
+      }
     }
 
-    public TextMessage(HistoryText h) {
-        mID = h.id;
-        mAccount = h.getAccountID();
-        mNumber = new SipUri(h.getNumber());
-        mTimestamp = h.getDate().getTime();
-        mType = h.isIncoming() ? direction.INCOMING : direction.OUTGOING;
-        mMessage = h.getMessage();
-        mCallID = h.getCallId();
-        mRead = h.isRead();
+    static Status fromInt(int n) {
+      return values[n];
     }
+  }
 
-    public String getRecordPath() {
-        return "";
+  public TextMessage(boolean in, String message, SipUri number, String callid, String account) {
+    mAccount = account;
+    mNumber = number;
+    mMessage = message;
+    mTimestamp = System.currentTimeMillis();
+    mCallID = callid;
+    mType = in ? direction.INCOMING : direction.OUTGOING;
+  }
+
+  public TextMessage(HistoryText h) {
+    mID = h.id;
+    mAccount = h.getAccountID();
+    mNumber = new SipUri(h.getNumber());
+    mTimestamp = h.getDate().getTime();
+    mType = h.isIncoming() ? direction.INCOMING : direction.OUTGOING;
+    mMessage = h.getMessage();
+    mCallID = h.getCallId();
+    mRead = h.isRead();
+  }
+
+  public String getRecordPath() {
+    return "";
+  }
+
+  public int getCallType() {
+    return mType;
+  }
+
+  public String getMessage() {
+    return mMessage;
+  }
+
+  public void setContact(CallContact contact) {
+    mContact = contact;
+  }
+
+  public void setCallId(String callId) {
+    this.mCallID = callId;
+  }
+
+  public String getCallId() {
+    return mCallID;
+  }
+
+  public void setNumber(SipUri number) {
+    this.mNumber = number;
+  }
+
+  public void read() {
+    mRead = true;
+  }
+
+  public void setStatus(int status) {
+    mState = Status.fromInt(status);
+  }
+
+  public interface direction {
+    int INCOMING = 1;
+    int OUTGOING = 2;
+  }
+
+  public void setID(long id) {
+    mID = id;
+  }
+
+  public long getId() {
+    return mID;
+  }
+
+  public long getTimestamp() {
+    return mTimestamp;
+  }
+
+  public void setTimestamp(long timestamp) {
+    this.mTimestamp = timestamp;
+  }
+
+  public void setAccount(String account) {
+    mAccount = account;
+  }
+
+  public String getAccount() {
+    return mAccount;
+  }
+
+  public String getTypeString() {
+    switch (mType) {
+      case direction.INCOMING:
+        return "INCOMING";
+      case direction.OUTGOING:
+        return "OUTGOING";
+      default:
+        return "UNDETERMINED";
     }
+  }
 
-    public int getCallType() {
-        return mType;
-    }
+  public void setState(int callState) {
+    mState = Status.fromInt(callState);
+  }
 
-    public String getMessage() {
-        return mMessage;
-    }
+  public CallContact getContact() {
+    return mContact;
+  }
 
-    public void setContact(CallContact contact) {
-        mContact = contact;
-    }
+  public String getNumber() {
+    return mNumber == null ? null : mNumber.getRawUriString();
+  }
 
-    public void setCallId(String callId) {
-        this.mCallID = callId;
-    }
+  public SipUri getNumberUri() {
+    return mNumber;
+  }
 
-    public String getCallId() {
-        return mCallID;
-    }
+  public boolean isOutgoing() {
+    return mType == direction.OUTGOING;
+  }
 
-    public void setNumber(SipUri number) {
-        this.mNumber = number;
-    }
+  public boolean isIncoming() {
+    return mType == direction.INCOMING;
+  }
 
-    public void read() {
-        mRead = true;
-    }
+  public boolean isRead() {
+    return mRead;
+  }
 
-    public void setStatus(int status) {
-        mState = Status.fromInt(status);
-    }
+  public void setRead(boolean read) {
+    mRead = read;
+  }
 
-    public interface direction {
-        int INCOMING = 1;
-        int OUTGOING = 2;
-    }
+  public boolean isNotified() {
+    return mNotified;
+  }
 
-    public void setID(long id) {
-        mID = id;
-    }
-
-    public long getId() {
-        return mID;
-    }
-
-    public long getTimestamp() {
-        return mTimestamp;
-    }
-
-    public void setTimestamp(long timestamp) {
-        this.mTimestamp = timestamp;
-    }
-
-    public void setAccount(String account) {
-        mAccount = account;
-    }
-
-    public String getAccount() {
-        return mAccount;
-    }
-
-    public String getTypeString() {
-        switch (mType) {
-            case direction.INCOMING:
-                return "INCOMING";
-            case direction.OUTGOING:
-                return "OUTGOING";
-            default:
-                return "UNDETERMINED";
-        }
-    }
-
-    public void setState(int callState) {
-        mState = Status.fromInt(callState);
-    }
-
-    public CallContact getContact() {
-        return mContact;
-    }
-
-    public String getNumber() {
-        return mNumber == null ? null : mNumber.getRawUriString();
-    }
-
-    public SipUri getNumberUri() {
-        return mNumber;
-    }
-
-    public boolean isOutgoing() {
-        return mType == direction.OUTGOING;
-    }
-
-    public boolean isIncoming() {
-        return mType == direction.INCOMING;
-    }
-
-    public boolean isRead() {
-        return mRead;
-    }
-
-    public void setRead(boolean read) {
-        mRead = read;
-    }
-
-    public boolean isNotified() {
-        return mNotified;
-    }
-
-    public void setNotified(boolean noti) {
-        mNotified = noti;
-    }
-
+  public void setNotified(boolean noti) {
+    mNotified = noti;
+  }
 }

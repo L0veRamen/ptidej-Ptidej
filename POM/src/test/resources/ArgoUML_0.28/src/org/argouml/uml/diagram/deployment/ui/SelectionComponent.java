@@ -25,90 +25,77 @@
 package org.argouml.uml.diagram.deployment.ui;
 
 import javax.swing.Icon;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.model.Model;
 import org.argouml.uml.diagram.ui.SelectionNodeClarifiers2;
 import org.tigris.gef.presentation.Fig;
 
-/**
- * The selection buttons for a component.
- *
- */
+/** The selection buttons for a component. */
 public class SelectionComponent extends SelectionNodeClarifiers2 {
 
-    private static Icon dep =
-            ResourceLoaderWrapper.lookupIconResource("Dependency");
+  private static Icon dep = ResourceLoaderWrapper.lookupIconResource("Dependency");
 
-    private static Icon depRight =
-            ResourceLoaderWrapper.lookupIconResource("DependencyRight");
+  private static Icon depRight = ResourceLoaderWrapper.lookupIconResource("DependencyRight");
 
-    /*
-     * North, South, West, East, South-West
-     */
-    private static Icon icons[] = 
-    {dep,
-     dep,
-     depRight,
-     depRight,
-     null,
-    };
-    
-    // TODO: I18N required
-    private static String instructions[] = 
-    {"Add a component",
-     "Add a component",
-     "Add a component",
-     "Add a component",
-     null,
-     "Move object(s)",
-    };
+  /*
+   * North, South, West, East, South-West
+   */
+  private static Icon icons[] = {
+    dep, dep, depRight, depRight, null,
+  };
 
+  // TODO: I18N required
+  private static String instructions[] = {
+    "Add a component",
+    "Add a component",
+    "Add a component",
+    "Add a component",
+    null,
+    "Move object(s)",
+  };
 
-    /**
-     * Construct a new SelectionComponent for the given Fig.
-     *
-     * @param f The given Fig.
-     */
-    public SelectionComponent(Fig f) {
-        super(f);
+  /**
+   * Construct a new SelectionComponent for the given Fig.
+   *
+   * @param f The given Fig.
+   */
+  public SelectionComponent(Fig f) {
+    super(f);
+  }
+
+  @Override
+  protected Icon[] getIcons() {
+    if (Model.getModelManagementHelper().isReadOnly(getContent().getOwner())) {
+      return new Icon[] {null, dep, depRight, null, null};
     }
+    return icons;
+  }
 
-    @Override
-    protected Icon[] getIcons() {
-        if (Model.getModelManagementHelper().isReadOnly(
-                getContent().getOwner())) {
-            return new Icon[] {null, dep, depRight, null, null };
-        }
-        return icons;
-    }
+  @Override
+  protected String getInstructions(int index) {
+    return instructions[index - BASE];
+  }
 
-    @Override
-    protected String getInstructions(int index) {
-        return instructions[index - BASE];
-    }
+  @Override
+  protected Object getNewEdgeType(int index) {
+    return Model.getMetaTypes().getDependency();
+  }
 
-    @Override
-    protected Object getNewEdgeType(int index) {
-        return Model.getMetaTypes().getDependency();
-    }
+  @Override
+  protected Object getNewNode(int index) {
+    return Model.getCoreFactory().createComponent();
+  }
 
-    @Override
-    protected Object getNewNode(int index) {
-        return Model.getCoreFactory().createComponent();
-    }
-    
-    @Override
-    protected Object getNewNodeType(int index) {
-        return Model.getMetaTypes().getComponent();
-    }
+  @Override
+  protected Object getNewNodeType(int index) {
+    return Model.getMetaTypes().getComponent();
+  }
 
-    @Override
-    protected boolean isReverseEdge(int index) {
-        if (index == LEFT || index == BOTTOM) {
-            return true;
-        }
-        return false;
+  @Override
+  protected boolean isReverseEdge(int index) {
+    if (index == LEFT || index == BOTTOM) {
+      return true;
     }
-
+    return false;
+  }
 }

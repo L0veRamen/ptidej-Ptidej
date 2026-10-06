@@ -33,36 +33,30 @@ import org.tigris.gef.base.Layer;
  */
 public class FigUsage extends FigDependency {
 
-    /**
-     * The constructor.
-     *
-     */
-    public FigUsage() {
-        super();
-    }
+  /** The constructor. */
+  public FigUsage() {
+    super();
+  }
 
-    /**
-     * The constructor.
-     *
-     * @param edge the owning UML element
-     */
-    public FigUsage(Object edge) {
-        super(edge);
-    }
+  /**
+   * The constructor.
+   *
+   * @param edge the owning UML element
+   */
+  public FigUsage(Object edge) {
+    super(edge);
+  }
 
-    /**
-     * The constructor.
-     *
-     * @param edge the owning UML element
-     * @param lay the layer
-     */
-    public FigUsage(Object edge, Layer lay) {
-        super(edge, lay);
-    }
+  /**
+   * The constructor.
+   *
+   * @param edge the owning UML element
+   * @param lay the layer
+   */
+  public FigUsage(Object edge, Layer lay) {
+    super(edge, lay);
+  }
 
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -1805275467987372774L;
+  /** The UID. */
+  private static final long serialVersionUID = -1805275467987372774L;
 } /* end class FigUsage */
-

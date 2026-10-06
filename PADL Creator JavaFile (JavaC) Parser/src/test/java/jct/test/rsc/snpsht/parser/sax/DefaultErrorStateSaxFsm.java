@@ -1,11 +1,11 @@
 /* (c) Copyright 2008 and following years, Julien Tanteri,
  * University of Montreal.
- * 
+ *
  * Use and copying of this software and preparation of derivative works
  * based upon this software are permitted. Any copy of this software or
  * of any derivative work must include the above copyright notice of
  * the author, this paragraph and the one after it.
- * 
+ *
  * This software is made available AS IS, and THE AUTHOR DISCLAIMS
  * ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
@@ -14,33 +14,32 @@
  * EXPRESSLY DISCLAIMED, WHETHER ARISING IN CONTRACT, TORT (INCLUDING
  * NEGLIGENCE) OR STRICT LIABILITY, EVEN IF THE AUTHOR IS ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGES.
- * 
+ *
  * All Rights Reserved.
  */
 package jct.test.rsc.snpsht.parser.sax;
 
 public class DefaultErrorStateSaxFsm extends AbstractStateSaxFsm {
-	private String message;
+  private String message;
 
-	public DefaultErrorStateSaxFsm(
-		SimpleSaxFsmParser fsm,
-		AbstractStateSaxFsm previewState,
-		String message) {
-		super(fsm, previewState);
-		this.message = message;
-	}
+  public DefaultErrorStateSaxFsm(
+      SimpleSaxFsmParser fsm, AbstractStateSaxFsm previewState, String message) {
+    super(fsm, previewState);
+    this.message = message;
+  }
 
-	public String getMessage() {
-		return this.message;
-	}
+  public String getMessage() {
+    return this.message;
+  }
 
-	@Override
-	public String toString() {
-		String toRet = "<DefaultErrorStateSaxFsm>\n" +
-		"Error during file parsing.\nMessage: " + 
-		getMessage() + "\nPreview state: " + getPreviewState();
-		return toRet;
-	}
-
-
+  @Override
+  public String toString() {
+    String toRet =
+        "<DefaultErrorStateSaxFsm>\n"
+            + "Error during file parsing.\nMessage: "
+            + getMessage()
+            + "\nPreview state: "
+            + getPreviewState();
+    return toRet;
+  }
 }

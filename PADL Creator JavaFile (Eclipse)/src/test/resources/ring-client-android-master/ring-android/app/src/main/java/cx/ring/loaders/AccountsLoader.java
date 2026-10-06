@@ -25,67 +25,62 @@ import android.content.Context;
 import android.os.OperationCanceledException;
 import android.os.RemoteException;
 import android.util.Log;
-
+import cx.ring.model.account.Account;
+import cx.ring.service.IDRingService;
 import java.util.ArrayList;
 import java.util.Map;
 
-import cx.ring.model.account.Account;
-import cx.ring.service.IDRingService;
-
 public class AccountsLoader extends AsyncTaskLoader<ArrayList<Account>> {
 
-    private static final String TAG = ContactsLoader.class.getSimpleName();
-    IDRingService mService;
+  private static final String TAG = ContactsLoader.class.getSimpleName();
+  IDRingService mService;
 
-    public AccountsLoader(Context context, IDRingService service) {
-        super(context);
-        Log.d(TAG, "AccountsLoader constructor");
-        mService = service;
-    }
+  public AccountsLoader(Context context, IDRingService service) {
+    super(context);
+    Log.d(TAG, "AccountsLoader constructor");
+    mService = service;
+  }
 
-    private boolean checkCancel() {
-        if (isLoadInBackgroundCanceled()) {
-            Log.d(TAG, "AccountsLoader cancelled");
-            throw new OperationCanceledException();
-        }
-        if (isAbandoned()) {
-            Log.d(TAG, "AccountsLoader abandoned");
-            return true;
-        }
-        return false;
+  private boolean checkCancel() {
+    if (isLoadInBackgroundCanceled()) {
+      Log.d(TAG, "AccountsLoader cancelled");
+      throw new OperationCanceledException();
     }
+    if (isAbandoned()) {
+      Log.d(TAG, "AccountsLoader abandoned");
+      return true;
+    }
+    return false;
+  }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public ArrayList<Account> loadInBackground() {
-        Log.d(TAG, "AccountsLoader loadInBackground");
-        ArrayList<Account> accounts = new ArrayList<>();
-        if (checkCancel() || mService == null)
-            return null;
-        try {
-            ArrayList<String> accountIDs = (ArrayList<String>) mService.getAccountList();
-            Map<String, String> details;
-            ArrayList<Map<String, String>> credentials;
-            Map<String, String> state;
-            for (String id : accountIDs) {
-                if (checkCancel())
-                    return null;
-                details = (Map<String, String>) mService.getAccountDetails(id);
-                state = (Map<String, String>) mService.getVolatileAccountDetails(id);
-                credentials = (ArrayList<Map<String, String>>) mService.getCredentials(id);
-                Account tmp = new Account(id, details, credentials, state);
-                accounts.add(tmp);
-            }
-        } catch (RemoteException | NullPointerException e) {
-            Log.e(TAG, e.toString());
-        }
-        if (checkCancel())
-            return null;
-        return accounts;
+  @SuppressWarnings("unchecked")
+  @Override
+  public ArrayList<Account> loadInBackground() {
+    Log.d(TAG, "AccountsLoader loadInBackground");
+    ArrayList<Account> accounts = new ArrayList<>();
+    if (checkCancel() || mService == null) return null;
+    try {
+      ArrayList<String> accountIDs = (ArrayList<String>) mService.getAccountList();
+      Map<String, String> details;
+      ArrayList<Map<String, String>> credentials;
+      Map<String, String> state;
+      for (String id : accountIDs) {
+        if (checkCancel()) return null;
+        details = (Map<String, String>) mService.getAccountDetails(id);
+        state = (Map<String, String>) mService.getVolatileAccountDetails(id);
+        credentials = (ArrayList<Map<String, String>>) mService.getCredentials(id);
+        Account tmp = new Account(id, details, credentials, state);
+        accounts.add(tmp);
+      }
+    } catch (RemoteException | NullPointerException e) {
+      Log.e(TAG, e.toString());
     }
+    if (checkCancel()) return null;
+    return accounts;
+  }
 
-    @Override
-    protected void onStopLoading() {
-        cancelLoad();
-    }
+  @Override
+  protected void onStopLoading() {
+    cancelLoad();
+  }
 }

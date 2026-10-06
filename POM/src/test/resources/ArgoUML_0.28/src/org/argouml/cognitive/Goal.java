@@ -24,99 +24,98 @@
 
 package org.argouml.cognitive;
 
-
-/**
- * This class models a goal of a designer.
- *
- */
+/** This class models a goal of a designer. */
 public class Goal {
 
-    // TODO: values
+  // TODO: values
 
-    ////////////////////////////////////////////////////////////////
-    // constants
+  ////////////////////////////////////////////////////////////////
+  // constants
 
-    /**
-     * The unspecified goal.
-     */
-    private static final Goal UNSPEC = new Goal("label.goal.unspecified", 1);
+  /** The unspecified goal. */
+  private static final Goal UNSPEC = new Goal("label.goal.unspecified", 1);
 
-    ////////////////////////////////////////////////////////////////
-    // instance variables
-    /**
-     * The localized name.
-     */
-    private String name;
+  ////////////////////////////////////////////////////////////////
+  // instance variables
+  /** The localized name. */
+  private String name;
 
-    /**
-     * The priority.
-     */
-    private int priority;
+  /** The priority. */
+  private int priority;
 
-    /**
-     * The constructor.
-     *
-     * @param n the name (to be localized)
-     * @param p the priority
-     */
-    public Goal(String n, int p) {
-	name = Translator.localize(n);
-	priority = p;
+  /**
+   * The constructor.
+   *
+   * @param n the name (to be localized)
+   * @param p the priority
+   */
+  public Goal(String n, int p) {
+    name = Translator.localize(n);
+    priority = p;
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // accessors
+
+  /*
+   * @see java.lang.Object#hashCode()
+   */
+  public int hashCode() {
+    if (name == null) {
+      return 0;
     }
+    return name.hashCode();
+  }
 
-    ////////////////////////////////////////////////////////////////
-    // accessors
-
-    /*
-     * @see java.lang.Object#hashCode()
-     */
-    public int hashCode() {
-        if (name == null) {
-            return 0;
-        }
-        return name.hashCode();
+  /*
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  public boolean equals(Object d2) {
+    if (!(d2 instanceof Goal)) {
+      return false;
     }
+    return ((Goal) d2).getName().equals(getName());
+  }
 
-    /*
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    public boolean equals(Object d2) {
-	if (!(d2 instanceof Goal)) {
-	    return false;
-	}
-	return ((Goal) d2).getName().equals(getName());
-    }
+  /**
+   * @return the localized name
+   */
+  public String getName() {
+    return name;
+  }
 
-    /**
-     * @return the localized name
-     */
-    public String getName() { return name; }
+  /**
+   * @param n the localized name
+   */
+  public void setName(String n) {
+    name = n;
+  }
 
-    /**
-     * @param n the localized name
-     */
-    public void setName(String n) { name = n; }
+  /**
+   * @return the priority
+   */
+  public int getPriority() {
+    return priority;
+  }
 
-    /**
-     * @return the priority
-     */
-    public int getPriority() { return priority; }
+  /**
+   * @param p the priority
+   */
+  public void setPriority(int p) {
+    priority = p;
+  }
 
-    /**
-     * @param p the priority
-     */
-    public void setPriority(int p) { priority = p; }
+  /*
+   * @see java.lang.Object#toString()
+   */
+  public String toString() {
+    return getName();
+  }
 
-    /*
-     * @see java.lang.Object#toString()
-     */
-    public String toString() { return getName(); }
-
-    /**
-     * @return Returns the unspecified goal.
-     */
-    public static Goal getUnspecifiedGoal() {
-        return UNSPEC;
-    }
-
+  /**
+   * @return Returns the unspecified goal.
+   */
+  public static Goal getUnspecifiedGoal() {
+    return UNSPEC;
+  }
 } /* end class Goal */

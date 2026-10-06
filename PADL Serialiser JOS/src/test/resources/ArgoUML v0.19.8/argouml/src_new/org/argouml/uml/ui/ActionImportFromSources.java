@@ -22,61 +22,51 @@
 // CALIFORNIA HAS NO OBLIGATIONS TO PROVIDE MAINTENANCE, SUPPORT,
 // UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
-
 package org.argouml.uml.ui;
 
 import java.awt.event.ActionEvent;
 import org.apache.log4j.Logger;
-
 import org.argouml.uml.reveng.Import;
 
-
-/** Action to trigger importing from sources.
+/**
+ * Action to trigger importing from sources.
+ *
  * @stereotype singleton
  */
 public class ActionImportFromSources extends UMLAction {
 
-    private static final Logger LOG =
-        Logger.getLogger(ActionImportFromSources.class);
+  private static final Logger LOG = Logger.getLogger(ActionImportFromSources.class);
 
-    ////////////////////////////////////////////////////////////////
-    // static variables
+  ////////////////////////////////////////////////////////////////
+  // static variables
 
-    /**
-     * The singleton.
-     */
-    private static final ActionImportFromSources SINGLETON =
-        new ActionImportFromSources();
+  /** The singleton. */
+  private static final ActionImportFromSources SINGLETON = new ActionImportFromSources();
 
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  /** The constructor. */
+  protected ActionImportFromSources() {
+    // this is not a "global" action, since it is never downlighted...
+    super("action.import-sources", HAS_ICON);
+  }
 
-    /**
-     *  The constructor.
-     */
-    protected ActionImportFromSources() {
-        // this is not a "global" action, since it is never downlighted...
-        super("action.import-sources", HAS_ICON);
-    }
+  ////////////////////////////////////////////////////////////////
+  // main methods
 
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent event) {
+    new Import();
+  }
 
-    ////////////////////////////////////////////////////////////////
-    // main methods
-
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent event) {
-    	new Import();
-    }
-
-
-    /**
-     * @return Returns the SINGLETON.
-     */
-    public static ActionImportFromSources getInstance() {
-        return SINGLETON;
-    }
+  /**
+   * @return Returns the SINGLETON.
+   */
+  public static ActionImportFromSources getInstance() {
+    return SINGLETON;
+  }
 }
 /* end class ActionImportFromSources */

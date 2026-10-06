@@ -25,72 +25,59 @@
 package org.argouml.ui.cmd;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.cognitive.Designer;
 import org.argouml.cognitive.Poster;
 import org.argouml.cognitive.ToDoItem;
 import org.argouml.ui.EmailExpertDialog;
 import org.argouml.util.osdep.OsUtil;
 
-
-
-/**
- * The action to send an email to an expert.
- *
- */
+/** The action to send an email to an expert. */
 public class ActionEmailExpert extends ToDoItemAction {
 
-    /**
-     * The constructor.
-     */
-    public ActionEmailExpert() {
-        super("action.send-email-to-expert", HAS_ICON);
+  /** The constructor. */
+  public ActionEmailExpert() {
+    super("action.send-email-to-expert", HAS_ICON);
+  }
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    if (OsUtil.isWin32()) {
+      ToDoItem target = (ToDoItem) getRememberedTarget();
+      Poster p = target.getPoster();
+      String to = p.getExpertEmail();
+      String subject = target.getHeadline().trim();
+      /* The replaceAll function is only supported in Java 1.4 and up.
+       * Once we stop supporting Java 1.3,
+       * we can reintroduce this clean solution!
+       * subject = subject.replaceAll("\\s", "%20");
+       */
+      int i;
+      while ((i = subject.indexOf(" ")) >= 0) {
+        StringBuffer s = new StringBuffer(subject);
+        subject = s.replace(i, i + 1, "%20").toString();
+      }
+
+      Designer dsgr = Designer.theDesigner();
+      try {
+        // MVW: This works under MSWindows only, I guess.
+        Runtime.getRuntime()
+            .exec("cmd /c start mailto:" + to + "?subject=" + subject + "&body=" + dsgr);
+      } catch (Exception ex) {
+        /*ignore for now*/
+      }
+    } else {
+      EmailExpertDialog dialog = new EmailExpertDialog();
+      dialog.setTarget(getRememberedTarget());
+      dialog.setVisible(true);
     }
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-        if (OsUtil.isWin32()) {
-            ToDoItem target = (ToDoItem) getRememberedTarget();
-            Poster p = target.getPoster();
-            String to = p.getExpertEmail();
-            String subject = target.getHeadline().trim();
-            /* The replaceAll function is only supported in Java 1.4 and up.
-             * Once we stop supporting Java 1.3,
-             * we can reintroduce this clean solution!
-             * subject = subject.replaceAll("\\s", "%20");
-             */
-            int i;
-            while ((i = subject.indexOf(" ")) >= 0) {
-                StringBuffer s = new StringBuffer(subject);
-                subject = s.replace(i, i + 1, "%20").toString();
-            }
-
-            Designer dsgr = Designer.theDesigner();
-            try {
-                //MVW: This works under MSWindows only, I guess.
-                Runtime.getRuntime().exec(
-                    "cmd /c start mailto:" + to
-                    + "?subject=" + subject
-                    + "&body=" + dsgr);
-            } catch (Exception ex) {
-                /*ignore for now*/
-            }
-        } else {
-            EmailExpertDialog dialog = new EmailExpertDialog();
-            dialog.setTarget(getRememberedTarget());
-            dialog.setVisible(true);
-        }
-    }
-
-    /**
-     * @see org.argouml.ui.cmd.ToDoItemAction#shouldBeEnabled(java.lang.Object)
-     */
-    public boolean shouldBeEnabled(Object target) {
-        return getRememberedTarget() != null
-            && getRememberedTarget() instanceof ToDoItem;
-    }
-
+  /**
+   * @see org.argouml.ui.cmd.ToDoItemAction#shouldBeEnabled(java.lang.Object)
+   */
+  public boolean shouldBeEnabled(Object target) {
+    return getRememberedTarget() != null && getRememberedTarget() instanceof ToDoItem;
+  }
 } /* end class ActionEmailExpert */
-

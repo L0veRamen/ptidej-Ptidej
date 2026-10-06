@@ -1,6 +1,3 @@
 package exemple;
 
-public interface B {
-
-
-}
+public interface B {}

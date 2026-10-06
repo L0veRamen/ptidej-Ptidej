@@ -25,56 +25,56 @@ package org.argouml.persistence;
 
 /**
  * The results of the last project load.
+ *
  * @deprecated in 0.22.1 use PersistenceManager
  * @author Bob Tarling
  */
 public class LastLoadInfo {
 
-    private static final LastLoadInfo INSTANCE = new LastLoadInfo();
+  private static final LastLoadInfo INSTANCE = new LastLoadInfo();
 
-    /**
-     * Get the singletone instance.
-     * @return the singletone instance.
-     */
-    public static LastLoadInfo getInstance() {
-        return INSTANCE;
-    }
+  /**
+   * Get the singletone instance.
+   *
+   * @return the singletone instance.
+   */
+  public static LastLoadInfo getInstance() {
+    return INSTANCE;
+  }
 
-    private LastLoadInfo() {
+  private LastLoadInfo() {}
 
-    }
+  /**
+   * Get the last message which caused loading to fail. Used for junit tests.
+   *
+   * @return the last message which caused loading to fail
+   */
+  public String getLastLoadMessage() {
+    return PersistenceManager.getInstance().getLastLoadMessage();
+  }
 
-    /**
-     * Get the last message which caused loading to fail. Used for junit tests.
-     *
-     * @return the last message which caused loading to fail
-     */
-    public String getLastLoadMessage() {
-        return PersistenceManager.getInstance().getLastLoadMessage();
-    }
+  /**
+   * Set the last load message. Used for junit tests.
+   *
+   * @param msg the last load message
+   */
+  public void setLastLoadMessage(String msg) {
+    PersistenceManager.getInstance().setLastLoadMessage(msg);
+  }
 
-    /**
-     * Set the last load message. Used for junit tests.
-     *
-     * @param msg the last load message
-     */
-    public void setLastLoadMessage(String msg) {
-        PersistenceManager.getInstance().setLastLoadMessage(msg);
-    }
+  /**
+   * @return the status of the last load attempt. Used for junit tests.
+   */
+  public boolean getLastLoadStatus() {
+    return PersistenceManager.getInstance().getLastLoadStatus();
+  }
 
-    /**
-     * @return the status of the last load attempt. Used for junit tests.
-     */
-    public boolean getLastLoadStatus() {
-        return PersistenceManager.getInstance().getLastLoadStatus();
-    }
-
-    /**
-     * Set the status of the last load attempt. Used for junit tests.
-     *
-     * @param status the status of the last load attempt
-     */
-    public void setLastLoadStatus(boolean status) {
-        PersistenceManager.getInstance().setLastLoadStatus(status);
-    }
+  /**
+   * Set the status of the last load attempt. Used for junit tests.
+   *
+   * @param status the status of the last load attempt
+   */
+  public void setLastLoadStatus(boolean status) {
+    PersistenceManager.getInstance().setLastLoadStatus(status);
+  }
 }

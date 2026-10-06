@@ -27,4 +27,4 @@ along with this program; if not, write to the Free Software
     <string name="call_human_state_failure">Başarısız</string>
     <string name="call_human_state_hold">Beklet</string>
     <string name="conference_human_state_hold">Beklet</string>
-    </resources>
+</resources>

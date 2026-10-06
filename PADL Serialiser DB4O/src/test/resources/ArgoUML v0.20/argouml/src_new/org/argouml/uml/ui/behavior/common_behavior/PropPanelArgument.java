@@ -26,7 +26,6 @@ package org.argouml.uml.ui.behavior.common_behavior;
 
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
-
 import org.argouml.i18n.Translator;
 import org.argouml.uml.ui.ActionDeleteSingleModelElement;
 import org.argouml.uml.ui.ActionNavigateAction;
@@ -38,32 +37,31 @@ import org.argouml.uml.ui.foundation.core.PropPanelModelElement;
 import org.argouml.util.ConfigLoader;
 
 /**
- * 
  * @since aug 10, 2003
- * @author Decki, Endi, Yayan. Polytechnic of Bandung Indonesia, Computer
- *         Engineering Departement
+ * @author Decki, Endi, Yayan. Polytechnic of Bandung Indonesia, Computer Engineering Departement
  */
 public class PropPanelArgument extends PropPanelModelElement {
 
-    // //////////////////////////////////////////////////////////////
-    // contructors
-    public PropPanelArgument() {
+  // //////////////////////////////////////////////////////////////
+  // contructors
+  public PropPanelArgument() {
 
-        super("Argument", ConfigLoader.getTabPropsOrientation());
+    super("Argument", ConfigLoader.getTabPropsOrientation());
 
-        addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.name"), getNameTextField());
 
-        UMLExpressionModel2 expressionModel = new UMLExpressionExpressionModel(
-                this, "expression");
-        addField(Translator.localize("label.value"), new JScrollPane(
-                new UMLExpressionBodyField(expressionModel, true),
-                ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER,
-                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER));
-        addField(Translator.localize("label.language"),
-                new UMLExpressionLanguageField(expressionModel, true));
+    UMLExpressionModel2 expressionModel = new UMLExpressionExpressionModel(this, "expression");
+    addField(
+        Translator.localize("label.value"),
+        new JScrollPane(
+            new UMLExpressionBodyField(expressionModel, true),
+            ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER,
+            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER));
+    addField(
+        Translator.localize("label.language"),
+        new UMLExpressionLanguageField(expressionModel, true));
 
-        addAction(new ActionNavigateAction());
-        addAction(new ActionDeleteSingleModelElement());
-
-    }
+    addAction(new ActionNavigateAction());
+    addAction(new ActionDeleteSingleModelElement());
+  }
 }

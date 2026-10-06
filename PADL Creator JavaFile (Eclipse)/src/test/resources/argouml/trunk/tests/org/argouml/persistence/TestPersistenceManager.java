@@ -25,14 +25,12 @@
 package org.argouml.persistence;
 
 import java.io.File;
-
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
-
 import junit.framework.TestCase;
 
 /**
- * Test class for PersistenceManager. Actually, the only tested method is 
+ * Test class for PersistenceManager. Actually, the only tested method is
  * getPersisterFromFileName().
  *
  * @since Jun 2, 2006
@@ -40,62 +38,57 @@ import junit.framework.TestCase;
  */
 public class TestPersistenceManager extends TestCase {
 
-    /**
-     * Constructor for TestPersistenceManager.
-     * @param arg0 is the name of the test case.
-     */
-    public TestPersistenceManager(String arg0) {
-        super(arg0);
-    }
-    
-    /**
-     * Test if the getPersisterFromFileName returns a correct implementation.
-     * 
-     */
-    public void testGetPersisterFromFileName() {
-        PersistenceManager persistence = PersistenceManager.getInstance();
-        AbstractFilePersister testPersister;
-        
-        // test an unknown file
-        testPersister = persistence.getPersisterFromFileName(
-                "unknown.foo");
-        assertNull(testPersister);
-        
-        // test project readable files
-        testPersister = persistence.getPersisterFromFileName(
-                "unknown." + new ZargoFilePersister().getExtension());
-        assertNotNull(testPersister);
-        
-        testPersister = persistence.getPersisterFromFileName(
-                "unknown." + new XmiFilePersister().getExtension());
-        assertNotNull(testPersister);
-        
-        testPersister = persistence.getPersisterFromFileName(
-                "unknown." + new XmlFilePersister().getExtension());
-        assertNotNull(testPersister);
-        
-        testPersister = persistence.getPersisterFromFileName(
-                "unknown." + new UmlFilePersister().getExtension());
-        assertNotNull(testPersister);
-        
-        testPersister = persistence.getPersisterFromFileName(
-                "unknown." + new ZipFilePersister().getExtension());
-        assertNotNull(testPersister);
-    }
-    
-    public void testSetSaveFileChooserFilters() {
-        JFileChooser chooser = new JFileChooser();
-        PersistenceManager persistence = PersistenceManager.getInstance();
-        persistence.setSaveFileChooserFilters(chooser, null);
-        
-        FileFilter[] fileFilters = chooser.getChoosableFileFilters();
-        assertNotNull(fileFilters);
-        assertEquals(4, fileFilters.length);
-        FileFilter defaultFileFilter = chooser.getFileFilter();
-        assertNotNull(defaultFileFilter);
-        assertTrue(defaultFileFilter.accept(new File(
-                "foo."
-                + new ZargoFilePersister().getExtension())));
-        
-    }
+  /**
+   * Constructor for TestPersistenceManager.
+   *
+   * @param arg0 is the name of the test case.
+   */
+  public TestPersistenceManager(String arg0) {
+    super(arg0);
+  }
+
+  /** Test if the getPersisterFromFileName returns a correct implementation. */
+  public void testGetPersisterFromFileName() {
+    PersistenceManager persistence = PersistenceManager.getInstance();
+    AbstractFilePersister testPersister;
+
+    // test an unknown file
+    testPersister = persistence.getPersisterFromFileName("unknown.foo");
+    assertNull(testPersister);
+
+    // test project readable files
+    testPersister =
+        persistence.getPersisterFromFileName("unknown." + new ZargoFilePersister().getExtension());
+    assertNotNull(testPersister);
+
+    testPersister =
+        persistence.getPersisterFromFileName("unknown." + new XmiFilePersister().getExtension());
+    assertNotNull(testPersister);
+
+    testPersister =
+        persistence.getPersisterFromFileName("unknown." + new XmlFilePersister().getExtension());
+    assertNotNull(testPersister);
+
+    testPersister =
+        persistence.getPersisterFromFileName("unknown." + new UmlFilePersister().getExtension());
+    assertNotNull(testPersister);
+
+    testPersister =
+        persistence.getPersisterFromFileName("unknown." + new ZipFilePersister().getExtension());
+    assertNotNull(testPersister);
+  }
+
+  public void testSetSaveFileChooserFilters() {
+    JFileChooser chooser = new JFileChooser();
+    PersistenceManager persistence = PersistenceManager.getInstance();
+    persistence.setSaveFileChooserFilters(chooser, null);
+
+    FileFilter[] fileFilters = chooser.getChoosableFileFilters();
+    assertNotNull(fileFilters);
+    assertEquals(4, fileFilters.length);
+    FileFilter defaultFileFilter = chooser.getFileFilter();
+    assertNotNull(defaultFileFilter);
+    assertTrue(
+        defaultFileFilter.accept(new File("foo." + new ZargoFilePersister().getExtension())));
+  }
 }

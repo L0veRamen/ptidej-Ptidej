@@ -4,35 +4,37 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
 package padl.analysis.repository.aacrelationships;
 
+import com.ibm.toad.cfparse.utils.Access;
 import padl.kernel.Cardinality;
-import padl.kernel.Constants;
 import padl.kernel.IField;
 import util.io.ProxyConsole;
 
-import com.ibm.toad.cfparse.utils.Access;
-
 /**
  * @author Yann-Gaël Guéhéneuc
- * @since  2004/08/01
+ * @since 2004/08/01
  */
 final class CadinalityOneAccessorsData implements IAccessorsData {
-	public Cardinality getCardinality() {
-		return Cardinality.One;
-	}
-	
-	public void setCardinality(Cardinality cardinality) {
-		ProxyConsole.getInstance().warningOutput().print("Trying to set the cardinality of a " + this.getClass().getSimpleName() + " which should have no effect.");
-	}
-	
-	public boolean matches(final String aTargetName, final IField aField) {
-		return (Access.isPrivate(aField.getVisibility()) || Access
-			.isProtected(aField.getVisibility()))
-				&& aField.getDisplayTypeName().equals(aTargetName);
-	}
+  public Cardinality getCardinality() {
+    return Cardinality.One;
+  }
+
+  public void setCardinality(Cardinality cardinality) {
+    ProxyConsole.getInstance()
+        .warningOutput()
+        .print(
+            "Trying to set the cardinality of a "
+                + this.getClass().getSimpleName()
+                + " which should have no effect.");
+  }
+
+  public boolean matches(final String aTargetName, final IField aField) {
+    return (Access.isPrivate(aField.getVisibility()) || Access.isProtected(aField.getVisibility()))
+        && aField.getDisplayTypeName().equals(aTargetName);
+  }
 }

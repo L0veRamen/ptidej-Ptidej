@@ -29,7 +29,6 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.ui.targetmanager.TargetManager;
@@ -50,129 +49,105 @@ import org.argouml.util.ConfigLoader;
 import org.tigris.swidgets.GridLayout2;
 import org.tigris.swidgets.Orientation;
 
+/** PropPanelPackage defines the Property Panel for Package elements. */
+public class PropPanelPackage extends PropPanelNamespace {
 
-/**
- * PropPanelPackage defines the Property Panel for Package elements.
- */
-public class PropPanelPackage extends PropPanelNamespace  {
+  private JPanel modifiersPanel;
+  private JScrollPane generalizationScroll;
+  private JScrollPane specializationScroll;
 
-    private JPanel modifiersPanel;
-    private JScrollPane generalizationScroll;
-    private JScrollPane specializationScroll;
+  private static UMLGeneralizableElementGeneralizationListModel generalizationListModel =
+      new UMLGeneralizableElementGeneralizationListModel();
+  private static UMLGeneralizableElementSpecializationListModel specializationListModel =
+      new UMLGeneralizableElementSpecializationListModel();
 
-    private static UMLGeneralizableElementGeneralizationListModel
-        generalizationListModel =
-        new UMLGeneralizableElementGeneralizationListModel();
-    private static UMLGeneralizableElementSpecializationListModel
-        specializationListModel =
-        new UMLGeneralizableElementSpecializationListModel();
+  /** The constructor. */
+  public PropPanelPackage() {
+    this("Package", lookupIcon("Package"), ConfigLoader.getTabPropsOrientation());
+  }
 
-    /**
-     * The constructor.
-     *
-     */
-    public PropPanelPackage() {
-        this("Package", lookupIcon("Package"),
-                ConfigLoader.getTabPropsOrientation());
+  /**
+   * Constructor for PropPanelPackage.
+   *
+   * @param title the title for this panel
+   * @param orientation the orientation
+   * @param icon the icon to show next to the title
+   */
+  public PropPanelPackage(String title, ImageIcon icon, Orientation orientation) {
+    super(title, icon, orientation);
+    placeElements();
+  }
+
+  /**
+   * Via this method, the GUI elements are added to the proppanel. Subclasses should override to
+   * place the elements the way they want.
+   */
+  protected void placeElements() {
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.stereotype"), getStereotypeSelector());
+    addField(Translator.localize("label.namespace"), getNamespaceSelector());
+
+    add(getNamespaceVisibilityPanel());
+
+    // TODO: facilitate importedElements.
+
+    modifiersPanel = new JPanel(new GridLayout2());
+    modifiersPanel.setBorder(new TitledBorder(Translator.localize("label.modifiers")));
+
+    modifiersPanel.add(new UMLGeneralizableElementAbstractCheckBox());
+    modifiersPanel.add(new UMLGeneralizableElementLeafCheckBox());
+    modifiersPanel.add(new UMLGeneralizableElementRootCheckBox());
+
+    add(modifiersPanel);
+    addSeperator();
+    addField(Translator.localize("label.generalizations"), getGeneralizationScroll());
+    addField(Translator.localize("label.specializations"), getSpecializationScroll());
+    addSeperator();
+    addField(Translator.localize("label.owned-elements"), getOwnedElementsScroll());
+
+    addAction(new ActionNavigateNamespace());
+    addAction(new ActionAddPackage());
+    addAction(new ActionAddDataType());
+    addAction(new ActionAddEnumeration());
+    addAction(new ActionNewStereotype());
+    addAction(new ActionNewTagDefinition());
+    addAction(new ActionDeleteSingleModelElement());
+  }
+
+  /** Add a package to the current package. */
+  public void addPackage() {
+    Object target = getTarget();
+    if (Model.getFacade().isAPackage(target)) {
+      Object /*MPackage*/ newPackage = Model.getModelManagementFactory().createPackage();
+      Object /*MPackage*/ currentPackage = target;
+      Model.getCoreHelper().addOwnedElement(currentPackage, newPackage);
+      TargetManager.getInstance().setTarget(newPackage);
     }
+  }
 
-    /**
-     * Constructor for PropPanelPackage.
-     * @param title the title for this panel
-     * @param orientation the orientation
-     * @param icon the icon to show next to the title
-     */
-    public PropPanelPackage(String title, ImageIcon icon,
-            Orientation orientation) {
-        super(title, icon, orientation);
-        placeElements();
+  /**
+   * Returns the generalizationScroll.
+   *
+   * @return JScrollPane
+   */
+  public JScrollPane getGeneralizationScroll() {
+    if (generalizationScroll == null) {
+      JList list = new UMLLinkedList(generalizationListModel);
+      generalizationScroll = new JScrollPane(list);
     }
+    return generalizationScroll;
+  }
 
-    /**
-     * Via this method, the GUI elements are added to the proppanel. Subclasses
-     * should override to place the elements the way they want.
-     */
-    protected void placeElements() {
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.stereotype"),
-                getStereotypeSelector());
-        addField(Translator.localize("label.namespace"),
-                getNamespaceSelector());
-
-        add(getNamespaceVisibilityPanel());
-
-        // TODO: facilitate importedElements.
-
-        modifiersPanel =
-            new JPanel(new GridLayout2());
-        modifiersPanel.setBorder(
-            new TitledBorder(Translator.localize(
-                    "label.modifiers")));
-
-        modifiersPanel.add(
-                            new UMLGeneralizableElementAbstractCheckBox());
-        modifiersPanel.add(
-                            new UMLGeneralizableElementLeafCheckBox());
-        modifiersPanel.add(
-                            new UMLGeneralizableElementRootCheckBox());
-
-        add(modifiersPanel);
-        addSeperator();
-        addField(Translator.localize("label.generalizations"),
-                getGeneralizationScroll());
-        addField(Translator.localize("label.specializations"),
-                getSpecializationScroll());
-        addSeperator();
-        addField(Translator.localize("label.owned-elements"),
-                getOwnedElementsScroll());
-
-        addAction(new ActionNavigateNamespace());
-        addAction(new ActionAddPackage());
-        addAction(new ActionAddDataType());
-        addAction(new ActionAddEnumeration());
-        addAction(new ActionNewStereotype());
-        addAction(new ActionNewTagDefinition());
-        addAction(new ActionDeleteSingleModelElement());
+  /**
+   * Returns the specializationScroll.
+   *
+   * @return JScrollPane
+   */
+  public JScrollPane getSpecializationScroll() {
+    if (specializationScroll == null) {
+      JList list = new UMLLinkedList(specializationListModel);
+      specializationScroll = new JScrollPane(list);
     }
-
-    /**
-     * Add a package to the current package.
-     */
-    public void addPackage() {
-        Object target = getTarget();
-        if (Model.getFacade().isAPackage(target)) {
-            Object/*MPackage*/ newPackage =
-                Model.getModelManagementFactory().createPackage();
-            Object/*MPackage*/ currentPackage = target;
-            Model.getCoreHelper().addOwnedElement(currentPackage, newPackage);
-            TargetManager.getInstance().setTarget(newPackage);
-        }
-    }
-
-    /**
-     * Returns the generalizationScroll.
-     * @return JScrollPane
-     */
-    public JScrollPane getGeneralizationScroll() {
-        if (generalizationScroll == null) {
-            JList list = new UMLLinkedList(generalizationListModel);
-            generalizationScroll = new JScrollPane(list);
-        }
-        return generalizationScroll;
-    }
-
-    /**
-     * Returns the specializationScroll.
-     * @return JScrollPane
-     */
-    public JScrollPane getSpecializationScroll() {
-        if (specializationScroll == null) {
-            JList list = new UMLLinkedList(specializationListModel);
-            specializationScroll = new JScrollPane(list);
-        }
-        return specializationScroll;
-    }
-
-
+    return specializationScroll;
+  }
 } /* end class PropPanelPackage */

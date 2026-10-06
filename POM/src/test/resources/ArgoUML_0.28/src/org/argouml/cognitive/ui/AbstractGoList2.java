@@ -29,45 +29,41 @@
 package org.argouml.cognitive.ui;
 
 import javax.swing.tree.TreeModel;
-
 import org.argouml.util.Predicate;
 import org.argouml.util.PredicateTrue;
 
 /**
  * @author MarkusK
- *
  */
-public abstract class AbstractGoList2 extends AbstractGoList implements
-        TreeModel {
+public abstract class AbstractGoList2 extends AbstractGoList implements TreeModel {
 
-    private Predicate listPredicate = PredicateTrue.getInstance();
+  private Predicate listPredicate = PredicateTrue.getInstance();
 
-    /**
-     * @param newPredicate the new list predicate
-     */
-    public void setListPredicate(Predicate newPredicate) {
-        listPredicate = newPredicate;
-    }
+  /**
+   * @param newPredicate the new list predicate
+   */
+  public void setListPredicate(Predicate newPredicate) {
+    listPredicate = newPredicate;
+  }
 
-    /**
-     * @return the list predicate
-     */
-    public Predicate getPredicate() {
-        return listPredicate;
-    }
+  /**
+   * @return the list predicate
+   */
+  public Predicate getPredicate() {
+    return listPredicate;
+  }
 
-    /*
-     * @see javax.swing.tree.TreeModel#getRoot()
-     */
-    public Object getRoot() {
-        throw new UnsupportedOperationException();
-    }
+  /*
+   * @see javax.swing.tree.TreeModel#getRoot()
+   */
+  public Object getRoot() {
+    throw new UnsupportedOperationException();
+  }
 
-    /**
-     * @param r ignored
-     */
-    public void setRoot(Object r) { 
-        // does nothing
-    }
-
+  /**
+   * @param r ignored
+   */
+  public void setRoot(Object r) {
+    // does nothing
+  }
 }

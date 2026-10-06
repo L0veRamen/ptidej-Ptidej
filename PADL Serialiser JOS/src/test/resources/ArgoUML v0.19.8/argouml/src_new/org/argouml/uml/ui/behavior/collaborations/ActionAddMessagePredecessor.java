@@ -26,76 +26,68 @@
 package org.argouml.uml.ui.behavior.collaborations;
 
 import java.util.Vector;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.AbstractActionAddModelElement;
 
 /**
  * Action to add a predecessor to some message.
+ *
  * @since Oct 2, 2002
  * @author jaap.branderhorst@xs4all.nl
  * @stereotype singleton
  */
 public class ActionAddMessagePredecessor extends AbstractActionAddModelElement {
 
-    private static final ActionAddMessagePredecessor SINGLETON =
-	new ActionAddMessagePredecessor();
+  private static final ActionAddMessagePredecessor SINGLETON = new ActionAddMessagePredecessor();
 
-    /**
-     * Constructor for ActionAddMessagePredecessor.
-     */
-    protected ActionAddMessagePredecessor() {
-        super();
-    }
+  /** Constructor for ActionAddMessagePredecessor. */
+  protected ActionAddMessagePredecessor() {
+    super();
+  }
 
-    /**
-     * @see org.argouml.uml.ui.AbstractActionAddModelElement#getChoices()
-     */
-    protected Vector getChoices() {
-        if (getTarget() == null) return new Vector();
-        Vector vec = new Vector();
-        vec.addAll(Model.getCollaborationsHelper()
-                .getAllPossiblePredecessors(getTarget()));
-        return vec;
-    }
+  /**
+   * @see org.argouml.uml.ui.AbstractActionAddModelElement#getChoices()
+   */
+  protected Vector getChoices() {
+    if (getTarget() == null) return new Vector();
+    Vector vec = new Vector();
+    vec.addAll(Model.getCollaborationsHelper().getAllPossiblePredecessors(getTarget()));
+    return vec;
+  }
 
-    /**
-     * @see org.argouml.uml.ui.AbstractActionAddModelElement#getSelected()
-     */
-    protected Vector getSelected() {
-        if (getTarget() == null)
-	    throw new IllegalStateException(
-                "getSelected may not be called with null target");
-        Vector vec = new Vector();
-        vec.addAll(Model.getFacade().getPredecessors(getTarget()));
-        return vec;
-    }
+  /**
+   * @see org.argouml.uml.ui.AbstractActionAddModelElement#getSelected()
+   */
+  protected Vector getSelected() {
+    if (getTarget() == null)
+      throw new IllegalStateException("getSelected may not be called with null target");
+    Vector vec = new Vector();
+    vec.addAll(Model.getFacade().getPredecessors(getTarget()));
+    return vec;
+  }
 
-    /**
-     * @see org.argouml.uml.ui.AbstractActionAddModelElement#getDialogTitle()
-     */
-    protected String getDialogTitle() {
-        return Translator.localize("dialog.add-predecessors");
-    }
+  /**
+   * @see org.argouml.uml.ui.AbstractActionAddModelElement#getDialogTitle()
+   */
+  protected String getDialogTitle() {
+    return Translator.localize("dialog.add-predecessors");
+  }
 
-    /**
-     * @see
-     * org.argouml.uml.ui.AbstractActionAddModelElement#doIt(java.util.Vector)
-     */
-    protected void doIt(Vector selected) {
-	if (getTarget() == null)
-	    throw new IllegalStateException(
-                "doIt may not be called with null target");
-	Object message = /*(MMessage)*/ getTarget();
-	Model.getCollaborationsHelper().setPredecessors(message, selected);
-    }
+  /**
+   * @see org.argouml.uml.ui.AbstractActionAddModelElement#doIt(java.util.Vector)
+   */
+  protected void doIt(Vector selected) {
+    if (getTarget() == null)
+      throw new IllegalStateException("doIt may not be called with null target");
+    Object message = /*(MMessage)*/ getTarget();
+    Model.getCollaborationsHelper().setPredecessors(message, selected);
+  }
 
-    /**
-     * @return Returns the SINGLETON.
-     */
-    public static ActionAddMessagePredecessor getInstance() {
-        return SINGLETON;
-    }
-
+  /**
+   * @return Returns the SINGLETON.
+   */
+  public static ActionAddMessagePredecessor getInstance() {
+    return SINGLETON;
+  }
 }

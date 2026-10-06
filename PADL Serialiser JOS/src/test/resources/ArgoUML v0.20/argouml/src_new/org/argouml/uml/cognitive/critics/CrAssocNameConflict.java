@@ -27,45 +27,40 @@ package org.argouml.uml.cognitive.critics;
 
 import java.util.Collection;
 import java.util.Iterator;
-
 import org.argouml.cognitive.Designer;
 import org.argouml.cognitive.critics.Critic;
 import org.argouml.model.Model;
 import org.argouml.uml.cognitive.UMLDecision;
 
 /**
- * Well-formedness rule [2] for MNamespace. See page 33 of UML 1.1
- * Semantics. OMG document ad/97-08-04.
+ * Well-formedness rule [2] for MNamespace. See page 33 of UML 1.1 Semantics. OMG document
+ * ad/97-08-04.
  *
  * @author jrobbins
  */
 public class CrAssocNameConflict extends CrUML {
 
-    /**
-     * The constructor.
-     *
-     */
-    public CrAssocNameConflict() {
-        setupHeadAndDesc();
-	addSupportedDecision(UMLDecision.NAMING);
-	setKnowledgeTypes(Critic.KT_SYNTAX);
-	// no good trigger
-    }
+  /** The constructor. */
+  public CrAssocNameConflict() {
+    setupHeadAndDesc();
+    addSupportedDecision(UMLDecision.NAMING);
+    setKnowledgeTypes(Critic.KT_SYNTAX);
+    // no good trigger
+  }
 
-    /**
-     * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
-     * java.lang.Object, org.argouml.cognitive.Designer)
-     */
-    public boolean predicate2(Object dm, Designer dsgr) {
-	if (!(Model.getFacade().isANamespace(dm))) return NO_PROBLEM;
-	Collection oes = Model.getFacade().getOwnedElements(dm);
-	if (oes == null) return NO_PROBLEM;
-	Iterator elems = oes.iterator();
-	while (elems.hasNext()) {
-	    if (!Model.getFacade().isAAssociation(elems.next())) continue;
-	    // TODO: not implemented yet
-	}
-	return NO_PROBLEM;
+  /**
+   * @see org.argouml.uml.cognitive.critics.CrUML#predicate2( java.lang.Object,
+   *     org.argouml.cognitive.Designer)
+   */
+  public boolean predicate2(Object dm, Designer dsgr) {
+    if (!(Model.getFacade().isANamespace(dm))) return NO_PROBLEM;
+    Collection oes = Model.getFacade().getOwnedElements(dm);
+    if (oes == null) return NO_PROBLEM;
+    Iterator elems = oes.iterator();
+    while (elems.hasNext()) {
+      if (!Model.getFacade().isAAssociation(elems.next())) continue;
+      // TODO: not implemented yet
     }
-
+    return NO_PROBLEM;
+  }
 } /* end class CrAssocNameConflict.java */

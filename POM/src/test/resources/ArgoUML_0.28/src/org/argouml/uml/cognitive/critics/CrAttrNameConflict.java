@@ -29,9 +29,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
 import javax.swing.Icon;
-
 import org.argouml.cognitive.Critic;
 import org.argouml.cognitive.Designer;
 import org.argouml.model.Model;
@@ -40,81 +38,73 @@ import org.argouml.uml.cognitive.UMLDecision;
 // Using Model through Facade
 
 /**
- * Check the:
- * Well-formedness rule [2] for Classifier.
- * See page 29 of UML 1.1, Semantics. OMG document ad/97-08-04.
- * See page 2-49 in UML V1.3
- * See page 55 in UMl 1.4.2 formal/04-07-02<p> 
+ * Check the: Well-formedness rule [2] for Classifier. See page 29 of UML 1.1, Semantics. OMG
+ * document ad/97-08-04. See page 2-49 in UML V1.3 See page 55 in UMl 1.4.2 formal/04-07-02
  *
- * In the process of modifying this to use the new Facade object
- * (Jan 2003) this was changed to no longer detect StructuralFeatures
- * with the same name but instead attributes with the same name.
- * This is in fact a more to the letter adherance to the UML
- * well-formedness rule but it is however a change.
+ * <p>In the process of modifying this to use the new Facade object (Jan 2003) this was changed to
+ * no longer detect StructuralFeatures with the same name but instead attributes with the same name.
+ * This is in fact a more to the letter adherance to the UML well-formedness rule but it is however
+ * a change.
  */
 public class CrAttrNameConflict extends CrUML {
 
-    /**
-     * The constructor.
-     *
-     */
-    public CrAttrNameConflict() {
-        setupHeadAndDesc();
-	addSupportedDecision(UMLDecision.INHERITANCE);
-	addSupportedDecision(UMLDecision.STORAGE);
-	addSupportedDecision(UMLDecision.NAMING);
-	setKnowledgeTypes(Critic.KT_SYNTAX);
-	addTrigger("structuralFeature");
-	addTrigger("feature_name");
+  /** The constructor. */
+  public CrAttrNameConflict() {
+    setupHeadAndDesc();
+    addSupportedDecision(UMLDecision.INHERITANCE);
+    addSupportedDecision(UMLDecision.STORAGE);
+    addSupportedDecision(UMLDecision.NAMING);
+    setKnowledgeTypes(Critic.KT_SYNTAX);
+    addTrigger("structuralFeature");
+    addTrigger("feature_name");
+  }
+
+  /**
+   * Examines the classifier and tells if we have two attributes with the same name. Comparison is
+   * done with equals (contains).
+   *
+   * @param dm is the classifier
+   * @param dsgr is not used.
+   * @return true if there are two with the same name.
+   * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(java.lang.Object,
+   *     org.argouml.cognitive.Designer)
+   */
+  @Override
+  public boolean predicate2(Object dm, Designer dsgr) {
+    if (!(Model.getFacade().isAClassifier(dm))) {
+      return NO_PROBLEM;
     }
 
-    /**
-     * Examines the classifier and tells if we have two attributes
-     * with the same name. Comparison is done with equals (contains).
-     *
-     * @param dm is the classifier
-     * @param dsgr is not used.
-     * @return true if there are two with the same name.
-     * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(java.lang.Object, org.argouml.cognitive.Designer)
-     */
-    @Override
-    public boolean predicate2(Object dm, Designer dsgr) {
-	if (!(Model.getFacade().isAClassifier(dm))) {
-            return NO_PROBLEM;
-        }
+    Collection<String> namesSeen = new ArrayList<String>();
+    Iterator attrs = Model.getFacade().getAttributes(dm).iterator();
+    while (attrs.hasNext()) {
+      String name = Model.getFacade().getName(attrs.next());
+      if (name == null || name.length() == 0) {
+        continue;
+      }
 
-	Collection<String> namesSeen = new ArrayList<String>();
-	Iterator attrs = Model.getFacade().getAttributes(dm).iterator();
-	while (attrs.hasNext()) {
-	    String name = Model.getFacade().getName(attrs.next());
-	    if (name == null || name.length() == 0) {
-	        continue;
-	    }
-
-	    if (namesSeen.contains(name)) {
-	        return PROBLEM_FOUND;
-	    }
-	    namesSeen.add(name);
-	}
-	return NO_PROBLEM;
+      if (namesSeen.contains(name)) {
+        return PROBLEM_FOUND;
+      }
+      namesSeen.add(name);
     }
+    return NO_PROBLEM;
+  }
 
-    /*
-     * @see org.argouml.cognitive.Poster#getClarifier()
-     */
-    @Override
-    public Icon getClarifier() {
-	return ClAttributeCompartment.getTheInstance();
-    }
+  /*
+   * @see org.argouml.cognitive.Poster#getClarifier()
+   */
+  @Override
+  public Icon getClarifier() {
+    return ClAttributeCompartment.getTheInstance();
+  }
 
-    /*
-     * @see org.argouml.uml.cognitive.critics.CrUML#getCriticizedDesignMaterials()
-     */
-    public Set<Object> getCriticizedDesignMaterials() {
-        Set<Object> ret = new HashSet<Object>();
-        ret.add(Model.getMetaTypes().getClassifier());
-        return ret;
-    }
-    
+  /*
+   * @see org.argouml.uml.cognitive.critics.CrUML#getCriticizedDesignMaterials()
+   */
+  public Set<Object> getCriticizedDesignMaterials() {
+    Set<Object> ret = new HashSet<Object>();
+    ret.add(Model.getMetaTypes().getClassifier());
+    return ret;
+  }
 }
-

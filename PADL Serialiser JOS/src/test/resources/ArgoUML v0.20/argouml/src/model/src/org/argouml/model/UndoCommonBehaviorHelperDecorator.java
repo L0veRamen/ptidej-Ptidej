@@ -25,21 +25,18 @@
 package org.argouml.model;
 
 /**
- * This Decorator is responsible for generating mementos for any
- * mutable methods.
+ * This Decorator is responsible for generating mementos for any mutable methods.
  *
  * @author Linus Tolke
  */
-public class UndoCommonBehaviorHelperDecorator
-	extends AbstractCommonBehaviorHelperDecorator {
+public class UndoCommonBehaviorHelperDecorator extends AbstractCommonBehaviorHelperDecorator {
 
-    /**
-     * Constructor.
-     *
-     * @param component The component we are decorating.
-     */
-    UndoCommonBehaviorHelperDecorator(CommonBehaviorHelper component) {
-        super(component);
-    }
+  /**
+   * Constructor.
+   *
+   * @param component The component we are decorating.
+   */
+  UndoCommonBehaviorHelperDecorator(CommonBehaviorHelper component) {
+    super(component);
+  }
 }
-

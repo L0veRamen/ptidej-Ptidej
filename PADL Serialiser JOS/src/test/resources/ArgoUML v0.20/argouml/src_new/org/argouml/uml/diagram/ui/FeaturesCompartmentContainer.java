@@ -24,9 +24,8 @@
 package org.argouml.uml.diagram.ui;
 
 /**
- * An interface to be implemented by any Fig that contains
- * a FigFeaturesCompartment.
+ * An interface to be implemented by any Fig that contains a FigFeaturesCompartment.
+ *
  * @author Bob Tarling
  */
-public abstract interface FeaturesCompartmentContainer {
-}
+public abstract interface FeaturesCompartmentContainer {}

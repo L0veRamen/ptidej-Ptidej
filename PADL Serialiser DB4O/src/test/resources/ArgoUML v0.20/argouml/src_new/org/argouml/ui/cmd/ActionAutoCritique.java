@@ -25,45 +25,33 @@
 package org.argouml.ui.cmd;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.cognitive.Designer;
 import org.argouml.cognitive.ToDoList;
 import org.argouml.uml.ui.UMLAction;
 
-
-
-/**
- * Stops critiquing and the TodoList validity checking thread in ToDoList.
- */
+/** Stops critiquing and the TodoList validity checking thread in ToDoList. */
 class ActionAutoCritique extends UMLAction {
 
-    /**
-     * The constructor.
-     */
-    public ActionAutoCritique() {
-	super("action.toggle-auto-critique", NO_ICON);
-	putValue("SELECTED",
-                new Boolean(Designer.theDesigner().getAutoCritique()));
-    }
+  /** The constructor. */
+  public ActionAutoCritique() {
+    super("action.toggle-auto-critique", NO_ICON);
+    putValue("SELECTED", new Boolean(Designer.theDesigner().getAutoCritique()));
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
 
-        // stop/start creating more critics
-	Designer d = Designer.theDesigner();
-	boolean b = d.getAutoCritique();
-	d.setAutoCritique(!b);
+    // stop/start creating more critics
+    Designer d = Designer.theDesigner();
+    boolean b = d.getAutoCritique();
+    d.setAutoCritique(!b);
 
-        // stop/start cleaning up invalid TodoItems.
-        ToDoList.getInstance().setPaused(!ToDoList.getInstance().isPaused());
-    }
+    // stop/start cleaning up invalid TodoItems.
+    ToDoList.getInstance().setPaused(!ToDoList.getInstance().isPaused());
+  }
 
-
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = 9057306108717070004L;
+  /** The UID. */
+  private static final long serialVersionUID = 9057306108717070004L;
 } /* end class ActionAutoCritique */
-

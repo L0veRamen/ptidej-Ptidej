@@ -28,7 +28,6 @@ import java.beans.PropertyChangeEvent;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Iterator;
-
 import org.argouml.model.AddAssociationEvent;
 import org.argouml.model.Model;
 import org.argouml.model.RemoveAssociationEvent;
@@ -37,122 +36,92 @@ import org.tigris.gef.base.Diagram;
 import org.tigris.gef.presentation.Fig;
 
 /**
- * List model which implements allAvailableContents operation for a
- * ClassifierRole as described in the well formedness rules.
+ * List model which implements allAvailableContents operation for a ClassifierRole as described in
+ * the well formedness rules.
  *
  * @author jaap.branderhorst@xs4all.nl
  */
-public class UMLClassifierRoleAvailableContentsListModel
-    extends UMLModelElementListModel2 {
+public class UMLClassifierRoleAvailableContentsListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLClassifierRoleAvailableContentsListModel.
-     */
-    public UMLClassifierRoleAvailableContentsListModel() {
-        super();
+  /** Constructor for UMLClassifierRoleAvailableContentsListModel. */
+  public UMLClassifierRoleAvailableContentsListModel() {
+    super();
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    setAllElements(Model.getCollaborationsHelper().allAvailableContents(getTarget()));
+  }
+
+  /**
+   * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+   */
+  public void propertyChange(PropertyChangeEvent e) {
+    if (e instanceof AddAssociationEvent) {
+      if (e.getPropertyName().equals("base") && e.getSource() == getTarget()) {
+        Object clazz = getChangedElement(e);
+        addAll(Model.getFacade().getOwnedElements(clazz));
+        Model.getPump().addModelEventListener(this, clazz, "ownedElement");
+      } else if (e.getPropertyName().equals("ownedElement")
+          && Model.getFacade().getBases(getTarget()).contains(e.getSource())) {
+        addElement(getChangedElement(e));
+      }
+    } else if (e instanceof RemoveAssociationEvent) {
+      if (e.getPropertyName().equals("base") && e.getSource() == getTarget()) {
+        Object clazz = getChangedElement(e);
+        Model.getPump().removeModelEventListener(this, clazz, "ownedElement");
+      } else if (e.getPropertyName().equals("ownedElement")
+          && Model.getFacade().getBases(getTarget()).contains(e.getSource())) {
+        removeElement(getChangedElement(e));
+      }
+    } else {
+      super.propertyChange(e);
     }
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        setAllElements(
-            Model.getCollaborationsHelper().allAvailableContents(getTarget()));
-    }
-
-    /**
-     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
-     */
-    public void propertyChange(PropertyChangeEvent e) {
-        if (e instanceof AddAssociationEvent) {
-            if (e.getPropertyName().equals("base")
-                    && e.getSource() == getTarget()) {
-                Object clazz = getChangedElement(e);
-                addAll(Model.getFacade().getOwnedElements(clazz));
-                Model.getPump().addModelEventListener(
-                                      this,
-                                      clazz,
-                                      "ownedElement");
-            } else if (
-                    e.getPropertyName().equals("ownedElement")
-                    && Model.getFacade().getBases(getTarget()).contains(
-                            e.getSource())) {
-                addElement(getChangedElement(e));
-            }
-        } else if (e instanceof RemoveAssociationEvent) {
-            if (e.getPropertyName().equals("base")
-                    && e.getSource() == getTarget()) {
-                Object clazz = getChangedElement(e);
-                Model.getPump().removeModelEventListener(
-                        this,
-                        clazz,
-                    "ownedElement");
-            } else if (
-                e.getPropertyName().equals("ownedElement")
-                && Model.getFacade().getBases(getTarget()).contains(
-                       e.getSource())) {
-                removeElement(getChangedElement(e));
-            }
-        } else {
-            super.propertyChange(e);
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#setTarget(java.lang.Object)
+   */
+  public void setTarget(Object theNewTarget) {
+    theNewTarget = theNewTarget instanceof Fig ? ((Fig) theNewTarget).getOwner() : theNewTarget;
+    if (Model.getFacade().isAModelElement(theNewTarget) || theNewTarget instanceof Diagram) {
+      if (getTarget() != null) {
+        Enumeration enumeration = elements();
+        while (enumeration.hasMoreElements()) {
+          Object base = enumeration.nextElement();
+          Model.getPump().removeModelEventListener(this, base, "ownedElement");
         }
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#setTarget(java.lang.Object)
-     */
-    public void setTarget(Object theNewTarget) {
-        theNewTarget = theNewTarget instanceof Fig
-            ? ((Fig) theNewTarget).getOwner() : theNewTarget;
-        if (Model.getFacade().isAModelElement(theNewTarget)
-                || theNewTarget instanceof Diagram) {
-            if (getTarget() != null) {
-                Enumeration enumeration = elements();
-                while (enumeration.hasMoreElements()) {
-                    Object base = enumeration.nextElement();
-                    Model.getPump().removeModelEventListener(
-                        this,
-                        base,
-                        "ownedElement");
-                }
-                Model.getPump().removeModelEventListener(
-                    this,
-                    getTarget(),
-                    "base");
-            }
-            setListTarget(theNewTarget);
-            if (getTarget() != null) {
-                Collection bases = Model.getFacade().getBases(getTarget());
-                Iterator it = bases.iterator();
-                while (it.hasNext()) {
-                    Object base = /*(MBase)*/ it.next();
-                    Model.getPump().addModelEventListener(
-                        this,
-                        base,
-                        "ownedElement");
-                }
-                // make sure we know it when a classifier is added as a base
-                Model.getPump().addModelEventListener(
-                    this,
-                    getTarget(),
-                    "base");
-            }
-            if (getTarget() != null) {
-                removeAllElements();
-                setBuildingModel(true);
-                buildModelList();
-                setBuildingModel(false);
-                if (getSize() > 0) {
-                    fireIntervalAdded(this, 0, getSize() - 1);
-                }
-            }
+        Model.getPump().removeModelEventListener(this, getTarget(), "base");
+      }
+      setListTarget(theNewTarget);
+      if (getTarget() != null) {
+        Collection bases = Model.getFacade().getBases(getTarget());
+        Iterator it = bases.iterator();
+        while (it.hasNext()) {
+          Object base = /*(MBase)*/ it.next();
+          Model.getPump().addModelEventListener(this, base, "ownedElement");
         }
+        // make sure we know it when a classifier is added as a base
+        Model.getPump().addModelEventListener(this, getTarget(), "base");
+      }
+      if (getTarget() != null) {
+        removeAllElements();
+        setBuildingModel(true);
+        buildModelList();
+        setBuildingModel(false);
+        if (getSize() > 0) {
+          fireIntervalAdded(this, 0, getSize() - 1);
+        }
+      }
     }
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return false;
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return false;
+  }
 }

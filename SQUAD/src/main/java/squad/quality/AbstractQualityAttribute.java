@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -15,45 +15,39 @@ import padl.kernel.IFirstClassEntity;
 import padl.util.Util;
 
 public abstract class AbstractQualityAttribute {
-	private final String name;
+  private final String name;
 
-	public AbstractQualityAttribute() {
-		this.name = Util.computeSimpleName(this.getClass().getName());
-	}
+  public AbstractQualityAttribute() {
+    this.name = Util.computeSimpleName(this.getClass().getName());
+  }
 
-	public final String computeNominalValue(
-		final IAbstractModel anAbstractModel,
-		final IFirstClassEntity anEntity) {
+  public final String computeNominalValue(
+      final IAbstractModel anAbstractModel, final IFirstClassEntity anEntity) {
 
-		final String result =
-			this.concretelyComputeNomValue(anAbstractModel, anEntity);
-		return result;
-	}
+    final String result = this.concretelyComputeNomValue(anAbstractModel, anEntity);
+    return result;
+  }
 
-	public final double computeNumericValue(
-		final IAbstractModel anAbstractModel,
-		final IFirstClassEntity anEntity) {
+  public final double computeNumericValue(
+      final IAbstractModel anAbstractModel, final IFirstClassEntity anEntity) {
 
-		final double result =
-			this.concretelyComputeNumValue(anAbstractModel, anEntity);
-		return result;
-	}
+    final double result = this.concretelyComputeNumValue(anAbstractModel, anEntity);
+    return result;
+  }
 
-	protected String concretelyComputeNomValue(
-		final IAbstractModel anAbstractModel,
-		final IFirstClassEntity anEntity) {
+  protected String concretelyComputeNomValue(
+      final IAbstractModel anAbstractModel, final IFirstClassEntity anEntity) {
 
-		return "N/A";
-	}
+    return "N/A";
+  }
 
-	protected double concretelyComputeNumValue(
-		final IAbstractModel anAbstractModel,
-		final IFirstClassEntity anEntity) {
+  protected double concretelyComputeNumValue(
+      final IAbstractModel anAbstractModel, final IFirstClassEntity anEntity) {
 
-		return Double.NaN;
-	}
+    return Double.NaN;
+  }
 
-	public final String getName() {
-		return this.name;
-	}
+  public final String getName() {
+    return this.name;
+  }
 }

@@ -25,45 +25,40 @@
 package org.argouml.core.propertypanels.ui;
 
 import org.argouml.model.Model;
-import org.argouml.ui.targetmanager.TargetEvent;
-import org.argouml.ui.targetmanager.TargetManager;
 
 /**
- *
  * @author mkl, penyaskito
- *
  */
 public class UMLScriptExpressionModel extends UMLExpressionModel {
 
-    /**
-     * The constructor.
-     *
-     * @param container the container of UML user interface components
-     * @param propertyName the name of the property
-     */
-    public UMLScriptExpressionModel(Object target) {
-        super(target, "script");
-    }
+  /**
+   * The constructor.
+   *
+   * @param container the container of UML user interface components
+   * @param propertyName the name of the property
+   */
+  public UMLScriptExpressionModel(Object target) {
+    super(target, "script");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLExpressionModel2#getExpression()
-     */
-    public Object getExpression() {
-        return Model.getFacade().getScript(getTarget());
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLExpressionModel2#getExpression()
+   */
+  public Object getExpression() {
+    return Model.getFacade().getScript(getTarget());
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLExpressionModel2#setExpression(java.lang.Object)
-     */
-    public void setExpression(Object expression) {
-        Model.getCommonBehaviorHelper()
-        	.setScript(getTarget(), expression);
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLExpressionModel2#setExpression(java.lang.Object)
+   */
+  public void setExpression(Object expression) {
+    Model.getCommonBehaviorHelper().setScript(getTarget(), expression);
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLExpressionModel2#newExpression()
-     */
-    public Object newExpression() {
-        return Model.getDataTypesFactory().createActionExpression("", "");
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLExpressionModel2#newExpression()
+   */
+  public Object newExpression() {
+    return Model.getDataTypesFactory().createActionExpression("", "");
+  }
 }

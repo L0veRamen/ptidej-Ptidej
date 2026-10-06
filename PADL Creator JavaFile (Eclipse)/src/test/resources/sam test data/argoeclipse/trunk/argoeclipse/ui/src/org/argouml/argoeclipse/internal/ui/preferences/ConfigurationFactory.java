@@ -22,7 +22,6 @@
 // CALIFORNIA HAS NO OBLIGATIONS TO PROVIDE MAINTENANCE, SUPPORT,
 // UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
-
 package org.argouml.argoeclipse.internal.ui.preferences;
 
 import org.argouml.application.configuration.ConfigurationHandler;
@@ -36,24 +35,19 @@ import org.argouml.application.configuration.IConfigurationFactory;
  */
 public class ConfigurationFactory implements IConfigurationFactory {
 
-    /**
-     * The active configuration handler.
-     */
-    private static ConfigurationHandler handler = new ConfigurationEclipse();
+  /** The active configuration handler. */
+  private static ConfigurationHandler handler = new ConfigurationEclipse();
 
-    /**
-     * Private constructor to not allow instantiation.
-     */
-    private ConfigurationFactory() {
-        // Don't allow instantiation
-    }
+  /** Private constructor to not allow instantiation. */
+  private ConfigurationFactory() {
+    // Don't allow instantiation
+  }
 
-    /**
-     * @see org.argouml.application.configuration.IConfigurationFactory#getConfigurationHandler()
-     * @return the configuration handler
-     */
-    public ConfigurationHandler getConfigurationHandler() {
-	return handler;
-    }
-
+  /**
+   * @see org.argouml.application.configuration.IConfigurationFactory#getConfigurationHandler()
+   * @return the configuration handler
+   */
+  public ConfigurationHandler getConfigurationHandler() {
+    return handler;
+  }
 }

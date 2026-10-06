@@ -26,91 +26,73 @@ package org.argouml.model;
 
 import java.util.Collection;
 
-
-
 /**
  * Test to check various aspects of extend relationships
- * 
+ *
  * @author Markus Klink
  */
 public class TestUmlExtend extends GenericUmlObjectTestFixture {
-    
-    private Object uc1, uc2;
-    private Object ep1, ep2;
-    private Object extend;
-    private UseCasesHelper helper = Model.getUseCasesHelper();
-    
-    /**
-     * Constructor.
-     *
-     * @param arg0 test name
-     */
-    public TestUmlExtend(String arg0) {
-	super(arg0, Model.getMetaTypes().getExtend());
-	validateTestClassIsGeneric(this);
-    }
 
-    /**
-     * Check that Usecases have Extends
-     */
-    public void testUsecasesHaveExtend() {
-        Object myextend = helper.getExtends(uc1, uc2);
-        assertNotNull(myextend);
-        assertSame(extend, myextend);
-    }
-    
-    /**
-     * Check that the Extends are correct
-     */
-    public void testExtendIsCorrect() {
-        Object base = 
-            Model.getFacade().getBase(extend);
-        Object included = 
-            Model.getFacade().getExtension(extend);
-        assertSame(uc1, base);
-        assertSame(uc2, included);
-    }
-    
-    /**
-     * Test that ExtensionPoints got created correctly during setup
-     */
-    public void testUsecaseHasExtensionPoints() {
-        Collection eps = Model.getFacade().getExtensionPoints(uc1);
-        assertTrue(eps.size() == 3);
-        assertTrue(eps.contains(ep1));
-        assertTrue(eps.contains(ep2));
-        Collection eps2 = Model.getFacade().getExtensionPoints(uc2);
-        assertNotNull(eps2);
-        assertTrue(eps2.size() == 0);
-    }
-    
-    /**
-     * Test setting ExtensionPoints
-     */
-    public void testSetExtensionPoints() {
-        Collection eps = Model.getFacade().getExtensionPoints(uc1);
-        helper.setExtensionPoints(extend, eps);
-        Collection eps2 = Model.getFacade().getExtensionPoints(extend);
-        assertTrue(eps2.containsAll(eps));
-        assertTrue(eps.size() == eps2.size());
-    }
+  private Object uc1, uc2;
+  private Object ep1, ep2;
+  private Object extend;
+  private UseCasesHelper helper = Model.getUseCasesHelper();
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        uc1 =
-            Model.getUmlFactory().buildNode(Model.getMetaTypes().getUseCase());
-        uc2 =
-            Model.getUmlFactory().buildNode(Model.getMetaTypes().getUseCase());
-        // by default the build already builds one default EP
-        extend =
-            Model.getUseCasesFactory().buildExtend(uc1, uc2);
-        ep1 = 
-            Model.getUseCasesFactory().buildExtensionPoint(uc1);
-        ep2 =
-            Model.getUseCasesFactory().buildExtensionPoint(uc1);
-    }
+  /**
+   * Constructor.
+   *
+   * @param arg0 test name
+   */
+  public TestUmlExtend(String arg0) {
+    super(arg0, Model.getMetaTypes().getExtend());
+    validateTestClassIsGeneric(this);
+  }
 
+  /** Check that Usecases have Extends */
+  public void testUsecasesHaveExtend() {
+    Object myextend = helper.getExtends(uc1, uc2);
+    assertNotNull(myextend);
+    assertSame(extend, myextend);
+  }
+
+  /** Check that the Extends are correct */
+  public void testExtendIsCorrect() {
+    Object base = Model.getFacade().getBase(extend);
+    Object included = Model.getFacade().getExtension(extend);
+    assertSame(uc1, base);
+    assertSame(uc2, included);
+  }
+
+  /** Test that ExtensionPoints got created correctly during setup */
+  public void testUsecaseHasExtensionPoints() {
+    Collection eps = Model.getFacade().getExtensionPoints(uc1);
+    assertTrue(eps.size() == 3);
+    assertTrue(eps.contains(ep1));
+    assertTrue(eps.contains(ep2));
+    Collection eps2 = Model.getFacade().getExtensionPoints(uc2);
+    assertNotNull(eps2);
+    assertTrue(eps2.size() == 0);
+  }
+
+  /** Test setting ExtensionPoints */
+  public void testSetExtensionPoints() {
+    Collection eps = Model.getFacade().getExtensionPoints(uc1);
+    helper.setExtensionPoints(extend, eps);
+    Collection eps2 = Model.getFacade().getExtensionPoints(extend);
+    assertTrue(eps2.containsAll(eps));
+    assertTrue(eps.size() == eps2.size());
+  }
+
+  /**
+   * @see junit.framework.TestCase#setUp()
+   */
+  protected void setUp() throws Exception {
+    super.setUp();
+    uc1 = Model.getUmlFactory().buildNode(Model.getMetaTypes().getUseCase());
+    uc2 = Model.getUmlFactory().buildNode(Model.getMetaTypes().getUseCase());
+    // by default the build already builds one default EP
+    extend = Model.getUseCasesFactory().buildExtend(uc1, uc2);
+    ep1 = Model.getUseCasesFactory().buildExtensionPoint(uc1);
+    ep2 = Model.getUseCasesFactory().buildExtensionPoint(uc1);
+  }
 }

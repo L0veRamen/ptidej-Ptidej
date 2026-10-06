@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -35,246 +35,152 @@ import ptidej.ui.primitive.IPrimitiveFactory;
 import ptidej.ui.primitive.IRectangle;
 
 public class PrimitiveFactory implements IPrimitiveFactory {
-	private static Map UniqueInstance = new HashMap(1);
-	// Yann 2002/12/16: Multipe-singletons!
-	// The PrimitiveFactory for SWT is a bit particular.
-	// I want one and only one instance of PrimitiveFactory
-	// associated with a given graphic context, but I can
-	// have multiple instances of graphic contexts and thus
-	// multiple instances of PrimitiveFactory: one per
-	// graphic context.
-	public static IPrimitiveFactory getInstance(
-		final Device device,
-		final GC graphics) {
+  private static Map UniqueInstance = new HashMap(1);
 
-		if (PrimitiveFactory.UniqueInstance.get(graphics) == null) {
-			final PrimitiveFactory primitiveFactory = new PrimitiveFactory();
-			primitiveFactory.setDevice(device);
-			primitiveFactory.setGraphics(graphics);
-			PrimitiveFactory.UniqueInstance.put(graphics, primitiveFactory);
-		}
+  // Yann 2002/12/16: Multipe-singletons!
+  // The PrimitiveFactory for SWT is a bit particular.
+  // I want one and only one instance of PrimitiveFactory
+  // associated with a given graphic context, but I can
+  // have multiple instances of graphic contexts and thus
+  // multiple instances of PrimitiveFactory: one per
+  // graphic context.
+  public static IPrimitiveFactory getInstance(final Device device, final GC graphics) {
 
-		return (IPrimitiveFactory) PrimitiveFactory.UniqueInstance
-			.get(graphics);
-	}
-	private Device device;
+    if (PrimitiveFactory.UniqueInstance.get(graphics) == null) {
+      final PrimitiveFactory primitiveFactory = new PrimitiveFactory();
+      primitiveFactory.setDevice(device);
+      primitiveFactory.setGraphics(graphics);
+      PrimitiveFactory.UniqueInstance.put(graphics, primitiveFactory);
+    }
 
-	private GC graphics;
-	public final IAggregationSymbol createAggregationSymbol(
-		final Point origin,
-		final Dimension dimension,
-		final RGB color) {
+    return (IPrimitiveFactory) PrimitiveFactory.UniqueInstance.get(graphics);
+  }
 
-		return new AggregationSymbol(
-			this.device,
-			this.graphics,
-			origin,
-			dimension,
-			color);
-	}
-	public final IArrowSymbol createArrowSymbol(
-		final Point origin,
-		final Dimension dimension,
-		final RGB color) {
+  private Device device;
 
-		return new ArrowSymbol(
-			this.device,
-			this.graphics,
-			origin,
-			dimension,
-			color);
-	}
-	public final IAssociationSymbol createAssociationSymbol(
-		final Point origin,
-		final Dimension dimension,
-		final RGB color) {
+  private GC graphics;
 
-		return new AssociationSymbol(
-			this.device,
-			this.graphics,
-			origin,
-			dimension,
-			color);
-	}
-	public final IButton createButton(
-		final String label,
-		final Point position,
-		final boolean centerText,
-		final RGB color) {
+  public final IAggregationSymbol createAggregationSymbol(
+      final Point origin, final Dimension dimension, final RGB color) {
 
-		return new Button(
-			this.device,
-			this.graphics,
-			label,
-			position,
-			centerText,
-			color);
-	}
-	public final IButton createButton(
-		final String label,
-		final Point position,
-		final Dimension dimension,
-		final boolean centerText,
-		final RGB color) {
+    return new AggregationSymbol(this.device, this.graphics, origin, dimension, color);
+  }
 
-		return new Button(
-			this.device,
-			this.graphics,
-			label,
-			position,
-			dimension,
-			centerText,
-			color);
-	}
-	public final ICompositionSymbol createCompositionSymbol(
-		final Point origin,
-		final Dimension dimension,
-		final RGB color) {
+  public final IArrowSymbol createArrowSymbol(
+      final Point origin, final Dimension dimension, final RGB color) {
 
-		return new CompositionSymbol(
-			this.device,
-			this.graphics,
-			origin,
-			dimension,
-			color);
-	}
-	public IDoubleSquareLine createDottedDoubleSquareLine(
-		final Point origin,
-		final Dimension dimension,
-		final RGB color) {
+    return new ArrowSymbol(this.device, this.graphics, origin, dimension, color);
+  }
 
-		return new DottedDoubleSquareLine(
-			this.getDevice(),
-			this.getGraphics(),
-			origin,
-			dimension,
-			color);
+  public final IAssociationSymbol createAssociationSymbol(
+      final Point origin, final Dimension dimension, final RGB color) {
 
-	}
-	public final IDottedLine createDottedLine(
-		final Point origin,
-		final Dimension dimension,
-		final RGB color) {
+    return new AssociationSymbol(this.device, this.graphics, origin, dimension, color);
+  }
 
-		return new DottedLine(
-			this.device,
-			this.graphics,
-			origin,
-			dimension,
-			color);
-	}
-	public final IDottedSquareLine createDottedSquareLine(
-		final Point origin,
-		final Dimension dimension,
-		final RGB color) {
+  public final IButton createButton(
+      final String label, final Point position, final boolean centerText, final RGB color) {
 
-		return new DottedSquareLine(
-			this.device,
-			this.graphics,
-			origin,
-			dimension,
-			color);
-	}
-	public final IDottedTriangle createDottedTriangle(
-		final Point origin,
-		final int symbolDirection,
-		final RGB color) {
+    return new Button(this.device, this.graphics, label, position, centerText, color);
+  }
 
-		return new DottedTriangle(
-			this.device,
-			this.graphics,
-			origin,
-			symbolDirection,
-			color);
-	}
-	public final ILabel createLabel(
-		final String label,
-		final Point position,
-		final Dimension dimension,
-		final RGB color) {
+  public final IButton createButton(
+      final String label,
+      final Point position,
+      final Dimension dimension,
+      final boolean centerText,
+      final RGB color) {
 
-		return new Label(
-			this.device,
-			this.graphics,
-			label,
-			position,
-			dimension,
-			color);
-	}
-	public final ILine createLine(
-		final Point origin,
-		final Dimension dimension,
-		final RGB color) {
+    return new Button(this.device, this.graphics, label, position, dimension, centerText, color);
+  }
 
-		return new Line(this.device, this.graphics, origin, dimension, color);
-	}
-	public IDoubleSquareLine createPlainDoubleSquareLine(
-		final Point origin,
-		final Dimension dimension,
-		final RGB color) {
+  public final ICompositionSymbol createCompositionSymbol(
+      final Point origin, final Dimension dimension, final RGB color) {
 
-		return new PlainDoubleSquareLine(
-			this.getDevice(),
-			this.getGraphics(),
-			origin,
-			dimension,
-			color);
-	}
-	public final IPlainSquareLine createPlainSquareLine(
-		final Point origin,
-		final Dimension dimension,
-		final RGB color) {
+    return new CompositionSymbol(this.device, this.graphics, origin, dimension, color);
+  }
 
-		return new PlainSquareLine(
-			this.device,
-			this.graphics,
-			origin,
-			dimension,
-			color);
-	}
-	public final IPlainTriangle createPlainTriangle(
-		final Point origin,
-		final int symbolDirection,
-		final RGB color) {
+  public IDoubleSquareLine createDottedDoubleSquareLine(
+      final Point origin, final Dimension dimension, final RGB color) {
 
-		return new PlainTriangle(
-			this.device,
-			this.graphics,
-			origin,
-			symbolDirection,
-			color);
-	}
-	public final IRectangle createRectangle(
-		final Point origin,
-		final Dimension dimension,
-		final RGB color) {
+    return new DottedDoubleSquareLine(
+        this.getDevice(), this.getGraphics(), origin, dimension, color);
+  }
 
-		return new Rectangle(
-			this.device,
-			this.graphics,
-			origin,
-			dimension,
-			color);
-	}
-	public final Device getDevice() {
-		return this.device;
-	}
-	public final GC getGraphics() {
-		return this.graphics;
-	}
-	public final void setDevice(final Device device) {
-		this.device = device;
-	}
+  public final IDottedLine createDottedLine(
+      final Point origin, final Dimension dimension, final RGB color) {
 
-	public final void setGraphics(final GC graphics) {
-		this.graphics = graphics;
-	}
-	public IInheritanceSymbol createInheritanceSymbol(
-		final Point origin,
-		final Dimension dimension,
-		final RGB color) {
+    return new DottedLine(this.device, this.graphics, origin, dimension, color);
+  }
 
-		// TODO Auto-generated method stub
-		return null;
-	}
+  public final IDottedSquareLine createDottedSquareLine(
+      final Point origin, final Dimension dimension, final RGB color) {
+
+    return new DottedSquareLine(this.device, this.graphics, origin, dimension, color);
+  }
+
+  public final IDottedTriangle createDottedTriangle(
+      final Point origin, final int symbolDirection, final RGB color) {
+
+    return new DottedTriangle(this.device, this.graphics, origin, symbolDirection, color);
+  }
+
+  public final ILabel createLabel(
+      final String label, final Point position, final Dimension dimension, final RGB color) {
+
+    return new Label(this.device, this.graphics, label, position, dimension, color);
+  }
+
+  public final ILine createLine(final Point origin, final Dimension dimension, final RGB color) {
+
+    return new Line(this.device, this.graphics, origin, dimension, color);
+  }
+
+  public IDoubleSquareLine createPlainDoubleSquareLine(
+      final Point origin, final Dimension dimension, final RGB color) {
+
+    return new PlainDoubleSquareLine(
+        this.getDevice(), this.getGraphics(), origin, dimension, color);
+  }
+
+  public final IPlainSquareLine createPlainSquareLine(
+      final Point origin, final Dimension dimension, final RGB color) {
+
+    return new PlainSquareLine(this.device, this.graphics, origin, dimension, color);
+  }
+
+  public final IPlainTriangle createPlainTriangle(
+      final Point origin, final int symbolDirection, final RGB color) {
+
+    return new PlainTriangle(this.device, this.graphics, origin, symbolDirection, color);
+  }
+
+  public final IRectangle createRectangle(
+      final Point origin, final Dimension dimension, final RGB color) {
+
+    return new Rectangle(this.device, this.graphics, origin, dimension, color);
+  }
+
+  public final Device getDevice() {
+    return this.device;
+  }
+
+  public final GC getGraphics() {
+    return this.graphics;
+  }
+
+  public final void setDevice(final Device device) {
+    this.device = device;
+  }
+
+  public final void setGraphics(final GC graphics) {
+    this.graphics = graphics;
+  }
+
+  public IInheritanceSymbol createInheritanceSymbol(
+      final Point origin, final Dimension dimension, final RGB color) {
+
+    // TODO Auto-generated method stub
+    return null;
+  }
 }

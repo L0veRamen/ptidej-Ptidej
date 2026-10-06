@@ -25,59 +25,51 @@
 package org.argouml.uml.ui.foundation.core;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.Action;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLCheckBox2;
 import org.tigris.gef.undo.UndoableAction;
 
 /**
- *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 4, 2003
  */
 public class ActionSetAssociationEndTargetScope extends UndoableAction {
 
-    private static final ActionSetAssociationEndTargetScope SINGLETON =
-        new ActionSetAssociationEndTargetScope();
+  private static final ActionSetAssociationEndTargetScope SINGLETON =
+      new ActionSetAssociationEndTargetScope();
 
-    /**
-     * Constructor for ActionSetElementOwnershipSpecification.
-     */
-    protected ActionSetAssociationEndTargetScope() {
-        super(Translator.localize("Set"), null);
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize("Set"));
-    }
+  /** Constructor for ActionSetElementOwnershipSpecification. */
+  protected ActionSetAssociationEndTargetScope() {
+    super(Translator.localize("Set"), null);
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize("Set"));
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        if (e.getSource() instanceof UMLCheckBox2) {
-            UMLCheckBox2 source = (UMLCheckBox2) e.getSource();
-            Object target = source.getTarget();
-            if (Model.getFacade().isAAssociationEnd(target)) {
-                Object m = /*(MAssociationEnd)*/ target;
-                if (source.isSelected()) {
-                    Model.getCoreHelper().setTargetScope(m,
-                            Model.getScopeKind().getClassifier());
-                } else {
-                    Model.getCoreHelper().setTargetScope(m,
-                            Model.getScopeKind().getInstance());
-                }
-            }
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    if (e.getSource() instanceof UMLCheckBox2) {
+      UMLCheckBox2 source = (UMLCheckBox2) e.getSource();
+      Object target = source.getTarget();
+      if (Model.getFacade().isAAssociationEnd(target)) {
+        Object m = /*(MAssociationEnd)*/ target;
+        if (source.isSelected()) {
+          Model.getCoreHelper().setTargetScope(m, Model.getScopeKind().getClassifier());
+        } else {
+          Model.getCoreHelper().setTargetScope(m, Model.getScopeKind().getInstance());
         }
+      }
     }
+  }
 
-    /**
-     * @return Returns the sINGLETON.
-     */
-    public static ActionSetAssociationEndTargetScope getInstance() {
-        return SINGLETON;
-    }
+  /**
+   * @return Returns the sINGLETON.
+   */
+  public static ActionSetAssociationEndTargetScope getInstance() {
+    return SINGLETON;
+  }
 }

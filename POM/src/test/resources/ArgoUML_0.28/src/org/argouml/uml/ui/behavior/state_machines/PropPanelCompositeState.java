@@ -28,7 +28,6 @@ import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.ui.targetmanager.TargetManager;
@@ -41,102 +40,83 @@ import org.argouml.uml.diagram.ui.ActionAddConcurrentRegion;
  */
 public class PropPanelCompositeState extends AbstractPropPanelState {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = 4758716706184949796L;
+  /** The serial version. */
+  private static final long serialVersionUID = 4758716706184949796L;
 
-    private JList subverticesList = null;
-    private Action addConcurrentRegion;
+  private JList subverticesList = null;
+  private Action addConcurrentRegion;
 
+  /**
+   * Constructor for PropPanelCompositeState.
+   *
+   * @param name the name of the properties panel
+   * @param icon the icon to be shown next to the name
+   */
+  public PropPanelCompositeState(final String name, final ImageIcon icon) {
+    super(name, icon);
+    initialize();
+  }
 
-    /**
-     * Constructor for PropPanelCompositeState.
-     * @param name the name of the properties panel
-     * @param icon the icon to be shown next to the name
-     */
-    public PropPanelCompositeState(final String name, final ImageIcon icon) {
-        super(name, icon);
-        initialize();
-    }
-    
-    /**
-     * Construct a new property panel for a CompositeState.
-     *
-     */
-    public PropPanelCompositeState() {
-        super("label.composite-state", lookupIcon("CompositeState"));
-        initialize();
+  /** Construct a new property panel for a CompositeState. */
+  public PropPanelCompositeState() {
+    super("label.composite-state", lookupIcon("CompositeState"));
+    initialize();
 
-        addField("label.name", getNameTextField());
-        addField("label.container", getContainerScroll());
-        /*
-         * addField("label.modifiers", new
-         * UMLCompositeStateConcurrentCheckBox());
-         */
-        addField("label.entry", getEntryScroll());
-        addField("label.exit", getExitScroll());
-        addField("label.do-activity", getDoScroll());
-
-        addSeparator();
-
-        addField("label.incoming", getIncomingScroll());
-        addField("label.outgoing", getOutgoingScroll());
-        addField("label.internal-transitions",
-                getInternalTransitionsScroll());
-
-        addSeparator();
-
-        addField("label.subvertex",
-                new JScrollPane(subverticesList));
-    }
-
+    addField("label.name", getNameTextField());
+    addField("label.container", getContainerScroll());
     /*
-     * @see org.argouml.uml.ui.behavior.state_machines.PropPanelStateVertex#addExtraButtons()
+     * addField("label.modifiers", new
+     * UMLCompositeStateConcurrentCheckBox());
      */
-    @Override
-    protected void addExtraButtons() {
-        super.addExtraButtons();
-        addConcurrentRegion = new ActionAddConcurrentRegion();
-        addAction(addConcurrentRegion);
-    }
+    addField("label.entry", getEntryScroll());
+    addField("label.exit", getExitScroll());
+    addField("label.do-activity", getDoScroll());
 
-    protected void updateExtraButtons() {
-        addConcurrentRegion.setEnabled(addConcurrentRegion.isEnabled());
-    }
+    addSeparator();
 
-    /**
-     * Initialize the panel with its specific fields, in casu
-     * the substate vertex list.
-     */
-    protected void initialize() {
-	subverticesList =
-	    new UMLCompositeStateSubvertexList(
-	            new UMLCompositeStateSubvertexListModel());
-    }
+    addField("label.incoming", getIncomingScroll());
+    addField("label.outgoing", getOutgoingScroll());
+    addField("label.internal-transitions", getInternalTransitionsScroll());
 
-    /*
-     * @see org.argouml.uml.ui.PropPanel#setTarget(java.lang.Object)
-     */
-    @Override
-    public void setTarget(final Object t) {
-        super.setTarget(t);
-        updateExtraButtons();
-        final Object target = TargetManager.getInstance().getModelTarget();
-        if (Model.getFacade().isAConcurrentRegion(target)) {
-            getTitleLabel().setText(
-                    Translator.localize("label.concurrent.region"));
-        } else if (Model.getFacade().isConcurrent(target)) {
-            getTitleLabel().setText(
-                    Translator.localize("label.concurrent.composite.state"));
-        } else if (!Model.getFacade().isASubmachineState(target)) {
-            // PropPanelSubmachine is a subclass that handles its own title
-            getTitleLabel().setText(
-                    Translator.localize("label.composite-state"));
-        }
-    }
+    addSeparator();
 
+    addField("label.subvertex", new JScrollPane(subverticesList));
+  }
+
+  /*
+   * @see org.argouml.uml.ui.behavior.state_machines.PropPanelStateVertex#addExtraButtons()
+   */
+  @Override
+  protected void addExtraButtons() {
+    super.addExtraButtons();
+    addConcurrentRegion = new ActionAddConcurrentRegion();
+    addAction(addConcurrentRegion);
+  }
+
+  protected void updateExtraButtons() {
+    addConcurrentRegion.setEnabled(addConcurrentRegion.isEnabled());
+  }
+
+  /** Initialize the panel with its specific fields, in casu the substate vertex list. */
+  protected void initialize() {
+    subverticesList = new UMLCompositeStateSubvertexList(new UMLCompositeStateSubvertexListModel());
+  }
+
+  /*
+   * @see org.argouml.uml.ui.PropPanel#setTarget(java.lang.Object)
+   */
+  @Override
+  public void setTarget(final Object t) {
+    super.setTarget(t);
+    updateExtraButtons();
+    final Object target = TargetManager.getInstance().getModelTarget();
+    if (Model.getFacade().isAConcurrentRegion(target)) {
+      getTitleLabel().setText(Translator.localize("label.concurrent.region"));
+    } else if (Model.getFacade().isConcurrent(target)) {
+      getTitleLabel().setText(Translator.localize("label.concurrent.composite.state"));
+    } else if (!Model.getFacade().isASubmachineState(target)) {
+      // PropPanelSubmachine is a subclass that handles its own title
+      getTitleLabel().setText(Translator.localize("label.composite-state"));
+    }
+  }
 }
-
-
-

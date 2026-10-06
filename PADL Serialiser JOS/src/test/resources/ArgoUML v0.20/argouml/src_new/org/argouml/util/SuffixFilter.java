@@ -27,97 +27,93 @@ package org.argouml.util;
 import java.io.File;
 import javax.swing.filechooser.FileFilter;
 
-/**
- * This class handles file extensions.
- *
- */
+/** This class handles file extensions. */
 public class SuffixFilter extends FileFilter {
 
-    ////////////////////////////////////////////////////////////////
-    // instance varaibles
+  ////////////////////////////////////////////////////////////////
+  // instance varaibles
 
-    private final String suffix;
-    private final String desc;
+  private final String suffix;
 
-    ////////////////////////////////////////////////////////////////
-    // constructor
+  private final String desc;
 
-    /**
-     * The constructor.
-     *
-     * @param s the suffix string
-     * @param d the file type description
-     */
-    public SuffixFilter(String s, String d) {
-	suffix = s;
-	desc = d;
+  ////////////////////////////////////////////////////////////////
+  // constructor
+
+  /**
+   * The constructor.
+   *
+   * @param s the suffix string
+   * @param d the file type description
+   */
+  public SuffixFilter(String s, String d) {
+    suffix = s;
+    desc = d;
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // FileFilter API
+
+  /**
+   * @see javax.swing.filechooser.FileFilter#accept(java.io.File)
+   */
+  public boolean accept(File f) {
+    if (f == null) {
+      return false;
     }
-
-    ////////////////////////////////////////////////////////////////
-    // FileFilter API
-
-    /**
-     * @see javax.swing.filechooser.FileFilter#accept(java.io.File)
-     */
-    public boolean accept(File f) {
-	if (f == null) {
-            return false;
-        }
-	if (f.isDirectory()) {
-            return true;
-        }
-	String extension = getExtension(f);
-	if (suffix.equalsIgnoreCase(extension)) {
-            return true;
-        }
-	return false;
+    if (f.isDirectory()) {
+      return true;
     }
-
-    /**
-     * @param f the file to get the extension from
-     * @return the extension string (without the dot)
-     */
-    public static String getExtension(File f) {
-	if (f == null) {
-            return null;
-        }
-	return getExtension(f.getName());
+    String extension = getExtension(f);
+    if (suffix.equalsIgnoreCase(extension)) {
+      return true;
     }
+    return false;
+  }
 
-    /**
-     * @param filename the name of the file to get the extension from
-     * @return the extension string (without the dot)
-     */
-    public static String getExtension(String filename) {
-	int i = filename.lastIndexOf('.');
-	if (i > 0 && i < filename.length() - 1) {
-	    return filename.substring(i + 1).toLowerCase();
-	}
-	return null;
+  /**
+   * @param f the file to get the extension from
+   * @return the extension string (without the dot)
+   */
+  public static String getExtension(File f) {
+    if (f == null) {
+      return null;
     }
+    return getExtension(f.getName());
+  }
 
-    /**
-     * @see javax.swing.filechooser.FileFilter#getDescription()
-     */
-    public String getDescription() {
-	return desc + " (*." + suffix + ")";
+  /**
+   * @param filename the name of the file to get the extension from
+   * @return the extension string (without the dot)
+   */
+  public static String getExtension(String filename) {
+    int i = filename.lastIndexOf('.');
+    if (i > 0 && i < filename.length() - 1) {
+      return filename.substring(i + 1).toLowerCase();
     }
+    return null;
+  }
 
-    /**
-     * @return Returns the _suffix.
-     */
-    public String getSuffix() {
-        return suffix;
-    }
+  /**
+   * @see javax.swing.filechooser.FileFilter#getDescription()
+   */
+  public String getDescription() {
+    return desc + " (*." + suffix + ")";
+  }
 
-    /**
-     * Adding this function enables easy selection of suffixfilters
-     * e.g. in a combobox.
-     *
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-        return getDescription();
-    }
+  /**
+   * @return Returns the _suffix.
+   */
+  public String getSuffix() {
+    return suffix;
+  }
 
+  /**
+   * Adding this function enables easy selection of suffixfilters e.g. in a combobox.
+   *
+   * @see java.lang.Object#toString()
+   */
+  public String toString() {
+    return getDescription();
+  }
 } /* end class SuffixFilter */

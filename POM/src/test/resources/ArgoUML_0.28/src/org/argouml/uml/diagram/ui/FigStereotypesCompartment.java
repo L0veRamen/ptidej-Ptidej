@@ -24,49 +24,40 @@
 
 package org.argouml.uml.diagram.ui;
 
-
 /**
- * A Fig designed to be the child of some FigNode or FigEdge to display the
- * stereotypes of the model element represented by the parent Fig.
- * <p>
- * TODO: The inheritance hierarchy of this class has been changed, so it may not
- * be binary API compatible even though it implements all methods of the missing
- * class (FigCompartment) with compatible signatures. Double check binary
- * compatibility and restore original implementation for deprecation period if
- * necessary.
- * 
+ * A Fig designed to be the child of some FigNode or FigEdge to display the stereotypes of the model
+ * element represented by the parent Fig.
+ *
+ * <p>TODO: The inheritance hierarchy of this class has been changed, so it may not be binary API
+ * compatible even though it implements all methods of the missing class (FigCompartment) with
+ * compatible signatures. Double check binary compatibility and restore original implementation for
+ * deprecation period if necessary.
+ *
  * @author Bob Tarling
  * @deprecated for 0.27.2 by mvw. Use {@link FigStereotypesGroup}.
  */
 @Deprecated
 public class FigStereotypesCompartment extends FigStereotypesGroup {
 
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -1696363445893406130L;
-    
-    
-    /**
-     * The constructor.
-     * 
-     * @param x x
-     * @param y y
-     * @param w width
-     * @param h height
-     * @deprecated for 0.27.2 by mvw. Use
-     *             {@link FigStereotypesGroup#FigStereotypesGroup(Object, 
-     *             java.awt.Rectangle, org.argouml.uml.diagram.DiagramSettings)}
-     */
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    public FigStereotypesCompartment(int x, int y, int w, int h) {
-        super(x, y, w, h);
-    }
-    
-    @Deprecated
-    protected void createModelElement() {
-    }
+  /** The UID. */
+  private static final long serialVersionUID = -1696363445893406130L;
 
+  /**
+   * The constructor.
+   *
+   * @param x x
+   * @param y y
+   * @param w width
+   * @param h height
+   * @deprecated for 0.27.2 by mvw. Use {@link FigStereotypesGroup#FigStereotypesGroup(Object,
+   *     java.awt.Rectangle, org.argouml.uml.diagram.DiagramSettings)}
+   */
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  public FigStereotypesCompartment(int x, int y, int w, int h) {
+    super(x, y, w, h);
+  }
 
+  @Deprecated
+  protected void createModelElement() {}
 }

@@ -27,125 +27,114 @@ package org.argouml.ui;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Vector;
-
 import org.apache.log4j.Logger;
 import org.argouml.ui.targetmanager.TargetEvent;
 import org.argouml.ui.targetmanager.TargetListener;
 import org.argouml.ui.targetmanager.TargetManager;
 import org.argouml.uml.ui.UMLAction;
 
-
 /**
- * Collects ArgoUML's global actions, and takes care of the
- * "enabled" status of all these actions.<p>
+ * Collects ArgoUML's global actions, and takes care of the "enabled" status of all these actions.
  *
- * Which means: <br>
- * Any instance of UMLAction may (at construction time)
- * tell Actions by calling addAction()
- * about UMLActions of which the availability depends on the currently
- * selected Target or the state of ArgoUML. <p>
+ * <p>Which means: <br>
+ * Any instance of UMLAction may (at construction time) tell Actions by calling addAction() about
+ * UMLActions of which the availability depends on the currently selected Target or the state of
+ * ArgoUML.
  *
- * From here on, Actions will check the availability
- * of all enlisted UMLActions after every Target change and
- * after every ArgoUML state change (i.e. every user action),
- * and downlight or enable the corresponding UI element,
- * e.g. menu item or toolbar item. <p>
+ * <p>From here on, Actions will check the availability of all enlisted UMLActions after every
+ * Target change and after every ArgoUML state change (i.e. every user action), and downlight or
+ * enable the corresponding UI element, e.g. menu item or toolbar item.
  *
- * Once UMLActions are enlisted, they can never be removed!<p>
+ * <p>Once UMLActions are enlisted, they can never be removed!
  *
- * This class is a Singleton.
+ * <p>This class is a Singleton.
  */
 public class Actions implements TargetListener {
 
-    private static final Logger LOG = Logger.getLogger(Actions.class);
+  private static final Logger LOG = Logger.getLogger(Actions.class);
 
-    private static final Actions INSTANCE = new Actions();
+  private static final Actions INSTANCE = new Actions();
 
-    /**
-     * @return the singleton
-     */
-    public static Actions getInstance() {
-        return INSTANCE;
+  /**
+   * @return the singleton
+   */
+  public static Actions getInstance() {
+    return INSTANCE;
+  }
+
+  private Actions() {
+    TargetManager.getInstance().addTargetListener(this);
+  }
+
+  /**
+   * <code>allActions</code> is the list of global UMLActions in ArgoUML. All these are UMLActions!
+   */
+  private static Vector allActions = new Vector(100);
+
+  /**
+   * Updates all global actions: check if enabled or not. This function used to be deprecated for
+   * unclear reasons - see issue 2735.
+   */
+  public static void updateAllEnabled() {
+    Enumeration actions = allActions.elements();
+    while (actions.hasMoreElements()) {
+      UMLAction a = (UMLAction) actions.nextElement();
+      a.updateEnabled();
     }
+  }
 
-    private Actions() {
-        TargetManager.getInstance().addTargetListener(this);
+  /**
+   * Updates all global actions as a consequence of the send TargetEvent.
+   *
+   * @param e the target event, which is used to determine the new target
+   */
+  private static void updateAllEnabled(TargetEvent e) {
+    Iterator actions = allActions.iterator();
+    while (actions.hasNext()) {
+      UMLAction a = (UMLAction) actions.next();
+      a.updateEnabled(e.getNewTarget());
     }
+  }
 
-    /**
-     * <code>allActions</code> is the list of global UMLActions in ArgoUML.
-     * All these are UMLActions!
-     */
-    private static Vector allActions = new Vector(100);
+  /**
+   * Add actions to the global actions list. Only done at construction time for UMLActions.
+   *
+   * @param newAction the new action to be added
+   */
+  public static void addAction(UMLAction newAction) {
+    LOG.debug("Adding action: " + newAction.getClass().getName());
+    allActions.addElement(newAction);
+  }
 
-    /**
-     * Updates all global actions: check if enabled or not.
-     * This function used to be deprecated for unclear reasons - see issue 2735.
-     */
-    public static void updateAllEnabled() {
-	Enumeration actions = allActions.elements();
-	while (actions.hasMoreElements()) {
-	    UMLAction a = (UMLAction) actions.nextElement();
-	    a.updateEnabled();
-	}
-    }
+  /**
+   * @param action the given action
+   * @return true if this is a global action
+   */
+  public static boolean isGlobalAction(UMLAction action) {
+    return allActions.contains(action);
+  }
 
-    /**
-     * Updates all global actions as a consequence of the send TargetEvent.
-     * @param e the target event, which is used to determine the new target
-     */
-    private static void updateAllEnabled(TargetEvent e) {
-	Iterator actions = allActions.iterator();
-	while (actions.hasNext()) {
-	    UMLAction a = (UMLAction) actions.next();
-	    a.updateEnabled(e.getNewTarget());
-	}
-    }
+  /**
+   * @see org.argouml.ui.targetmanager.TargetListener#targetAdded(
+   *     org.argouml.ui.targetmanager.TargetEvent)
+   */
+  public void targetAdded(TargetEvent e) {
+    updateAllEnabled(e);
+  }
 
-    /**
-     * Add actions to the global actions list.
-     * Only done at construction time for UMLActions.
-     *
-     * @param newAction the new action to be added
-     */
-    public static void addAction(UMLAction newAction) {
-        LOG.debug("Adding action: " + newAction.getClass().getName());
-        allActions.addElement(newAction);
-    }
+  /**
+   * @see org.argouml.ui.targetmanager.TargetListener#targetRemoved(
+   *     org.argouml.ui.targetmanager.TargetEvent)
+   */
+  public void targetRemoved(TargetEvent e) {
+    updateAllEnabled(e);
+  }
 
-    /**
-     * @param action the given action
-     * @return true if this is a global action
-     */
-    public static boolean isGlobalAction(UMLAction action) {
-        return allActions.contains(action);
-    }
-
-    /**
-     * @see org.argouml.ui.targetmanager.TargetListener#targetAdded(
-     *         org.argouml.ui.targetmanager.TargetEvent)
-     */
-    public void targetAdded(TargetEvent e) {
-        updateAllEnabled(e);
-
-    }
-
-    /**
-     * @see org.argouml.ui.targetmanager.TargetListener#targetRemoved(
-     *         org.argouml.ui.targetmanager.TargetEvent)
-     */
-    public void targetRemoved(TargetEvent e) {
-        updateAllEnabled(e);
-
-    }
-
-    /**
-     * @see org.argouml.ui.targetmanager.TargetListener#targetSet(
-     *         org.argouml.ui.targetmanager.TargetEvent)
-     */
-    public void targetSet(TargetEvent e) {
-        updateAllEnabled(e);
-
-    }
-
-}  /* end class Actions */
+  /**
+   * @see org.argouml.ui.targetmanager.TargetListener#targetSet(
+   *     org.argouml.ui.targetmanager.TargetEvent)
+   */
+  public void targetSet(TargetEvent e) {
+    updateAllEnabled(e);
+  }
+} /* end class Actions */

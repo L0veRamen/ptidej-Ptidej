@@ -28,21 +28,21 @@ import org.eclipse.osgi.util.NLS;
 
 /**
  * New Wizard message bundle.
+ *
  * @author Bogdan Pistol
  */
 public class NewWizardMessages extends NLS {
 
-    private static final String BUNDLE_NAME = 
-        "org.argouml.argoeclipse.internal.ui." //$NON-NLS-1$
-        + "newwizard.NewWizardMessages"; //$NON-NLS-1$
-    
-    public static String wizardTitle;
-    public static String wizardDescription;
-    public static String confirmOverwiteTitle;
-    public static String confirmOverwiteDescription;
-    
-    static {
-        NLS.initializeMessages(BUNDLE_NAME, NewWizardMessages.class);
-    }
-    
+  private static final String BUNDLE_NAME =
+      "org.argouml.argoeclipse.internal.ui." //$NON-NLS-1$
+          + "newwizard.NewWizardMessages"; //$NON-NLS-1$
+
+  public static String wizardTitle;
+  public static String wizardDescription;
+  public static String confirmOverwiteTitle;
+  public static String confirmOverwiteDescription;
+
+  static {
+    NLS.initializeMessages(BUNDLE_NAME, NewWizardMessages.class);
+  }
 }

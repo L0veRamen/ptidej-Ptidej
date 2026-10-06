@@ -1,6 +1,6 @@
 package padl.example.syntheticBridge;
 
 class NonPublicSuperClass {
-	public void foo() {
-	};
+  public void foo() {}
+  ;
 }

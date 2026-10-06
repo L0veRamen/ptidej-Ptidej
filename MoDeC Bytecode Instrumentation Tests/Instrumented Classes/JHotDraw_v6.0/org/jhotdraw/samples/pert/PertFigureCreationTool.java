@@ -15,21 +15,18 @@ import org.jhotdraw.framework.*;
 import org.jhotdraw.standard.*;
 
 /**
- * A more efficient version of the generic Pert creation
- * tool that is not based on cloning.
+ * A more efficient version of the generic Pert creation tool that is not based on cloning.
  *
  * @version <$CURRENT_VERSION$>
  */
-public  class PertFigureCreationTool extends CreationTool {
+public class PertFigureCreationTool extends CreationTool {
 
-	public PertFigureCreationTool(DrawingEditor newDrawingEditor) {
-		super(newDrawingEditor);
-	}
+  public PertFigureCreationTool(DrawingEditor newDrawingEditor) {
+    super(newDrawingEditor);
+  }
 
-	/**
-	 * Creates a new PertFigure.
-	 */
-	protected Figure createFigure() {
-		return new PertFigure();
-	}
+  /** Creates a new PertFigure. */
+  protected Figure createFigure() {
+    return new PertFigure();
+  }
 }

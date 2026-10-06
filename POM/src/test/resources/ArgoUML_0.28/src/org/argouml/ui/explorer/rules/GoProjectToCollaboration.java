@@ -29,48 +29,44 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.argouml.i18n.Translator;
 import org.argouml.kernel.Project;
 import org.argouml.model.Model;
 
-/**
- * Rule for Project->Collaboration.
- *
- */
+/** Rule for Project->Collaboration. */
 public class GoProjectToCollaboration extends AbstractPerspectiveRule {
 
-    /*
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
-     */
-    public String getRuleName() {
-        return Translator.localize("misc.project.collaboration");
-    }
+  /*
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
+   */
+  public String getRuleName() {
+    return Translator.localize("misc.project.collaboration");
+  }
 
-    /*
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
-     */
-    public Collection getChildren(Object parent) {
-	Collection col = new ArrayList();
-        if (parent instanceof Project) {
-            for (Object model : ((Project) parent).getUserDefinedModelList()) {
-                col.addAll(Model.getModelManagementHelper()
-                        .getAllModelElementsOfKind(model,
-                                Model.getMetaTypes().getCollaboration()));
-            }
-        }
-	return col;
+  /*
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
+   */
+  public Collection getChildren(Object parent) {
+    Collection col = new ArrayList();
+    if (parent instanceof Project) {
+      for (Object model : ((Project) parent).getUserDefinedModelList()) {
+        col.addAll(
+            Model.getModelManagementHelper()
+                .getAllModelElementsOfKind(model, Model.getMetaTypes().getCollaboration()));
+      }
     }
+    return col;
+  }
 
-    /*
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
-     */
-    public Set getDependencies(Object parent) {
-        if (parent instanceof Project) {
-	    Set set = new HashSet();
-	    set.add(parent);
-	    return set;
-	}
-	return Collections.EMPTY_SET;
+  /*
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
+   */
+  public Set getDependencies(Object parent) {
+    if (parent instanceof Project) {
+      Set set = new HashSet();
+      set.add(parent);
+      return set;
     }
+    return Collections.EMPTY_SET;
+  }
 }

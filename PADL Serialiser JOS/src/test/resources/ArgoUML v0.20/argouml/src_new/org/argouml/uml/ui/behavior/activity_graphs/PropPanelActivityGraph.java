@@ -24,22 +24,17 @@
 
 package org.argouml.uml.ui.behavior.activity_graphs;
 
-import org.argouml.util.ConfigLoader;
 import org.argouml.uml.ui.behavior.state_machines.*;
+import org.argouml.util.ConfigLoader;
 
 /**
  * PropertyPanel for Activitygraphs. Currently it just inherits everything from
- * PropPanelStateMachine.
- * TODO: implement partitions
+ * PropPanelStateMachine. TODO: implement partitions
  */
 public class PropPanelActivityGraph extends PropPanelStateMachine {
 
-    /**
-     * The constructor.
-     *
-     */
-    public PropPanelActivityGraph() {
-        super("ActivityGraph", ConfigLoader.getTabPropsOrientation());
-    }
+  /** The constructor. */
+  public PropPanelActivityGraph() {
+    super("ActivityGraph", ConfigLoader.getTabPropsOrientation());
+  }
 }
-

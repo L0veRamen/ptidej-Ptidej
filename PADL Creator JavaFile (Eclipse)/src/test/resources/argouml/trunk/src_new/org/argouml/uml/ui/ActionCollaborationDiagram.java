@@ -28,31 +28,23 @@ import org.argouml.uml.diagram.DiagramFactory;
 import org.argouml.uml.diagram.collaboration.ui.UMLCollaborationDiagram;
 import org.argouml.uml.diagram.ui.UMLDiagram;
 
-/**
- * Action to trigger creation of new collaboration diagram.
- */
+/** Action to trigger creation of new collaboration diagram. */
 public class ActionCollaborationDiagram extends ActionNewDiagram {
 
-    /**
-     * Constructor.
-     */
-    public ActionCollaborationDiagram() {
-        super("action.collaboration-diagram");
-    }
+  /** Constructor. */
+  public ActionCollaborationDiagram() {
+    super("action.collaboration-diagram");
+  }
 
-    /**
-     * @see org.argouml.uml.ui.ActionNewDiagram#createDiagram()
-     */
-    public UMLDiagram createDiagram() {
-        return (UMLDiagram) DiagramFactory.getInstance().createDiagram(
-                UMLCollaborationDiagram.class,
-                createCollaboration(),
-                null);
-    }
+  /**
+   * @see org.argouml.uml.ui.ActionNewDiagram#createDiagram()
+   */
+  public UMLDiagram createDiagram() {
+    return (UMLDiagram)
+        DiagramFactory.getInstance()
+            .createDiagram(UMLCollaborationDiagram.class, createCollaboration(), null);
+  }
 
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -1089352213298998155L;
-
+  /** The UID. */
+  private static final long serialVersionUID = -1089352213298998155L;
 } /* end class ActionCollaborationDiagram */

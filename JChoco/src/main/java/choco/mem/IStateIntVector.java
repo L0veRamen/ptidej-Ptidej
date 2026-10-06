@@ -13,51 +13,31 @@
 
 package choco.mem;
 
-/**
- * Describes an search vector with states (describing some history of the data structure).
- */
+/** Describes an search vector with states (describing some history of the data structure). */
 public interface IStateIntVector {
 
-	/**
-	 * Minimal capacity of a vector
-	 */
-	public static final int MIN_CAPACITY = 8;
+  /** Minimal capacity of a vector */
+  public static final int MIN_CAPACITY = 8;
 
-	/**
-	 * Adds a new search at the end of the vector.
-	 * @param i The search to add.
-	 */
+  /**
+   * Adds a new search at the end of the vector.
+   *
+   * @param i The search to add.
+   */
+  public void add(int i);
 
-	public void add(int i);
+  /** Returns the <code>index</code>th element of the vector. */
+  public int get(int index);
 
-	/**
-	 * Returns the <code>index</code>th element of the vector.
-	 */
+  /** Checks if the vector is empty. */
+  public boolean isEmpty();
 
-	public int get(int index);
+  /** removes the search at the end of the vector. does nothing when called on an empty vector */
+  public void removeLast();
 
-	/**
-	 * Checks if the vector is empty.
-	 */
+  /** Assigns a new value <code>val</code> to the element <code>index</code>. */
+  public int set(int index, int val);
 
-	public boolean isEmpty();
-
-	/**
-	 * removes the search at the end of the vector.
-	 * does nothing when called on an empty vector
-	 */
-
-	public void removeLast();
-
-	/**
-	 * Assigns a new value <code>val</code> to the element <code>index</code>.
-	 */
-
-	public int set(int index, int val);
-
-	/**
-	 * Returns the current size of the stored search vector.
-	 */
-
-	public int size();
+  /** Returns the current size of the stored search vector. */
+  public int size();
 }

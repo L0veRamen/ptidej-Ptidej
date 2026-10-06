@@ -29,10 +29,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * <p>A marker interface to be implemented by Actions that will create some
- * modification to the UML model when it is executed.</p>
- * <p>Actions that implement this are filtered out or disabled in some
- * displays if the model element that would be effected is read only</p>
+ * A marker interface to be implemented by Actions that will create some modification to the UML
+ * model when it is executed.
+ *
+ * <p>Actions that implement this are filtered out or disabled in some displays if the model element
+ * that would be effected is read only
+ *
  * @author Bob Tarling
  */
 @Inherited

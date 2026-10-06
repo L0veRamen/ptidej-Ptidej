@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -20,20 +20,20 @@ import padl.creator.classfile.test.topLevelEntity.TopLevelEntityTest;
 
 /**
  * @author Yann-Gaël Guéhéneuc
- * @since  2004/01/25
+ * @since 2004/01/25
  */
 public final class TestCreatorClassFile extends TestSuite {
-	public static TestSuite suite() {
-		final TestCreatorClassFile suite = new TestCreatorClassFile();
-		suite.setName(TestCreatorClassFile.class.getName());
+  public static TestSuite suite() {
+    final TestCreatorClassFile suite = new TestCreatorClassFile();
+    suite.setName(TestCreatorClassFile.class.getName());
 
-		suite.addTestSuite(ComparisonTest.class);
-		suite.addTestSuite(FieldAccessTest.class);
-		suite.addTestSuite(InheritanceTest.class);
-		suite.addTestSuite(MethodInvocationMissingTest.class);
-		suite.addTestSuite(ArgoUMLPathTest.class);
-		suite.addTestSuite(TopLevelEntityTest.class);
+    suite.addTestSuite(ComparisonTest.class);
+    suite.addTestSuite(FieldAccessTest.class);
+    suite.addTestSuite(InheritanceTest.class);
+    suite.addTestSuite(MethodInvocationMissingTest.class);
+    suite.addTestSuite(ArgoUMLPathTest.class);
+    suite.addTestSuite(TopLevelEntityTest.class);
 
-		return suite;
-	}
+    return suite;
+  }
 }

@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xerces" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -63,114 +63,112 @@ import java.util.ResourceBundle;
 import org.apache.xerces.utils.XMLMessageProvider;
 
 public class DatatypeMessageProvider implements XMLMessageProvider {
-    /**
-     * The domain of messages concerning the XML Schema: Datatypes specification.
-     */
-    public static final String DATATYPE_DOMAIN = "http://www.w3.org/TR/xml-schema-2";
+  /** The domain of messages concerning the XML Schema: Datatypes specification. */
+  public static final String DATATYPE_DOMAIN = "http://www.w3.org/TR/xml-schema-2";
 
-    /**
-     * Set the locale used for error messages
-     *
-     * @param locale the new locale
-     */
-    public void setLocale(Locale locale) {
-        fLocale = locale;
+  /**
+   * Set the locale used for error messages
+   *
+   * @param locale the new locale
+   */
+  public void setLocale(Locale locale) {
+    fLocale = locale;
+  }
+
+  /**
+   * get the local used for error messages
+   *
+   * @return the locale
+   */
+  public Locale getLocale() {
+    return fLocale;
+  }
+
+  /**
+   * Creates a message from the specified key and replacement arguments, localized to the given
+   * locale.
+   *
+   * @param locale The requested locale of the message to be created.
+   * @param key The key for the message text.
+   * @param args The arguments to be used as replacement text in the message created.
+   */
+  public String createMessage(Locale locale, int majorCode, int minorCode, Object args[]) {
+    boolean throwex = false;
+    if (fResourceBundle == null || locale != fLocale) {
+      if (locale != null)
+        fResourceBundle =
+            ListResourceBundle.getBundle("org.apache.xerces.msg.DatatypeMessages", locale);
+      if (fResourceBundle == null)
+        fResourceBundle = ListResourceBundle.getBundle("org.apache.xerces.msg.DatatypeMessages");
     }
-    /**
-     * get the local used for error messages
-     *
-     * @return the locale
-     */
-    public Locale getLocale() {
-        return fLocale;
+    if (majorCode < 0 || majorCode >= fgMessageKeys.length) {
+      majorCode = MSG_BAD_MAJORCODE;
+      throwex = true;
+    }
+    String msgKey = fgMessageKeys[majorCode];
+    String msg = fResourceBundle.getString(msgKey);
+    if (args != null) {
+      try {
+        msg = java.text.MessageFormat.format(msg, args);
+      } catch (Exception e) {
+        msg = fResourceBundle.getString(fgMessageKeys[MSG_FORMAT_FAILURE]);
+        msg += " " + fResourceBundle.getString(msgKey);
+      }
     }
 
-    /**
-     * Creates a message from the specified key and replacement
-     * arguments, localized to the given locale.
-     *
-     * @param locale    The requested locale of the message to be
-     *                  created.
-     * @param key       The key for the message text.
-     * @param args      The arguments to be used as replacement text
-     *                  in the message created.
-     */
-    public String createMessage(Locale locale, int majorCode, int minorCode, Object args[]) {
-        boolean throwex = false;
-        if (fResourceBundle == null || locale != fLocale) {
-            if (locale != null)
-                fResourceBundle = ListResourceBundle.getBundle("org.apache.xerces.msg.DatatypeMessages", locale);
-            if (fResourceBundle == null)
-                fResourceBundle = ListResourceBundle.getBundle("org.apache.xerces.msg.DatatypeMessages");
-        }
-        if (majorCode < 0 || majorCode >= fgMessageKeys.length) {
-            majorCode = MSG_BAD_MAJORCODE;
-            throwex = true;
-        }
-        String msgKey = fgMessageKeys[majorCode];
-        String msg = fResourceBundle.getString(msgKey);
-        if (args != null) {
-            try {
-                msg = java.text.MessageFormat.format(msg, args);
-            } catch (Exception e) {
-                msg = fResourceBundle.getString(fgMessageKeys[MSG_FORMAT_FAILURE]);
-                msg += " " + fResourceBundle.getString(msgKey);
-            }
-        }
-
-        if (throwex) {
-            throw new RuntimeException(msg);
-        }
-        return msg;
+    if (throwex) {
+      throw new RuntimeException(msg);
     }
-    //
-    //
-    //
-    private Locale fLocale = null;
-    private ResourceBundle fResourceBundle = null;
-    //
-    // Major Codes
-    //
-    public static final int 
-        MSG_BAD_MAJORCODE = 0,              //  majorCode parameter to createMessage was out of bounds
-        MSG_FORMAT_FAILURE = 1,             //  exception thrown during messageFormat call
-        NotBoolean = 2,
-        NotDecimal = 3,
-        FacetsInconsistent = 4,
-        IllegalFacetValue = 5,
-        IllegalDecimalFacet = 6,
-        UnknownFacet = 7,
-        InvalidEnumValue = 8,
-        OutOfBounds = 9,
-        NotAnEnumValue = 10,
-        NotInteger = 11,
-        IllegalIntegerFacet = 12,
-        NotReal = 13,
-        IllegalRealFacet = 14,
-        // ...
-        MSG_MAX_CODE = 15;
+    return msg;
+  }
 
-    //
-    // Minor Codes
-    //
-    public static final int
-        MSG_NONE = 0;
+  //
+  //
+  //
+  private Locale fLocale = null;
+  private ResourceBundle fResourceBundle = null;
+  //
+  // Major Codes
+  //
+  public static final int
+      MSG_BAD_MAJORCODE = 0, //  majorCode parameter to createMessage was out of bounds
+      MSG_FORMAT_FAILURE = 1, //  exception thrown during messageFormat call
+      NotBoolean = 2,
+      NotDecimal = 3,
+      FacetsInconsistent = 4,
+      IllegalFacetValue = 5,
+      IllegalDecimalFacet = 6,
+      UnknownFacet = 7,
+      InvalidEnumValue = 8,
+      OutOfBounds = 9,
+      NotAnEnumValue = 10,
+      NotInteger = 11,
+      IllegalIntegerFacet = 12,
+      NotReal = 13,
+      IllegalRealFacet = 14,
+      // ...
+      MSG_MAX_CODE = 15;
 
-    public static final String[] fgMessageKeys = {
-        "BadMajorCode",                 //   0, "The majorCode parameter to createMessage was out of bounds."
-        "FormatFailed",                 //   1, "An internal error occurred while formatting the following message:"
-        "NotBoolean",                   //   2, "{0} is not a boolean"
-        "NotDecimal",                   //   3, "{0} is not a decimal"
-        "FacetsInconsistent",           //   4, "Facets are inconsistent with base type"
-        "IllegalFacetValue",            //   5, "Illegal value {0} for facet {1}."
-        "IllegalDecimalFacet",          //   6, "Illegal Facet for decimal type"
-        "UnknownFacet",                 //   7, "Unknown Facet: {0}"
-        "InvalidEnumValue",             //   8, "Invalid value for Enum constant: {0}"
-        "OutOfBounds",                  //   9, "{0} is out of bounds."
-        "NotAnEnumValue",               //  10, "{0} is not one of the specified enum values."
-        "NotInteger",                   //  11, "{0} is not an integer."
-        "IllegalIntegerFacet",          //  12, "Illegal Facet for Integer type."
-        "NotReal",                      //  13, "{0} is not a double."
-        "IllegalRealFacet",             //  14, "Illegal Facet for Real type." 
-    };
+  //
+  // Minor Codes
+  //
+  public static final int MSG_NONE = 0;
+
+  public static final String[] fgMessageKeys = {
+    "BadMajorCode", //   0, "The majorCode parameter to createMessage was out of bounds."
+    "FormatFailed", //   1, "An internal error occurred while formatting the following message:"
+    "NotBoolean", //   2, "{0} is not a boolean"
+    "NotDecimal", //   3, "{0} is not a decimal"
+    "FacetsInconsistent", //   4, "Facets are inconsistent with base type"
+    "IllegalFacetValue", //   5, "Illegal value {0} for facet {1}."
+    "IllegalDecimalFacet", //   6, "Illegal Facet for decimal type"
+    "UnknownFacet", //   7, "Unknown Facet: {0}"
+    "InvalidEnumValue", //   8, "Invalid value for Enum constant: {0}"
+    "OutOfBounds", //   9, "{0} is out of bounds."
+    "NotAnEnumValue", //  10, "{0} is not one of the specified enum values."
+    "NotInteger", //  11, "{0} is not an integer."
+    "IllegalIntegerFacet", //  12, "Illegal Facet for Integer type."
+    "NotReal", //  13, "{0} is not a double."
+    "IllegalRealFacet", //  14, "Illegal Facet for Real type."
+  };
 }

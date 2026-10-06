@@ -39,129 +39,121 @@ import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
  */
 public class PropPanelStimulus extends PropPanelModelElement {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = 81659498358156000L;
+  /** The serial version. */
+  private static final long serialVersionUID = 81659498358156000L;
 
-    /**
-     * Construct a new property panel for a Stimulus.
-     */
-    public PropPanelStimulus() {
-        super("label.stimulus", lookupIcon("Stimulus"));
+  /** Construct a new property panel for a Stimulus. */
+  public PropPanelStimulus() {
+    super("label.stimulus", lookupIcon("Stimulus"));
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.action"),
-                new UMLStimulusActionTextField(this,
-                        new UMLStimulusActionTextProperty("name")));
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(
+        Translator.localize("label.action"),
+        new UMLStimulusActionTextField(this, new UMLStimulusActionTextProperty("name")));
 
-	addField(Translator.localize("label.sender"),
-                getSingleRowScroll(new UMLStimulusSenderListModel()));
+    addField(
+        Translator.localize("label.sender"), getSingleRowScroll(new UMLStimulusSenderListModel()));
 
-	addField(Translator.localize("label.receiver"),
-                getSingleRowScroll(new UMLStimulusReceiverListModel()));
+    addField(
+        Translator.localize("label.receiver"),
+        getSingleRowScroll(new UMLStimulusReceiverListModel()));
 
-        addField(Translator.localize("label.namespace"),
-                getNamespaceSelector());
+    addField(Translator.localize("label.namespace"), getNamespaceSelector());
 
-        addAction(new ActionNavigateNamespace());
-        addAction(new ActionNewStereotype());
-        addAction(getDeleteAction());
+    addAction(new ActionNavigateNamespace());
+    addAction(new ActionNewStereotype());
+    addAction(getDeleteAction());
+  }
+
+  /**
+   * @return the sender of this stimulus
+   */
+  public Object getSender() {
+    Object sender = null;
+    Object target = getTarget();
+    if (Model.getFacade().isAStimulus(target)) {
+      sender = Model.getFacade().getSender(target);
     }
+    return sender;
+  }
 
-    /**
-     * @return the sender of this stimulus
-     */
-    public Object getSender() {
-        Object sender = null;
-        Object target = getTarget();
-        if (Model.getFacade().isAStimulus(target)) {
-            sender =  Model.getFacade().getSender(target);
+  /**
+   * @param element the sender of this stimulus
+   */
+  public void setSender(Object element) {
+    Object target = getTarget();
+    if (Model.getFacade().isAStimulus(target)) {
+      Model.getCollaborationsHelper().setSender(target, element);
+    }
+  }
+
+  /**
+   * @return the receiver of this stimulus
+   */
+  public Object getReceiver() {
+    Object receiver = null;
+    Object target = getTarget();
+    if (Model.getFacade().isAStimulus(target)) {
+      receiver = Model.getFacade().getReceiver(target);
+    }
+    return receiver;
+  }
+
+  /**
+   * @param element the receiver of this stimulus
+   */
+  public void setReceiver(Object element) {
+    Object target = getTarget();
+    if (Model.getFacade().isAStimulus(target)) {
+      Model.getCommonBehaviorHelper().setReceiver(target, element);
+    }
+  }
+
+  /**
+   * @param modelelement the given modelelement
+   * @return true if it is acceptable, i.e. it is an association
+   */
+  public boolean isAcceptableAssociation(Object modelelement) {
+    return Model.getFacade().isAAssociation(modelelement);
+  }
+
+  /**
+   * @return the association of the link of the stimulus
+   */
+  public Object getAssociation() {
+    Object association = null;
+    Object target = getTarget();
+    if (Model.getFacade().isAStimulus(target)) {
+      Object link = Model.getFacade().getCommunicationLink(target);
+      if (link != null) {
+        association = Model.getFacade().getAssociation(link);
+      }
+    }
+    return association;
+  }
+
+  /**
+   * @param element the association of the link of the stimulus
+   */
+  public void setAssociation(Object element) {
+    Object target = getTarget();
+    if (Model.getFacade().isAStimulus(target)) {
+      Object stimulus = target;
+      Object link = Model.getFacade().getCommunicationLink(stimulus);
+      if (link == null) {
+        link = Model.getCommonBehaviorFactory().createLink();
+        if (link != null) {
+          Model.getCommonBehaviorHelper().addStimulus(link, stimulus);
+          Model.getCommonBehaviorHelper().setCommunicationLink(stimulus, link);
         }
-        return sender;
+      }
+      Object oldAssoc = Model.getFacade().getAssociation(link);
+      if (oldAssoc != element) {
+        Model.getCoreHelper().setAssociation(link, element);
+        //
+        //  TODO: more needs to go here
+        //
+      }
     }
-
-    /**
-     * @param element the sender of this stimulus
-     */
-    public void setSender(Object element) {
-        Object target = getTarget();
-        if (Model.getFacade().isAStimulus(target)) {
-            Model.getCollaborationsHelper().setSender(target, element);
-        }
-    }
-
-
-    /**
-     * @return the receiver of this stimulus
-     */
-    public Object getReceiver() {
-        Object receiver = null;
-        Object target = getTarget();
-        if (Model.getFacade().isAStimulus(target)) {
-            receiver =  Model.getFacade().getReceiver(target);
-        }
-        return receiver;
-    }
-
-    /**
-     * @param element the receiver of this stimulus
-     */
-    public void setReceiver(Object element) {
-        Object target = getTarget();
-        if (Model.getFacade().isAStimulus(target)) {
-            Model.getCommonBehaviorHelper().setReceiver(target, element);
-        }
-    }
-
-    /**
-     * @param modelelement the given modelelement
-     * @return true if it is acceptable, i.e. it is an association
-     */
-    public boolean isAcceptableAssociation(Object modelelement) {
-        return Model.getFacade().isAAssociation(modelelement);
-    }
-
-    /**
-     * @return the association of the link of the stimulus
-     */
-    public Object getAssociation() {
-        Object association = null;
-        Object target = getTarget();
-        if (Model.getFacade().isAStimulus(target)) {
-            Object link = Model.getFacade().getCommunicationLink(target);
-            if (link != null) {
-                association = Model.getFacade().getAssociation(link);
-            }
-        }
-        return association;
-    }
-
-    /**
-     * @param element the association of the link of the stimulus
-     */
-    public void setAssociation(Object element) {
-        Object target = getTarget();
-        if (Model.getFacade().isAStimulus(target)) {
-            Object stimulus = target;
-            Object link = Model.getFacade().getCommunicationLink(stimulus);
-            if (link == null) {
-                link = Model.getCommonBehaviorFactory().createLink();
-                if (link != null) {
-                    Model.getCommonBehaviorHelper().addStimulus(link, stimulus);
-                    Model.getCommonBehaviorHelper().setCommunicationLink(
-                            stimulus,
-                            link);
-                }
-            }
-            Object oldAssoc = Model.getFacade().getAssociation(link);
-            if (oldAssoc != element) {
-                Model.getCoreHelper().setAssociation(link, element);
-                //
-                //  TODO: more needs to go here
-                //
-            }
-        }
-    }
+  }
 }

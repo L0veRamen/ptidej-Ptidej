@@ -26,73 +26,66 @@ package org.argouml.core.propertypanels.ui;
 
 import java.util.ArrayList;
 import java.util.Collection;
-
 import org.argouml.model.Model;
 import org.argouml.ui.targetmanager.TargetManager;
 import org.argouml.uml.ui.UMLComboBoxModel2;
 
 /**
- *
  * @author oliver.heyden@gentleware.de
  */
 public class UMLCallEventOperationComboBoxModel extends UMLComboBoxModel2 {
-    /**
-     * The constructor.
-     */
-    public UMLCallEventOperationComboBoxModel() {
-        super("operation", true);
-    }
+  /** The constructor. */
+  public UMLCallEventOperationComboBoxModel() {
+    super("operation", true);
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        Object target = TargetManager.getInstance().getModelTarget();
-        Collection ops = new ArrayList();
-        if (Model.getFacade().isACallEvent(target)) {
-            Object ns = Model.getFacade().getNamespace(target);
-            if (Model.getFacade().isANamespace(ns)) {
-                Collection classifiers =
-                    Model.getModelManagementHelper().getAllModelElementsOfKind(
-                            ns,
-                            Model.getMetaTypes().getClassifier());
-                for (Object classifier : classifiers) {
-                    ops.addAll(Model.getFacade().getOperations(classifier));
-                }
-                
-                // TODO: getAllModelElementsOfKind should probably do this
-                // processing of imported elements automatically
-                for (Object importedElem : Model.getModelManagementHelper()
-                        .getAllImportedElements(ns)) {
-                    if (Model.getFacade().isAClassifier(importedElem)) {
-                        ops.addAll(Model.getFacade()
-                                .getOperations(importedElem));
-                    }
-                }
-            }
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    Object target = TargetManager.getInstance().getModelTarget();
+    Collection ops = new ArrayList();
+    if (Model.getFacade().isACallEvent(target)) {
+      Object ns = Model.getFacade().getNamespace(target);
+      if (Model.getFacade().isANamespace(ns)) {
+        Collection classifiers =
+            Model.getModelManagementHelper()
+                .getAllModelElementsOfKind(ns, Model.getMetaTypes().getClassifier());
+        for (Object classifier : classifiers) {
+          ops.addAll(Model.getFacade().getOperations(classifier));
         }
-        setElements(ops);
-    }
 
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
-     */
-    protected Object getSelectedModelElement() {
-        Object target = TargetManager.getInstance().getModelTarget();
-        if (Model.getFacade().isACallEvent(target)) {
-            return Model.getFacade().getOperation(target);
+        // TODO: getAllModelElementsOfKind should probably do this
+        // processing of imported elements automatically
+        for (Object importedElem : Model.getModelManagementHelper().getAllImportedElements(ns)) {
+          if (Model.getFacade().isAClassifier(importedElem)) {
+            ops.addAll(Model.getFacade().getOperations(importedElem));
+          }
         }
-        return null;
+      }
     }
+    setElements(ops);
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(java.lang.Object)
-     */
-    protected boolean isValidElement(Object element) {
-        Object target = TargetManager.getInstance().getModelTarget();
-        if (Model.getFacade().isACallEvent(target)) {
-            return element == Model.getFacade().getOperation(target);
-        }
-        return false;
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
+   */
+  protected Object getSelectedModelElement() {
+    Object target = TargetManager.getInstance().getModelTarget();
+    if (Model.getFacade().isACallEvent(target)) {
+      return Model.getFacade().getOperation(target);
     }
+    return null;
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(java.lang.Object)
+   */
+  protected boolean isValidElement(Object element) {
+    Object target = TargetManager.getInstance().getModelTarget();
+    if (Model.getFacade().isACallEvent(target)) {
+      return element == Model.getFacade().getOperation(target);
+    }
+    return false;
+  }
 }

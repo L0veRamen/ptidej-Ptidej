@@ -26,43 +26,34 @@ package org.argouml.model;
 
 import junit.framework.TestCase;
 
-/**
- * Split out the manual tests.
- */
+/** Split out the manual tests. */
 public class TestModel2 extends TestCase {
-    /**
-     * @param arg0 The name of the test case.
-     */
-    public TestModel2(String arg0) {
-        super(arg0);
-    }
+  /**
+   * @param arg0 The name of the test case.
+   */
+  public TestModel2(String arg0) {
+    super(arg0);
+  }
 
-    /**
-     * Test if the CollaborationsFactory is really a singleton.
-     */
-    public void testCollaborationsFactoryInstance() {
-        Object o1 = Model.getCollaborationsFactory();
-        Object o2 = Model.getCollaborationsFactory();
+  /** Test if the CollaborationsFactory is really a singleton. */
+  public void testCollaborationsFactoryInstance() {
+    Object o1 = Model.getCollaborationsFactory();
+    Object o2 = Model.getCollaborationsFactory();
 
-        assertTrue("Different singletons", o1 == o2);
-    }
+    assertTrue("Different singletons", o1 == o2);
+  }
 
-    /**
-     * Test if the factory is really a singleton.
-     */
-    public void testCommonBehaviorFactoryInstance() {
-	Object o1 = Model.getCommonBehaviorFactory();
-	Object o2 = Model.getCommonBehaviorFactory();
-	assertTrue("Different singletons", o1 == o2);
-    }
+  /** Test if the factory is really a singleton. */
+  public void testCommonBehaviorFactoryInstance() {
+    Object o1 = Model.getCommonBehaviorFactory();
+    Object o2 = Model.getCommonBehaviorFactory();
+    assertTrue("Different singletons", o1 == o2);
+  }
 
-    /**
-     * Test if the CoreFactory is really a singleton.
-     */
-    public void testCoreFactoryInstance() {
-	Object o1 = Model.getCoreFactory();
-	Object o2 = Model.getCoreFactory();
-	assertTrue("Different singletons", o1 == o2);
-    }
+  /** Test if the CoreFactory is really a singleton. */
+  public void testCoreFactoryInstance() {
+    Object o1 = Model.getCoreFactory();
+    Object o2 = Model.getCoreFactory();
+    assertTrue("Different singletons", o1 == o2);
+  }
 }
-

@@ -22,18 +22,17 @@
 
 package com.noelios.restlet.http;
 
+import com.noelios.restlet.ClientHelper;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
-
 import org.restlet.Client;
 import org.restlet.Context;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 
-import com.noelios.restlet.ClientHelper;
-
 /**
  * Base HTTP client connector. Here is the list of parameters that are supported:
+ *
  * <table>
  * 	<tr>
  * 		<th>Parameter name</th>
@@ -47,105 +46,90 @@ import com.noelios.restlet.ClientHelper;
  * 		<td>com.noelios.restlet.http.HttpClientConverter</td>
  * 		<td>Class name of the converter of low-level HTTP calls into high level requests and responses.</td>
  * 	</tr>
- *	</table>
+ * </table>
+ *
  * @author Jerome Louvel (contact@noelios.com)
  */
-public abstract class HttpClientHelper extends ClientHelper
-{
-	/** The converter from uniform calls to HTTP calls. */
-	private HttpClientConverter converter;
+public abstract class HttpClientHelper extends ClientHelper {
+  /** The converter from uniform calls to HTTP calls. */
+  private HttpClientConverter converter;
 
-	/**
-	 * Constructor.
-	 * @param client The client to help.
-	 */
-	public HttpClientHelper(Client client)
-	{
-		super(client);
-		this.converter = null;
-	}
+  /**
+   * Constructor.
+   *
+   * @param client The client to help.
+   */
+  public HttpClientHelper(Client client) {
+    super(client);
+    this.converter = null;
+  }
 
-	/**
-	 * Creates a low-level HTTP client call from a high-level request.
-	 * @param request The high-level request.
-	 * @return A low-level HTTP client call.
-	 */
-	public abstract HttpClientCall create(Request request);
+  /**
+   * Creates a low-level HTTP client call from a high-level request.
+   *
+   * @param request The high-level request.
+   * @return A low-level HTTP client call.
+   */
+  public abstract HttpClientCall create(Request request);
 
-	/**
-	 * Handles a call.
-	 * @param request The request to handle.
-	 * @param response The response to update.
-	 */
-	public void handle(Request request, Response response)
-	{
-		try
-		{
-			HttpClientCall httpCall = getConverter().toSpecific(this, request, response);
-			getConverter().commit(httpCall, request, response);
-		}
-		catch (Exception e)
-		{
-			getLogger().log(Level.WARNING, "Error while handling an HTTP client call: ",
-					e.getMessage());
-			getLogger().log(Level.INFO, "Error while handling an HTTP client call", e);
-		}
-	}
+  /**
+   * Handles a call.
+   *
+   * @param request The request to handle.
+   * @param response The response to update.
+   */
+  public void handle(Request request, Response response) {
+    try {
+      HttpClientCall httpCall = getConverter().toSpecific(this, request, response);
+      getConverter().commit(httpCall, request, response);
+    } catch (Exception e) {
+      getLogger().log(Level.WARNING, "Error while handling an HTTP client call: ", e.getMessage());
+      getLogger().log(Level.INFO, "Error while handling an HTTP client call", e);
+    }
+  }
 
-	/**
-	 * Returns the converter from uniform calls to HTTP calls.
-	 * @return the converter from uniform calls to HTTP calls.
-	 */
-	public HttpClientConverter getConverter()
-	{
-		if (this.converter == null)
-		{
-			try
-			{
-				String converterClass = getParameters().getFirstValue("converter",
-						"com.noelios.restlet.http.HttpClientConverter");
-				this.converter = (HttpClientConverter) Class.forName(converterClass)
-						.getConstructor(Context.class).newInstance(getContext());
-			}
-			catch (IllegalArgumentException e)
-			{
-				getLogger().log(Level.SEVERE, "Unable to create the HTTP server converter", e);
-			}
-			catch (SecurityException e)
-			{
-				getLogger().log(Level.SEVERE, "Unable to create the HTTP server converter", e);
-			}
-			catch (InstantiationException e)
-			{
-				getLogger().log(Level.SEVERE, "Unable to create the HTTP server converter", e);
-			}
-			catch (IllegalAccessException e)
-			{
-				getLogger().log(Level.SEVERE, "Unable to create the HTTP server converter", e);
-			}
-			catch (InvocationTargetException e)
-			{
-				getLogger().log(Level.SEVERE, "Unable to create the HTTP server converter", e);
-			}
-			catch (NoSuchMethodException e)
-			{
-				getLogger().log(Level.SEVERE, "Unable to create the HTTP server converter", e);
-			}
-			catch (ClassNotFoundException e)
-			{
-				getLogger().log(Level.SEVERE, "Unable to create the HTTP server converter", e);
-			}
-		}
+  /**
+   * Returns the converter from uniform calls to HTTP calls.
+   *
+   * @return the converter from uniform calls to HTTP calls.
+   */
+  public HttpClientConverter getConverter() {
+    if (this.converter == null) {
+      try {
+        String converterClass =
+            getParameters()
+                .getFirstValue("converter", "com.noelios.restlet.http.HttpClientConverter");
+        this.converter =
+            (HttpClientConverter)
+                Class.forName(converterClass)
+                    .getConstructor(Context.class)
+                    .newInstance(getContext());
+      } catch (IllegalArgumentException e) {
+        getLogger().log(Level.SEVERE, "Unable to create the HTTP server converter", e);
+      } catch (SecurityException e) {
+        getLogger().log(Level.SEVERE, "Unable to create the HTTP server converter", e);
+      } catch (InstantiationException e) {
+        getLogger().log(Level.SEVERE, "Unable to create the HTTP server converter", e);
+      } catch (IllegalAccessException e) {
+        getLogger().log(Level.SEVERE, "Unable to create the HTTP server converter", e);
+      } catch (InvocationTargetException e) {
+        getLogger().log(Level.SEVERE, "Unable to create the HTTP server converter", e);
+      } catch (NoSuchMethodException e) {
+        getLogger().log(Level.SEVERE, "Unable to create the HTTP server converter", e);
+      } catch (ClassNotFoundException e) {
+        getLogger().log(Level.SEVERE, "Unable to create the HTTP server converter", e);
+      }
+    }
 
-		return this.converter;
-	}
+    return this.converter;
+  }
 
-	/**
-	 * Sets the converter from uniform calls to HTTP calls.
-	 * @param converter The converter to set.
-	 */
-	public void setConverter(HttpClientConverter converter)
-	{
-		this.converter = converter;
-	}
+  /**
+   * Sets the converter from uniform calls to HTTP calls.
+   *
+   * @param converter The converter to set.
+   */
+  public void setConverter(HttpClientConverter converter) {
+    this.converter = converter;
+  }
 }

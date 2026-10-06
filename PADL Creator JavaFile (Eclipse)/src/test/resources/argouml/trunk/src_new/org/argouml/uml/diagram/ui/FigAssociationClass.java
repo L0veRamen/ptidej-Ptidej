@@ -25,105 +25,91 @@
 package org.argouml.uml.diagram.ui;
 
 import java.util.Iterator;
-
 import org.tigris.gef.base.Layer;
 import org.tigris.gef.presentation.Fig;
 import org.tigris.gef.presentation.FigNode;
 import org.tigris.gef.presentation.FigPoly;
 import org.tigris.gef.presentation.FigText;
 
-
 /**
- * An Association Class is represented by 3 seperate Figs
- * FigAssociationClass is the association edge drawn between two classifiers
- * this displays that association properties of the association class.
- * FigClassAssociationClass is the classifier box that displays the class
- * properties of the association class.
- * FigEdgeAssociationClass is the dashed line that joins these two.
- * 
- * Whenever the user attempts to remove or delete one of these parts then all
- * parts must go.
- * Delete would be handled because the model element is deleted and all parts
- * are listening for such an event and will remove themselves.
- * However if the user attempts to just remove from diagram one of these parts
- * then there is no such event. Hence the removeFromDiagram method is
- * overridden to delegate removal from a single removeFromDiagram method on
- * FigAssociationClass.
+ * An Association Class is represented by 3 seperate Figs FigAssociationClass is the association
+ * edge drawn between two classifiers this displays that association properties of the association
+ * class. FigClassAssociationClass is the classifier box that displays the class properties of the
+ * association class. FigEdgeAssociationClass is the dashed line that joins these two.
+ *
+ * <p>Whenever the user attempts to remove or delete one of these parts then all parts must go.
+ * Delete would be handled because the model element is deleted and all parts are listening for such
+ * an event and will remove themselves. However if the user attempts to just remove from diagram one
+ * of these parts then there is no such event. Hence the removeFromDiagram method is overridden to
+ * delegate removal from a single removeFromDiagram method on FigAssociationClass.
  *
  * @author bob.tarling@gmail.com
  */
 public class FigAssociationClass extends FigAssociation {
 
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = 3643715304027095083L;
+  /** The UID. */
+  private static final long serialVersionUID = 3643715304027095083L;
 
-    /**
-     * Construct a new FigAssociationClass during load from PGML.
-     */
-    public FigAssociationClass() {
-        super();
-        setBetweenNearestPoints(true);
-        ((FigPoly) getFig()).setRectilinear(false);
-        setDashed(false);
-    }
+  /** Construct a new FigAssociationClass during load from PGML. */
+  public FigAssociationClass() {
+    super();
+    setBetweenNearestPoints(true);
+    ((FigPoly) getFig()).setRectilinear(false);
+    setDashed(false);
+  }
 
-    /**
-     * Construct a new FigAssociationClass from user interaction.
-     *
-     * @param ed the edge
-     * @param lay the layer
-     */
-    public FigAssociationClass(Object ed, Layer lay) {
-        this();
-        setLayer(lay);
-        setOwner(ed);
-    }
-    
-    /**
-     * Discover the attached FigEdgeAssociationClass and the
-     * FigClassAssociationClass attached to that. Remove them from the diagram
-     * before removing this.
-     */
-    protected void removeFromDiagramImpl() {
-        FigEdgePort figEdgePort = getEdgePort();
-        
-        FigEdgeAssociationClass figEdgeLink = null;
-        Iterator it = figEdgePort.getFigEdges().iterator();
-        while (it.hasNext() && figEdgeLink == null) {
-            Object o = it.next();
-            if (o instanceof FigEdgeAssociationClass) {
-                figEdgeLink = (FigEdgeAssociationClass) o;
-            }
-        }
-        if (figEdgeLink != null) {
-            FigNode figClassBox = figEdgeLink.getDestFigNode();
-            if (!(figClassBox instanceof FigClassAssociationClass)) {
-                figClassBox = figEdgeLink.getSourceFigNode();
-            }
-            figEdgeLink.removeFromDiagramImpl();
-            ((FigClassAssociationClass) figClassBox).removeFromDiagramImpl();
-        }
-        super.removeFromDiagramImpl();
-    }
+  /**
+   * Construct a new FigAssociationClass from user interaction.
+   *
+   * @param ed the edge
+   * @param lay the layer
+   */
+  public FigAssociationClass(Object ed, Layer lay) {
+    this();
+    setLayer(lay);
+    setOwner(ed);
+  }
 
-    /*
-     * @see org.tigris.gef.presentation.FigEdge#setFig(
-     *         org.tigris.gef.presentation.Fig)
-     * TODO: Is this required? Why would the fig already be dashed?
-     */
-    public void setFig(Fig f) {
-        super.setFig(f);
-        getFig().setDashed(false);
-    }
+  /**
+   * Discover the attached FigEdgeAssociationClass and the FigClassAssociationClass attached to
+   * that. Remove them from the diagram before removing this.
+   */
+  protected void removeFromDiagramImpl() {
+    FigEdgePort figEdgePort = getEdgePort();
 
-    /*
-     * @see org.argouml.uml.diagram.ui.FigEdgeModelElement#getNameFig()
-     */
-    protected FigText getNameFig() {
-        return null;
+    FigEdgeAssociationClass figEdgeLink = null;
+    Iterator it = figEdgePort.getFigEdges().iterator();
+    while (it.hasNext() && figEdgeLink == null) {
+      Object o = it.next();
+      if (o instanceof FigEdgeAssociationClass) {
+        figEdgeLink = (FigEdgeAssociationClass) o;
+      }
     }
-    
+    if (figEdgeLink != null) {
+      FigNode figClassBox = figEdgeLink.getDestFigNode();
+      if (!(figClassBox instanceof FigClassAssociationClass)) {
+        figClassBox = figEdgeLink.getSourceFigNode();
+      }
+      figEdgeLink.removeFromDiagramImpl();
+      ((FigClassAssociationClass) figClassBox).removeFromDiagramImpl();
+    }
+    super.removeFromDiagramImpl();
+  }
+
+  /*
+   * @see org.tigris.gef.presentation.FigEdge#setFig(
+   *         org.tigris.gef.presentation.Fig)
+   * TODO: Is this required? Why would the fig already be dashed?
+   */
+  public void setFig(Fig f) {
+    super.setFig(f);
+    getFig().setDashed(false);
+  }
+
+  /*
+   * @see org.argouml.uml.diagram.ui.FigEdgeModelElement#getNameFig()
+   */
+  protected FigText getNameFig() {
+    return null;
+  }
 } /* end class FigAssociationClass */
-

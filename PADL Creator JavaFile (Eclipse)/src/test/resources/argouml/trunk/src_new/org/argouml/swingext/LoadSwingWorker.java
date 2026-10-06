@@ -23,77 +23,68 @@
 // UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 package org.argouml.swingext;
+
 import java.io.File;
 import java.io.IOException;
-
 import javax.swing.UIManager;
-
 import org.apache.log4j.Logger;
 import org.argouml.application.api.ProgressMonitor;
 import org.argouml.i18n.Translator;
-import org.argouml.persistence.ProgressListener;
 import org.argouml.ui.ArgoFrame;
 import org.argouml.ui.ProjectBrowser;
 
-/**
- * The specialized SwingWorker used for loading projects 
- */
+/** The specialized SwingWorker used for loading projects */
 public class LoadSwingWorker extends SwingWorker {
 
-    private static final Logger LOG = Logger.getLogger(LoadSwingWorker.class);
-    
-    private boolean showUi;
-    private File file;
+  private static final Logger LOG = Logger.getLogger(LoadSwingWorker.class);
 
-    /**
-     * This is the only constructor for LoadSwingWorker.
-     * 
-     * @param aFile		the file that's going to be opened as a project
-     * @param aShowUi	whether to show the UI or not
-     */
-    public LoadSwingWorker(File aFile, boolean aShowUi) {
-        this.showUi = aShowUi;
-        this.file = aFile;
-    }
-	
-    /**
-     * Implements org.argouml.swingext.SwingWorker#construct(); this is
-     * the main method for this SwingWorker.
-     * In this case, it simply loads the project.
-     * 
-     * @param pmw	the ProgressMonitorWindow used by ProjectBrowser
-     * @return		always null
-     */
-    public Object construct(ProgressMonitor pmw) {
-        // loads the project
-        ProjectBrowser.getInstance().loadProject(file, showUi, pmw);
-        return null;
-    }
+  private boolean showUi;
+  private File file;
 
-    /**
-     * Implements org.argouml.swingext.SwingWorker#initProgressMonitorWindow(); 
-     * it just creates an instance of ProgressMonitorWindow.
-     * 
-     * @return  an instance of ProgressMonitorWindow
-     */
-    public ProgressMonitor initProgressMonitorWindow() {
-        UIManager.put("ProgressMonitor.progressText", 
-                Translator.localize("filechooser.open-project"));
-        Object[] msgArgs = new Object[] {this.file.getPath()};
-        return new ProgressMonitorWindow(ArgoFrame.getInstance(),
-                Translator.messageFormat("dialog.openproject.title", msgArgs));
+  /**
+   * This is the only constructor for LoadSwingWorker.
+   *
+   * @param aFile the file that's going to be opened as a project
+   * @param aShowUi whether to show the UI or not
+   */
+  public LoadSwingWorker(File aFile, boolean aShowUi) {
+    this.showUi = aShowUi;
+    this.file = aFile;
+  }
+
+  /**
+   * Implements org.argouml.swingext.SwingWorker#construct(); this is the main method for this
+   * SwingWorker. In this case, it simply loads the project.
+   *
+   * @param pmw the ProgressMonitorWindow used by ProjectBrowser
+   * @return always null
+   */
+  public Object construct(ProgressMonitor pmw) {
+    // loads the project
+    ProjectBrowser.getInstance().loadProject(file, showUi, pmw);
+    return null;
+  }
+
+  /**
+   * Implements org.argouml.swingext.SwingWorker#initProgressMonitorWindow(); it just creates an
+   * instance of ProgressMonitorWindow.
+   *
+   * @return an instance of ProgressMonitorWindow
+   */
+  public ProgressMonitor initProgressMonitorWindow() {
+    UIManager.put("ProgressMonitor.progressText", Translator.localize("filechooser.open-project"));
+    Object[] msgArgs = new Object[] {this.file.getPath()};
+    return new ProgressMonitorWindow(
+        ArgoFrame.getInstance(), Translator.messageFormat("dialog.openproject.title", msgArgs));
+  }
+
+  /** Overrides the finished method of the SwingWorker class to update the GUI */
+  public void finished() {
+    super.finished();
+    try {
+      ProjectBrowser.getInstance().addFileSaved(file);
+    } catch (IOException exc) {
+      LOG.error("Failed to save file: " + file + " in most recently used list");
     }
-    
-    /**
-     * Overrides the finished method of the SwingWorker class to update the GUI
-     */
-    public void finished() {
-    	super.finished();
-    	try {
-    	    ProjectBrowser.getInstance().addFileSaved(file);
-    	} catch (IOException exc) {
-            LOG.error("Failed to save file: " + file
-                    + " in most recently used list");
-    	}
-    }
+  }
 }

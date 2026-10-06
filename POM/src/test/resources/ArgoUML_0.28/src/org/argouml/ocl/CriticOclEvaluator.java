@@ -26,62 +26,52 @@ package org.argouml.ocl;
 
 import org.tigris.gef.ocl.ExpansionException;
 
-
 /**
- * CriticOclEvaluator is singleton version of OCLEvaluator which is used for
- * evaluating simple OCL expressions used in the critiques.<p>
- * 
- * Implementation History: As best I was able to reconstruct the history in
- * early 2007, OclEvaluator was originally implemented as a singleton, but that
- * was changed in September, 2004 because of some perceived problems, but then
- * it was discovered that the Critic subsystem depended on the singleton
- * pattern, so an earlier version of OclEvaluator was reintroduced with a new
- * name. Because of the large amount of duplicate code between the two classes,
- * this was refactored in March, 2007 to use an instance of the main
- * OclEvaluator class.
- * 
+ * CriticOclEvaluator is singleton version of OCLEvaluator which is used for evaluating simple OCL
+ * expressions used in the critiques.
+ *
+ * <p>Implementation History: As best I was able to reconstruct the history in early 2007,
+ * OclEvaluator was originally implemented as a singleton, but that was changed in September, 2004
+ * because of some perceived problems, but then it was discovered that the Critic subsystem depended
+ * on the singleton pattern, so an earlier version of OclEvaluator was reintroduced with a new name.
+ * Because of the large amount of duplicate code between the two classes, this was refactored in
+ * March, 2007 to use an instance of the main OclEvaluator class.
+ *
  * @stereotype singleton
  * @deprecated for 0.25.2 by tfmorris - use {@link OCLEvaluator}
  */
 @Deprecated
 public class CriticOclEvaluator {
 
-    private static final CriticOclEvaluator INSTANCE =
-        new CriticOclEvaluator();
+  private static final CriticOclEvaluator INSTANCE = new CriticOclEvaluator();
 
-    private static final OCLEvaluator EVALUATOR =
-        new OCLEvaluator();
-    
-    private CriticOclEvaluator() {
-        // no instantiations
-    }
+  private static final OCLEvaluator EVALUATOR = new OCLEvaluator();
 
-    /**
-     * @return the singleton of CriticOclEvaluator
-     */
-    public static final CriticOclEvaluator getInstance() {
-        return INSTANCE;
-    }
+  private CriticOclEvaluator() {
+    // no instantiations
+  }
 
-    /*
-     * @see OCLEvaluator#evalToString(java.lang.Object, java.lang.String)
-     */
-    public synchronized String evalToString(Object self, String expr)
-        throws ExpansionException {
-        
-        return EVALUATOR.evalToString(self, expr);
-    }
+  /**
+   * @return the singleton of CriticOclEvaluator
+   */
+  public static final CriticOclEvaluator getInstance() {
+    return INSTANCE;
+  }
 
-    /*
-     * @see OCLEvaluator#evalToString(java.lang.Object, java.lang.String, java.lang.String)
-     */
-    public synchronized String evalToString(
-            Object self,
-            String expr,
-            String sep)
-    	throws ExpansionException {
-        
-        return EVALUATOR.evalToString(self, expr, sep);
-    }
+  /*
+   * @see OCLEvaluator#evalToString(java.lang.Object, java.lang.String)
+   */
+  public synchronized String evalToString(Object self, String expr) throws ExpansionException {
 
+    return EVALUATOR.evalToString(self, expr);
+  }
+
+  /*
+   * @see OCLEvaluator#evalToString(java.lang.Object, java.lang.String, java.lang.String)
+   */
+  public synchronized String evalToString(Object self, String expr, String sep)
+      throws ExpansionException {
+
+    return EVALUATOR.evalToString(self, expr, sep);
+  }
 }

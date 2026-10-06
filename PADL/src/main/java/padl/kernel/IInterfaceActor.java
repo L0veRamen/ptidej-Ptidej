@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -13,12 +13,10 @@ package padl.kernel;
 import java.util.Iterator;
 
 /**
- * 
  * @author Yann
- * @since  2009/05/01
- *
+ * @since 2009/05/01
  */
 // TODO Reassess the usefulness of this interface
 public interface IInterfaceActor extends IFirstClassEntity {
-	Iterator getIteratorOnImplementingClasses();
+  Iterator getIteratorOnImplementingClasses();
 }

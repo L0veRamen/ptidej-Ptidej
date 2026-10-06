@@ -33,43 +33,34 @@ import javax.swing.ImageIcon;
  */
 public class PropPanelSimpleState extends AbstractPropPanelState {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = 7072535148338954868L;
+  /** The serial version. */
+  private static final long serialVersionUID = 7072535148338954868L;
 
-    /**
-     * Construct a new default property panel for a Simple State.
-     */
-    public PropPanelSimpleState() {
-        this("label.simple.state", lookupIcon("SimpleState"));
-    }
+  /** Construct a new default property panel for a Simple State. */
+  public PropPanelSimpleState() {
+    this("label.simple.state", lookupIcon("SimpleState"));
+  }
 
-    
-    /**
-     * Construct a new property panel for a Simple State with the given
-     * attributes.
-     * 
-     * @param name the name of the properties panel, shown at the top
-     * @param icon the icon shown at the top
-     */
-    private PropPanelSimpleState(String name, ImageIcon icon) {
-        super(name, icon);
+  /**
+   * Construct a new property panel for a Simple State with the given attributes.
+   *
+   * @param name the name of the properties panel, shown at the top
+   * @param icon the icon shown at the top
+   */
+  private PropPanelSimpleState(String name, ImageIcon icon) {
+    super(name, icon);
 
-        addField("label.name", getNameTextField());
-        addField("label.container", getContainerScroll());
-        addField("label.entry", getEntryScroll());
-        addField("label.exit", getExitScroll());
-        addField("label.do-activity", getDoScroll());
-        addField("label.deferrable", getDeferrableEventsScroll());
+    addField("label.name", getNameTextField());
+    addField("label.container", getContainerScroll());
+    addField("label.entry", getEntryScroll());
+    addField("label.exit", getExitScroll());
+    addField("label.do-activity", getDoScroll());
+    addField("label.deferrable", getDeferrableEventsScroll());
 
-        addSeparator();
+    addSeparator();
 
-        addField("label.incoming", getIncomingScroll());
-        addField("label.outgoing", getOutgoingScroll());
-        addField("label.internal-transitions", getInternalTransitionsScroll());
-
-    }
-
+    addField("label.incoming", getIncomingScroll());
+    addField("label.outgoing", getOutgoingScroll());
+    addField("label.internal-transitions", getInternalTransitionsScroll());
+  }
 }
-

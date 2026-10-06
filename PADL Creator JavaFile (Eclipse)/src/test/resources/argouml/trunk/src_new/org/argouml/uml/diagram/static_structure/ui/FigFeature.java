@@ -26,7 +26,6 @@ package org.argouml.uml.diagram.static_structure.ui;
 
 import java.awt.Color;
 import java.awt.Rectangle;
-
 import org.argouml.uml.diagram.ui.CompartmentFigText;
 import org.argouml.uml.diagram.ui.FigNodeModelElement;
 import org.argouml.uml.notation.NotationProvider;
@@ -38,97 +37,91 @@ import org.tigris.gef.presentation.Handle;
 /**
  * Fig to show features in class or interface like attributes or operations.
  *
- * TODO: This doesn't have any behavior specific to Features.  It's really
- * just an item for a ListCompartment and should probably have a better name
- * tfm - 20060310
+ * <p>TODO: This doesn't have any behavior specific to Features. It's really just an item for a
+ * ListCompartment and should probably have a better name tfm - 20060310
  *
  * @since Dec 1, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
 public class FigFeature extends CompartmentFigText {
 
-    private static class SelectionFeature extends Selection {
-        /**
-         * Constructor for SelectionFeature.
-         *
-         * @param f The Fig.
-         */
-        public SelectionFeature(Fig f) {
-            super(f);
-        }
-
-        /**
-         * Does nothing.
-         * @see org.tigris.gef.base.Selection#dragHandle(int, int,
-         * int, int, org.tigris.gef.presentation.Handle)
-         */
-        public void dragHandle(int mx, int my, int anX, int anY, Handle h) {
-        }
-
-        /**
-         * Does nothing.
-         * @see
-         * org.tigris.gef.base.Selection#hitHandle(java.awt.Rectangle,
-         * org.tigris.gef.presentation.Handle)
-         */
-        public void hitHandle(Rectangle r, Handle h) {
-        }
-
-        /**
-         * The UID.
-         */
-        private static final long serialVersionUID = 7437255966804296937L;
-    }
-
+  private static class SelectionFeature extends Selection {
     /**
-    * Constructor for FigFeature.
-    * @param x x
-    * @param y x
-    * @param w w
-    * @param h h
-    * @param aFig the fig
-    * @param np the notation provider for the text
-    */
-    public FigFeature(int x, int y, int w, int h, Fig aFig, 
-            NotationProvider np) {
-        super(x, y, w, h, aFig, np);
-        setFilled(false);
-        setLineWidth(0);
-        setFont(FigNodeModelElement.getLabelFont());
-        setTextColor(Color.black);
-        setTextFilled(false);
-        setJustification(FigText.JUSTIFY_LEFT);
-        setReturnAction(FigText.END_EDITING);
-        setRightMargin(3);
-        setLeftMargin(3);
-    }
-
-    /**
-     * Via makeSelection we can add a custom selection class. This way
-     * we can add a custom keyevent handler for our attributes or operations.
+     * Constructor for SelectionFeature.
      *
-     * @see org.tigris.gef.presentation.Fig#makeSelection()
+     * @param f The Fig.
      */
-    public Selection makeSelection() {
-        return new SelectionFeature(this);
+    public SelectionFeature(Fig f) {
+      super(f);
     }
 
     /**
-     * @see org.tigris.gef.presentation.FigText#setTextFilled(boolean)
+     * Does nothing.
+     *
+     * @see org.tigris.gef.base.Selection#dragHandle(int, int, int, int,
+     *     org.tigris.gef.presentation.Handle)
      */
-    public void setTextFilled(boolean filled) {
-        super.setTextFilled(false);
-    }
+    public void dragHandle(int mx, int my, int anX, int anY, Handle h) {}
 
     /**
-     * @see org.tigris.gef.presentation.Fig#setFilled(boolean)
+     * Does nothing.
+     *
+     * @see org.tigris.gef.base.Selection#hitHandle(java.awt.Rectangle,
+     *     org.tigris.gef.presentation.Handle)
      */
-    public void setFilled(boolean filled) {
-        super.setFilled(false);
-    }
+    public void hitHandle(Rectangle r, Handle h) {}
 
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -6174252286709779782L;
+    /** The UID. */
+    private static final long serialVersionUID = 7437255966804296937L;
+  }
+
+  /**
+   * Constructor for FigFeature.
+   *
+   * @param x x
+   * @param y x
+   * @param w w
+   * @param h h
+   * @param aFig the fig
+   * @param np the notation provider for the text
+   */
+  public FigFeature(int x, int y, int w, int h, Fig aFig, NotationProvider np) {
+    super(x, y, w, h, aFig, np);
+    setFilled(false);
+    setLineWidth(0);
+    setFont(FigNodeModelElement.getLabelFont());
+    setTextColor(Color.black);
+    setTextFilled(false);
+    setJustification(FigText.JUSTIFY_LEFT);
+    setReturnAction(FigText.END_EDITING);
+    setRightMargin(3);
+    setLeftMargin(3);
+  }
+
+  /**
+   * Via makeSelection we can add a custom selection class. This way we can add a custom keyevent
+   * handler for our attributes or operations.
+   *
+   * @see org.tigris.gef.presentation.Fig#makeSelection()
+   */
+  public Selection makeSelection() {
+    return new SelectionFeature(this);
+  }
+
+  /**
+   * @see org.tigris.gef.presentation.FigText#setTextFilled(boolean)
+   */
+  public void setTextFilled(boolean filled) {
+    super.setTextFilled(false);
+  }
+
+  /**
+   * @see org.tigris.gef.presentation.Fig#setFilled(boolean)
+   */
+  public void setFilled(boolean filled) {
+    super.setFilled(false);
+  }
+
+  /** The UID. */
+  private static final long serialVersionUID = -6174252286709779782L;
 }

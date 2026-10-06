@@ -25,7 +25,6 @@
 package org.argouml.uml.ui.behavior.collaborations;
 
 import junit.framework.TestCase;
-
 import org.argouml.model.Model;
 
 /**
@@ -34,61 +33,54 @@ import org.argouml.model.Model;
  */
 public class TestUMLInteractionCollaborationListModel extends TestCase {
 
-    private Object elem;
-    private UMLInteractionContextListModel model;
+  private Object elem;
+  private UMLInteractionContextListModel model;
 
-    /**
-     * Constructor for TestUMLInteractionCollaborationListModel.
-     *
-     * @param arg0 is the name of the test case.
-     */
-    public TestUMLInteractionCollaborationListModel(String arg0) {
-        super(arg0);
-    }
+  /**
+   * Constructor for TestUMLInteractionCollaborationListModel.
+   *
+   * @param arg0 is the name of the test case.
+   */
+  public TestUMLInteractionCollaborationListModel(String arg0) {
+    super(arg0);
+  }
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        elem = Model.getCollaborationsFactory().createInteraction();
-        model = new UMLInteractionContextListModel();
-        model.setTarget(elem);
-        Model.getPump().flushModelEvents();
-    }
+  /**
+   * @see junit.framework.TestCase#setUp()
+   */
+  protected void setUp() throws Exception {
+    super.setUp();
+    elem = Model.getCollaborationsFactory().createInteraction();
+    model = new UMLInteractionContextListModel();
+    model.setTarget(elem);
+    Model.getPump().flushModelEvents();
+  }
 
-    /**
-     * @see junit.framework.TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        Model.getUmlFactory().delete(elem);
-        model = null;
-    }
+  /**
+   * @see junit.framework.TestCase#tearDown()
+   */
+  protected void tearDown() throws Exception {
+    super.tearDown();
+    Model.getUmlFactory().delete(elem);
+    model = null;
+  }
 
-    /**
-     * Test setContext().
-     */
-    public void testSetContext() {
-        Object col =
-	    Model.getCollaborationsFactory().createCollaboration();
-        Model.getCollaborationsHelper().setContext(elem, col);
-        Model.getPump().flushModelEvents();
-        assertEquals(1, model.getSize());
-        assertEquals(col, model.getElementAt(0));
-    }
+  /** Test setContext(). */
+  public void testSetContext() {
+    Object col = Model.getCollaborationsFactory().createCollaboration();
+    Model.getCollaborationsHelper().setContext(elem, col);
+    Model.getPump().flushModelEvents();
+    assertEquals(1, model.getSize());
+    assertEquals(col, model.getElementAt(0));
+  }
 
-    /**
-     * Test setContext(null).
-     */
-    public void testRemoveContext() {
-        Object col =
-	    Model.getCollaborationsFactory().createCollaboration();
-        Model.getCollaborationsHelper().setContext(elem, col);
-        Model.getCollaborationsHelper().setContext(elem, null);
-        Model.getPump().flushModelEvents();
-        assertEquals(0, model.getSize());
-        assertTrue(model.isEmpty());
-    }
-
+  /** Test setContext(null). */
+  public void testRemoveContext() {
+    Object col = Model.getCollaborationsFactory().createCollaboration();
+    Model.getCollaborationsHelper().setContext(elem, col);
+    Model.getCollaborationsHelper().setContext(elem, null);
+    Model.getPump().flushModelEvents();
+    assertEquals(0, model.getSize());
+    assertTrue(model.isEmpty());
+  }
 }

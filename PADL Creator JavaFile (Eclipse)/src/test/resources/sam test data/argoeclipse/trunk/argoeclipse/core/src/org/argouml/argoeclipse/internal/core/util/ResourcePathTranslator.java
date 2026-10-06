@@ -34,82 +34,78 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
 /**
- * This class is responsible for converting Eclipse resources into java.io.File
- * and find out if a java.io.File corresponds to a resource from the
- * Eclipse workspace.
+ * This class is responsible for converting Eclipse resources into java.io.File and find out if a
+ * java.io.File corresponds to a resource from the Eclipse workspace.
  *
  * @author Bogdan Pistol
  */
 public class ResourcePathTranslator {
-    
-    /**
-     * Verifies if the workspace resource with this path exists in the 
-     * filesystem and returns it's filesystem path.
-     * 
-     * @param workspacePath the path of the resource in the Eclipse workspace
-     * @return if it exists returns the path in the filesystem otherwise returns
-     *         null
-     */
-    public static String getFilesystemPath(String workspacePath) {
-        String result = null;
 
-        IPath path = new Path(workspacePath);
-        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-        IFile file = null;
+  /**
+   * Verifies if the workspace resource with this path exists in the filesystem and returns it's
+   * filesystem path.
+   *
+   * @param workspacePath the path of the resource in the Eclipse workspace
+   * @return if it exists returns the path in the filesystem otherwise returns null
+   */
+  public static String getFilesystemPath(String workspacePath) {
+    String result = null;
 
-        file = root.getFile(path);       
+    IPath path = new Path(workspacePath);
+    IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+    IFile file = null;
 
-        if (file != null && file.exists()) {
-            result = file.getLocation().toOSString();
+    file = root.getFile(path);
+
+    if (file != null && file.exists()) {
+      result = file.getLocation().toOSString();
+    } else {
+      IProject project = root.getProject(path.segment(0));
+
+      if (project.exists()) {
+        path = path.removeFirstSegments(1);
+        if (path.segmentCount() == 0) {
+          result = project.getLocation().toOSString();
         } else {
-            IProject project = root.getProject(path.segment(0));
-
-            if (project.exists()) {
-                path = path.removeFirstSegments(1);
-                if (path.segmentCount() == 0) {
-                    result = project.getLocation().toOSString();
-                } else {
-                    IFolder folder = project.getFolder(path);
-                    if (folder.exists()) {
-                        result = folder.getLocation().toOSString();
-                    }
-                }
-            }
+          IFolder folder = project.getFolder(path);
+          if (folder.exists()) {
+            result = folder.getLocation().toOSString();
+          }
         }
-
-        return result;
-    }
-    
-    /**
-     * Verifies if the filesystem resource exists in the workspace and returns
-     * it's path in the workspace.
-     * 
-     * @param filesystemPath the path in the filesystem
-     * @return if it exists returns the path in the workspace otherwise returns
-     *         null
-     */
-    public static String getWorkspacePath(String filesystemPath) {
-        String result = null;
-
-        IPath path = new Path(filesystemPath);
-        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-        IFile file = null;
-
-        try {
-            file = root.getFileForLocation(path);
-        } catch (RuntimeException e) {
-        }
-
-        if (file != null && file.exists()) {
-            result = file.getFullPath().toOSString();
-        } else {
-            IContainer[] container = root.findContainersForLocation(path);
-            if (container != null && container.length == 1) {
-                result = container[0].getFullPath().toOSString();
-            }
-        }
-
-        return result;
+      }
     }
 
+    return result;
+  }
+
+  /**
+   * Verifies if the filesystem resource exists in the workspace and returns it's path in the
+   * workspace.
+   *
+   * @param filesystemPath the path in the filesystem
+   * @return if it exists returns the path in the workspace otherwise returns null
+   */
+  public static String getWorkspacePath(String filesystemPath) {
+    String result = null;
+
+    IPath path = new Path(filesystemPath);
+    IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+    IFile file = null;
+
+    try {
+      file = root.getFileForLocation(path);
+    } catch (RuntimeException e) {
+    }
+
+    if (file != null && file.exists()) {
+      result = file.getFullPath().toOSString();
+    } else {
+      IContainer[] container = root.findContainersForLocation(path);
+      if (container != null && container.length == 1) {
+        result = container[0].getFullPath().toOSString();
+      }
+    }
+
+    return result;
+  }
 }

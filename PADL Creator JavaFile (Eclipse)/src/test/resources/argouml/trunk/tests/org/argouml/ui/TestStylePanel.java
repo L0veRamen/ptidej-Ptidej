@@ -25,105 +25,106 @@
 package org.argouml.ui;
 
 import junit.framework.TestCase;
-
 import org.argouml.model.Model;
 import org.argouml.ui.targetmanager.TargetEvent;
 import org.argouml.uml.diagram.static_structure.ui.UMLClassDiagram;
 import org.tigris.gef.presentation.FigText;
 
 /**
- * @author jaap.branderhorst@xs4all.nl
- * Jul 27, 2003
+ * @author jaap.branderhorst@xs4all.nl Jul 27, 2003
  */
 public class TestStylePanel extends TestCase {
 
-    class MockStylePanel extends StylePanel {
+  class MockStylePanel extends StylePanel {
 
-        private boolean refreshCalled = false;
+    private boolean refreshCalled = false;
 
-        public MockStylePanel() {
-            super("mock");
-        }
-
-        /**
-         * @see org.argouml.ui.TabTarget#refresh()
-         */
-        public void refresh() {
-            super.refresh();
-            refreshCalled = true;
-        }
-
-        /**
-         * @return Returns the refreshCalled.
-         */
-        boolean isRefreshCalled() {
-            return refreshCalled;
-        }
-
+    public MockStylePanel() {
+      super("mock");
     }
 
     /**
-     * @param arg0 is the name of the test case.
+     * @see org.argouml.ui.TabTarget#refresh()
      */
-    public TestStylePanel(String arg0) {
-        super(arg0);
+    public void refresh() {
+      super.refresh();
+      refreshCalled = true;
     }
 
     /**
-     * Test setting a target.
+     * @return Returns the refreshCalled.
      */
-    public void testTargetSet() {
-
-        StylePanel pane = new MockStylePanel();
-        Object target = new Object();
-        TargetEvent e =
-            new TargetEvent(this,
-			    TargetEvent.TARGET_SET,
-			    new Object[] {
-				null,
-			    },
-			    new Object[] {
-				target,
-			    });
-        pane.targetSet(e);
-        // new target is of type object, refresh should not be called
-        assertTrue(!((MockStylePanel) pane).isRefreshCalled());
-        target = new UMLClassDiagram();
-        e = new TargetEvent(this,
-			    TargetEvent.TARGET_SET,
-			    new Object[] {
-				null,
-			    },
-			    new Object[] {
-				target,
-			    });
-        pane.targetSet(e);
-        // new target is of type UMLClassDiagram, refresh should not be called
-        assertTrue(!((MockStylePanel) pane).isRefreshCalled());
-        target = Model.getCoreFactory().createClass();
-        e = new TargetEvent(this,
-			    TargetEvent.TARGET_SET,
-			    new Object[] {
-				null,
-			    },
-			    new Object[] {
-				target,
-			    });
-        pane.targetSet(e);
-        // new target is a modelelement, refresh should not be called
-        assertTrue(!((MockStylePanel) pane).isRefreshCalled());
-        target = new FigText(0, 0, 0, 0);
-        e = new TargetEvent(this,
-			    TargetEvent.TARGET_SET,
-			    new Object[] {
-				null,
-			    },
-			    new Object[] {
-				target,
-			    });
-        pane.targetSet(e);
-        // new target is a fig, refresh should be called
-        assertTrue(((MockStylePanel) pane).isRefreshCalled());
-
+    boolean isRefreshCalled() {
+      return refreshCalled;
     }
+  }
+
+  /**
+   * @param arg0 is the name of the test case.
+   */
+  public TestStylePanel(String arg0) {
+    super(arg0);
+  }
+
+  /** Test setting a target. */
+  public void testTargetSet() {
+
+    StylePanel pane = new MockStylePanel();
+    Object target = new Object();
+    TargetEvent e =
+        new TargetEvent(
+            this,
+            TargetEvent.TARGET_SET,
+            new Object[] {
+              null,
+            },
+            new Object[] {
+              target,
+            });
+    pane.targetSet(e);
+    // new target is of type object, refresh should not be called
+    assertTrue(!((MockStylePanel) pane).isRefreshCalled());
+    target = new UMLClassDiagram();
+    e =
+        new TargetEvent(
+            this,
+            TargetEvent.TARGET_SET,
+            new Object[] {
+              null,
+            },
+            new Object[] {
+              target,
+            });
+    pane.targetSet(e);
+    // new target is of type UMLClassDiagram, refresh should not be called
+    assertTrue(!((MockStylePanel) pane).isRefreshCalled());
+    target = Model.getCoreFactory().createClass();
+    e =
+        new TargetEvent(
+            this,
+            TargetEvent.TARGET_SET,
+            new Object[] {
+              null,
+            },
+            new Object[] {
+              target,
+            });
+    pane.targetSet(e);
+    // new target is a modelelement, refresh should not be called
+    assertTrue(!((MockStylePanel) pane).isRefreshCalled());
+    target = new FigText(0, 0, 0, 0);
+    e =
+        new TargetEvent(
+            this,
+            TargetEvent.TARGET_SET,
+            new Object[] {
+              null,
+            },
+            new Object[] {
+              target,
+            });
+    pane.targetSet(e);
+    // new target is a fig, refresh should be called
+    assertTrue(((MockStylePanel) pane).isRefreshCalled());
+  }
 }

@@ -34,37 +34,21 @@ import org.argouml.util.ConfigLoader;
  */
 public class PropPanelFinalState extends AbstractPropPanelState {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = 4111793068615402073L;
+  /** The serial version. */
+  private static final long serialVersionUID = 4111793068615402073L;
 
-    /**
-     * Construct a new property panel for a Final State.
-     */
-    public PropPanelFinalState() {
-        super("Final State", lookupIcon("FinalState"),
-                ConfigLoader.getTabPropsOrientation());
+  /** Construct a new property panel for a Final State. */
+  public PropPanelFinalState() {
+    super("Final State", lookupIcon("FinalState"), ConfigLoader.getTabPropsOrientation());
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.container"),
-                getContainerScroll());
-        addField(Translator.localize("label.entry"),
-                getEntryScroll());
-        addField(Translator.localize("label.do-activity"),
-                getDoScroll());
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.container"), getContainerScroll());
+    addField(Translator.localize("label.entry"), getEntryScroll());
+    addField(Translator.localize("label.do-activity"), getDoScroll());
 
-        addSeparator();
+    addSeparator();
 
-        addField(Translator.localize("label.incoming"),
-                getIncomingScroll());
-        addField(Translator.localize("label.internal-transitions"),
-                getInternalTransitionsScroll());
-
-    }
-
+    addField(Translator.localize("label.incoming"), getIncomingScroll());
+    addField(Translator.localize("label.internal-transitions"), getInternalTransitionsScroll());
+  }
 } /* end class PropPanelFinalState */
-
-
-

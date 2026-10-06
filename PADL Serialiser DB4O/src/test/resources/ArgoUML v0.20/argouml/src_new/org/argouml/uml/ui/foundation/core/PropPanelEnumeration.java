@@ -26,50 +26,43 @@ package org.argouml.uml.ui.foundation.core;
 
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.uml.ui.UMLLinkedList;
 import org.argouml.util.ConfigLoader;
 
-/**
- * The properties panel for a Datatype.
- */
+/** The properties panel for a Datatype. */
 public class PropPanelEnumeration extends PropPanelDataType {
 
-    private JScrollPane literalsScroll;
+  private JScrollPane literalsScroll;
 
-    private static UMLEnumerationLiteralsListModel literalsListModel =
-        new UMLEnumerationLiteralsListModel();
+  private static UMLEnumerationLiteralsListModel literalsListModel =
+      new UMLEnumerationLiteralsListModel();
 
-    /**
-     * The constructor.
-     */
-    public PropPanelEnumeration() {
-        super("Enumeration", lookupIcon("Enumeration"),
-                ConfigLoader.getTabPropsOrientation());
+  /** The constructor. */
+  public PropPanelEnumeration() {
+    super("Enumeration", lookupIcon("Enumeration"), ConfigLoader.getTabPropsOrientation());
 
-        addField(Translator.localize("label.literals"),
-                getLiteralsScroll());
+    addField(Translator.localize("label.literals"), getLiteralsScroll());
+  }
+
+  /**
+   * @see org.argouml.uml.ui.foundation.core.PropPanelDataType#addEnumerationButtons()
+   */
+  protected void addEnumerationButtons() {
+    super.addEnumerationButtons();
+    addAction(new ActionAddLiteral());
+  }
+
+  /**
+   * Returns the attributeScroll.
+   *
+   * @return JScrollPane
+   */
+  public JScrollPane getLiteralsScroll() {
+    if (literalsScroll == null) {
+      JList list = new UMLLinkedList(literalsListModel);
+      literalsScroll = new JScrollPane(list);
     }
-
-    /**
-     * @see org.argouml.uml.ui.foundation.core.PropPanelDataType#addEnumerationButtons()
-     */
-    protected void addEnumerationButtons() {
-        super.addEnumerationButtons();
-        addAction(new ActionAddLiteral());
-    }
-
-    /**
-     * Returns the attributeScroll.
-     *
-     * @return JScrollPane
-     */
-    public JScrollPane getLiteralsScroll() {
-        if (literalsScroll == null) {
-            JList list = new UMLLinkedList(literalsListModel);
-            literalsScroll = new JScrollPane(list);
-        }
-        return literalsScroll;
-    }
+    return literalsScroll;
+  }
 }

@@ -16,23 +16,20 @@ import choco.palm.integer.PalmIntVar;
 import choco.palm.search.DecisionConstraint;
 
 /**
- * Created by IntelliJ IDEA.
- * User: grochart
- * Date: 26 ao?t 2003
- * Time: 10:47:40
- * To change this template use Options | File Templates.
+ * Created by IntelliJ IDEA. User: grochart Date: 26 ao?t 2003 Time: 10:47:40 To change this
+ * template use Options | File Templates.
  */
 public class PalmAssignment extends PalmEqualXC implements DecisionConstraint {
-	public PalmAssignment(final IntVar v0, final int cste) {
-		super(v0, cste);
-	}
+  public PalmAssignment(final IntVar v0, final int cste) {
+    super(v0, cste);
+  }
 
-	public Constraint negate() {
-		final PalmIntVar v = (PalmIntVar) this.v0;
-		return v.getNegDecisionConstraint(this.cste);
-		/*if (v.hasEnumeratedDomain())
-		  return v.getNegnConstraint(this.cste);
-		else
-		  return v.getNegEnumerationConstraint(this.cste); */
-	}
+  public Constraint negate() {
+    final PalmIntVar v = (PalmIntVar) this.v0;
+    return v.getNegDecisionConstraint(this.cste);
+    /*if (v.hasEnumeratedDomain())
+      return v.getNegnConstraint(this.cste);
+    else
+      return v.getNegEnumerationConstraint(this.cste); */
+  }
 }

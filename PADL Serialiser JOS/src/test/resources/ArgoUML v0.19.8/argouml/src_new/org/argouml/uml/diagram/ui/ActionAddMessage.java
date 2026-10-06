@@ -25,7 +25,6 @@
 package org.argouml.uml.diagram.ui;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.model.Model;
 import org.argouml.ui.targetmanager.TargetManager;
 import org.argouml.uml.ui.UMLAction;
@@ -38,90 +37,81 @@ import org.tigris.gef.presentation.FigNode;
 
 /**
  * Action to add a message.
+ *
  * @stereotype singleton
  */
 public class ActionAddMessage extends UMLAction {
 
-    ////////////////////////////////////////////////////////////////
-    // static variables
+  ////////////////////////////////////////////////////////////////
+  // static variables
 
-    private static ActionAddMessage singleton = new ActionAddMessage();
+  private static ActionAddMessage singleton = new ActionAddMessage();
 
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  /** The constructor. */
+  private ActionAddMessage() {
+    super("action.add-message", true, HAS_ICON);
+  }
 
-    /**
-     * The constructor.
-     */
-    private ActionAddMessage() {
-        super("action.add-message", true, HAS_ICON);
+  ////////////////////////////////////////////////////////////////
+  // main methods
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    Object target = TargetManager.getInstance().getModelTarget();
+
+    if (!(Model.getFacade().isAAssociationRole(target))
+        && Model.getFacade().isACollaboration(Model.getFacade().getNamespace(target))) {
+      return;
     }
+    // So, the target is a MAssociationRole
+    this.addMessage(target);
+    super.actionPerformed(ae);
+  }
 
+  /**
+   * Add a message to an associationRole: it builds it using the Factory method and then it creates
+   * the Fig and adds it to the diagram.
+   *
+   * @param associationrole the associationRole to which the new message must be added
+   */
+  private void addMessage(Object associationrole) {
+    Object collaboration = Model.getFacade().getNamespace(associationrole);
+    Object message = Model.getCollaborationsFactory().buildMessage(collaboration, associationrole);
+    Editor e = Globals.curEditor();
+    GraphModel gm = e.getGraphModel();
+    Layer lay = e.getLayerManager().getActiveLayer();
+    GraphNodeRenderer gr = e.getGraphNodeRenderer();
+    FigNode figMsg = gr.getFigNodeFor(gm, lay, message, null);
+    ((FigMessage) figMsg).addPathItemToFigAssociationRole(lay);
 
-    ////////////////////////////////////////////////////////////////
-    // main methods
-
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-    	Object target =  TargetManager.getInstance().getModelTarget();
-
-    	if (!(Model.getFacade().isAAssociationRole(target))
-	    && Model.getFacade().isACollaboration(Model.getFacade()
-                .getNamespace(target))) {
-    	    return;
-    	}
-        // So, the target is a MAssociationRole
-    	this.addMessage(target);
-        super.actionPerformed(ae);
-    }
-
-    /**
-     * Add a message to an associationRole: it builds it using the
-     * Factory method and then it creates the Fig and adds it to the
-     * diagram.
-     *
-     * @param associationrole the associationRole to which the new message
-     *                        must be added
-     */
-    private void addMessage(Object associationrole) {
-        Object collaboration = Model.getFacade().getNamespace(associationrole);
-        Object message =
-            Model.getCollaborationsFactory()
-            	.buildMessage(collaboration, associationrole);
-        Editor e = Globals.curEditor();
-        GraphModel gm = e.getGraphModel();
-        Layer lay = e.getLayerManager().getActiveLayer();
-        GraphNodeRenderer gr = e.getGraphNodeRenderer();
-        FigNode figMsg = gr.getFigNodeFor(gm, lay, message, null);
-        ((FigMessage) figMsg).addPathItemToFigAssociationRole(lay);
-        
-        gm.getNodes().add(message); /*MVW This is not the correct way, 
-        * but it allows connecting a CommentEdge to it! 
+    gm.getNodes().add(message); /*MVW This is not the correct way,
+        * but it allows connecting a CommentEdge to it!
         * See e.g. ActionAddNote for the correct way.
         * Testcase:
         * 1. Select the message.
         * 2. Click the Comment tool.
         * */
-        
-        TargetManager.getInstance().setTarget(message);
-    }
 
-    /**
-     * @see org.argouml.uml.ui.UMLAction#shouldBeEnabled()
-     */
-    public boolean shouldBeEnabled() {
-	Object target =  TargetManager.getInstance().getModelTarget();
-	return super.shouldBeEnabled()
-	    && Model.getFacade().isAAssociationRole(target);
-    }
+    TargetManager.getInstance().setTarget(message);
+  }
 
-    /**
-     * @return Returns the singleton.
-     */
-    public static ActionAddMessage getSingleton() {
-        return singleton;
-    }
-}  /* end class ActionAddMessage */
+  /**
+   * @see org.argouml.uml.ui.UMLAction#shouldBeEnabled()
+   */
+  public boolean shouldBeEnabled() {
+    Object target = TargetManager.getInstance().getModelTarget();
+    return super.shouldBeEnabled() && Model.getFacade().isAAssociationRole(target);
+  }
+
+  /**
+   * @return Returns the singleton.
+   */
+  public static ActionAddMessage getSingleton() {
+    return singleton;
+  }
+} /* end class ActionAddMessage */

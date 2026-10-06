@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -15,23 +15,21 @@ import padl.kernel.IFirstClassEntity;
 
 /**
  * @author Yann-Gaël Guéhéneuc
- * @since  2006/11/28
+ * @since 2006/11/28
  */
 public class Utils {
-	public static IFirstClassEntity searchForEntity(
-		final IAbstractLevelModel anAbstractModel,
-		final String anEntityName) {
+  public static IFirstClassEntity searchForEntity(
+      final IAbstractLevelModel anAbstractModel, final String anEntityName) {
 
-		IFirstClassEntity firstClassEntity =
-			(IFirstClassEntity) anAbstractModel
-				.getConstituentFromName(anEntityName);
-		if (firstClassEntity == null) {
-			firstClassEntity =
-				anAbstractModel.getFactory().createGhost(
-					anEntityName.toCharArray(),
-					anEntityName.toCharArray());
-			anAbstractModel.addConstituent(firstClassEntity);
-		}
-		return firstClassEntity;
-	}
+    IFirstClassEntity firstClassEntity =
+        (IFirstClassEntity) anAbstractModel.getConstituentFromName(anEntityName);
+    if (firstClassEntity == null) {
+      firstClassEntity =
+          anAbstractModel
+              .getFactory()
+              .createGhost(anEntityName.toCharArray(), anEntityName.toCharArray());
+      anAbstractModel.addConstituent(firstClassEntity);
+    }
+    return firstClassEntity;
+  }
 }

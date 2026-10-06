@@ -4,15 +4,15 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
 /**
  * NOTI - Number Of Transitive Invacation
- * 
+ *
  * @author Alban Tiberghien
- * @since  2008/08/13 
+ * @since 2008/08/13
  */
 package pom.metrics.repository;
 
@@ -29,87 +29,77 @@ import pom.metrics.IDependencyIndependentMetric;
 import pom.metrics.IMetric;
 import pom.metrics.IUnaryMetric;
 
-public class NOTI extends AbstractMetric implements IMetric, IUnaryMetric, IDependencyIndependentMetric {
-	protected double concretelyCompute(
-		final IAbstractModel anAbstractModel,
-		final IFirstClassEntity firstClassEntity) {
+public class NOTI extends AbstractMetric
+    implements IMetric, IUnaryMetric, IDependencyIndependentMetric {
+  protected double concretelyCompute(
+      final IAbstractModel anAbstractModel, final IFirstClassEntity firstClassEntity) {
 
-		int result = -1;
+    int result = -1;
 
-		final Collection methods =
-			super.classPrimitives
-				.listOfOverriddenAndConcreteMethods(firstClassEntity);
-		final Iterator iter = methods.iterator();
-		while (iter.hasNext()) {
-			final IConstructor method = (IConstructor) iter.next();
-			result =
-				Math.max(result, this.computeInvocation(
-					firstClassEntity,
-					method,
-					new ArrayList(),
-					0));
-		}
+    final Collection methods =
+        super.classPrimitives.listOfOverriddenAndConcreteMethods(firstClassEntity);
+    final Iterator iter = methods.iterator();
+    while (iter.hasNext()) {
+      final IConstructor method = (IConstructor) iter.next();
+      result =
+          Math.max(
+              result, this.computeInvocation(firstClassEntity, method, new ArrayList<String>(), 0));
+    }
 
-		return result;
+    return result;
+  }
 
-	}
-	public String getDefinition() {
-		final String def =
-			"Highest number of transitive invocation among methods of a class. See the Law of Demeter for a definition.";
-		return def;
-	}
-	private int computeInvocation(
-		final IFirstClassEntity currentEntity,
-		final IOperation currentOperation,
-		final List visitedEntities,
-		final int transitiveInvocation) {
+  public String getDefinition() {
+    final String def =
+        "Highest number of transitive invocation among methods of a class. See the Law of Demeter for a definition.";
+    return def;
+  }
 
-		/**
-		* Alban 2008/09/08 As this metrics is not used with a boxplot and the
-		* threshold defined by the literature is 4, I limited the return value
-		* to 20. It's a temporary fix and I have to find why this $*&%$ algo
-		* don't stop !
-		*/
-		visitedEntities.add(currentEntity.getDisplayID());
-		if (transitiveInvocation >= 20) {
-			return 20;
-		}
+  private int computeInvocation(
+      final IFirstClassEntity currentEntity,
+      final IOperation currentOperation,
+      final List<String> visitedEntities,
+      final int transitiveInvocation) {
 
-		int cpt = -1;
+    /**
+     * Alban 2008/09/08 As this metrics is not used with a boxplot and the threshold defined by the
+     * literature is 4, I limited the return value to 20. It's a temporary fix and I have to find
+     * why this $*&%$ algo don't stop !
+     */
+    visitedEntities.add(currentEntity.getDisplayID());
+    if (transitiveInvocation >= 20) {
+      return 20;
+    }
 
-		final Iterator iterator =
-			currentOperation.getIteratorOnConstituents(IMethodInvocation.class);
-		iterator.hasNext();
-		while (iterator.hasNext()) {
-			final IMethodInvocation mi = (IMethodInvocation) iterator.next();
-			final IOperation calledOperation = mi.getCalledMethod();
+    int cpt = -1;
 
-			/**
-			 * Alban 2008/09/08: Infinite loop! 
-			 * It misses again a stop condition 
-			 * TODO Find which one !
-			 * Yann 2010/03/04: Visited Entities
-			 * I added a list of visited entities to make
-			 * sure that we do not visit the same entities
-			 * many times around jumping from one method
-			 * to the others...
-			 */
-			if (calledOperation != null) {
-				final IFirstClassEntity targetEntity = mi.getTargetEntity();
-				if (targetEntity != null
-						&& !visitedEntities.contains(targetEntity
-							.getDisplayID())) {
+    final Iterator iterator = currentOperation.getIteratorOnConstituents(IMethodInvocation.class);
+    iterator.hasNext();
+    while (iterator.hasNext()) {
+      final IMethodInvocation mi = (IMethodInvocation) iterator.next();
+      final IOperation calledOperation = mi.getCalledMethod();
 
-					cpt =
-						Math.max(cpt, this.computeInvocation(
-							targetEntity,
-							(IOperation) calledOperation,
-							visitedEntities,
-							transitiveInvocation + 1));
-				}
-			}
-		}
+      /**
+       * Alban 2008/09/08: Infinite loop! It misses again a stop condition TODO Find which one !
+       * Yann 2010/03/04: Visited Entities I added a list of visited entities to make sure that we
+       * do not visit the same entities many times around jumping from one method to the others...
+       */
+      if (calledOperation != null) {
+        final IFirstClassEntity targetEntity = mi.getTargetEntity();
+        if (targetEntity != null && !visitedEntities.contains(targetEntity.getDisplayID())) {
 
-		return cpt + 1;
-	}
+          cpt =
+              Math.max(
+                  cpt,
+                  this.computeInvocation(
+                      targetEntity,
+                      (IOperation) calledOperation,
+                      visitedEntities,
+                      transitiveInvocation + 1));
+        }
+      }
+    }
+
+    return cpt + 1;
+  }
 }

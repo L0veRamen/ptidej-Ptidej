@@ -28,14 +28,12 @@ import javax.swing.JPanel;
 
 public interface UIFactory {
 
-    /**
-     * Creates a panel based on the target, using a XML that
-     * describes the UI of the panel.     
-     *  
-     * @param target The model element selected
-     * @return A Panel to be added to the main panel
-     * @throws Exception If something goes wrong
-     */
-    public abstract JPanel createGUI(Object target) throws Exception;
-
+  /**
+   * Creates a panel based on the target, using a XML that describes the UI of the panel.
+   *
+   * @param target The model element selected
+   * @return A Panel to be added to the main panel
+   * @throws Exception If something goes wrong
+   */
+  public abstract JPanel createGUI(Object target) throws Exception;
 }

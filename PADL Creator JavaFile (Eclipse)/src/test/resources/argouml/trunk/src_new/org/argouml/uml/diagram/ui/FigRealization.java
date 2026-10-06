@@ -24,35 +24,27 @@
 
 package org.argouml.uml.diagram.ui;
 
-
 /**
  * Fig for a UML Realization.
- * <p>
- * Implementation has been moved to FigAbstraction for alignment
- * with UML spec and to allow reuse for other abstractions such
- * as Derivation, Refinement, or Trace.
+ *
+ * <p>Implementation has been moved to FigAbstraction for alignment with UML spec and to allow reuse
+ * for other abstractions such as Derivation, Refinement, or Trace.
  */
 public class FigRealization extends FigAbstraction {
-    /**
-     * The constructor.
-     *
-     */
-    public FigRealization() {
-        super();
-    }
+  /** The constructor. */
+  public FigRealization() {
+    super();
+  }
 
-    /**
-     * The constructor.
-     *
-     * @param edge the owning UML element
-     */
-    public FigRealization(Object edge) {
-        super(edge);
-    }
-    
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -5688833795126793130L;
+  /**
+   * The constructor.
+   *
+   * @param edge the owning UML element
+   */
+  public FigRealization(Object edge) {
+    super(edge);
+  }
+
+  /** The UID. */
+  private static final long serialVersionUID = -5688833795126793130L;
 } /* end class FigRealization */
-

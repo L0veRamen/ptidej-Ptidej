@@ -25,50 +25,41 @@
 package org.argouml.uml.ui.behavior.activity_graphs;
 
 import javax.swing.ImageIcon;
-
 import org.argouml.i18n.Translator;
 import org.argouml.uml.ui.behavior.state_machines.AbstractPropPanelState;
 
 /**
- * User interface panel shown at the bottom of the screen that allows the user
- * to edit the properties of the selected UML model element.
+ * User interface panel shown at the bottom of the screen that allows the user to edit the
+ * properties of the selected UML model element.
  */
 public class PropPanelActionState extends AbstractPropPanelState {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = 4936258091606712050L;
+  /** The serial version. */
+  private static final long serialVersionUID = 4936258091606712050L;
 
-    /**
-     * Construct a default property panel for an Action State.
-     */
-    public PropPanelActionState() {
-        this("label.action-state", lookupIcon("ActionState"));
-    }
+  /** Construct a default property panel for an Action State. */
+  public PropPanelActionState() {
+    this("label.action-state", lookupIcon("ActionState"));
+  }
 
-    
-    /**
-     * Construct a property panel for an Action State with the given params.
-     *
-     * @param name the name of the properties panel
-     * @param icon the icon to be shown next to the name
-     */
-    public PropPanelActionState(String name, ImageIcon icon) {
-        super(name, icon);
+  /**
+   * Construct a property panel for an Action State with the given params.
+   *
+   * @param name the name of the properties panel
+   * @param icon the icon to be shown next to the name
+   */
+  public PropPanelActionState(String name, ImageIcon icon) {
+    super(name, icon);
 
-        addField(Translator.localize("label.name"), getNameTextField());
-        addField(Translator.localize("label.container"), getContainerScroll());
-        addField(Translator.localize("label.entry"), getEntryScroll());
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.container"), getContainerScroll());
+    addField(Translator.localize("label.entry"), getEntryScroll());
 
-        addField(Translator.localize("label.deferrable"),
-                getDeferrableEventsScroll());
+    addField(Translator.localize("label.deferrable"), getDeferrableEventsScroll());
 
-        addSeparator();
+    addSeparator();
 
-        addField(Translator.localize("label.incoming"), getIncomingScroll());
-        addField(Translator.localize("label.outgoing"), getOutgoingScroll());
-
-    }
-
+    addField(Translator.localize("label.incoming"), getIncomingScroll());
+    addField(Translator.localize("label.outgoing"), getOutgoingScroll());
+  }
 }

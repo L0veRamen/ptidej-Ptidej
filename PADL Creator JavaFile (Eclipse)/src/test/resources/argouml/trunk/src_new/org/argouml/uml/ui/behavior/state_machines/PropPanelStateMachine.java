@@ -26,7 +26,6 @@ package org.argouml.uml.ui.behavior.state_machines;
 
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.uml.ui.ActionNavigateNamespace;
 import org.argouml.uml.ui.UMLComboBox2;
@@ -46,79 +45,60 @@ import org.tigris.swidgets.Orientation;
  */
 public class PropPanelStateMachine extends PropPanelModelElement {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = -2157218581140487530L;
+  /** The serial version. */
+  private static final long serialVersionUID = -2157218581140487530L;
 
-    /**
-     * Constructor for PropPanelStateMachine.
-     */
-    public PropPanelStateMachine() {
-        this("StateMachine", ConfigLoader.getTabPropsOrientation());
+  /** Constructor for PropPanelStateMachine. */
+  public PropPanelStateMachine() {
+    this("StateMachine", ConfigLoader.getTabPropsOrientation());
+  }
 
-    }
+  /**
+   * The constructor.
+   *
+   * @param name the title of the properties panel, to be shown at the top
+   * @param orient the orientation of the panel
+   */
+  public PropPanelStateMachine(String name, Orientation orient) {
+    super(name, lookupIcon(name), orient);
+    initialize();
+  }
 
-    /**
-     * The constructor.
-     *
-     * @param name the title of the properties panel, to be shown at the top
-     * @param orient the orientation of the panel
-     */
-    public PropPanelStateMachine(String name, Orientation orient) {
-        super(name, lookupIcon(name), orient);
-        initialize();
-    }
+  /** Initialise the panel with fields and stuff. */
+  protected void initialize() {
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.namespace"), getNamespaceSelector());
 
-    /**
-     * Initialise the panel with fields and stuff.
-     */
-    protected void initialize() {
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.namespace"),
-                getNamespaceSelector());
+    // the context in which the statemachine resides
+    UMLComboBox2 contextComboBox =
+        new UMLComboBox2(getContextComboBoxModel(), ActionSetContextStateMachine.getInstance());
+    addField(
+        Translator.localize("label.context"),
+        new UMLComboBoxNavigator(
+            this, Translator.localize("label.context.navigate.tooltip"), contextComboBox));
 
-        // the context in which the statemachine resides
-        UMLComboBox2 contextComboBox =
-            new UMLComboBox2(
-                     getContextComboBoxModel(),
-                     ActionSetContextStateMachine.getInstance());
-        addField(Translator.localize("label.context"),
-                new UMLComboBoxNavigator(
-                        this,
-                        Translator.localize("label.context.navigate.tooltip"),
-                        contextComboBox));
-        
-        // the top state
-        JList topList = new UMLLinkedList(new UMLStateMachineTopListModel());
-        addField(Translator.localize("label.top-state"),
-                new JScrollPane(topList));
+    // the top state
+    JList topList = new UMLLinkedList(new UMLStateMachineTopListModel());
+    addField(Translator.localize("label.top-state"), new JScrollPane(topList));
 
-        addSeparator();
+    addSeparator();
 
-        // the transitions the statemachine has
-        JList transitionList = new UMLLinkedList(
-                new UMLStateMachineTransitionListModel());
-        addField(Translator.localize("label.transition"),
-                new JScrollPane(transitionList));
+    // the transitions the statemachine has
+    JList transitionList = new UMLLinkedList(new UMLStateMachineTransitionListModel());
+    addField(Translator.localize("label.transition"), new JScrollPane(transitionList));
 
-        // the submachinestates
-        // maybe this should be a mutable linked list but that's for the future
-        // to decide
-        JList submachineStateList = new UMLLinkedList(
-                new UMLStateMachineSubmachineStateListModel());
-        addField(Translator.localize("label.submachinestate"),
-                new JScrollPane(submachineStateList));
+    // the submachinestates
+    // maybe this should be a mutable linked list but that's for the future
+    // to decide
+    JList submachineStateList = new UMLLinkedList(new UMLStateMachineSubmachineStateListModel());
+    addField(Translator.localize("label.submachinestate"), new JScrollPane(submachineStateList));
 
-        addAction(new ActionNavigateNamespace());
-        addAction(new ActionNewStereotype());
-        addAction(getDeleteAction());
-    }
+    addAction(new ActionNavigateNamespace());
+    addAction(new ActionNewStereotype());
+    addAction(getDeleteAction());
+  }
 
-    protected UMLComboBoxModel2 getContextComboBoxModel() {
-        return new UMLStateMachineContextComboBoxModel();
-    }
-    
-    
+  protected UMLComboBoxModel2 getContextComboBoxModel() {
+    return new UMLStateMachineContextComboBoxModel();
+  }
 }

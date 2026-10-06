@@ -25,79 +25,75 @@
 package org.argouml.uml.notation.java;
 
 import java.util.HashMap;
-
 import org.argouml.model.Model;
 import org.argouml.ui.ProjectBrowser;
 import org.argouml.uml.notation.AssociationEndNameNotation;
-import org.argouml.uml.notation.uml.AssociationEndNameNotationUml;
 import org.argouml.uml.notation.uml.NotationUtilityUml;
 
 /**
- * The Java notation for an associationend name (i.e. the  role).
- * 
+ * The Java notation for an associationend name (i.e. the role).
+ *
  * @author michiel
  */
 public class AssociationEndNameNotationJava extends AssociationEndNameNotation {
 
-	private static final AssociationEndNameNotationJava instance =
-		new AssociationEndNameNotationJava();
-	
-	/**
-	 * Create a new instance of AssociationEndNameNotationUml
-	 * @return the notation
-	 */
-    public static final AssociationEndNameNotationJava getInstance() {
-    	return instance;
+  private static final AssociationEndNameNotationJava instance =
+      new AssociationEndNameNotationJava();
+
+  /**
+   * Create a new instance of AssociationEndNameNotationUml
+   *
+   * @return the notation
+   */
+  public static final AssociationEndNameNotationJava getInstance() {
+    return instance;
+  }
+
+  /**
+   * The constructor.
+   *
+   * @param assocEnd the Java associationEnd
+   */
+  protected AssociationEndNameNotationJava() {
+    super();
+  }
+
+  /**
+   * @see org.argouml.uml.notation.NotationProvider#getParsingHelp()
+   */
+  public String getParsingHelp() {
+    //        return "parsing.help.fig-association-end-name";
+    return "Parsing in Java not yet supported";
+  }
+
+  /**
+   * @see org.argouml.uml.notation.NotationProvider#parse(java.lang.Object, java.lang.String)
+   */
+  public void parse(Object modelElement, String text) {
+    ProjectBrowser.getInstance().getStatusBar().showStatus("Parsing in Java not yet supported");
+  }
+
+  /**
+   * @see org.argouml.uml.notation.NotationProvider#toString(java.lang.Object, java.util.HashMap)
+   */
+  public String toString(Object modelElement, HashMap args) {
+    String name = Model.getFacade().getName(modelElement);
+    if (name == null) {
+      name = "";
     }
 
-    /**
-     * The constructor.
-     *
-     * @param assocEnd the Java associationEnd
-     */
-    protected AssociationEndNameNotationJava() {
-        super();
+    Object visi = Model.getFacade().getVisibility(modelElement);
+    String visibility = "";
+    if (visi != null) {
+      visibility = NotationUtilityJava.generateVisibility(visi);
+    }
+    if (name.length() < 1) {
+      visibility = "";
+      // this is the temporary solution for issue 1011
     }
 
-    /**
-     * @see org.argouml.uml.notation.NotationProvider#getParsingHelp()
-     */
-    public String getParsingHelp() {
-//        return "parsing.help.fig-association-end-name";
-        return "Parsing in Java not yet supported";
-    }
+    String stereoString = NotationUtilityUml.generateStereotype(modelElement);
 
-    /**
-     * @see org.argouml.uml.notation.NotationProvider#parse(java.lang.Object, java.lang.String)
-     */
-    public void parse(Object modelElement, String text) {
-        ProjectBrowser.getInstance().getStatusBar().showStatus(
-            "Parsing in Java not yet supported");
-    }
-
-    /**
-     * @see org.argouml.uml.notation.NotationProvider#toString(java.lang.Object, java.util.HashMap)
-     */
-    public String toString(Object modelElement, HashMap args) {
-        String name = Model.getFacade().getName(modelElement);
-        if (name == null) {
-            name = "";
-        }
-
-        Object visi = Model.getFacade().getVisibility(modelElement);
-        String visibility = "";
-        if (visi != null) {
-            visibility = NotationUtilityJava.generateVisibility(visi);
-        }
-        if (name.length() < 1) {
-            visibility = "";
-            //this is the temporary solution for issue 1011
-        }
-
-        String stereoString = 
-            NotationUtilityUml.generateStereotype(modelElement);
-
-        return stereoString + visibility + name;
-    }
-    
+    return stereoString + visibility + name;
+  }
 }

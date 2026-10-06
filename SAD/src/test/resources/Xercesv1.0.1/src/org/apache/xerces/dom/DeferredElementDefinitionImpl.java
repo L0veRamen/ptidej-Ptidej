@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xerces" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -60,93 +60,87 @@ package org.apache.xerces.dom;
 import org.w3c.dom.*;
 
 /**
- * NON-DOM CLASS: Describe one of the Elements (and its associated
- * Attributes) defined in this Document Type.
- * <p>
- * I've included this in Level 1 purely as an anchor point for default
- * attributes. In Level 2 it should enable the ChildRule support.
+ * NON-DOM CLASS: Describe one of the Elements (and its associated Attributes) defined in this
+ * Document Type.
+ *
+ * <p>I've included this in Level 1 purely as an anchor point for default attributes. In Level 2 it
+ * should enable the ChildRule support.
  *
  * @version
  */
-public class DeferredElementDefinitionImpl 
-    extends ElementDefinitionImpl 
-    implements DeferredNode {
+public class DeferredElementDefinitionImpl extends ElementDefinitionImpl implements DeferredNode {
 
-    //
-    // Constants
-    //
+  //
+  // Constants
+  //
 
-    /** Serialization version. */
-    static final long serialVersionUID = 6703238199538041591L;
-    
-    //
-    // Data
-    //
+  /** Serialization version. */
+  static final long serialVersionUID = 6703238199538041591L;
 
-    /** Node index. */
-    protected transient int fNodeIndex;
+  //
+  // Data
+  //
 
-    //
-    // Constructors
-    //
+  /** Node index. */
+  protected transient int fNodeIndex;
 
-    /**
-     * This is the deferred constructor. Only the fNodeIndex is given here.
-     * All other data, can be requested from the ownerDocument via the index.
-     */
-    DeferredElementDefinitionImpl(DeferredDocumentImpl ownerDocument, int nodeIndex) {
-        super(ownerDocument, null);
-        
-        fNodeIndex = nodeIndex;
-        syncData = true;
-        syncChildren = true;
+  //
+  // Constructors
+  //
 
-    } // <init>(DeferredDocumentImpl,int)
+  /**
+   * This is the deferred constructor. Only the fNodeIndex is given here. All other data, can be
+   * requested from the ownerDocument via the index.
+   */
+  DeferredElementDefinitionImpl(DeferredDocumentImpl ownerDocument, int nodeIndex) {
+    super(ownerDocument, null);
 
-    //
-    // DeferredNode methods
-    //
+    fNodeIndex = nodeIndex;
+    syncData = true;
+    syncChildren = true;
+  } // <init>(DeferredDocumentImpl,int)
 
-    /** Returns the node index. */
-    public int getNodeIndex() {
-        return fNodeIndex;
+  //
+  // DeferredNode methods
+  //
+
+  /** Returns the node index. */
+  public int getNodeIndex() {
+    return fNodeIndex;
+  }
+
+  //
+  // Protected methods
+  //
+
+  /** Synchronizes the data (name and value) for fast nodes. */
+  protected void synchronizeData() {
+
+    // no need to sync in the future
+    syncData = false;
+
+    // fluff data
+    DeferredDocumentImpl ownerDocument = (DeferredDocumentImpl) this.ownerDocument;
+    name = ownerDocument.getNodeNameString(fNodeIndex);
+  } // synchronizeData()
+
+  /** Synchronizes the default attribute values. */
+  protected void synchronizeChildren() {
+
+    // attributes are now synced
+    syncChildren = false;
+
+    // create attributes node map
+    DeferredDocumentImpl ownerDocument = (DeferredDocumentImpl) this.ownerDocument;
+    attributes = new NamedNodeMapImpl(ownerDocument, null);
+
+    // Default attributes dangle as children of the element
+    // definition "node" in the internal fast table.
+    for (int nodeIndex = ownerDocument.getFirstChild(fNodeIndex);
+        nodeIndex != -1;
+        nodeIndex = ownerDocument.getNextSibling(nodeIndex)) {
+      Node attr = ownerDocument.getNodeObject(nodeIndex);
+      attributes.setNamedItem(attr);
     }
-
-    //
-    // Protected methods
-    //
-
-    /** Synchronizes the data (name and value) for fast nodes. */
-    protected void synchronizeData() {
-
-        // no need to sync in the future
-        syncData = false;
-
-        // fluff data
-        DeferredDocumentImpl ownerDocument = (DeferredDocumentImpl)this.ownerDocument;
-        name = ownerDocument.getNodeNameString(fNodeIndex);
-
-    } // synchronizeData()
-
-    /** Synchronizes the default attribute values. */
-    protected void synchronizeChildren() {
-
-        // attributes are now synced
-        syncChildren = false;
-
-        // create attributes node map
-        DeferredDocumentImpl ownerDocument = (DeferredDocumentImpl)this.ownerDocument;
-        attributes = new NamedNodeMapImpl(ownerDocument, null);
-
-        // Default attributes dangle as children of the element
-        // definition "node" in the internal fast table.
-        for (int nodeIndex = ownerDocument.getFirstChild(fNodeIndex);
-             nodeIndex != -1;
-             nodeIndex = ownerDocument.getNextSibling(nodeIndex)) {
-            Node attr = ownerDocument.getNodeObject(nodeIndex);
-            attributes.setNamedItem(attr);
-        }
-
-    } // synchronizeChildren()
-
+  } // synchronizeChildren()
 } // class DeferredElementDefinitionImpl

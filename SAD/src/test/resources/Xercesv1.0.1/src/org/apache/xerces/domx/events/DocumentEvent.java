@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xerces" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -59,26 +59,22 @@ package org.apache.xerces.domx.events;
 import org.w3c.dom.DOMException;
 
 /**
- *  The <code>DocumentEvent</code> interface provides a mechanism by which the 
- * a user can create an Event of a type supported by the implementation. 
+ * The <code>DocumentEvent</code> interface provides a mechanism by which the a user can create an
+ * Event of a type supported by the implementation.
+ *
  * @since DOM Level 2
  */
 public interface DocumentEvent {
   /**
-   * 
-   * @param type The <code>type</code> paramater specifies the type of 
-   *   <code>Event</code> to be created.  If the <code>Event</code> type 
-   *   specified is supported by the implementation  this method will return 
-   *   a new <code>Event</code> of the type requested.  If the 
-   *   <code> Event</code> is to be dispatched via the 
-   *   <code>dispatchEvent</code> method the  appropriate event init method 
-   *   must be called after creation in order to initialize the 
-   *   <code>Event</code>'s values.
+   * @param type The <code>type</code> paramater specifies the type of <code>Event</code> to be
+   *     created. If the <code>Event</code> type specified is supported by the implementation this
+   *     method will return a new <code>Event</code> of the type requested. If the <code> Event
+   *     </code> is to be dispatched via the <code>dispatchEvent</code> method the appropriate event
+   *     init method must be called after creation in order to initialize the <code>Event</code>'s
+   *     values.
    * @return The newly created <code>Event</code>
-   * @exception DOMException
-   *   UNSUPPORTED_EVENT_TYPE: Raised if the implementation does not support 
-   *   the type of <code>Event</code> requested
+   * @exception DOMException UNSUPPORTED_EVENT_TYPE: Raised if the implementation does not support
+   *     the type of <code>Event</code> requested
    */
-  public Event              createEvent(String type)
-										throws DOMException;
+  public Event createEvent(String type) throws DOMException;
 }

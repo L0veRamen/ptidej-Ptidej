@@ -7,7 +7,7 @@
  *                                                                           *
  *  The contents of this file are subject to the Sun Public License Version  *
  *  1.0 (the "License"); you may not use this file except in compliance with *
- *  the License. A copy of the License is available at http://www.sun.com    * 
+ *  the License. A copy of the License is available at http://www.sun.com    *
  *                                                                           *
  *  The Original Code is BeanShell. The Initial Developer of the Original    *
  *  Code is Pat Niemeyer. Portions created by Pat Niemeyer are Copyright     *
@@ -36,53 +36,48 @@ package bsh;
 import bsh.Capabilities.Unavailable;
 
 /**
-	ReflectManager is a dynamically loaded extension that supports extended
-	reflection features supported by JDK1.2 and greater.
+ * ReflectManager is a dynamically loaded extension that supports extended reflection features
+ * supported by JDK1.2 and greater.
+ *
+ * <p>In particular it currently supports accessible method and field access supported by JDK1.2 and
+ * greater.
+ */
+public abstract class ReflectManager {
+  private static ReflectManager rfm;
 
-	In particular it currently supports accessible method and field access 
-	supported by JDK1.2 and greater.
-*/
-public abstract class ReflectManager
-{
-	private static ReflectManager rfm;
+  /**
+   * Return the singleton bsh ReflectManager.
+   *
+   * @throws Unavailable
+   */
+  public static ReflectManager getReflectManager() throws Unavailable {
+    if (rfm == null) {
+      Class clas;
+      try {
+        clas = Class.forName("bsh.reflect.ReflectManagerImpl");
+        rfm = (ReflectManager) clas.getDeclaredConstructor().newInstance();
+      } catch (Exception e) {
+        throw new Unavailable("Reflect Manager unavailable: " + e);
+      }
+    }
 
-	/**
-		Return the singleton bsh ReflectManager.
-		@throws Unavailable
-	*/
-	public static ReflectManager getReflectManager() 
-		throws Unavailable
-	{
-		if ( rfm == null ) 
-		{
-			Class clas;
-			try {
-				clas = Class.forName( "bsh.reflect.ReflectManagerImpl" );
-				rfm = (ReflectManager)clas.getDeclaredConstructor().newInstance();
-			} catch ( Exception e ) {
-				throw new Unavailable("Reflect Manager unavailable: "+e);
-			}
-		}
-	
-		return rfm;
-	}
+    return rfm;
+  }
 
-	/**
-		Reflect Manager Set Accessible.
-		Convenience method to invoke the reflect manager.
-		@throws Unavailable
-	*/
-	public static boolean RMSetAccessible( Object obj ) 
-		throws Unavailable
-	{
-		return getReflectManager().setAccessible( obj );
-	}
+  /**
+   * Reflect Manager Set Accessible. Convenience method to invoke the reflect manager.
+   *
+   * @throws Unavailable
+   */
+  public static boolean RMSetAccessible(Object obj) throws Unavailable {
+    return getReflectManager().setAccessible(obj);
+  }
 
-	/**
-		Set a java.lang.reflect Field, Method, Constructor, or Array of
-		accessible objects to accessible mode.
-		@return true if the object was accessible or false if it was not.
-	*/
-	public abstract boolean setAccessible( Object o );
+  /**
+   * Set a java.lang.reflect Field, Method, Constructor, or Array of accessible objects to
+   * accessible mode.
+   *
+   * @return true if the object was accessible or false if it was not.
+   */
+  public abstract boolean setAccessible(Object o);
 }
-

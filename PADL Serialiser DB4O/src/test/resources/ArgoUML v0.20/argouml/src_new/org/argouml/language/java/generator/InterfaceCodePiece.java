@@ -27,7 +27,6 @@
   Author: Marcus Andersson andersson@users.sourceforge.net
 */
 
-
 package org.argouml.language.java.generator;
 
 import java.io.BufferedReader;
@@ -35,97 +34,86 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Stack;
 
-/**
-   This code piece represents an interface declaration.
-*/
+/** This code piece represents an interface declaration. */
 public class InterfaceCodePiece extends NamedCodePiece {
-    /** The code piece this interface represents. */
-    private CodePiece interfaceDef;
+  /** The code piece this interface represents. */
+  private CodePiece interfaceDef;
 
-    /** The name of the interface. */
-    private String name;
+  /** The name of the interface. */
+  private String name;
 
-    /**
-       Constructor.
+  /**
+   * Constructor.
+   *
+   * @param def The code piece this interface represents.
+   * @param n The name of the interface.
+   */
+  public InterfaceCodePiece(CodePiece def, String n) {
+    interfaceDef = def;
+    name = n;
+  }
 
-       @param def The code piece this interface represents.
-       @param n The name of the interface.
-    */
-    public InterfaceCodePiece(CodePiece def,
-                              String n) {
-	interfaceDef = def;
-	name = n;
+  /**
+   * @see org.argouml.language.java.generator.CodePiece#getText()
+   *     <p>Return the string representation for this piece of code.
+   */
+  public StringBuffer getText() {
+    return interfaceDef.getText();
+  }
+
+  /**
+   * @see org.argouml.language.java.generator.CodePiece#getStartPosition()
+   *     <p>Return the start position.
+   */
+  public int getStartPosition() {
+    return interfaceDef.getStartPosition();
+  }
+
+  /**
+   * @see org.argouml.language.java.generator.CodePiece#getEndPosition()
+   *     <p>Return the end position.
+   */
+  public int getEndPosition() {
+    return interfaceDef.getEndPosition();
+  }
+
+  /**
+   * @see org.argouml.language.java.generator.CodePiece#getStartLine()
+   *     <p>Return the start line
+   */
+  public int getStartLine() {
+    return interfaceDef.getStartLine();
+  }
+
+  /**
+   * @see org.argouml.language.java.generator.CodePiece#getEndLine() Return the end line
+   */
+  public int getEndLine() {
+    return interfaceDef.getEndLine();
+  }
+
+  /**
+   * @see org.argouml.language.java.generator.NamedCodePiece#write( java.io.BufferedReader,
+   *     java.io.BufferedWriter, java.util.Stack)
+   *     <p>Write the code this piece represents to file. This will add one level to the stack if
+   *     the interface is in the model.
+   */
+  public void write(BufferedReader reader, BufferedWriter writer, Stack parseStateStack)
+      throws IOException {
+    ParseState parseState = (ParseState) parseStateStack.peek();
+    Object mInterface = /*(MInterface)*/ parseState.newClassifier(name);
+
+    if (mInterface != null) {
+      parseStateStack.push(new ParseState(mInterface));
+      StringBuffer sbText = GeneratorJava.getInstance().generateClassifierStart(mInterface);
+      if (sbText != null) {
+        writer.write(sbText.toString());
+      }
+      // dispose code piece in reader
+      ffCodePiece(reader, null);
+    } else {
+      // not in model, so write the original code
+      ffCodePiece(reader, writer);
     }
-
-    /**
-     * @see org.argouml.language.java.generator.CodePiece#getText()
-     *
-     * Return the string representation for this piece of code.
-     */
-    public StringBuffer getText() {
-	return interfaceDef.getText();
-    }
-
-    /**
-     * @see org.argouml.language.java.generator.CodePiece#getStartPosition()
-     *
-     * Return the start position.
-     */
-    public int getStartPosition() {
-	return interfaceDef.getStartPosition();
-    }
-
-    /**
-     * @see org.argouml.language.java.generator.CodePiece#getEndPosition()
-     *
-     * Return the end position.
-     */
-    public int getEndPosition() {
-	return interfaceDef.getEndPosition();
-    }
-
-    /**
-     * @see org.argouml.language.java.generator.CodePiece#getStartLine()
-     *
-     * Return the start line
-     */
-    public int getStartLine() {
-	return interfaceDef.getStartLine();
-    }
-
-    /**
-     * @see org.argouml.language.java.generator.CodePiece#getEndLine()
-     * Return the end line
-     */
-    public int getEndLine() {
-	return interfaceDef.getEndLine();
-    }
-
-    /**
-     * @see org.argouml.language.java.generator.NamedCodePiece#write(
-     *         java.io.BufferedReader, java.io.BufferedWriter, java.util.Stack)
-     *
-     * Write the code this piece represents to file. This will add one
-     * level to the stack if the interface is in the model.
-     */
-    public void write(BufferedReader reader,
-                      BufferedWriter writer,
-                      Stack parseStateStack) throws IOException {
-        ParseState parseState = (ParseState) parseStateStack.peek();
-        Object mInterface = /*(MInterface)*/ parseState.newClassifier(name);
-
-	if (mInterface != null) {
-	    parseStateStack.push(new ParseState(mInterface));
-	    StringBuffer sbText =
-		GeneratorJava.getInstance().generateClassifierStart(mInterface);
-	    if (sbText != null) {
-		writer.write (sbText.toString());
-	    }
-            // dispose code piece in reader
-            ffCodePiece(reader, null);
-        } else {
-            // not in model, so write the original code
-            ffCodePiece(reader, writer);
-        }
-    }
+  }
 }

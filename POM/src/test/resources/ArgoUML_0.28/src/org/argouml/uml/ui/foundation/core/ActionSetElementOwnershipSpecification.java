@@ -25,59 +25,51 @@
 package org.argouml.uml.ui.foundation.core;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.Action;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLCheckBox2;
 import org.tigris.gef.undo.UndoableAction;
 
 /**
- * This class sets the "isSpecification" for a ElementOwnership 
- * (incorporated in ModelElement for MDR) or a ElementImport.
- * 
+ * This class sets the "isSpecification" for a ElementOwnership (incorporated in ModelElement for
+ * MDR) or a ElementImport.
+ *
  * @since Oct 12, 2002
  * @author jaap.branderhorst@xs4all.nl
  * @stereotype singleton
  */
 public class ActionSetElementOwnershipSpecification extends UndoableAction {
 
-    private static final ActionSetElementOwnershipSpecification SINGLETON =
-        new ActionSetElementOwnershipSpecification();
+  private static final ActionSetElementOwnershipSpecification SINGLETON =
+      new ActionSetElementOwnershipSpecification();
 
-    /**
-     * Constructor for ActionSetElementOwnershipSpecification.
-     */
-    protected ActionSetElementOwnershipSpecification() {
-        super(Translator.localize("Set"), null);
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize("Set"));
+  /** Constructor for ActionSetElementOwnershipSpecification. */
+  protected ActionSetElementOwnershipSpecification() {
+    super(Translator.localize("Set"), null);
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize("Set"));
+  }
+
+  /*
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    if (e.getSource() instanceof UMLCheckBox2) {
+      UMLCheckBox2 source = (UMLCheckBox2) e.getSource();
+      Object target = source.getTarget();
+      if (Model.getFacade().isAModelElement(target) || Model.getFacade().isAElementImport(target)) {
+        Object m = target;
+        Model.getModelManagementHelper().setSpecification(m, !Model.getFacade().isSpecification(m));
+      }
     }
+  }
 
-    /*
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        if (e.getSource() instanceof UMLCheckBox2) {
-            UMLCheckBox2 source = (UMLCheckBox2) e.getSource();
-            Object target = source.getTarget();
-            if (Model.getFacade().isAModelElement(target)
-                    || Model.getFacade().isAElementImport(target)) {
-                Object m = target;
-                Model.getModelManagementHelper().setSpecification(m,
-                        !Model.getFacade().isSpecification(m));
-            }
-        }
-    }
-
-    /**
-     * @return Returns the SINGLETON.
-     */
-    public static ActionSetElementOwnershipSpecification getInstance() {
-        return SINGLETON;
-    }
-
+  /**
+   * @return Returns the SINGLETON.
+   */
+  public static ActionSetElementOwnershipSpecification getInstance() {
+    return SINGLETON;
+  }
 }

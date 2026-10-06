@@ -25,87 +25,77 @@
 package org.argouml.uml.reveng;
 
 /**
- * Interface for the generic import settings that a pluggable importer module
- * can query the value of.
+ * Interface for the generic import settings that a pluggable importer module can query the value
+ * of.
  */
-
 public interface ImportSettings {
 
-    /**
-     * Import only classifiers
-     */
-    public static final int DETAIL_CLASSIFIER = 0;
+  /** Import only classifiers */
+  public static final int DETAIL_CLASSIFIER = 0;
 
-    /**
-     * Import classifiers and their features
-     */
-    public static final int DETAIL_CLASSIFIER_FEATURE = 1;
+  /** Import classifiers and their features */
+  public static final int DETAIL_CLASSIFIER_FEATURE = 1;
 
-    /**
-     * Import full detail
-     */
-    public static final int DETAIL_FULL = 2;
+  /** Import full detail */
+  public static final int DETAIL_FULL = 2;
 
-    /**
-     * @return the level of import detail requested by the user. One of
-     *         DETAIL_CLASSIFIER, DETAIL_CLASSIFIER_FEATURE, or DETAIL_FULL.
-     */
-    public int getImportLevel();
+  /**
+   * @return the level of import detail requested by the user. One of DETAIL_CLASSIFIER,
+   *     DETAIL_CLASSIFIER_FEATURE, or DETAIL_FULL.
+   */
+  public int getImportLevel();
 
-    /**
-     * @return string representing the character encoding of the input source
-     *         files.
-     */
-    public String getInputSourceEncoding();
+  /**
+   * @return string representing the character encoding of the input source files.
+   */
+  public String getInputSourceEncoding();
 
-    // TODO: Change attribute and datatype to return a literal/enum
-    // instead? - tfm
-    public static final int ASSOCIATION_AS_ATTRIBUTE = 1;
+  // TODO: Change attribute and datatype to return a literal/enum
+  // instead? - tfm
+  public static final int ASSOCIATION_AS_ATTRIBUTE = 1;
 
-    public static final int ASSOCIATION_AS_ASSOCIATION = 0;
+  public static final int ASSOCIATION_AS_ASSOCIATION = 0;
 
-    public static final int ARRAY_AS_DATATYPE = 1;
+  public static final int ARRAY_AS_DATATYPE = 1;
 
-    public static final int ARRAY_AS_ARRAY = 0;
+  public static final int ARRAY_AS_ARRAY = 0;
 
-    /**
-     * @return true if associations should be modeled as attributes
-     */
-    public boolean isAttributeSelected();
+  /**
+   * @return true if associations should be modeled as attributes
+   */
+  public boolean isAttributeSelected();
 
-    /**
-     * @return true if arrays should be modeled as UML Datatypes
-     */
-    public boolean isDatatypeSelected();
+  /**
+   * @return true if arrays should be modeled as UML Datatypes
+   */
+  public boolean isDatatypeSelected();
 
-    /**
-     * @return true if the directory tree should be descended recursively
-     *         importing all parseable files.
-     */
-    public boolean isDescendSelected();
+  /**
+   * @return true if the directory tree should be descended recursively importing all parseable
+   *     files.
+   */
+  public boolean isDescendSelected();
 
-    /**
-     * @return true if user as requested that only sources files which have been
-     *         changed since the last import should be imported this time. If
-     *         false, all files should be imported, regardless of their
-     *         modification date.
-     */
-    public boolean isChangedOnlySelected();
+  /**
+   * @return true if user as requested that only sources files which have been changed since the
+   *     last import should be imported this time. If false, all files should be imported,
+   *     regardless of their modification date.
+   */
+  public boolean isChangedOnlySelected();
 
-    // boolean isCreateDiagramsSelected();
-    // boolean isMinimizeFigsSelected();
-    // boolean isLayoutDiagramsSelected();
+  // boolean isCreateDiagramsSelected();
+  // boolean isMinimizeFigsSelected();
+  // boolean isLayoutDiagramsSelected();
 
-    /**
-     * @deprecated by tfmorris for 0.23.3 - only for use by old code
-     * @return the interface to the diagram subsystem
-     */
-    DiagramInterface getDiagramInterface();
+  /**
+   * @deprecated by tfmorris for 0.23.3 - only for use by old code
+   * @return the interface to the diagram subsystem
+   */
+  DiagramInterface getDiagramInterface();
 
-    /**
-     * @deprecated only to be used by Java and IDL until they are upgraded.
-     * @return the current import session
-     */
-    Import getImportSession();
-
+  /**
+   * @deprecated only to be used by Java and IDL until they are upgraded.
+   * @return the current import session
+   */
+  Import getImportSession();
 }

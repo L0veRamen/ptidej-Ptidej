@@ -25,7 +25,6 @@
 package org.argouml.uml.ui.foundation.extension_mechanisms;
 
 import java.util.Collection;
-
 import org.apache.log4j.Logger;
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.Model;
@@ -37,46 +36,39 @@ import org.argouml.uml.ui.UMLComboBoxModel2;
  */
 public class UMLTagDefinitionStereotypeComboBoxModel extends UMLComboBoxModel2 {
 
-    private Logger LOG = Logger.getLogger(UMLTagDefinitionStereotypeComboBoxModel.class);
-    
-    /**
-     * Constructor for UMLModelElementStereotypeComboBoxModel.
-     */
-    public UMLTagDefinitionStereotypeComboBoxModel() {
-        super("stereotype", true);
-        Model.getPump().addClassModelEventListener(
-            this,
-            Model.getMetaTypes().getNamespace(),
-            "ownedElement");
-    }
+  private Logger LOG = Logger.getLogger(UMLTagDefinitionStereotypeComboBoxModel.class);
 
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object o) {
-        return Model.getFacade().isAStereotype(o);
-    }
+  /** Constructor for UMLModelElementStereotypeComboBoxModel. */
+  public UMLTagDefinitionStereotypeComboBoxModel() {
+    super("stereotype", true);
+    Model.getPump()
+        .addClassModelEventListener(this, Model.getMetaTypes().getNamespace(), "ownedElement");
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        Object elem = getTarget();
-        Collection models =
-            ProjectManager.getManager().getCurrentProject().getModels();
-        setElements(Model.getExtensionMechanismsHelper()
-	        .getAllPossibleStereotypes(models, elem));
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object o) {
+    return Model.getFacade().isAStereotype(o);
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
-     */
-    protected Object getSelectedModelElement() {
-        Object owner = null;
-        if (getTarget() != null && Model.getFacade().isATagDefinition(getTarget())) {
-            owner = Model.getFacade().getOwner(getTarget());
-        }
-        return owner;
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    Object elem = getTarget();
+    Collection models = ProjectManager.getManager().getCurrentProject().getModels();
+    setElements(Model.getExtensionMechanismsHelper().getAllPossibleStereotypes(models, elem));
+  }
 
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
+   */
+  protected Object getSelectedModelElement() {
+    Object owner = null;
+    if (getTarget() != null && Model.getFacade().isATagDefinition(getTarget())) {
+      owner = Model.getFacade().getOwner(getTarget());
+    }
+    return owner;
+  }
 }

@@ -26,16 +26,12 @@ package org.argouml.uml.diagram.ui;
 
 import java.awt.Color;
 import java.beans.PropertyChangeEvent;
-
 import org.apache.log4j.Logger;
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
 import org.argouml.kernel.ProjectSettings;
 import org.argouml.model.AttributeChangeEvent;
 import org.argouml.model.Model;
-import org.argouml.uml.diagram.ui.CompartmentFigText;
-import org.argouml.uml.diagram.ui.FigNodeModelElement;
-import org.tigris.gef.base.Globals;
 import org.tigris.gef.base.Layer;
 import org.tigris.gef.presentation.Fig;
 import org.tigris.gef.presentation.FigText;
@@ -47,70 +43,68 @@ import org.tigris.gef.presentation.FigText;
  */
 public class FigStereotype extends CompartmentFigText {
 
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -6174252286709779782L;
-    
-    private static final Logger LOG = Logger.getLogger(FigStereotype.class);
-    
-    /**
-    * Constructor for FigFeature.
-    * @param x x
-    * @param y x
-    * @param w w
-    * @param h h
-    * @param figCompartment the fig
-    */
-    public FigStereotype(int x, int y, int w, int h, Fig figCompartment, 
-            Object owner) {
-        super(x, y, w, h, figCompartment, "name");
-        setFilled(false);
-        setLineWidth(0);
-        setFont(FigNodeModelElement.getLabelFont());
-        setTextColor(Color.black);
-        setTextFilled(false);
-        setJustification(FigText.JUSTIFY_LEFT);
-        setReturnAction(FigText.END_EDITING);
-        setRightMargin(3);
-        setLeftMargin(3);
-        setOwner(owner);
-    }
+  /** The UID. */
+  private static final long serialVersionUID = -6174252286709779782L;
 
-    public void propertyChange(PropertyChangeEvent event) {
-        super.propertyChange(event);
-        if (event instanceof AttributeChangeEvent) {
-            if (event.getPropertyName().equals("name")) {
-                damage();
-            }
-        }
+  private static final Logger LOG = Logger.getLogger(FigStereotype.class);
+
+  /**
+   * Constructor for FigFeature.
+   *
+   * @param x x
+   * @param y x
+   * @param w w
+   * @param h h
+   * @param figCompartment the fig
+   */
+  public FigStereotype(int x, int y, int w, int h, Fig figCompartment, Object owner) {
+    super(x, y, w, h, figCompartment, "name");
+    setFilled(false);
+    setLineWidth(0);
+    setFont(FigNodeModelElement.getLabelFont());
+    setTextColor(Color.black);
+    setTextFilled(false);
+    setJustification(FigText.JUSTIFY_LEFT);
+    setReturnAction(FigText.END_EDITING);
+    setRightMargin(3);
+    setLeftMargin(3);
+    setOwner(owner);
+  }
+
+  public void propertyChange(PropertyChangeEvent event) {
+    super.propertyChange(event);
+    if (event instanceof AttributeChangeEvent) {
+      if (event.getPropertyName().equals("name")) {
+        damage();
+      }
     }
-    
-    protected void setText() {
-        setText(Model.getFacade().getName(getOwner()));
+  }
+
+  protected void setText() {
+    setText(Model.getFacade().getName(getOwner()));
+  }
+
+  /**
+   * Add guillemots to any text set to this Fig
+   *
+   * @see org.tigris.gef.presentation.FigText#setText(java.lang.String)
+   */
+  public void setText(String text) {
+    Project project = ProjectManager.getManager().getCurrentProject();
+    ProjectSettings ps = project.getProjectSettings();
+    super.setText(ps.getLeftGuillemot() + text + ps.getRightGuillemot());
+  }
+
+  // TODO: Delete after GEF 0.12.1 commited
+  public void damage() {
+    Layer lay = getLayer();
+    Fig group = getGroup();
+    while (lay == null && group != null) {
+      lay = group.getLayer();
+      group = group.getGroup();
     }
-    
-    /**
-     * Add guillemots to any text set to this Fig
-     * @see org.tigris.gef.presentation.FigText#setText(java.lang.String)
-     */
-    public void setText(String text) {
-        Project project = 
-            ProjectManager.getManager().getCurrentProject();
-        ProjectSettings ps = project.getProjectSettings();
-        super.setText(ps.getLeftGuillemot() + text + ps.getRightGuillemot());
+    if (lay != null) {
+      lay.damageAll();
     }
-    
-    // TODO: Delete after GEF 0.12.1 commited
-    public void damage() {
-        Layer lay = getLayer();
-        Fig group = getGroup();
-        while (lay == null && group != null) {
-            lay = group.getLayer();
-            group = group.getGroup();
-        }
-        if (lay != null) {
-            lay.damageAll();
-        }
-    }
+  }
 }

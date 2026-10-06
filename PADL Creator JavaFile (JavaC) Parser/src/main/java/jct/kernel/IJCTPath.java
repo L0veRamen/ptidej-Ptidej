@@ -1,99 +1,68 @@
 /**
  * @author Mathieu Lemoine
  * @created 2008-10-20 (月)
- *
- * Licensed under 3-clause BSD License:
- * Copyright © 2009, Mathieu Lemoine
- * All rights reserved.
- * 
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *  * Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- *  * Neither the name of Mathieu Lemoine nor the
- *    names of contributors may be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- * 
- * THIS SOFTWARE IS PROVIDED BY Mathieu Lemoine ''AS IS'' AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL Mathieu Lemoine BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *     <p>Licensed under 3-clause BSD License: Copyright © 2009, Mathieu Lemoine All rights
+ *     reserved.
+ *     <p>Redistribution and use in source and binary forms, with or without modification, are
+ *     permitted provided that the following conditions are met: * Redistributions of source code
+ *     must retain the above copyright notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright notice, this list of
+ *     conditions and the following disclaimer in the documentation and/or other materials provided
+ *     with the distribution. * Neither the name of Mathieu Lemoine nor the names of contributors
+ *     may be used to endorse or promote products derived from this software without specific prior
+ *     written permission.
+ *     <p>THIS SOFTWARE IS PROVIDED BY Mathieu Lemoine ''AS IS'' AND ANY EXPRESS OR IMPLIED
+ *     WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ *     FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Mathieu Lemoine BE LIABLE
+ *     FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *     (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ *     DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ *     WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+ *     ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package jct.kernel;
 
 import java.io.Serializable;
 
 /**
- * Interface representing a path from the root node to a specific element of a
- * model
- * 
+ * Interface representing a path from the root node to a specific element of a model
+ *
  * @author Mathieu Lemoine
  */
 public interface IJCTPath extends Cloneable, Serializable {
-	/**
-	 * Returns the first part of this path
-	 */
-	public IJCTPathPart getFirstPart();
+  /** Returns the first part of this path */
+  public IJCTPathPart getFirstPart();
 
-	/**
-	 * Returns the last part of this path
-	 */
-	public IJCTPathPart getLastPart();
+  /** Returns the last part of this path */
+  public IJCTPathPart getLastPart();
 
-	/**
-	 * Adds a new part at the end of the path
-	 */
-	public void addPart(final IJCTPathPart part);
+  /** Adds a new part at the end of the path */
+  public void addPart(final IJCTPathPart part);
 
-	/**
-	 * Returns the element within the model designated by this path. There is a
-	 * difference between knowing the path and walking the path...
-	 */
-	public IJCTElement walk(final IJCTRootNode model);
+  /**
+   * Returns the element within the model designated by this path. There is a difference between
+   * knowing the path and walking the path...
+   */
+  public IJCTElement walk(final IJCTRootNode model);
 
-	/**
-	 * Returns the path to the enclosing element.
-	 */
-	public IJCTPath getPathToEnclosing();
+  /** Returns the path to the enclosing element. */
+  public IJCTPath getPathToEnclosing();
 
-	/**
-	 * Return the data of the element designated by this path
-	 */
-	public JCTKind getResultKind();
+  /** Return the data of the element designated by this path */
+  public JCTKind getResultKind();
 
-	/**
-	 * Return the index of the element designated by this path
-	 */
-	public String getData();
+  /** Return the index of the element designated by this path */
+  public String getData();
 
-	/**
-	 * Return the kind of the element designated by this path
-	 */
-	public Integer getIndex();
+  /** Return the kind of the element designated by this path */
+  public Integer getIndex();
 
-	/**
-	 * Return the informative data of this path
-	 */
-	public byte[] getInformativeData();
+  /** Return the informative data of this path */
+  public byte[] getInformativeData();
 
-	/**
-	 * Returns a clone of this path part
-	 */
-	public IJCTPath clone();
+  /** Returns a clone of this path part */
+  public IJCTPath clone();
 
-	/**
-	 * Returns whether this is designating an (indirect) element of that
-	 */
-	public boolean isEnclosing(final IJCTPath that);
-
+  /** Returns whether this is designating an (indirect) element of that */
+  public boolean isEnclosing(final IJCTPath that);
 }

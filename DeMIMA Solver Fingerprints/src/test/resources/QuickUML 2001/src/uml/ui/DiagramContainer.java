@@ -1,28 +1,24 @@
 /**
+ * QuickUML; A simple UML tool that demonstrates one use of the Java Diagram Package
  *
-    QuickUML; A simple UML tool that demonstrates one use of the 
-    Java Diagram Package 
-
-    Copyright (C) 2001  Eric Crahen <crahen@cse.buffalo.edu>
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
+ * <p>Copyright (C) 2001 Eric Crahen <crahen@cse.buffalo.edu>
+ *
+ * <p>This program is free software; you can redistribute it and/or modify it under the terms of the
+ * GNU General Public License as published by the Free Software Foundation; either version 2 of the
+ * License, or (at your option) any later version.
+ *
+ * <p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * <p>You should have received a copy of the GNU General Public License along with this program; if
+ * not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307 USA
  */
-
 package uml.ui;
 
+import diagram.Diagram;
+import diagram.DiagramModel;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Event;
@@ -33,7 +29,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Icon;
@@ -45,7 +40,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
-
 import uml.diagram.AssociationLink;
 import uml.diagram.AssociationLinkEditor;
 import uml.diagram.AssociationLinkRenderer;
@@ -70,14 +64,9 @@ import uml.diagram.NoteRenderer;
 import uml.diagram.RealizationLink;
 import uml.diagram.RealizationLinkEditor;
 import uml.diagram.RealizationLinkRenderer;
-import diagram.Diagram;
-import diagram.DiagramModel;
-
-
 
 /**
  * @class DiagramContainer
- *
  * @date 08-20-2001
  * @author Eric Crahen
  * @version 1.0
@@ -86,37 +75,34 @@ public class DiagramContainer extends JScrollPane {
 
   protected Action saveAction = new SaveAction();
   protected Action closeAction = new CloseAction();
-  protected Action printAction =  new PrintAction();
-  protected Action scaledPrintAction =  new ScaledPrintAction();
-  protected Action exportAction =  new ExportGIFAction();
+  protected Action printAction = new PrintAction();
+  protected Action scaledPrintAction = new ScaledPrintAction();
+  protected Action exportAction = new ExportGIFAction();
   protected Action resizeAction = new ResizeAction();
 
   // Placeholders for the menu, the real actions are install on the diagram
   // when ever one is place in the container by the diagram ui
   protected Action copyAction = new CopyAction();
   protected Action cutAction = new CutAction();
-  protected Action pasteAction = new PasteAction(); 
+  protected Action pasteAction = new PasteAction();
 
   protected Dimension defaultSize;
 
   // Color editor data
-  private final static String[] colorProperties = {
-
-    "composition.foreground","composition.background",
-    "class.foreground","class.background",
-    "association.foreground","association.background",
-    "dependency.foreground","dependency.background",
-    "diagram.foreground","diagram.background",
-    "generalization.foreground","generalization.background",
-    "interface.foreground","interface.background",
-    "note.foreground","note.background",
-    "realization.foreground","realization.background"
-
+  private static final String[] colorProperties = {
+    "composition.foreground", "composition.background",
+    "class.foreground", "class.background",
+    "association.foreground", "association.background",
+    "dependency.foreground", "dependency.background",
+    "diagram.foreground", "diagram.background",
+    "generalization.foreground", "generalization.background",
+    "interface.foreground", "interface.background",
+    "note.foreground", "note.background",
+    "realization.foreground", "realization.background"
   };
 
   // Font editor data
-  private final static String[] fontProperties = {
-
+  private static final String[] fontProperties = {
     "composition.font",
     "class.font",
     "association.font",
@@ -128,14 +114,11 @@ public class DiagramContainer extends JScrollPane {
     "realization.font"
   };
 
-  /**
-   * Create a new Container for a diagram
-   */
+  /** Create a new Container for a diagram */
   public DiagramContainer() {
 
     super(VERTICAL_SCROLLBAR_ALWAYS, HORIZONTAL_SCROLLBAR_ALWAYS);
-    setView( createDiagram() );
-
+    setView(createDiagram());
   }
 
   /**
@@ -156,7 +139,7 @@ public class DiagramContainer extends JScrollPane {
     menu.addSeparator();
     menu.add(printAction);
     menu.add(scaledPrintAction);
- 
+
     menu = menuBar.getMenu("Edit");
     menu.add(copyAction);
     menu.add(cutAction);
@@ -166,21 +149,17 @@ public class DiagramContainer extends JScrollPane {
     menu.add(resizeAction);
     menu.add(new FontAction(this, fontProperties));
     menu.add(new ColorAction(this, colorProperties));
-    menu.add(new JSeparator(), -1);    
-    
+    menu.add(new JSeparator(), -1);
+
     JCheckBoxMenuItem item = new JCheckBoxMenuItem(new ToggleRefreshAction());
     item.setState(true);
     menu.add(item, -1);
 
     menu = menuBar.getMenu("Tool");
     menu.add(new BuildAction(this));
-
   }
 
-
-  /**
-   * Create a new diagram
-   */
+  /** Create a new diagram */
   public Diagram createDiagram() {
 
     Diagram diagram = new Diagram();
@@ -209,11 +188,9 @@ public class DiagramContainer extends JScrollPane {
     diagram.setFigureEditor(DependencyLink.class, new DependencyLinkEditor());
     diagram.setFigureEditor(AssociationLink.class, new AssociationLinkEditor());
 
-    if(defaultSize != null) 
-      resizeDiagram(diagram, defaultSize);
+    if (defaultSize != null) resizeDiagram(diagram, defaultSize);
 
     return diagram;
-
   }
 
   /**
@@ -222,7 +199,7 @@ public class DiagramContainer extends JScrollPane {
    * @return Diagram
    */
   public Diagram getView() {
-    return (Diagram)getViewport().getView();
+    return (Diagram) getViewport().getView();
   }
 
   /**
@@ -235,7 +212,7 @@ public class DiagramContainer extends JScrollPane {
     Diagram oldDiagram = getView();
     setViewportView(diagram);
 
-    if(diagram == null) { // Disable actions that need a diagram
+    if (diagram == null) { // Disable actions that need a diagram
 
       closeAction.setEnabled(false);
       saveAction.setEnabled(false);
@@ -248,7 +225,7 @@ public class DiagramContainer extends JScrollPane {
       cutAction.setEnabled(false);
       pasteAction.setEnabled(false);
 
-    } else if(oldDiagram == null) { // Enable actions that need a diagram
+    } else if (oldDiagram == null) { // Enable actions that need a diagram
 
       closeAction.setEnabled(true);
       saveAction.setEnabled(true);
@@ -260,109 +237,87 @@ public class DiagramContainer extends JScrollPane {
       copyAction.setEnabled(true);
       cutAction.setEnabled(true);
       pasteAction.setEnabled(true);
-
     }
 
     super.firePropertyChange("diagram.container", oldDiagram, diagram);
-
   }
 
-  /**
-   * Find the Frame for this event
-   */
-  protected Component getFrame(ActionEvent e) {  
-    return getFrame((Component)e.getSource());
+  /** Find the Frame for this event */
+  protected Component getFrame(ActionEvent e) {
+    return getFrame((Component) e.getSource());
   }
 
   protected Frame getFrame(Component frame) {
 
-    for(;!(frame instanceof Frame); frame = frame.getParent())
-      if(frame instanceof JPopupMenu)
-        frame = ((JPopupMenu)frame).getInvoker();
+    for (; !(frame instanceof Frame); frame = frame.getParent())
+      if (frame instanceof JPopupMenu) frame = ((JPopupMenu) frame).getInvoker();
 
-    return (frame instanceof Frame) ? (Frame)frame : null;
-
+    return (frame instanceof Frame) ? (Frame) frame : null;
   }
-  
+
   public Frame getFrame() {
     return getFrame(this);
   }
 
-  /**
-   * Load an Icon with the IconManager
-   */
+  /** Load an Icon with the IconManager */
   protected Icon getIcon(String name) {
     return IconManager.getInstance().getIconResource(this, name);
   }
 
-  /**
-   * Popup an error message
-   */
+  /** Popup an error message */
   protected void displayError(Throwable t) {
     t.printStackTrace();
     displayError(t.getClass().getName(), t.getMessage());
   }
 
-  /**
-   * Popup an error message
-   */
+  /** Popup an error message */
   protected void displayError(String title, String msg) {
     JOptionPane.showMessageDialog(this, msg, title, JOptionPane.ERROR_MESSAGE);
   }
 
-  /**
-   * Resize & update the diagram
-   */
+  /** Resize & update the diagram */
   protected void resizeDiagram(Diagram diagram, Dimension d) {
 
     diagram.setMinimumSize(d);
-    diagram.setPreferredSize(d);     
+    diagram.setPreferredSize(d);
     diagram.setBounds(0, 0, d.width, d.height);
 
     doLayout();
-
   }
-
 
   /**
    * @class NewAction
-   *
    */
   protected class NewAction extends AbstractAction {
-    
+
     public NewAction() {
       super("New", getIcon("images/New.gif"));
     }
 
     public void actionPerformed(ActionEvent e) {
-      setView( createDiagram() );
+      setView(createDiagram());
     }
-
   }
-
 
   /**
    * @class CloseAction
-   *
    */
   protected class CloseAction extends AbstractAction {
-    
+
     public CloseAction() {
       super("Close", getIcon("images/Close.gif"));
     }
 
     public void actionPerformed(ActionEvent e) {
-      setView( null );
+      setView(null);
     }
-
   }
 
   /**
    * @class OpenAction
-   *
    */
   protected class OpenAction extends FileAction {
-    
+
     private SimpleFilter filter = new SimpleFilter("dia", "Diagrams");
 
     public OpenAction() {
@@ -377,47 +332,40 @@ public class DiagramContainer extends JScrollPane {
       chooser.setAcceptAllFileFilterUsed(false);
       chooser.setFileFilter(filter);
 
-      if(JFileChooser.APPROVE_OPTION == chooser.showOpenDialog(getFrame(e)))
+      if (JFileChooser.APPROVE_OPTION == chooser.showOpenDialog(getFrame(e)))
         openFile(chooser.getSelectedFile());
-      
     }
-    
+
     public void openFile(File file) {
 
       try {
 
         // Check that the file name matches
         String name = file.getName().toLowerCase();
-        if(!name.endsWith(".dia")) 
+        if (!name.endsWith(".dia"))
           throw new RuntimeException("Not a valid diagram file extension");
-                
+
         ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
-        
+
         // Get the current view or create one
         Diagram diagram = getView();
-        if(diagram == null)
-          setView(diagram = createDiagram());
-        
-        diagram.setModel((DiagramModel)ois.readObject());
+        if (diagram == null) setView(diagram = createDiagram());
+
+        diagram.setModel((DiagramModel) ois.readObject());
         diagram.repaint();
 
-      } catch(Throwable t) { 
+      } catch (Throwable t) {
         t.printStackTrace();
         displayError("File Error", "Invalid diagram file");
       }
-      
     }
-
   } /* OpenAction */
-
-
 
   /**
    * @class SaveAction
-   *
    */
   protected class SaveAction extends FileAction {
-    
+
     private SimpleFilter filter = new SimpleFilter("dia", "Diagrams");
 
     public SaveAction() {
@@ -432,36 +380,30 @@ public class DiagramContainer extends JScrollPane {
       chooser.setAcceptAllFileFilterUsed(false);
       chooser.setFileFilter(filter);
 
-      if(JFileChooser.APPROVE_OPTION == chooser.showSaveDialog(getFrame(e)))
+      if (JFileChooser.APPROVE_OPTION == chooser.showSaveDialog(getFrame(e)))
         saveFile(chooser.getSelectedFile());
-      
     }
-    
+
     public void saveFile(File file) {
 
       // Adjust the file name to match
       String name = file.getName().toLowerCase();
-      if(!name.endsWith(".dia")) 
-        file = new File(file.getName() + ".dia");
+      if (!name.endsWith(".dia")) file = new File(file.getName() + ".dia");
 
       try {
 
         ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file));
-        oos.writeObject((DiagramModel)getView().getModel());
+        oos.writeObject((DiagramModel) getView().getModel());
 
-      } catch(Throwable t) { 
+      } catch (Throwable t) {
         t.printStackTrace();
         displayError("File Error", "Error writing to file");
       }
-
     }
-
   } /* SaveAction */
-
 
   /**
    * @class ExportAction
-   *
    */
   protected class ExportGIFAction extends ExportAction {
 
@@ -482,19 +424,18 @@ public class DiagramContainer extends JScrollPane {
       chooser.setAcceptAllFileFilterUsed(false);
       chooser.setFileFilter(filter);
 
-      if(JFileChooser.APPROVE_OPTION == chooser.showSaveDialog(getFrame(e))) {
+      if (JFileChooser.APPROVE_OPTION == chooser.showSaveDialog(getFrame(e))) {
         try {
           writeGIF(chooser.getSelectedFile());
-        } catch(Throwable t) { displayError(t); }
+        } catch (Throwable t) {
+          displayError(t);
+        }
       }
-
     }
-
   }
 
   /**
    * @class PrintAction
-   *
    */
   protected class PrintAction extends PrintableAction {
 
@@ -505,12 +446,10 @@ public class DiagramContainer extends JScrollPane {
     public Component getComponent() {
       return getView();
     }
-
   }
 
   /**
    * @class ScaledPrintAction
-   *
    */
   protected class ScaledPrintAction extends ScaledPrintableAction {
 
@@ -521,41 +460,34 @@ public class DiagramContainer extends JScrollPane {
     public Component getComponent() {
       return getView();
     }
-
   }
 
   /**
    * @class CopyAction
-   *
    */
   protected class CopyAction extends AbstractAction {
-    
+
     public CopyAction() {
       super("Copy", getIcon("images/Copy.gif"));
       putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke('C', Event.CTRL_MASK));
     }
 
     public void actionPerformed(ActionEvent e) {
-      
+
       Diagram diagram = getView();
-      if(diagram != null) {
+      if (diagram != null) {
 
         Action action = diagram.getActionMap().get("copy");
-        if(action != null)
-          action.actionPerformed(e);
-
+        if (action != null) action.actionPerformed(e);
       }
-
     }
-
   }
 
   /**
    * @class CutAction
-   *
    */
   protected class CutAction extends AbstractAction {
-    
+
     public CutAction() {
       super("Cut", getIcon("images/Cut.gif"));
       putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke('X', Event.CTRL_MASK));
@@ -564,24 +496,19 @@ public class DiagramContainer extends JScrollPane {
     public void actionPerformed(ActionEvent e) {
 
       Diagram diagram = getView();
-      if(diagram != null) {
+      if (diagram != null) {
 
         Action action = diagram.getActionMap().get("cut");
-        if(action != null)
-          action.actionPerformed(e);
-
+        if (action != null) action.actionPerformed(e);
       }
-
     }
-
   }
 
   /**
    * @class PasteAction
-   *
    */
   protected class PasteAction extends AbstractAction {
-    
+
     public PasteAction() {
       super("Paste", getIcon("images/Paste.gif"));
       putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke('V', Event.CTRL_MASK));
@@ -590,58 +517,45 @@ public class DiagramContainer extends JScrollPane {
     public void actionPerformed(ActionEvent e) {
 
       Diagram diagram = getView();
-      if(diagram != null) {
+      if (diagram != null) {
 
         Action action = diagram.getActionMap().get("paste");
-        if(action != null)
-          action.actionPerformed(e);
-
+        if (action != null) action.actionPerformed(e);
       }
-
     }
-
   }
-
 
   /**
    * @class ResizeAction
-   *
    */
   protected class ResizeAction extends AbstractAction {
-    
+
     public ResizeAction() {
       super("Resize ...");
     }
 
     public void actionPerformed(ActionEvent e) {
-      
-      Diagram diagram = getView();
-      if(diagram != null) 
-        promptResize(diagram);
 
+      Diagram diagram = getView();
+      if (diagram != null) promptResize(diagram);
     }
 
     protected void promptResize(Diagram diagram) {
-      
+
       SizePanel size = new SizePanel(diagram);
-      int n = JOptionPane.showConfirmDialog(DiagramContainer.this, 
-                                            size, "Resize Diagram", 
-                                            JOptionPane.OK_CANCEL_OPTION);
-      if(n == JOptionPane.OK_OPTION) {
-        
+      int n =
+          JOptionPane.showConfirmDialog(
+              DiagramContainer.this, size, "Resize Diagram", JOptionPane.OK_CANCEL_OPTION);
+      if (n == JOptionPane.OK_OPTION) {
+
         defaultSize = size.getDimension(defaultSize);
-        resizeDiagram(diagram, defaultSize);     
-        
+        resizeDiagram(diagram, defaultSize);
       }
-      
     }
-
   }
-
 
   /**
    * @class ToggleRefreshAction
-   *
    */
   protected class ToggleRefreshAction extends AbstractAction {
 
@@ -652,15 +566,11 @@ public class DiagramContainer extends JScrollPane {
     public void actionPerformed(ActionEvent e) {
 
       Diagram diagram = getView();
-      if(diagram != null) {
+      if (diagram != null) {
 
         boolean toggle = !diagram.isFastRefreshEnabled();
         diagram.enableFastRefresh(toggle);
-
       }
-
     }
-
   }
-
 }

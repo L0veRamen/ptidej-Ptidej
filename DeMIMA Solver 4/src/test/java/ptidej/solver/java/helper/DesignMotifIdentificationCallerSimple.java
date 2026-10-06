@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -31,37 +31,31 @@ import util.io.ReaderInputStream;
 
 /**
  * @author yann
- * @since  2013/09/25
+ * @since 2013/09/25
  */
 public class DesignMotifIdentificationCallerSimple {
-	public static void main(final String[] args) throws FileNotFoundException,
-			IOException {
+  public static void main(final String[] args) throws FileNotFoundException, IOException {
 
-		final String path = "../DeMIMA Solver 4/src/test/resources/JHotDraw v5.2.jar";
-		final String name = "JHotDraw v5.2.ini";
+    final String path = "../DeMIMA Solver 4/src/test/resources/JHotDraw v5.2.jar";
+    final String name = "JHotDraw v5.2.ini";
 
-		final IIdiomLevelModel idiomLevelModel =
-			ModelGenerator.generateModelFromJAR(path);
-		final IWalker constraintModelBuilder = new GeneratorExcludingGhosts();
-		final List listOfModelEntities =
-			Manager.build(idiomLevelModel, constraintModelBuilder);
-		final Problem constraintProblem =
-			CompositeMotif.getProblem(listOfModelEntities);
+    final IIdiomLevelModel idiomLevelModel = ModelGenerator.generateModelFromJAR(path);
+    final IWalker constraintModelBuilder = new GeneratorExcludingGhosts();
+    final List listOfModelEntities = Manager.build(idiomLevelModel, constraintModelBuilder);
+    final Problem constraintProblem = CompositeMotif.getProblem(listOfModelEntities);
 
-		final Writer writer = ProxyDisk.getInstance().fileTempOutput(name);
-		constraintProblem.setWriter(new PrintWriter(writer));
-		constraintProblem.automaticSolve(true);
+    final Writer writer = ProxyDisk.getInstance().fileTempOutput(name);
+    constraintProblem.setWriter(new PrintWriter(writer));
+    constraintProblem.automaticSolve(true);
 
-		final Reader reader = ProxyDisk.getInstance().fileTempInput(name);
-		final Properties properties = new Properties();
-		properties.load(new ReaderInputStream(reader));
-		final OccurrenceBuilder solutionBuilder =
-			OccurrenceBuilder.getInstance();
-		final Occurrence[] solutions =
-			solutionBuilder.getCanonicalOccurrences(properties);
+    final Reader reader = ProxyDisk.getInstance().fileTempInput(name);
+    final Properties properties = new Properties();
+    properties.load(new ReaderInputStream(reader));
+    final OccurrenceBuilder solutionBuilder = OccurrenceBuilder.getInstance();
+    final Occurrence[] solutions = solutionBuilder.getCanonicalOccurrences(properties);
 
-		System.out.print("Found ");
-		System.out.print(solutions.length);
-		System.out.println(" solutions.");
-	}
+    System.out.print("Found ");
+    System.out.print(solutions.length);
+    System.out.println(" solutions.");
+  }
 }

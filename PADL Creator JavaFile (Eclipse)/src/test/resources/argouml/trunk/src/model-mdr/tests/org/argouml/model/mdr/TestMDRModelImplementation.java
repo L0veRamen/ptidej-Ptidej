@@ -25,276 +25,211 @@
 package org.argouml.model.mdr;
 
 import junit.framework.TestCase;
-
 import org.argouml.model.UmlException;
 
-/**
- * Testing the MDRModelImplementation.
- */
+/** Testing the MDRModelImplementation. */
 public class TestMDRModelImplementation extends TestCase {
-    /**
-     * The ModelImplementation.<p>
-     *
-     * The reason for not having this as a member variable that is created by
-     * {@link #setUp()} is that the MDR is the initialized several times and
-     * the current implementation fails on the second initialization.
-     */
-    private static MDRModelImplementation modelImplementation;
-    
-    static {
-        try {
-            modelImplementation = new MDRModelImplementation();
-        } catch (UmlException e) {
-            e.printStackTrace();
-        }
-    }
+  /**
+   * The ModelImplementation.
+   *
+   * <p>The reason for not having this as a member variable that is created by {@link #setUp()} is
+   * that the MDR is the initialized several times and the current implementation fails on the
+   * second initialization.
+   */
+  private static MDRModelImplementation modelImplementation;
 
-    /**
-     * Constructor for TestMDRModelImplementation.
-     * @param arg0 The name of the test case.
-     */
-    public TestMDRModelImplementation(String arg0) {
-        super(arg0);
+  static {
+    try {
+      modelImplementation = new MDRModelImplementation();
+    } catch (UmlException e) {
+      e.printStackTrace();
     }
-    
-    /*
-     * @see junit.framework.TestCase#setUp()
-     */
-    public void setUp() throws Exception {
-        assertNotNull(modelImplementation);
-    }
+  }
 
-    /**
-     * 
-     */
-    public void testGetFacade() {
-        assertNotNull(modelImplementation.getFacade());
-    }
+  /**
+   * Constructor for TestMDRModelImplementation.
+   *
+   * @param arg0 The name of the test case.
+   */
+  public TestMDRModelImplementation(String arg0) {
+    super(arg0);
+  }
 
-    /**
-     * 
-     */
-    public void testGetModelEventPump() {
-        assertNotNull(modelImplementation.getModelEventPump());
-    }
+  /*
+   * @see junit.framework.TestCase#setUp()
+   */
+  public void setUp() throws Exception {
+    assertNotNull(modelImplementation);
+  }
 
-    /**
-     * 
-     */
-    public void testGetActivityGraphsFactory() {
-        assertNotNull(modelImplementation.getActivityGraphsFactory());
-    }
+  /** */
+  public void testGetFacade() {
+    assertNotNull(modelImplementation.getFacade());
+  }
 
-    /**
-     * 
-     */
-    public void testGetActivityGraphsHelper() {
-        assertNotNull(modelImplementation.getActivityGraphsHelper());
-    }
+  /** */
+  public void testGetModelEventPump() {
+    assertNotNull(modelImplementation.getModelEventPump());
+  }
 
-    /**
-     * 
-     */
-    public void testGetCollaborationsFactory() {
-        assertNotNull(modelImplementation.getCollaborationsFactory());
-    }
+  /** */
+  public void testGetActivityGraphsFactory() {
+    assertNotNull(modelImplementation.getActivityGraphsFactory());
+  }
 
-    /**
-     * 
-     */
-    public void testGetCollaborationsHelper() {
-        assertNotNull(modelImplementation.getCollaborationsHelper());
-    }
+  /** */
+  public void testGetActivityGraphsHelper() {
+    assertNotNull(modelImplementation.getActivityGraphsHelper());
+  }
 
-    /**
-     * 
-     */
-    public void testGetCommonBehaviorFactory() {
-        assertNotNull(modelImplementation.getCommonBehaviorFactory());
-    }
+  /** */
+  public void testGetCollaborationsFactory() {
+    assertNotNull(modelImplementation.getCollaborationsFactory());
+  }
 
-    /**
-     * 
-     */
-    public void testGetCommonBehaviorHelper() {
-        assertNotNull(modelImplementation.getCommonBehaviorHelper());
-    }
+  /** */
+  public void testGetCollaborationsHelper() {
+    assertNotNull(modelImplementation.getCollaborationsHelper());
+  }
 
-    /**
-     * 
-     */
-    public void testGetCoreFactory() {
-        assertNotNull(modelImplementation.getCoreFactory());
-    }
+  /** */
+  public void testGetCommonBehaviorFactory() {
+    assertNotNull(modelImplementation.getCommonBehaviorFactory());
+  }
 
-    /**
-     * 
-     */
-    public void testGetCoreHelper() {
-        assertNotNull(modelImplementation.getCoreHelper());
-    }
+  /** */
+  public void testGetCommonBehaviorHelper() {
+    assertNotNull(modelImplementation.getCommonBehaviorHelper());
+  }
 
-    /**
-     * 
-     */
-    public void testGetDataTypesFactory() {
-        assertNotNull(modelImplementation.getDataTypesFactory());
-    }
+  /** */
+  public void testGetCoreFactory() {
+    assertNotNull(modelImplementation.getCoreFactory());
+  }
 
-    /**
-     * 
-     */
-    public void testGetDataTypesHelper() {
-        assertNotNull(modelImplementation.getDataTypesHelper());
-    }
+  /** */
+  public void testGetCoreHelper() {
+    assertNotNull(modelImplementation.getCoreHelper());
+  }
 
-    /**
-     * 
-     */
-    public void testGetExtensionMechanismsFactory() {
-        assertNotNull(modelImplementation.getExtensionMechanismsFactory());
-    }
+  /** */
+  public void testGetDataTypesFactory() {
+    assertNotNull(modelImplementation.getDataTypesFactory());
+  }
 
-    /**
-     * 
-     */
-    public void testGetExtensionMechanismsHelper() {
-        assertNotNull(modelImplementation.getExtensionMechanismsHelper());
-    }
+  /** */
+  public void testGetDataTypesHelper() {
+    assertNotNull(modelImplementation.getDataTypesHelper());
+  }
 
-    /**
-     * 
-     */
-    public void testGetModelManagementFactory() {
-        assertNotNull(modelImplementation.getModelManagementFactory());
-    }
+  /** */
+  public void testGetExtensionMechanismsFactory() {
+    assertNotNull(modelImplementation.getExtensionMechanismsFactory());
+  }
 
-    /**
-     * 
-     */
-    public void testGetModelManagementHelper() {
-        assertNotNull(modelImplementation.getModelManagementHelper());
-    }
+  /** */
+  public void testGetExtensionMechanismsHelper() {
+    assertNotNull(modelImplementation.getExtensionMechanismsHelper());
+  }
 
-    /**
-     * 
-     */
-    public void testGetStateMachinesFactory() {
-        assertNotNull(modelImplementation.getStateMachinesFactory());
-    }
+  /** */
+  public void testGetModelManagementFactory() {
+    assertNotNull(modelImplementation.getModelManagementFactory());
+  }
 
-    /**
-     * 
-     */
-    public void testGetStateMachinesHelper() {
-        assertNotNull(modelImplementation.getStateMachinesHelper());
-    }
+  /** */
+  public void testGetModelManagementHelper() {
+    assertNotNull(modelImplementation.getModelManagementHelper());
+  }
 
-    /**
-     * 
-     */
-    public void testGetUmlFactory() {
-        assertNotNull(modelImplementation.getUmlFactory());
-    }
+  /** */
+  public void testGetStateMachinesFactory() {
+    assertNotNull(modelImplementation.getStateMachinesFactory());
+  }
 
-    /**
-     * 
-     */
-    public void testGetUmlHelper() {
-        assertNotNull(modelImplementation.getUmlHelper());
-    }
+  /** */
+  public void testGetStateMachinesHelper() {
+    assertNotNull(modelImplementation.getStateMachinesHelper());
+  }
 
-    /**
-     * 
-     */
-    public void testGetUseCasesFactory() {
-        assertNotNull(modelImplementation.getUseCasesFactory());
-    }
+  /** */
+  public void testGetUmlFactory() {
+    assertNotNull(modelImplementation.getUmlFactory());
+  }
 
-    /**
-     * 
-     */
-    public void testGetUseCasesHelper() {
-        assertNotNull(modelImplementation.getUseCasesHelper());
-    }
+  /** */
+  public void testGetUmlHelper() {
+    assertNotNull(modelImplementation.getUmlHelper());
+  }
 
-    /**
-     * 
-     */
-    public void testGetMetaTypes() {
-        assertNotNull(modelImplementation.getMetaTypes());
-    }
+  /** */
+  public void testGetUseCasesFactory() {
+    assertNotNull(modelImplementation.getUseCasesFactory());
+  }
 
-    /**
-     * 
-     */
-    public void testGetChangeableKind() {
-        assertNotNull(modelImplementation.getChangeableKind());
-    }
+  /** */
+  public void testGetUseCasesHelper() {
+    assertNotNull(modelImplementation.getUseCasesHelper());
+  }
 
-    /**
-     * 
-     */
-    public void testGetAggregationKind() {
-        assertNotNull(modelImplementation.getAggregationKind());
-    }
+  /** */
+  public void testGetMetaTypes() {
+    assertNotNull(modelImplementation.getMetaTypes());
+  }
 
-    /**
-     * 
-     */
-    public void testGetPseudostateKind() {
-        assertNotNull(modelImplementation.getPseudostateKind());
-    }
+  /** */
+  public void testGetChangeableKind() {
+    assertNotNull(modelImplementation.getChangeableKind());
+  }
 
-    /**
-     * 
-     */
-    public void testGetScopeKind() {
-        assertNotNull(modelImplementation.getScopeKind());
-    }
+  /** */
+  public void testGetAggregationKind() {
+    assertNotNull(modelImplementation.getAggregationKind());
+  }
 
-    /**
-     * 
-     */
-    public void testGetConcurrencyKind() {
-        assertNotNull(modelImplementation.getConcurrencyKind());
-    }
+  /** */
+  public void testGetPseudostateKind() {
+    assertNotNull(modelImplementation.getPseudostateKind());
+  }
 
-    /**
-     * 
-     */
-    public void testGetDirectionKind() {
-        assertNotNull(modelImplementation.getDirectionKind());
-    }
+  /** */
+  public void testGetScopeKind() {
+    assertNotNull(modelImplementation.getScopeKind());
+  }
 
-    /**
-     * 
-     */
-    public void testGetOrderingKind() {
-        assertNotNull(modelImplementation.getOrderingKind());
-    }
+  /** */
+  public void testGetConcurrencyKind() {
+    assertNotNull(modelImplementation.getConcurrencyKind());
+  }
 
-    /**
-     * 
-     */
-    public void testGetVisibilityKind() {
-        assertNotNull(modelImplementation.getVisibilityKind());
-    }
+  /** */
+  public void testGetDirectionKind() {
+    assertNotNull(modelImplementation.getDirectionKind());
+  }
 
-    /**
-     * @throws UmlException If an error occur
-     */
-    public void testGetXmiReader() throws UmlException {
-        assertNotNull(modelImplementation.getXmiReader());
-    }
+  /** */
+  public void testGetOrderingKind() {
+    assertNotNull(modelImplementation.getOrderingKind());
+  }
 
-    /**
-     * @throws UmlException If an error occur
-     */
-    public void testGetXmiWriter() throws UmlException {
-        // Check both old and new variants of method
-        assertNotNull(modelImplementation.getXmiWriter(null, null));
-        assertNotNull(modelImplementation.getXmiWriter(null, null, null));
-    }
+  /** */
+  public void testGetVisibilityKind() {
+    assertNotNull(modelImplementation.getVisibilityKind());
+  }
+
+  /**
+   * @throws UmlException If an error occur
+   */
+  public void testGetXmiReader() throws UmlException {
+    assertNotNull(modelImplementation.getXmiReader());
+  }
+
+  /**
+   * @throws UmlException If an error occur
+   */
+  public void testGetXmiWriter() throws UmlException {
+    // Check both old and new variants of method
+    assertNotNull(modelImplementation.getXmiWriter(null, null));
+    assertNotNull(modelImplementation.getXmiWriter(null, null, null));
+  }
 }
-

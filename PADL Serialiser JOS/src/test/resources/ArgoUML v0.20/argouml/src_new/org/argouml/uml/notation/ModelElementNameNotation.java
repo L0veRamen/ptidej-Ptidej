@@ -27,26 +27,20 @@ package org.argouml.uml.notation;
 import org.argouml.model.Model;
 
 /**
- * This abstract class forms the basis of all Notation providers
- * for the text shown in the Fig that represents the name of the modelelement.
- * Subclass this for all languages.
+ * This abstract class forms the basis of all Notation providers for the text shown in the Fig that
+ * represents the name of the modelelement. Subclass this for all languages.
  *
  * @author mvw@tigris.org
  */
 public abstract class ModelElementNameNotation extends ValueHandler {
 
-    protected Object myModelElement;
+  protected Object myModelElement;
 
-
-    /**
-     * The constructor.
-     */
-    public ModelElementNameNotation(Object modelElement) {
-        if (!Model.getFacade().isAModelElement(modelElement)) {
-            throw new IllegalArgumentException("This is not a ModelElement.");
-        }
-        myModelElement = modelElement;
+  /** The constructor. */
+  public ModelElementNameNotation(Object modelElement) {
+    if (!Model.getFacade().isAModelElement(modelElement)) {
+      throw new IllegalArgumentException("This is not a ModelElement.");
     }
-
-
+    myModelElement = modelElement;
+  }
 }

@@ -26,71 +26,67 @@ package org.argouml.uml.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListModel;
 
 /**
- * A control for displaying the contents of a list model that is know to only
- * ever contain one item. Preferred, maximum and minimum size are all returned
- * as the height of one row.
- * 
+ * A control for displaying the contents of a list model that is know to only ever contain one item.
+ * Preferred, maximum and minimum size are all returned as the height of one row.
+ *
  * @author Bob Tarling
  * @since 0.23 alpha3
  */
 public class UMLSingleRowSelector extends JPanel {
-    
-    /**
-     * The scrollpane that will contain the list
-     */
-    private JScrollPane scroll;
 
-    private Dimension preferredSize = null;
-    
-    /**
-     * Constructor
-     * @param model The single item list model
-     */
-    public UMLSingleRowSelector(ListModel model) {
-        super(new BorderLayout());
-        scroll = new ScrollList(model, 1);
-        add(scroll);
-        
-        preferredSize = scroll.getPreferredSize();
+  /** The scrollpane that will contain the list */
+  private JScrollPane scroll;
 
-        scroll.setVerticalScrollBarPolicy(
-        	JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+  private Dimension preferredSize = null;
 
-        scroll.setHorizontalScrollBarPolicy(
-        	JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-    }
-    
-    /**
-     * Make sure the control is always a fixed height
-     * @return the minimum size as the height of one row in a JList
-     */
-    public Dimension getMinimumSize() {
-        Dimension size = super.getMinimumSize();
-        size.height = preferredSize.height;
-        return size;
-    }
-    
-    /**
-     * Make sure the control is always a fixed height
-     * @return the maximum size as the height of one row in a JList
-     */
-    public Dimension getMaximumSize() {
-        Dimension size = super.getMaximumSize();
-        size.height = preferredSize.height;
-        return size;
-    }
-    
-    
-    /**
-     * @return the preferred size as the height of one row in a JList
-     */
-    public Dimension getPreferredSize() {
-        return preferredSize;
-    }
+  /**
+   * Constructor
+   *
+   * @param model The single item list model
+   */
+  public UMLSingleRowSelector(ListModel model) {
+    super(new BorderLayout());
+    scroll = new ScrollList(model, 1);
+    add(scroll);
+
+    preferredSize = scroll.getPreferredSize();
+
+    scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+
+    scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+  }
+
+  /**
+   * Make sure the control is always a fixed height
+   *
+   * @return the minimum size as the height of one row in a JList
+   */
+  public Dimension getMinimumSize() {
+    Dimension size = super.getMinimumSize();
+    size.height = preferredSize.height;
+    return size;
+  }
+
+  /**
+   * Make sure the control is always a fixed height
+   *
+   * @return the maximum size as the height of one row in a JList
+   */
+  public Dimension getMaximumSize() {
+    Dimension size = super.getMaximumSize();
+    size.height = preferredSize.height;
+    return size;
+  }
+
+  /**
+   * @return the preferred size as the height of one row in a JList
+   */
+  public Dimension getPreferredSize() {
+    return preferredSize;
+  }
 }

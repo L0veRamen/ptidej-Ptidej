@@ -28,21 +28,21 @@ import org.eclipse.osgi.util.NLS;
 
 /**
  * Editor message bundle.
+ *
  * @author Bogdan Pistol
  */
 public class EditorMessages extends NLS {
 
-    private static final String BUNDLE_NAME = 
-        "org.argouml.argoeclipse.internal.ui." //$NON-NLS-1$
-        + "editor.EditorMessages"; //$NON-NLS-1$
-    
-    public static String warningTitle;
-    public static String warningMsg;
-    public static String warningNotRegistered;
-    public static String warningNullPanel;
-    
-    static {
-        NLS.initializeMessages(BUNDLE_NAME, EditorMessages.class);
-    }
-    
+  private static final String BUNDLE_NAME =
+      "org.argouml.argoeclipse.internal.ui." //$NON-NLS-1$
+          + "editor.EditorMessages"; //$NON-NLS-1$
+
+  public static String warningTitle;
+  public static String warningMsg;
+  public static String warningNotRegistered;
+  public static String warningNullPanel;
+
+  static {
+    NLS.initializeMessages(BUNDLE_NAME, EditorMessages.class);
+  }
 }

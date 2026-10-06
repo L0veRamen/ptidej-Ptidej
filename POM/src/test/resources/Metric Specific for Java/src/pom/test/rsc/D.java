@@ -7,13 +7,13 @@
 package pom.test.rsc;
 
 /**
- * @author Farouk ZAIDI - 2004-04-01
- * POM Tests
- *
+ * @author Farouk ZAIDI - 2004-04-01 POM Tests
  */
 public interface D {
 
-	public static int counter = 100;
-	public void fooD();
-	public void myComputingD(int a, int p, String s);
+  public static int counter = 100;
+
+  public void fooD();
+
+  public void myComputingD(int a, int p, String s);
 }

@@ -29,21 +29,18 @@ import org.argouml.uml.ui.behavior.state_machines.PropPanelStateMachine;
 import org.argouml.util.ConfigLoader;
 
 /**
- * PropertyPanel for Activitygraphs. It inherits almost everything from
- * PropPanelStateMachine.
- * 
- * TODO: implement partitions
+ * PropertyPanel for Activitygraphs. It inherits almost everything from PropPanelStateMachine.
+ *
+ * <p>TODO: implement partitions
  */
 public class PropPanelActivityGraph extends PropPanelStateMachine {
 
-    /**
-     * The constructor.
-     */
-    public PropPanelActivityGraph() {
-        super("ActivityGraph", ConfigLoader.getTabPropsOrientation());
-    }
-    
-    protected UMLComboBoxModel2 getContextComboBoxModel() {
-        return new UMLActivityGraphContextComboBoxModel();
-    }
+  /** The constructor. */
+  public PropPanelActivityGraph() {
+    super("ActivityGraph", ConfigLoader.getTabPropsOrientation());
+  }
+
+  protected UMLComboBoxModel2 getContextComboBoxModel() {
+    return new UMLActivityGraphContextComboBoxModel();
+  }
 }

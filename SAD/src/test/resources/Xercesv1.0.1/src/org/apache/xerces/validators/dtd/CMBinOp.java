@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xerces" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -61,126 +61,101 @@ import org.apache.xerces.framework.XMLContentSpecNode;
 import org.apache.xerces.utils.ImplementationMessages;
 
 /**
- *
  * @version
  */
-public class CMBinOp extends CMNode
-{
-    // -------------------------------------------------------------------
-    //  Constructors
-    // -------------------------------------------------------------------
-    public CMBinOp(int type, CMNode leftNode, CMNode rightNode) throws CMException
-    {
-        super(type);
+public class CMBinOp extends CMNode {
+  // -------------------------------------------------------------------
+  //  Constructors
+  // -------------------------------------------------------------------
+  public CMBinOp(int type, CMNode leftNode, CMNode rightNode) throws CMException {
+    super(type);
 
-        // Insure that its one of the types we require
-        if ((type() != XMLContentSpecNode.CONTENTSPECNODE_CHOICE)
-        &&  (type() != XMLContentSpecNode.CONTENTSPECNODE_SEQ))
-        {
-            throw new CMException(ImplementationMessages.VAL_BST);
-        }
-
-        // Store the nodes and init any data that needs it
-        fLeftChild = leftNode;
-        fRightChild = rightNode;
+    // Insure that its one of the types we require
+    if ((type() != XMLContentSpecNode.CONTENTSPECNODE_CHOICE)
+        && (type() != XMLContentSpecNode.CONTENTSPECNODE_SEQ)) {
+      throw new CMException(ImplementationMessages.VAL_BST);
     }
 
+    // Store the nodes and init any data that needs it
+    fLeftChild = leftNode;
+    fRightChild = rightNode;
+  }
 
-    // -------------------------------------------------------------------
-    //  Package, final methods
-    // -------------------------------------------------------------------
-    final CMNode getLeft()
-    {
-        return fLeftChild;
-    }
+  // -------------------------------------------------------------------
+  //  Package, final methods
+  // -------------------------------------------------------------------
+  final CMNode getLeft() {
+    return fLeftChild;
+  }
 
-    final CMNode getRight()
-    {
-        return fRightChild;
-    }
+  final CMNode getRight() {
+    return fRightChild;
+  }
 
-
-    // -------------------------------------------------------------------
-    //  Package, inherited methods
-    // -------------------------------------------------------------------
-    boolean isNullable() throws CMException
-    {
-        //
-        //  If its an alternation, then if either child is nullable then
-        //  this node is nullable. If its a concatenation, then both of
-        //  them have to be nullable.
-        //
-        if (type() == XMLContentSpecNode.CONTENTSPECNODE_CHOICE)
-            return (fLeftChild.isNullable() || fRightChild.isNullable());
-        else if (type() == XMLContentSpecNode.CONTENTSPECNODE_SEQ)
-            return (fLeftChild.isNullable() && fRightChild.isNullable());
-        else
-            throw new CMException(ImplementationMessages.VAL_BST);
-    }
-
-
-    // -------------------------------------------------------------------
-    //  Protected, inherited methods
-    // -------------------------------------------------------------------
-    protected void calcFirstPos(CMStateSet toSet) throws CMException
-    {
-        if (type() == XMLContentSpecNode.CONTENTSPECNODE_CHOICE)
-        {
-            // Its the the union of the first positions of our children.
-            toSet.setTo(fLeftChild.firstPos());
-            toSet.union(fRightChild.firstPos());
-        }
-         else if (type() == XMLContentSpecNode.CONTENTSPECNODE_SEQ)
-        {
-            //
-            //  If our left child is nullable, then its the union of our
-            //  children's first positions. Else is our left child's first
-            //  positions.
-            //
-            toSet.setTo(fLeftChild.firstPos());
-            if (fLeftChild.isNullable())
-                toSet.union(fRightChild.firstPos());
-        }
-         else
-        {
-            throw new CMException(ImplementationMessages.VAL_BST);
-        }
-    }
-
-    protected void calcLastPos(CMStateSet toSet) throws CMException
-    {
-        if (type() == XMLContentSpecNode.CONTENTSPECNODE_CHOICE)
-        {
-            // Its the the union of the first positions of our children.
-            toSet.setTo(fLeftChild.lastPos());
-            toSet.union(fRightChild.lastPos());
-        }
-         else if (type() == XMLContentSpecNode.CONTENTSPECNODE_SEQ)
-        {
-            //
-            //  If our right child is nullable, then its the union of our
-            //  children's last positions. Else is our right child's last
-            //  positions.
-            //
-            toSet.setTo(fRightChild.lastPos());
-            if (fRightChild.isNullable())
-                toSet.union(fLeftChild.lastPos());
-        }
-         else
-        {
-            throw new CMException(ImplementationMessages.VAL_BST);
-        }
-    }
-
-
-    // -------------------------------------------------------------------
-    //  Private data members
+  // -------------------------------------------------------------------
+  //  Package, inherited methods
+  // -------------------------------------------------------------------
+  boolean isNullable() throws CMException {
     //
-    //  fLeftChild
-    //  fRightChild
-    //      These are the references to the two nodes that are on either
-    //      side of this binary operation.
-    // -------------------------------------------------------------------
-    private CMNode  fLeftChild;
-    private CMNode  fRightChild;
-};
+    //  If its an alternation, then if either child is nullable then
+    //  this node is nullable. If its a concatenation, then both of
+    //  them have to be nullable.
+    //
+    if (type() == XMLContentSpecNode.CONTENTSPECNODE_CHOICE)
+      return (fLeftChild.isNullable() || fRightChild.isNullable());
+    else if (type() == XMLContentSpecNode.CONTENTSPECNODE_SEQ)
+      return (fLeftChild.isNullable() && fRightChild.isNullable());
+    else throw new CMException(ImplementationMessages.VAL_BST);
+  }
+
+  // -------------------------------------------------------------------
+  //  Protected, inherited methods
+  // -------------------------------------------------------------------
+  protected void calcFirstPos(CMStateSet toSet) throws CMException {
+    if (type() == XMLContentSpecNode.CONTENTSPECNODE_CHOICE) {
+      // Its the the union of the first positions of our children.
+      toSet.setTo(fLeftChild.firstPos());
+      toSet.union(fRightChild.firstPos());
+    } else if (type() == XMLContentSpecNode.CONTENTSPECNODE_SEQ) {
+      //
+      //  If our left child is nullable, then its the union of our
+      //  children's first positions. Else is our left child's first
+      //  positions.
+      //
+      toSet.setTo(fLeftChild.firstPos());
+      if (fLeftChild.isNullable()) toSet.union(fRightChild.firstPos());
+    } else {
+      throw new CMException(ImplementationMessages.VAL_BST);
+    }
+  }
+
+  protected void calcLastPos(CMStateSet toSet) throws CMException {
+    if (type() == XMLContentSpecNode.CONTENTSPECNODE_CHOICE) {
+      // Its the the union of the first positions of our children.
+      toSet.setTo(fLeftChild.lastPos());
+      toSet.union(fRightChild.lastPos());
+    } else if (type() == XMLContentSpecNode.CONTENTSPECNODE_SEQ) {
+      //
+      //  If our right child is nullable, then its the union of our
+      //  children's last positions. Else is our right child's last
+      //  positions.
+      //
+      toSet.setTo(fRightChild.lastPos());
+      if (fRightChild.isNullable()) toSet.union(fLeftChild.lastPos());
+    } else {
+      throw new CMException(ImplementationMessages.VAL_BST);
+    }
+  }
+
+  // -------------------------------------------------------------------
+  //  Private data members
+  //
+  //  fLeftChild
+  //  fRightChild
+  //      These are the references to the two nodes that are on either
+  //      side of this binary operation.
+  // -------------------------------------------------------------------
+  private CMNode fLeftChild;
+  private CMNode fRightChild;
+}
+;

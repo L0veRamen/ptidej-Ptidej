@@ -25,32 +25,29 @@
 package org.argouml.application;
 
 /**
- * This class <strong>only</strong> encapsulates the ArgoUML version string.<p>
+ * This class <strong>only</strong> encapsulates the ArgoUML version string.
  *
- * It should <strong>not</strong> be edited manually because it is
- * build from the file ArgoVersion.template when necessary.<p>
+ * <p>It should <strong>not</strong> be edited manually because it is build from the file
+ * ArgoVersion.template when necessary.
+ *
+ * <p>
  *
  * @author Thierry Lach
- * @since  Argo0.11.1
+ * @since Argo0.11.1
  */
 public final class ArgoVersion {
-    /** 
-     * Version number.
-     */
-    private static final String VERSION = "0.19.8";
+  /** Version number. */
+  private static final String VERSION = "0.19.8";
 
-    /**
-     * Retrieve the version number.
-     *
-     * @return the version number.
-     */
-    public static String getVersion() {
-        return VERSION;
-    }
+  /**
+   * Retrieve the version number.
+   *
+   * @return the version number.
+   */
+  public static String getVersion() {
+    return VERSION;
+  }
 
-    /**
-     * Don't allow instantiation.
-     */
-    private ArgoVersion() {
-    }
+  /** Don't allow instantiation. */
+  private ArgoVersion() {}
 }

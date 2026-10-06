@@ -1,7 +1,6 @@
 package padl.util.adapter;
 
 import java.util.Iterator;
-
 import padl.event.IEvent;
 import padl.event.IModelListener;
 import padl.kernel.IConstituent;
@@ -12,313 +11,309 @@ import padl.kernel.IFirstClassEntity;
 import padl.visitor.IVisitor;
 
 public abstract class FirstClassAdapter implements IFirstClassEntity {
-	protected IFirstClassEntity wrappedEntity;
-
-	protected FirstClassAdapter(IFirstClassEntity entity) {
-		this.wrappedEntity = entity;
-	}
-
-	@Override
-	public void addConstituent(IConstituentOfEntity anElement) {
-		wrappedEntity.addConstituent(anElement);
-	}
-
-	@Override
-	public void addInheritedEntity(IFirstClassEntity anEntity) {
-		wrappedEntity.addInheritedEntity(anEntity);
-	}
-
-	@Override
-	public IFirstClassEntity getInheritedEntityFromName(char[] aName) {
-		return wrappedEntity.getInheritedEntityFromName(aName);
-	}
-
-	@Override
-	public IFirstClassEntity getInheritedEntityFromID(char[] anID) {
-		return wrappedEntity.getInheritedEntityFromID(anID);
-	}
-
-	@Override
-	public Iterator getIteratorOnInheritedEntities() {
-		return wrappedEntity.getIteratorOnInheritedEntities();
-	}
-
-	@Override
-	public Iterator getIteratorOnInheritedEntities(IFilter aFilter) {
-		return wrappedEntity.getIteratorOnInheritedEntities(aFilter);
-	}
-
-	@Override
-	public Iterator getIteratorOnInheritingEntities() {
-		return wrappedEntity.getIteratorOnInheritingEntities();
-	}
-
-	@Override
-	public Iterator getIteratorOnInheritingEntities(IFilter aFilter) {
-		return wrappedEntity.getIteratorOnInheritingEntities(aFilter);
-	}
-
-	@Override
-	public int getNumberOfInheritedEntities() {
-		return wrappedEntity.getNumberOfInheritedEntities();
-	}
-
-	@Override
-	public int getNumberOfInheritingEntities() {
-		return wrappedEntity.getNumberOfInheritingEntities();
-	}
-
-	@Override
-	public String getPurpose() {
-		return wrappedEntity.getPurpose();
-	}
-
-	@Override
-	public boolean isAboveInHierarchy(IFirstClassEntity anEntity) {
-		return wrappedEntity.isAboveInHierarchy(anEntity);
-	}
-
-	@Override
-	public void removeInheritedEntity(IFirstClassEntity anEntity) {
-		wrappedEntity.removeInheritedEntity(anEntity);
-	}
-
-	@Override
-	public IConstituent getClone() {
-		return wrappedEntity.getClone();
-	}
-
-	public void accept(final IVisitor aVisitor) {
-		wrappedEntity.accept(aVisitor);
-	}
-
-	@Override
-	public void setPurpose(String aPurpose) {
-		wrappedEntity.setPurpose(aPurpose);
-	}
-
-	public void addConstituent(final IConstituent aConstituent) {
-		wrappedEntity.addConstituent(aConstituent);
-	}
-
-	public void addExtension(final IConstituentExtension anExtension) {
-		wrappedEntity.addExtension(anExtension);
-	}
-
-	public boolean doesContainConstituentWithID(final char[] anID) {
-		return wrappedEntity.doesContainConstituentWithID(anID);
-	}
-
-	public boolean doesContainConstituentWithName(final char[] aName) {
-		return wrappedEntity.doesContainConstituentWithName(aName);
-	}
-
-	public void endCloneSession() {
-		wrappedEntity.endCloneSession();
-	}
+  protected IFirstClassEntity wrappedEntity;
+
+  protected FirstClassAdapter(IFirstClassEntity entity) {
+    this.wrappedEntity = entity;
+  }
+
+  @Override
+  public void addConstituent(IConstituentOfEntity anElement) {
+    wrappedEntity.addConstituent(anElement);
+  }
+
+  @Override
+  public void addInheritedEntity(IFirstClassEntity anEntity) {
+    wrappedEntity.addInheritedEntity(anEntity);
+  }
+
+  @Override
+  public IFirstClassEntity getInheritedEntityFromName(char[] aName) {
+    return wrappedEntity.getInheritedEntityFromName(aName);
+  }
+
+  @Override
+  public IFirstClassEntity getInheritedEntityFromID(char[] anID) {
+    return wrappedEntity.getInheritedEntityFromID(anID);
+  }
+
+  @Override
+  public Iterator getIteratorOnInheritedEntities() {
+    return wrappedEntity.getIteratorOnInheritedEntities();
+  }
+
+  @Override
+  public Iterator getIteratorOnInheritedEntities(IFilter aFilter) {
+    return wrappedEntity.getIteratorOnInheritedEntities(aFilter);
+  }
+
+  @Override
+  public Iterator getIteratorOnInheritingEntities() {
+    return wrappedEntity.getIteratorOnInheritingEntities();
+  }
+
+  @Override
+  public Iterator getIteratorOnInheritingEntities(IFilter aFilter) {
+    return wrappedEntity.getIteratorOnInheritingEntities(aFilter);
+  }
+
+  @Override
+  public int getNumberOfInheritedEntities() {
+    return wrappedEntity.getNumberOfInheritedEntities();
+  }
+
+  @Override
+  public int getNumberOfInheritingEntities() {
+    return wrappedEntity.getNumberOfInheritingEntities();
+  }
+
+  @Override
+  public String getPurpose() {
+    return wrappedEntity.getPurpose();
+  }
+
+  @Override
+  public boolean isAboveInHierarchy(IFirstClassEntity anEntity) {
+    return wrappedEntity.isAboveInHierarchy(anEntity);
+  }
+
+  @Override
+  public void removeInheritedEntity(IFirstClassEntity anEntity) {
+    wrappedEntity.removeInheritedEntity(anEntity);
+  }
+
+  @Override
+  public IConstituent getClone() {
+    return wrappedEntity.getClone();
+  }
+
+  public void accept(final IVisitor aVisitor) {
+    wrappedEntity.accept(aVisitor);
+  }
+
+  @Override
+  public void setPurpose(String aPurpose) {
+    wrappedEntity.setPurpose(aPurpose);
+  }
+
+  public void addConstituent(final IConstituent aConstituent) {
+    wrappedEntity.addConstituent(aConstituent);
+  }
+
+  public void addExtension(final IConstituentExtension anExtension) {
+    wrappedEntity.addExtension(anExtension);
+  }
+
+  public boolean doesContainConstituentWithID(final char[] anID) {
+    return wrappedEntity.doesContainConstituentWithID(anID);
+  }
+
+  public boolean doesContainConstituentWithName(final char[] aName) {
+    return wrappedEntity.doesContainConstituentWithName(aName);
+  }
+
+  public void endCloneSession() {
+    wrappedEntity.endCloneSession();
+  }
 
-	public void fireModelChange(final String anEventType,
-			final IEvent anEvent) {
-		this.fireModelChange(anEventType, anEvent);
-	}
-
-	public String[] getCodeLines() {
-		return wrappedEntity.getCodeLines();
-	}
-
-	public String getComment() {
-		return wrappedEntity.getComment();
-	}
-
-	public Iterator getConcurrentIteratorOnConstituents() {
-		return this.getConcurrentIteratorOnConstituents();
-	}
-
-	public Iterator getConcurrentIteratorOnConstituents(
-			final Class aConstituentType) {
-		return this.getConcurrentIteratorOnConstituents(aConstituentType);
-	}
-
-	public Iterator getConcurrentIteratorOnConstituents(final IFilter aFilter) {
-		return this.getConcurrentIteratorOnConstituents(aFilter);
-	}
-
-	public IConstituent getConstituentFromID(final char[] anID) {
-		return wrappedEntity.getConstituentFromID(anID);
-	}
-
-	public IConstituent getConstituentFromID(final String anID) {
-		return wrappedEntity.getConstituentFromID(anID);
-	}
-
-	public IConstituent getConstituentFromName(final char[] aName) {
-		return wrappedEntity.getConstituentFromName(aName);
-	}
-
-	public IConstituent getConstituentFromName(final String aName) {
-		return wrappedEntity.getConstituentFromName(aName.toCharArray());
-	}
-
-	public String getDisplayID() {
-		return wrappedEntity.getDisplayID();
-	}
+  public void fireModelChange(final String anEventType, final IEvent anEvent) {
+    this.fireModelChange(anEventType, anEvent);
+  }
 
-	public String getDisplayName() {
-		return wrappedEntity.getDisplayName();
-	}
+  public String[] getCodeLines() {
+    return wrappedEntity.getCodeLines();
+  }
 
-	public String getDisplayPath() {
-		return wrappedEntity.getDisplayPath();
-	}
+  public String getComment() {
+    return wrappedEntity.getComment();
+  }
 
-	public IConstituentExtension getExtension(final char[] anExtensionName) {
-		return wrappedEntity.getExtension(anExtensionName);
-	}
+  public Iterator getConcurrentIteratorOnConstituents() {
+    return this.getConcurrentIteratorOnConstituents();
+  }
 
-	public char[] getID() {
-		return wrappedEntity.getID();
-	}
+  public Iterator getConcurrentIteratorOnConstituents(final Class aConstituentType) {
+    return this.getConcurrentIteratorOnConstituents(aConstituentType);
+  }
 
-	public Iterator getIteratorOnConstituents() {
-		return wrappedEntity.getIteratorOnConstituents();
-	}
+  public Iterator getConcurrentIteratorOnConstituents(final IFilter aFilter) {
+    return this.getConcurrentIteratorOnConstituents(aFilter);
+  }
 
-	public Iterator getIteratorOnConstituents(final IFilter aFilter) {
-		return wrappedEntity.getIteratorOnConstituents(aFilter);
-	}
+  public IConstituent getConstituentFromID(final char[] anID) {
+    return wrappedEntity.getConstituentFromID(anID);
+  }
 
-	public Iterator getIteratorOnConstituents(
-			final java.lang.Class aConstituentType) {
-		return wrappedEntity.getIteratorOnConstituents(aConstituentType);
-	}
+  public IConstituent getConstituentFromID(final String anID) {
+    return wrappedEntity.getConstituentFromID(anID);
+  }
 
-	public char[] getName() {
-		return wrappedEntity.getName();
-	}
+  public IConstituent getConstituentFromName(final char[] aName) {
+    return wrappedEntity.getConstituentFromName(aName);
+  }
 
-	public int getNumberOfConstituents() {
-		return this.getNumberOfConstituents();
-	}
+  public IConstituent getConstituentFromName(final String aName) {
+    return wrappedEntity.getConstituentFromName(aName.toCharArray());
+  }
 
-	public int getNumberOfConstituents(final Class aConstituentType) {
-		return this.getNumberOfConstituents(aConstituentType);
-	}
+  public String getDisplayID() {
+    return wrappedEntity.getDisplayID();
+  }
 
-	public char[] getPath() {
-		return wrappedEntity.getPath();
-	}
+  public String getDisplayName() {
+    return wrappedEntity.getDisplayName();
+  }
 
-	public int getVisibility() {
-		return wrappedEntity.getVisibility();
-	}
+  public String getDisplayPath() {
+    return wrappedEntity.getDisplayPath();
+  }
 
-	public int getWeight() {
-		return wrappedEntity.getWeight();
-	}
+  public IConstituentExtension getExtension(final char[] anExtensionName) {
+    return wrappedEntity.getExtension(anExtensionName);
+  }
 
-	public boolean isAbstract() {
-		return wrappedEntity.isAbstract();
-	}
+  public char[] getID() {
+    return wrappedEntity.getID();
+  }
 
-	public boolean isFinal() {
-		return wrappedEntity.isFinal();
-	}
+  public Iterator getIteratorOnConstituents() {
+    return wrappedEntity.getIteratorOnConstituents();
+  }
 
-	public boolean isPrivate() {
-		return wrappedEntity.isPrivate();
-	}
+  public Iterator getIteratorOnConstituents(final IFilter aFilter) {
+    return wrappedEntity.getIteratorOnConstituents(aFilter);
+  }
 
-	public boolean isProtected() {
-		return wrappedEntity.isProtected();
-	}
+  public Iterator getIteratorOnConstituents(final java.lang.Class aConstituentType) {
+    return wrappedEntity.getIteratorOnConstituents(aConstituentType);
+  }
 
-	public boolean isPublic() {
-		return wrappedEntity.isPublic();
-	}
+  public char[] getName() {
+    return wrappedEntity.getName();
+  }
 
-	public boolean isStatic() {
-		return wrappedEntity.isStatic();
-	}
+  public int getNumberOfConstituents() {
+    return this.getNumberOfConstituents();
+  }
 
-	public void performCloneSession() {
-		wrappedEntity.performCloneSession();
-	}
+  public int getNumberOfConstituents(final Class aConstituentType) {
+    return this.getNumberOfConstituents(aConstituentType);
+  }
 
-	public void removeConstituentFromID(final char[] anID) {
-		wrappedEntity.removeConstituentFromID(anID);
-	}
+  public char[] getPath() {
+    return wrappedEntity.getPath();
+  }
 
-	public void removeModelListener(final IModelListener aModelListener) {
-		this.removeModelListener(aModelListener);
-	}
+  public int getVisibility() {
+    return wrappedEntity.getVisibility();
+  }
 
-	public void resetCodeLines() {
-		wrappedEntity.resetCodeLines();
-	}
+  public int getWeight() {
+    return wrappedEntity.getWeight();
+  }
 
-	public void setAbstract(final boolean aBoolean) {
-		wrappedEntity.setAbstract(aBoolean);
-	}
+  public boolean isAbstract() {
+    return wrappedEntity.isAbstract();
+  }
 
-	public void setCodeLines(final String someCode) {
+  public boolean isFinal() {
+    return wrappedEntity.isFinal();
+  }
 
-		wrappedEntity.setCodeLines(someCode);
-	}
+  public boolean isPrivate() {
+    return wrappedEntity.isPrivate();
+  }
 
-	public void setCodeLines(final String[] someCode) {
-		wrappedEntity.setCodeLines(someCode);
-	}
+  public boolean isProtected() {
+    return wrappedEntity.isProtected();
+  }
 
-	public void setComment(final String aComment) {
-		wrappedEntity.setComment(aComment);
-	}
+  public boolean isPublic() {
+    return wrappedEntity.isPublic();
+  }
 
-	public void setDisplayName(final String aName) {
-		wrappedEntity.setDisplayName(aName);
-	}
+  public boolean isStatic() {
+    return wrappedEntity.isStatic();
+  }
 
-	public void setFinal(final boolean aBoolean) {
-		wrappedEntity.setFinal(aBoolean);
-	}
+  public void performCloneSession() {
+    wrappedEntity.performCloneSession();
+  }
 
-	public void setName(final char[] aName) {
-		wrappedEntity.setName(aName);
-	}
+  public void removeConstituentFromID(final char[] anID) {
+    wrappedEntity.removeConstituentFromID(anID);
+  }
 
-	public void setPrivate(final boolean aBoolean) {
-		wrappedEntity.setPrivate(aBoolean);
-	}
+  public void removeModelListener(final IModelListener aModelListener) {
+    this.removeModelListener(aModelListener);
+  }
 
-	public void setProtected(final boolean aBoolean) {
-		wrappedEntity.setProtected(aBoolean);
-	}
+  public void resetCodeLines() {
+    wrappedEntity.resetCodeLines();
+  }
 
-	public void setPublic(final boolean aBoolean) {
-		wrappedEntity.setPublic(aBoolean);
-	}
+  public void setAbstract(final boolean aBoolean) {
+    wrappedEntity.setAbstract(aBoolean);
+  }
 
-	public void setStatic(final boolean aBoolean) {
-		wrappedEntity.setStatic(aBoolean);
-	}
+  public void setCodeLines(final String someCode) {
 
-	public void setVisibility(final int aVisibility) {
-		wrappedEntity.setVisibility(aVisibility);
-	}
+    wrappedEntity.setCodeLines(someCode);
+  }
 
-	public void setWeight(final int aWeight) {
-		wrappedEntity.setWeight(aWeight);
-	}
+  public void setCodeLines(final String[] someCode) {
+    wrappedEntity.setCodeLines(someCode);
+  }
 
-	public void startCloneSession() {
-		wrappedEntity.startCloneSession();
-	}
+  public void setComment(final String aComment) {
+    wrappedEntity.setComment(aComment);
+  }
 
-	public String toString() {
-		return wrappedEntity.toString();
-	}
+  public void setDisplayName(final String aName) {
+    wrappedEntity.setDisplayName(aName);
+  }
 
-	public String toString(final int aTab) {
-		return wrappedEntity.toString(aTab);
-	}
+  public void setFinal(final boolean aBoolean) {
+    wrappedEntity.setFinal(aBoolean);
+  }
 
+  public void setName(final char[] aName) {
+    wrappedEntity.setName(aName);
+  }
+
+  public void setPrivate(final boolean aBoolean) {
+    wrappedEntity.setPrivate(aBoolean);
+  }
+
+  public void setProtected(final boolean aBoolean) {
+    wrappedEntity.setProtected(aBoolean);
+  }
+
+  public void setPublic(final boolean aBoolean) {
+    wrappedEntity.setPublic(aBoolean);
+  }
+
+  public void setStatic(final boolean aBoolean) {
+    wrappedEntity.setStatic(aBoolean);
+  }
+
+  public void setVisibility(final int aVisibility) {
+    wrappedEntity.setVisibility(aVisibility);
+  }
+
+  public void setWeight(final int aWeight) {
+    wrappedEntity.setWeight(aWeight);
+  }
+
+  public void startCloneSession() {
+    wrappedEntity.startCloneSession();
+  }
+
+  public String toString() {
+    return wrappedEntity.toString();
+  }
+
+  public String toString(final int aTab) {
+    return wrappedEntity.toString(aTab);
+  }
 }

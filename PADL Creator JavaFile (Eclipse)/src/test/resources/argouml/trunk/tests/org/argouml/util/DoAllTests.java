@@ -26,50 +26,41 @@ package org.argouml.util;
 
 import java.lang.reflect.Modifier;
 import java.util.*;
-
 import junit.framework.*;
 import junit.runner.*;
 
-/**
- * A class to run all the tests.
- *
- */
+/** A class to run all the tests. */
 public class DoAllTests extends TestSuite {
 
-    /**
-     * @return the test suite
-     */
-    public static Test suite() {
-        TestSuite suite = new TestSuite();
-        int count = 0;
+  /**
+   * @return the test suite
+   */
+  public static Test suite() {
+    TestSuite suite = new TestSuite();
+    int count = 0;
 
-        for (Enumeration e = (new LoadingTestCollector()).collectTests();
-	     e.hasMoreElements();
-	     ) {
-            Object o = e.nextElement();
+    for (Enumeration e = (new LoadingTestCollector()).collectTests(); e.hasMoreElements(); ) {
+      Object o = e.nextElement();
 
-            if (!(o instanceof String))
-                continue;
-            String s = (String) o;
+      if (!(o instanceof String)) continue;
+      String s = (String) o;
 
-            if (s.equals("org.argouml.util.DoAllTests"))
-                continue;
+      if (s.equals("org.argouml.util.DoAllTests")) continue;
 
-            Class candidate;
-            try {
-                candidate = Class.forName(s);
-            } catch (ClassNotFoundException exception) {
-                System.err.println("Cannot load class: " + s);
-                continue;
-            }
-            if (!Modifier.isAbstract(candidate.getModifiers())) {
-                suite.addTest(new TestSuite(candidate));
-                count++;
-            }
-
-        }
-        System.out.println("Number of test classes found: " + count);
-
-        return suite;
+      Class candidate;
+      try {
+        candidate = Class.forName(s);
+      } catch (ClassNotFoundException exception) {
+        System.err.println("Cannot load class: " + s);
+        continue;
+      }
+      if (!Modifier.isAbstract(candidate.getModifiers())) {
+        suite.addTest(new TestSuite(candidate));
+        count++;
+      }
     }
+    System.out.println("Number of test classes found: " + count);
+
+    return suite;
+  }
 }

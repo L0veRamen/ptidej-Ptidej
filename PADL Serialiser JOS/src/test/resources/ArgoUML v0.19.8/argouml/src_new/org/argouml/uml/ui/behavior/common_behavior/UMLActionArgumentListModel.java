@@ -5,18 +5,17 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
 
 public class UMLActionArgumentListModel extends UMLModelElementListModel2 {
 
-    public UMLActionArgumentListModel() {
-        super("arguments");
-    }
-    
-    protected void buildModelList() {
-        if (getTarget() != null) {
-            setAllElements(Model.getFacade().getActualArguments(getTarget()));
-        }        
-    }
+  public UMLActionArgumentListModel() {
+    super("arguments");
+  }
 
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().isAArgument(element);
+  protected void buildModelList() {
+    if (getTarget() != null) {
+      setAllElements(Model.getFacade().getActualArguments(getTarget()));
     }
+  }
 
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().isAArgument(element);
+  }
 }

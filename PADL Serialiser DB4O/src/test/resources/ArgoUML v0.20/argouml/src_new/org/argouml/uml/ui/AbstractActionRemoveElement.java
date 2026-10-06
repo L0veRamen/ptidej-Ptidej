@@ -27,82 +27,79 @@ package org.argouml.uml.ui;
 import org.argouml.i18n.Translator;
 
 /**
- * Base class for remove actions. Remove actions can remove an element
- * from the model. This can either be a total remove ('erase from
- * model') or just a remove from a list of bases as in the case of
- * classifierrole bases.<p>
+ * Base class for remove actions. Remove actions can remove an element from the model. This can
+ * either be a total remove ('erase from model') or just a remove from a list of bases as in the
+ * case of classifierrole bases.
+ *
+ * <p>
  *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 25, 2003
  */
 public class AbstractActionRemoveElement extends UMLAction {
 
-    /**
-     * The object that owns the object that must be removed (the
-     * object that is the target of the projectbrowser in most cases).
-     */
-    private Object target;
+  /**
+   * The object that owns the object that must be removed (the object that is the target of the
+   * projectbrowser in most cases).
+   */
+  private Object target;
 
-    private Object objectToRemove;
+  private Object objectToRemove;
 
-    /**
-     * Constructor for AbstractActionRemoveElement.
-     */
-    protected AbstractActionRemoveElement() {
-        this(Translator.localize("Delete From Model"));
-    }
+  /** Constructor for AbstractActionRemoveElement. */
+  protected AbstractActionRemoveElement() {
+    this(Translator.localize("Delete From Model"));
+  }
 
-    /**
-     *  The constructor.
-     * @param name the name for this action
-     */
-    protected AbstractActionRemoveElement(String name) {
-        super(name, true, NO_ICON);
-    }
+  /**
+   * The constructor.
+   *
+   * @param name the name for this action
+   */
+  protected AbstractActionRemoveElement(String name) {
+    super(name, true, NO_ICON);
+  }
 
-     /**
-     * Returns the target.
-     *
-     * @return MModelElement
-     */
-    public Object getTarget() {
-        return target;
-    }
+  /**
+   * Returns the target.
+   *
+   * @return MModelElement
+   */
+  public Object getTarget() {
+    return target;
+  }
 
-    /**
-     * Sets the target.
-     *
-     * @param theTarget The target to set
-     */
-    public void setTarget(Object theTarget) {
-        target = theTarget;
-    }
+  /**
+   * Sets the target.
+   *
+   * @param theTarget The target to set
+   */
+  public void setTarget(Object theTarget) {
+    target = theTarget;
+  }
 
-    /**
-     * Returns the objectToRemove.
-     *
-     * @return Object
-     */
-    public Object getObjectToRemove() {
-        return objectToRemove;
-    }
+  /**
+   * Returns the objectToRemove.
+   *
+   * @return Object
+   */
+  public Object getObjectToRemove() {
+    return objectToRemove;
+  }
 
-    /**
-     * Sets the objectToRemove.
-     *
-     * @param theObjectToRemove The objectToRemove to set
-     */
-    public void setObjectToRemove(Object theObjectToRemove) {
-        objectToRemove = theObjectToRemove;
-    }
+  /**
+   * Sets the objectToRemove.
+   *
+   * @param theObjectToRemove The objectToRemove to set
+   */
+  public void setObjectToRemove(Object theObjectToRemove) {
+    objectToRemove = theObjectToRemove;
+  }
 
-
-
-    /**
-     * @see javax.swing.Action#isEnabled()
-     */
-    public boolean isEnabled() {
-        return getObjectToRemove() != null;
-    }
-
+  /**
+   * @see javax.swing.Action#isEnabled()
+   */
+  public boolean isEnabled() {
+    return getObjectToRemove() != null;
+  }
 }

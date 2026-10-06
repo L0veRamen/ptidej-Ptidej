@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -22,31 +22,29 @@ import pom.metrics.IUnaryMetric;
 
 /**
  * @author Foutse Khomh
- * @since  2007/03/01
+ * @since 2007/03/01
  */
-public class MOA extends AbstractMetric implements IMetric, IUnaryMetric, 
-	IDependencyIndependentMetric {
-	public String getDefinition() {
-		final String def =
-			"Data declarations whose types are user-defined entities.";
-		return def;
-	}
-	protected double concretelyCompute(
-		final IAbstractModel anAbstractModel,
-		final IFirstClassEntity firstClassEntity) {
+public class MOA extends AbstractMetric
+    implements IMetric, IUnaryMetric, IDependencyIndependentMetric {
+  public String getDefinition() {
+    final String def = "Data declarations whose types are user-defined entities.";
+    return def;
+  }
 
-		final List implantedFields =
-			this.classPrimitives.listOfImplementedFields(firstClassEntity);
+  protected double concretelyCompute(
+      final IAbstractModel anAbstractModel, final IFirstClassEntity firstClassEntity) {
 
-		double countMOA = 0;
-		final Iterator iterField = implantedFields.iterator();
-		while (iterField.hasNext()) {
-			final IField field = (IField) iterField.next();
-			if (!(anAbstractModel.getTopLevelEntityFromID(field.getType()) instanceof IGhost)) {
+    final List implantedFields = this.classPrimitives.listOfImplementedFields(firstClassEntity);
 
-				countMOA = countMOA + 1;
-			}
-		}
-		return countMOA;
-	}
+    double countMOA = 0;
+    final Iterator iterField = implantedFields.iterator();
+    while (iterField.hasNext()) {
+      final IField field = (IField) iterField.next();
+      if (!(anAbstractModel.getTopLevelEntityFromID(field.getType()) instanceof IGhost)) {
+
+        countMOA = countMOA + 1;
+      }
+    }
+    return countMOA;
+  }
 }

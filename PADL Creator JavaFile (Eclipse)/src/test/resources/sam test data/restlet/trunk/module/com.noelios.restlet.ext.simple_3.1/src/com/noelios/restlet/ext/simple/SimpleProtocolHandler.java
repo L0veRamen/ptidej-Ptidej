@@ -24,58 +24,60 @@ package com.noelios.restlet.ext.simple;
 
 import java.io.IOException;
 import java.util.logging.Level;
-
 import simple.http.ProtocolHandler;
 import simple.http.Request;
 import simple.http.Response;
 
 /**
  * Simple protocol handler delegating the calls to the Restlet server helper.
- * @author Jerome Louvel (contact@noelios.com) <a href="http://www.noelios.com/">Noelios Consulting</a>
+ *
+ * @author Jerome Louvel (contact@noelios.com) <a href="http://www.noelios.com/">Noelios
+ *     Consulting</a>
  */
-public class SimpleProtocolHandler implements ProtocolHandler
-{
-	/** The delegate Restlet server helper. */
-	private SimpleServerHelper helper;
+public class SimpleProtocolHandler implements ProtocolHandler {
+  /** The delegate Restlet server helper. */
+  private SimpleServerHelper helper;
 
-	/**
-	 * Constructor.
-	 * @param helper The delegate Restlet server helper.
-	 */
-	public SimpleProtocolHandler(SimpleServerHelper helper)
-	{
-		this.helper = helper;
-	}
+  /**
+   * Constructor.
+   *
+   * @param helper The delegate Restlet server helper.
+   */
+  public SimpleProtocolHandler(SimpleServerHelper helper) {
+    this.helper = helper;
+  }
 
-	/**
-	 * Returns the delegate Restlet server helper.
-	 * @return The delegate Restlet server helper.
-	 */
-	public SimpleServerHelper getHelper()
-	{
-		return this.helper;
-	}
+  /**
+   * Returns the delegate Restlet server helper.
+   *
+   * @return The delegate Restlet server helper.
+   */
+  public SimpleServerHelper getHelper() {
+    return this.helper;
+  }
 
-	/**
-	 * Handles a Simple request/response transaction.
-	 * @param request The Simple request.
-	 * @param response The Simple response.
-	 */
-	public void handle(Request request, Response response)
-	{
-		getHelper().handle(
-				new SimpleCall(getHelper().getLogger(), request, response, getHelper()
-						.isConfidential(), getHelper().getServer().getPort()));
+  /**
+   * Handles a Simple request/response transaction.
+   *
+   * @param request The Simple request.
+   * @param response The Simple response.
+   */
+  public void handle(Request request, Response response) {
+    getHelper()
+        .handle(
+            new SimpleCall(
+                getHelper().getLogger(),
+                request,
+                response,
+                getHelper().isConfidential(),
+                getHelper().getServer().getPort()));
 
-		try
-		{
-			response.getOutputStream().close();
-		}
-		catch (IOException ioe)
-		{
-			getHelper().getLogger().log(Level.WARNING,
-					"Exception while closing the Simple response's output stream", ioe);
-		}
-	}
-
+    try {
+      response.getOutputStream().close();
+    } catch (IOException ioe) {
+      getHelper()
+          .getLogger()
+          .log(Level.WARNING, "Exception while closing the Simple response's output stream", ioe);
+    }
+  }
 }

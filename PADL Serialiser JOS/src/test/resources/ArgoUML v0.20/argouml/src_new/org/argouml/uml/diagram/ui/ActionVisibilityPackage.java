@@ -27,34 +27,33 @@ package org.argouml.uml.diagram.ui;
 import org.argouml.model.Model;
 
 class ActionVisibilityPackage extends AbstractActionRadioMenuItem {
-    /**
-     * The constructor.
-     *
-     * @param o the target
-     */
-    public ActionVisibilityPackage(Object o) {
-        super("checkbox.visibility.package-uc", NO_ICON);
-        putValue("SELECTED", new Boolean(
-            Model.getVisibilityKind().getPackage()
-                .equals(valueOfTarget(o))));
-    }
+  /**
+   * The constructor.
+   *
+   * @param o the target
+   */
+  public ActionVisibilityPackage(Object o) {
+    super("checkbox.visibility.package-uc", NO_ICON);
+    putValue(
+        "SELECTED", new Boolean(Model.getVisibilityKind().getPackage().equals(valueOfTarget(o))));
+  }
 
-    /**
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement.AbstractActionRadioMenuItem#toggleValueOfTarget(java.lang.Object)
-     */
-    void toggleValueOfTarget(Object t) {
-        Model.getCoreHelper().setVisibility(t,
-            Model.getVisibilityKind().getPackage());
-    }
+  /**
+   * @see
+   *     org.argouml.uml.diagram.ui.FigNodeModelElement.AbstractActionRadioMenuItem#toggleValueOfTarget(java.lang.Object)
+   */
+  void toggleValueOfTarget(Object t) {
+    Model.getCoreHelper().setVisibility(t, Model.getVisibilityKind().getPackage());
+  }
 
-    /**
-     * Make use of the default visibility, which is public...
-     * TODO: centralise this knowledge.
-     *
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement.AbstractActionRadioMenuItem#valueOfTarget(java.lang.Object)
-     */
-    Object valueOfTarget(Object t) {
-        Object v = Model.getFacade().getVisibility(t);
-        return v == null ? Model.getVisibilityKind().getPublic() : v;
-    }
+  /**
+   * Make use of the default visibility, which is public... TODO: centralise this knowledge.
+   *
+   * @see
+   *     org.argouml.uml.diagram.ui.FigNodeModelElement.AbstractActionRadioMenuItem#valueOfTarget(java.lang.Object)
+   */
+  Object valueOfTarget(Object t) {
+    Object v = Model.getFacade().getVisibility(t);
+    return v == null ? Model.getVisibilityKind().getPublic() : v;
+  }
 }

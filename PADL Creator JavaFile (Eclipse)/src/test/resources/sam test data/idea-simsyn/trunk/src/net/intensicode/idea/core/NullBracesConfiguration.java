@@ -2,32 +2,23 @@ package net.intensicode.idea.core;
 
 import net.intensicode.idea.config.BracesConfiguration;
 
+/** TODO: Describe this! */
+public final class NullBracesConfiguration implements BracesConfiguration {
+  public static final NullBracesConfiguration INSTANCE = new NullBracesConfiguration();
 
+  // From BracesConfiguration
 
-/**
- * TODO: Describe this!
- */
-public final class NullBracesConfiguration implements BracesConfiguration
-{
-    public static final NullBracesConfiguration INSTANCE = new NullBracesConfiguration();
+  public final String[] getBracePairs() {
+    return EMPTY_ARRAY;
+  }
 
-    // From BracesConfiguration
+  public final String[] getStructuralPairs() {
+    return EMPTY_ARRAY;
+  }
 
-    public final String[] getBracePairs()
-    {
-        return EMPTY_ARRAY;
-    }
+  // Implementation
 
-    public final String[] getStructuralPairs()
-    {
-        return EMPTY_ARRAY;
-    }
+  private NullBracesConfiguration() {}
 
-    // Implementation
-
-    private NullBracesConfiguration()
-    {
-    }
-
-    private static final String[] EMPTY_ARRAY = new String[0];
+  private static final String[] EMPTY_ARRAY = new String[0];
 }

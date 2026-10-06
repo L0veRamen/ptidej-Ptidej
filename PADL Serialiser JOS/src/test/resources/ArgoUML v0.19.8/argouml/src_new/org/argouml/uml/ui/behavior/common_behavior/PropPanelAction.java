@@ -29,7 +29,6 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
-
 import org.argouml.i18n.Translator;
 import org.argouml.uml.ui.ActionDeleteSingleModelElement;
 import org.argouml.uml.ui.ActionNavigateContainerElement;
@@ -45,154 +44,139 @@ import org.argouml.util.ConfigLoader;
 import org.tigris.swidgets.GridLayout2;
 
 /**
- * An abstract representatation of the properties panel of an Action. TODO: this
- * property panel needs refactoring to remove dependency on old gui components.
+ * An abstract representatation of the properties panel of an Action. TODO: this property panel
+ * needs refactoring to remove dependency on old gui components.
  */
 public abstract class PropPanelAction extends PropPanelModelElement {
 
-        private JScrollPane expressionScroll;
+  private JScrollPane expressionScroll;
 
-        private UMLExpressionLanguageField languageField;
+  private UMLExpressionLanguageField languageField;
 
-        private JScrollPane recurrenceScroll;
+  private JScrollPane recurrenceScroll;
 
-        private JScrollPane argumentsScroll;
+  private JScrollPane argumentsScroll;
 
-        private UMLExpressionModel2 scriptModel;
+  private UMLExpressionModel2 scriptModel;
 
-        private UMLExpressionModel2 recurrenceModel;
+  private UMLExpressionModel2 recurrenceModel;
 
-        private JList argumentsList;
+  private JList argumentsList;
 
-        private JPanel recurrencePanel;
+  private JPanel recurrencePanel;
 
-        private JPanel scriptPanel;
+  private JPanel scriptPanel;
 
-        /**
-         * The constructor.
-         */
-        public PropPanelAction() {
-                this("Action", null);
-        }
+  /** The constructor. */
+  public PropPanelAction() {
+    this("Action", null);
+  }
 
-        /**
-         * The constructor.
-         * 
-         * @param name
-         *                the name of the properties panel
-         * @param icon
-         *                the icon to be shown next to the name
-         */
-        public PropPanelAction(String name, ImageIcon icon) {
-                super(name, icon, ConfigLoader.getTabPropsOrientation());
-                initialize();
-        }
+  /**
+   * The constructor.
+   *
+   * @param name the name of the properties panel
+   * @param icon the icon to be shown next to the name
+   */
+  public PropPanelAction(String name, ImageIcon icon) {
+    super(name, icon, ConfigLoader.getTabPropsOrientation());
+    initialize();
+  }
 
-        /**
-         * The initialization of the panel with its fields and stuff.
-         */
-        public void initialize() {
+  /** The initialization of the panel with its fields and stuff. */
+  public void initialize() {
 
-                addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.name"), getNameTextField());
 
-                add(new UMLActionAsynchronousCheckBox());
+    add(new UMLActionAsynchronousCheckBox());
 
-                UMLExpressionModel2 scriptModel = new UMLScriptExpressionModel(
-                                this, "script");
+    UMLExpressionModel2 scriptModel = new UMLScriptExpressionModel(this, "script");
 
-                scriptPanel = new JPanel(new GridLayout2());
-                scriptPanel.setBorder(new TitledBorder(Translator
-                                .localize("label.script")));
-                // recurrencePanel.add(addField(Translator.localize("label.expression"),
-                // new JScrollPane(
-                // new UMLExpressionBodyField(expressionModel, true))));
-                // recurrencePanel.add(addField(Translator.localize("label.language"),
-                // new UMLExpressionLanguageField(expressionModel, false)));
-                scriptPanel.add(new JScrollPane(new UMLExpressionBodyField(
-                                scriptModel, true)));
-                scriptPanel.add(new UMLExpressionLanguageField(scriptModel,
-                                false));
+    scriptPanel = new JPanel(new GridLayout2());
+    scriptPanel.setBorder(new TitledBorder(Translator.localize("label.script")));
+    // recurrencePanel.add(addField(Translator.localize("label.expression"),
+    // new JScrollPane(
+    // new UMLExpressionBodyField(expressionModel, true))));
+    // recurrencePanel.add(addField(Translator.localize("label.language"),
+    // new UMLExpressionLanguageField(expressionModel, false)));
+    scriptPanel.add(new JScrollPane(new UMLExpressionBodyField(scriptModel, true)));
+    scriptPanel.add(new UMLExpressionLanguageField(scriptModel, false));
 
-                add(scriptPanel);
+    add(scriptPanel);
 
-                UMLExpressionModel2 recurrenceModel = new UMLRecurrenceExpressionModel(
-                                this, "recurrence");
+    UMLExpressionModel2 recurrenceModel = new UMLRecurrenceExpressionModel(this, "recurrence");
 
-                recurrencePanel = new JPanel(new GridLayout2());
-                recurrencePanel.setBorder(new TitledBorder(Translator
-                                .localize("label.recurrence")));
-                recurrencePanel.add(new JScrollPane(new UMLExpressionBodyField(
-                                recurrenceModel, true)));
-                recurrencePanel.add(new UMLExpressionLanguageField(
-                                recurrenceModel, false));
+    recurrencePanel = new JPanel(new GridLayout2());
+    recurrencePanel.setBorder(new TitledBorder(Translator.localize("label.recurrence")));
+    recurrencePanel.add(new JScrollPane(new UMLExpressionBodyField(recurrenceModel, true)));
+    recurrencePanel.add(new UMLExpressionLanguageField(recurrenceModel, false));
 
-                add(recurrencePanel);
+    add(recurrencePanel);
 
-                addSeperator();
+    addSeperator();
 
-                argumentsList = new UMLMutableLinkedList(
-                                new UMLActionArgumentListModel(), null,
-                                new ActionNewArgument(),
-                                new ActionRemoveArgument(), true);
-                argumentsList.setVisibleRowCount(5);
-                JScrollPane argumentsScroll = new JScrollPane(argumentsList);
-                addField(Translator.localize("label.arguments"),
-                                argumentsScroll);
+    argumentsList =
+        new UMLMutableLinkedList(
+            new UMLActionArgumentListModel(),
+            null,
+            new ActionNewArgument(),
+            new ActionRemoveArgument(),
+            true);
+    argumentsList.setVisibleRowCount(5);
+    JScrollPane argumentsScroll = new JScrollPane(argumentsList);
+    addField(Translator.localize("label.arguments"), argumentsScroll);
 
-                addAction(new ActionNavigateContainerElement());
-                addAction(new ActionNewStereotype());
-                addAction(new ActionDeleteSingleModelElement());
+    addAction(new ActionNavigateContainerElement());
+    addAction(new ActionNewStereotype());
+    addAction(new ActionDeleteSingleModelElement());
+  }
 
-        }
+  public JScrollPane getExpressionScroll() {
+    if (expressionScroll == null) {
+      UMLExpressionBodyField field = new UMLExpressionBodyField(scriptModel, true);
+      field.setRows(3);
+      expressionScroll = new JScrollPane(field);
+    }
+    return expressionScroll;
+  }
 
-        public JScrollPane getExpressionScroll() {
-                if (expressionScroll == null) {
-                        UMLExpressionBodyField field = new UMLExpressionBodyField(
-                                        scriptModel, true);
-                        field.setRows(3);
-                        expressionScroll = new JScrollPane(field);
-                }
-                return expressionScroll;
-        }
+  public UMLExpressionLanguageField getLanguageField() {
+    if (languageField == null) {
+      languageField = new UMLExpressionLanguageField(scriptModel, true);
+    }
+    return languageField;
+  }
 
-        public UMLExpressionLanguageField getLanguageField() {
-                if (languageField == null) {
-                        languageField = new UMLExpressionLanguageField(
-                                        scriptModel, true);
-                }
-                return languageField;
-        }
+  public JScrollPane getRecurrenceScroll() {
+    if (recurrenceScroll == null) {
+      recurrenceScroll =
+          new JScrollPane(
+              new UMLExpressionBodyField(recurrenceModel, true),
+              JScrollPane.VERTICAL_SCROLLBAR_NEVER,
+              JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    }
+    return recurrenceScroll;
+  }
 
-        public JScrollPane getRecurrenceScroll() {
-                if (recurrenceScroll == null) {
-                        recurrenceScroll = new JScrollPane(
-                                        new UMLExpressionBodyField(
-                                                        recurrenceModel, true),
-                                        JScrollPane.VERTICAL_SCROLLBAR_NEVER,
-                                        JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-                }
-                return recurrenceScroll;
-        }
+  public JScrollPane getArgumentsScroll() {
+    if (argumentsScroll == null) {
+      argumentsScroll = new JScrollPane(argumentsList);
+    }
+    return argumentsScroll;
+  }
 
-        public JScrollPane getArgumentsScroll() {
-                if (argumentsScroll == null) {
-                        argumentsScroll = new JScrollPane(argumentsList);
-                }
-                return argumentsScroll;
-        }
-
-        /*
-         * public void initialize() { _expressionModel = new UMLExpressionModel(
-         * this, (Class) ModelFacade.ACTION, "script", (Class)
-         * ModelFacade.ACTION_EXPRESSION, "getScript", "setScript" );
-         * _recurrenceModel = new UMLExpressionModel( this, (Class)
-         * ModelFacade.ACTION, "recurrence", (Class)
-         * ModelFacade.ITERATION_EXPRESSION, "getRecurrence", "setRecurrence" );
-         * _argumentsList = new UMLMutableLinkedList(new
-         * UMLActionActualArgumentListModel(), null,
-         * ActionNewArgument.SINGLETON, ActionRemoveArgument.SINGLETON, false);
-         * _argumentsList.setForeground(Color.blue);
-         * _argumentsList.setVisibleRowCount(5);
-         * _argumentsList.setFont(smallFont); }
-         */
+  /*
+   * public void initialize() { _expressionModel = new UMLExpressionModel(
+   * this, (Class) ModelFacade.ACTION, "script", (Class)
+   * ModelFacade.ACTION_EXPRESSION, "getScript", "setScript" );
+   * _recurrenceModel = new UMLExpressionModel( this, (Class)
+   * ModelFacade.ACTION, "recurrence", (Class)
+   * ModelFacade.ITERATION_EXPRESSION, "getRecurrence", "setRecurrence" );
+   * _argumentsList = new UMLMutableLinkedList(new
+   * UMLActionActualArgumentListModel(), null,
+   * ActionNewArgument.SINGLETON, ActionRemoveArgument.SINGLETON, false);
+   * _argumentsList.setForeground(Color.blue);
+   * _argumentsList.setVisibleRowCount(5);
+   * _argumentsList.setFont(smallFont); }
+   */
 }

@@ -28,118 +28,108 @@ import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-
 import org.argouml.model.AttributeChangeEvent;
 import org.argouml.model.Model;
 import org.argouml.ui.targetmanager.TargetManager;
 
 class UMLCallActionOperationComboBoxModel extends UMLComboBoxModel {
-    /**
-     * The constructor.
-     */
-    public UMLCallActionOperationComboBoxModel() {
-        super("operation", true);
-    }
+  /** The constructor. */
+  public UMLCallActionOperationComboBoxModel() {
+    super("operation", true);
+  }
 
-    /**
-     * The list of operations shall contain
-     * all operations of all classifiers
-     * contained in the same package as the callaction itself. <p>
-     *
-     * TODO: In fact, we also should include operations of imported
-     * clasifiers.
-     *
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        Object target = TargetManager.getInstance().getModelTarget();
-        Collection ops = new ArrayList();
-        if (Model.getFacade().isACallAction(target)) {
-            Object ns = Model.getFacade().getModelElementContainer(target);
-            while (!Model.getFacade().isAPackage(ns)) {
-                ns = Model.getFacade().getModelElementContainer(ns);
-                if (ns == null) {
-                    break;
-                }
-            }
-            if (Model.getFacade().isANamespace(ns)) {
-                Collection c =
-                    Model.getModelManagementHelper()
-                    .getAllModelElementsOfKind(
-                            ns,
-                            Model.getMetaTypes().getClassifier());
-                Iterator i = c.iterator();
-                while (i.hasNext()) {
-                    ops.addAll(Model.getFacade().getOperations(i.next()));
-                }
-            }
-            /* To be really sure, let's add the operation
-             * that is linked to the action in the model,
-             * too - if it is not listed yet.
-             * We need this, incase an operation is moved
-             * out of the package,
-             * or maybe with imported XMI...
-             */
-            Object current = Model.getFacade().getOperation(target);
-            if (Model.getFacade().isAOperation(current)) {
-                if (!ops.contains(current)) {
-                    ops.add(current);
-                }
-            }
+  /**
+   * The list of operations shall contain all operations of all classifiers contained in the same
+   * package as the callaction itself.
+   *
+   * <p>TODO: In fact, we also should include operations of imported clasifiers.
+   *
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    Object target = TargetManager.getInstance().getModelTarget();
+    Collection ops = new ArrayList();
+    if (Model.getFacade().isACallAction(target)) {
+      Object ns = Model.getFacade().getModelElementContainer(target);
+      while (!Model.getFacade().isAPackage(ns)) {
+        ns = Model.getFacade().getModelElementContainer(ns);
+        if (ns == null) {
+          break;
         }
-        setElements(ops);
-    }
-
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
-     */
-    protected Object getSelectedModelElement() {
-        Object target = TargetManager.getInstance().getModelTarget();
-        if (Model.getFacade().isACallAction(target)) {
-            return Model.getFacade().getOperation(target);
+      }
+      if (Model.getFacade().isANamespace(ns)) {
+        Collection c =
+            Model.getModelManagementHelper()
+                .getAllModelElementsOfKind(ns, Model.getMetaTypes().getClassifier());
+        Iterator i = c.iterator();
+        while (i.hasNext()) {
+          ops.addAll(Model.getFacade().getOperations(i.next()));
         }
-        return null;
-    }
-
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(java.lang.Object)
-     */
-    protected boolean isValidElement(Object element) {
-        Object target = TargetManager.getInstance().getModelTarget();
-        if (Model.getFacade().isACallAction(target)) {
-            return element == Model.getFacade().getOperation(target);
+      }
+      /* To be really sure, let's add the operation
+       * that is linked to the action in the model,
+       * too - if it is not listed yet.
+       * We need this, incase an operation is moved
+       * out of the package,
+       * or maybe with imported XMI...
+       */
+      Object current = Model.getFacade().getOperation(target);
+      if (Model.getFacade().isAOperation(current)) {
+        if (!ops.contains(current)) {
+          ops.add(current);
         }
-        return false;
+      }
     }
+    setElements(ops);
+  }
 
-    /**
-     * The function in the parent removes items from the list
-     * when deselected. We do not need that here. <p>
-     *
-     *  This function is only needed when another operation is connected to
-     *  the action in the model, to select it in the combo. <p>
-     *
-     *  It is e.g. not usefull to update the combo for removed operations,
-     *  since you can only remove operations by changing the target,
-     *  and selecting the action again re-generates the complete list.
-     *
-     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
-     */
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        if (evt instanceof AttributeChangeEvent) {
-            if (evt.getPropertyName().equals("operation")) {
-                if (evt.getSource() == getTarget()
-                        && (getChangedElement(evt) != null)) {
-                    Object elem = getChangedElement(evt);
-                    setSelectedItem(elem);
-                }
-            }
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
+   */
+  protected Object getSelectedModelElement() {
+    Object target = TargetManager.getInstance().getModelTarget();
+    if (Model.getFacade().isACallAction(target)) {
+      return Model.getFacade().getOperation(target);
+    }
+    return null;
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(java.lang.Object)
+   */
+  protected boolean isValidElement(Object element) {
+    Object target = TargetManager.getInstance().getModelTarget();
+    if (Model.getFacade().isACallAction(target)) {
+      return element == Model.getFacade().getOperation(target);
+    }
+    return false;
+  }
+
+  /**
+   * The function in the parent removes items from the list when deselected. We do not need that
+   * here.
+   *
+   * <p>This function is only needed when another operation is connected to the action in the model,
+   * to select it in the combo.
+   *
+   * <p>It is e.g. not usefull to update the combo for removed operations, since you can only remove
+   * operations by changing the target, and selecting the action again re-generates the complete
+   * list.
+   *
+   * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+   */
+  @Override
+  public void propertyChange(PropertyChangeEvent evt) {
+    if (evt instanceof AttributeChangeEvent) {
+      if (evt.getPropertyName().equals("operation")) {
+        if (evt.getSource() == getTarget() && (getChangedElement(evt) != null)) {
+          Object elem = getChangedElement(evt);
+          setSelectedItem(elem);
         }
+      }
     }
+  }
 
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = 7752478921939209157L;
+  /** The UID. */
+  private static final long serialVersionUID = 7752478921939209157L;
 }

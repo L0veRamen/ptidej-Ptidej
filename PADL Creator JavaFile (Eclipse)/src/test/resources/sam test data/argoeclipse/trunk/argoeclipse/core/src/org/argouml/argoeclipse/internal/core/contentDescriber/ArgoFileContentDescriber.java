@@ -26,34 +26,31 @@ package org.argouml.argoeclipse.internal.core.contentDescriber;
 
 import java.io.IOException;
 import java.io.InputStream;
-
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.content.IContentDescriber;
 import org.eclipse.core.runtime.content.IContentDescription;
 
 /**
  * Content type for argo files.
- * 
+ *
  * @see org.eclipse.core.runtime.content.IContentDescriber
  * @author Bogdan Pistol
  */
 public class ArgoFileContentDescriber implements IContentDescriber {
 
-    /*
-     * @see org.eclipse.core.runtime.content.IContentDescriber#describe(java.io.InputStream,
-     *      org.eclipse.core.runtime.content.IContentDescription)
-     */
-    public int describe(InputStream contents, IContentDescription description)
-        throws IOException {
-        
-        return VALID;
-    }
+  /*
+   * @see org.eclipse.core.runtime.content.IContentDescriber#describe(java.io.InputStream,
+   *      org.eclipse.core.runtime.content.IContentDescription)
+   */
+  public int describe(InputStream contents, IContentDescription description) throws IOException {
 
-    /*
-     * @see org.eclipse.core.runtime.content.IContentDescriber#getSupportedOptions()
-     */
-    public QualifiedName[] getSupportedOptions() {
-        return null;
-    }
+    return VALID;
+  }
 
+  /*
+   * @see org.eclipse.core.runtime.content.IContentDescriber#getSupportedOptions()
+   */
+  public QualifiedName[] getSupportedOptions() {
+    return null;
+  }
 }

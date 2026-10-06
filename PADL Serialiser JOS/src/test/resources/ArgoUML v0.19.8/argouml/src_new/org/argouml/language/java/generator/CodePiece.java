@@ -27,38 +27,35 @@
   Author: Marcus Andersson andersson@users.sourceforge.net
 */
 
-
 package org.argouml.language.java.generator;
 
 /**
-   A piece of code is a continuous part of a source code file. The
-   code piece is going to be replaced by a string generated from the
-   UML model.
-*/
-public abstract class CodePiece
-{
-    /**
-     * @return the string representation for this piece of code
-     */
-    public abstract StringBuffer getText();
+ * A piece of code is a continuous part of a source code file. The code piece is going to be
+ * replaced by a string generated from the UML model.
+ */
+public abstract class CodePiece {
+  /**
+   * @return the string representation for this piece of code
+   */
+  public abstract StringBuffer getText();
 
-    /**
-     *  @return the start position
-     */
-    public abstract int getStartPosition();
+  /**
+   * @return the start position
+   */
+  public abstract int getStartPosition();
 
-    /**
-     * @return the end position
-     */
-    public abstract int getEndPosition();
+  /**
+   * @return the end position
+   */
+  public abstract int getEndPosition();
 
-    /**
-     * @return the start line
-     */
-    public abstract int getStartLine();
+  /**
+   * @return the start line
+   */
+  public abstract int getStartLine();
 
-    /**
-     * @return the end line
-     */
-    public abstract int getEndLine();
+  /**
+   * @return the end line
+   */
+  public abstract int getEndLine();
 }

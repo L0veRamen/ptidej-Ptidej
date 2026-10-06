@@ -33,26 +33,23 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  */
 public class UMLStateMachineTopListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLStateMachineTopListModel.
-     */
-    public UMLStateMachineTopListModel() {
-        super("top");
-    }
+  /** Constructor for UMLStateMachineTopListModel. */
+  public UMLStateMachineTopListModel() {
+    super("top");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        removeAllElements();
-        addElement(Model.getFacade().getTop(getTarget()));
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    removeAllElements();
+    addElement(Model.getFacade().getTop(getTarget()));
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return element == Model.getFacade().getTop(getTarget());
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return element == Model.getFacade().getTop(getTarget());
+  }
 }

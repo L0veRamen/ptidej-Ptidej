@@ -25,61 +25,57 @@
 package org.argouml.ui;
 
 import javax.swing.Action;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.tigris.gef.base.CreateNodeAction;
 
 /**
- * Command to create nodes with the appropriate modelelement. The modelelement
- * is initialized using the UmlFactory.buildNode method in the Model subsystem.
+ * Command to create nodes with the appropriate modelelement. The modelelement is initialized using
+ * the UmlFactory.buildNode method in the Model subsystem.
  *
  * @author jaap.branderhorst@xs4all.nl
  */
 public class CmdCreateNode extends CreateNodeAction {
-    
-    private static final long serialVersionUID = 4813526025971574818L;
 
-    /**
-     * Constructor for CmdCreateNode.
-     *
-     * @param nodeType the type of model element for which to create a FigNode
-     * @param name the i18n key used to generate the tooltip and icon.
-     */
-    public CmdCreateNode(Object nodeType, String name) {
-        super(nodeType,
-                name,
-                ResourceLoaderWrapper.lookupIconResource(
-                        ResourceLoaderWrapper.getImageBinding(name)));
-        putToolTip(name);
-    }
+  private static final long serialVersionUID = 4813526025971574818L;
 
+  /**
+   * Constructor for CmdCreateNode.
+   *
+   * @param nodeType the type of model element for which to create a FigNode
+   * @param name the i18n key used to generate the tooltip and icon.
+   */
+  public CmdCreateNode(Object nodeType, String name) {
+    super(
+        nodeType,
+        name,
+        ResourceLoaderWrapper.lookupIconResource(ResourceLoaderWrapper.getImageBinding(name)));
+    putToolTip(name);
+  }
 
-    /**
-     * Delegate creation of the node to the uml model subsystem.
-     *
-     * @return an object which represents a particular UML
-     *         Element.
-     *
-     * @see org.tigris.gef.graph.GraphFactory#makeNode()
-     * @see org.tigris.gef.base.CmdCreateNode#makeNode()
-     */
-    @Override
-    public Object makeNode() {
-        // TODO: We need to get the model/extent (and package?) associated with
-        // the current diagram so that we can create the new element in the
-        // right place.
-        Object newNode = Model.getUmlFactory().buildNode(getArg("className"));
-        return newNode;
-    }
+  /**
+   * Delegate creation of the node to the uml model subsystem.
+   *
+   * @return an object which represents a particular UML Element.
+   * @see org.tigris.gef.graph.GraphFactory#makeNode()
+   * @see org.tigris.gef.base.CmdCreateNode#makeNode()
+   */
+  @Override
+  public Object makeNode() {
+    // TODO: We need to get the model/extent (and package?) associated with
+    // the current diagram so that we can create the new element in the
+    // right place.
+    Object newNode = Model.getUmlFactory().buildNode(getArg("className"));
+    return newNode;
+  }
 
-    /**
-     * Adds tooltip text to the Action.
-     *
-     * @param name The key to localize as the name.
-     */
-    private void putToolTip(String name) {
-        putValue(Action.SHORT_DESCRIPTION, Translator.localize(name));
-    }
+  /**
+   * Adds tooltip text to the Action.
+   *
+   * @param name The key to localize as the name.
+   */
+  private void putToolTip(String name) {
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize(name));
+  }
 }

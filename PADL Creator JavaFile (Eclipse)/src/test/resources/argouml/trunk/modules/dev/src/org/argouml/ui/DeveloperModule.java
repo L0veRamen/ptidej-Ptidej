@@ -25,11 +25,9 @@
 package org.argouml.ui;
 
 import java.awt.BorderLayout;
-
 import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JTabbedPane;
-
 import org.argouml.dev.figinspector.FigInspectorPanel;
 import org.argouml.model.mdr.EventPumpInspectorPanel;
 import org.argouml.moduleloader.ModuleInterface;
@@ -45,96 +43,86 @@ import org.tigris.gef.undo.UndoManagerWrapper;
  */
 public final class DeveloperModule implements ModuleInterface {
 
-    /**
-     * Wrapper.
-     */
-    private UndoManagerWrapper um = new UndoManagerWrapper();
+  /** Wrapper. */
+  private UndoManagerWrapper um = new UndoManagerWrapper();
 
-    /**
-     * This is creatable from the module loader.
-     */
-    public DeveloperModule() {
+  /** This is creatable from the module loader. */
+  public DeveloperModule() {}
+
+  ////////////////////////////////////////////////////////////////
+  // Main methods.
+
+  /**
+   * @see ModuleInterface#enable()
+   */
+  public boolean enable() {
+    // TODO: Add a checkbox menu item to hide/show undo panel
+
+    UndoManager.setInstance(um);
+    JMenu editMenu = ProjectBrowser.getInstance().getJMenuBar().getMenu(1);
+    editMenu.getMenuComponent(0).setVisible(true);
+    editMenu.getMenuComponent(1).setVisible(true);
+    UndoManager.getInstance().setUndoMax(10);
+
+    JTabbedPane devPanel = new JTabbedPane();
+
+    JComponent undoLogPanel = UndoLogPanel.getInstance();
+    devPanel.addTab("Undo Stack", undoLogPanel);
+
+    JComponent inspectorPanel = FigInspectorPanel.getInstance();
+    devPanel.add("Fig Inspector", inspectorPanel);
+
+    JComponent targetManagerPanel = TargetManagerPanel.getInstance();
+    devPanel.add("TargetManager", targetManagerPanel);
+
+    JComponent eventPumpPanel = EventPumpInspectorPanel.getInstance();
+    devPanel.add("Model Listeners", eventPumpPanel);
+
+    ProjectBrowser.getInstance().addPanel(devPanel, BorderLayout.EAST);
+
+    return true;
+  }
+
+  /**
+   * @see ModuleInterface#disable()
+   *     <p>This removes us from the Tools menu. If we were not registered there we don't care.
+   */
+  public boolean disable() {
+    JMenu editMenu = ProjectBrowser.getInstance().getJMenuBar().getMenu(1);
+
+    editMenu.getMenuComponent(0).setVisible(false);
+    editMenu.getMenuComponent(1).setVisible(false);
+    UndoManager.getInstance().empty();
+    UndoManager.getInstance().setUndoMax(0);
+
+    JComponent undoLogPanel = UndoLogPanel.getInstance();
+    ProjectBrowser.getInstance().removePanel(undoLogPanel);
+    return true;
+  }
+
+  /**
+   * @see ModuleInterface#getName()
+   */
+  public String getName() {
+    return "DeveloperModule";
+  }
+
+  /**
+   * @see ModuleInterface#getInfo(int)
+   */
+  public String getInfo(int type) {
+    switch (type) {
+      case DESCRIPTION:
+        return "This is a module to provide test panels " + "for ArgoUML developers";
+      case AUTHOR:
+        return "Bob Tarling";
+      case VERSION:
+        return "1.0";
+      default:
+        return null;
     }
+  }
 
-    ////////////////////////////////////////////////////////////////
-    // Main methods.
-
-    /**
-     * @see ModuleInterface#enable()
-     */
-    public boolean enable() {
-        // TODO: Add a checkbox menu item to hide/show undo panel
-
-        UndoManager.setInstance(um);
-        JMenu editMenu = ProjectBrowser.getInstance().getJMenuBar().getMenu(1);
-        editMenu.getMenuComponent(0).setVisible(true);
-        editMenu.getMenuComponent(1).setVisible(true);
-        UndoManager.getInstance().setUndoMax(10);
-
-        JTabbedPane devPanel = new JTabbedPane();
-
-        JComponent undoLogPanel = UndoLogPanel.getInstance();
-        devPanel.addTab("Undo Stack", undoLogPanel);
-
-        JComponent inspectorPanel = FigInspectorPanel.getInstance();
-        devPanel.add("Fig Inspector", inspectorPanel);
-
-        JComponent targetManagerPanel = TargetManagerPanel.getInstance();
-        devPanel.add("TargetManager", targetManagerPanel);
-
-        JComponent eventPumpPanel = EventPumpInspectorPanel.getInstance();
-        devPanel.add("Model Listeners", eventPumpPanel);
-
-        ProjectBrowser.getInstance().addPanel(devPanel, BorderLayout.EAST);
-
-        return true;
-    }
-
-    /**
-     * @see ModuleInterface#disable()
-     *
-     * This removes us from the Tools menu. If we were not registered there
-     * we don't care.
-     */
-    public boolean disable() {
-        JMenu editMenu = ProjectBrowser.getInstance().getJMenuBar().getMenu(1);
-
-        editMenu.getMenuComponent(0).setVisible(false);
-        editMenu.getMenuComponent(1).setVisible(false);
-        UndoManager.getInstance().empty();
-        UndoManager.getInstance().setUndoMax(0);
-
-        JComponent undoLogPanel = UndoLogPanel.getInstance();
-        ProjectBrowser.getInstance().removePanel(undoLogPanel);
-        return true;
-    }
-
-    /**
-     * @see ModuleInterface#getName()
-     */
-    public String getName() {
-        return "DeveloperModule";
-    }
-
-    /**
-     * @see ModuleInterface#getInfo(int)
-     */
-    public String getInfo(int type) {
-        switch (type) {
-        case DESCRIPTION:
-            return "This is a module to provide test panels "
-                + "for ArgoUML developers";
-        case AUTHOR:
-            return "Bob Tarling";
-        case VERSION:
-            return "1.0";
-        default:
-            return null;
-        }
-    }
-
-    /**
-     * The version uid.
-     */
-    private static final long serialVersionUID = -2570516012301142091L;
+  /** The version uid. */
+  private static final long serialVersionUID = -2570516012301142091L;
 }

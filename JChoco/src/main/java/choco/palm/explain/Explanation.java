@@ -10,76 +10,70 @@
 
 package choco.palm.explain;
 
-import java.util.BitSet;
-import java.util.Set;
 import choco.Constraint;
 import choco.ConstraintCollection;
 import choco.palm.integer.PalmIntVar;
 import choco.palm.integer.explain.DecSupExplanation;
 import choco.palm.integer.explain.IncInfExplanation;
 import choco.palm.integer.explain.RemovalExplanation;
+import java.util.BitSet;
+import java.util.Set;
 
-/**
- * Explanation interface.
- */
-
+/** Explanation interface. */
 public interface Explanation extends ConstraintCollection {
 
-	/**
-	 * Checks if the explain is valid, that is wether all the constraint are active.
-	 */
+  /** Checks if the explain is valid, that is wether all the constraint are active. */
+  public boolean isValid();
 
-	public boolean isValid();
+  /**
+   * Makes a DecSupExplanation from the current explain by adding dependencies.
+   *
+   * @param sup The previous value of the bound.
+   * @param var The involved variable.
+   */
+  public DecSupExplanation makeDecSupExplanation(int sup, PalmIntVar var);
 
-	/**
-	 * Makes a DecSupExplanation from the current explain by adding dependencies.
-	 * @param sup The previous value of the bound.
-	 * @param var The involved variable.
-	 */
+  /**
+   * Makes an IncInfExplanation from the current explain by adding dependencies.
+   *
+   * @param inf The previous value of the bound.
+   * @param var The involved variable.
+   */
+  public IncInfExplanation makeIncInfExplanation(int inf, PalmIntVar var);
 
-	public DecSupExplanation makeDecSupExplanation(int sup, PalmIntVar var);
+  /**
+   * Makes a RemovalExplanation from the current explain by adding dependencies.
+   *
+   * @param value The removed value of the domain.
+   * @param var The involved variable.
+   */
+  public RemovalExplanation makeRemovalExplanation(int value, PalmIntVar var);
 
-	/**
-	 * Makes an IncInfExplanation from the current explain by adding dependencies.
-	 * @param inf The previous value of the bound.
-	 * @param var The involved variable.
-	 */
+  /**
+   * yet another form of merging two collection of constraints
+   *
+   * @param set a collection of constraints represented by a BitSet
+   */
+  public void merge(BitSet set);
 
-	public IncInfExplanation makeIncInfExplanation(int inf, PalmIntVar var);
+  /**
+   * Posts a restoration prop.
+   *
+   * @param constraint
+   */
+  public void postUndoRemoval(Constraint constraint);
 
-	/**
-	 * Makes a RemovalExplanation from the current explain by adding dependencies.
-	 * @param value The removed value of the domain.
-	 * @param var The involved variable.
-	 */
+  /**
+   * Copies the explain set and returns the new bitset.
+   *
+   * @return The explain as a BitSet.
+   */
+  public BitSet toBitSet();
 
-	public RemovalExplanation makeRemovalExplanation(int value, PalmIntVar var);
-
-	/**
-	 * yet another form of merging two collection of constraints
-	 * @param set a collection of constraints represented by a BitSet
-	 */
-	public void merge(BitSet set);
-
-	/**
-	 * Posts a restoration prop.
-	 * @param constraint
-	 */
-
-	public void postUndoRemoval(Constraint constraint);
-
-	/**
-	 * Copies the explain set and returns the new bitset.
-	 * @return The explain as a BitSet.
-	 */
-
-	public BitSet toBitSet();
-
-	/**
-	 * Creates a set with all the constraints in the explain..
-	 * @return The explain as a set.
-	 */
-
-	public Set toSet();
-
+  /**
+   * Creates a set with all the constraints in the explain..
+   *
+   * @return The explain as a set.
+   */
+  public Set<Constraint> toSet();
 }

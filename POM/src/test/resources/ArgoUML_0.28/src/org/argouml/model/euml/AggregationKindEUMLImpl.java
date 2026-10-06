@@ -30,21 +30,20 @@ import org.argouml.model.AggregationKind;
 
 /**
  * Eclipse UML2 implementation of AggregationKind.
- * 
+ *
  * @author Tom Morris
  */
 class AggregationKindEUMLImpl implements AggregationKind {
 
-    public Object getAggregate() {
-        return org.eclipse.uml2.uml.AggregationKind.SHARED_LITERAL;
-    }
+  public Object getAggregate() {
+    return org.eclipse.uml2.uml.AggregationKind.SHARED_LITERAL;
+  }
 
-    public Object getComposite() {
-        return org.eclipse.uml2.uml.AggregationKind.COMPOSITE_LITERAL;
-    }
+  public Object getComposite() {
+    return org.eclipse.uml2.uml.AggregationKind.COMPOSITE_LITERAL;
+  }
 
-    public Object getNone() {
-        return org.eclipse.uml2.uml.AggregationKind.NONE_LITERAL;
-    }
-
+  public Object getNone() {
+    return org.eclipse.uml2.uml.AggregationKind.NONE_LITERAL;
+  }
 }

@@ -32,7 +32,6 @@ import org.argouml.model.OrderingKind;
 import org.argouml.model.PseudostateKind;
 import org.argouml.model.ScopeKind;
 import org.argouml.model.VisibilityKind;
-
 import ru.novosoft.uml.foundation.data_types.MAggregationKind;
 import ru.novosoft.uml.foundation.data_types.MCallConcurrencyKind;
 import ru.novosoft.uml.foundation.data_types.MChangeableKind;
@@ -43,248 +42,246 @@ import ru.novosoft.uml.foundation.data_types.MPseudostateKind;
 import ru.novosoft.uml.foundation.data_types.MScopeKind;
 import ru.novosoft.uml.foundation.data_types.MVisibilityKind;
 
-/**
- * Class that contains enums in the Model.
- */
+/** Class that contains enums in the Model. */
 public class KindsImpl
-	implements ChangeableKind, AggregationKind, PseudostateKind,
-	ScopeKind, ConcurrencyKind, DirectionKind,
-	OrderingKind, VisibilityKind {
+    implements ChangeableKind,
+        AggregationKind,
+        PseudostateKind,
+        ScopeKind,
+        ConcurrencyKind,
+        DirectionKind,
+        OrderingKind,
+        VisibilityKind {
 
-    /**
-     * Constructor.
-     */
-    KindsImpl() {
-    }
+  /** Constructor. */
+  KindsImpl() {}
 
-    /**
-     * @return Returns the AddOnly ChangeableKind.
-     */
-    public Object getAddOnly() {
-        return MChangeableKind.ADD_ONLY;
-    }
+  /**
+   * @return Returns the AddOnly ChangeableKind.
+   */
+  public Object getAddOnly() {
+    return MChangeableKind.ADD_ONLY;
+  }
 
-    /**
-     * @return Returns the Aggregate AggregationKind.
-     */
-    public Object getAggregate() {
-        return MAggregationKind.AGGREGATE;
-    }
+  /**
+   * @return Returns the Aggregate AggregationKind.
+   */
+  public Object getAggregate() {
+    return MAggregationKind.AGGREGATE;
+  }
 
-    /**
-     * @return Returns the Branch/Choice PseudostateKind.
-     */
-    public Object getBranch() {
-        return MPseudostateKind.BRANCH;
-    }
+  /**
+   * @return Returns the Branch/Choice PseudostateKind.
+   */
+  public Object getBranch() {
+    return MPseudostateKind.BRANCH;
+  }
 
-    /**
-     * @return Returns the Branch/Choice PseudostateKind.
-     */
-    public Object getChoice() {
-        return getBranch(); // NSUML uses Branch, not Choice
-    }
+  /**
+   * @return Returns the Branch/Choice PseudostateKind.
+   */
+  public Object getChoice() {
+    return getBranch(); // NSUML uses Branch, not Choice
+  }
 
-    /**
-     * @return Returns the Changeable ChangeableKind.
-     */
-    public Object getChangeable() {
-        return MChangeableKind.CHANGEABLE;
-    }
+  /**
+   * @return Returns the Changeable ChangeableKind.
+   */
+  public Object getChangeable() {
+    return MChangeableKind.CHANGEABLE;
+  }
 
-    /**
-     * @return Returns the Classifier ScopeKind.
-     */
-    public Object getClassifier() {
-        return MScopeKind.CLASSIFIER;
-    }
+  /**
+   * @return Returns the Classifier ScopeKind.
+   */
+  public Object getClassifier() {
+    return MScopeKind.CLASSIFIER;
+  }
 
-    /**
-     * @return Returns the Composite AggregationKind.
-     */
-    public Object getComposite() {
-        return MAggregationKind.COMPOSITE;
-    }
+  /**
+   * @return Returns the Composite AggregationKind.
+   */
+  public Object getComposite() {
+    return MAggregationKind.COMPOSITE;
+  }
 
-    /**
-     * @return Returns the Concurrent CallConcurrencyKind.
-     */
-    public Object getConcurrent() {
-        return MCallConcurrencyKind.CONCURRENT;
-    }
+  /**
+   * @return Returns the Concurrent CallConcurrencyKind.
+   */
+  public Object getConcurrent() {
+    return MCallConcurrencyKind.CONCURRENT;
+  }
 
-    /**
-     * @return Returns the DeepHistory PseudostateKind.
-     */
-    public Object getDeepHistory() {
-        return MPseudostateKind.DEEP_HISTORY;
-    }
+  /**
+   * @return Returns the DeepHistory PseudostateKind.
+   */
+  public Object getDeepHistory() {
+    return MPseudostateKind.DEEP_HISTORY;
+  }
 
-    /**
-     * @return Returns the Fork PseudostateKind.
-     */
-    public Object getFork() {
-        return MPseudostateKind.FORK;
-    }
+  /**
+   * @return Returns the Fork PseudostateKind.
+   */
+  public Object getFork() {
+    return MPseudostateKind.FORK;
+  }
 
-    /**
-     * @return Returns the Frozen ChangeableKind.
-     */
-    public Object getFrozen() {
-        return MChangeableKind.FROZEN;
-    }
+  /**
+   * @return Returns the Frozen ChangeableKind.
+   */
+  public Object getFrozen() {
+    return MChangeableKind.FROZEN;
+  }
 
-    /**
-     * @return Returns the Guarded CallConcurrencyKind.
-     */
-    public Object getGuarded() {
-        return MCallConcurrencyKind.GUARDED;
-    }
+  /**
+   * @return Returns the Guarded CallConcurrencyKind.
+   */
+  public Object getGuarded() {
+    return MCallConcurrencyKind.GUARDED;
+  }
 
-    /**
-     * @return Returns the In ParameterDirectionKind.
-     */
-    public Object getInParameter() {
-        return MParameterDirectionKind.IN;
-    }
+  /**
+   * @return Returns the In ParameterDirectionKind.
+   */
+  public Object getInParameter() {
+    return MParameterDirectionKind.IN;
+  }
 
-    /**
-     * @return Returns the Initial PseudostateKind.
-     */
-    public Object getInitial() {
-        return MPseudostateKind.INITIAL;
-    }
+  /**
+   * @return Returns the Initial PseudostateKind.
+   */
+  public Object getInitial() {
+    return MPseudostateKind.INITIAL;
+  }
 
-    /**
-     * @return Returns the Inout ParameterDirectionKind.
-     */
-    public Object getInOutParameter() {
-        return MParameterDirectionKind.INOUT;
-    }
+  /**
+   * @return Returns the Inout ParameterDirectionKind.
+   */
+  public Object getInOutParameter() {
+    return MParameterDirectionKind.INOUT;
+  }
 
-    /**
-     * @return Returns the Instance ScopeKind.
-     */
-    public Object getInstance() {
-        return MScopeKind.INSTANCE;
-    }
+  /**
+   * @return Returns the Instance ScopeKind.
+   */
+  public Object getInstance() {
+    return MScopeKind.INSTANCE;
+  }
 
-    /**
-     * @return Returns the Join PseudostateKind.
-     */
-    public Object getJoin() {
-        return MPseudostateKind.JOIN;
-    }
+  /**
+   * @return Returns the Join PseudostateKind.
+   */
+  public Object getJoin() {
+    return MPseudostateKind.JOIN;
+  }
 
-    /**
-     * @return Returns the Junction PseudostateKind.
-     */
-    public Object getJunction() {
-        return MPseudostateKind.JUNCTION;
-    }
+  /**
+   * @return Returns the Junction PseudostateKind.
+   */
+  public Object getJunction() {
+    return MPseudostateKind.JUNCTION;
+  }
 
-    /**
-     * @return Returns the 0 1 Multiplicity.
-     */
-    public Object get01() {
-        return MMultiplicity.M0_1;
-    }
+  /**
+   * @return Returns the 0 1 Multiplicity.
+   */
+  public Object get01() {
+    return MMultiplicity.M0_1;
+  }
 
-    /**
-     * @return Returns the 0 N Multiplicity.
-     */
-    public Object get0N() {
-        return MMultiplicity.M0_N;
-    }
+  /**
+   * @return Returns the 0 N Multiplicity.
+   */
+  public Object get0N() {
+    return MMultiplicity.M0_N;
+  }
 
-    /**
-     * @return Returns the 1 1 Multiplicity.
-     */
-    public Object get11() {
-        return MMultiplicity.M1_1;
-    }
+  /**
+   * @return Returns the 1 1 Multiplicity.
+   */
+  public Object get11() {
+    return MMultiplicity.M1_1;
+  }
 
-    /**
-     * @return Returns the 1 N Multiplicity.
-     */
-    public Object get1N() {
-        return MMultiplicity.M1_N;
-    }
+  /**
+   * @return Returns the 1 N Multiplicity.
+   */
+  public Object get1N() {
+    return MMultiplicity.M1_N;
+  }
 
-    /**
-     * @return Returns the None AggregationKind.
-     */
-    public Object getNone() {
-        return MAggregationKind.NONE;
-    }
+  /**
+   * @return Returns the None AggregationKind.
+   */
+  public Object getNone() {
+    return MAggregationKind.NONE;
+  }
 
-    /**
-     * @return Returns the Ordered OrderingKind.
-     */
-    public Object getOrdered() {
-        return MOrderingKind.ORDERED;
-    }
+  /**
+   * @return Returns the Ordered OrderingKind.
+   */
+  public Object getOrdered() {
+    return MOrderingKind.ORDERED;
+  }
 
-    /**
-     * @return Returns the Out ParameterDirectionKind.
-     */
-    public Object getOutParameter() {
-        return MParameterDirectionKind.OUT;
-    }
+  /**
+   * @return Returns the Out ParameterDirectionKind.
+   */
+  public Object getOutParameter() {
+    return MParameterDirectionKind.OUT;
+  }
 
-    /**
-     * @return Returns the Private VisibilityKind.
-     */
-    public Object getPrivate() {
-        return MVisibilityKind.PRIVATE;
-    }
+  /**
+   * @return Returns the Private VisibilityKind.
+   */
+  public Object getPrivate() {
+    return MVisibilityKind.PRIVATE;
+  }
 
-    /**
-     * @return Returns the Protected VisibilityKind.
-     */
-    public Object getProtected() {
-        return MVisibilityKind.PROTECTED;
-    }
+  /**
+   * @return Returns the Protected VisibilityKind.
+   */
+  public Object getProtected() {
+    return MVisibilityKind.PROTECTED;
+  }
 
-    /**
-     * @return Returns the Public VisibilityKind.
-     */
-    public Object getPublic() {
-        return MVisibilityKind.PUBLIC;
-    }
+  /**
+   * @return Returns the Public VisibilityKind.
+   */
+  public Object getPublic() {
+    return MVisibilityKind.PUBLIC;
+  }
 
-    /**
-     * @return Returns the Return ParameterDirectionKind.
-     */
-    public Object getReturnParameter() {
-        return MParameterDirectionKind.RETURN;
-    }
+  /**
+   * @return Returns the Return ParameterDirectionKind.
+   */
+  public Object getReturnParameter() {
+    return MParameterDirectionKind.RETURN;
+  }
 
-    /**
-     * @return Returns the Sequential CallConcurrencyKind.
-     */
-    public Object getSequential() {
-        return MCallConcurrencyKind.SEQUENTIAL;
-    }
+  /**
+   * @return Returns the Sequential CallConcurrencyKind.
+   */
+  public Object getSequential() {
+    return MCallConcurrencyKind.SEQUENTIAL;
+  }
 
-    /**
-     * @return Returns the ShallowHistory PseudostateKind.
-     */
-    public Object getShallowHistory() {
-        return MPseudostateKind.SHALLOW_HISTORY;
-    }
+  /**
+   * @return Returns the ShallowHistory PseudostateKind.
+   */
+  public Object getShallowHistory() {
+    return MPseudostateKind.SHALLOW_HISTORY;
+  }
 
-    /**
-     * @return Returns the Unordered OrderingKind.
-     */
-    public Object getUnordered() {
-        return MOrderingKind.UNORDERED;
-    }
+  /**
+   * @return Returns the Unordered OrderingKind.
+   */
+  public Object getUnordered() {
+    return MOrderingKind.UNORDERED;
+  }
 
-    public Object getPackage() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
+  public Object getPackage() {
+    // TODO Auto-generated method stub
+    return null;
+  }
 }
-

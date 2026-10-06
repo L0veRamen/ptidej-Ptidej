@@ -27,40 +27,32 @@
 package org.argouml.ui;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.Action;
-
 import org.argouml.cognitive.ToDoItem;
 import org.argouml.i18n.Translator;
 import org.tigris.gef.undo.UndoableAction;
 
-/**
- * Action to display the todo pane.
- *
- */
+/** Action to display the todo pane. */
 public class ActionGoToCritique extends UndoableAction {
-    private ToDoItem item = null;
+  private ToDoItem item = null;
 
-    /**
-     * Constructor.
-     *
-     * @param theItem The item that we go to.
-     */
-    public ActionGoToCritique(ToDoItem theItem) {
-        super(Translator.localize(theItem.getHeadline()), 
-	            null);
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize(theItem.getHeadline()));
-	item = theItem;
-    }
+  /**
+   * Constructor.
+   *
+   * @param theItem The item that we go to.
+   */
+  public ActionGoToCritique(ToDoItem theItem) {
+    super(Translator.localize(theItem.getHeadline()), null);
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize(theItem.getHeadline()));
+    item = theItem;
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-    	super.actionPerformed(ae);
-	ProjectBrowser.getInstance().getTodoPane().selectItem(item);
-    }
-
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    super.actionPerformed(ae);
+    ProjectBrowser.getInstance().getTodoPane().selectItem(item);
+  }
 } /* end class ActionGoToCritique */

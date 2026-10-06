@@ -28,36 +28,30 @@ import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
 /**
- *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 26, 2003
  */
-public class UMLGeneralizableElementSpecializationListModel
-    extends UMLModelElementListModel2 {
+public class UMLGeneralizableElementSpecializationListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLGeneralizableElementSpecializationListModel.
-     */
-    public UMLGeneralizableElementSpecializationListModel() {
-        super("specialization");
+  /** Constructor for UMLGeneralizableElementSpecializationListModel. */
+  public UMLGeneralizableElementSpecializationListModel() {
+    super("specialization");
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (getTarget() != null) {
+      setAllElements(Model.getFacade().getSpecializations(getTarget()));
     }
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (getTarget() != null) {
-            setAllElements(Model.getFacade().getSpecializations(getTarget()));
-        }
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ element) {
-        return Model.getFacade().isAGeneralization(element)
-            && Model.getFacade().getSpecializations(getTarget())
-            	.contains(element);
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ element) {
+    return Model.getFacade().isAGeneralization(element)
+        && Model.getFacade().getSpecializations(getTarget()).contains(element);
+  }
 }

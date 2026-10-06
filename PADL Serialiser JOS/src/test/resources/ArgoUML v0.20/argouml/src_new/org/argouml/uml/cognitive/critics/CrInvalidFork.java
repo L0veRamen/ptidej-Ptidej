@@ -25,55 +25,47 @@
 package org.argouml.uml.cognitive.critics;
 
 import java.util.Collection;
-
 import org.argouml.cognitive.Designer;
 import org.argouml.model.Model;
 import org.argouml.uml.cognitive.UMLDecision;
 
 /**
- * A critic to detect when a fork state has the wrong number of
- * transitions.  Implements constraint [5] on MPseudostate in the UML
- * Semantics v1.1, pp. 104.
+ * A critic to detect when a fork state has the wrong number of transitions. Implements constraint
+ * [5] on MPseudostate in the UML Semantics v1.1, pp. 104.
  *
  * @author jrobbins
  */
 public class CrInvalidFork extends CrUML {
 
-    /**
-     * The constructor.
-     */
-    public CrInvalidFork() {
-        setupHeadAndDesc();
-	addSupportedDecision(UMLDecision.STATE_MACHINES);
-	addTrigger("incoming");
-    }
+  /** The constructor. */
+  public CrInvalidFork() {
+    setupHeadAndDesc();
+    addSupportedDecision(UMLDecision.STATE_MACHINES);
+    addTrigger("incoming");
+  }
 
-    /**
-     * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
-     * java.lang.Object, org.argouml.cognitive.Designer)
-     */
-    public boolean predicate2(Object dm, Designer dsgr) {
-	if (!(Model.getFacade().isAPseudostate(dm))) {
-	    return NO_PROBLEM;
-	}
-	Object k = Model.getFacade().getPseudostateKind(dm);
-	if (!Model.getFacade().equalsPseudostateKind(
-	        k,
-	        Model.getPseudostateKind().getFork())) {
-	    return NO_PROBLEM;
-	}
-	Collection outgoing = Model.getFacade().getOutgoings(dm);
-	Collection incoming = Model.getFacade().getIncomings(dm);
-	int nOutgoing = outgoing == null ? 0 : outgoing.size();
-	int nIncoming = incoming == null ? 0 : incoming.size();
-	if (nIncoming > 1) {
-	    return PROBLEM_FOUND;
-	}
-	if (nOutgoing == 1) {
-	    return PROBLEM_FOUND;
-	}
-	return NO_PROBLEM;
+  /**
+   * @see org.argouml.uml.cognitive.critics.CrUML#predicate2( java.lang.Object,
+   *     org.argouml.cognitive.Designer)
+   */
+  public boolean predicate2(Object dm, Designer dsgr) {
+    if (!(Model.getFacade().isAPseudostate(dm))) {
+      return NO_PROBLEM;
     }
-
+    Object k = Model.getFacade().getPseudostateKind(dm);
+    if (!Model.getFacade().equalsPseudostateKind(k, Model.getPseudostateKind().getFork())) {
+      return NO_PROBLEM;
+    }
+    Collection outgoing = Model.getFacade().getOutgoings(dm);
+    Collection incoming = Model.getFacade().getIncomings(dm);
+    int nOutgoing = outgoing == null ? 0 : outgoing.size();
+    int nIncoming = incoming == null ? 0 : incoming.size();
+    if (nIncoming > 1) {
+      return PROBLEM_FOUND;
+    }
+    if (nOutgoing == 1) {
+      return PROBLEM_FOUND;
+    }
+    return NO_PROBLEM;
+  }
 } /* end class CrInvalidFork */
-

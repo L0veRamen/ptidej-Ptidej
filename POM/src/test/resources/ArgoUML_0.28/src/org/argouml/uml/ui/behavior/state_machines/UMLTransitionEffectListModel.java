@@ -25,7 +25,6 @@
 package org.argouml.uml.ui.behavior.state_machines;
 
 import javax.swing.JPopupMenu;
-
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 import org.argouml.uml.ui.behavior.common_behavior.ActionNewAction;
@@ -37,37 +36,34 @@ import org.argouml.uml.ui.behavior.common_behavior.PopupMenuNewAction;
  */
 public class UMLTransitionEffectListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLStateMachineTopListModel.
-     */
-    public UMLTransitionEffectListModel() {
-        super("effect");
-    }
+  /** Constructor for UMLStateMachineTopListModel. */
+  public UMLTransitionEffectListModel() {
+    super("effect");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        removeAllElements();
-        addElement(Model.getFacade().getEffect(getTarget()));
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    removeAllElements();
+    addElement(Model.getFacade().getEffect(getTarget()));
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return element == Model.getFacade().getEffect(getTarget());
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return element == Model.getFacade().getEffect(getTarget());
+  }
 
-    @Override
-    public boolean buildPopup(JPopupMenu popup, int index) {
-        PopupMenuNewAction.buildMenu(popup, 
-                ActionNewAction.Roles.EFFECT, getTarget());
-        return true;
-    }
+  @Override
+  public boolean buildPopup(JPopupMenu popup, int index) {
+    PopupMenuNewAction.buildMenu(popup, ActionNewAction.Roles.EFFECT, getTarget());
+    return true;
+  }
 
-    @Override
-    protected boolean hasPopup() {
-        return true;
-    }
+  @Override
+  protected boolean hasPopup() {
+    return true;
+  }
 }

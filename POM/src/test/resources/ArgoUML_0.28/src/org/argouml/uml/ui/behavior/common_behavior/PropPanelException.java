@@ -26,20 +26,16 @@ package org.argouml.uml.ui.behavior.common_behavior;
 
 /**
  * Property Panel for an Exception.
- * <p>
- * Currently this differs only in name from a Signal, but the semantic
- * difference is significant to the user, so we give it a different name and
- * handle it separately.
- * 
+ *
+ * <p>Currently this differs only in name from a Signal, but the semantic difference is significant
+ * to the user, so we give it a different name and handle it separately.
+ *
  * @author Tom Morris
  */
 public class PropPanelException extends PropPanelSignal {
 
-    /**
-     * Construct the property panel.
-     */
-    public PropPanelException() {
-        super("label.exception", "Exception");
-    }
-
+  /** Construct the property panel. */
+  public PropPanelException() {
+    super("label.exception", "Exception");
+  }
 }

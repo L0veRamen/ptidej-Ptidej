@@ -25,7 +25,6 @@
 package org.argouml.uml.ui.foundation.core;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLAction;
@@ -37,58 +36,46 @@ import org.argouml.uml.ui.UMLComboBox2;
  */
 public class ActionSetParameterType extends UMLAction {
 
-    private static final ActionSetParameterType SINGLETON =
-        new ActionSetParameterType();
+  private static final ActionSetParameterType SINGLETON = new ActionSetParameterType();
 
-    /**
-     * Constructor for ActionSetStructuralFeatureType.
-     */
-    protected ActionSetParameterType() {
-        super(Translator.localize("Set"), true, NO_ICON);
+  /** Constructor for ActionSetStructuralFeatureType. */
+  protected ActionSetParameterType() {
+    super(Translator.localize("Set"), true, NO_ICON);
+  }
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    Object source = e.getSource();
+    Object oldClassifier = null;
+    Object newClassifier = null;
+    Object para = null;
+    if (source instanceof UMLComboBox2) {
+      UMLComboBox2 box = ((UMLComboBox2) source);
+      Object o = box.getTarget();
+      if (Model.getFacade().isAParameter(o)) {
+        para = /*(MParameter)*/ o;
+        oldClassifier = Model.getFacade().getType(para);
+      }
+      o = box.getSelectedItem();
+      if (Model.getFacade().isAClassifier(o)) {
+        newClassifier = /*(MClassifier)*/ o;
+      }
     }
-
-
-
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        Object source = e.getSource();
-        Object oldClassifier = null;
-        Object newClassifier = null;
-        Object para = null;
-        if (source instanceof UMLComboBox2) {
-            UMLComboBox2 box = ((UMLComboBox2) source);
-            Object o = box.getTarget();
-            if (Model.getFacade().isAParameter(o)) {
-                para = /*(MParameter)*/ o;
-                oldClassifier = Model.getFacade().getType(para);
-            }
-            o = box.getSelectedItem();
-            if (Model.getFacade().isAClassifier(o)) {
-                newClassifier = /*(MClassifier)*/ o;
-            }
-        }
-        if (newClassifier != null
-                && newClassifier != oldClassifier
-                && para != null) {
-            newClassifier = /*(MClassifier)*/ Model.getModelManagementHelper()
-                .getCorrespondingElement(
-				      newClassifier,
-				      Model.getFacade().getModel(para));
-            Model.getCoreHelper().setType(para, newClassifier);
-            super.actionPerformed(e);
-        }
-
+    if (newClassifier != null && newClassifier != oldClassifier && para != null) {
+      newClassifier = /*(MClassifier)*/
+          Model.getModelManagementHelper()
+              .getCorrespondingElement(newClassifier, Model.getFacade().getModel(para));
+      Model.getCoreHelper().setType(para, newClassifier);
+      super.actionPerformed(e);
     }
+  }
 
-
-
-    /**
-     * @return Returns the sINGLETON.
-     */
-    public static ActionSetParameterType getInstance() {
-        return SINGLETON;
-    }
-
+  /**
+   * @return Returns the sINGLETON.
+   */
+  public static ActionSetParameterType getInstance() {
+    return SINGLETON;
+  }
 }

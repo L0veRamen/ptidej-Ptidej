@@ -25,65 +25,60 @@
 package org.argouml.uml.ui.foundation.extension_mechanisms;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLAction;
 import org.argouml.uml.ui.UMLComboBox2;
+
 /**
  * @since Nov 3, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
 public class ActionSetTagDefinitionType extends UMLAction {
 
-    private static final ActionSetTagDefinitionType SINGLETON =
-        new ActionSetTagDefinitionType();
+  private static final ActionSetTagDefinitionType SINGLETON = new ActionSetTagDefinitionType();
 
-    /**
-     * Constructor for ActionSetTagDefinitionType.
-     */
-    protected ActionSetTagDefinitionType() {
-        super(Translator.localize("Set"), true, NO_ICON);
+  /** Constructor for ActionSetTagDefinitionType. */
+  protected ActionSetTagDefinitionType() {
+    super(Translator.localize("Set"), true, NO_ICON);
+  }
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    Object source = e.getSource();
+    Object oldClassifier = null;
+    Object newClassifier = null;
+    Object attr = null;
+    if (source instanceof UMLComboBox2) {
+      UMLComboBox2 box = (UMLComboBox2) source;
+      Object o = box.getTarget();
+      if (Model.getFacade().isATagDefinition(o)) {
+        attr = /*(MAttribute)*/ o;
+        oldClassifier = Model.getFacade().getType(attr);
+      }
+      o = box.getSelectedItem();
+      if (Model.getFacade().isAClassifier(o)) {
+        newClassifier = /*(MClassifier)*/ o;
+      }
     }
+    if (newClassifier != oldClassifier && attr != null) {
+      if (newClassifier != null) {
+        newClassifier = /*(MClassifier)*/
+            Model.getModelManagementHelper()
+                .getCorrespondingElement(newClassifier, Model.getFacade().getModel(attr));
+      }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        Object source = e.getSource();
-        Object oldClassifier = null;
-        Object newClassifier = null;
-        Object attr = null;
-        if (source instanceof UMLComboBox2) {
-            UMLComboBox2 box = (UMLComboBox2) source;
-            Object o = box.getTarget();
-            if (Model.getFacade().isATagDefinition(o)) {
-                attr = /*(MAttribute)*/ o;
-                oldClassifier = Model.getFacade().getType(attr);
-            }
-            o = box.getSelectedItem();
-            if (Model.getFacade().isAClassifier(o)) {
-                newClassifier = /*(MClassifier)*/ o;
-            }
-        }
-        if (newClassifier != oldClassifier && attr != null) {
-            if (newClassifier != null) {
-                newClassifier = /*(MClassifier)*/ Model
-                    .getModelManagementHelper().getCorrespondingElement(
-                                    newClassifier,
-                                    Model.getFacade().getModel(attr));
-            }
-
-            Model.getCoreHelper().setType(attr, newClassifier);
-        }
+      Model.getCoreHelper().setType(attr, newClassifier);
     }
+  }
 
-    /**
-     * @return Returns the sINGLETON.
-     */
-    public static ActionSetTagDefinitionType getInstance() {
-        return SINGLETON;
-    }
-
+  /**
+   * @return Returns the sINGLETON.
+   */
+  public static ActionSetTagDefinitionType getInstance() {
+    return SINGLETON;
+  }
 }

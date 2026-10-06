@@ -7,7 +7,7 @@
  *                                                                           *
  *  The contents of this file are subject to the Sun Public License Version  *
  *  1.0 (the "License"); you may not use this file except in compliance with *
- *  the License. A copy of the License is available at http://www.sun.com    * 
+ *  the License. A copy of the License is available at http://www.sun.com    *
  *                                                                           *
  *  The Original Code is BeanShell. The Initial Developer of the Original    *
  *  Code is Pat Niemeyer. Portions created by Pat Niemeyer are Copyright     *
@@ -34,16 +34,15 @@
 package bsh;
 
 class BSHSwitchLabel extends SimpleNode {
-	boolean isDefault;
+  boolean isDefault;
 
-	public BSHSwitchLabel(int id) { super(id); }
+  public BSHSwitchLabel(int id) {
+    super(id);
+  }
 
-	public Object eval(
-		CallStack callstack, Interpreter interpreter) throws EvalError
-	{
-		if ( isDefault )
-			return null; // should probably error
-		SimpleNode label = ((SimpleNode)jjtGetChild(0));
-		return label.eval( callstack, interpreter );
-	}
+  public Object eval(CallStack callstack, Interpreter interpreter) throws EvalError {
+    if (isDefault) return null; // should probably error
+    SimpleNode label = ((SimpleNode) jjtGetChild(0));
+    return label.eval(callstack, interpreter);
+  }
 }

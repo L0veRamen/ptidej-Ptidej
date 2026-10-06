@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xerces" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -60,41 +60,49 @@ package org.apache.xerces.msg;
 import java.util.ListResourceBundle;
 
 /**
- * This file contains error and warning messages for the Schema validator
- * The messages are arranged in key and value tuples in a ListResourceBundle.
+ * This file contains error and warning messages for the Schema validator The messages are arranged
+ * in key and value tuples in a ListResourceBundle.
  *
  * @version
  */
 public class SchemaMessages extends ListResourceBundle {
-    /** The list resource bundle contents. */
-    public static final Object CONTENTS[][] = {
-// Internal message formatter messages
-        { "BadMajorCode", "The majorCode parameter to createMessage was out of bounds." },
-        { "FormatFailed", "An internal error occurred while formatting the following message:\n  " },
-        { "NoValidatorFor", "No validator for datatype {0}" },
-        { "IncorrectDatatype", "Incorrect datatype: {0}" },
-        { "NotADatatype", "{0} is not a datatype." },
-        { "TextOnlyContentWithType", "The content attribute must be 'textOnly' if you specify a type attribute." },
-        { "FeatureUnsupported", "{0} is unsupported" },
-        { "NestedOnlyInElemOnly", "Nested Element decls only allowed in elemOnly content" },
-        { "EltRefOnlyInMixedElemOnly", "Element references only allowed in mixed or elemOnly content"},
-        { "OnlyInEltContent", "{0} only allowed in elemOnly content."},
-        { "OrderIsAll", "{0} not allowed if the order is all."},
-        { "DatatypeWithType", "Datatype qualifiers can only be used if you specify a type attribute."},
-        { "DatatypeQualUnsupported", "The datatype qualifier {0} is not supported."},
-        { "GroupContentRestricted", "Error: {0} content must be one of element, group, modelGroupRef.  Saw {1}"},
-        { "UnknownBaseDatatype", "Unknown base type {0} for type {1}." },
-        { "OneOfTypeRefArchRef", "Can only have one of type, ref, and archRef attributes."},
-        { "NoContentForRef", "Cannot have child content for an element declaration that has a ref attribute" },
-        { "IncorrectDefaultType", "Incorrect type for {0}'s default value: {1}" },
-        { "IllegalAttContent", "Illegal content {0} in attribute group" },
-        { "ValueNotInteger", "Value of {0} is not an integer." },
-        { "DatatypeError", "Datatype error: {0}." },
-    };
-    
-    /** Returns the list resource bundle contents. */
-    public Object[][] getContents() {
-        return CONTENTS;
-    }
+  /** The list resource bundle contents. */
+  public static final Object CONTENTS[][] = {
+    // Internal message formatter messages
+    {"BadMajorCode", "The majorCode parameter to createMessage was out of bounds."},
+    {"FormatFailed", "An internal error occurred while formatting the following message:\n  "},
+    {"NoValidatorFor", "No validator for datatype {0}"},
+    {"IncorrectDatatype", "Incorrect datatype: {0}"},
+    {"NotADatatype", "{0} is not a datatype."},
+    {
+      "TextOnlyContentWithType",
+      "The content attribute must be 'textOnly' if you specify a type attribute."
+    },
+    {"FeatureUnsupported", "{0} is unsupported"},
+    {"NestedOnlyInElemOnly", "Nested Element decls only allowed in elemOnly content"},
+    {"EltRefOnlyInMixedElemOnly", "Element references only allowed in mixed or elemOnly content"},
+    {"OnlyInEltContent", "{0} only allowed in elemOnly content."},
+    {"OrderIsAll", "{0} not allowed if the order is all."},
+    {"DatatypeWithType", "Datatype qualifiers can only be used if you specify a type attribute."},
+    {"DatatypeQualUnsupported", "The datatype qualifier {0} is not supported."},
+    {
+      "GroupContentRestricted",
+      "Error: {0} content must be one of element, group, modelGroupRef.  Saw {1}"
+    },
+    {"UnknownBaseDatatype", "Unknown base type {0} for type {1}."},
+    {"OneOfTypeRefArchRef", "Can only have one of type, ref, and archRef attributes."},
+    {
+      "NoContentForRef",
+      "Cannot have child content for an element declaration that has a ref attribute"
+    },
+    {"IncorrectDefaultType", "Incorrect type for {0}'s default value: {1}"},
+    {"IllegalAttContent", "Illegal content {0} in attribute group"},
+    {"ValueNotInteger", "Value of {0} is not an integer."},
+    {"DatatypeError", "Datatype error: {0}."},
+  };
 
+  /** Returns the list resource bundle contents. */
+  public Object[][] getContents() {
+    return CONTENTS;
+  }
 }

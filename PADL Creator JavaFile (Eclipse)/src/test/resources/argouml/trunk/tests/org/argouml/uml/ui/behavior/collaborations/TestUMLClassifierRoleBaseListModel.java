@@ -31,51 +31,49 @@ import org.argouml.uml.ui.AbstractUMLModelElementListModel2Test;
  * @since Oct 27, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class TestUMLClassifierRoleBaseListModel
-    extends AbstractUMLModelElementListModel2Test {
+public class TestUMLClassifierRoleBaseListModel extends AbstractUMLModelElementListModel2Test {
 
-    /**
-     * Constructor for TestUMLClassifierRoleBaseListModel.
-     *
-     * @param arg0 is the name of the test case.
-     */
-    public TestUMLClassifierRoleBaseListModel(String arg0) {
-        super(arg0);
+  /**
+   * Constructor for TestUMLClassifierRoleBaseListModel.
+   *
+   * @param arg0 is the name of the test case.
+   */
+  public TestUMLClassifierRoleBaseListModel(String arg0) {
+    super(arg0);
+  }
+
+  /**
+   * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#buildElement()
+   */
+  protected void buildElement() {
+    setElem(Model.getCollaborationsFactory().createClassifierRole());
+  }
+
+  /**
+   * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#buildModel()
+   */
+  protected void buildModel() {
+    setModel(new UMLClassifierRoleBaseListModel());
+  }
+
+  /**
+   * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#fillModel()
+   */
+  protected Object[] fillModel() {
+    Object[] bases = new Object[10];
+    for (int i = 0; i < bases.length; i++) {
+      bases[i] = Model.getCoreFactory().createClass();
+      Model.getCollaborationsHelper().addBase(getElem(), bases[i]);
     }
+    return bases;
+  }
 
-    /**
-     * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#buildElement()
-     */
-    protected void buildElement() {
-        setElem(Model.getCollaborationsFactory().createClassifierRole());
+  /**
+   * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#removeHalfModel(Object[])
+   */
+  protected void removeHalfModel(Object[] elements) {
+    for (int i = 0; i < 5; i++) {
+      Model.getCollaborationsHelper().removeBase(getElem(), elements[i]);
     }
-
-    /**
-     * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#buildModel()
-     */
-    protected void buildModel() {
-        setModel(new UMLClassifierRoleBaseListModel());
-    }
-
-    /**
-     * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#fillModel()
-     */
-    protected Object[] fillModel() {
-        Object[] bases = new Object[10];
-        for (int i = 0; i < bases.length; i++) {
-            bases[i] = Model.getCoreFactory().createClass();
-            Model.getCollaborationsHelper().addBase(getElem(), bases[i]);
-        }
-        return bases;
-    }
-
-    /**
-     * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#removeHalfModel(Object[])
-     */
-    protected void removeHalfModel(Object[] elements) {
-        for (int i = 0; i < 5; i++) {
-            Model.getCollaborationsHelper().removeBase(getElem(), elements[i]);
-        }
-    }
-
+  }
 }

@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -20,44 +20,35 @@ import ptidej.viewer.utils.Resources;
 import util.help.Browser;
 
 public class SolverFingerprintsAction extends AbstractAction {
-	private static final long serialVersionUID = 1L;
-	private static SolverFingerprintsAction UniqueInstance;
-	public static SolverFingerprintsAction getInstance() {
-		return (SolverFingerprintsAction.UniqueInstance == null) ? SolverFingerprintsAction.UniqueInstance =
-			new SolverFingerprintsAction()
-				: SolverFingerprintsAction.UniqueInstance;
-	}
+  private static final long serialVersionUID = 1L;
+  private static SolverFingerprintsAction UniqueInstance;
 
-	private SolverFingerprintsAction() {
-	}
-	public void actionPerformed(final ActionEvent e) {
-		final String action = e.getActionCommand();
-		if (action
-			.equals(Resources.METRICAL_PTIDEJ_SOLVER_4_FIND_SIMILAR_MICRO_ARCHITECTURE)) {
+  public static SolverFingerprintsAction getInstance() {
+    return (SolverFingerprintsAction.UniqueInstance == null)
+        ? SolverFingerprintsAction.UniqueInstance = new SolverFingerprintsAction()
+        : SolverFingerprintsAction.UniqueInstance;
+  }
 
-			final OccurrenceGenerator solutionGenerator =
-				OccurrenceGenerator.getInstance();
+  private SolverFingerprintsAction() {}
 
-			final Properties solutions =
-				solutionGenerator
-					.getOccurrences(
-						DesktopPane.getInstance().getPatternName(),
-						DesktopPane
-							.getInstance()
-							.getAbstractRepresentationWindow()
-							.getSourceModel(),
-						DesktopPane.getInstance().getSolver(),
-						DesktopPane.getInstance().getProblem());
+  public void actionPerformed(final ActionEvent e) {
+    final String action = e.getActionCommand();
+    if (action.equals(Resources.METRICAL_PTIDEJ_SOLVER_4_FIND_SIMILAR_MICRO_ARCHITECTURE)) {
 
-			ViewerCommons.loadConstraintsData(DesktopPane
-				.getInstance()
-				.getAbstractRepresentationWindow(), solutions);
-		}
-		else if (action
-			.equals(Resources.METRICAL_PTIDEJ_SOLVER_4_SIMILAR_MICRO_ARCHITECTURE_HELP)) {
-			Browser
-				.displayURL(Resources
-					.getLink(Resources.METRICAL_PTIDEJ_SOLVER_4_SIMILAR_MICRO_ARCHITECTURE_HELP));
-		}
-	}
+      final OccurrenceGenerator solutionGenerator = OccurrenceGenerator.getInstance();
+
+      final Properties solutions =
+          solutionGenerator.getOccurrences(
+              DesktopPane.getInstance().getPatternName(),
+              DesktopPane.getInstance().getAbstractRepresentationWindow().getSourceModel(),
+              DesktopPane.getInstance().getSolver(),
+              DesktopPane.getInstance().getProblem());
+
+      ViewerCommons.loadConstraintsData(
+          DesktopPane.getInstance().getAbstractRepresentationWindow(), solutions);
+    } else if (action.equals(Resources.METRICAL_PTIDEJ_SOLVER_4_SIMILAR_MICRO_ARCHITECTURE_HELP)) {
+      Browser.displayURL(
+          Resources.getLink(Resources.METRICAL_PTIDEJ_SOLVER_4_SIMILAR_MICRO_ARCHITECTURE_HELP));
+    }
+  }
 }

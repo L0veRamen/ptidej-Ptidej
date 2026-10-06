@@ -12,18 +12,14 @@
 package org.jhotdraw.framework;
 
 /**
- * This interface has the purpose to reduce the dependency of JHotDraw on AWT
- * classes and interfaces.
- * See {@link org.jhotdraw.standard.AWTCursor} for an example of implementation
- * for this interface.
- * 
- * <p>Created on: 08/05/2003.</p>
- * 
+ * This interface has the purpose to reduce the dependency of JHotDraw on AWT classes and
+ * interfaces. See {@link org.jhotdraw.standard.AWTCursor} for an example of implementation for this
+ * interface.
+ *
+ * <p>Created on: 08/05/2003.
+ *
  * @version $Revision: 1.1 $
- * @author <a href="mailto:ricardo_padilha@users.sourceforge.net">Ricardo 
- * Sangoi Padilha</a>
+ * @author <a href="mailto:ricardo_padilha@users.sourceforge.net">Ricardo Sangoi Padilha</a>
  * @see org.jhotdraw.standard.AWTCursor
  */
-public interface Cursor {
-
-}
+public interface Cursor {}

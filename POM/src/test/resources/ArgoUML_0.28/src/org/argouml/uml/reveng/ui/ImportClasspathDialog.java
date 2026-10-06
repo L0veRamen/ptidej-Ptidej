@@ -32,7 +32,6 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -40,159 +39,148 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.uml.reveng.SettingsTypes.PathListSelection;
 import org.tigris.gef.base.Globals;
 
 /**
- * Panel to collect a list of paths for an importer. <em>NOTE:</em> Although
- * this class is public it is <em>only</em> intended for use by the package
- * org.argouml.reveng.
- * <p>
- * This was originally included in Import.java and was called
- * ImportClasspathDialog.
+ * Panel to collect a list of paths for an importer. <em>NOTE:</em> Although this class is public it
+ * is <em>only</em> intended for use by the package org.argouml.reveng.
+ *
+ * <p>This was originally included in Import.java and was called ImportClasspathDialog.
  */
 public class ImportClasspathDialog extends JPanel {
 
-    private JList paths;
+  private JList paths;
 
-    private DefaultListModel pathsModel;
+  private DefaultListModel pathsModel;
 
-    private JButton addButton;
+  private JButton addButton;
 
-    private JButton removeButton;
+  private JButton removeButton;
 
-    private JFileChooser chooser;
-    
-    private PathListSelection setting;
+  private JFileChooser chooser;
 
+  private PathListSelection setting;
 
-    /**
-     * Construct a panel which provides controls for populating a list of 
-     * paths.  This can be used for a Java classpath, C++ include path, etc.
-     * 
-     * @param pathListSetting the settings object for this pathlist
+  /**
+   * Construct a panel which provides controls for populating a list of paths. This can be used for
+   * a Java classpath, C++ include path, etc.
+   *
+   * @param pathListSetting the settings object for this pathlist
+   */
+  public ImportClasspathDialog(PathListSelection pathListSetting) {
+    super();
+    setting = pathListSetting;
+    setToolTipText(setting.getDescription());
+
+    setLayout(new BorderLayout(0, 0));
+
+    JLabel label = new JLabel(setting.getLabel());
+    add(label, BorderLayout.NORTH);
+
+    pathsModel = new DefaultListModel();
+    for (String path : setting.getDefaultPathList()) {
+      pathsModel.addElement(path);
+    }
+
+    paths = new JList(pathsModel);
+    paths.setVisibleRowCount(5);
+    paths.setToolTipText(setting.getDescription());
+    JScrollPane listScroller = new JScrollPane(paths);
+    add(listScroller, BorderLayout.CENTER);
+
+    // panel for controls
+    JPanel controlsPanel = new JPanel();
+    controlsPanel.setLayout(new GridLayout(0, 2, 50, 0));
+
+    addButton = new JButton(Translator.localize("button.add"));
+    controlsPanel.add(addButton);
+    addButton.addActionListener(new AddListener());
+
+    removeButton = new JButton(Translator.localize("button.remove"));
+    controlsPanel.add(removeButton);
+    removeButton.addActionListener(new RemoveListener());
+
+    // TODO: Add Up/Down buttons to control the ordering of items
+
+    add(controlsPanel, BorderLayout.SOUTH);
+  }
+
+  private void updatePathList() {
+    List<String> pathList = new ArrayList<String>();
+    for (int i = 0; i < pathsModel.size(); i++) {
+      String path = (String) pathsModel.getElementAt(i);
+      pathList.add(path);
+    }
+    setting.setPathList(pathList);
+  }
+
+  class RemoveListener implements ActionListener {
+    /*
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
-    public ImportClasspathDialog(PathListSelection pathListSetting) {
-        super();
-        setting = pathListSetting;
-        setToolTipText(setting.getDescription());
-        
-        setLayout(new BorderLayout(0, 0));
+    public void actionPerformed(ActionEvent e) {
+      // This method can be called only if
+      // there's a valid selection
+      // so go ahead and remove whatever's selected.
+      int index = paths.getSelectedIndex();
+      if (index < 0) {
+        return;
+      }
+      pathsModel.remove(index);
+      updatePathList();
 
-        JLabel label = new JLabel(setting.getLabel());
-        add(label, BorderLayout.NORTH);
+      int size = pathsModel.getSize();
 
-        pathsModel = new DefaultListModel();
-        for (String path : setting.getDefaultPathList()) {
-            pathsModel.addElement(path);
-        }
-        
-        paths = new JList(pathsModel);
-        paths.setVisibleRowCount(5);
-        paths.setToolTipText(setting.getDescription());
-        JScrollPane listScroller = new JScrollPane(paths);
-        add(listScroller, BorderLayout.CENTER);
+      if (size == 0) { // nothings left, disable firing.
+        removeButton.setEnabled(false);
 
-        // panel for controls
-        JPanel controlsPanel = new JPanel();
-        controlsPanel.setLayout(new GridLayout(0, 2, 50, 0));
-        
-        addButton = new JButton(Translator.localize("button.add"));
-        controlsPanel.add(addButton);
-        addButton.addActionListener(new AddListener());
-        
-        removeButton = new JButton(Translator.localize("button.remove"));
-        controlsPanel.add(removeButton);
-        removeButton.addActionListener(new RemoveListener());
-        
-        // TODO: Add Up/Down buttons to control the ordering of items
-        
-        add(controlsPanel, BorderLayout.SOUTH);
-    }
-
-
-    private void updatePathList() {
-        List<String> pathList = new ArrayList<String>();
-        for (int i = 0; i < pathsModel.size(); i++) {
-            String path = (String) pathsModel.getElementAt(i);
-            pathList.add(path);
-        }
-        setting.setPathList(pathList);
-    }
-
-    class RemoveListener implements ActionListener {
-        /*
-         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-         */
-        public void actionPerformed(ActionEvent e) {
-            //This method can be called only if
-            //there's a valid selection
-            //so go ahead and remove whatever's selected.
-            int index = paths.getSelectedIndex();
-            if (index < 0) {
-                return;
-            }
-            pathsModel.remove(index);
-            updatePathList();
-
-            int size = pathsModel.getSize();
-
-            if (size == 0) { //nothings left, disable firing.
-                removeButton.setEnabled(false);
-
-            } else { //Select an index.
-                if (index == pathsModel.getSize()) {
-                    //removed item in last position
-                    index--;
-                }
-
-                paths.setSelectedIndex(index);
-                paths.ensureIndexIsVisible(index);
-            }
+      } else { // Select an index.
+        if (index == pathsModel.getSize()) {
+          // removed item in last position
+          index--;
         }
 
+        paths.setSelectedIndex(index);
+        paths.ensureIndexIsVisible(index);
+      }
     }
+  }
 
+  class AddListener implements ActionListener {
+    /*
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    public void actionPerformed(ActionEvent e) {
 
-    class AddListener implements ActionListener {
-        /*
-         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-         */
-        public void actionPerformed(ActionEvent e) {
+      if (chooser == null) {
+        chooser = new JFileChooser(Globals.getLastDirectory());
+        if (chooser == null) {
+          chooser = new JFileChooser();
+        }
 
-            if (chooser == null ) {
-                chooser = new JFileChooser(Globals.getLastDirectory()); 
-                if (chooser == null) {
-                    chooser = new JFileChooser();
-                }
-
-                chooser.setFileSelectionMode(
-                        JFileChooser.FILES_AND_DIRECTORIES);
-                chooser.setMultiSelectionEnabled(true);
-                chooser.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e1) {
-                        if (e1.getActionCommand().equals(
-                                JFileChooser.APPROVE_SELECTION)) {
-                            File[] files = chooser.getSelectedFiles();
-                            for (File theFile : files) {
-                                if (theFile != null) {
-                                    pathsModel.addElement(theFile.toString());
-                                }
-                            }
-                            updatePathList();
-                        } else if (e1.getActionCommand().equals(
-                                JFileChooser.CANCEL_SELECTION)) {
-                            // Just quit
-                        }
-
+        chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        chooser.setMultiSelectionEnabled(true);
+        chooser.addActionListener(
+            new ActionListener() {
+              public void actionPerformed(ActionEvent e1) {
+                if (e1.getActionCommand().equals(JFileChooser.APPROVE_SELECTION)) {
+                  File[] files = chooser.getSelectedFiles();
+                  for (File theFile : files) {
+                    if (theFile != null) {
+                      pathsModel.addElement(theFile.toString());
                     }
-                });
-            }
+                  }
+                  updatePathList();
+                } else if (e1.getActionCommand().equals(JFileChooser.CANCEL_SELECTION)) {
+                  // Just quit
+                }
+              }
+            });
+      }
 
-            chooser.showOpenDialog(new Frame());
-        }
+      chooser.showOpenDialog(new Frame());
     }
-
+  }
 }

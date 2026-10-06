@@ -30,15 +30,13 @@ import org.argouml.model.Model;
  * navigate to the context.
  *
  * @author mkl
- *
  */
 public class ActionNavigateContext extends AbstractActionNavigate {
 
-    /*
-     * @see org.argouml.uml.ui.AbstractActionNavigate#navigateTo(java.lang.Object)
-     */
-    protected Object navigateTo(Object source) {
-        return Model.getFacade().getContext(source);
-    }
-
+  /*
+   * @see org.argouml.uml.ui.AbstractActionNavigate#navigateTo(java.lang.Object)
+   */
+  protected Object navigateTo(Object source) {
+    return Model.getFacade().getContext(source);
+  }
 }

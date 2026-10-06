@@ -22,9 +22,11 @@
 // CALIFORNIA HAS NO OBLIGATIONS TO PROVIDE MAINTENANCE, SUPPORT,
 // UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
-
 package org.argouml.uml.diagram.ui;
 
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.util.Vector;
 import org.apache.log4j.Logger;
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
@@ -38,10 +40,6 @@ import org.tigris.gef.base.Editor;
 import org.tigris.gef.base.Globals;
 import org.tigris.gef.presentation.Fig;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.util.Vector;
-
 /**
  * Delete a concurrent region of a concurrent composite state
  *
@@ -49,114 +47,100 @@ import java.util.Vector;
  */
 public class ActionDeleteConcurrentRegion extends UMLAction {
 
-    ////////////////////////////////////////////////////////////////
-    // static variables
+  ////////////////////////////////////////////////////////////////
+  // static variables
 
-	/** logger */
-    private static final Logger LOG =
-        Logger.getLogger(ActionDeleteConcurrentRegion.class);
+  /** logger */
+  private static final Logger LOG = Logger.getLogger(ActionDeleteConcurrentRegion.class);
 
-    private static ActionDeleteConcurrentRegion singleton =
-        new ActionDeleteConcurrentRegion();
+  private static ActionDeleteConcurrentRegion singleton = new ActionDeleteConcurrentRegion();
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    private ActionDeleteConcurrentRegion() {
-        super("action.delete-concurrent-region");
+  private ActionDeleteConcurrentRegion() {
+    super("action.delete-concurrent-region");
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // main methods
+
+  /**
+   * @see org.argouml.uml.ui.UMLAction#shouldBeEnabled()
+   */
+  public boolean shouldBeEnabled() {
+    super.shouldBeEnabled();
+    int size = 0;
+    try {
+      Editor ce = Globals.curEditor();
+      Vector figs = ce.getSelectionManager().getFigs();
+      size = figs.size();
+    } catch (Exception e) {
     }
+    return size > 0;
+  }
 
-    ////////////////////////////////////////////////////////////////
-    // main methods
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    try {
+      /*Here the actions to delete a region.
+      We assume the only figs enclosed in a concurrent composite state
+      are concurrent region figs*/
+      Fig f = (Fig) TargetManager.getInstance().getFigTarget();
+      Fig encloser = null;
 
-    /**
-     * @see org.argouml.uml.ui.UMLAction#shouldBeEnabled()
-     */
-    public boolean shouldBeEnabled() {
-        super.shouldBeEnabled();
-        int size = 0;
-        try {
-            Editor ce = Globals.curEditor();
-            Vector figs = ce.getSelectionManager().getFigs();
-            size = figs.size();
-        } catch (Exception e) {
+      int height = 0;
+      Rectangle encBound;
+      Project p = ProjectManager.getManager().getCurrentProject();
+
+      if (Model.getFacade().isAConcurrentRegion(f.getOwner())) encloser = f.getEnclosingFig();
+
+      Vector nodesInside;
+      nodesInside = ((Vector) encloser.getEnclosedFigs().clone());
+      int index = nodesInside.indexOf(f);
+      Rectangle r = f.getBounds();
+      encBound = encloser.getBounds();
+      if (Model.getFacade().isAConcurrentRegion(f.getOwner())) p.moveToTrash(f.getOwner());
+      // It wasnt the last region
+      if (index < nodesInside.size() - 1) {
+        Rectangle rFig = ((Fig) nodesInside.elementAt(index + 1)).getBounds();
+        height = rFig.y - r.y;
+        for (int i = ++index; i < nodesInside.size(); i++)
+          ((FigNodeModelElement) nodesInside.elementAt(i)).displace(0, -height);
+      }
+      // It was the last region
+      else height = r.height + 4;
+
+      ((FigCompositeState) encloser).setBounds(encBound.height - height);
+      ((FigConcurrentRegion) ((Vector) encloser.getEnclosedFigs()).elementAt(0))
+          .setLineColor(Color.white);
+
+      /*When only one concurrent region remains it must be erased and the
+      composite state sets non concurent*/
+      if (((Vector) encloser.getEnclosedFigs()).size() == 1) {
+        f = ((Fig) encloser.getEnclosedFigs().elementAt(0));
+        nodesInside = ((Vector) f.getEnclosedFigs());
+        Model.getStateMachinesHelper().setConcurrent(encloser.getOwner(), false);
+        if (!nodesInside.isEmpty()) {
+          for (int i = 0; i < nodesInside.size(); i++) {
+            FigStateVertex curFig = (FigStateVertex) nodesInside.elementAt(i);
+            curFig.setEnclosingFig(encloser);
+          }
         }
-        return size > 0;
+        p.moveToTrash(f.getOwner());
+      }
+
+    } catch (Exception ex) {
+      LOG.error(ex);
     }
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-        try {
-            /*Here the actions to delete a region.
-            We assume the only figs enclosed in a concurrent composite state
-            are concurrent region figs*/
-            Fig f = (Fig) TargetManager.getInstance().getFigTarget();
-            Fig encloser = null;
-
-            int height = 0;
-            Rectangle encBound;
-            Project p = ProjectManager.getManager().getCurrentProject();
-
-            if (Model.getFacade().isAConcurrentRegion(f.getOwner()))
-                encloser = f.getEnclosingFig();
-
-            Vector nodesInside;
-            nodesInside = ((Vector) encloser.getEnclosedFigs().clone());
-            int index = nodesInside.indexOf(f);
-            Rectangle r = f.getBounds();
-            encBound = encloser.getBounds();
-            if (Model.getFacade().isAConcurrentRegion(f.getOwner()))
-                p.moveToTrash(f.getOwner());
-            //It wasnt the last region
-            if (index < nodesInside.size() - 1) {
-                Rectangle rFig =
-                    ((Fig) nodesInside.elementAt(index + 1)).getBounds();
-                height = rFig.y - r.y;
-                for (int i = ++index; i < nodesInside.size();  i++)
-                    ((FigNodeModelElement) nodesInside.elementAt(i))
-                        .displace(0, -height);
-            }
-            //It was the last region
-            else
-                height = r.height + 4;
-
-            ((FigCompositeState) encloser).setBounds(encBound.height - height);
-            ((FigConcurrentRegion) ((Vector) encloser.getEnclosedFigs())
-                    .elementAt(0)).setLineColor(Color.white);
-
-            /*When only one concurrent region remains it must be erased and the
-              composite state sets non concurent*/
-            if (((Vector) encloser.getEnclosedFigs()).size() == 1) {
-                f = ((Fig) encloser.getEnclosedFigs().elementAt(0));
-                nodesInside = ((Vector) f.getEnclosedFigs());
-                Model.getStateMachinesHelper().setConcurrent(
-                        encloser.getOwner(), false);
-                if (!nodesInside.isEmpty()) {
-                    for (int i = 0; i < nodesInside.size(); i++) {
-                        FigStateVertex curFig =
-                            (FigStateVertex) nodesInside.elementAt(i);
-                        curFig.setEnclosingFig(encloser);
-                    }
-                }
-                p.moveToTrash(f.getOwner());
-
-            }
-
-
-
-        } catch (Exception ex) {
-            LOG.error(
-                ex);
-        }
-    }
-
-    /**
-     * @return Returns the singleton.
-     */
-    public static ActionDeleteConcurrentRegion getSingleton() {
-        return singleton;
-    }
-
+  /**
+   * @return Returns the singleton.
+   */
+  public static ActionDeleteConcurrentRegion getSingleton() {
+    return singleton;
+  }
 }

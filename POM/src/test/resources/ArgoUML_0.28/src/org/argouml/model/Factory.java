@@ -26,10 +26,7 @@ package org.argouml.model;
 
 /**
  * Marker interface that all Model factory interfaces extend.
- * 
- * @author Tom Morris
  *
+ * @author Tom Morris
  */
-public interface Factory {
-
-}
+public interface Factory {}

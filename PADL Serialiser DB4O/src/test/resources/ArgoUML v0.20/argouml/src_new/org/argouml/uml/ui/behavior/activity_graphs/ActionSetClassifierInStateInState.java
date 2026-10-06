@@ -26,7 +26,6 @@ package org.argouml.uml.ui.behavior.activity_graphs;
 
 import java.awt.event.ActionEvent;
 import java.util.Collection;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLAction;
@@ -35,39 +34,37 @@ import org.argouml.uml.ui.UMLComboBox2;
 /**
  * The Action to set the "inState" of a ClassifierInState.
  *
- * TODO: This is not correct yet! Should set all the states from a list!
+ * <p>TODO: This is not correct yet! Should set all the states from a list!
  *
  * @author mvw
- *
  */
 class ActionSetClassifierInStateInState extends UMLAction {
 
-    /**
-     * The constructor.
-     */
-    public ActionSetClassifierInStateInState() {
-        super(Translator.localize("Set"), false, NO_ICON);
-    }
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        Object source = e.getSource(); // the source UI element of the event
-        if (source instanceof UMLComboBox2) {
-            UMLComboBox2 box = (UMLComboBox2) source;
-            Object cis = box.getTarget();
-            if (Model.getFacade().isAClassifierInState(cis)) {
-                Collection c = Model.getFacade().getInStates(cis);
+  /** The constructor. */
+  public ActionSetClassifierInStateInState() {
+    super(Translator.localize("Set"), false, NO_ICON);
+  }
 
-                Object state = box.getSelectedItem();
-                if (Model.getFacade().isAState(state)) {
-                    if (!c.contains(state)) {
-                        Model.getActivityGraphsHelper().addInState(cis, state);
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    Object source = e.getSource(); // the source UI element of the event
+    if (source instanceof UMLComboBox2) {
+      UMLComboBox2 box = (UMLComboBox2) source;
+      Object cis = box.getTarget();
+      if (Model.getFacade().isAClassifierInState(cis)) {
+        Collection c = Model.getFacade().getInStates(cis);
 
-                        super.actionPerformed(e);
-                    }
-                }
-            }
+        Object state = box.getSelectedItem();
+        if (Model.getFacade().isAState(state)) {
+          if (!c.contains(state)) {
+            Model.getActivityGraphsHelper().addInState(cis, state);
+
+            super.actionPerformed(e);
+          }
         }
+      }
     }
+  }
 }

@@ -25,27 +25,24 @@
 package org.argouml.ui;
 
 /**
- * Used in one of the tee files. The save throws an exception without this.
- * TODO: Document its purpose or remove if useless.
+ * Used in one of the tee files. The save throws an exception without this. TODO: Document its
+ * purpose or remove if useless.
  */
 public class UsageStatistic {
-    // //////////////////////////////////////////////////////////////
-    // instance variables
-    private String name;
+  // //////////////////////////////////////////////////////////////
+  // instance variables
+  private String name;
 
-    private int value;
+  private int value;
 
-    /**
-     * The constructor.
-     * 
-     * @param n
-     *            the name
-     * @param v
-     *            the value
-     */
-    public UsageStatistic(String n, int v) {
-        name = n;
-        value = v;
-    }
-
+  /**
+   * The constructor.
+   *
+   * @param n the name
+   * @param v the value
+   */
+  public UsageStatistic(String n, int v) {
+    name = n;
+    value = v;
+  }
 } /* end class UsageStatistic */

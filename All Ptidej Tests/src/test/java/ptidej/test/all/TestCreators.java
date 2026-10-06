@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -29,25 +29,25 @@ import padl.creator.xmiclassdiagram.test.TestCreatorXMI;
  * @since 2013/05/10
  */
 public final class TestCreators extends TestSuite {
-	public static TestSuite suite() {
-		final TestCreators suite = new TestCreators();
-		suite.setName(TestCreators.class.getName());
+  public static TestSuite suite() {
+    final TestCreators suite = new TestCreators();
+    suite.setName(TestCreators.class.getName());
 
-		suite.addTest(TestCreatorAOL.suite());
-		suite.addTest(TestCreatorAspectJ.suite());
+    suite.addTest(TestCreatorAOL.suite());
+    suite.addTest(TestCreatorAspectJ.suite());
 
-		suite.addTest(TestCreatorCSharpV1.suite());
-		suite.addTest(TestCreatorCSharpV2.suite());
+    suite.addTest(TestCreatorCSharpV1.suite());
+    suite.addTest(TestCreatorCSharpV2.suite());
 
-		suite.addTest(TestCreatorCPPFileUsingANTLR.suite());
-		suite.addTest(TestCreatorCPPFileUsingEclipse.suite());
-		suite.addTest(TestCreatorClassFile.suite());
-		suite.addTest(TestCreatorJavaFileUsingEclipse.suite());
-		suite.addTest(TestCreatorJavaFileUsingJavaC.suite());
-		suite.addTest(TestCreatorJavaFilevsClassFile.suite());
-		suite.addTest(TestCreatorMSE.suite());
-		suite.addTest(TestCreatorXMI.suite());
+    suite.addTest(TestCreatorCPPFileUsingANTLR.suite());
+    suite.addTest(TestCreatorCPPFileUsingEclipse.suite());
+    suite.addTest(TestCreatorClassFile.suite());
+    suite.addTest(TestCreatorJavaFileUsingEclipse.suite());
+    suite.addTest(TestCreatorJavaFileUsingJavaC.suite());
+    suite.addTest(TestCreatorJavaFilevsClassFile.suite());
+    suite.addTest(TestCreatorMSE.suite());
+    suite.addTest(TestCreatorXMI.suite());
 
-		return suite;
-	}
+    return suite;
+  }
 }

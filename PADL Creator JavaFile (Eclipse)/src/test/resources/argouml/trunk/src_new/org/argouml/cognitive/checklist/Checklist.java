@@ -29,115 +29,113 @@ import java.util.Enumeration;
 import java.util.Vector;
 
 /**
- * A Checklist is basically a list of CheckItems.  It also provides
- * some convience functions for adding trivial CheckItems (ones that
- * have no predicate).
+ * A Checklist is basically a list of CheckItems. It also provides some convience functions for
+ * adding trivial CheckItems (ones that have no predicate).
  *
- * In ArgoUML, Checklists are shown in the TabChecklist panel.
+ * <p>In ArgoUML, Checklists are shown in the TabChecklist panel.
  *
  * @see org.argouml.cognitive.checklist.ui.TabChecklist
- *
  * @author Jason Robbins
  */
 public class Checklist implements Serializable {
 
-    ////////////////////////////////////////////////////////////////
-    // instance variables
+  ////////////////////////////////////////////////////////////////
+  // instance variables
 
-    /**
-     * Pending CheckItems for the designer to consider.
-     */
-    private Vector items = new Vector();
+  /** Pending CheckItems for the designer to consider. */
+  private Vector items = new Vector();
 
-    private String nextCategory = "General";
+  private String nextCategory = "General";
 
-    /**
-     * The constructor.
-     *
-     */
-    public Checklist() { }
+  /** The constructor. */
+  public Checklist() {}
 
-    ////////////////////////////////////////////////////////////////
-    // accessors
+  ////////////////////////////////////////////////////////////////
+  // accessors
 
-    /**
-     * @return the items
-     */
-    public Vector getCheckItems() { return items; }
+  /**
+   * @return the items
+   */
+  public Vector getCheckItems() {
+    return items;
+  }
 
-    /**
-     * @param item the item to be added to the list
-     */
-    public void addItem(CheckItem item) {
-	items.addElement(item);
+  /**
+   * @param item the item to be added to the list
+   */
+  public void addItem(CheckItem item) {
+    items.addElement(item);
+  }
+
+  /**
+   * @param item the item to be removed
+   */
+  public void removeItem(CheckItem item) {
+    items.removeElement(item);
+  }
+
+  /**
+   * @param description the description for a new item
+   */
+  public void addItem(String description) {
+    CheckItem item = new CheckItem(nextCategory, description);
+    items.addElement(item);
+  }
+
+  /**
+   * Replace the list by the given new list.
+   *
+   * @param list the given new list
+   */
+  public synchronized void addAll(Checklist list) {
+    Enumeration cur = list.elements();
+    while (cur.hasMoreElements()) {
+      CheckItem item = (CheckItem) cur.nextElement();
+      addItem(item);
     }
+  }
 
-    /**
-     * @param item the item to be removed
-     */
-    public void removeItem(CheckItem item) {
-	items.removeElement(item);
+  /**
+   * @return the list in enumeration format
+   */
+  public Enumeration elements() {
+    return items.elements();
+  }
+
+  /**
+   * @return the number of items in the list
+   */
+  public int size() {
+    return items.size();
+  }
+
+  /**
+   * @param index the position of the item to retrieve
+   * @return the item
+   */
+  public CheckItem elementAt(int index) {
+    return (CheckItem) items.elementAt(index);
+  }
+
+  /**
+   * @param cat the category
+   */
+  public void setNextCategory(String cat) {
+    nextCategory = cat;
+  }
+
+  /*
+   * @see java.lang.Object#toString()
+   */
+  public String toString() {
+    String res;
+    res = getClass().getName() + " {\n";
+    Enumeration cur = elements();
+    while (cur.hasMoreElements()) {
+      CheckItem item = (CheckItem) cur.nextElement();
+      res += "    " + item.toString() + "\n";
     }
-
-    /**
-     * @param description the description for a new item
-     */
-    public void addItem(String description) {
-	CheckItem item = new CheckItem(nextCategory, description);
-	items.addElement(item);
-    }
-
-    /**
-     * Replace the list by the given new list.
-     *
-     * @param list the given new list
-     */
-    public synchronized void addAll(Checklist list) {
-	Enumeration cur = list.elements();
-	while (cur.hasMoreElements()) {
-	    CheckItem item = (CheckItem) cur.nextElement();
-	    addItem(item);
-	}
-    }
-
-    /**
-     * @return the list in enumeration format
-     */
-    public Enumeration elements() { return items.elements(); }
-
-    /**
-     * @return the number of items in the list
-     */
-    public int size() { return items.size(); }
-
-    /**
-     * @param index the position of the item to retrieve
-     * @return the item
-     */
-    public CheckItem elementAt(int index) {
-	return (CheckItem) items.elementAt(index);
-    }
-
-    /**
-     * @param cat the category
-     */
-    public void setNextCategory(String cat) { nextCategory = cat; }
-
-
-    /*
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-	String res;
-	res = getClass().getName() + " {\n";
-	Enumeration cur = elements();
-	while (cur.hasMoreElements()) {
-	    CheckItem item = (CheckItem) cur.nextElement();
-	    res += "    " + item.toString() + "\n";
-	}
-	res += "  }";
-	return res;
-    }
-
+    res += "  }";
+    return res;
+  }
 } /* end class Checklist */
-

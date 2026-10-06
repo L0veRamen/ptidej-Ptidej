@@ -19,29 +19,28 @@ import junit.framework.TestSuite;
  */
 public class AllTests {
 
-	public static void main(String[] args) {
-		junit.textui.TestRunner.run(AllTests.class);
-	}
+  public static void main(String[] args) {
+    junit.textui.TestRunner.run(AllTests.class);
+  }
 
-	public static Test suite() {
-		TestSuite suite = new TestSuite("Test for org.jhotdraw.test");
-		//$JUnit-BEGIN$
-		
-		suite.addTest(org.jhotdraw.test.contrib.AllTests.suite());
-		suite.addTest(org.jhotdraw.test.figures.AllTests.suite());
-		suite.addTest(org.jhotdraw.test.framework.AllTests.suite());
-		suite.addTest(org.jhotdraw.test.samples.javadraw.AllTests.suite());
-		suite.addTest(org.jhotdraw.test.samples.minimap.AllTests.suite());
-		suite.addTest(org.jhotdraw.test.samples.net.AllTests.suite());
-		suite.addTest(org.jhotdraw.test.samples.nothing.AllTests.suite());
-		suite.addTest(org.jhotdraw.test.samples.pert.AllTests.suite());
-		suite.addTest(org.jhotdraw.test.standard.AllTests.suite());
-		suite.addTest(org.jhotdraw.test.util.AllTests.suite());
-		suite.addTest(org.jhotdraw.test.util.collections.jdk11.AllTests.suite());
-		suite.addTest(org.jhotdraw.test.util.collections.jdk12.AllTests.suite());
-		
+  public static Test suite() {
+    TestSuite suite = new TestSuite("Test for org.jhotdraw.test");
+    // $JUnit-BEGIN$
 
-		//$JUnit-END$
-		return suite;
-	}
+    suite.addTest(org.jhotdraw.test.contrib.AllTests.suite());
+    suite.addTest(org.jhotdraw.test.figures.AllTests.suite());
+    suite.addTest(org.jhotdraw.test.framework.AllTests.suite());
+    suite.addTest(org.jhotdraw.test.samples.javadraw.AllTests.suite());
+    suite.addTest(org.jhotdraw.test.samples.minimap.AllTests.suite());
+    suite.addTest(org.jhotdraw.test.samples.net.AllTests.suite());
+    suite.addTest(org.jhotdraw.test.samples.nothing.AllTests.suite());
+    suite.addTest(org.jhotdraw.test.samples.pert.AllTests.suite());
+    suite.addTest(org.jhotdraw.test.standard.AllTests.suite());
+    suite.addTest(org.jhotdraw.test.util.AllTests.suite());
+    suite.addTest(org.jhotdraw.test.util.collections.jdk11.AllTests.suite());
+    suite.addTest(org.jhotdraw.test.util.collections.jdk12.AllTests.suite());
+
+    // $JUnit-END$
+    return suite;
+  }
 }

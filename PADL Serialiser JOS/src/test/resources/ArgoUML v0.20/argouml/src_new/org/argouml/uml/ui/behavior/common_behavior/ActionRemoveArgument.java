@@ -25,35 +25,28 @@
 package org.argouml.uml.ui.behavior.common_behavior;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.AbstractActionRemoveElement;
 
 /**
  * Action to remove a actualArgument from a Action.
- * 
+ *
  * @since aug 10, 2003
- * @author Decki, Endi, Yayan. Polytechnic of Bandung Indonesia, Computer
- *         Engineering Departement
+ * @author Decki, Endi, Yayan. Polytechnic of Bandung Indonesia, Computer Engineering Departement
  */
 public class ActionRemoveArgument extends AbstractActionRemoveElement {
 
+  /** Constructor for ActionRemoveArgument. */
+  protected ActionRemoveArgument() {
+    super(Translator.localize("menu.popup.remove"));
+  }
 
-    /**
-     * Constructor for ActionRemoveArgument.
-     */
-    protected ActionRemoveArgument() {
-        super(Translator.localize("menu.popup.remove"));
-    }
-
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        Model.getCommonBehaviorHelper().removeActualArgument(getTarget(),
-                getObjectToRemove());
-    }
-
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    Model.getCommonBehaviorHelper().removeActualArgument(getTarget(), getObjectToRemove());
+  }
 }

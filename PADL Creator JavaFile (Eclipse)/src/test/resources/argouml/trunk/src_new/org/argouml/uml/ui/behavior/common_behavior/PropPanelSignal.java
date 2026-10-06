@@ -24,14 +24,11 @@
 
 package org.argouml.uml.ui.behavior.common_behavior;
 
-
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Vector;
-
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.Model;
@@ -44,248 +41,209 @@ import org.argouml.uml.ui.foundation.core.PropPanelClassifier;
 import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
 import org.argouml.util.ConfigLoader;
 
-/**
- * The properties panel of a Signal.
- *
- */
+/** The properties panel of a Signal. */
 public class PropPanelSignal extends PropPanelClassifier {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = -4496838172438164508L;
+  /** The serial version. */
+  private static final long serialVersionUID = -4496838172438164508L;
 
-    /**
-     * Construct a new property panel for a Signal.
-     */
-    public PropPanelSignal() {
-        super("Signal", lookupIcon("SignalSending"),
-                ConfigLoader.getTabPropsOrientation());
+  /** Construct a new property panel for a Signal. */
+  public PropPanelSignal() {
+    super("Signal", lookupIcon("SignalSending"), ConfigLoader.getTabPropsOrientation());
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.namespace"),
-                getNamespaceSelector());
-        add(getNamespaceVisibilityPanel());
-        add(getModifiersPanel());
-		
-        addSeparator();
-        
-        addField(Translator.localize("label.generalizations"),
-				getGeneralizationScroll());
-        addField(Translator.localize("label.specializations"),
-				getSpecializationScroll());
-		
-        addSeparator();
-		
-        AbstractActionAddModelElement actionAddContext =
-            new ActionAddContextSignal();
-        AbstractActionRemoveElement actionRemoveContext =
-            new ActionRemoveContextSignal();
-        JScrollPane operationScroll = new JScrollPane(
-                new UMLMutableLinkedList(
-                        new UMLSignalContextListModel(),
-                        actionAddContext, null, 
-                        actionRemoveContext, true));
-        addField(Translator.localize("label.contexts"),
-                operationScroll);		
-        AbstractActionAddModelElement actionAddReception =
-            new ActionAddReceptionSignal();
-        AbstractActionRemoveElement actionRemoveReception =
-            new ActionRemoveReceptionSignal();
-        JScrollPane receptionScroll = new JScrollPane(
-                new UMLMutableLinkedList(
-                        new UMLSignalReceptionListModel(),
-                        actionAddReception, null, 
-                        actionRemoveReception, true));
-        addField(Translator.localize("label.receptions"),
-                receptionScroll);
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.namespace"), getNamespaceSelector());
+    add(getNamespaceVisibilityPanel());
+    add(getModifiersPanel());
 
-        addAction(new ActionNavigateNamespace());
-        addAction(new ActionNewSignal());
-        addAction(new ActionNewStereotype());
-        addAction(getDeleteAction());
-    }
+    addSeparator();
 
+    addField(Translator.localize("label.generalizations"), getGeneralizationScroll());
+    addField(Translator.localize("label.specializations"), getSpecializationScroll());
 
+    addSeparator();
+
+    AbstractActionAddModelElement actionAddContext = new ActionAddContextSignal();
+    AbstractActionRemoveElement actionRemoveContext = new ActionRemoveContextSignal();
+    JScrollPane operationScroll =
+        new JScrollPane(
+            new UMLMutableLinkedList(
+                new UMLSignalContextListModel(),
+                actionAddContext,
+                null,
+                actionRemoveContext,
+                true));
+    addField(Translator.localize("label.contexts"), operationScroll);
+    AbstractActionAddModelElement actionAddReception = new ActionAddReceptionSignal();
+    AbstractActionRemoveElement actionRemoveReception = new ActionRemoveReceptionSignal();
+    JScrollPane receptionScroll =
+        new JScrollPane(
+            new UMLMutableLinkedList(
+                new UMLSignalReceptionListModel(),
+                actionAddReception,
+                null,
+                actionRemoveReception,
+                true));
+    addField(Translator.localize("label.receptions"), receptionScroll);
+
+    addAction(new ActionNavigateNamespace());
+    addAction(new ActionNewSignal());
+    addAction(new ActionNewStereotype());
+    addAction(getDeleteAction());
+  }
 } /* end class PropPanelSignal */
 
 /**
  * The model for the listbox showing the receptions of a signal.
- * 
+ *
  * @author Michiel
  */
 class UMLSignalReceptionListModel extends UMLModelElementListModel2 {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = 3273212639257377015L;
+  /** The serial version. */
+  private static final long serialVersionUID = 3273212639257377015L;
 
-    /**
-     * Construct a list model showing the receptions of a signal.
+  /** Construct a list model showing the receptions of a signal. */
+  public UMLSignalReceptionListModel() {
+    /*
+     * The event to listen to is "reception", so that model updates
+     * get shown in the list. Reproduce this by adding a new reception,
+     * and see the result displayed in the list.
      */
-    public UMLSignalReceptionListModel() {
-        /*
-         * The event to listen to is "reception", so that model updates
-         * get shown in the list. Reproduce this by adding a new reception,
-         * and see the result displayed in the list.
-         */
-        super("reception");
+    super("reception");
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (getTarget() != null) {
+      setAllElements(Model.getFacade().getReceptions(getTarget()));
     }
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (getTarget() != null) {
-            setAllElements(Model.getFacade().getReceptions(getTarget()));
-        }
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(java.lang.Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().isAReception(element)
-            && Model.getFacade().getReceptions(getTarget()).contains(element);
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(java.lang.Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().isAReception(element)
+        && Model.getFacade().getReceptions(getTarget()).contains(element);
+  }
 }
-
 
 /**
  * This Action adds a Reception to a Signal.
- * 
+ *
  * @author Michiel
  */
 class ActionAddReceptionSignal extends AbstractActionAddModelElement {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = -2854099588590429237L;
+  /** The serial version. */
+  private static final long serialVersionUID = -2854099588590429237L;
 
-    /**
-     * Construct an Action which adds a Reception to a Signal.
-     */
-    public ActionAddReceptionSignal() {
-        super();
+  /** Construct an Action which adds a Reception to a Signal. */
+  public ActionAddReceptionSignal() {
+    super();
+  }
+
+  /**
+   * @see org.argouml.uml.ui.AbstractActionAddModelElement#getChoices()
+   */
+  protected Vector getChoices() {
+    Vector ret = new Vector();
+    Object model = ProjectManager.getManager().getCurrentProject().getModel();
+    if (getTarget() != null) {
+      ret.addAll(
+          Model.getModelManagementHelper()
+              .getAllModelElementsOfKind(model, Model.getMetaTypes().getReception()));
     }
+    return ret;
+  }
 
-    /**
-     * @see org.argouml.uml.ui.AbstractActionAddModelElement#getChoices()
-     */
-    protected Vector getChoices() {
-        Vector ret = new Vector();
-        Object model =
-            ProjectManager.getManager().getCurrentProject().getModel();
-        if (getTarget() != null) {
-            ret.addAll(Model.getModelManagementHelper()
-                .getAllModelElementsOfKind(model, 
-                    Model.getMetaTypes().getReception()));
-        }
-        return ret;
-    }
+  /**
+   * @see org.argouml.uml.ui.AbstractActionAddModelElement#getSelected()
+   */
+  protected Vector getSelected() {
+    Vector ret = new Vector();
+    ret.addAll(Model.getFacade().getReceptions(getTarget()));
+    return ret;
+  }
 
-    /**
-     * @see org.argouml.uml.ui.AbstractActionAddModelElement#getSelected()
-     */
-    protected Vector getSelected() {
-        Vector ret = new Vector();
-        ret.addAll(Model.getFacade().getReceptions(getTarget()));
-        return ret;
-    }
+  /**
+   * @see org.argouml.uml.ui.AbstractActionAddModelElement#getDialogTitle()
+   */
+  protected String getDialogTitle() {
+    return Translator.localize("dialog.title.add-receptions");
+  }
 
-    /**
-     * @see org.argouml.uml.ui.AbstractActionAddModelElement#getDialogTitle()
-     */
-    protected String getDialogTitle() {
-        return Translator.localize("dialog.title.add-receptions");
-    }
-
-    /**
-     * @see org.argouml.uml.ui.AbstractActionAddModelElement#doIt(java.util.Vector)
-     */
-    protected void doIt(Vector selected) {
-        Model.getCommonBehaviorHelper().setReception(getTarget(), selected);
-    }
-
+  /**
+   * @see org.argouml.uml.ui.AbstractActionAddModelElement#doIt(java.util.Vector)
+   */
+  protected void doIt(Vector selected) {
+    Model.getCommonBehaviorHelper().setReception(getTarget(), selected);
+  }
 }
 
 /**
  * This Action removes a Context from a Signal.
- * 
+ *
  * @author Michiel
  */
 class ActionRemoveContextSignal extends AbstractActionRemoveElement {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = -3345844954130000669L;
+  /** The serial version. */
+  private static final long serialVersionUID = -3345844954130000669L;
 
-    /**
-     * Construct an Action which removes a Context from a Signal.
-     */
-    public ActionRemoveContextSignal() {
-        super(Translator.localize("menu.popup.remove"));
+  /** Construct an Action which removes a Context from a Signal. */
+  public ActionRemoveContextSignal() {
+    super(Translator.localize("menu.popup.remove"));
+  }
+
+  /**
+   * @see org.tigris.gef.undo.UndoableAction#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    Object ctxt = getObjectToRemove();
+    if (ctxt != null) {
+      Object signal = getTarget();
+      if (Model.getFacade().isASignal(signal)) {
+        Collection contexts = new ArrayList(Model.getFacade().getContexts(signal));
+        contexts.remove(ctxt);
+        Model.getCommonBehaviorHelper().setContexts(signal, contexts);
+      }
     }
-
-    /**
-     * @see org.tigris.gef.undo.UndoableAction#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        Object ctxt = getObjectToRemove(); 
-        if (ctxt != null) {
-            Object signal = getTarget();
-            if (Model.getFacade().isASignal(signal)) {
-                Collection contexts = new ArrayList(
-                        Model.getFacade().getContexts(signal));
-                contexts.remove(ctxt);
-                Model.getCommonBehaviorHelper().setContexts(signal, contexts);
-            }
-        }
-    }
-
+  }
 }
 
 /**
  * This Action removes a Reception from a Signal.
- * 
+ *
  * @author Michiel
  */
 class ActionRemoveReceptionSignal extends AbstractActionRemoveElement {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = -2630315087703962883L;
+  /** The serial version. */
+  private static final long serialVersionUID = -2630315087703962883L;
 
-    /**
-     * Construct an Action which removes a Reception from a Signal.
-     */
-    public ActionRemoveReceptionSignal() {
-        super(Translator.localize("menu.popup.remove"));
+  /** Construct an Action which removes a Reception from a Signal. */
+  public ActionRemoveReceptionSignal() {
+    super(Translator.localize("menu.popup.remove"));
+  }
+
+  /**
+   * @see org.tigris.gef.undo.UndoableAction#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    Object rec = getObjectToRemove();
+    if (rec != null) {
+      Object signal = getTarget();
+      if (Model.getFacade().isASignal(signal)) {
+        Collection receptions = new ArrayList(Model.getFacade().getReceptions(signal));
+        receptions.remove(rec);
+        Model.getCommonBehaviorHelper().setReception(signal, receptions);
+      }
     }
-
-    /**
-     * @see org.tigris.gef.undo.UndoableAction#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        Object rec = getObjectToRemove(); 
-        if (rec != null) {
-            Object signal = getTarget();
-            if (Model.getFacade().isASignal(signal)) {
-                Collection receptions = new ArrayList(
-                        Model.getFacade().getReceptions(signal));
-                receptions.remove(rec);
-                Model.getCommonBehaviorHelper().setReception(signal, 
-                        receptions);
-            }
-        }
-    }
-
+  }
 }

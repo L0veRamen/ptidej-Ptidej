@@ -25,7 +25,6 @@
 package org.argouml.argoeclipse.internal.ui.exportwizard;
 
 import java.io.File;
-
 import org.argouml.argoeclipse.internal.ui.model.Actions;
 import org.argouml.argoeclipse.internal.ui.util.HybridAction;
 import org.argouml.argoeclipse.internal.ui.wizard.ExternalResourcePage;
@@ -33,45 +32,41 @@ import org.argouml.uml.ui.ActionSaveAllGraphics;
 
 /**
  * Deals with the export ALLGraphics wizard.
- * @author Bogdan Pistol 
+ *
+ * @author Bogdan Pistol
  */
 public class ExportAllGraphics extends ExportGraphics {
 
-    /**
-     * The wizard page.
-     */
-    private ExternalResourcePage page;
-    
-    /*
-     * @see org.eclipse.jface.wizard.Wizard#addPage(org.eclipse.jface.wizard.IWizardPage)
-     */
-    public void addPages() {
-        if (!verifyProjectOpen()) {
-            return;
-        }
-        page = new ExternalResourcePage(
-                ExportWizardMessages.exportAllGraphicsTitle,
-                ExportWizardMessages.exportAllGraphicsDescription,
-                FILE_EXTENSIONS,
-                ExternalResourcePage.EXPORT_TO_FOLDER);
-        addPage(page);
-    }
+  /** The wizard page. */
+  private ExternalResourcePage page;
 
-    /*
-     * @see org.eclipse.jface.wizard.Wizard#performFinish()
-     */
-    public boolean performFinish() {       
-        String result = page.getResourcePath();
-        if (result == null) {
-            return false;
-        }
-        HybridAction action =
-                (HybridAction) Actions.getInstance()
-                        .getActionExportAllGraphics();
-        ((ActionSaveAllGraphics) action.getSwingAction()).trySave(
-                true, new File(result));
-        page.refreshResource();
-        return true;
+  /*
+   * @see org.eclipse.jface.wizard.Wizard#addPage(org.eclipse.jface.wizard.IWizardPage)
+   */
+  public void addPages() {
+    if (!verifyProjectOpen()) {
+      return;
     }
+    page =
+        new ExternalResourcePage(
+            ExportWizardMessages.exportAllGraphicsTitle,
+            ExportWizardMessages.exportAllGraphicsDescription,
+            FILE_EXTENSIONS,
+            ExternalResourcePage.EXPORT_TO_FOLDER);
+    addPage(page);
+  }
 
+  /*
+   * @see org.eclipse.jface.wizard.Wizard#performFinish()
+   */
+  public boolean performFinish() {
+    String result = page.getResourcePath();
+    if (result == null) {
+      return false;
+    }
+    HybridAction action = (HybridAction) Actions.getInstance().getActionExportAllGraphics();
+    ((ActionSaveAllGraphics) action.getSwingAction()).trySave(true, new File(result));
+    page.refreshResource();
+    return true;
+  }
 }

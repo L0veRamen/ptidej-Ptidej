@@ -1,32 +1,25 @@
 /**
+ * QuickUML; A simple UML tool that demonstrates one use of the Java Diagram Package
  *
-    QuickUML; A simple UML tool that demonstrates one use of the 
-    Java Diagram Package 
-
-    Copyright (C) 2001  Eric Crahen <crahen@cse.buffalo.edu>
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
+ * <p>Copyright (C) 2001 Eric Crahen <crahen@cse.buffalo.edu>
+ *
+ * <p>This program is free software; you can redistribute it and/or modify it under the terms of the
+ * GNU General Public License as published by the Free Software Foundation; either version 2 of the
+ * License, or (at your option) any later version.
+ *
+ * <p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * <p>You should have received a copy of the GNU General Public License along with this program; if
+ * not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307 USA
  */
-
 package uml.ui;
 
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
-
 import javax.swing.JComponent;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
@@ -35,12 +28,10 @@ import javax.swing.plaf.basic.BasicScrollPaneUI;
 
 /**
  * @class FlatScrollPane
- *
  * @date 08-20-2001
  * @author Eric Crahen
  * @version 1.0
- *
- * This is a flat-style scroll pane
+ *     <p>This is a flat-style scroll pane
  */
 public class FlatScrollPane extends JScrollPane {
 
@@ -64,18 +55,14 @@ public class FlatScrollPane extends JScrollPane {
     setUI(new FlatScrollPaneUI());
   }
 
-  /**
-   * Get the background color of the view component or null
-   */
+  /** Get the background color of the view component or null */
   public static Color getViewBackground(JScrollPane pane) {
 
     JViewport viewport = pane.getViewport();
     Component view = null;
-    if(viewport != null && (view = viewport.getView()) != null)
-      return view.getBackground();
+    if (viewport != null && (view = viewport.getView()) != null) return view.getBackground();
 
     return null;
-
   }
 
   public JScrollBar createHorizontalScrollBar() {
@@ -98,23 +85,21 @@ public class FlatScrollPane extends JScrollPane {
 
       // Add a transparent corner between the scrollbars
       final JScrollPane thisPane = scrollpane;
-      scrollpane.setCorner(getScrollBarCorner(), new Component() {
+      scrollpane.setCorner(
+          getScrollBarCorner(),
+          new Component() {
 
-        public void paint(Graphics g) {
+            public void paint(Graphics g) {
 
-          int w = getSize().width;
-          int h = getSize().height;
+              int w = getSize().width;
+              int h = getSize().height;
 
-          Color c = getViewBackground(thisPane);
-          if(c != null)
-            g.setColor(c);
+              Color c = getViewBackground(thisPane);
+              if (c != null) g.setColor(c);
 
-          g.fillRect(0, 0, w, h);
-
-        }
-
-      });
-
+              g.fillRect(0, 0, w, h);
+            }
+          });
     }
 
     public void uninstallUI(JComponent c) {
@@ -125,7 +110,5 @@ public class FlatScrollPane extends JScrollPane {
     protected String getScrollBarCorner() {
       return LOWER_RIGHT_CORNER;
     }
-
   }
-
 }

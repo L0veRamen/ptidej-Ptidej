@@ -35,12 +35,8 @@ import org.argouml.uml.diagram.ui.PropPanelDiagram;
  */
 class PropPanelUMLSequenceDiagram extends PropPanelDiagram {
 
-    /**
-     * Constructor for PropPanelUMLSequenceDiagram.
-     */
-    public PropPanelUMLSequenceDiagram() {
-        super(Translator.localize("label.sequence-diagram"),
-                lookupIcon("SequenceDiagram"));
-    }
-
+  /** Constructor for PropPanelUMLSequenceDiagram. */
+  public PropPanelUMLSequenceDiagram() {
+    super(Translator.localize("label.sequence-diagram"), lookupIcon("SequenceDiagram"));
+  }
 }

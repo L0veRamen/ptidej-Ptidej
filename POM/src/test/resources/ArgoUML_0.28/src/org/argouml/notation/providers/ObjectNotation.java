@@ -28,70 +28,65 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
 import java.util.Iterator;
-
 import org.argouml.model.AttributeChangeEvent;
 import org.argouml.model.Model;
 import org.argouml.notation.NotationProvider;
 
 /**
- * This abstract class forms the basis of all Notation providers
- * for the text shown in the Fig that represents an Object.
- * Subclass this for all languages.
+ * This abstract class forms the basis of all Notation providers for the text shown in the Fig that
+ * represents an Object. Subclass this for all languages.
  *
  * @author mvw@tigris.org
  */
 public abstract class ObjectNotation extends NotationProvider {
 
-    /**
-     * The constructor.
-     *
-     * @param theObject the UML element
-     */
-    public ObjectNotation(Object theObject) {
-        if (!Model.getFacade().isAObject(theObject)) {
-            throw new IllegalArgumentException("This is not an Object.");
-        }
+  /**
+   * The constructor.
+   *
+   * @param theObject the UML element
+   */
+  public ObjectNotation(Object theObject) {
+    if (!Model.getFacade().isAObject(theObject)) {
+      throw new IllegalArgumentException("This is not an Object.");
     }
+  }
 
-    /*
-     * @see org.argouml.notation.providers.NotationProvider#initialiseListener(java.beans.PropertyChangeListener, java.lang.Object)
-     */
-    public void initialiseListener(PropertyChangeListener listener, 
-            Object modelElement) {
-        addElementListener(listener, modelElement, 
-                new String[] {"name", "classifier"});
+  /*
+   * @see org.argouml.notation.providers.NotationProvider#initialiseListener(java.beans.PropertyChangeListener, java.lang.Object)
+   */
+  public void initialiseListener(PropertyChangeListener listener, Object modelElement) {
+    addElementListener(listener, modelElement, new String[] {"name", "classifier"});
 
-        // Add the following once we show stereotypes:
-//      Collection c = Model.getFacade().getStereotypes(newOwner);
-//      Iterator i = c.iterator();
-//      while (i.hasNext()) {
-//          Object st = i.next();
-//          addElementListener(st, "name");
-//      }
+    // Add the following once we show stereotypes:
+    //      Collection c = Model.getFacade().getStereotypes(newOwner);
+    //      Iterator i = c.iterator();
+    //      while (i.hasNext()) {
+    //          Object st = i.next();
+    //          addElementListener(st, "name");
+    //      }
 
-        Collection c = Model.getFacade().getClassifiers(modelElement);
-        Iterator i = c.iterator();
-        while (i.hasNext()) {
-            Object st = i.next();
-            addElementListener(listener, st, "name");
-        }
+    Collection c = Model.getFacade().getClassifiers(modelElement);
+    Iterator i = c.iterator();
+    while (i.hasNext()) {
+      Object st = i.next();
+      addElementListener(listener, st, "name");
     }
+  }
 
-    /*
-     * @see org.argouml.notation.providers.NotationProvider#updateListener(java.beans.PropertyChangeListener, java.lang.Object, java.beans.PropertyChangeEvent)
-     */
-    public void updateListener(PropertyChangeListener listener, 
-            Object modelElement, PropertyChangeEvent pce) {
-        if (pce instanceof AttributeChangeEvent
-                && pce.getSource() == modelElement
-                && "classifier".equals(pce.getPropertyName())) {
-            if (pce.getOldValue() != null) {
-                removeElementListener(listener, pce.getOldValue());
-            }
-            if (pce.getNewValue() != null) {
-                addElementListener(listener, pce.getNewValue(), "name");
-            }
-        }
+  /*
+   * @see org.argouml.notation.providers.NotationProvider#updateListener(java.beans.PropertyChangeListener, java.lang.Object, java.beans.PropertyChangeEvent)
+   */
+  public void updateListener(
+      PropertyChangeListener listener, Object modelElement, PropertyChangeEvent pce) {
+    if (pce instanceof AttributeChangeEvent
+        && pce.getSource() == modelElement
+        && "classifier".equals(pce.getPropertyName())) {
+      if (pce.getOldValue() != null) {
+        removeElementListener(listener, pce.getOldValue());
+      }
+      if (pce.getNewValue() != null) {
+        addElementListener(listener, pce.getNewValue(), "name");
+      }
     }
-
+  }
 }

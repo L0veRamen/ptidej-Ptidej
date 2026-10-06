@@ -25,42 +25,36 @@
 package org.argouml.uml.ui.behavior.common_behavior;
 
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.uml.ui.AbstractActionAddModelElement;
 import org.argouml.uml.ui.UMLMutableLinkedList;
 
 /**
- * The properties panel for a CreateAction. TODO: this property panel needs
- * refactoring to remove dependency on old gui components.
+ * The properties panel for a CreateAction. TODO: this property panel needs refactoring to remove
+ * dependency on old gui components.
  */
 public class PropPanelCreateAction extends PropPanelAction {
 
-    /**
-     * The constructor.
-     */
-    public PropPanelCreateAction() {
-        super("CreateAction", lookupIcon("CreateAction"));
+  /** The constructor. */
+  public PropPanelCreateAction() {
+    super("CreateAction", lookupIcon("CreateAction"));
 
-        // addField(Translator.localize( "label.recurrence"),
-        // getRecurrenceScroll());
+    // addField(Translator.localize( "label.recurrence"),
+    // getRecurrenceScroll());
 
-        UMLMutableLinkedList list = new UMLMutableLinkedList(
-                new UMLCreateActionClassifierListModel(), null, null);
-        list.setVisibleRowCount(1);
+    UMLMutableLinkedList list =
+        new UMLMutableLinkedList(new UMLCreateActionClassifierListModel(), null, null);
+    list.setVisibleRowCount(1);
 
-        AbstractActionAddModelElement action = new ActionAddCreateActionInstantiation();
+    AbstractActionAddModelElement action = new ActionAddCreateActionInstantiation();
 
-        addSeperator();
+    addSeperator();
 
-        JScrollPane instantiationScroll = new JScrollPane(
-                new UMLMutableLinkedList(
-                        new UMLCreateActionClassifierListModel(), action, null,
-                        null, true));
+    JScrollPane instantiationScroll =
+        new JScrollPane(
+            new UMLMutableLinkedList(
+                new UMLCreateActionClassifierListModel(), action, null, null, true));
 
-        addField(Translator.localize("label.instantiation"),
-                instantiationScroll);
-
-    }
-
+    addField(Translator.localize("label.instantiation"), instantiationScroll);
+  }
 }

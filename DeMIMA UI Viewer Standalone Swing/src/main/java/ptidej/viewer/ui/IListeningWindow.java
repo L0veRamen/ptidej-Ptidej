@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -14,6 +14,5 @@ import ptidej.ui.canvas.event.ICanvasListener;
 import ptidej.viewer.event.IGraphModelListener;
 import ptidej.viewer.event.ISourceModelListener;
 
-public interface IListeningWindow extends ICanvasListener, IGraphModelListener,
-		ISourceModelListener, IWindow {
-}
+public interface IListeningWindow
+    extends ICanvasListener, IGraphModelListener, ISourceModelListener, IWindow {}

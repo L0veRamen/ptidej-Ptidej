@@ -25,53 +25,38 @@
 package org.argouml.ui.cmd;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.Action;
-
 import org.argouml.cognitive.Designer;
 import org.argouml.cognitive.ToDoList;
 import org.argouml.i18n.Translator;
 import org.tigris.gef.undo.UndoableAction;
 
-
-
-/**
- * Stops critiquing and the TodoList validity checking thread in ToDoList.
- */
+/** Stops critiquing and the TodoList validity checking thread in ToDoList. */
 public class ActionAutoCritique extends UndoableAction {
 
-    /**
-     * The constructor.
-     */
-    public ActionAutoCritique() {
-        super(Translator.localize("action.toggle-auto-critique"),
-                null);
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize("action.toggle-auto-critique"));
-        putValue("SELECTED",
-                    Boolean.valueOf(Designer.theDesigner().getAutoCritique()));
-    }
+  /** The constructor. */
+  public ActionAutoCritique() {
+    super(Translator.localize("action.toggle-auto-critique"), null);
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize("action.toggle-auto-critique"));
+    putValue("SELECTED", Boolean.valueOf(Designer.theDesigner().getAutoCritique()));
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-        super.actionPerformed(ae);
-    	
-        // stop/start creating more critics
-	Designer d = Designer.theDesigner();
-	boolean b = d.getAutoCritique();
-	d.setAutoCritique(!b);
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    super.actionPerformed(ae);
 
-        // stop/start cleaning up invalid TodoItems.
-        ToDoList.getInstance().setPaused(!ToDoList.getInstance().isPaused());
-    }
+    // stop/start creating more critics
+    Designer d = Designer.theDesigner();
+    boolean b = d.getAutoCritique();
+    d.setAutoCritique(!b);
 
+    // stop/start cleaning up invalid TodoItems.
+    ToDoList.getInstance().setPaused(!ToDoList.getInstance().isPaused());
+  }
 
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = 9057306108717070004L;
+  /** The UID. */
+  private static final long serialVersionUID = 9057306108717070004L;
 } /* end class ActionAutoCritique */
-

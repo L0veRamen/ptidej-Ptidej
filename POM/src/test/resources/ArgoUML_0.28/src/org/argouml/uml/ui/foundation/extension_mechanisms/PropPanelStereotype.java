@@ -32,12 +32,10 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.AbstractActionAddModelElement2;
@@ -54,274 +52,246 @@ import org.argouml.uml.ui.foundation.core.UMLGeneralizableElementRootCheckBox;
 import org.argouml.uml.ui.foundation.core.UMLGeneralizableElementSpecializationListModel;
 import org.tigris.gef.undo.UndoManager;
 
-/**
- * The properties panel for a Stereotype.
- */
+/** The properties panel for a Stereotype. */
 public class PropPanelStereotype extends PropPanelModelElement {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = 8038077991746618130L;
+  /** The serial version. */
+  private static final long serialVersionUID = 8038077991746618130L;
 
-    private List<String> metaClasses;
-    
-    private static UMLGeneralizableElementSpecializationListModel
-    specializationListModel =
-            new UMLGeneralizableElementSpecializationListModel();
+  private List<String> metaClasses;
 
-    private static UMLGeneralizableElementGeneralizationListModel
-    generalizationListModel =
-            new UMLGeneralizableElementGeneralizationListModel();
+  private static UMLGeneralizableElementSpecializationListModel specializationListModel =
+      new UMLGeneralizableElementSpecializationListModel();
 
-    private static UMLStereotypeTagDefinitionListModel
-    tagDefinitionListModel =
-            new UMLStereotypeTagDefinitionListModel();
+  private static UMLGeneralizableElementGeneralizationListModel generalizationListModel =
+      new UMLGeneralizableElementGeneralizationListModel();
 
-    private static UMLExtendedElementsListModel
-    extendedElementsListModel =
-            new UMLExtendedElementsListModel();
+  private static UMLStereotypeTagDefinitionListModel tagDefinitionListModel =
+      new UMLStereotypeTagDefinitionListModel();
 
-    private JScrollPane generalizationScroll;
+  private static UMLExtendedElementsListModel extendedElementsListModel =
+      new UMLExtendedElementsListModel();
 
-    private JScrollPane specializationScroll;
+  private JScrollPane generalizationScroll;
 
-    private JScrollPane tagDefinitionScroll;
+  private JScrollPane specializationScroll;
 
-    private JScrollPane extendedElementsScroll;
+  private JScrollPane tagDefinitionScroll;
 
-    /**
-     * Construct a stereotype properties panel.
-     */
-    public PropPanelStereotype() {
-        super("label.stereotype-title", lookupIcon("Stereotype"));
+  private JScrollPane extendedElementsScroll;
 
-        addField(Translator.localize("label.name"), getNameTextField());
+  /** Construct a stereotype properties panel. */
+  public PropPanelStereotype() {
+    super("label.stereotype-title", lookupIcon("Stereotype"));
 
-        addField(Translator.localize("label.namespace"),
-                 getNamespaceSelector());
+    addField(Translator.localize("label.name"), getNameTextField());
 
+    addField(Translator.localize("label.namespace"), getNamespaceSelector());
 
-        JPanel modifiersPanel = createBorderPanel(
-                Translator.localize("label.modifiers"));
-        modifiersPanel.add(new UMLGeneralizableElementAbstractCheckBox());
-        modifiersPanel.add(new UMLGeneralizableElementLeafCheckBox());
-        modifiersPanel.add(new UMLGeneralizableElementRootCheckBox());
-        add(modifiersPanel);
-        
-        add(getVisibilityPanel());
+    JPanel modifiersPanel = createBorderPanel(Translator.localize("label.modifiers"));
+    modifiersPanel.add(new UMLGeneralizableElementAbstractCheckBox());
+    modifiersPanel.add(new UMLGeneralizableElementLeafCheckBox());
+    modifiersPanel.add(new UMLGeneralizableElementRootCheckBox());
+    add(modifiersPanel);
 
-        addSeparator();
+    add(getVisibilityPanel());
 
-        addField(Translator.localize("label.generalizations"),
-                getGeneralizationScroll());
+    addSeparator();
 
-        addField(Translator.localize("label.specializations"),
-                getSpecializationScroll());
+    addField(Translator.localize("label.generalizations"), getGeneralizationScroll());
 
-        addField(Translator.localize("label.tagdefinitions"),
-                getTagDefinitionScroll());
+    addField(Translator.localize("label.specializations"), getSpecializationScroll());
 
-        addSeparator();
+    addField(Translator.localize("label.tagdefinitions"), getTagDefinitionScroll());
 
-        initMetaClasses();
-        UMLMutableLinkedList umll = new UMLMutableLinkedList(
-                new UMLStereotypeBaseClassListModel(), 
-                new ActionAddStereotypeBaseClass(), 
-                null);
-        umll.setDeleteAction(new ActionDeleteStereotypeBaseClass());
-        umll.setCellRenderer(new DefaultListCellRenderer());
-        addField(Translator.localize("label.base-class"),
-            new JScrollPane(umll));
+    addSeparator();
 
-        addField(Translator.localize("label.extended-elements"),
-                getExtendedElementsScroll());
+    initMetaClasses();
+    UMLMutableLinkedList umll =
+        new UMLMutableLinkedList(
+            new UMLStereotypeBaseClassListModel(), new ActionAddStereotypeBaseClass(), null);
+    umll.setDeleteAction(new ActionDeleteStereotypeBaseClass());
+    umll.setCellRenderer(new DefaultListCellRenderer());
+    addField(Translator.localize("label.base-class"), new JScrollPane(umll));
 
-        addAction(new ActionNavigateNamespace());
-        addAction(new ActionNewStereotype());
-        addAction(new ActionNewTagDefinition());
-        addAction(getDeleteAction());
+    addField(Translator.localize("label.extended-elements"), getExtendedElementsScroll());
+
+    addAction(new ActionNavigateNamespace());
+    addAction(new ActionNewStereotype());
+    addAction(new ActionNewTagDefinition());
+    addAction(getDeleteAction());
+  }
+
+  /**
+   * Returns the generalizationScroll.
+   *
+   * @return JScrollPane
+   */
+  protected JScrollPane getGeneralizationScroll() {
+    if (generalizationScroll == null) {
+      JList list = new UMLLinkedList(generalizationListModel);
+      generalizationScroll = new JScrollPane(list);
+    }
+    return generalizationScroll;
+  }
+
+  /**
+   * Returns the specializationScroll.
+   *
+   * @return JScrollPane
+   */
+  protected JScrollPane getSpecializationScroll() {
+    if (specializationScroll == null) {
+      JList list = new UMLLinkedList(specializationListModel);
+      specializationScroll = new JScrollPane(list);
+    }
+    return specializationScroll;
+  }
+
+  /**
+   * Returns the tagDefinitionScroll.
+   *
+   * @return JScrollPane
+   */
+  protected JScrollPane getTagDefinitionScroll() {
+    if (tagDefinitionScroll == null) {
+      JList list = new UMLLinkedList(tagDefinitionListModel);
+      tagDefinitionScroll = new JScrollPane(list);
+    }
+    return tagDefinitionScroll;
+  }
+
+  protected JScrollPane getExtendedElementsScroll() {
+    if (extendedElementsScroll == null) {
+      JList list = new UMLLinkedList(extendedElementsListModel);
+      extendedElementsScroll = new JScrollPane(list);
+    }
+    return extendedElementsScroll;
+  }
+
+  /**
+   * Initialise the meta-classes list.
+   *
+   * <p>All this code is necessary to be independent of model repository implementation, i.e. to
+   * ensure that we have a sorted list of strings.
+   */
+  void initMetaClasses() {
+    Collection<String> tmpMetaClasses = Model.getCoreHelper().getAllMetatypeNames();
+    if (tmpMetaClasses instanceof List) {
+      metaClasses = (List<String>) tmpMetaClasses;
+    } else {
+      metaClasses = new LinkedList<String>(tmpMetaClasses);
+    }
+    try {
+      Collections.sort(metaClasses);
+    } catch (UnsupportedOperationException e) {
+      // We got passed an unmodifiable List.  Copy it and sort the result
+      metaClasses = new LinkedList<String>(tmpMetaClasses);
+      Collections.sort(metaClasses);
+    }
+  }
+
+  /**
+   * The list model for the BaseClasses of the stereotype.
+   *
+   * @author Michiel
+   */
+  class UMLStereotypeBaseClassListModel extends UMLModelElementListModel2 {
+
+    /** Construct the model, listen to changes of "baseClass". */
+    UMLStereotypeBaseClassListModel() {
+      super("baseClass");
     }
 
-    /**
-     * Returns the generalizationScroll.
-     *
-     * @return JScrollPane
-     */
-    protected JScrollPane getGeneralizationScroll() {
-        if (generalizationScroll == null) {
-            JList list = new UMLLinkedList(generalizationListModel);
-            generalizationScroll = new JScrollPane(list);
-        }
-        return generalizationScroll;
+    @Override
+    protected void buildModelList() {
+      removeAllElements();
+      if (Model.getFacade().isAStereotype(getTarget())) {
+        // keep them sorted
+        LinkedList<String> lst =
+            new LinkedList<String>(Model.getFacade().getBaseClasses(getTarget()));
+        Collections.sort(lst);
+        addAll(lst);
+      }
     }
 
-    /**
-     * Returns the specializationScroll.
-     *
-     * @return JScrollPane
-     */
-    protected JScrollPane getSpecializationScroll() {
-        if (specializationScroll == null) {
-            JList list = new UMLLinkedList(specializationListModel);
-            specializationScroll = new JScrollPane(list);
-        }
-        return specializationScroll;
+    @Override
+    protected boolean isValidElement(Object element) {
+      if (Model.getFacade().isAStereotype(element)) {
+        return true;
+      }
+      return false;
+    }
+  }
+
+  /**
+   * The Action to add a baseclass to the stereotype.
+   *
+   * @author Michiel
+   */
+  class ActionAddStereotypeBaseClass extends AbstractActionAddModelElement2 {
+
+    @Override
+    protected List<String> getChoices() {
+      return Collections.unmodifiableList(metaClasses);
     }
 
-    /**
-     * Returns the tagDefinitionScroll.
-     *
-     * @return JScrollPane
-     */
-    protected JScrollPane getTagDefinitionScroll() {
-        if (tagDefinitionScroll == null) {
-            JList list = new UMLLinkedList(tagDefinitionListModel);
-            tagDefinitionScroll = new JScrollPane(list);
-        }
-        return tagDefinitionScroll;
+    @Override
+    protected String getDialogTitle() {
+      return Translator.localize("dialog.title.add-baseclasses");
     }
 
-    protected JScrollPane getExtendedElementsScroll() {
-        if (extendedElementsScroll == null) {
-            JList list = new UMLLinkedList(extendedElementsListModel);
-            extendedElementsScroll = new JScrollPane(list);
-        }
-        return extendedElementsScroll;
+    @Override
+    protected List<String> getSelected() {
+      List<String> result = new ArrayList<String>();
+      if (Model.getFacade().isAStereotype(getTarget())) {
+        Collection<String> bases = Model.getFacade().getBaseClasses(getTarget());
+        result.addAll(bases);
+      }
+      return result;
     }
-    
-    /**
-     * Initialise the meta-classes list. <p>
-     * 
-     * All this code is necessary to be independent of 
-     * model repository implementation, 
-     * i.e. to ensure that we have a 
-     * sorted list of strings.
-     */
-    void initMetaClasses() {
-        Collection<String> tmpMetaClasses = 
-            Model.getCoreHelper().getAllMetatypeNames();
-        if (tmpMetaClasses instanceof List) {
-            metaClasses = (List<String>) tmpMetaClasses;
+
+    @Override
+    protected void doIt(Collection selected) {
+      Object stereo = getTarget();
+      Set<Object> oldSet = new HashSet<Object>(getSelected());
+      Set toBeRemoved = new HashSet<Object>(oldSet);
+
+      for (Object o : selected) {
+        if (oldSet.contains(o)) {
+          toBeRemoved.remove(o);
         } else {
-            metaClasses = new LinkedList<String>(tmpMetaClasses);
+          Model.getExtensionMechanismsHelper().addBaseClass(stereo, o);
         }
-        try {
-            Collections.sort(metaClasses);
-        } catch (UnsupportedOperationException e) {
-            // We got passed an unmodifiable List.  Copy it and sort the result
-            metaClasses = new LinkedList<String>(tmpMetaClasses);
-            Collections.sort(metaClasses);
-        }
+      }
+      for (Object o : toBeRemoved) {
+        Model.getExtensionMechanismsHelper().removeBaseClass(stereo, o);
+      }
+    }
+  }
+
+  /**
+   * The Action to remove a baseclass from a stereotype.
+   *
+   * @author Michiel
+   */
+  class ActionDeleteStereotypeBaseClass extends AbstractActionRemoveElement {
+
+    public ActionDeleteStereotypeBaseClass() {
+      super(Translator.localize("menu.popup.remove"));
     }
 
-    /**
-     * The list model for the BaseClasses of the stereotype.
-     *
-     * @author Michiel
-     */
-    class UMLStereotypeBaseClassListModel extends UMLModelElementListModel2 {
-
-        /**
-         * Construct the model, listen to changes of "baseClass".
-         */
-        UMLStereotypeBaseClassListModel() {
-            super("baseClass");
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      // TODO: Use per-project undo manager, not global
+      UndoManager.getInstance().startChain();
+      Object baseclass = getObjectToRemove();
+      if (baseclass != null) {
+        Object st = getTarget();
+        if (Model.getFacade().isAStereotype(st)) {
+          Model.getExtensionMechanismsHelper().removeBaseClass(st, baseclass);
         }
-
-        @Override
-        protected void buildModelList() {
-            removeAllElements();
-            if (Model.getFacade().isAStereotype(getTarget())) {
-                // keep them sorted
-                LinkedList<String> lst = new LinkedList<String>(
-                        Model.getFacade().getBaseClasses(getTarget()));
-                Collections.sort(lst);
-                addAll(lst);
-            }
-        }
-
-        @Override
-        protected boolean isValidElement(Object element) {
-            if (Model.getFacade().isAStereotype(element)) {
-                return true;
-            }
-            return false;
-        }
+      }
     }
-    
-    /**
-     * The Action to add a baseclass to the stereotype.
-     *
-     * @author Michiel
-     */
-    class ActionAddStereotypeBaseClass extends AbstractActionAddModelElement2 {
-
-        @Override
-        protected List<String> getChoices() {
-            return Collections.unmodifiableList(metaClasses);
-        }
-
-        @Override
-        protected String getDialogTitle() {
-            return Translator.localize("dialog.title.add-baseclasses");
-        }
-
-        @Override
-        protected List<String> getSelected() {
-            List<String> result = new ArrayList<String>();
-            if (Model.getFacade().isAStereotype(getTarget())) {
-                Collection<String> bases = 
-                    Model.getFacade().getBaseClasses(getTarget());
-                result.addAll(bases);
-            }
-            return result;
-        }
-
-        @Override
-        protected void doIt(Collection selected) {
-            Object stereo = getTarget();
-            Set<Object> oldSet = new HashSet<Object>(getSelected());
-            Set toBeRemoved = new HashSet<Object>(oldSet);
-
-            for (Object o : selected) {
-                if (oldSet.contains(o)) {
-                    toBeRemoved.remove(o);
-                } else {
-                    Model.getExtensionMechanismsHelper()
-                            .addBaseClass(stereo, o);
-                }
-            }
-            for (Object o : toBeRemoved) {
-                Model.getExtensionMechanismsHelper().removeBaseClass(stereo, o);
-            }
-        }
-        
-    }
-    
-    /**
-     * The Action to remove a baseclass from a stereotype.
-     *
-     * @author Michiel
-     */
-    class ActionDeleteStereotypeBaseClass extends AbstractActionRemoveElement {
-
-        public ActionDeleteStereotypeBaseClass() {
-            super(Translator.localize("menu.popup.remove"));
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            // TODO: Use per-project undo manager, not global
-            UndoManager.getInstance().startChain();
-            Object baseclass = getObjectToRemove();
-            if (baseclass != null) {
-                Object st = getTarget();
-                if (Model.getFacade().isAStereotype(st)) {
-                    Model.getExtensionMechanismsHelper().removeBaseClass(st,
-                            baseclass);
-                }
-            }
-        }
-    }
+  }
 }

@@ -27,7 +27,6 @@ package org.argouml.uml.ui.foundation.core;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.ui.targetmanager.TargetManager;
@@ -39,115 +38,101 @@ import org.argouml.uml.ui.UMLTextField2;
 import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
 import org.argouml.util.ConfigLoader;
 
-/**
- * The properties panel for a Generalization.
- */
+/** The properties panel for a Generalization. */
 public class PropPanelGeneralization extends PropPanelModelElement {
 
-    private JTextField discriminatorTextField;
+  private JTextField discriminatorTextField;
 
-    private JScrollPane parentScroll;
+  private JScrollPane parentScroll;
 
-    private JScrollPane childScroll;
+  private JScrollPane childScroll;
 
-    private static UMLDiscriminatorNameDocument discriminatorDocument =
-        new UMLDiscriminatorNameDocument();
+  private static UMLDiscriminatorNameDocument discriminatorDocument =
+      new UMLDiscriminatorNameDocument();
 
-    private static UMLGeneralizationChildListModel childListModel =
-        new UMLGeneralizationChildListModel();
+  private static UMLGeneralizationChildListModel childListModel =
+      new UMLGeneralizationChildListModel();
 
-    private static UMLGeneralizationParentListModel parentListModel =
-        new UMLGeneralizationParentListModel();
+  private static UMLGeneralizationParentListModel parentListModel =
+      new UMLGeneralizationParentListModel();
 
-    /**
-     * The constructor.
-     *
-     */
-    public PropPanelGeneralization() {
-        super("Generalization",
-            lookupIcon("Generalization"),
-            ConfigLoader.getTabPropsOrientation());
+  /** The constructor. */
+  public PropPanelGeneralization() {
+    super("Generalization", lookupIcon("Generalization"), ConfigLoader.getTabPropsOrientation());
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
+    addField(Translator.localize("label.name"), getNameTextField());
 
-        addField(Translator.localize("label.stereotype"),
-                getStereotypeSelector());
+    addField(Translator.localize("label.stereotype"), getStereotypeSelector());
 
-        addField(Translator.localize("label.discriminator"),
-                getDiscriminatorTextField());
+    addField(Translator.localize("label.discriminator"), getDiscriminatorTextField());
 
-        addField(Translator.localize("label.namespace"),
-                getNamespaceSelector());
+    addField(Translator.localize("label.namespace"), getNamespaceSelector());
 
-        addSeperator();
+    addSeperator();
 
-        addField(Translator.localize("label.parent"),
-                getParentScroll());
+    addField(Translator.localize("label.parent"), getParentScroll());
 
-        addField(Translator.localize("label.child"),
-                getChildScroll());
+    addField(Translator.localize("label.child"), getChildScroll());
 
-        addField(Translator.localize("label.powertype"),
-                new UMLComboBox2(new UMLGeneralizationPowertypeComboBoxModel(),
-                        ActionSetGeneralizationPowertype.getInstance()));
+    addField(
+        Translator.localize("label.powertype"),
+        new UMLComboBox2(
+            new UMLGeneralizationPowertypeComboBoxModel(),
+            ActionSetGeneralizationPowertype.getInstance()));
 
-        addAction(new ActionNavigateContainerElement());
-        addAction(new ActionNewStereotype());
-        addAction(new ActionDeleteSingleModelElement());
+    addAction(new ActionNavigateContainerElement());
+    addAction(new ActionNewStereotype());
+    addAction(new ActionDeleteSingleModelElement());
+  }
+
+  /**
+   * @see org.argouml.uml.ui.foundation.core.PropPanelModelElement#navigateUp()
+   */
+  public void navigateUp() {
+    Object target = getTarget();
+    if (Model.getFacade().isAModelElement(target)) {
+      Object namespace = Model.getFacade().getNamespace(target);
+      if (namespace != null) {
+        TargetManager.getInstance().setTarget(namespace);
+      }
     }
+  }
 
-    /**
-     * @see org.argouml.uml.ui.foundation.core.PropPanelModelElement#navigateUp()
-     */
-    public void navigateUp() {
-        Object target = getTarget();
-        if (Model.getFacade().isAModelElement(target)) {
-            Object namespace = Model.getFacade().getNamespace(target);
-            if (namespace != null) {
-                TargetManager.getInstance().setTarget(namespace);
-            }
-        }
+  /**
+   * @return the discriminator textfield
+   */
+  protected JTextField getDiscriminatorTextField() {
+    if (discriminatorTextField == null) {
+      discriminatorTextField = new UMLTextField2(discriminatorDocument);
     }
+    return discriminatorTextField;
+  }
 
-    /**
-     * @return the discriminator textfield
-     */
-    protected JTextField getDiscriminatorTextField() {
-        if (discriminatorTextField == null) {
-            discriminatorTextField = new UMLTextField2(discriminatorDocument);
-        }
-        return discriminatorTextField;
+  /**
+   * @return the scrollpane for the parent
+   */
+  protected JScrollPane getParentScroll() {
+    if (parentScroll == null) {
+      JList list = new UMLLinkedList(parentListModel);
+      list.setVisibleRowCount(1);
+      parentScroll =
+          new JScrollPane(
+              list, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     }
+    return parentScroll;
+  }
 
-    /**
-     * @return the scrollpane for the parent
-     */
-    protected JScrollPane getParentScroll() {
-        if (parentScroll == null) {
-            JList list = new UMLLinkedList(parentListModel);
-            list.setVisibleRowCount(1);
-            parentScroll =
-                new JScrollPane(list,
-                        JScrollPane.VERTICAL_SCROLLBAR_NEVER,
-                        JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        }
-        return parentScroll;
+  /**
+   * @return the scrollpane for the child
+   */
+  public JScrollPane getChildScroll() {
+    if (childScroll == null) {
+      JList list = new UMLLinkedList(childListModel);
+      list.setVisibleRowCount(1);
+      childScroll =
+          new JScrollPane(
+              list, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     }
-
-    /**
-     * @return the scrollpane for the child
-     */
-    public JScrollPane getChildScroll() {
-        if (childScroll == null) {
-            JList list = new UMLLinkedList(childListModel);
-            list.setVisibleRowCount(1);
-            childScroll =
-                new JScrollPane(list,
-                        JScrollPane.VERTICAL_SCROLLBAR_NEVER,
-                        JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        }
-        return childScroll;
-    }
-
+    return childScroll;
+  }
 } /* end class PropPanelGeneralization */

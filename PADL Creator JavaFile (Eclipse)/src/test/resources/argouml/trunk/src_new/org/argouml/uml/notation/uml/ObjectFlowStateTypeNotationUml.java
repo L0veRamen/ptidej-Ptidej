@@ -26,7 +26,6 @@ package org.argouml.uml.notation.uml;
 
 import java.text.ParseException;
 import java.util.HashMap;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.ui.ProjectBrowser;
@@ -35,83 +34,74 @@ import org.argouml.uml.notation.ObjectFlowStateTypeNotation;
 /**
  * @author Michiel
  */
-public class ObjectFlowStateTypeNotationUml
-    extends ObjectFlowStateTypeNotation {
+public class ObjectFlowStateTypeNotationUml extends ObjectFlowStateTypeNotation {
 
-    /**
-     * The constructor.
-     *
-     * @param objectflowstate the ObjectFlowState represented by this notation
-     */
-    public ObjectFlowStateTypeNotationUml(Object objectflowstate) {
-        super(objectflowstate);
+  /**
+   * The constructor.
+   *
+   * @param objectflowstate the ObjectFlowState represented by this notation
+   */
+  public ObjectFlowStateTypeNotationUml(Object objectflowstate) {
+    super(objectflowstate);
+  }
+
+  /**
+   * @see org.argouml.uml.notation.NotationProvider#parse(java.lang.Object, java.lang.String)
+   */
+  public void parse(Object modelElement, String text) {
+    try {
+      parseObjectFlowState1(modelElement, text);
+    } catch (ParseException pe) {
+      String msg = "statusmsg.bar.error.parsing.objectflowstate";
+      Object[] args = {
+        pe.getLocalizedMessage(), Integer.valueOf(pe.getErrorOffset()),
+      };
+      ProjectBrowser.getInstance().getStatusBar().showStatus(Translator.messageFormat(msg, args));
     }
+  }
 
-    /**
-     * @see org.argouml.uml.notation.NotationProvider#parse(java.lang.Object, java.lang.String)
-     */
-    public void parse(Object modelElement, String text) {
-        try {
-            parseObjectFlowState1(modelElement, text);
-        } catch (ParseException pe) {
-            String msg = "statusmsg.bar.error.parsing.objectflowstate";
-            Object[] args = {
-                pe.getLocalizedMessage(),
-                Integer.valueOf(pe.getErrorOffset()),
-            };
-            ProjectBrowser.getInstance().getStatusBar().showStatus(
-                    Translator.messageFormat(msg, args));
-        }
+  /**
+   * Do the actual parsing.
+   *
+   * @param objectFlowState the given element to be altered
+   * @param s the new string
+   * @return the altered ObjectFlowState
+   * @throws ParseException when the given text was rejected
+   */
+  protected Object parseObjectFlowState1(Object objectFlowState, String s) throws ParseException {
+    Object c = Model.getActivityGraphsHelper().findClassifierByName(objectFlowState, s);
+    if (c != null) {
+      Model.getCoreHelper().setType(objectFlowState, c);
+    } else {
+      String msg = "parsing.error.object-flow-type.classifier-not-found";
+      Object[] args = {s};
+      throw new ParseException(Translator.localize(msg, args), 0);
     }
+    return objectFlowState;
+  }
 
-    /**
-     * Do the actual parsing.
-     *
-     * @param objectFlowState the given element to be altered
-     * @param s the new string
-     * @return the altered ObjectFlowState
-     * @throws ParseException when the given text was rejected
-     */
-    protected Object parseObjectFlowState1(Object objectFlowState, String s)
-        throws ParseException {
-        Object c =
-            Model.getActivityGraphsHelper()
-                    .findClassifierByName(objectFlowState, s);
-        if (c != null) {
-            Model.getCoreHelper().setType(objectFlowState, c);
-        } else {
-            String msg = "parsing.error.object-flow-type.classifier-not-found";
-            Object[] args = {s};
-            throw new ParseException(
-                    Translator.localize(msg, args), 
-                    0);
-        }
-        return objectFlowState;
+  /**
+   * @see org.argouml.uml.notation.NotationProvider#getParsingHelp()
+   */
+  public String getParsingHelp() {
+    return "parsing.help.fig-objectflowstate1";
+  }
+
+  /**
+   * @see org.argouml.uml.notation.NotationProvider#toString(java.lang.Object, java.util.HashMap)
+   */
+  public String toString(Object modelElement, HashMap args) {
+    Object classifier = Model.getFacade().getType(modelElement);
+    if (Model.getFacade().isAClassifierInState(classifier)) {
+      classifier = Model.getFacade().getType(classifier);
     }
-
-    /**
-     * @see org.argouml.uml.notation.NotationProvider#getParsingHelp()
-     */
-    public String getParsingHelp() {
-        return "parsing.help.fig-objectflowstate1";
+    if (classifier == null) {
+      return "";
     }
-
-    /**
-     * @see org.argouml.uml.notation.NotationProvider#toString(java.lang.Object, java.util.HashMap)
-     */
-    public String toString(Object modelElement, HashMap args) {
-        Object classifier = Model.getFacade().getType(modelElement);
-        if (Model.getFacade().isAClassifierInState(classifier)) {
-            classifier = Model.getFacade().getType(classifier);
-        }
-        if (classifier == null) {
-            return "";
-        }
-        String name = Model.getFacade().getName(classifier);
-        if (name == null) {
-            name = "";
-        }
-        return name;
+    String name = Model.getFacade().getName(classifier);
+    if (name == null) {
+      name = "";
     }
-
+    return name;
+  }
 }

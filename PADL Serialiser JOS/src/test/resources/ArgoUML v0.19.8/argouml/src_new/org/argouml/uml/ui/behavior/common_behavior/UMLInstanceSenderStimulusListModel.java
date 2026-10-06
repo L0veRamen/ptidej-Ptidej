@@ -31,31 +31,26 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  * ListModel for the stimuli an instance sends.
  *
  * @author mkl
- *
  */
-public class UMLInstanceSenderStimulusListModel
-    extends UMLModelElementListModel2 {
+public class UMLInstanceSenderStimulusListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor.
-     */
-    public UMLInstanceSenderStimulusListModel() {
-        super("stimuli3");
-    }
+  /** Constructor. */
+  public UMLInstanceSenderStimulusListModel() {
+    super("stimuli3");
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        removeAllElements();
-        addElement(Model.getFacade().getStimuli3(getTarget()));
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    removeAllElements();
+    addElement(Model.getFacade().getStimuli3(getTarget()));
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ element) {
-        return Model.getFacade().getStimuli3(getTarget()).contains(element);
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ element) {
+    return Model.getFacade().getStimuli3(getTarget()).contains(element);
+  }
 }

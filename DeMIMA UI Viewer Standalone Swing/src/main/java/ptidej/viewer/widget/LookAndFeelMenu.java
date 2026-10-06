@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -27,75 +27,70 @@ import ptidej.viewer.utils.Resources;
 import util.io.ProxyConsole;
 
 public class LookAndFeelMenu extends JMenu implements ActionListener {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private static LookAndFeelMenu UniqueInstance;
-	public static LookAndFeelMenu getUniqueInstance() {
-		if (LookAndFeelMenu.UniqueInstance == null) {
-			LookAndFeelMenu.UniqueInstance = new LookAndFeelMenu();
-		}
-		return LookAndFeelMenu.UniqueInstance;
-	}
+  /** */
+  private static final long serialVersionUID = 1L;
 
-	private List components = new ArrayList();
-	private UIManager.LookAndFeelInfo lf[] = UIManager
-		.getInstalledLookAndFeels();
-	private Hashtable lookAndFeels;
+  private static LookAndFeelMenu UniqueInstance;
 
-	private LookAndFeelMenu() {
-		this.setText(Resources.getMenuText(
-			Resources.LOOKANDFEELS,
-			LookAndFeelMenu.class));
-		this.setMnemonic(Resources.getMenuMnemonic(
-			Resources.LOOKANDFEELS,
-			LookAndFeelMenu.class).charAt(0));
+  public static LookAndFeelMenu getUniqueInstance() {
+    if (LookAndFeelMenu.UniqueInstance == null) {
+      LookAndFeelMenu.UniqueInstance = new LookAndFeelMenu();
+    }
+    return LookAndFeelMenu.UniqueInstance;
+  }
 
-		this.lookAndFeels = new Hashtable();
+  private List<Component> components = new ArrayList<>();
+  private UIManager.LookAndFeelInfo lf[] = UIManager.getInstalledLookAndFeels();
+  private Hashtable<String, String> lookAndFeels;
 
-		for (int i = 0; i < this.lf.length; i++) {
-			final String strName = this.lf[i].getName();
-			final String strClassName = this.lf[i].getClassName();
-			this.lookAndFeels.put(strName, strClassName);
-			final JMenuItem itemLF = new JMenuItem(strName);
-			itemLF.addActionListener(this);
-			this.add(itemLF);
-		}
+  private LookAndFeelMenu() {
+    this.setText(Resources.getMenuText(Resources.LOOKANDFEELS, LookAndFeelMenu.class));
+    this.setMnemonic(
+        Resources.getMenuMnemonic(Resources.LOOKANDFEELS, LookAndFeelMenu.class).charAt(0));
 
-		this.components.add(DesktopFrame.getInstance());
-		this.components.add(AboutDialog.getUniqueInstance());
-	}
-	public void actionPerformed(final ActionEvent ae) {
-		// Yann 2006/07/19: Understanding...
-		// I am not sure that we really do need
-		// the following piece of code, everything
-		// seems to work fine without it! So, I
-		// remove it...
-		//	this.components.add(
-		//		Desktop
-		//			.getUniqueInstance()
-		//			.getPtidejToolBar()
-		//			.dropdown
-		//			.getPopupMenu());
-		final Object obj = this.lookAndFeels.get(ae.getActionCommand());
-		if (obj != null)
-			try {
-				UIManager.setLookAndFeel((LookAndFeel) ((Class
-					.forName((String) obj)).getDeclaredConstructor().newInstance()));
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						for (int i = 0; i < LookAndFeelMenu.this.components
-							.size(); i++) {
-							SwingUtilities
-								.updateComponentTreeUI((Component) (LookAndFeelMenu.this.components
-									.get(i)));
-						}
-					}
-				});
-			}
-			catch (final Exception e) {
-				e.printStackTrace(ProxyConsole.getInstance().errorOutput());
-			}
-	}
+    this.lookAndFeels = new Hashtable<>();
+
+    for (int i = 0; i < this.lf.length; i++) {
+      final String strName = this.lf[i].getName();
+      final String strClassName = this.lf[i].getClassName();
+      this.lookAndFeels.put(strName, strClassName);
+      final JMenuItem itemLF = new JMenuItem(strName);
+      itemLF.addActionListener(this);
+      this.add(itemLF);
+    }
+
+    this.components.add(DesktopFrame.getInstance());
+    this.components.add(AboutDialog.getUniqueInstance());
+  }
+
+  public void actionPerformed(final ActionEvent ae) {
+    // Yann 2006/07/19: Understanding...
+    // I am not sure that we really do need
+    // the following piece of code, everything
+    // seems to work fine without it! So, I
+    // remove it...
+    //	this.components.add(
+    //		Desktop
+    //			.getUniqueInstance()
+    //			.getPtidejToolBar()
+    //			.dropdown
+    //			.getPopupMenu());
+    final Object obj = this.lookAndFeels.get(ae.getActionCommand());
+    if (obj != null)
+      try {
+        UIManager.setLookAndFeel(
+            (LookAndFeel) ((Class.forName((String) obj)).getDeclaredConstructor().newInstance()));
+        SwingUtilities.invokeLater(
+            new Runnable() {
+              public void run() {
+                for (int i = 0; i < LookAndFeelMenu.this.components.size(); i++) {
+                  SwingUtilities.updateComponentTreeUI(
+                      (Component) (LookAndFeelMenu.this.components.get(i)));
+                }
+              }
+            });
+      } catch (final Exception e) {
+        e.printStackTrace(ProxyConsole.getInstance().errorOutput());
+      }
+  }
 }

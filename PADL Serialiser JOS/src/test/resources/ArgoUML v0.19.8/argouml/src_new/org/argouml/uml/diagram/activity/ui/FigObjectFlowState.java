@@ -32,7 +32,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyVetoException;
 import java.text.ParseException;
 import java.util.Iterator;
-
 import org.argouml.application.events.ArgoEvent;
 import org.argouml.application.events.ArgoEventPump;
 import org.argouml.i18n.Translator;
@@ -45,347 +44,334 @@ import org.tigris.gef.graph.GraphModel;
 import org.tigris.gef.presentation.FigRect;
 import org.tigris.gef.presentation.FigText;
 
-
 /**
- * Class to display graphics for a UML ObjectFlowState in a diagram.<p>
+ * Class to display graphics for a UML ObjectFlowState in a diagram.
  *
- * The Fig of this modelelement may either contain the Classifier name, or
- * it contains the name of the ClassifierInState AND the name of its state.
- * In the examples in the UML standard, this is written like<pre>
+ * <p>The Fig of this modelelement may either contain the Classifier name, or it contains the name
+ * of the ClassifierInState AND the name of its state. In the examples in the UML standard, this is
+ * written like
+ *
+ * <pre>
  *      PurchaseOrder
  *       [approved]
  * </pre>
- * i.e. in 2 lines. The first line is underlined,
- * to indicate that it is an instance (object).<p>
  *
- * The fact that the first line is underlined, and the 2nd not, is the
- * reason to implement them in 2 seperate Figs.<p>
+ * i.e. in 2 lines. The first line is underlined, to indicate that it is an instance (object).
  *
- * TODO: Allow stereotypes to be shown.
+ * <p>The fact that the first line is underlined, and the 2nd not, is the reason to implement them
+ * in 2 seperate Figs.
+ *
+ * <p>TODO: Allow stereotypes to be shown.
  *
  * @author mvw
  */
 public class FigObjectFlowState extends FigNodeModelElement {
 
-    private static final int PADDING = 8;
-    private static final int OFFSET = 10;
-    private static final int WIDTH = 70;
-    private static final int HEIGHT = 40;
+  private static final int PADDING = 8;
+  private static final int OFFSET = 10;
+  private static final int WIDTH = 70;
+  private static final int HEIGHT = 40;
 
-    private FigRect cover;
-    private FigText classifier; // the classifier(instate) name
-    private FigText state;      // the state name
+  private FigRect cover;
+  private FigText classifier; // the classifier(instate) name
+  private FigText state; // the state name
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    /**
-     * Main Constructor FigObjectFlowState (called from file loading).
-     */
-    public FigObjectFlowState() {
-        setBigPort(new FigRect(OFFSET, OFFSET, WIDTH, HEIGHT,
-                Color.cyan, Color.cyan));
-        cover =
-            new FigRect(OFFSET, OFFSET, WIDTH, HEIGHT,
-                    Color.black, Color.white);
+  /** Main Constructor FigObjectFlowState (called from file loading). */
+  public FigObjectFlowState() {
+    setBigPort(new FigRect(OFFSET, OFFSET, WIDTH, HEIGHT, Color.cyan, Color.cyan));
+    cover = new FigRect(OFFSET, OFFSET, WIDTH, HEIGHT, Color.black, Color.white);
 
-        classifier = new FigText(OFFSET, HEIGHT - OFFSET, WIDTH, 21);
-        classifier.setFont(getLabelFont());
-        classifier.setTextColor(Color.black);
-        classifier.setReturnAction(FigText.END_EDITING);
-        classifier.setTabAction(FigText.END_EDITING);
-        classifier.setLineWidth(0);
-        classifier.setFilled(false);
-        classifier.setUnderline(true);
+    classifier = new FigText(OFFSET, HEIGHT - OFFSET, WIDTH, 21);
+    classifier.setFont(getLabelFont());
+    classifier.setTextColor(Color.black);
+    classifier.setReturnAction(FigText.END_EDITING);
+    classifier.setTabAction(FigText.END_EDITING);
+    classifier.setLineWidth(0);
+    classifier.setFilled(false);
+    classifier.setUnderline(true);
 
-        state = new FigText(OFFSET, OFFSET, WIDTH, 21);
-        state.setFont(getLabelFont());
-        state.setTextColor(Color.black);
-        state.setReturnAction(FigText.END_EDITING);
-        state.setReturnAction(FigText.END_EDITING);
-        state.setLineWidth(0);
-        state.setFilled(false);
+    state = new FigText(OFFSET, OFFSET, WIDTH, 21);
+    state.setFont(getLabelFont());
+    state.setTextColor(Color.black);
+    state.setReturnAction(FigText.END_EDITING);
+    state.setReturnAction(FigText.END_EDITING);
+    state.setLineWidth(0);
+    state.setFilled(false);
 
-        // add Figs to the FigNode in back-to-front order
-        addFig(getBigPort());
-        addFig(cover);
-        addFig(classifier);
-        addFig(state);
+    // add Figs to the FigNode in back-to-front order
+    addFig(getBigPort());
+    addFig(cover);
+    addFig(classifier);
+    addFig(state);
 
-        enableSizeChecking(false);
-        setReadyToEdit(false);
-        Rectangle r = getBounds();
-        setBounds(r.x, r.y, r.width, r.height);
+    enableSizeChecking(false);
+    setReadyToEdit(false);
+    Rectangle r = getBounds();
+    setBounds(r.x, r.y, r.width, r.height);
 
-        setNameFig(null); // DEBUG only!
+    setNameFig(null); // DEBUG only!
 
-        ArgoEventPump.addListener(ArgoEvent.ANY_NOTATION_EVENT, this);
+    ArgoEventPump.addListener(ArgoEvent.ANY_NOTATION_EVENT, this);
+  }
+
+  /**
+   * Constructor FigObjectFlowState that hooks the Fig into an existing UML model element.
+   *
+   * @param gm ignored!
+   * @param node owner, i.e. the UML element
+   */
+  public FigObjectFlowState(GraphModel gm, Object node) {
+    this();
+    setOwner(node);
+    enableSizeChecking(true);
+  }
+
+  /**
+   * @see
+   *     org.argouml.uml.diagram.ui.FigNodeModelElement#modelChanged(java.beans.PropertyChangeEvent)
+   */
+  protected void modelChanged(PropertyChangeEvent mee) {
+    super.modelChanged(mee);
+    if ((mee.getSource() == getOwner())
+        || (mee.getSource() == Model.getFacade().getType(getOwner()))) {
+      renderingChanged();
     }
+  }
 
-    /**
-     * Constructor FigObjectFlowState that hooks the Fig into
-     * an existing UML model element.
-     *
-     * @param gm ignored!
-     * @param node owner, i.e. the UML element
-     */
-    public FigObjectFlowState(GraphModel gm, Object node) {
-        this();
-        setOwner(node);
-        enableSizeChecking(true);
+  /**
+   * @see org.argouml.uml.diagram.ui.FigNodeModelElement#placeString()
+   */
+  public String placeString() {
+    return "new ObjectFlowState";
+  }
+
+  /**
+   * @see java.lang.Object#clone()
+   */
+  public Object clone() {
+    FigObjectFlowState figClone = (FigObjectFlowState) super.clone();
+    Iterator it = figClone.getFigs().iterator();
+    figClone.setBigPort((FigRect) it.next());
+    figClone.cover = (FigRect) it.next();
+    figClone.classifier = (FigText) it.next();
+    figClone.state = (FigText) it.next();
+    return figClone;
+  }
+
+  /**
+   * Get the minimum size. The space between the 2 text figs is: PADDING.
+   *
+   * @see org.tigris.gef.presentation.Fig#getMinimumSize()
+   */
+  public Dimension getMinimumSize() {
+    Dimension tempDim = classifier.getMinimumSize();
+    int w = tempDim.width + PADDING * 2;
+    int h = tempDim.height + PADDING;
+    tempDim = state.getMinimumSize();
+    w = Math.max(w, tempDim.width + PADDING * 2);
+    h = h + PADDING + tempDim.height + PADDING;
+
+    return new Dimension(Math.max(w, WIDTH / 2), Math.max(h, HEIGHT / 2));
+  }
+
+  /**
+   * Override setBounds to keep shapes looking right. The classifier and state Figs are nicely
+   * centered vertically, and stretched out over the full width, to allow easy selection with the
+   * mouse. The Fig can only be shrinked to half its original size - so that it is not reduceable to
+   * a few pixels only.
+   *
+   * @see org.tigris.gef.presentation.Fig#setBoundsImpl(int, int, int, int)
+   */
+  protected void setBoundsImpl(int x, int y, int w, int h) {
+    // if (getNameFig() == null) return;
+    Rectangle oldBounds = getBounds();
+
+    Dimension classDim = classifier.getMinimumSize();
+    Dimension stateDim = state.getMinimumSize();
+    /* the height of the blank space above and below the text figs: */
+    int blank = (h - PADDING - classDim.height - stateDim.height) / 2;
+    classifier.setBounds(x + PADDING, y + blank, w - PADDING * 2, classDim.height);
+    state.setBounds(
+        x + PADDING, y + blank + classDim.height + PADDING, w - PADDING * 2, stateDim.height);
+
+    getBigPort().setBounds(x, y, w, h);
+    cover.setBounds(x, y, w, h);
+
+    calcBounds();
+    updateEdges();
+    firePropChange("bounds", oldBounds, getBounds());
+  }
+
+  /**
+   * @see org.argouml.uml.diagram.ui.FigNodeModelElement#renderingChanged()
+   */
+  public void renderingChanged() {
+    updateClassifierText();
+    updateStateText();
+    updateBounds();
+    damage();
+  }
+
+  /** Updates the text of the classifier FigText. */
+  private void updateClassifierText() {
+    if (isReadyToEdit()) {
+      if (getOwner() == null) {
+        return;
+      }
+      String theNewText = Notation.generate(this, getOwner()); // the ObjectFlowState
+      classifier.setText(theNewText);
     }
+  }
 
-    /**
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement#modelChanged(java.beans.PropertyChangeEvent)
-     */
-    protected void modelChanged(PropertyChangeEvent mee) {
-        super.modelChanged(mee);
-        if ((mee.getSource() == getOwner())
-            || (mee.getSource() == Model.getFacade().getType(getOwner()))) {
-            renderingChanged();
-        }
+  /** Updates the text of the state FigText. */
+  private void updateStateText() {
+    if (isReadyToEdit()) {
+      if (getOwner() == null) {
+        return;
+      }
+      String theNewText = "";
+      Object cis = Model.getFacade().getType(getOwner());
+      if (Model.getFacade().isAClassifierInState(cis)) {
+        theNewText = "[" + Notation.generate(this, cis) + "]";
+      }
+      state.setText(theNewText);
     }
+  }
 
-    /**
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement#placeString()
-     */
-    public String placeString() {
-        return "new ObjectFlowState";
-    }
+  ////////////////////////////////////////////////////////////////
+  // Fig accessors
 
-    /**
-     * @see java.lang.Object#clone()
-     */
-    public Object clone() {
-        FigObjectFlowState figClone = (FigObjectFlowState) super.clone();
-        Iterator it = figClone.getFigs().iterator();
-        figClone.setBigPort((FigRect) it.next());
-        figClone.cover = (FigRect) it.next();
-        figClone.classifier = (FigText) it.next();
-        figClone.state = (FigText) it.next();
-        return figClone;
-    }
+  /**
+   * @see org.argouml.uml.diagram.ui.FigNodeModelElement#getNameFig()
+   */
+  public FigText getNameFig() {
+    return null;
+  }
 
-    /**
-     * Get the minimum size.
-     * The space between the 2 text figs is: PADDING.
-     * @see org.tigris.gef.presentation.Fig#getMinimumSize()
-     */
-    public Dimension getMinimumSize() {
-        Dimension tempDim = classifier.getMinimumSize();
-        int w = tempDim.width + PADDING * 2;
-        int h = tempDim.height + PADDING;
-        tempDim = state.getMinimumSize();
-        w = Math.max(w, tempDim.width + PADDING * 2);
-        h = h + PADDING + tempDim.height + PADDING;
+  /**
+   * @see org.argouml.uml.diagram.ui.FigNodeModelElement#getName()
+   */
+  public String getName() {
+    return null;
+  }
 
-        return new Dimension(Math.max(w, WIDTH / 2), Math.max(h, HEIGHT / 2));
-    }
+  /**
+   * @see org.argouml.uml.diagram.ui.FigNodeModelElement#setName(java.lang.String)
+   */
+  public void setName(String n) {}
 
-    /**
-     * Override setBounds to keep shapes looking right.
-     * The classifier and state Figs are nicely centered vertically,
-     * and stretched out over the full width,
-     * to allow easy selection with the mouse.
-     * The Fig can only be shrinked to half its original size - so that
-     * it is not reduceable to a few pixels only.
-     *
-     * @see org.tigris.gef.presentation.Fig#setBoundsImpl(int, int, int, int)
-     */
-    protected void setBoundsImpl(int x, int y, int w, int h) {
-        //if (getNameFig() == null) return;
-        Rectangle oldBounds = getBounds();
+  /**
+   * @see org.tigris.gef.presentation.Fig#setLineColor(java.awt.Color)
+   */
+  public void setLineColor(Color col) {
+    cover.setLineColor(col);
+  }
 
-        Dimension classDim = classifier.getMinimumSize();
-        Dimension stateDim = state.getMinimumSize();
-        /* the height of the blank space above and below the text figs: */
-        int blank = (h - PADDING - classDim.height - stateDim.height) / 2;
-        classifier.setBounds(x + PADDING,
-                y + blank,
-                w - PADDING * 2,
-                classDim.height);
-        state.setBounds(x + PADDING,
-                y + blank + classDim.height + PADDING,
-                w - PADDING * 2,
-                stateDim.height);
+  /**
+   * @see org.tigris.gef.presentation.Fig#getLineColor()
+   */
+  public Color getLineColor() {
+    return cover.getLineColor();
+  }
 
-        getBigPort().setBounds(x, y, w, h);
-        cover.setBounds(x, y, w, h);
+  /**
+   * @see org.tigris.gef.presentation.Fig#setFillColor(java.awt.Color)
+   */
+  public void setFillColor(Color col) {
+    cover.setFillColor(col);
+  }
 
-        calcBounds();
-        updateEdges();
-        firePropChange("bounds", oldBounds, getBounds());
-    }
+  /**
+   * @see org.tigris.gef.presentation.Fig#getFillColor()
+   */
+  public Color getFillColor() {
+    return cover.getFillColor();
+  }
 
-    /**
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement#renderingChanged()
-     */
-    public void renderingChanged() {
+  /**
+   * @see org.tigris.gef.presentation.Fig#setFilled(boolean)
+   */
+  public void setFilled(boolean f) {
+    cover.setFilled(f);
+  }
+
+  /**
+   * @see org.tigris.gef.presentation.Fig#getFilled()
+   */
+  public boolean getFilled() {
+    return cover.getFilled();
+  }
+
+  /**
+   * @see org.tigris.gef.presentation.Fig#setLineWidth(int)
+   */
+  public void setLineWidth(int w) {
+    cover.setLineWidth(w);
+  }
+
+  /**
+   * @see org.tigris.gef.presentation.Fig#getLineWidth()
+   */
+  public int getLineWidth() {
+    return cover.getLineWidth();
+  }
+
+  /**
+   * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
+   */
+  public void keyPressed(KeyEvent ke) {
+    if (!isReadyToEdit()) {
+      if (Model.getFacade().isAModelElement(getOwner())) {
         updateClassifierText();
         updateStateText();
-        updateBounds();
-        damage();
+        setReadyToEdit(true);
+      } else {
+        // LOG.debug("not ready to edit name");
+        return;
+      }
     }
-
-    /**
-     * Updates the text of the classifier FigText.
-     */
-    private void updateClassifierText() {
-        if (isReadyToEdit()) {
-            if (getOwner() == null) {
-                return;
-            }
-            String theNewText =
-                Notation.generate(this, getOwner()); // the ObjectFlowState
-            classifier.setText(theNewText);
-        }
+    if (ke.isConsumed() || getOwner() == null) {
+      return;
     }
+    classifier.keyPressed(ke);
+  }
 
-    /**
-     * Updates the text of the state FigText.
-     */
-    private void updateStateText() {
-        if (isReadyToEdit()) {
-            if (getOwner() == null) {
-                return;
-            }
-            String theNewText = "";
-            Object cis = Model.getFacade().getType(getOwner());
-            if (Model.getFacade().isAClassifierInState(cis)) {
-                theNewText = "[" + Notation.generate(this, cis) + "]";
-            }
-            state.setText(theNewText);
-        }
+  /**
+   * @see
+   *     org.argouml.uml.diagram.ui.FigNodeModelElement#textEdited(org.tigris.gef.presentation.FigText)
+   */
+  protected void textEdited(FigText ft) throws PropertyVetoException {
+    try {
+      if (ft == classifier && this.getOwner() != null) {
+        ParserDisplay.SINGLETON.parseObjectFlowState1(ft.getText(), this.getOwner());
+      } else if (ft == state && this.getOwner() != null) {
+        ParserDisplay.SINGLETON.parseObjectFlowState2(ft.getText(), this.getOwner());
+      }
+      ProjectBrowser.getInstance().getStatusBar().showStatus("");
+    } catch (ParseException pe) {
+      String msg = "statusmsg.bar.error.parsing.objectflowstate";
+      Object[] args = {
+        pe.getLocalizedMessage(), new Integer(pe.getErrorOffset()),
+      };
+      ProjectBrowser.getInstance().getStatusBar().showStatus(Translator.messageFormat(msg, args));
+      updateClassifierText();
+      updateStateText();
     }
+  }
 
-    ////////////////////////////////////////////////////////////////
-    // Fig accessors
-
-    /**
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement#getNameFig()
-     */
-    public FigText getNameFig() {
-        return null;
+  /**
+   * @see
+   *     org.argouml.uml.diagram.ui.FigNodeModelElement#textEditStarted(org.tigris.gef.presentation.FigText)
+   */
+  protected void textEditStarted(FigText ft) {
+    if (ft == classifier) {
+      showHelp("parsing.help.fig-objectflowstate1");
     }
-
-    /**
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement#getName()
-     */
-    public String getName() {
-        return null;
+    if (ft == state) {
+      showHelp("parsing.help.fig-objectflowstate2");
     }
-
-    /**
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement#setName(java.lang.String)
-     */
-    public void setName(String n) {
-
-    }
-
-    /**
-     * @see org.tigris.gef.presentation.Fig#setLineColor(java.awt.Color)
-     */
-    public void setLineColor(Color col) { cover.setLineColor(col); }
-
-    /**
-     * @see org.tigris.gef.presentation.Fig#getLineColor()
-     */
-    public Color getLineColor() { return cover.getLineColor(); }
-
-    /**
-     * @see org.tigris.gef.presentation.Fig#setFillColor(java.awt.Color)
-     */
-    public void setFillColor(Color col) { cover.setFillColor(col); }
-
-    /**
-     * @see org.tigris.gef.presentation.Fig#getFillColor()
-     */
-    public Color getFillColor() { return cover.getFillColor(); }
-
-    /**
-     * @see org.tigris.gef.presentation.Fig#setFilled(boolean)
-     */
-    public void setFilled(boolean f) {
-        cover.setFilled(f);
-    }
-
-    /**
-     * @see org.tigris.gef.presentation.Fig#getFilled()
-     */
-    public boolean getFilled() {
-        return cover.getFilled();
-    }
-
-    /**
-     * @see org.tigris.gef.presentation.Fig#setLineWidth(int)
-     */
-    public void setLineWidth(int w) {
-        cover.setLineWidth(w);
-    }
-
-    /**
-     * @see org.tigris.gef.presentation.Fig#getLineWidth()
-     */
-    public int getLineWidth() {
-        return cover.getLineWidth();
-    }
-
-    /**
-     * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
-     */
-    public void keyPressed(KeyEvent ke) {
-        if (!isReadyToEdit()) {
-            if (Model.getFacade().isAModelElement(getOwner())) {
-                updateClassifierText();
-                updateStateText();
-                setReadyToEdit(true);
-            } else {
-                //LOG.debug("not ready to edit name");
-                return;
-            }
-        }
-        if (ke.isConsumed() || getOwner() == null) {
-            return;
-        }
-        classifier.keyPressed(ke);
-    }
-
-    /**
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement#textEdited(org.tigris.gef.presentation.FigText)
-     */
-    protected void textEdited(FigText ft) throws PropertyVetoException {
-        try {
-            if (ft == classifier && this.getOwner() != null) {
-                ParserDisplay.SINGLETON.parseObjectFlowState1(ft.getText(),
-                    this.getOwner());
-            } else if (ft == state && this.getOwner() != null) {
-                ParserDisplay.SINGLETON.parseObjectFlowState2(ft.getText(),
-                        this.getOwner());
-            }
-            ProjectBrowser.getInstance().getStatusBar().showStatus("");
-        } catch (ParseException pe) {
-            String msg = "statusmsg.bar.error.parsing.objectflowstate";
-            Object[] args = {
-                pe.getLocalizedMessage(),
-                new Integer(pe.getErrorOffset()),
-            };
-            ProjectBrowser.getInstance().getStatusBar().showStatus(
-                    Translator.messageFormat(msg, args));
-            updateClassifierText();
-            updateStateText();
-        }
-    }
-
-    /**
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement#textEditStarted(org.tigris.gef.presentation.FigText)
-     */
-    protected void textEditStarted(FigText ft) {
-        if (ft == classifier) {
-            showHelp("parsing.help.fig-objectflowstate1");
-        }
-        if (ft == state) {
-            showHelp("parsing.help.fig-objectflowstate2");
-        }
-    }
-
+  }
 } /* end class FigObjectFlowState */

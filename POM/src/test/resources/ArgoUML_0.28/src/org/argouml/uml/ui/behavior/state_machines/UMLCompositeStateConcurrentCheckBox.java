@@ -36,20 +36,18 @@ import org.argouml.uml.ui.UMLCheckBox2;
 @Deprecated
 public class UMLCompositeStateConcurrentCheckBox extends UMLCheckBox2 {
 
-    /**
-     * Constructor for UMLCompositeStateConcurrentCheckBox.
-     */
-    public UMLCompositeStateConcurrentCheckBox() {
-         super(Translator.localize("label.concurrent"),
-            ActionSetCompositeStateConcurrent.getInstance(),
-            "isConcurent");
-    }
+  /** Constructor for UMLCompositeStateConcurrentCheckBox. */
+  public UMLCompositeStateConcurrentCheckBox() {
+    super(
+        Translator.localize("label.concurrent"),
+        ActionSetCompositeStateConcurrent.getInstance(),
+        "isConcurent");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLCheckBox2#buildModel()
-     */
-    public void buildModel() {
-        setSelected(Model.getFacade().isConcurrent(getTarget()));
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLCheckBox2#buildModel()
+   */
+  public void buildModel() {
+    setSelected(Model.getFacade().isConcurrent(getTarget()));
+  }
 }

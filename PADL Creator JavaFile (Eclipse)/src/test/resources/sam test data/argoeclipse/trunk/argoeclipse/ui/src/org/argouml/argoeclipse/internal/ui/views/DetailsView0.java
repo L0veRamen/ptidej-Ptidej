@@ -25,25 +25,22 @@
 package org.argouml.argoeclipse.internal.ui.views;
 
 import javax.swing.JPanel;
-
 import org.argouml.argoeclipse.internal.core.model.Register;
 import org.argouml.argoeclipse.internal.ui.model.Panels;
 
 /**
- * This is a view for the a Details Pane.
- * In future there could be multiple details panes with different contents,
- * so this is the first.
+ * This is a view for the a Details Pane. In future there could be multiple details panes with
+ * different contents, so this is the first.
  *
  * @author Bogdan Pistol
  */
-public class DetailsView0 extends View {    
+public class DetailsView0 extends View {
 
-    public DetailsView0() {
-        super(Register.DETAILS);
-    }
-    
-    public JPanel getPanel() {
-        return Panels.getDetailsPanel0();
-    }
-    
+  public DetailsView0() {
+    super(Register.DETAILS);
+  }
+
+  public JPanel getPanel() {
+    return Panels.getDetailsPanel0();
+  }
 }

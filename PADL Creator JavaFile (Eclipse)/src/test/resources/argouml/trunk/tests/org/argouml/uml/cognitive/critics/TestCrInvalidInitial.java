@@ -25,49 +25,41 @@
 package org.argouml.uml.cognitive.critics;
 
 import junit.framework.TestCase;
-
 import org.argouml.model.Model;
 
 public class TestCrInvalidInitial extends TestCase {
 
-    private CrUML critic = null;
+  private CrUML critic = null;
 
-    private Object statemachine;
+  private Object statemachine;
 
-    private Object compositestate;
+  private Object compositestate;
 
-    private Object initial;
+  private Object initial;
 
-    private Object state1, state2;
-    
-    public TestCrInvalidInitial(String arg0) {
-        super(arg0);
-    }
+  private Object state1, state2;
 
-    protected void setUp() throws Exception {
-        super.setUp();
-        critic = new CrInvalidInitial();
-        statemachine = Model.getStateMachinesFactory().createStateMachine();
-        compositestate = Model.getStateMachinesFactory()
-                .buildCompositeStateOnStateMachine(statemachine);
-        initial = Model.getStateMachinesFactory().buildPseudoState(
-                compositestate);
-        Model.getCoreHelper().setKind(initial,
-                Model.getPseudostateKind().getInitial());
-        state1 = Model.getStateMachinesFactory().buildSimpleState(
-                compositestate);
-        state2 = Model.getStateMachinesFactory().buildSimpleState(
-                compositestate);
-      
+  public TestCrInvalidInitial(String arg0) {
+    super(arg0);
+  }
 
-    }
+  protected void setUp() throws Exception {
+    super.setUp();
+    critic = new CrInvalidInitial();
+    statemachine = Model.getStateMachinesFactory().createStateMachine();
+    compositestate =
+        Model.getStateMachinesFactory().buildCompositeStateOnStateMachine(statemachine);
+    initial = Model.getStateMachinesFactory().buildPseudoState(compositestate);
+    Model.getCoreHelper().setKind(initial, Model.getPseudostateKind().getInitial());
+    state1 = Model.getStateMachinesFactory().buildSimpleState(compositestate);
+    state2 = Model.getStateMachinesFactory().buildSimpleState(compositestate);
+  }
 
-    public void testPredicate2() {
-        assertFalse(critic.predicate2(initial, null));
-        Model.getStateMachinesFactory().buildTransition(initial, state1);
-        assertFalse(critic.predicate2(initial, null));
-        Model.getStateMachinesFactory().buildTransition(initial, state2);
-        assertTrue(critic.predicate2(initial, null));
-        
-    }
+  public void testPredicate2() {
+    assertFalse(critic.predicate2(initial, null));
+    Model.getStateMachinesFactory().buildTransition(initial, state1);
+    assertFalse(critic.predicate2(initial, null));
+    Model.getStateMachinesFactory().buildTransition(initial, state2);
+    assertTrue(critic.predicate2(initial, null));
+  }
 }

@@ -33,59 +33,53 @@ import org.restlet.data.Response;
 
 /**
  * Simple HTTP server invoked by the simple client.
+ *
  * @author Jerome Louvel (contact@noelios.com)
  */
-public class SimpleServer
-{
-	public static void main(String[] args)
-	{
-		try
-		{
-			// Create a new Restlet container
-			Container container = new Container();
+public class SimpleServer {
+  public static void main(String[] args) {
+    try {
+      // Create a new Restlet container
+      Container container = new Container();
 
-			// Create the HTTP server connector, then add it as a server
-			// connector to the Restlet container. Note that the container
-			// is the call restlet.
-			container.getServers().add(Protocol.HTTP, 9876);
+      // Create the HTTP server connector, then add it as a server
+      // connector to the Restlet container. Note that the container
+      // is the call restlet.
+      container.getServers().add(Protocol.HTTP, 9876);
 
-			// Prepare and attach a test Handler
-			Handler handler = new Handler(container.getContext())
-			{
-				@Override
-				public void handlePut(Request request, Response response)
-				{
-					System.out.println("Handling the call...");
-					System.out.println("Trying to get the entity as a form...");
-					Form form = request.getEntityAsForm();
+      // Prepare and attach a test Handler
+      Handler handler =
+          new Handler(container.getContext()) {
+            @Override
+            public void handlePut(Request request, Response response) {
+              System.out.println("Handling the call...");
+              System.out.println("Trying to get the entity as a form...");
+              Form form = request.getEntityAsForm();
 
-					System.out.println("Trying to getParameters...");
-					StringBuffer sb = new StringBuffer("foo");
-					for (Parameter p : form)
-					{
-						System.out.println(p);
+              System.out.println("Trying to getParameters...");
+              StringBuffer sb = new StringBuffer("foo");
+              for (Parameter p : form) {
+                System.out.println(p);
 
-						sb.append("field name = ");
-						sb.append(p.getName());
-						sb.append("value = ");
-						sb.append(p.getValue());
-						sb.append("\n");
-						System.out.println(sb.toString());
-					}
+                sb.append("field name = ");
+                sb.append(p.getName());
+                sb.append("value = ");
+                sb.append(p.getValue());
+                sb.append("\n");
+                System.out.println(sb.toString());
+              }
 
-					response.setEntity(sb.toString(), MediaType.TEXT_PLAIN);
-					System.out.println("Done!");
-				}
-			};
+              response.setEntity(sb.toString(), MediaType.TEXT_PLAIN);
+              System.out.println("Done!");
+            }
+          };
 
-			container.getDefaultHost().attach("/test", handler);
+      container.getDefaultHost().attach("/test", handler);
 
-			// Now, start the container
-			container.start();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
+      // Now, start the container
+      container.start();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
 }

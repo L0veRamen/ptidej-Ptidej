@@ -27,72 +27,75 @@ package org.argouml.model.uml;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
-
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
-
 import ru.novosoft.uml.model_management.MModel;
 import ru.novosoft.uml.xmi.IncompleteXMIException;
 import ru.novosoft.uml.xmi.XMIWriter;
 
 /**
- * A wrapper around the genuine XmiReader that provides public
- * access with no knowledge of actual UML implementation.
+ * A wrapper around the genuine XmiReader that provides public access with no knowledge of actual
+ * UML implementation.
  *
  * @author Bob Tarling
  */
 public class XmiWriter {
-    private static final Logger LOG = Logger.getLogger(XmiWriter.class);
+  private static final Logger LOG = Logger.getLogger(XmiWriter.class);
 
-    private XMIWriter xmiWriter;
+  private XMIWriter xmiWriter;
 
-    /**
-     * Constructor for XMIReader.
-     * @throws SAXException when there is a XML problem
-     * @param model the UML model
-     * @param writer the writer
-     */
-    public XmiWriter(Object model, Writer writer) throws SAXException {
-        try {
-            xmiWriter = new XMIWriter((MModel) model, writer);
-        } catch (IOException e) {
-            throw new SAXException(e);
-        }
+  /**
+   * Constructor for XMIReader.
+   *
+   * @throws SAXException when there is a XML problem
+   * @param model the UML model
+   * @param writer the writer
+   */
+  public XmiWriter(Object model, Writer writer) throws SAXException {
+    try {
+      xmiWriter = new XMIWriter((MModel) model, writer);
+    } catch (IOException e) {
+      throw new SAXException(e);
     }
+  }
 
-    /**
-     * Write XMI to registered writer
-     * @throws SAXException if it goes wrong
-     */
-    public void write() throws SAXException {
-        try {
-            xmiWriter.gen();
-            if (!xmiWriter.getNotContainedElements().isEmpty()) {
-                logNotContainedElements();
-                throw new IncompleteXMIException();
-            }
-        } catch (IncompleteXMIException ixe) {
-            if ( !xmiWriter.getNotContainedElements().isEmpty()) {
-                logNotContainedElements();
-                throw new SAXException(ixe);
-            }
-        } catch (Exception e) {
-            LOG.error("Exception thrown by the NSUML XMIWriter", e);
-            throw new SAXException(e);
-        } finally {
-            logNotContainedElements();
-        }
+  /**
+   * Write XMI to registered writer
+   *
+   * @throws SAXException if it goes wrong
+   */
+  public void write() throws SAXException {
+    try {
+      xmiWriter.gen();
+      if (!xmiWriter.getNotContainedElements().isEmpty()) {
+        logNotContainedElements();
+        throw new IncompleteXMIException();
+      }
+    } catch (IncompleteXMIException ixe) {
+      if (!xmiWriter.getNotContainedElements().isEmpty()) {
+        logNotContainedElements();
+        throw new SAXException(ixe);
+      }
+    } catch (Exception e) {
+      LOG.error("Exception thrown by the NSUML XMIWriter", e);
+      throw new SAXException(e);
+    } finally {
+      logNotContainedElements();
     }
+  }
 
-    private void logNotContainedElements() {
-        if (xmiWriter != null) {
-            Iterator it = xmiWriter.getNotContainedElements().iterator();
-            while (it.hasNext()) {
-                Object missingElement = it.next();
-                LOG.error("Not contained in XMI: "
-                    + missingElement.getClass().getName()
-                    + "[" + missingElement + "]");
-            }
-        }
+  private void logNotContainedElements() {
+    if (xmiWriter != null) {
+      Iterator it = xmiWriter.getNotContainedElements().iterator();
+      while (it.hasNext()) {
+        Object missingElement = it.next();
+        LOG.error(
+            "Not contained in XMI: "
+                + missingElement.getClass().getName()
+                + "["
+                + missingElement
+                + "]");
+      }
     }
+  }
 }

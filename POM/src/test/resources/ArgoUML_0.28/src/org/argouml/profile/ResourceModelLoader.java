@@ -25,7 +25,6 @@
 package org.argouml.profile;
 
 import java.util.Collection;
-
 import org.apache.log4j.Logger;
 
 /**
@@ -35,37 +34,30 @@ import org.apache.log4j.Logger;
  */
 public class ResourceModelLoader extends URLModelLoader {
 
-    /**
-     * Logger.
-     */
-    private static final Logger LOG = Logger
-            .getLogger(ResourceModelLoader.class);
-    
-    private Class clazz;
-    
-    /**
-     * The default constructor for this class. Loads resources from the same 
-     * ClassLoader that loaded this class.
-     */
-    public ResourceModelLoader() {
-        this.clazz = this.getClass();
-    }
-    
-    /**
-     * Loads resources from the ClassLoader that loaded the given class
-     * 
-     * @param c the reference class
-     */
-    public ResourceModelLoader(Class c) {
-        clazz = c;
-    }
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(ResourceModelLoader.class);
 
-    
-    public Collection loadModel(ProfileReference reference) 
-        throws ProfileException {
-        LOG.info("Loading profile from resource'" + reference.getPath() + "'");
-        return super.loadModel(clazz.getResource(reference.getPath()), 
-            reference.getPublicReference());
-    }
+  private Class clazz;
 
+  /**
+   * The default constructor for this class. Loads resources from the same ClassLoader that loaded
+   * this class.
+   */
+  public ResourceModelLoader() {
+    this.clazz = this.getClass();
+  }
+
+  /**
+   * Loads resources from the ClassLoader that loaded the given class
+   *
+   * @param c the reference class
+   */
+  public ResourceModelLoader(Class c) {
+    clazz = c;
+  }
+
+  public Collection loadModel(ProfileReference reference) throws ProfileException {
+    LOG.info("Loading profile from resource'" + reference.getPath() + "'");
+    return super.loadModel(clazz.getResource(reference.getPath()), reference.getPublicReference());
+  }
 }

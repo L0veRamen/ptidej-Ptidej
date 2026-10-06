@@ -25,51 +25,50 @@ package org.restlet.resource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
 import org.restlet.data.MediaType;
 import org.restlet.util.ByteUtils;
 
 /**
- * Representation based on a BIO output stream. The write(OutputStream) 
- * method needs to be overriden in subclasses.
+ * Representation based on a BIO output stream. The write(OutputStream) method needs to be overriden
+ * in subclasses.
+ *
  * @author Jerome Louvel (contact@noelios.com)
  */
-public abstract class OutputRepresentation extends StreamRepresentation
-{
-	/**
-	 * Constructor.
-	 * @param mediaType The representation's mediaType.
-	 */
-	public OutputRepresentation(MediaType mediaType)
-	{
-		super(mediaType);
-	}
+public abstract class OutputRepresentation extends StreamRepresentation {
+  /**
+   * Constructor.
+   *
+   * @param mediaType The representation's mediaType.
+   */
+  public OutputRepresentation(MediaType mediaType) {
+    super(mediaType);
+  }
 
-	/**
-	 * Constructor.
-	 * @param mediaType The representation's mediaType.
-	 * @param expectedSize The expected input stream size.
-	 */
-	public OutputRepresentation(MediaType mediaType, long expectedSize)
-	{
-		super(mediaType);
-		setSize(expectedSize);
-	}
+  /**
+   * Constructor.
+   *
+   * @param mediaType The representation's mediaType.
+   * @param expectedSize The expected input stream size.
+   */
+  public OutputRepresentation(MediaType mediaType, long expectedSize) {
+    super(mediaType);
+    setSize(expectedSize);
+  }
 
-	/**
-	 * Returns a stream with the representation's content. 
-	 * Internally, it uses a writer thread and a pipe stream.
-	 * @return A stream with the representation's content.
-	 */
-	public InputStream getStream() throws IOException
-	{
-		return ByteUtils.getStream(this);
-	}
+  /**
+   * Returns a stream with the representation's content. Internally, it uses a writer thread and a
+   * pipe stream.
+   *
+   * @return A stream with the representation's content.
+   */
+  public InputStream getStream() throws IOException {
+    return ByteUtils.getStream(this);
+  }
 
-	/**
-	 * Writes the representation to a byte stream.
-	 * @param outputStream The output stream.
-	 */
-	public abstract void write(OutputStream outputStream) throws IOException;
-
+  /**
+   * Writes the representation to a byte stream.
+   *
+   * @param outputStream The output stream.
+   */
+  public abstract void write(OutputStream outputStream) throws IOException;
 }

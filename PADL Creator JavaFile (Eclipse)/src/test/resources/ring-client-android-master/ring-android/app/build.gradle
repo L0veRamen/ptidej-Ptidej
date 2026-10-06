@@ -73,6 +73,6 @@ android {
             def sp = archs.split(',')
             include(sp)
             universalApk true
+        }
     }
-  }
 }

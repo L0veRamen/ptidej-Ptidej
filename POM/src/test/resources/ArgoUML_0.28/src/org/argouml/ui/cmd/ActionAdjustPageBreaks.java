@@ -34,20 +34,17 @@ import org.tigris.gef.base.AdjustPageBreaksAction;
  */
 public class ActionAdjustPageBreaks extends AdjustPageBreaksAction {
 
-    /**
-     * The Constructor.
-     */
-    public ActionAdjustPageBreaks() {
-        this(Translator.localize("menu.adjust-pagebreaks"));
-    }
+  /** The Constructor. */
+  public ActionAdjustPageBreaks() {
+    this(Translator.localize("menu.adjust-pagebreaks"));
+  }
 
-    /**
-     * The Constructor.
-     * 
-     * @param name the name of the action
-     */
-    public ActionAdjustPageBreaks(String name) {
-        super(name);
-    }
-
+  /**
+   * The Constructor.
+   *
+   * @param name the name of the action
+   */
+  public ActionAdjustPageBreaks(String name) {
+    super(name);
+  }
 }

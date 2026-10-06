@@ -4,34 +4,29 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
 package modec.test.observer.example;
 
-//package src.OBSERVER;
+// package src.OBSERVER;
 // CONCRETE OBSERVER
 import java.awt.*;
-import javax.swing.*;
 import java.util.*;
-
+import javax.swing.*;
 
 public class MonthlyReport extends JFrame implements Observer {
-  /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+  /** */
+  private static final long serialVersionUID = 1L;
 
-public static final String newline = "\n";
+  public static final String newline = "\n";
 
   private JLabel lblTransactions;
   private JTextArea taTransactions;
   private ReportManager objReportManager;
 
-
-  public MonthlyReport(ReportManager inp_objReportManager)
-  throws Exception {
+  public MonthlyReport(ReportManager inp_objReportManager) throws Exception {
     super("Observer Pattern - Example");
     this.objReportManager = inp_objReportManager;
 
@@ -41,11 +36,10 @@ public static final String newline = "\n";
     this.taTransactions.setLineWrap(true);
     this.taTransactions.setWrapStyleWord(true);
 
-    //Create Labels
-    this.lblTransactions =
-      new JLabel("Current Month Transactions");
+    // Create Labels
+    this.lblTransactions = new JLabel("Current Month Transactions");
 
-    //For layout purposes, put the buttons in a separate panel
+    // For layout purposes, put the buttons in a separate panel
     JPanel buttonPanel = new JPanel();
 
     buttonPanel.add(this.lblTransactions);
@@ -55,8 +49,7 @@ public static final String newline = "\n";
     contentPane.add(buttonPanel, BorderLayout.CENTER);
     try {
       UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-      SwingUtilities.updateComponentTreeUI(
-        MonthlyReport.this);
+      SwingUtilities.updateComponentTreeUI(MonthlyReport.this);
     } catch (Exception ex) {
       System.out.println(ex);
     }
@@ -64,34 +57,29 @@ public static final String newline = "\n";
     setSize(400, 300);
     setVisible(true);
     this.objReportManager.register(this);
-
   }
 
   public void refreshData(Observable subject) {
     if (subject == this.objReportManager) {
-      //get subject's state
+      // get subject's state
       String department = this.objReportManager.getDepartment();
 
-      this.lblTransactions.setText(
-        "Current Month Transactions - " +
-        department);
-      Vector trnList =
-        getCurrentMonthTransactions(department);
+      this.lblTransactions.setText("Current Month Transactions - " + department);
+      Vector trnList = getCurrentMonthTransactions(department);
       String content = "";
       for (int i = 0; i < trnList.size(); i++) {
-        content = content +
-                  trnList.elementAt(i).toString() + "\n";
+        content = content + trnList.elementAt(i).toString() + "\n";
       }
       this.taTransactions.setText(content);
     }
   }
-  private Vector getCurrentMonthTransactions(String department
-                                             ) {
+
+  private Vector getCurrentMonthTransactions(String department) {
     Vector v = new Vector();
     FileUtil futil = new FileUtil();
     Vector allRows = futil.fileToVector("Data/Transactions.dat");
 
-    //current month
+    // current month
     Calendar cal = Calendar.getInstance();
     cal.setTime(new Date());
     int month = cal.get(Calendar.MONTH) + 1;
@@ -102,18 +90,25 @@ public static final String newline = "\n";
       String str = (String) allRows.elementAt(i);
       if (str.indexOf(searchStr) > -1) {
 
-        StringTokenizer st =
-          new StringTokenizer(str, ",");
-        st.nextToken();//bypass the department
-        str = "   " + j + ". " + st.nextToken() + "/" +
-              st.nextToken() + "~~~" +
-              st.nextToken() + "Items" + "~~~" +
-              st.nextToken() + " Dollars";
+        StringTokenizer st = new StringTokenizer(str, ",");
+        st.nextToken(); // bypass the department
+        str =
+            "   "
+                + j
+                + ". "
+                + st.nextToken()
+                + "/"
+                + st.nextToken()
+                + "~~~"
+                + st.nextToken()
+                + "Items"
+                + "~~~"
+                + st.nextToken()
+                + " Dollars";
         j++;
         v.addElement(str);
       }
     }
     return v;
   }
-}// end of class
-
+} // end of class

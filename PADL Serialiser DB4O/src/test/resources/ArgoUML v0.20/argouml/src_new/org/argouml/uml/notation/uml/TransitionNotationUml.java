@@ -25,7 +25,6 @@
 package org.argouml.uml.notation.uml;
 
 import java.text.ParseException;
-
 import org.argouml.i18n.Translator;
 import org.argouml.ui.ProjectBrowser;
 import org.argouml.uml.generator.GeneratorDisplay;
@@ -37,48 +36,44 @@ import org.argouml.uml.notation.TransitionNotation;
  */
 public class TransitionNotationUml extends TransitionNotation {
 
-    /**
-     * The constructor.
-     *
-     * @param transition the transition represented by this notation
-     */
-    public TransitionNotationUml(Object transition) {
-        super(transition);
+  /**
+   * The constructor.
+   *
+   * @param transition the transition represented by this notation
+   */
+  public TransitionNotationUml(Object transition) {
+    super(transition);
+  }
+
+  /**
+   * @see org.argouml.notation.NotationProvider4#parse(java.lang.String)
+   */
+  public String parse(String text) {
+    try {
+      // TODO: Make the next call inline - replace ParserDisplay
+      ParserDisplay.SINGLETON.parseTransition(myTransition, text);
+    } catch (ParseException pe) {
+      String msg = "statusmsg.bar.error.parsing.transition";
+      Object[] args = {
+        pe.getLocalizedMessage(), new Integer(pe.getErrorOffset()),
+      };
+      ProjectBrowser.getInstance().getStatusBar().showStatus(Translator.messageFormat(msg, args));
     }
+    return toString();
+  }
 
-    /**
-     * @see org.argouml.notation.NotationProvider4#parse(java.lang.String)
-     */
-    public String parse(String text) {
-        try {
-            //TODO: Make the next call inline - replace ParserDisplay
-            ParserDisplay.SINGLETON.parseTransition(myTransition, text);
-        } catch (ParseException pe) {
-            String msg = "statusmsg.bar.error.parsing.transition";
-            Object[] args = {
-                    pe.getLocalizedMessage(),
-                    new Integer(pe.getErrorOffset()),
-            };
-            ProjectBrowser.getInstance().getStatusBar().showStatus(
-                    Translator.messageFormat(msg, args));
-        }
-        return toString();
-    }
+  /**
+   * @see org.argouml.notation.NotationProvider4#getParsingHelp()
+   */
+  public String getParsingHelp() {
+    return "parsing.help.fig-transition";
+  }
 
-    /**
-     * @see org.argouml.notation.NotationProvider4#getParsingHelp()
-     */
-    public String getParsingHelp() {
-        return "parsing.help.fig-transition";
-    }
-
-    /**
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-        /* TODO: copy this here inline! Replace GeneratorDisplay. */
-        return GeneratorDisplay.getInstance().generateTransition(myTransition);
-    }
-
-
+  /**
+   * @see java.lang.Object#toString()
+   */
+  public String toString() {
+    /* TODO: copy this here inline! Replace GeneratorDisplay. */
+    return GeneratorDisplay.getInstance().generateTransition(myTransition);
+  }
 }

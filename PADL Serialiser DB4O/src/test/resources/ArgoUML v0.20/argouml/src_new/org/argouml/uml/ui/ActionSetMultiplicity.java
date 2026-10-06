@@ -26,45 +26,41 @@
 package org.argouml.uml.ui;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.i18n.Translator;
 
 /**
  * Framework action to set the multiplicity of some modelelement.
+ *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 6, 2003
  */
 public abstract class ActionSetMultiplicity extends UMLAction {
 
-    /**
-     * Constructor for ActionSetMultiplicity.
-     */
-    protected ActionSetMultiplicity() {
-        super(Translator.localize("Set"), true, NO_ICON);
+  /** Constructor for ActionSetMultiplicity. */
+  protected ActionSetMultiplicity() {
+    super(Translator.localize("Set"), true, NO_ICON);
+  }
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    Object source = e.getSource();
+    if (source instanceof UMLComboBox2) {
+      Object selected = ((UMLComboBox2) source).getSelectedItem();
+      Object target = ((UMLComboBox2) source).getTarget();
+      if (target != null && selected != null) setSelectedItem(selected, target);
     }
+  }
 
-    /**
-     * @see
-     * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        Object source = e.getSource();
-        if (source instanceof UMLComboBox2) {
-            Object selected = ((UMLComboBox2) source).getSelectedItem();
-            Object target = ((UMLComboBox2) source).getTarget();
-            if (target != null && selected != null)
-                setSelectedItem(selected, target);
-        }
-    }
-
-    /**
-     * The user should implement this method to set the multiplicity (the given
-     * item) for the target of the comboboxmodel (target
-     * @param item The multiplicity that should be set
-     * @param target The target of the comboboxmodel (the modelelement that
-     * should have its multiplicity set).
-     */
-    public abstract void setSelectedItem(Object item, Object target);
-
+  /**
+   * The user should implement this method to set the multiplicity (the given item) for the target
+   * of the comboboxmodel (target
+   *
+   * @param item The multiplicity that should be set
+   * @param target The target of the comboboxmodel (the modelelement that should have its
+   *     multiplicity set).
+   */
+  public abstract void setSelectedItem(Object item, Object target);
 }

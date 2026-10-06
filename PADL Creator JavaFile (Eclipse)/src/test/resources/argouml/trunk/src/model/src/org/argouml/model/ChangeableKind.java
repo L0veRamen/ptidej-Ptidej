@@ -24,22 +24,20 @@
 
 package org.argouml.model;
 
-/**
- * The different ChangeableKinds.
- */
+/** The different ChangeableKinds. */
 public interface ChangeableKind {
-    /**
-     * @return Returns the AddOnly ChangeableKind.
-     */
-    Object getAddOnly();
+  /**
+   * @return Returns the AddOnly ChangeableKind.
+   */
+  Object getAddOnly();
 
-    /**
-     * @return Returns the Changeable ChangeableKind.
-     */
-    Object getChangeable();
+  /**
+   * @return Returns the Changeable ChangeableKind.
+   */
+  Object getChangeable();
 
-    /**
-     * @return Returns the Frozen ChangeableKind.
-     */
-    Object getFrozen();
+  /**
+   * @return Returns the Frozen ChangeableKind.
+   */
+  Object getFrozen();
 }

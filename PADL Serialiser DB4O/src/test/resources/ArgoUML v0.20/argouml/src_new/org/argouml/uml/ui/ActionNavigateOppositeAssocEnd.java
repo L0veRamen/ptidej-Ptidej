@@ -25,9 +25,7 @@
 package org.argouml.uml.ui;
 
 import java.util.Collection;
-
 import javax.swing.Action;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.model.Model;
 import org.argouml.ui.targetmanager.TargetManager;
@@ -36,42 +34,35 @@ import org.argouml.ui.targetmanager.TargetManager;
  * navigate to opposite association end.
  *
  * @author mkl
- *
  */
 public class ActionNavigateOppositeAssocEnd extends AbstractActionNavigate {
 
-    /**
-     * The constructor.
-     */
-    public ActionNavigateOppositeAssocEnd() {
-        super("button.go-opposite", true);
-        putValue(Action.SMALL_ICON,
-                ResourceLoaderWrapper.lookupIconResource("AssociationEnd"));
-    }
+  /** The constructor. */
+  public ActionNavigateOppositeAssocEnd() {
+    super("button.go-opposite", true);
+    putValue(Action.SMALL_ICON, ResourceLoaderWrapper.lookupIconResource("AssociationEnd"));
+  }
 
-    /**
-     * @see org.argouml.uml.ui.AbstractActionNavigate#navigateTo(java.lang.Object)
-     */
-    protected Object navigateTo(Object source) {
-        return Model.getFacade().getOppositeEnd(source);
-    }
+  /**
+   * @see org.argouml.uml.ui.AbstractActionNavigate#navigateTo(java.lang.Object)
+   */
+  protected Object navigateTo(Object source) {
+    return Model.getFacade().getOppositeEnd(source);
+  }
 
-    /**
-     * @see javax.swing.Action#isEnabled()
-     */
-    public boolean isEnabled() {
-        Object o = TargetManager.getInstance().getTarget();
-        if (o != null && Model.getFacade().isAAssociationEnd(o)) {
-            Collection ascEnds =
-                Model.getFacade().getConnections(
-                        Model.getFacade().getAssociation(o));
-            if (ascEnds.size() > 2) {
-                return false;
-            } else {
-                return true;
-            }
-        }
+  /**
+   * @see javax.swing.Action#isEnabled()
+   */
+  public boolean isEnabled() {
+    Object o = TargetManager.getInstance().getTarget();
+    if (o != null && Model.getFacade().isAAssociationEnd(o)) {
+      Collection ascEnds = Model.getFacade().getConnections(Model.getFacade().getAssociation(o));
+      if (ascEnds.size() > 2) {
         return false;
+      } else {
+        return true;
+      }
     }
-
+    return false;
+  }
 }

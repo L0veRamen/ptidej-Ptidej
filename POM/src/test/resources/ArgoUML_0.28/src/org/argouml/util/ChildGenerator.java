@@ -27,26 +27,24 @@ package org.argouml.util;
 import java.util.Iterator;
 
 /**
- * Interface used in {@link org.argouml.cognitive.ListSet} to compute transitive
- * closures. it is based on the GEF interface of the same name by Jason Robbins
- * {@link org.tigris.gef.util.ChildGenerator}, but uses an Iterator instead of
- * an Enumeration for better compatibility with Collections.
- * <p>
- * The iterator method is given a unique name to allow it to be used in
- * combination with other interfaces of a similar style, but if a class only
- * implements this interface, it may want to implement {@link Iterable} for
- * greater usage convenience and make this the default iterator.
- * 
+ * Interface used in {@link org.argouml.cognitive.ListSet} to compute transitive closures. it is
+ * based on the GEF interface of the same name by Jason Robbins {@link
+ * org.tigris.gef.util.ChildGenerator}, but uses an Iterator instead of an Enumeration for better
+ * compatibility with Collections.
+ *
+ * <p>The iterator method is given a unique name to allow it to be used in combination with other
+ * interfaces of a similar style, but if a class only implements this interface, it may want to
+ * implement {@link Iterable} for greater usage convenience and make this the default iterator.
+ *
  * @author Tom Morris
  */
 public interface ChildGenerator {
 
-   /**
-     * Get an Iterator which iterates through the children of the given object
-     * 
-     * @param parent the parent of the children to be iterated through
-     * @return an iterator for the children of the given parent
-     */
-    public Iterator childIterator(Object parent);
-
+  /**
+   * Get an Iterator which iterates through the children of the given object
+   *
+   * @param parent the parent of the children to be iterated through
+   * @return an iterator for the children of the given parent
+   */
+  public Iterator childIterator(Object parent);
 }

@@ -25,7 +25,6 @@
 package org.argouml.uml.ui;
 
 import junit.framework.TestCase;
-
 import org.argouml.ui.StylePanel;
 import org.argouml.ui.StylePanelFigNodeModelElement;
 import org.argouml.uml.diagram.state.ui.FigSimpleState;
@@ -48,67 +47,62 @@ import org.argouml.uml.diagram.use_case.ui.StylePanelFigUseCase;
 
 /**
  * @author mkl
- *
  */
 public class TestTabStyle extends TestCase {
 
-    /**
-     * The constructor.
-     *
-     * @param arg the name
-     */
-    public TestTabStyle(String arg) {
-        super(arg);
-    }
+  /**
+   * The constructor.
+   *
+   * @param arg the name
+   */
+  public TestTabStyle(String arg) {
+    super(arg);
+  }
 
-    /**
-     * Test findPanelFor().
-     */
-    public void testFindPanelFor() {
+  /** Test findPanelFor(). */
+  public void testFindPanelFor() {
 
-        TabStyle tabStyle = new TabStyle();
+    TabStyle tabStyle = new TabStyle();
 
-        StylePanel panel;
+    StylePanel panel;
 
-        panel = tabStyle.findPanelFor(FigClass.class);
-        assertTrue(panel instanceof StylePanelFigClass);
+    panel = tabStyle.findPanelFor(FigClass.class);
+    assertTrue(panel instanceof StylePanelFigClass);
 
-        panel = tabStyle.findPanelFor(FigInterface.class);
-        assertTrue(panel instanceof StylePanelFigInterface);
+    panel = tabStyle.findPanelFor(FigInterface.class);
+    assertTrue(panel instanceof StylePanelFigInterface);
 
-        panel = tabStyle.findPanelFor(FigUseCase.class);
-        assertTrue(panel instanceof StylePanelFigUseCase);
+    panel = tabStyle.findPanelFor(FigUseCase.class);
+    assertTrue(panel instanceof StylePanelFigUseCase);
 
-        panel = tabStyle.findPanelFor(FigNodeModelElement.class);
-        assertTrue(panel instanceof StylePanelFigNodeModelElement);
+    panel = tabStyle.findPanelFor(FigNodeModelElement.class);
+    assertTrue(panel instanceof StylePanelFigNodeModelElement);
 
-        panel = tabStyle.findPanelFor(FigEdgeModelElement.class);
-        assertTrue(panel instanceof SPFigEdgeModelElement);
+    panel = tabStyle.findPanelFor(FigEdgeModelElement.class);
+    assertTrue(panel instanceof SPFigEdgeModelElement);
 
-        panel = tabStyle.findPanelFor(FigSimpleState.class);
-        assertTrue(panel instanceof StylePanelFigNodeModelElement);
+    panel = tabStyle.findPanelFor(FigSimpleState.class);
+    assertTrue(panel instanceof StylePanelFigNodeModelElement);
 
-        panel = tabStyle.findPanelFor(FigTransition.class);
-        assertTrue(panel instanceof SPFigEdgeModelElement);
+    panel = tabStyle.findPanelFor(FigTransition.class);
+    assertTrue(panel instanceof SPFigEdgeModelElement);
 
-        panel = tabStyle.findPanelFor(FigActor.class);
-        assertTrue(panel instanceof StylePanelFigNodeModelElement);
+    panel = tabStyle.findPanelFor(FigActor.class);
+    assertTrue(panel instanceof StylePanelFigNodeModelElement);
 
-        panel = tabStyle.findPanelFor(FigInstance.class);
-        assertTrue(panel instanceof StylePanelFigNodeModelElement);
+    panel = tabStyle.findPanelFor(FigInstance.class);
+    assertTrue(panel instanceof StylePanelFigNodeModelElement);
 
-        panel = tabStyle.findPanelFor(FigLink.class);
-        assertTrue(panel instanceof SPFigEdgeModelElement);
+    panel = tabStyle.findPanelFor(FigLink.class);
+    assertTrue(panel instanceof SPFigEdgeModelElement);
 
-        panel = tabStyle.findPanelFor(FigGeneralization.class);
-        assertTrue(panel instanceof SPFigEdgeModelElement);
+    panel = tabStyle.findPanelFor(FigGeneralization.class);
+    assertTrue(panel instanceof SPFigEdgeModelElement);
 
-        panel = tabStyle.findPanelFor(FigRealization.class);
-        assertTrue(panel instanceof SPFigEdgeModelElement);
+    panel = tabStyle.findPanelFor(FigRealization.class);
+    assertTrue(panel instanceof SPFigEdgeModelElement);
 
-        panel = tabStyle.findPanelFor(FigAssociation.class);
-        assertTrue(panel instanceof SPFigEdgeModelElement);
-
-    }
-
+    panel = tabStyle.findPanelFor(FigAssociation.class);
+    assertTrue(panel instanceof SPFigEdgeModelElement);
+  }
 }

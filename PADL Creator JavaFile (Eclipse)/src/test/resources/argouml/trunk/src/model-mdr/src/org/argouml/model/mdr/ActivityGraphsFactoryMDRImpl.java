@@ -25,7 +25,6 @@
 package org.argouml.model.mdr;
 
 import java.util.Collection;
-
 import org.argouml.model.ActivityGraphsFactory;
 import org.omg.uml.behavioralelements.activitygraphs.ActionState;
 import org.omg.uml.behavioralelements.activitygraphs.ActivityGraph;
@@ -42,236 +41,223 @@ import org.omg.uml.foundation.core.ModelElement;
 import org.omg.uml.foundation.core.Namespace;
 
 /**
- * Factory to create UML classes for the UML BehaviorialElements::ActivityGraphs
- * package.
- * 
- * TODO: Change visibility to package after reflection problem solved.
+ * Factory to create UML classes for the UML BehaviorialElements::ActivityGraphs package.
+ *
+ * <p>TODO: Change visibility to package after reflection problem solved.
+ *
  * <p>
+ *
  * @since ARGO0.19.5
- * @author Ludovic Ma&icirc;tre
- * Derived from NSUML implementation by:
+ * @author Ludovic Ma&icirc;tre Derived from NSUML implementation by:
  * @author Thierry Lach
  */
 public class ActivityGraphsFactoryMDRImpl extends AbstractUmlModelFactoryMDR
-        implements ActivityGraphsFactory {
+    implements ActivityGraphsFactory {
 
-    /**
-     * The model implementation.
-     */
-    private MDRModelImplementation nsmodel;
+  /** The model implementation. */
+  private MDRModelImplementation nsmodel;
 
-    /**
-     * Don't allow instantiation.
-     * 
-     * @param implementation
-     *            To get other helpers and factories.
-     */
-    ActivityGraphsFactoryMDRImpl(MDRModelImplementation implementation) {
-        nsmodel = implementation;
+  /**
+   * Don't allow instantiation.
+   *
+   * @param implementation To get other helpers and factories.
+   */
+  ActivityGraphsFactoryMDRImpl(MDRModelImplementation implementation) {
+    nsmodel = implementation;
+  }
+
+  /*
+   * @see org.argouml.model.ActivityGraphsFactory#createActionState()
+   */
+  public Object createActionState() {
+    ActionState myActionState =
+        nsmodel.getUmlPackage().getActivityGraphs().getActionState().createActionState();
+    super.initialize(myActionState);
+    return myActionState;
+  }
+
+  /*
+   * @see org.argouml.model.ActivityGraphsFactory#createActivityGraph()
+   */
+  public Object createActivityGraph() {
+    ActivityGraph myActivityGraph =
+        nsmodel.getUmlPackage().getActivityGraphs().getActivityGraph().createActivityGraph();
+    super.initialize(myActivityGraph);
+    return myActivityGraph;
+  }
+
+  /*
+   * @see org.argouml.model.ActivityGraphsFactory#createCallState()
+   */
+  public Object createCallState() {
+    CallState myCallState =
+        nsmodel.getUmlPackage().getActivityGraphs().getCallState().createCallState();
+    super.initialize(myCallState);
+    return myCallState;
+  }
+
+  /*
+   * @see org.argouml.model.ActivityGraphsFactory#createClassifierInState()
+   */
+  public Object createClassifierInState() {
+    ClassifierInState myClassifierInState =
+        nsmodel
+            .getUmlPackage()
+            .getActivityGraphs()
+            .getClassifierInState()
+            .createClassifierInState();
+    super.initialize(myClassifierInState);
+    return myClassifierInState;
+  }
+
+  /*
+   * @see org.argouml.model.ActivityGraphsFactory#createObjectFlowState()
+   */
+  public Object createObjectFlowState() {
+    ObjectFlowState myObjectFlowState =
+        nsmodel.getUmlPackage().getActivityGraphs().getObjectFlowState().createObjectFlowState();
+    super.initialize(myObjectFlowState);
+    return myObjectFlowState;
+  }
+
+  /*
+   * @see org.argouml.model.ActivityGraphsFactory#createPartition()
+   */
+  public Object createPartition() {
+    Partition myPartition =
+        nsmodel.getUmlPackage().getActivityGraphs().getPartition().createPartition();
+    super.initialize(myPartition);
+    return myPartition;
+  }
+
+  /*
+   * @see org.argouml.model.ActivityGraphsFactory#createSubactivityState()
+   */
+  public Object createSubactivityState() {
+    SubactivityState mySubactivityState =
+        nsmodel.getUmlPackage().getActivityGraphs().getSubactivityState().createSubactivityState();
+    super.initialize(mySubactivityState);
+    return mySubactivityState;
+  }
+
+  /*
+   * @see org.argouml.model.ActivityGraphsFactory#buildActivityGraph(java.lang.Object)
+   */
+  public Object buildActivityGraph(Object theContext) {
+    if (theContext instanceof ModelElement) {
+      ActivityGraph myActivityGraph = (ActivityGraph) createActivityGraph();
+      myActivityGraph.setContext((ModelElement) theContext);
+      if (theContext instanceof Namespace) {
+        myActivityGraph.setNamespace((Namespace) theContext);
+      } else if (theContext instanceof BehavioralFeature) {
+        myActivityGraph.setNamespace(((BehavioralFeature) theContext).getOwner());
+      }
+      Object top =
+          nsmodel.getStateMachinesFactory().buildCompositeStateOnStateMachine(myActivityGraph);
+      myActivityGraph.setTop((State) top);
+      return myActivityGraph;
+    }
+    throw new IllegalArgumentException("Cannot create an ActivityGraph with context " + theContext);
+  }
+
+  /*
+   * @see org.argouml.model.ActivityGraphsFactory#buildObjectFlowState(java.lang.Object)
+   */
+  public Object buildObjectFlowState(Object compositeState) {
+    if (!(compositeState instanceof CompositeState)) {
+      throw new IllegalArgumentException();
     }
 
-    /*
-     * @see org.argouml.model.ActivityGraphsFactory#createActionState()
-     */
-    public Object createActionState() {
-        ActionState myActionState = nsmodel.getUmlPackage().getActivityGraphs().
-            getActionState().createActionState();
-        super.initialize(myActionState);
-        return myActionState;
+    ObjectFlowState state = (ObjectFlowState) createObjectFlowState();
+    state.setContainer((CompositeState) compositeState);
+    return state;
+  }
+
+  /*
+   * @see org.argouml.model.ActivityGraphsFactory#buildClassifierInState(java.lang.Object, java.util.Collection)
+   */
+  public Object buildClassifierInState(Object classifier, Collection state) {
+    if (!(classifier instanceof Classifier)) {
+      throw new IllegalArgumentException();
+    }
+    if (state.size() < 1) {
+      throw new IllegalArgumentException("Collection of states must have at least one element");
     }
 
-    /*
-     * @see org.argouml.model.ActivityGraphsFactory#createActivityGraph()
-     */
-    public Object createActivityGraph() {
-        ActivityGraph myActivityGraph = nsmodel.getUmlPackage().
-            getActivityGraphs().getActivityGraph().createActivityGraph();
-        super.initialize(myActivityGraph);
-        return myActivityGraph;
+    ClassifierInState c = (ClassifierInState) createClassifierInState();
+    c.setType((Classifier) classifier);
+    c.getInState().addAll(state);
+    c.setNamespace(((Classifier) classifier).getNamespace());
+    // this doesn't support I18N or multiple states,
+    // but it's just a default
+    c.setName(
+        ((Classifier) classifier).getName()
+            + "inState["
+            + ((State) state.iterator().next()).getName()
+            + "]");
+    return c;
+  }
+
+  /**
+   * @param elem the ActionState to be deleted
+   */
+  void deleteActionState(Object elem) {
+    if (!(elem instanceof ActionState)) {
+      throw new IllegalArgumentException();
     }
+  }
 
-    /*
-     * @see org.argouml.model.ActivityGraphsFactory#createCallState()
-     */
-    public Object createCallState() {
-        CallState myCallState = nsmodel.getUmlPackage().getActivityGraphs().
-            getCallState().createCallState();
-        super.initialize(myCallState);
-        return myCallState;
+  /**
+   * @param elem the ActivityGraph to be deleted
+   */
+  void deleteActivityGraph(Object elem) {
+    if (!(elem instanceof ActivityGraph)) {
+      throw new IllegalArgumentException();
     }
+  }
 
-    /*
-     * @see org.argouml.model.ActivityGraphsFactory#createClassifierInState()
-     */
-    public Object createClassifierInState() {
-        ClassifierInState myClassifierInState = nsmodel.getUmlPackage().
-            getActivityGraphs().getClassifierInState().
-                createClassifierInState();
-        super.initialize(myClassifierInState);
-        return myClassifierInState;
+  /**
+   * @param elem the CallState to be deleted
+   */
+  void deleteCallState(Object elem) {
+    if (!(elem instanceof CallState)) {
+      throw new IllegalArgumentException();
     }
+  }
 
-    /*
-     * @see org.argouml.model.ActivityGraphsFactory#createObjectFlowState()
-     */
-    public Object createObjectFlowState() {
-        ObjectFlowState myObjectFlowState = nsmodel.getUmlPackage().
-            getActivityGraphs().getObjectFlowState().
-                createObjectFlowState();
-        super.initialize(myObjectFlowState);
-        return myObjectFlowState;
+  /**
+   * @param elem the ClassifierInState to be deleted
+   */
+  void deleteClassifierInState(Object elem) {
+    if (!(elem instanceof ClassifierInState)) {
+      throw new IllegalArgumentException();
     }
+  }
 
-    /*
-     * @see org.argouml.model.ActivityGraphsFactory#createPartition()
-     */
-    public Object createPartition() {
-        Partition myPartition = nsmodel.getUmlPackage().getActivityGraphs().
-            getPartition().createPartition();
-        super.initialize(myPartition);
-        return myPartition;
+  /**
+   * @param elem ObjectFlowState
+   */
+  void deleteObjectFlowState(Object elem) {
+    if (!(elem instanceof ObjectFlowState)) {
+      throw new IllegalArgumentException();
     }
+  }
 
-    /*
-     * @see org.argouml.model.ActivityGraphsFactory#createSubactivityState()
-     */
-    public Object createSubactivityState() {
-        SubactivityState mySubactivityState = nsmodel.getUmlPackage().
-            getActivityGraphs().getSubactivityState().
-                createSubactivityState();
-        super.initialize(mySubactivityState);
-        return mySubactivityState;
+  /**
+   * @param elem Partition
+   */
+  void deletePartition(Object elem) {
+    if (!(elem instanceof Partition)) {
+      throw new IllegalArgumentException();
     }
+  }
 
-    /*
-     * @see org.argouml.model.ActivityGraphsFactory#buildActivityGraph(java.lang.Object)
-     */
-    public Object buildActivityGraph(Object theContext) {
-        if (theContext instanceof ModelElement) {
-            ActivityGraph myActivityGraph = (ActivityGraph) 
-                createActivityGraph();
-            myActivityGraph.setContext((ModelElement) theContext);
-            if (theContext instanceof Namespace) {
-                myActivityGraph.setNamespace((Namespace) theContext);
-            } else if (theContext instanceof BehavioralFeature) {
-                myActivityGraph.setNamespace(((BehavioralFeature) theContext).
-                        getOwner());
-            }
-            Object top = nsmodel.getStateMachinesFactory().
-                buildCompositeStateOnStateMachine(myActivityGraph);
-            myActivityGraph.setTop((State) top);
-            return myActivityGraph;
-        }
-        throw new IllegalArgumentException(
-                "Cannot create an ActivityGraph with context " + theContext);
+  /**
+   * @param elem SubactivityState
+   */
+  void deleteSubactivityState(Object elem) {
+    if (!(elem instanceof SubactivityState)) {
+      throw new IllegalArgumentException();
     }
-
-    /*
-     * @see org.argouml.model.ActivityGraphsFactory#buildObjectFlowState(java.lang.Object)
-     */
-    public Object buildObjectFlowState(Object compositeState) {
-        if (!(compositeState instanceof CompositeState)) {
-            throw new IllegalArgumentException();
-        }
-
-        ObjectFlowState state = (ObjectFlowState) createObjectFlowState();
-        state.setContainer((CompositeState) compositeState);
-        return state;
-    }
-
-    /*
-     * @see org.argouml.model.ActivityGraphsFactory#buildClassifierInState(java.lang.Object, java.util.Collection)
-     */
-    public Object buildClassifierInState(Object classifier, Collection state) {
-        if (!(classifier instanceof Classifier)) {
-            throw new IllegalArgumentException();
-        }
-        if (state.size() < 1) {
-            throw new IllegalArgumentException(
-                    "Collection of states must have at least one element");
-        }
-
-        ClassifierInState c = (ClassifierInState) createClassifierInState();
-        c.setType((Classifier) classifier);
-        c.getInState().addAll(state);
-        c.setNamespace(((Classifier) classifier).getNamespace());
-        // this doesn't support I18N or multiple states, 
-        // but it's just a default
-        c.setName(((Classifier) classifier).getName() 
-                + "inState[" 
-                + ((State) state.iterator().next()).getName() 
-                + "]");
-        return c;
-    }
-
-    /**
-     * @param elem
-     *            the ActionState to be deleted
-     */
-    void deleteActionState(Object elem) {
-        if (!(elem instanceof ActionState)) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    /**
-     * @param elem
-     *            the ActivityGraph to be deleted
-     */
-    void deleteActivityGraph(Object elem) {
-        if (!(elem instanceof ActivityGraph)) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    /**
-     * @param elem
-     *            the CallState to be deleted
-     */
-    void deleteCallState(Object elem) {
-        if (!(elem instanceof CallState)) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    /**
-     * @param elem
-     *            the ClassifierInState to be deleted
-     */
-    void deleteClassifierInState(Object elem) {
-        if (!(elem instanceof ClassifierInState)) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    /**
-     * @param elem
-     *            ObjectFlowState
-     */
-    void deleteObjectFlowState(Object elem) {
-        if (!(elem instanceof ObjectFlowState)) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    /**
-     * @param elem
-     *            Partition
-     */
-    void deletePartition(Object elem) {
-        if (!(elem instanceof Partition)) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    /**
-     * @param elem
-     *            SubactivityState
-     */
-    void deleteSubactivityState(Object elem) {
-        if (!(elem instanceof SubactivityState)) {
-            throw new IllegalArgumentException();
-        }
-    }
-
+  }
 }

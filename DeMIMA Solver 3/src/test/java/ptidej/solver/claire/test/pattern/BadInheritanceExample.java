@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc  and others, see in file; API and its implementation
  ******************************************************************************/
@@ -20,63 +20,53 @@ import padl.kernel.IUseRelationship;
 import padl.motif.models.TestMotifModel;
 
 public final class BadInheritanceExample extends TestMotifModel {
-	private static final long serialVersionUID = -2800020575042406684L;
+  private static final long serialVersionUID = -2800020575042406684L;
 
-	public BadInheritanceExample() {
-		// A -<|- B -<|- C
-		// D -<|- E
-		// F -<|- G
-		// A -k--> B
-		// B ----> C
-		// D <>--> E
-		// F <#>-> G
+  public BadInheritanceExample() {
+    // A -<|- B -<|- C
+    // D -<|- E
+    // F -<|- G
+    // A -k--> B
+    // B ----> C
+    // D <>--> E
+    // F <#>-> G
 
-		final IClass A = this.getFactory().createClass("A".toCharArray(),
-				"A".toCharArray());
-		final IClass B = this.getFactory().createClass("B".toCharArray(),
-				"B".toCharArray());
-		final IClass C = this.getFactory().createClass("C".toCharArray(),
-				"C".toCharArray());
-		final IClass D = this.getFactory().createClass("D".toCharArray(),
-				"D".toCharArray());
-		final IClass E = this.getFactory().createClass("E".toCharArray(),
-				"E".toCharArray());
-		final IClass F = this.getFactory().createClass("F".toCharArray(),
-				"F".toCharArray());
-		final IClass G = this.getFactory().createClass("G".toCharArray(),
-				"G".toCharArray());
+    final IClass A = this.getFactory().createClass("A".toCharArray(), "A".toCharArray());
+    final IClass B = this.getFactory().createClass("B".toCharArray(), "B".toCharArray());
+    final IClass C = this.getFactory().createClass("C".toCharArray(), "C".toCharArray());
+    final IClass D = this.getFactory().createClass("D".toCharArray(), "D".toCharArray());
+    final IClass E = this.getFactory().createClass("E".toCharArray(), "E".toCharArray());
+    final IClass F = this.getFactory().createClass("F".toCharArray(), "F".toCharArray());
+    final IClass G = this.getFactory().createClass("G".toCharArray(), "G".toCharArray());
 
-		B.addInheritedEntity(A);
-		C.addInheritedEntity(B);
-		E.addInheritedEntity(D);
-		G.addInheritedEntity(F);
+    B.addInheritedEntity(A);
+    C.addInheritedEntity(B);
+    E.addInheritedEntity(D);
+    G.addInheritedEntity(F);
 
-		final IUseRelationship link1 = this.getFactory().createUseRelationship(
-				"link1".toCharArray(), B, Cardinality.One);
-		A.addConstituent(link1);
-		final IAssociation link2 = this.getFactory()
-				.createAssociationRelationship("link2".toCharArray(), C,
-						Cardinality.One);
-		B.addConstituent(link2);
-		final IAggregation link3 = this.getFactory()
-				.createAggregationRelationship("link3".toCharArray(), E,
-						Cardinality.One);
-		D.addConstituent(link3);
-		final IComposition link4 = this.getFactory()
-				.createCompositionRelationship("link4".toCharArray(), G,
-						Cardinality.One);
-		F.addConstituent(link4);
+    final IUseRelationship link1 =
+        this.getFactory().createUseRelationship("link1".toCharArray(), B, Cardinality.One);
+    A.addConstituent(link1);
+    final IAssociation link2 =
+        this.getFactory().createAssociationRelationship("link2".toCharArray(), C, Cardinality.One);
+    B.addConstituent(link2);
+    final IAggregation link3 =
+        this.getFactory().createAggregationRelationship("link3".toCharArray(), E, Cardinality.One);
+    D.addConstituent(link3);
+    final IComposition link4 =
+        this.getFactory().createCompositionRelationship("link4".toCharArray(), G, Cardinality.One);
+    F.addConstituent(link4);
 
-		final IPackage enclosingPackage = this.getFactory()
-				.createPackage("BadInheritanceTest".toCharArray());
-		enclosingPackage.addConstituent(A);
-		enclosingPackage.addConstituent(B);
-		enclosingPackage.addConstituent(C);
-		enclosingPackage.addConstituent(D);
-		enclosingPackage.addConstituent(E);
-		enclosingPackage.addConstituent(F);
-		enclosingPackage.addConstituent(G);
+    final IPackage enclosingPackage =
+        this.getFactory().createPackage("BadInheritanceTest".toCharArray());
+    enclosingPackage.addConstituent(A);
+    enclosingPackage.addConstituent(B);
+    enclosingPackage.addConstituent(C);
+    enclosingPackage.addConstituent(D);
+    enclosingPackage.addConstituent(E);
+    enclosingPackage.addConstituent(F);
+    enclosingPackage.addConstituent(G);
 
-		this.addConstituent(enclosingPackage);
-	}
+    this.addConstituent(enclosingPackage);
+  }
 }

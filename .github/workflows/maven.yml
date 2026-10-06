@@ -20,16 +20,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Check out the code
-      uses: actions/checkout@v4
-    - name: Set up JDK 25
-      uses: actions/setup-java@v3
-      with:
-        java-version: '25'
-        distribution: 'oracle'
-        cache: maven
-    - name: Build and validate with Maven
-      run: |
-        mvn --batch-mode clean
-        mvn --batch-mode validate
-        mvn --batch-mode install
+      - name: Check out the code
+        uses: actions/checkout@v4
+      - name: Set up JDK 25
+        uses: actions/setup-java@v3
+        with:
+          java-version: '25'
+          distribution: 'oracle'
+          cache: maven
+      - name: Build and validate with Maven
+        run: |
+          mvn --batch-mode clean
+          mvn --batch-mode validate
+          mvn --batch-mode install

@@ -4,20 +4,18 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
 package squad.quality.pqmod;
 
+import com.ibm.toad.cfparse.ClassFile;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.ibm.toad.cfparse.ClassFile;
-
 import squad.quality.IQualityAttribute;
 import util.io.ProxyConsole;
 import util.io.SubtypeLoader;
@@ -26,76 +24,70 @@ import util.repository.IRepository;
 import util.repository.impl.FileRepositoryFactory;
 
 public class PQMODRepository implements IRepository {
-	private static PQMODRepository UniqueInstance;
+  private static PQMODRepository UniqueInstance;
 
-	public static PQMODRepository getInstance() {
-		if (PQMODRepository.UniqueInstance == null) {
-			PQMODRepository.UniqueInstance = new PQMODRepository();
-		}
-		return PQMODRepository.UniqueInstance;
-	}
+  public static PQMODRepository getInstance() {
+    if (PQMODRepository.UniqueInstance == null) {
+      PQMODRepository.UniqueInstance = new PQMODRepository();
+    }
+    return PQMODRepository.UniqueInstance;
+  }
 
-	private final IQualityAttribute[] qualityAttributes;
-	private final Map<String, IQualityAttribute> mapOfAttributes = new HashMap<String, IQualityAttribute>();
+  private final IQualityAttribute[] qualityAttributes;
+  private final Map<String, IQualityAttribute> mapOfAttributes =
+      new HashMap<String, IQualityAttribute>();
 
-	private PQMODRepository() {
-		final List<IQualityAttribute> listOfQualityAttributes = new ArrayList<IQualityAttribute>();
-		try {
-			final ClassFile[] classFiles = SubtypeLoader.loadSubtypesFromStreams(
-					"squad.quality.IQualityAttribute",
-					FileRepositoryFactory.getInstance().getFileRepository(this)
-							.getFiles("squad/quality/pqmod/repository/",
-									".class"),
-					"squad.quality.pqmod.repository", ".class");
+  @SuppressWarnings("unchecked") // The class is known to implement the quality-attribute interface
+  private PQMODRepository() {
+    final List<IQualityAttribute> listOfQualityAttributes = new ArrayList<IQualityAttribute>();
+    try {
+      final ClassFile[] classFiles =
+          SubtypeLoader.loadSubtypesFromStreams(
+              "squad.quality.IQualityAttribute",
+              FileRepositoryFactory.getInstance()
+                  .getFileRepository(this)
+                  .getFiles("squad/quality/pqmod/repository/", ".class"),
+              "squad.quality.pqmod.repository",
+              ".class");
 
-			for (int i = 0; i < classFiles.length; i++) {
-				try {
-					final Class<IQualityAttribute> attributeClass = (Class<IQualityAttribute>) Class
-							.forName(classFiles[i].getName());
-					final IQualityAttribute qualityAttribute = attributeClass
-							.getDeclaredConstructor().newInstance();
+      for (int i = 0; i < classFiles.length; i++) {
+        try {
+          final Class<IQualityAttribute> attributeClass =
+              (Class<IQualityAttribute>) Class.forName(classFiles[i].getName());
+          final IQualityAttribute qualityAttribute =
+              attributeClass.getDeclaredConstructor().newInstance();
 
-					this.mapOfAttributes.put(qualityAttribute.getName(),
-							qualityAttribute);
-					listOfQualityAttributes.add(qualityAttribute);
-				}
-				catch (final ClassNotFoundException e) {
-					e.printStackTrace(ProxyConsole.getInstance().errorOutput());
-				}
-				catch (final IllegalArgumentException e) {
-					e.printStackTrace(ProxyConsole.getInstance().errorOutput());
-				}
-				catch (final SecurityException e) {
-					e.printStackTrace(ProxyConsole.getInstance().errorOutput());
-				}
-				catch (final InstantiationException e) {
-					e.printStackTrace(ProxyConsole.getInstance().errorOutput());
-				}
-				catch (final IllegalAccessException e) {
-					e.printStackTrace(ProxyConsole.getInstance().errorOutput());
-				}
-				catch (InvocationTargetException e) {
-					e.printStackTrace();
-				}
-				catch (NoSuchMethodException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		catch (final FileAccessException e) {
-			e.printStackTrace(ProxyConsole.getInstance().errorOutput());
-		}
+          this.mapOfAttributes.put(qualityAttribute.getName(), qualityAttribute);
+          listOfQualityAttributes.add(qualityAttribute);
+        } catch (final ClassNotFoundException e) {
+          e.printStackTrace(ProxyConsole.getInstance().errorOutput());
+        } catch (final IllegalArgumentException e) {
+          e.printStackTrace(ProxyConsole.getInstance().errorOutput());
+        } catch (final SecurityException e) {
+          e.printStackTrace(ProxyConsole.getInstance().errorOutput());
+        } catch (final InstantiationException e) {
+          e.printStackTrace(ProxyConsole.getInstance().errorOutput());
+        } catch (final IllegalAccessException e) {
+          e.printStackTrace(ProxyConsole.getInstance().errorOutput());
+        } catch (InvocationTargetException e) {
+          e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+          e.printStackTrace();
+        }
+      }
+    } catch (final FileAccessException e) {
+      e.printStackTrace(ProxyConsole.getInstance().errorOutput());
+    }
 
-		this.qualityAttributes = new IQualityAttribute[listOfQualityAttributes
-				.size()];
-		listOfQualityAttributes.toArray(this.qualityAttributes);
-	}
+    this.qualityAttributes = new IQualityAttribute[listOfQualityAttributes.size()];
+    listOfQualityAttributes.toArray(this.qualityAttributes);
+  }
 
-	public IQualityAttribute getQualityAttribute(final String anAttributeName) {
-		return (IQualityAttribute) this.mapOfAttributes.get(anAttributeName);
-	}
+  public IQualityAttribute getQualityAttribute(final String anAttributeName) {
+    return (IQualityAttribute) this.mapOfAttributes.get(anAttributeName);
+  }
 
-	public IQualityAttribute[] getQualityAttributes() {
-		return this.qualityAttributes;
-	}
+  public IQualityAttribute[] getQualityAttributes() {
+    return this.qualityAttributes;
+  }
 }

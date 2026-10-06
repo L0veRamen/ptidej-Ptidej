@@ -25,12 +25,10 @@
 package org.argouml.uml.ui.behavior.collaborations;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
@@ -44,88 +42,75 @@ import org.argouml.uml.ui.foundation.core.PropPanelModelElement;
 import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
 import org.argouml.util.ConfigLoader;
 
-/**
- * Properties panel for a Message.
- */
+/** Properties panel for a Message. */
 public class PropPanelMessage extends PropPanelModelElement {
 
+  /** The constructor. */
+  public PropPanelMessage() {
+    super("Message", ConfigLoader.getTabPropsOrientation());
+
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.stereotype"), getStereotypeSelector());
+    JList interactionList = new UMLLinkedList(new UMLMessageInteractionListModel());
+    interactionList.setVisibleRowCount(1);
+    addField(Translator.localize("label.interaction"), new JScrollPane(interactionList));
+
+    JList senderList = new UMLLinkedList(new UMLMessageSenderListModel());
+    senderList.setVisibleRowCount(1);
+    JScrollPane senderScroll = new JScrollPane(senderList);
+    addField(Translator.localize("label.sender"), senderScroll);
+
+    JList receiverList = new UMLLinkedList(new UMLMessageReceiverListModel());
+    receiverList.setVisibleRowCount(1);
+    JScrollPane receiverScroll = new JScrollPane(receiverList);
+    addField(Translator.localize("label.receiver"), receiverScroll);
+
+    addSeperator();
+
+    addField(
+        Translator.localize("label.activator"),
+        new UMLMessageActivatorComboBox(this, new UMLMessageActivatorComboBoxModel()));
+
+    JList actionList =
+        new UMLMutableLinkedList(
+            new UMLMessageActionListModel(), null, ActionNewActionForMessage.getInstance());
+    actionList.setVisibleRowCount(1);
+    JScrollPane actionScroll = new JScrollPane(actionList);
+    addField(Translator.localize("label.action"), actionScroll);
+
+    JScrollPane predecessorScroll =
+        new JScrollPane(
+            new UMLMutableLinkedList(
+                new UMLMessagePredecessorListModel(),
+                ActionAddMessagePredecessor.getInstance(),
+                null));
+    addField(Translator.localize("label.predecessor"), predecessorScroll);
+
+    addAction(new ActionNavigateContainerElement());
+    addAction(new ActionToolNewAction());
+    addAction(new ActionNewStereotype());
+    addAction(new ActionDeleteSingleModelElement());
+  }
+
+  private class ActionToolNewAction extends AbstractActionNewModelElement {
+
+    /** The constructor. */
+    public ActionToolNewAction() {
+      super("button.new-action");
+      putValue(Action.NAME, Translator.localize("button.new-action"));
+      Icon icon = ResourceLoaderWrapper.lookupIcon("CallAction");
+      putValue(Action.SMALL_ICON, icon);
+    }
+
     /**
-     * The constructor.
-     *
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
-    public PropPanelMessage() {
-        super("Message", ConfigLoader.getTabPropsOrientation());
-
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.stereotype"),
-                getStereotypeSelector());
-       JList interactionList =
-            new UMLLinkedList(new UMLMessageInteractionListModel());
-        interactionList.setVisibleRowCount(1);
-        addField(Translator.localize("label.interaction"),
-        	 new JScrollPane(interactionList));
-
-        JList senderList = new UMLLinkedList(new UMLMessageSenderListModel());
-        senderList.setVisibleRowCount(1);
-        JScrollPane senderScroll = new JScrollPane(senderList);
-        addField(Translator.localize("label.sender"), senderScroll);
-
-        JList receiverList =
-            new UMLLinkedList(new UMLMessageReceiverListModel());
-        receiverList.setVisibleRowCount(1);
-        JScrollPane receiverScroll = new JScrollPane(receiverList);
-        addField(Translator.localize("label.receiver"),
-                receiverScroll);
-
-        addSeperator();
-
-        addField(Translator.localize("label.activator"),
-        	 new UMLMessageActivatorComboBox(this,
-        		 new UMLMessageActivatorComboBoxModel()));
-
-        JList actionList =
-        	 new UMLMutableLinkedList(new UMLMessageActionListModel(),
-        	         null, ActionNewActionForMessage.getInstance());
-        actionList.setVisibleRowCount(1);
-        JScrollPane actionScroll = new JScrollPane(actionList);
-        addField(Translator.localize("label.action"), actionScroll);
-
-        JScrollPane predecessorScroll = new JScrollPane(
-                new UMLMutableLinkedList(new UMLMessagePredecessorListModel(),
-        	ActionAddMessagePredecessor.getInstance(),
-        	null));
-        addField(Translator.localize("label.predecessor"),
-        	 predecessorScroll);
-
-            addAction(new ActionNavigateContainerElement());
-            addAction(new ActionToolNewAction());
-            addAction(new ActionNewStereotype());
-            addAction(new ActionDeleteSingleModelElement());
+    public void actionPerformed(ActionEvent e) {
+      Object target = TargetManager.getInstance().getModelTarget();
+      if (Model.getFacade().isAMessage(target)) {
+        Model.getCommonBehaviorFactory().buildAction(target);
+        super.actionPerformed(e);
+      }
     }
-
-    private class ActionToolNewAction extends AbstractActionNewModelElement {
-
-        /**
-         * The constructor.
-         */
-        public ActionToolNewAction() {
-            super("button.new-action");
-            putValue(Action.NAME, Translator.localize("button.new-action"));
-            Icon icon = ResourceLoaderWrapper.lookupIcon("CallAction");
-            putValue(Action.SMALL_ICON, icon);
-        }
-
-        /**
-         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-         */
-        public void actionPerformed(ActionEvent e) {
-            Object target = TargetManager.getInstance().getModelTarget();
-            if (Model.getFacade().isAMessage(target)) {
-                Model.getCommonBehaviorFactory().buildAction(target);
-                super.actionPerformed(e);
-            }
-        }
-    }
-
+  }
 } /* end class PropPanelMessage */

@@ -25,7 +25,6 @@
 package org.argouml.uml.ui.behavior.use_cases;
 
 import junit.framework.TestCase;
-
 import org.argouml.model.Model;
 
 /**
@@ -34,57 +33,53 @@ import org.argouml.model.Model;
  */
 public class TestUMLExtensionPointUseCaseListModel extends TestCase {
 
-    private Object elem;
-    private UMLExtensionPointUseCaseListModel model;
+  private Object elem;
+  private UMLExtensionPointUseCaseListModel model;
 
-    /**
-     * Constructor for TestUMLExtensionPointUseCaseListModel.
-     * @param arg0 is the name of the test case.
-     */
-    public TestUMLExtensionPointUseCaseListModel(String arg0) {
-        super(arg0);
-    }
+  /**
+   * Constructor for TestUMLExtensionPointUseCaseListModel.
+   *
+   * @param arg0 is the name of the test case.
+   */
+  public TestUMLExtensionPointUseCaseListModel(String arg0) {
+    super(arg0);
+  }
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        elem = Model.getUseCasesFactory().createExtensionPoint();
-        model = new UMLExtensionPointUseCaseListModel();
-        model.setTarget(elem);
-        Model.getPump().flushModelEvents();
-    }
+  /**
+   * @see junit.framework.TestCase#setUp()
+   */
+  protected void setUp() throws Exception {
+    super.setUp();
+    elem = Model.getUseCasesFactory().createExtensionPoint();
+    model = new UMLExtensionPointUseCaseListModel();
+    model.setTarget(elem);
+    Model.getPump().flushModelEvents();
+  }
 
-    /**
-     * @see junit.framework.TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        Model.getUmlFactory().delete(elem);
-        model = null;
-    }
+  /**
+   * @see junit.framework.TestCase#tearDown()
+   */
+  protected void tearDown() throws Exception {
+    super.tearDown();
+    Model.getUmlFactory().delete(elem);
+    model = null;
+  }
 
-    /**
-     * Test setUseCase().
-     */
-    public void testSetUseCase() {
-        Object usecase = Model.getUseCasesFactory().createUseCase();
-        Model.getUseCasesHelper().setUseCase(elem, usecase);
-        Model.getPump().flushModelEvents();
-        assertEquals(1, model.getSize());
-        assertEquals(usecase, model.getElementAt(0));
-    }
+  /** Test setUseCase(). */
+  public void testSetUseCase() {
+    Object usecase = Model.getUseCasesFactory().createUseCase();
+    Model.getUseCasesHelper().setUseCase(elem, usecase);
+    Model.getPump().flushModelEvents();
+    assertEquals(1, model.getSize());
+    assertEquals(usecase, model.getElementAt(0));
+  }
 
-    /**
-     * Test setUseCase() with null argument.
-     */
-    public void testRemoveUseCase() {
-        Object usecase = Model.getUseCasesFactory().createUseCase();
-        Model.getUseCasesHelper().setUseCase(elem, usecase);
-        Model.getUseCasesHelper().setUseCase(elem, null);
-        Model.getPump().flushModelEvents();
-        assertEquals(0, model.getSize());
-    }
-
+  /** Test setUseCase() with null argument. */
+  public void testRemoveUseCase() {
+    Object usecase = Model.getUseCasesFactory().createUseCase();
+    Model.getUseCasesHelper().setUseCase(elem, usecase);
+    Model.getUseCasesHelper().setUseCase(elem, null);
+    Model.getPump().flushModelEvents();
+    assertEquals(0, model.getSize());
+  }
 }

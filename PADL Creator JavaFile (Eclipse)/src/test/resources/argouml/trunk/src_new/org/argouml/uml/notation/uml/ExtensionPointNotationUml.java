@@ -26,7 +26,6 @@ package org.argouml.uml.notation.uml;
 
 import java.util.HashMap;
 import java.util.StringTokenizer;
-
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.Model;
 import org.argouml.ui.targetmanager.TargetManager;
@@ -34,205 +33,197 @@ import org.argouml.uml.notation.ExtensionPointNotation;
 
 /**
  * The notation for an extension point for UML.
- * 
+ *
  * @author michiel
  */
 public class ExtensionPointNotationUml extends ExtensionPointNotation {
 
-    /**
-     * The constructor.
-     *
-     * @param ep the represented Extension Point
-     */
-    public ExtensionPointNotationUml(Object ep) {
-        super(ep);
+  /**
+   * The constructor.
+   *
+   * @param ep the represented Extension Point
+   */
+  public ExtensionPointNotationUml(Object ep) {
+    super(ep);
+  }
+
+  /**
+   * @see org.argouml.uml.notation.NotationProvider#parse(java.lang.Object, java.lang.String)
+   */
+  public void parse(Object modelElement, String text) {
+    /* TODO: This try-catch will be needed
+     * once the code below is improved. */
+    //        try {
+    parseExtensionPointFig(Model.getFacade().getUseCase(modelElement), modelElement, text);
+    //        } catch (ParseException pe) {
+    //            String msg = "statusmsg.bar.error.parsing.extensionpoint";
+    //            Object[] args = {
+    //                pe.getLocalizedMessage(),
+    //                Integer.valueOf(pe.getErrorOffset()),
+    //            };
+    //            ProjectBrowser.getInstance().getStatusBar().showStatus(
+    //                    Translator.messageFormat(msg, args));
+    //        }
+  }
+
+  /**
+   * Parse an extension point.
+   *
+   * <p>The syntax is "name: location", "name:", "location" or "". The fields of the extension point
+   * are updated appropriately.
+   *
+   * @param useCase The use case that owns this extension point
+   * @param ep The extension point concerned
+   * @param text The text to parse
+   */
+  public void parseExtensionPointFig(Object useCase, Object ep, String text) {
+
+    // We can do nothing if we don't have both the use case and extension
+    // point.
+    if ((useCase == null) || (ep == null)) {
+      return;
     }
 
-    /**
-     * @see org.argouml.uml.notation.NotationProvider#parse(java.lang.Object, java.lang.String)
-     */
-    public void parse(Object modelElement, String text) {
-        /* TODO: This try-catch will be needed 
-         * once the code below is improved. */
-//        try {
-        parseExtensionPointFig(Model.getFacade()
-                    .getUseCase(modelElement), modelElement, text);
-//        } catch (ParseException pe) {
-//            String msg = "statusmsg.bar.error.parsing.extensionpoint";
-//            Object[] args = {
-//                pe.getLocalizedMessage(),
-//                Integer.valueOf(pe.getErrorOffset()),
-//            };
-//            ProjectBrowser.getInstance().getStatusBar().showStatus(
-//                    Translator.messageFormat(msg, args));
-//        }
+    // Parse the string to creat a new extension point.
+    Object newEp = parseExtensionPoint(text);
+
+    // If we got back null we interpret this as meaning delete the
+    // reference to the extension point from the use case, otherwise we set
+    // the fields of the extension point to the values in newEp.
+    if (newEp == null) {
+      ProjectManager.getManager().getCurrentProject().moveToTrash(ep);
+      TargetManager.getInstance().setTarget(useCase);
+    } else {
+      Model.getCoreHelper().setName(ep, Model.getFacade().getName(newEp));
+      Model.getUseCasesHelper().setLocation(ep, Model.getFacade().getLocation(newEp));
     }
-    /**
-     * Parse an extension point.<p>
-     *
-     * The syntax is "name: location", "name:", "location" or "". The fields of
-     * the extension point are updated appropriately.
-     *
-     * @param useCase The use case that owns this extension point
-     * @param ep      The extension point concerned
-     * @param text    The text to parse
-     */
-    public void parseExtensionPointFig(Object useCase, Object ep, String text) {
+    /* TODO: This needs more work!
+     * We simply throw the new extension point away? */
+  }
 
-        // We can do nothing if we don't have both the use case and extension
-        // point.
-        if ((useCase == null) || (ep == null)) {
-            return;
-        }
+  /**
+   * Parse a string representing an extension point and return a new extension point.
+   *
+   * <p>The syntax is "name: location", "name:", "location" or "". <em>Note:</em> If either field is
+   * blank, it will be set to null in the extension point.
+   *
+   * <p>We break up the string into tokens at the ":". We must keep the ":" as a token, so we can
+   * distinguish between "name:" and "location". The number of tokens will distinguish our four
+   * cases.
+   *
+   * <p>
+   *
+   * @param text The string to parse
+   * @return A new extension point, with fields set appropriately, or <code>null</code> if we are
+   *     given <code>null</code> or a blank string. <em>Note</em>. The string ":" can be used to set
+   *     both name and location to null.
+   */
+  private Object parseExtensionPoint(String text) {
 
-        // Parse the string to creat a new extension point.
-        Object newEp = parseExtensionPoint(text);
+    // If we are given the null string, return immediately
 
-        // If we got back null we interpret this as meaning delete the
-        // reference to the extension point from the use case, otherwise we set
-        // the fields of the extension point to the values in newEp.
-        if (newEp == null) {
-            ProjectManager.getManager().getCurrentProject().moveToTrash(ep);
-            TargetManager.getInstance().setTarget(useCase);
+    if (text == null) {
+      return null;
+    }
+
+    // Build a new extension point
+
+    // This method has insufficient information to call buildExtensionPoint.
+    // Thus we'll need to create one, and pray that whomever called us knows
+    // what kind of mess they got.
+    Object ep = Model.getUseCasesFactory().createExtensionPoint();
+
+    StringTokenizer st = new StringTokenizer(text.trim(), ":", true);
+    int numTokens = st.countTokens();
+
+    String epLocation;
+    String epName;
+
+    switch (numTokens) {
+      case 0:
+
+        // The empty string. Return null
+        ep = null;
+
+        break;
+
+      case 1:
+
+        // A string of the form "location". This will be confused by the
+        // string ":", so we pick this out as an instruction to clear both
+        // name and location.
+        epLocation = st.nextToken().trim();
+
+        if (epLocation.equals(":")) {
+          Model.getCoreHelper().setName(ep, null);
+          Model.getUseCasesHelper().setLocation(ep, null);
         } else {
-            Model.getCoreHelper().setName(ep, Model.getFacade().getName(newEp));
-            Model.getUseCasesHelper().setLocation(ep,
-                    Model.getFacade().getLocation(newEp));
+          Model.getCoreHelper().setName(ep, null);
+          Model.getUseCasesHelper().setLocation(ep, epLocation);
         }
-        /* TODO: This needs more work! 
-         * We simply throw the new extension point away? */
+
+        break;
+
+      case 2:
+
+        // A string of the form "name:"
+        epName = st.nextToken().trim();
+
+        Model.getCoreHelper().setName(ep, epName);
+        Model.getUseCasesHelper().setLocation(ep, null);
+
+        break;
+
+      case 3:
+
+        // A string of the form "name:location". Discard the middle token
+        // (":")
+        epName = st.nextToken().trim();
+        st.nextToken(); // Read past the colon.
+        epLocation = st.nextToken().trim();
+
+        Model.getCoreHelper().setName(ep, epName);
+        Model.getUseCasesHelper().setLocation(ep, epLocation);
+
+        break;
     }
 
-    /**
-     * Parse a string representing an extension point and return a new extension
-     * point.<p>
-     *
-     * The syntax is "name: location", "name:", "location" or "".
-     * <em>Note:</em> If either field is blank, it will be set to null
-     * in the extension point.
-     *
-     * We break up the string into tokens at the ":". We must keep the ":" as a
-     * token, so we can distinguish between "name:" and "location". The number
-     * of tokens will distinguish our four cases.<p>
-     *
-     * @param text The string to parse
-     *
-     * @return A new extension point, with fields set appropriately, or
-     *         <code>null</code> if we are given <code>null</code> or a
-     *         blank string. <em>Note</em>. The string ":" can be used to set
-     *         both name and location to null.
-     */
-    private Object parseExtensionPoint(String text) {
+    return ep;
+  }
 
-        // If we are given the null string, return immediately
+  /**
+   * @see org.argouml.uml.notation.NotationProvider#getParsingHelp()
+   */
+  public String getParsingHelp() {
+    return "parsing.help.fig-extensionpoint";
+  }
 
-        if (text == null) {
-            return null;
-        }
+  /**
+   * Generate the display for an extension point.
+   *
+   * <p>The representation is "name: location". The "name: " is omitted if there is no name given.
+   *
+   * @see org.argouml.uml.notation.NotationProvider#toString(java.lang.Object, java.util.HashMap)
+   */
+  public String toString(Object modelElement, HashMap args) {
 
-        // Build a new extension point
+    // The string to build
+    String s = "";
 
-        // This method has insufficient information to call buildExtensionPoint.
-        // Thus we'll need to create one, and pray that whomever called us knows
-        // what kind of mess they got.
-        Object ep =
-            Model.getUseCasesFactory().createExtensionPoint();
+    // Get the fields we want
+    String epName = Model.getFacade().getName(modelElement);
+    String epLocation = Model.getFacade().getLocation(modelElement);
 
-        StringTokenizer st = new StringTokenizer(text.trim(), ":", true);
-        int numTokens = st.countTokens();
-
-        String epLocation;
-        String epName;
-
-        switch (numTokens) {
-
-        case 0:
-
-            // The empty string. Return null
-            ep = null;
-
-            break;
-
-        case 1:
-
-            // A string of the form "location". This will be confused by the
-            // string ":", so we pick this out as an instruction to clear both
-            // name and location.
-            epLocation = st.nextToken().trim();
-
-            if (epLocation.equals(":")) {
-                Model.getCoreHelper().setName(ep, null);
-                Model.getUseCasesHelper().setLocation(ep, null);
-            } else {
-                Model.getCoreHelper().setName(ep, null);
-                Model.getUseCasesHelper().setLocation(ep, epLocation);
-            }
-
-            break;
-
-        case 2:
-
-            // A string of the form "name:"
-            epName = st.nextToken().trim();
-
-            Model.getCoreHelper().setName(ep, epName);
-            Model.getUseCasesHelper().setLocation(ep, null);
-
-            break;
-
-        case 3:
-
-            // A string of the form "name:location". Discard the middle token
-            // (":")
-            epName = st.nextToken().trim();
-            st.nextToken(); // Read past the colon.
-            epLocation = st.nextToken().trim();
-
-            Model.getCoreHelper().setName(ep, epName);
-            Model.getUseCasesHelper().setLocation(ep, epLocation);
-
-            break;
-        }
-
-        return ep;
+    // Put in the name field if it's there
+    if ((epName != null) && (epName.length() > 0)) {
+      s += epName + ": ";
     }
 
-    /**
-     * @see org.argouml.uml.notation.NotationProvider#getParsingHelp()
-     */
-    public String getParsingHelp() {
-        return "parsing.help.fig-extensionpoint";
+    // Put in the location field if it's there
+    if ((epLocation != null) && (epLocation.length() > 0)) {
+      s += epLocation;
     }
 
-    /**
-     * Generate the display for an extension point.<p>
-     *
-     * The representation is "name: location". 
-     * The "name: " is omitted if there
-     * is no name given.
-     *
-     * @see org.argouml.uml.notation.NotationProvider#toString(java.lang.Object, java.util.HashMap)
-     */
-    public String toString(Object modelElement, HashMap args) {
-
-        // The string to build
-        String s = "";
-
-        // Get the fields we want
-        String epName = Model.getFacade().getName(modelElement);
-        String epLocation = Model.getFacade().getLocation(modelElement);
-
-        // Put in the name field if it's there
-        if ((epName != null) && (epName.length() > 0)) {
-            s += epName + ": ";
-        }
-
-        // Put in the location field if it's there
-        if ((epLocation != null) && (epLocation.length() > 0)) {
-            s += epLocation;
-        }
-
-        return s;
-    }
-
+    return s;
+  }
 }

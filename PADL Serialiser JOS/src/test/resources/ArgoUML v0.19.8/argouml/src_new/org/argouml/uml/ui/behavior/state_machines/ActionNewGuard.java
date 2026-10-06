@@ -26,7 +26,6 @@
 package org.argouml.uml.ui.behavior.state_machines;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.model.Model;
 import org.argouml.ui.targetmanager.TargetManager;
 import org.argouml.uml.ui.AbstractActionNewModelElement;
@@ -37,29 +36,25 @@ import org.argouml.uml.ui.AbstractActionNewModelElement;
  */
 public class ActionNewGuard extends AbstractActionNewModelElement {
 
-    private static ActionNewGuard singleton = new ActionNewGuard();
+  private static ActionNewGuard singleton = new ActionNewGuard();
 
-    /**
-     * Constructor for ActionNewCallAction.
-     */
-    protected ActionNewGuard() {
-        super();
-    }
+  /** Constructor for ActionNewCallAction. */
+  protected ActionNewGuard() {
+    super();
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        TargetManager.getInstance().setTarget(
-                Model.getStateMachinesFactory().buildGuard(getTarget()));
-    }
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    TargetManager.getInstance().setTarget(Model.getStateMachinesFactory().buildGuard(getTarget()));
+  }
 
-    /**
-     * @return Returns the singleton.
-     */
-    public static ActionNewGuard getSingleton() {
-        return singleton;
-    }
-
+  /**
+   * @return Returns the singleton.
+   */
+  public static ActionNewGuard getSingleton() {
+    return singleton;
+  }
 }

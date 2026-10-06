@@ -1,10 +1,6 @@
-
 package org.argouml.model;
 
 /**
  * @author lmaitre
- *
  */
-public interface AbstractModelFactory {
-
-}
+public interface AbstractModelFactory {}

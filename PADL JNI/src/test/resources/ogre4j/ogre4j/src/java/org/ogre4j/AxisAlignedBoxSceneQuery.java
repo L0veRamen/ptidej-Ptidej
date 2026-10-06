@@ -1,5 +1,3 @@
 package org.ogre4j;
 
-public class AxisAlignedBoxSceneQuery extends NativeObject {
-
-}
+public class AxisAlignedBoxSceneQuery extends NativeObject {}

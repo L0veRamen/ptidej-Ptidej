@@ -15,32 +15,18 @@ package choco.model;
 
 import choco.ContradictionException;
 
-/**
- * An interface for all the search variable listeners.
- */
+/** An interface for all the search variable listeners. */
 public interface IIntListener extends IVarListener {
 
-	/**
-	 * Default propagation on improved lower bound: propagation on domain revision.
-	 */
+  /** Default propagation on improved lower bound: propagation on domain revision. */
+  public void awakeOnInf(int varIdx) throws ContradictionException;
 
-	public void awakeOnInf(int varIdx) throws ContradictionException;
+  /** Default propagation on instantiation: full constraint re-propagation. */
+  public void awakeOnInst(int varIdx) throws ContradictionException;
 
-	/**
-	 * Default propagation on instantiation: full constraint re-propagation.
-	 */
+  /** Default propagation on one value removal: propagation on domain revision. */
+  public void awakeOnRem(int varIdx, int val) throws ContradictionException;
 
-	public void awakeOnInst(int varIdx) throws ContradictionException;
-
-	/**
-	 * Default propagation on one value removal: propagation on domain revision.
-	 */
-
-	public void awakeOnRem(int varIdx, int val) throws ContradictionException;
-
-	/**
-	 * Default propagation on improved upper bound: propagation on domain revision.
-	 */
-
-	public void awakeOnSup(int varIdx) throws ContradictionException;
+  /** Default propagation on improved upper bound: propagation on domain revision. */
+  public void awakeOnSup(int varIdx) throws ContradictionException;
 }

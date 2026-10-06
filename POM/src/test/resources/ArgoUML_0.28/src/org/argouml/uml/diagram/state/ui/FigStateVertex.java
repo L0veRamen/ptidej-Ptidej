@@ -29,7 +29,6 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import org.argouml.model.Model;
 import org.argouml.uml.diagram.DiagramSettings;
 import org.argouml.uml.diagram.activity.ui.SelectionActionState;
@@ -45,163 +44,150 @@ import org.tigris.gef.presentation.FigEdge;
 import org.tigris.gef.presentation.FigNode;
 
 /**
- * Abstract class for a State Vertex 
- * which has behavior for nestable nodes in UML Statechart diagrams.
+ * Abstract class for a State Vertex which has behavior for nestable nodes in UML Statechart
+ * diagrams.
  */
 public abstract class FigStateVertex extends FigNodeModelElement {
 
-    /**
-     * The main constructor
-     * @deprecated for 0.27.3 by mvw.  Use 
-     * {@link #FigStateVertex(Object, Rectangle, DiagramSettings)}.
-     */
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    public FigStateVertex() {
-        this.allowRemoveFromDiagram(false);
+  /**
+   * The main constructor
+   *
+   * @deprecated for 0.27.3 by mvw. Use {@link #FigStateVertex(Object, Rectangle, DiagramSettings)}.
+   */
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  public FigStateVertex() {
+    this.allowRemoveFromDiagram(false);
+  }
+
+  /**
+   * The constructor which hooks the Fig into the UML element
+   *
+   * @param gm ignored
+   * @param node the UML elm
+   * @deprecated for 0.27.3 by mvw. Use {@link #FigStateVertex(Object, Rectangle, DiagramSettings)}.
+   */
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  public FigStateVertex(@SuppressWarnings("unused") GraphModel gm, Object node) {
+    this();
+    setOwner(node);
+  }
+
+  /**
+   * Constructor used by PGML parser.
+   *
+   * @param owner the owning UML element
+   * @param bounds rectangle describing bounds
+   * @param settings rendering settings
+   */
+  public FigStateVertex(Object owner, Rectangle bounds, DiagramSettings settings) {
+    super(owner, bounds, settings);
+    this.allowRemoveFromDiagram(false);
+  }
+
+  /*
+   * Overridden to make it possible to include a stateVertex in a composite
+   * state.
+   * @see org.tigris.gef.presentation.Fig#setEnclosingFig(org.tigris.gef.presentation.Fig)
+   */
+  @Override
+  public void setEnclosingFig(Fig encloser) {
+    LayerPerspective layer = (LayerPerspective) getLayer();
+
+    // If the layer is null, then most likely we are being deleted.
+    if (layer == null) {
+      return;
     }
 
-    /**
-     * The constructor which hooks the Fig into the UML element
-     * 
-     * @param gm
-     *            ignored
-     * @param node
-     *            the UML elm
-     * @deprecated for 0.27.3 by mvw.  Use 
-     * {@link #FigStateVertex(Object, Rectangle, DiagramSettings)}.
-     */
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    public FigStateVertex(@SuppressWarnings("unused") GraphModel gm, Object node) {
-        this();
-        setOwner(node);
+    super.setEnclosingFig(encloser);
+
+    if (!(Model.getFacade().isAStateVertex(getOwner()))) {
+      return;
     }
-
-    /**
-     * Constructor used by PGML parser.
-     * 
-     * @param owner the owning UML element
-     * @param bounds rectangle describing bounds
-     * @param settings rendering settings
-     */
-    public FigStateVertex(Object owner, Rectangle bounds, DiagramSettings settings) {
-        super(owner, bounds, settings);
-        this.allowRemoveFromDiagram(false);
+    Object stateVertex = getOwner();
+    Object compositeState = null;
+    if (encloser != null && (Model.getFacade().isACompositeState(encloser.getOwner()))) {
+      compositeState = encloser.getOwner();
+      ((FigStateVertex) encloser).redrawEnclosedFigs();
+    } else {
+      compositeState =
+          Model.getStateMachinesHelper()
+              .getTop(Model.getStateMachinesHelper().getStateMachine(stateVertex));
     }
-
-    /*
-     * Overridden to make it possible to include a stateVertex in a composite
-     * state.
-     * @see org.tigris.gef.presentation.Fig#setEnclosingFig(org.tigris.gef.presentation.Fig)
-     */
-    @Override
-    public void setEnclosingFig(Fig encloser) {
-        LayerPerspective layer = (LayerPerspective) getLayer();
-        
-        // If the layer is null, then most likely we are being deleted.
-        if (layer == null) {
-            return;
-        }
-
-        super.setEnclosingFig(encloser);
-        
-        if (!(Model.getFacade().isAStateVertex(getOwner()))) {
-            return;
-        }
-        Object stateVertex = getOwner();
-        Object compositeState = null;
-        if (encloser != null
-                && (Model.getFacade().isACompositeState(encloser.getOwner()))) {
-            compositeState = encloser.getOwner();
-            ((FigStateVertex) encloser).redrawEnclosedFigs();
-        } else {
-            compositeState = Model.getStateMachinesHelper().getTop(
-                    Model.getStateMachinesHelper()
-                            .getStateMachine(stateVertex));
-        }
-        if (compositeState != null) {
-            /* Do not change the model unless needed - avoids issue 4446: */
-            if (Model.getFacade().getContainer(stateVertex) != compositeState) {
-                Model.getStateMachinesHelper().setContainer(stateVertex,
-                        compositeState);
-            }
-        }
+    if (compositeState != null) {
+      /* Do not change the model unless needed - avoids issue 4446: */
+      if (Model.getFacade().getContainer(stateVertex) != compositeState) {
+        Model.getStateMachinesHelper().setContainer(stateVertex, compositeState);
+      }
     }
+  }
 
-    /**
-     * Method to draw a StateVertex Fig's enclosed figs.
-     */
-    public void redrawEnclosedFigs() {
-        Editor editor = Globals.curEditor();
-        if (editor != null && !getEnclosedFigs().isEmpty()) {
-            LayerDiagram lay =
-                ((LayerDiagram) editor.getLayerManager().getActiveLayer());
-            for (Fig f : getEnclosedFigs()) {
-                lay.bringInFrontOf(f, this);
-                if (f instanceof FigNode) {
-                    FigNode fn = (FigNode) f;
-                    Iterator it = fn.getFigEdges().iterator();
-                    while (it.hasNext()) {
-                        lay.bringInFrontOf(((FigEdge) it.next()), this);
-                    }
-                    if (fn instanceof FigStateVertex) {
-                        ((FigStateVertex) fn).redrawEnclosedFigs();
-                    }
-                }
-            }
+  /** Method to draw a StateVertex Fig's enclosed figs. */
+  public void redrawEnclosedFigs() {
+    Editor editor = Globals.curEditor();
+    if (editor != null && !getEnclosedFigs().isEmpty()) {
+      LayerDiagram lay = ((LayerDiagram) editor.getLayerManager().getActiveLayer());
+      for (Fig f : getEnclosedFigs()) {
+        lay.bringInFrontOf(f, this);
+        if (f instanceof FigNode) {
+          FigNode fn = (FigNode) f;
+          Iterator it = fn.getFigEdges().iterator();
+          while (it.hasNext()) {
+            lay.bringInFrontOf(((FigEdge) it.next()), this);
+          }
+          if (fn instanceof FigStateVertex) {
+            ((FigStateVertex) fn).redrawEnclosedFigs();
+          }
         }
+      }
     }
+  }
 
-    /**
-     * return selectors, depending whether we deal with activity or state
-     * diagrams.
-     *
-     * {@inheritDoc}
-     */
-    @Override
-    public Selection makeSelection() {
-        Object pstate = getOwner();
+  /**
+   * return selectors, depending whether we deal with activity or state diagrams.
+   *
+   * <p>{@inheritDoc}
+   */
+  @Override
+  public Selection makeSelection() {
+    Object pstate = getOwner();
 
-        if (pstate != null) {
+    if (pstate != null) {
 
-            if (Model.getFacade().isAActivityGraph(
-                    Model.getFacade().getStateMachine(
-                            Model.getFacade().getContainer(pstate)))) {
-                return new SelectionActionState(this);
-            }
-            return new SelectionState(this);
-        }
-        return null;
+      if (Model.getFacade()
+          .isAActivityGraph(
+              Model.getFacade().getStateMachine(Model.getFacade().getContainer(pstate)))) {
+        return new SelectionActionState(this);
+      }
+      return new SelectionState(this);
     }
-    
-    /**
-     * Number of points to compute for gravity point circle.
-     */
-    private static final int CIRCLE_POINTS = 32;
-    
-    /**
-     * Return a list of gravity points around circle which is enclosed
-     * in the bounding box.  Convenience method for use by FigInitialState
-     * and FigFinalState.
-     * TODO: As this method is not required by all sub classes,
-     * it would seem sensible to extend FigStateVertex with FigCircleVertex
-     * and only have the relevant concrete Figs extend that and gain this
-     * functionality.
-     * @return a List of Points
-     */
-    List<Point> getCircleGravityPoints() {
-        List<Point> ret = new ArrayList<Point>();
-        int cx = getBigPort().getCenter().x;
-        int cy = getBigPort().getCenter().y;
-        double radius = getBigPort().getWidth() / 2 + 1;
-        final double pi2 = Math.PI * 2;
-        for (int i = 0; i < CIRCLE_POINTS; i++) {
-            int x = (int) (cx + Math.cos(pi2 * i / CIRCLE_POINTS) * radius);
-            int y = (int) (cy + Math.sin(pi2 * i / CIRCLE_POINTS) * radius);
-            ret.add(new Point(x, y));
-        }
-        return ret;
-    }
+    return null;
+  }
 
+  /** Number of points to compute for gravity point circle. */
+  private static final int CIRCLE_POINTS = 32;
+
+  /**
+   * Return a list of gravity points around circle which is enclosed in the bounding box.
+   * Convenience method for use by FigInitialState and FigFinalState. TODO: As this method is not
+   * required by all sub classes, it would seem sensible to extend FigStateVertex with
+   * FigCircleVertex and only have the relevant concrete Figs extend that and gain this
+   * functionality.
+   *
+   * @return a List of Points
+   */
+  List<Point> getCircleGravityPoints() {
+    List<Point> ret = new ArrayList<Point>();
+    int cx = getBigPort().getCenter().x;
+    int cy = getBigPort().getCenter().y;
+    double radius = getBigPort().getWidth() / 2 + 1;
+    final double pi2 = Math.PI * 2;
+    for (int i = 0; i < CIRCLE_POINTS; i++) {
+      int x = (int) (cx + Math.cos(pi2 * i / CIRCLE_POINTS) * radius);
+      int y = (int) (cy + Math.sin(pi2 * i / CIRCLE_POINTS) * radius);
+      ret.add(new Point(x, y));
+    }
+    return ret;
+  }
 }

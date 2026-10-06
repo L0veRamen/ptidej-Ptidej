@@ -31,18 +31,17 @@ import org.argouml.uml.ui.UMLMutableLinkedList;
 /**
  * @since Dec 15, 2002
  * @author jaap.branderhorst@xs4all.nl
- * @deprecated in 0.27.2 use UMLMutableLinkedList in
- * combination with UMLTransitionTriggerListModel 
+ * @deprecated in 0.27.2 use UMLMutableLinkedList in combination with UMLTransitionTriggerListModel
  */
 @Deprecated
 public class UMLTransitionTriggerList extends UMLMutableLinkedList {
 
-    /**
-     * Constructor for UMLTransitionTriggerList.
-     * @param dataModel the model
-     */
-    public UMLTransitionTriggerList(
-        UMLModelElementListModel2 dataModel) {
-        super(dataModel);
-    }
+  /**
+   * Constructor for UMLTransitionTriggerList.
+   *
+   * @param dataModel the model
+   */
+  public UMLTransitionTriggerList(UMLModelElementListModel2 dataModel) {
+    super(dataModel);
+  }
 }

@@ -31,35 +31,35 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 
 /**
  * Configures the workbench
+ *
  * @author Tom Morris
  */
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
-    private static final String PERSPECTIVE_ID = 
-        "org.argouml.argoeclipse.internal.ui.perspective" //$NON-NLS-1$
-        + ".Perspective"; //$NON-NLS-1$
+  private static final String PERSPECTIVE_ID =
+      "org.argouml.argoeclipse.internal.ui.perspective" //$NON-NLS-1$
+          + ".Perspective"; //$NON-NLS-1$
 
-    /*
-     * @see org.eclipse.ui.application.WorkbenchAdvisor#createWorkbenchWindowAdvisor(org.eclipse.ui.application.IWorkbenchWindowConfigurer)
-     */
-    public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(
-            IWorkbenchWindowConfigurer configurer) {
-        return new ApplicationWorkbenchWindowAdvisor(configurer);
-    }
+  /*
+   * @see org.eclipse.ui.application.WorkbenchAdvisor#createWorkbenchWindowAdvisor(org.eclipse.ui.application.IWorkbenchWindowConfigurer)
+   */
+  public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(
+      IWorkbenchWindowConfigurer configurer) {
+    return new ApplicationWorkbenchWindowAdvisor(configurer);
+  }
 
-    /*
-     * @see org.eclipse.ui.application.WorkbenchAdvisor#initialize(org.eclipse.ui.application.IWorkbenchConfigurer)
-     */
-    public void initialize(IWorkbenchConfigurer configurer) {
-        super.initialize(configurer);
-        configurer.setSaveAndRestore(true);
-    }
+  /*
+   * @see org.eclipse.ui.application.WorkbenchAdvisor#initialize(org.eclipse.ui.application.IWorkbenchConfigurer)
+   */
+  public void initialize(IWorkbenchConfigurer configurer) {
+    super.initialize(configurer);
+    configurer.setSaveAndRestore(true);
+  }
 
-    /*
-     * @see org.eclipse.ui.application.WorkbenchAdvisor#getInitialWindowPerspectiveId()
-     */
-    public String getInitialWindowPerspectiveId() {
-        return PERSPECTIVE_ID;
-    }
-    
+  /*
+   * @see org.eclipse.ui.application.WorkbenchAdvisor#getInitialWindowPerspectiveId()
+   */
+  public String getInitialWindowPerspectiveId() {
+    return PERSPECTIVE_ID;
+  }
 }

@@ -17,26 +17,26 @@ import org.jhotdraw.framework.DrawingEditor;
  * Copy the selection to the clipboard.
  *
  * @see Clipboard
- *
  * @version <$CURRENT_VERSION$>
  */
 public class CopyCommand extends FigureTransferCommand {
 
-	/**
-	 * Constructs a copy command.
-	 * @param name the command name
-	 * @param newDrawingEditor the DrawingEditor which manages the views
-	 */
-	public CopyCommand(String name, DrawingEditor newDrawingEditor) {
-		super(name, newDrawingEditor);
-	}
+  /**
+   * Constructs a copy command.
+   *
+   * @param name the command name
+   * @param newDrawingEditor the DrawingEditor which manages the views
+   */
+  public CopyCommand(String name, DrawingEditor newDrawingEditor) {
+    super(name, newDrawingEditor);
+  }
 
-	public void execute() {
-		super.execute();
-		copyFigures(view().selection(), view().selectionCount());
-	}
+  public void execute() {
+    super.execute();
+    copyFigures(view().selection(), view().selectionCount());
+  }
 
-	protected boolean isExecutableWithView() {
-		return view().selectionCount() > 0;
-	}
+  protected boolean isExecutableWithView() {
+    return view().selectionCount() > 0;
+  }
 }

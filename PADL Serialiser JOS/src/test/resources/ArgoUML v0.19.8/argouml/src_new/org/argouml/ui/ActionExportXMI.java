@@ -26,62 +26,51 @@ package org.argouml.ui;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
-
 import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
-
 import org.argouml.application.api.Configuration;
 import org.argouml.i18n.Translator;
 import org.argouml.persistence.PersistenceManager;
 
 /**
  * Exports the xmi of a project to a file choosen by the user.
- * @author jaap.branderhorst@xs4all.nl
- * Jun 7, 2003
+ *
+ * @author jaap.branderhorst@xs4all.nl Jun 7, 2003
  */
-public final class ActionExportXMI extends AbstractAction
-{
+public final class ActionExportXMI extends AbstractAction {
 
-    /**
-     * The constructor.
-     */
-    public ActionExportXMI() {
-        super(Translator.localize("action.export-project-as-xmi"));
+  /** The constructor. */
+  public ActionExportXMI() {
+    super(Translator.localize("action.export-project-as-xmi"));
+  }
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    PersistenceManager pm = PersistenceManager.getInstance();
+    // show a chooser dialog for the file name, only xmi is allowed
+    JFileChooser chooser = new JFileChooser();
+    chooser.setDialogTitle(Translator.localize("action.export-project-as-xmi"));
+    chooser.setApproveButtonText(Translator.localize("filechooser.export"));
+    chooser.setAcceptAllFileFilterUsed(true);
+    pm.setXmiFileChooserFilter(chooser);
+
+    String fn = Configuration.getString(PersistenceManager.KEY_EXPORT_XMI_PATH);
+    if (fn.length() > 0) {
+      chooser.setSelectedFile(new File(fn));
     }
 
-    /**
-     * @see
-     * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        PersistenceManager pm = PersistenceManager.getInstance();
-        // show a chooser dialog for the file name, only xmi is allowed
-        JFileChooser chooser = new JFileChooser();
-        chooser.setDialogTitle(Translator.localize(
-				       "action.export-project-as-xmi"));
-        chooser.setApproveButtonText(Translator.localize(
-					     "filechooser.export"));
-        chooser.setAcceptAllFileFilterUsed(true);
-        pm.setXmiFileChooserFilter(chooser);
-
-        String fn = Configuration.getString(
-                PersistenceManager.KEY_EXPORT_XMI_PATH);
-        if (fn.length() > 0) {
-            chooser.setSelectedFile(new File(fn));
-        }
-        
-        int result = chooser.showSaveDialog(ProjectBrowser.getInstance());
-        if (result == JFileChooser.APPROVE_OPTION) {
-            File theFile = chooser.getSelectedFile();
-            if (theFile != null) {
-                String name = theFile.getName();
-                Configuration.setString(
-                        PersistenceManager.KEY_EXPORT_XMI_PATH,
-                        theFile.getPath());
-                name = pm.fixXmiExtension(name);
-                theFile = new File(theFile.getParent(), name);
-                ProjectBrowser.getInstance().trySave(false, theFile);
-            }
-        }
+    int result = chooser.showSaveDialog(ProjectBrowser.getInstance());
+    if (result == JFileChooser.APPROVE_OPTION) {
+      File theFile = chooser.getSelectedFile();
+      if (theFile != null) {
+        String name = theFile.getName();
+        Configuration.setString(PersistenceManager.KEY_EXPORT_XMI_PATH, theFile.getPath());
+        name = pm.fixXmiExtension(name);
+        theFile = new File(theFile.getParent(), name);
+        ProjectBrowser.getInstance().trySave(false, theFile);
+      }
     }
+  }
 }

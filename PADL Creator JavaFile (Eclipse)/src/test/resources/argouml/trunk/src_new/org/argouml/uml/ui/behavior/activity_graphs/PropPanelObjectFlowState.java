@@ -31,12 +31,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Vector;
-
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JComboBox;
 import javax.swing.JScrollPane;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
@@ -57,304 +55,261 @@ import org.argouml.util.ConfigLoader;
 public class PropPanelObjectFlowState extends AbstractPropPanelState
     implements PropertyChangeListener {
 
-    private JComboBox classifierComboBox;
-    private JScrollPane statesScroll;
+  private JComboBox classifierComboBox;
+  private JScrollPane statesScroll;
 
-    private ActionNewClassifierInState actionNewCIS;
+  private ActionNewClassifierInState actionNewCIS;
 
-    private UMLObjectFlowStateClassifierComboBoxModel classifierComboBoxModel =
-        new UMLObjectFlowStateClassifierComboBoxModel();
+  private UMLObjectFlowStateClassifierComboBoxModel classifierComboBoxModel =
+      new UMLObjectFlowStateClassifierComboBoxModel();
 
-    /**
-     * Construct a property panel for ObjectFlowState elements.
-     */
-    public PropPanelObjectFlowState() {
-        super("ObjectFlowState", lookupIcon("ObjectFlowState"), ConfigLoader
-                .getTabPropsOrientation());
+  /** Construct a property panel for ObjectFlowState elements. */
+  public PropPanelObjectFlowState() {
+    super("ObjectFlowState", lookupIcon("ObjectFlowState"), ConfigLoader.getTabPropsOrientation());
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.container"),
-                getContainerScroll());
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.container"), getContainerScroll());
 
-        // field for Type (Classifier)
-        addField(Translator.localize("label.type"),
-            new UMLComboBoxNavigator(
-                this,
-                Translator.localize("label.classifierinstate.navigate.tooltip"),
-                getClassifierComboBox()));
+    // field for Type (Classifier)
+    addField(
+        Translator.localize("label.type"),
+        new UMLComboBoxNavigator(
+            this,
+            Translator.localize("label.classifierinstate.navigate.tooltip"),
+            getClassifierComboBox()));
 
-        // field for States
-        AbstractActionAddModelElement actionAdd =
-            new ActionAddOFSState();
-        AbstractActionRemoveElement actionRemove =
-            new ActionRemoveOFSState();
-        UMLMutableLinkedList list =
-            new UMLMutableLinkedList(
-                new UMLOFSStateListModel(),
-                actionAdd,
-                null,
-                actionRemove,
-                true);
-        statesScroll = new JScrollPane(list);
-        addField(Translator.localize("label.instate"),
-                statesScroll);
+    // field for States
+    AbstractActionAddModelElement actionAdd = new ActionAddOFSState();
+    AbstractActionRemoveElement actionRemove = new ActionRemoveOFSState();
+    UMLMutableLinkedList list =
+        new UMLMutableLinkedList(new UMLOFSStateListModel(), actionAdd, null, actionRemove, true);
+    statesScroll = new JScrollPane(list);
+    addField(Translator.localize("label.instate"), statesScroll);
 
-        addSeparator();
+    addSeparator();
 
-        addField(Translator.localize("label.incoming"),
-                getIncomingScroll());
-        addField(Translator.localize("label.outgoing"),
-                getOutgoingScroll());
+    addField(Translator.localize("label.incoming"), getIncomingScroll());
+    addField(Translator.localize("label.outgoing"), getOutgoingScroll());
+  }
+
+  /**
+   * @see org.argouml.uml.ui.behavior.state_machines.AbstractPropPanelState#addExtraButtons()
+   */
+  protected void addExtraButtons() {
+    /* We do not want the Internal Transitions button here. */
+
+    actionNewCIS = new ActionNewClassifierInState();
+    actionNewCIS.putValue(
+        Action.SHORT_DESCRIPTION, Translator.localize("button.new-classifierinstate"));
+    Icon icon = ResourceLoaderWrapper.lookupIcon("ClassifierInState");
+    actionNewCIS.putValue(Action.SMALL_ICON, icon);
+    addAction(actionNewCIS);
+  }
+
+  /**
+   * @see org.argouml.uml.ui.PropPanel#setTarget(java.lang.Object)
+   */
+  public void setTarget(Object t) {
+    Object oldTarget = getTarget();
+    super.setTarget(t);
+    actionNewCIS.setEnabled(actionNewCIS.isEnabled());
+    if (Model.getFacade().isAObjectFlowState(oldTarget)) {
+      Model.getPump().removeModelEventListener(this, oldTarget, "type");
+    }
+    if (Model.getFacade().isAObjectFlowState(t)) {
+      Model.getPump().addModelEventListener(this, t, "type");
+    }
+  }
+
+  /**
+   * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+   */
+  public void propertyChange(PropertyChangeEvent evt) {
+    actionNewCIS.setEnabled(actionNewCIS.isEnabled());
+  }
+
+  /**
+   * @return the combo box for the type (Classifier or ClassifierInState)
+   */
+  protected JComboBox getClassifierComboBox() {
+    if (classifierComboBox == null) {
+      classifierComboBox =
+          new UMLSearchableComboBox(
+              classifierComboBoxModel, new ActionSetObjectFlowStateClassifier(), true);
+    }
+    return classifierComboBox;
+  }
+
+  /**
+   * Utility function to remove the top states from a given collection of states.
+   *
+   * @param ret a collection of states
+   */
+  static void removeTopStateFrom(Collection ret) {
+    Iterator i = ret.iterator();
+    Collection tops = new ArrayList();
+    while (i.hasNext()) {
+      Object state = i.next();
+      if (Model.getFacade().isACompositeState(state) && Model.getFacade().isTop(state)) {
+        tops.add(state);
+      }
+    }
+    ret.removeAll(tops);
+  }
+
+  class UMLOFSStateListModel extends UMLModelElementListModel2 {
+
+    /** Constructor for UMLOFSStateListModel. */
+    public UMLOFSStateListModel() {
+      /* TODO: This needs work...
+       * We also need to listen to addition/removal
+       * of states to/from a ClassifierInState.
+       */
+      super("type");
     }
 
-
     /**
-     * @see org.argouml.uml.ui.behavior.state_machines.AbstractPropPanelState#addExtraButtons()
+     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
      */
-    protected void addExtraButtons() {
-        /* We do not want the Internal Transitions button here. */
-
-        actionNewCIS = new ActionNewClassifierInState();
-        actionNewCIS.putValue(Action.SHORT_DESCRIPTION,
-                Translator.localize("button.new-classifierinstate"));
-        Icon icon = ResourceLoaderWrapper.lookupIcon("ClassifierInState");
-        actionNewCIS.putValue(Action.SMALL_ICON, icon);
-        addAction(actionNewCIS);
-    }
-
-    /**
-     * @see org.argouml.uml.ui.PropPanel#setTarget(java.lang.Object)
-     */
-    public void setTarget(Object t) {
-        Object oldTarget = getTarget();
-        super.setTarget(t);
-        actionNewCIS.setEnabled(actionNewCIS.isEnabled());
-        if (Model.getFacade().isAObjectFlowState(oldTarget)) {
-            Model.getPump().removeModelEventListener(this, oldTarget, "type");
+    protected void buildModelList() {
+      if (getTarget() != null) {
+        Object classifier = Model.getFacade().getType(getTarget());
+        if (Model.getFacade().isAClassifierInState(classifier)) {
+          Collection c = Model.getFacade().getInStates(classifier);
+          setAllElements(c);
         }
+      }
+    }
+
+    /**
+     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(java.lang.Object)
+     */
+    protected boolean isValidElement(Object elem) {
+      Object t = getTarget();
+      if (Model.getFacade().isAState(elem) && Model.getFacade().isAObjectFlowState(t)) {
+        Object type = Model.getFacade().getType(t);
+        if (Model.getFacade().isAClassifierInState(type)) {
+          Collection c = Model.getFacade().getInStates(type);
+          if (c.contains(elem)) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+
+    /** The UID. */
+    private static final long serialVersionUID = -7742772495832660119L;
+  }
+
+  class ActionAddOFSState extends AbstractActionAddModelElement {
+    private Object choiceClass = Model.getMetaTypes().getState();
+
+    /** The constructor. */
+    public ActionAddOFSState() {
+      super();
+      this.setMultiSelect(true);
+    }
+
+    /**
+     * @see org.argouml.uml.ui.AbstractActionAddModelElement#doIt( java.util.Vector)
+     */
+    protected void doIt(Vector selected) {
+      Object t = getTarget();
+      if (Model.getFacade().isAObjectFlowState(t)) {
+        Object type = Model.getFacade().getType(t);
+        if (Model.getFacade().isAClassifierInState(type)) {
+          Model.getActivityGraphsHelper().setInStates(type, selected);
+        } else if (Model.getFacade().isAClassifier(type)
+            && (selected != null)
+            && (selected.size() > 0)) {
+          /* So, we found a Classifier
+           * that is not a ClassifierInState.
+           * And at least one state has been selected.
+           * Well, let's correct that:
+           */
+          Object cis = Model.getActivityGraphsFactory().buildClassifierInState(type, selected);
+          Model.getCoreHelper().setType(t, cis);
+        }
+      }
+    }
+
+    /**
+     * @see org.argouml.uml.ui.AbstractActionAddModelElement#getChoices()
+     */
+    protected Vector getChoices() {
+      Vector ret = new Vector();
+      Object t = getTarget();
+      if (Model.getFacade().isAObjectFlowState(t)) {
+        Object classifier = Model.getFacade().getType(t);
+        if (Model.getFacade().isAClassifierInState(classifier)) {
+          classifier = Model.getFacade().getType(classifier);
+        }
+        if (Model.getFacade().isAClassifier(classifier)) {
+          ret.addAll(
+              Model.getModelManagementHelper()
+                  .getAllModelElementsOfKindWithModel(classifier, choiceClass));
+        }
+        removeTopStateFrom(ret);
+      }
+      return ret;
+    }
+
+    /**
+     * @see org.argouml.uml.ui.AbstractActionAddModelElement#getDialogTitle()
+     */
+    protected String getDialogTitle() {
+      return Translator.localize("dialog.title.add-state");
+    }
+
+    /**
+     * @see org.argouml.uml.ui.AbstractActionAddModelElement#getSelected()
+     */
+    protected Vector getSelected() {
+      Object t = getTarget();
+      if (Model.getFacade().isAObjectFlowState(t)) {
+        Object type = Model.getFacade().getType(t);
+        if (Model.getFacade().isAClassifierInState(type)) {
+          return new Vector(Model.getFacade().getInStates(type));
+        }
+      }
+      return new Vector();
+    }
+
+    /** The UID. */
+    private static final long serialVersionUID = 7266495601719117169L;
+  }
+
+  class ActionRemoveOFSState extends AbstractActionRemoveElement {
+
+    /** Constructor. */
+    public ActionRemoveOFSState() {
+      super(Translator.localize("menu.popup.remove"));
+    }
+
+    /**
+     * @see org.tigris.gef.undo.UndoableAction#actionPerformed(java.awt.event.ActionEvent)
+     */
+    public void actionPerformed(ActionEvent e) {
+      super.actionPerformed(e);
+      Object state = getObjectToRemove();
+      if (state != null) {
+        Object t = getTarget();
         if (Model.getFacade().isAObjectFlowState(t)) {
-            Model.getPump().addModelEventListener(this, t, "type");
+          Object type = Model.getFacade().getType(t);
+          if (Model.getFacade().isAClassifierInState(type)) {
+            Collection states = new ArrayList(Model.getFacade().getInStates(type));
+            states.remove(state);
+            Model.getActivityGraphsHelper().setInStates(type, states);
+          }
         }
+      }
     }
 
-    /**
-     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
-     */
-    public void propertyChange(PropertyChangeEvent evt) {
-        actionNewCIS.setEnabled(actionNewCIS.isEnabled());
-    }
+    /** The UID. */
+    private static final long serialVersionUID = -5113809512624883836L;
+  }
 
-    /**
-     * @return the combo box for the type (Classifier or ClassifierInState)
-     */
-    protected JComboBox getClassifierComboBox() {
-        if (classifierComboBox == null) {
-            classifierComboBox =
-                new UMLSearchableComboBox(
-                    classifierComboBoxModel,
-                    new ActionSetObjectFlowStateClassifier(), true);
-        }
-        return classifierComboBox;
-
-    }
-
-
-    /**
-     * Utility function to remove the top states
-     * from a given collection of states.
-     *
-     * @param ret a collection of states
-     */
-    static void removeTopStateFrom(Collection ret) {
-        Iterator i = ret.iterator();
-        Collection tops = new ArrayList();
-        while (i.hasNext()) {
-            Object state = i.next();
-            if (Model.getFacade().isACompositeState(state)
-                    && Model.getFacade().isTop(state)) {
-                tops.add(state);
-            }
-        }
-        ret.removeAll(tops);
-    }
-
-
-    class UMLOFSStateListModel extends UMLModelElementListModel2 {
-
-        /**
-         * Constructor for UMLOFSStateListModel.
-         */
-        public UMLOFSStateListModel() {
-            /* TODO: This needs work...
-             * We also need to listen to addition/removal
-             * of states to/from a ClassifierInState.
-             */
-            super("type");
-        }
-
-        /**
-         * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-         */
-        protected void buildModelList() {
-            if (getTarget() != null) {
-                Object classifier = Model.getFacade().getType(getTarget());
-                if (Model.getFacade().isAClassifierInState(classifier)) {
-                    Collection c = Model.getFacade().getInStates(classifier);
-                    setAllElements(c);
-                }
-            }
-        }
-
-        /**
-         * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(java.lang.Object)
-         */
-        protected boolean isValidElement(Object elem) {
-            Object t = getTarget();
-            if (Model.getFacade().isAState(elem)
-                    && Model.getFacade().isAObjectFlowState(t)) {
-                Object type = Model.getFacade().getType(t);
-                if (Model.getFacade().isAClassifierInState(type)) {
-                    Collection c = Model.getFacade().getInStates(type);
-                    if (c.contains(elem)) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        /**
-         * The UID.
-         */
-        private static final long serialVersionUID = -7742772495832660119L;
-    }
-
-    class ActionAddOFSState extends AbstractActionAddModelElement {
-        private Object choiceClass = Model.getMetaTypes().getState();
-
-
-        /**
-         * The constructor.
-         */
-        public ActionAddOFSState() {
-            super();
-            this.setMultiSelect(true);
-        }
-
-        /**
-         * @see org.argouml.uml.ui.AbstractActionAddModelElement#doIt(
-         *         java.util.Vector)
-         */
-        protected void doIt(Vector selected) {
-            Object t = getTarget();
-            if (Model.getFacade().isAObjectFlowState(t)) {
-                Object type = Model.getFacade().getType(t);
-                if (Model.getFacade().isAClassifierInState(type)) {
-                    Model.getActivityGraphsHelper().setInStates(type, selected);
-                } else if (Model.getFacade().isAClassifier(type)
-                        && (selected != null)
-                        && (selected.size() > 0)) {
-                    /* So, we found a Classifier
-                     * that is not a ClassifierInState.
-                     * And at least one state has been selected.
-                     * Well, let's correct that:
-                     */
-                    Object cis =
-                        Model.getActivityGraphsFactory()
-                            .buildClassifierInState(type, selected);
-                    Model.getCoreHelper().setType(t, cis);
-                }
-            }
-        }
-
-        /**
-         * @see org.argouml.uml.ui.AbstractActionAddModelElement#getChoices()
-         */
-        protected Vector getChoices() {
-            Vector ret = new Vector();
-            Object t = getTarget();
-            if (Model.getFacade().isAObjectFlowState(t)) {
-                Object classifier = Model.getFacade().getType(t);
-                if (Model.getFacade().isAClassifierInState(classifier)) {
-                    classifier = Model.getFacade().getType(classifier);
-                }
-                if (Model.getFacade().isAClassifier(classifier)) {
-                    ret.addAll(Model.getModelManagementHelper()
-                            .getAllModelElementsOfKindWithModel(classifier,
-                                    choiceClass));
-                }
-                removeTopStateFrom(ret);
-            }
-            return ret;
-        }
-
-        /**
-         * @see org.argouml.uml.ui.AbstractActionAddModelElement#getDialogTitle()
-         */
-        protected String getDialogTitle() {
-            return Translator.localize("dialog.title.add-state");
-        }
-
-        /**
-         * @see org.argouml.uml.ui.AbstractActionAddModelElement#getSelected()
-         */
-        protected Vector getSelected() {
-            Object t = getTarget();
-            if (Model.getFacade().isAObjectFlowState(t)) {
-                Object type = Model.getFacade().getType(t);
-                if (Model.getFacade().isAClassifierInState(type)) {
-                    return new Vector(Model.getFacade().getInStates(type));
-                }
-            }
-            return new Vector();
-        }
-
-        /**
-         * The UID.
-         */
-        private static final long serialVersionUID = 7266495601719117169L;
-    }
-
-    class ActionRemoveOFSState extends AbstractActionRemoveElement {
-
-        /**
-         * Constructor.
-         */
-        public ActionRemoveOFSState() {
-            super(Translator.localize("menu.popup.remove"));
-        }
-
-        /**
-         * @see org.tigris.gef.undo.UndoableAction#actionPerformed(java.awt.event.ActionEvent)
-         */
-        public void actionPerformed(ActionEvent e) {
-            super.actionPerformed(e);
-            Object state = getObjectToRemove();
-            if (state != null) {
-                Object t = getTarget();
-                if (Model.getFacade().isAObjectFlowState(t)) {
-                    Object type = Model.getFacade().getType(t);
-                    if (Model.getFacade().isAClassifierInState(type)) {
-                        Collection states =
-                            new ArrayList(
-                                Model.getFacade().getInStates(type));
-                        states.remove(state);
-                        Model.getActivityGraphsHelper()
-                                .setInStates(type, states);
-                    }
-                }
-            }
-        }
-
-        /**
-         * The UID.
-         */
-        private static final long serialVersionUID = -5113809512624883836L;
-    }
-
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -3484756765780298846L;
+  /** The UID. */
+  private static final long serialVersionUID = -3484756765780298846L;
 }

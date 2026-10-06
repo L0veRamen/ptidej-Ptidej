@@ -25,7 +25,6 @@
 package org.argouml.uml.ui.behavior.state_machines;
 
 import javax.swing.JComboBox;
-
 import org.argouml.i18n.Translator;
 import org.argouml.uml.ui.UMLComboBox2;
 import org.argouml.uml.ui.UMLComboBoxNavigator;
@@ -37,34 +36,24 @@ import org.argouml.util.ConfigLoader;
  */
 public class PropPanelStubState extends PropPanelStateVertex {
 
-    /**
-     * Constructor for PropPanelStubState.
-     */
-    public PropPanelStubState() {
-        super("Stub State", lookupIcon("StubState"),
-                ConfigLoader.getTabPropsOrientation());
+  /** Constructor for PropPanelStubState. */
+  public PropPanelStubState() {
+    super("Stub State", lookupIcon("StubState"), ConfigLoader.getTabPropsOrientation());
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.stereotype"),
-                getStereotypeSelector());
-        addField(Translator.localize("label.container"),
-                getContainerScroll());
-        JComboBox referencestateBox =
-                new UMLComboBox2(
-                        new UMLStubStateComboBoxModel(),
-                        ActionSetStubStateReferenceState.getInstance());
-        addField(Translator.localize("label.referencestate"),
-                new UMLComboBoxNavigator(
-                        this,
-                        Translator.localize("tooltip.nav-stubstate"),
-                        referencestateBox));
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.stereotype"), getStereotypeSelector());
+    addField(Translator.localize("label.container"), getContainerScroll());
+    JComboBox referencestateBox =
+        new UMLComboBox2(
+            new UMLStubStateComboBoxModel(), ActionSetStubStateReferenceState.getInstance());
+    addField(
+        Translator.localize("label.referencestate"),
+        new UMLComboBoxNavigator(
+            this, Translator.localize("tooltip.nav-stubstate"), referencestateBox));
 
-        addSeperator();
+    addSeperator();
 
-        addField(Translator.localize("label.incoming"),
-                getIncomingScroll());
-        addField(Translator.localize("label.outgoing"),
-                getOutgoingScroll());
-    }
+    addField(Translator.localize("label.incoming"), getIncomingScroll());
+    addField(Translator.localize("label.outgoing"), getOutgoingScroll());
+  }
 }

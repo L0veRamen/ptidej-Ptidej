@@ -4,39 +4,38 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
 package padl.creator.javafile.eclipse.test.methodinvocation;
 
-import org.junit.Assert;
 import junit.framework.TestCase;
+import org.junit.Assert;
 import padl.creator.javafile.eclipse.test.util.Utils;
 import padl.kernel.ICodeLevelModel;
 import padl.kernel.IFirstClassEntity;
 import padl.kernel.IMethod;
 
 public class PooyaTest extends TestCase {
-	public PooyaTest(final String name) {
-		super(name);
-	}
-	public void test1() {
-		final String sourcePath =
-			"../PADL Creator JavaFile (Eclipse)/target/test-classes/Pooya's/";
-		final String classPathEntry = "";
+  public PooyaTest(final String name) {
+    super(name);
+  }
 
-		final ICodeLevelModel codeLevelModel = Utils
-			.createCompleteJavaFilesPadlModel("", sourcePath, classPathEntry);
+  public void test1() {
+    final String sourcePath = "../PADL Creator JavaFile (Eclipse)/target/test-classes/Pooya's/";
+    final String classPathEntry = "";
 
-		final IFirstClassEntity entity = codeLevelModel
-			.getTopLevelEntityFromID("java.util.Mazaheri".toString());
-		Assert.assertNotNull(entity);
+    final ICodeLevelModel codeLevelModel =
+        Utils.createCompleteJavaFilesPadlModel("", sourcePath, classPathEntry);
 
-		final IMethod method =
-			(IMethod) entity.getConstituentFromID("MazMaz(int, int)");
-		Assert.assertNotNull(method);
+    final IFirstClassEntity entity =
+        codeLevelModel.getTopLevelEntityFromID("java.util.Mazaheri".toString());
+    Assert.assertNotNull(entity);
 
-		Assert.assertEquals(method.getNumberOfConstituents(), 2);
-	}
+    final IMethod method = (IMethod) entity.getConstituentFromID("MazMaz(int, int)");
+    Assert.assertNotNull(method);
+
+    Assert.assertEquals(method.getNumberOfConstituents(), 2);
+  }
 }

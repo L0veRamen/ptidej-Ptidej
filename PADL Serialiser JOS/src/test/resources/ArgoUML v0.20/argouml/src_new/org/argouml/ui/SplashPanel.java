@@ -26,60 +26,55 @@ package org.argouml.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Graphics;
-
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-
 import org.argouml.application.ArgoVersion;
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 
 /**
- * This panel is used in the splash-screen and the aboutbox.
- * It contains an image and a version text.
- * 
+ * This panel is used in the splash-screen and the aboutbox. It contains an image and a version
+ * text.
+ *
  * @author mvw@tigris.org
  */
 class SplashPanel extends JPanel {
 
-    private ImageIcon splashImage = null;
-    
-    /**
-     * The constructor.
-     * 
-     * @param iconName the name of the image to be shown
-     */
-    public SplashPanel(String iconName) {
-	super();
-	splashImage =
-	    ResourceLoaderWrapper.lookupIconResource(iconName);
+  private ImageIcon splashImage = null;
 
-	JLabel splashLabel = new JLabel("", SwingConstants.LEFT) {
+  /**
+   * The constructor.
+   *
+   * @param iconName the name of the image to be shown
+   */
+  public SplashPanel(String iconName) {
+    super();
+    splashImage = ResourceLoaderWrapper.lookupIconResource(iconName);
 
-	    /**
-             * The following values were determined experimentally:
-             * left margin 10, top margin 18.
-             * 
-	     * @see javax.swing.JComponent#paint(java.awt.Graphics)
-	     */
-	    public void paint(Graphics g) {
-	        super.paint(g);
-	        g.drawString("v" + ArgoVersion.getVersion(), 
-	                getInsets().left + 10, getInsets().top + 18);
-	    }
-	    
+    JLabel splashLabel =
+        new JLabel("", SwingConstants.LEFT) {
+
+          /**
+           * The following values were determined experimentally: left margin 10, top margin 18.
+           *
+           * @see javax.swing.JComponent#paint(java.awt.Graphics)
+           */
+          public void paint(Graphics g) {
+            super.paint(g);
+            g.drawString(
+                "v" + ArgoVersion.getVersion(), getInsets().left + 10, getInsets().top + 18);
+          }
         };
-        
-        if (splashImage != null) {
-	    splashLabel.setIcon(splashImage);
-	}
-	setLayout(new BorderLayout(0, 0));
-	add(splashLabel, BorderLayout.CENTER);
-    }
 
-    public ImageIcon getImage() {
-	return splashImage;
+    if (splashImage != null) {
+      splashLabel.setIcon(splashImage);
     }
+    setLayout(new BorderLayout(0, 0));
+    add(splashLabel, BorderLayout.CENTER);
+  }
 
+  public ImageIcon getImage() {
+    return splashImage;
+  }
 } /* end class SplashPanel */

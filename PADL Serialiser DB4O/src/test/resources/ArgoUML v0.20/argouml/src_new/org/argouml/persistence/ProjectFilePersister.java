@@ -24,7 +24,6 @@
 package org.argouml.persistence;
 
 import java.io.File;
-
 import org.argouml.kernel.Project;
 
 /**
@@ -34,18 +33,17 @@ import org.argouml.kernel.Project;
  */
 public interface ProjectFilePersister {
 
-    /**
-     * @param project the project to save
-     * @param file The file to write.
-     * @throws SaveException if anything goes wrong.
-     */
-    void save(Project project, File file) throws SaveException;
+  /**
+   * @param project the project to save
+   * @param file The file to write.
+   * @throws SaveException if anything goes wrong.
+   */
+  void save(Project project, File file) throws SaveException;
 
-    /**
-     * @param file the file of the project to load.
-     * @return the Project
-     *
-     * @throws OpenException when we fail to open from this url
-     */
-    Project doLoad(File file) throws OpenException;
+  /**
+   * @param file the file of the project to load.
+   * @return the Project
+   * @throws OpenException when we fail to open from this url
+   */
+  Project doLoad(File file) throws OpenException;
 }

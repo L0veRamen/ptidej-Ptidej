@@ -27,7 +27,6 @@ package org.argouml.ui;
 import java.beans.PropertyVetoException;
 import java.util.Collection;
 import java.util.Iterator;
-
 import org.argouml.cognitive.ItemUID;
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.Model;
@@ -35,165 +34,156 @@ import org.tigris.gef.base.Diagram;
 import org.tigris.gef.base.Editor;
 import org.tigris.gef.presentation.Fig;
 
-/**
- * This class represents all Diagrams within ArgoUML.
- * It is based upon the GEF Diagram.
- */
+/** This class represents all Diagrams within ArgoUML. It is based upon the GEF Diagram. */
 public class ArgoDiagram extends Diagram {
 
-    private ItemUID id;
+  private ItemUID id;
 
-    static {
-        /**
-         * Hack to use vetocheck in constructing names.
-         *
-         * TODO: Is this needed?
-         */
-        new ArgoDiagram();
-    }
-
+  static {
     /**
-     * The constructor.
-     */
-    public ArgoDiagram() {
-        super();
-        // really dirty hack to remove unwanted listeners
-        getLayer().getGraphModel().removeGraphEventListener(getLayer());
-    }
-
-    /**
-     * The constructor.
+     * Hack to use vetocheck in constructing names.
      *
-     * @param diagramName the name of the diagram
+     * <p>TODO: Is this needed?
      */
-    public ArgoDiagram(String diagramName) {
-        // next line patch to issue 596 (hopefully)
-        super(diagramName);
-        try {
-            setName(diagramName);
-        } catch (PropertyVetoException pve) { }
+    new ArgoDiagram();
+  }
+
+  /** The constructor. */
+  public ArgoDiagram() {
+    super();
+    // really dirty hack to remove unwanted listeners
+    getLayer().getGraphModel().removeGraphEventListener(getLayer());
+  }
+
+  /**
+   * The constructor.
+   *
+   * @param diagramName the name of the diagram
+   */
+  public ArgoDiagram(String diagramName) {
+    // next line patch to issue 596 (hopefully)
+    super(diagramName);
+    try {
+      setName(diagramName);
+    } catch (PropertyVetoException pve) {
     }
+  }
 
-    ////////////////////////////////////////////////////////////////
-    // accessors
+  ////////////////////////////////////////////////////////////////
+  // accessors
 
-    /**
-     * @see org.tigris.gef.base.Diagram#setName(java.lang.String)
-     */
-    public void setName(String n) throws PropertyVetoException {
-        super.setName(n);
-        ProjectManager.getManager().setNeedsSave(true);
+  /**
+   * @see org.tigris.gef.base.Diagram#setName(java.lang.String)
+   */
+  public void setName(String n) throws PropertyVetoException {
+    super.setName(n);
+    ProjectManager.getManager().setNeedsSave(true);
+  }
+
+  /**
+   * @param i the new id
+   */
+  public void setItemUID(ItemUID i) {
+    id = i;
+  }
+
+  /**
+   * @return the item UID
+   */
+  public ItemUID getItemUID() {
+    return id;
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // event management
+  /** The UID. */
+  static final long serialVersionUID = -401219134410459387L;
+
+  /**
+   * TODO: The reference to the method
+   * org.argouml.uml.ui.VetoablePropertyChange#getVetoMessage(String) was here but the class does
+   * exist anymore. Where is it? This method is never used!
+   *
+   * @param propertyName is the name of the property
+   * @return a message or null if not applicable.
+   */
+  public String getVetoMessage(String propertyName) {
+    if (propertyName.equals("name")) {
+      return "Name of diagram may not exist already";
     }
+    return null;
+  }
 
-    /**
-     * @param i the new id
-     */
-    public void setItemUID(ItemUID i) {
-        id = i;
+  /**
+   * Finds the presentation (the Fig) for some object. If the object is a modelelement that is
+   * contained in some other modelelement that has its own fig, that fig is returned. It extends
+   * presentationFor that only gets the fig belonging to the node obj.
+   *
+   * <p>
+   *
+   * @author jaap.branderhorst@xs4all.nl
+   * @return the Fig for the object
+   * @param obj is th object
+   */
+  public Fig getContainingFig(Object obj) {
+    Fig fig = super.presentationFor(obj);
+    if (fig == null && Model.getFacade().isAModelElement(obj)) {
+      // maybe we have a modelelement that is part of some other
+      // fig
+      if (Model.getFacade().isAOperation(obj) || Model.getFacade().isAAttribute(obj)) {
+
+        // get all the classes from the diagram
+        return presentationFor(Model.getFacade().getOwner(obj));
+      }
     }
+    return fig;
+  }
 
-    /**
-     * @return the item UID
-     */
-    public ItemUID getItemUID() {
-        return id;
+  /**
+   * @see org.tigris.gef.base.Diagram#initialize(Object)
+   */
+  public void initialize(Object owner) {
+    super.initialize(owner);
+    ProjectManager.getManager().getCurrentProject().setActiveDiagram(this);
+  }
+
+  /**
+   * This will mark the entire visible area of all Editors to be repaired from any damage - i.e.
+   * repainted.
+   */
+  public void damage() {
+    if (getLayer() != null && getLayer().getEditors() != null) {
+      Iterator it = getLayer().getEditors().iterator();
+      while (it.hasNext()) {
+        ((Editor) it.next()).damageAll();
+      }
     }
+  }
 
-    ////////////////////////////////////////////////////////////////
-    // event management
-    /**
-     * The UID.
-     */
-    static final long serialVersionUID = -401219134410459387L;
-
-    /**
-     * TODO: The reference to the method
-     * org.argouml.uml.ui.VetoablePropertyChange#getVetoMessage(String)
-     * was here but the class does exist anymore. Where is it?
-     * This method is never used!
-     *
-     * @param propertyName is the name of the property
-     * @return a message or null if not applicable.
-     */
-    public String getVetoMessage(String propertyName) {
-    	if (propertyName.equals("name")) {
-	    return "Name of diagram may not exist already";
-    	}
-        return null;
+  /**
+   * @see Diagram#getEdges(Collection)
+   */
+  public Collection getEdges(Collection c) {
+    if (getGraphModel() != null) {
+      return getGraphModel().getEdges();
     }
+    return super.getEdges(null);
+  }
 
-    /**
-     * Finds the presentation (the Fig) for some object. If the object
-     * is a modelelement that is contained in some other modelelement
-     * that has its own fig, that fig is returned. It extends
-     * presentationFor that only gets the fig belonging to the node
-     * obj.<p>
-     *
-     * @author jaap.branderhorst@xs4all.nl
-     * @return the Fig for the object
-     * @param obj is th object
-     */
-    public Fig getContainingFig(Object obj) {
-        Fig fig = super.presentationFor(obj);
-        if (fig == null && Model.getFacade().isAModelElement(obj)) {
-	    // maybe we have a modelelement that is part of some other
-            // fig
-            if (Model.getFacade().isAOperation(obj)
-		|| Model.getFacade().isAAttribute(obj)) {
-
-                // get all the classes from the diagram
-                return presentationFor(Model.getFacade().getOwner(obj));
-            }
-        }
-        return fig;
+  /**
+   * @see Diagram#getNodes(Collection)
+   */
+  public Collection getNodes(Collection c) {
+    if (getGraphModel() != null) {
+      return getGraphModel().getNodes();
     }
+    return super.getNodes(c);
+  }
 
-    /**
-     * @see org.tigris.gef.base.Diagram#initialize(Object)
-     */
-    public void initialize(Object owner) {
-        super.initialize(owner);
-        ProjectManager.getManager().getCurrentProject().setActiveDiagram(this);
-    }
-
-    /**
-     * This will mark the entire visible area of all Editors to be repaired
-     *  from any damage - i.e. repainted.
-     */
-    public void damage() {
-        if (getLayer() != null && getLayer().getEditors() != null) {
-            Iterator it = getLayer().getEditors().iterator();
-            while (it.hasNext()) {
-                ((Editor) it.next()).damageAll();
-            }
-        }
-    }
-
-    /**
-     * @see Diagram#getEdges(Collection)
-     */
-    public Collection getEdges(Collection c) {
-        if (getGraphModel() != null) {
-            return getGraphModel().getEdges();
-        }
-        return super.getEdges(null);
-    }
-
-    /**
-     * @see Diagram#getNodes(Collection)
-     */
-    public Collection getNodes(Collection c) {
-        if (getGraphModel() != null) {
-            return getGraphModel().getNodes();
-        }
-        return super.getNodes(c);
-    }
-
-    /**
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-        return "Diagram: " + getName();
-    }
-
+  /**
+   * @see java.lang.Object#toString()
+   */
+  public String toString() {
+    return "Diagram: " + getName();
+  }
 } /* end class ArgoDiagram */

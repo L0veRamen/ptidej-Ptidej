@@ -33,39 +33,37 @@ import org.argouml.i18n.Translator;
  */
 public abstract class AbstractActionNewModelElement extends UMLAction {
 
-    private Object/*MModelElement*/ target;
+  private Object /*MModelElement*/ target;
 
-    /**
-     * The constructor.
-     * Defaults to name "action.new", global and NO_ICON
-     */
-    protected AbstractActionNewModelElement() {
-        super(Translator.localize("action.new"), true, NO_ICON);
-    }
+  /** The constructor. Defaults to name "action.new", global and NO_ICON */
+  protected AbstractActionNewModelElement() {
+    super(Translator.localize("action.new"), true, NO_ICON);
+  }
 
-    /**
-     * The constructor.
-     *
-     * @param name the to be localized name of the action
-     */
-    protected AbstractActionNewModelElement(String name) {
-        super(name, true, HAS_ICON);
-    }
+  /**
+   * The constructor.
+   *
+   * @param name the to be localized name of the action
+   */
+  protected AbstractActionNewModelElement(String name) {
+    super(name, true, HAS_ICON);
+  }
 
-     /**
-     * Returns the target.
-     * @return MModelElement
-     */
-    public Object/*MModelElement*/ getTarget() {
-        return target;
-    }
+  /**
+   * Returns the target.
+   *
+   * @return MModelElement
+   */
+  public Object /*MModelElement*/ getTarget() {
+    return target;
+  }
 
-    /**
-     * Sets the target.
-     * @param theTarget The target to set
-     */
-    public void setTarget(Object theTarget) {
-        target = theTarget;
-    }
-
+  /**
+   * Sets the target.
+   *
+   * @param theTarget The target to set
+   */
+  public void setTarget(Object theTarget) {
+    target = theTarget;
+  }
 }

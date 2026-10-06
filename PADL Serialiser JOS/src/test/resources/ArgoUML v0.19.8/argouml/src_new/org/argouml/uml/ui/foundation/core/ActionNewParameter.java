@@ -26,7 +26,6 @@ package org.argouml.uml.ui.foundation.core;
 
 import java.awt.event.ActionEvent;
 import java.util.Collection;
-
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.Model;
 import org.argouml.ui.targetmanager.TargetManager;
@@ -39,32 +38,26 @@ import org.argouml.uml.ui.AbstractActionNewModelElement;
  * @author jaap.branderhorst@xs4all.nl
  */
 public class ActionNewParameter extends AbstractActionNewModelElement {
-    /**
-     * The constructor.
-     */
-    public ActionNewParameter() {
-        super("button.new-parameter");
-    }
+  /** The constructor. */
+  public ActionNewParameter() {
+    super("button.new-parameter");
+  }
 
-    /**
-     * On event, a parameter is build and added to the target.
-     *
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        //Object target =  getTarget(); // it is not set anywhere, pity...
-        Object target =  TargetManager.getInstance().getModelTarget();
-        Object model =
-            ProjectManager.getManager().getCurrentProject().getModel();
-        Object voidType =
-            ProjectManager.getManager().getCurrentProject().findType("void");
-        Collection propertyChangeListeners =
-            ProjectManager.getManager().getCurrentProject()
-            	.findFigsForMember(target);
-        Object param =
-            Model.getCoreFactory().buildParameter(target, model,
-                voidType, propertyChangeListeners);
-        TargetManager.getInstance().setTarget(param);
-    }
+  /**
+   * On event, a parameter is build and added to the target.
+   *
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    // Object target =  getTarget(); // it is not set anywhere, pity...
+    Object target = TargetManager.getInstance().getModelTarget();
+    Object model = ProjectManager.getManager().getCurrentProject().getModel();
+    Object voidType = ProjectManager.getManager().getCurrentProject().findType("void");
+    Collection propertyChangeListeners =
+        ProjectManager.getManager().getCurrentProject().findFigsForMember(target);
+    Object param =
+        Model.getCoreFactory().buildParameter(target, model, voidType, propertyChangeListeners);
+    TargetManager.getInstance().setTarget(param);
+  }
 }

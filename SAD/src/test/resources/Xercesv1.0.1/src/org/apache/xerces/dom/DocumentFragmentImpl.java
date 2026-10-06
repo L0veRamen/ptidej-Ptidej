@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xerces" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -60,93 +60,80 @@ package org.apache.xerces.dom;
 import org.w3c.dom.*;
 
 /**
- * DocumentFragment is a "lightweight" or "minimal" Document
- * object. It is very common to want to be able to extract a portion
- * of a document's tree or to create a new fragment of a
- * document. Imagine implementing a user command like cut or
- * rearranging a document by moving fragments around. It is desirable
- * to have an object which can hold such fragments and it is quite
- * natural to use a Node for this purpose. While it is true that a
- * Document object could fulfil this role, a Document object can
- * potentially be a heavyweight object, depending on the underlying
- * implementation... and in DOM Level 1, nodes aren't allowed to cross
- * Document boundaries anyway. What is really needed for this is a
- * very lightweight object.  DocumentFragment is such an object.
- * <P>
- * Furthermore, various operations -- such as inserting nodes as
- * children of another Node -- may take DocumentFragment objects as
- * arguments; this results in all the child nodes of the
+ * DocumentFragment is a "lightweight" or "minimal" Document object. It is very common to want to be
+ * able to extract a portion of a document's tree or to create a new fragment of a document. Imagine
+ * implementing a user command like cut or rearranging a document by moving fragments around. It is
+ * desirable to have an object which can hold such fragments and it is quite natural to use a Node
+ * for this purpose. While it is true that a Document object could fulfil this role, a Document
+ * object can potentially be a heavyweight object, depending on the underlying implementation... and
+ * in DOM Level 1, nodes aren't allowed to cross Document boundaries anyway. What is really needed
+ * for this is a very lightweight object. DocumentFragment is such an object.
+ *
+ * <p>Furthermore, various operations -- such as inserting nodes as children of another Node -- may
+ * take DocumentFragment objects as arguments; this results in all the child nodes of the
  * DocumentFragment being moved to the child list of this node.
- * <P>
- * The children of a DocumentFragment node are zero or more nodes
- * representing the tops of any sub-trees defining the structure of
- * the document.  DocumentFragment do not need to be well-formed XML
- * documents (although they do need to follow the rules imposed upon
- * well-formed XML parsed entities, which can have multiple top
- * nodes). For example, a DocumentFragment might have only one child
- * and that child node could be a Text node. Such a structure model
- * represents neither an HTML document nor a well-formed XML document.
- * <P>
- * When a DocumentFragment is inserted into a Document (or indeed any
- * other Node that may take children) the children of the
- * DocumentFragment and not the DocumentFragment itself are inserted
- * into the Node. This makes the DocumentFragment very useful when the
- * user wishes to create nodes that are siblings; the DocumentFragment
- * acts as the parent of these nodes so that the user can use the
- * standard methods from the Node interface, such as insertBefore()
- * and appendChild().
+ *
+ * <p>The children of a DocumentFragment node are zero or more nodes representing the tops of any
+ * sub-trees defining the structure of the document. DocumentFragment do not need to be well-formed
+ * XML documents (although they do need to follow the rules imposed upon well-formed XML parsed
+ * entities, which can have multiple top nodes). For example, a DocumentFragment might have only one
+ * child and that child node could be a Text node. Such a structure model represents neither an HTML
+ * document nor a well-formed XML document.
+ *
+ * <p>When a DocumentFragment is inserted into a Document (or indeed any other Node that may take
+ * children) the children of the DocumentFragment and not the DocumentFragment itself are inserted
+ * into the Node. This makes the DocumentFragment very useful when the user wishes to create nodes
+ * that are siblings; the DocumentFragment acts as the parent of these nodes so that the user can
+ * use the standard methods from the Node interface, such as insertBefore() and appendChild().
  *
  * @version
- * @since  PR-DOM-Level-1-19980818.
+ * @since PR-DOM-Level-1-19980818.
  */
-public class DocumentFragmentImpl 
-    extends NodeImpl 
-    implements DocumentFragment {
+public class DocumentFragmentImpl extends NodeImpl implements DocumentFragment {
 
-    //
-    // Constants
-    //
+  //
+  // Constants
+  //
 
-    /** Serialization version. */
-    static final long serialVersionUID = -7596449967279236746L;
-    
-    //
-    // Constructors
-    //
+  /** Serialization version. */
+  static final long serialVersionUID = -7596449967279236746L;
 
-    /** Factory constructor. */
-    public DocumentFragmentImpl(DocumentImpl ownerDoc) {
-        super(ownerDoc, null, null);
-    }  
-  
-    /** Constructor for serialization. */
-    public DocumentFragmentImpl() {}
+  //
+  // Constructors
+  //
 
-    //
-    // Node methods
-    //
+  /** Factory constructor. */
+  public DocumentFragmentImpl(DocumentImpl ownerDoc) {
+    super(ownerDoc, null, null);
+  }
 
-    /** 
-     * A short integer indicating what type of node this is. The named
-     * constants for this value are defined in the org.w3c.dom.Node interface.
-     */
-    public short getNodeType() {
-        return Node.DOCUMENT_FRAGMENT_NODE;
-    }
+  /** Constructor for serialization. */
+  public DocumentFragmentImpl() {}
 
-    /** Returns the node name. */
-    public String getNodeName() {
-        return "#document-fragment";
-    }
-    
-    /**
-     * DocumentFragments never have a nodeValue.
-     * @throws DOMException(NO_MODIFICATION_ALLOWED_ERR)
-     */
-    public void setNodeValue(String x) 
-        throws DOMException {
-    	throw new DOMExceptionImpl(DOMException.NO_MODIFICATION_ALLOWED_ERR, 
-    	                           "NO_MODIFICATION_ALLOWED_ERR");
-    }
+  //
+  // Node methods
+  //
 
+  /**
+   * A short integer indicating what type of node this is. The named constants for this value are
+   * defined in the org.w3c.dom.Node interface.
+   */
+  public short getNodeType() {
+    return Node.DOCUMENT_FRAGMENT_NODE;
+  }
+
+  /** Returns the node name. */
+  public String getNodeName() {
+    return "#document-fragment";
+  }
+
+  /**
+   * DocumentFragments never have a nodeValue.
+   *
+   * @throws DOMException(NO_MODIFICATION_ALLOWED_ERR)
+   */
+  public void setNodeValue(String x) throws DOMException {
+    throw new DOMExceptionImpl(
+        DOMException.NO_MODIFICATION_ALLOWED_ERR, "NO_MODIFICATION_ALLOWED_ERR");
+  }
 } // class DocumentFragmentImpl

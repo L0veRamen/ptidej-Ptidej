@@ -28,44 +28,39 @@ import org.restlet.data.Protocol;
 
 /**
  * Jetty AJP server connector.
+ *
  * @see <a href="http://jetty.mortbay.com/">Jetty home page</a>
  * @author Jerome Louvel (contact@noelios.com)
  */
-public class AjpServerHelper extends JettyServerHelper
-{
-	/**
-	 * Constructor.
-	 * @param server The server to help.
-	 */
-	public AjpServerHelper(Server server)
-	{
-		super(server);
-		getSupportedProtocols().add(Protocol.AJP);
-	}
+public class AjpServerHelper extends JettyServerHelper {
+  /**
+   * Constructor.
+   *
+   * @param server The server to help.
+   */
+  public AjpServerHelper(Server server) {
+    super(server);
+    getSupportedProtocols().add(Protocol.AJP);
+  }
 
-	/** Start hook. */
-	public void start() throws Exception
-	{
-		AjpListener listener;
+  /** Start hook. */
+  public void start() throws Exception {
+    AjpListener listener;
 
-		if (getServer().getAddress() != null)
-		{
-			listener = new AjpListener(this, new InetAddrPort(getServer().getAddress(),
-					getServer().getPort()));
-		}
-		else
-		{
-			listener = new AjpListener(this);
-			listener.setPort(getServer().getPort());
-		}
+    if (getServer().getAddress() != null) {
+      listener =
+          new AjpListener(this, new InetAddrPort(getServer().getAddress(), getServer().getPort()));
+    } else {
+      listener = new AjpListener(this);
+      listener.setPort(getServer().getPort());
+    }
 
-		// Configure the listener
-		listener.setMinThreads(getMinThreads());
-		listener.setMaxThreads(getMaxThreads());
-		listener.setMaxIdleTimeMs(getMaxIdleTimeMs());
+    // Configure the listener
+    listener.setMinThreads(getMinThreads());
+    listener.setMaxThreads(getMaxThreads());
+    listener.setMaxIdleTimeMs(getMaxIdleTimeMs());
 
-		setListener(listener);
-		super.start();
-	}
-
+    setListener(listener);
+    super.start();
+  }
 }

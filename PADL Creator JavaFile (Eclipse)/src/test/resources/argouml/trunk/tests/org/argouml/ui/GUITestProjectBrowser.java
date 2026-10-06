@@ -25,11 +25,8 @@
 package org.argouml.ui;
 
 import java.beans.PropertyVetoException;
-
 import javax.swing.Action;
-
 import junit.framework.TestCase;
-
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.Model;
@@ -38,147 +35,127 @@ import org.argouml.ui.targetmanager.TargetManager;
 import org.argouml.uml.diagram.static_structure.ui.UMLClassDiagram;
 
 /**
- * Testing the ProjectBrowser.
- * The reason for this being a GUITest is that all the tests rely on
- * that the ProjectBrowser can be created and it can only be created
- * if there is a real gui available.
+ * Testing the ProjectBrowser. The reason for this being a GUITest is that all the tests rely on
+ * that the ProjectBrowser can be created and it can only be created if there is a real gui
+ * available.
  *
  * @since Nov 23, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
 public class GUITestProjectBrowser extends TestCase {
 
-    /**
-     * Constructor.
-     *
-     * @param arg0 name of the test case
-     */
-    public GUITestProjectBrowser(String arg0) {
-        super(arg0);
+  /**
+   * Constructor.
+   *
+   * @param arg0 name of the test case
+   */
+  public GUITestProjectBrowser(String arg0) {
+    super(arg0);
+  }
+
+  /**
+   * Tests that the projectbrowser is created or can be created. Also test that everything is set up
+   * properly within the object.
+   */
+  public void testConstruction() {
+    assertNotNull(ProjectBrowser.getInstance());
+    ProjectBrowser pb = ProjectBrowser.getInstance();
+    assertNotNull(pb.getLocale());
+    assertNotNull(pb.getAppName());
+    assertNotNull(pb.getTabProps());
+    assertNotNull(pb.getStatusBar());
+    assertNotNull(pb.getJMenuBar());
+    assertNotNull(pb.getEditorPane());
+    assertNotNull(pb.getTodoPane());
+  }
+
+  /** Test the AppName. */
+  public void testAppName() {
+    ProjectBrowser pb = ProjectBrowser.getInstance();
+
+    pb.setAppName("Gurkburk");
+    assertEquals("Gurkburk", pb.getAppName());
+  }
+
+  /** Test the existance of public static members. */
+  public void compileTestPublicStaticMembers() {
+    Integer.valueOf(ProjectBrowser.DEFAULT_COMPONENTWIDTH + ProjectBrowser.DEFAULT_COMPONENTHEIGHT);
+  }
+
+  /** Test the existance of public members. */
+  public void compileTestPublicMembers() {
+    assertNotNull(ProjectBrowser.getInstance().getDefaultFont());
+  }
+
+  /**
+   * @see junit.framework.TestCase#setUp()
+   */
+  protected void setUp() throws Exception {
+    super.setUp();
+  }
+
+  /** Testing the setTarget method in ProjectBrowser. */
+  public void testSetTarget() {
+    Project p = ProjectManager.getManager().getCurrentProject();
+    Object package1 = Model.getModelManagementFactory().buildPackage("test1", null);
+    Object package2 = Model.getModelManagementFactory().buildPackage("test2", null);
+    UMLClassDiagram diagram1 = new UMLClassDiagram(package1);
+    UMLClassDiagram diagram2 = new UMLClassDiagram(package2);
+    p.addMember(diagram1);
+    p.addMember(diagram2);
+
+    TargetManager tm = TargetManager.getInstance();
+
+    tm.setTarget(diagram1);
+    assertEquals("Diagram1 should be the target", diagram1, tm.getTarget());
+
+    tm.setTarget(diagram2);
+    assertEquals("Diagram2 should be the target", diagram2, tm.getTarget());
+
+    p.moveToTrash(package2);
+    Model.getPump().flushModelEvents();
+    assertEquals(
+        "The target is not reset to the first diagram", p.getDiagrams().get(0), tm.getTarget());
+  }
+
+  /** Testing the Window Title of the ProjectBrowser. */
+  public void testSetTitle() {
+    Project p = ProjectManager.getManager().getCurrentProject();
+    ProjectBrowser pb = ProjectBrowser.getInstance();
+    TargetManager tm = TargetManager.getInstance();
+
+    Object package1 = Model.getModelManagementFactory().buildPackage("test1", null);
+    Object package2 = Model.getModelManagementFactory().buildPackage("test2", null);
+    UMLClassDiagram diagram1 = new UMLClassDiagram(package1);
+    UMLClassDiagram diagram2 = new UMLClassDiagram(package2);
+    try {
+      diagram1.setName("diagram1");
+      diagram2.setName("diagram2");
+    } catch (PropertyVetoException e) {
+      assertNotNull("PropertyVetoException " + e, e);
     }
 
-    /**
-     * Tests that the projectbrowser is created or can be created.
-     * Also test that everything is set up properly within the object.
-     */
-    public void testConstruction() {
-	assertNotNull(ProjectBrowser.getInstance());
-	ProjectBrowser pb = ProjectBrowser.getInstance();
-	assertNotNull(pb.getLocale());
-	assertNotNull(pb.getAppName());
-	assertNotNull(pb.getTabProps());
-	assertNotNull(pb.getStatusBar());
-	assertNotNull(pb.getJMenuBar());
-	assertNotNull(pb.getEditorPane());
-	assertNotNull(pb.getTodoPane());
-    }
+    p.addMember(diagram1);
+    p.addMember(diagram2);
 
-    /**
-     * Test the AppName.
-     */
-    public void testAppName() {
-	ProjectBrowser pb = ProjectBrowser.getInstance();
+    Model.getPump().flushModelEvents();
 
-	pb.setAppName("Gurkburk");
-	assertEquals("Gurkburk", pb.getAppName());
-    }
+    tm.setTarget(diagram1);
+    assertTrue(
+        "Title should contain diagram1 name", pb.getTitle().indexOf(diagram1.getName()) != -1);
 
-    /**
-     * Test the existance of public static members.
-     */
-    public void compileTestPublicStaticMembers() {
-	Integer.valueOf(ProjectBrowser.DEFAULT_COMPONENTWIDTH
-	        + ProjectBrowser.DEFAULT_COMPONENTHEIGHT);
-    }
+    tm.setTarget(diagram2);
+    assertTrue(
+        "Title should contain diagram2 name", pb.getTitle().indexOf(diagram2.getName()) != -1);
 
-    /**
-     * Test the existance of public members.
-     */
-    public void compileTestPublicMembers() {
-	assertNotNull(ProjectBrowser.getInstance().getDefaultFont());
-    }
+    assertTrue("Title should contain application name", pb.getTitle().indexOf("Gurkburk") != -1);
 
+    assertTrue("Title should contain *", pb.getTitle().indexOf("*") != -1);
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
+    Action a = new ActionNew();
+    a.putValue("non-interactive", Boolean.TRUE);
+    a.actionPerformed(null);
 
-    /**
-     * Testing the setTarget method in ProjectBrowser.
-     */
-    public void testSetTarget() {
-        Project p = ProjectManager.getManager().getCurrentProject();
-	Object package1 =
-	    Model.getModelManagementFactory().buildPackage("test1", null);
-	Object package2 =
-	    Model.getModelManagementFactory().buildPackage("test2", null);
-	UMLClassDiagram diagram1 = new UMLClassDiagram(package1);
-	UMLClassDiagram diagram2 = new UMLClassDiagram(package2);
-        p.addMember(diagram1);
-        p.addMember(diagram2);
-
-        TargetManager tm = TargetManager.getInstance();
-
-        tm.setTarget(diagram1);
-	assertEquals("Diagram1 should be the target", diagram1, tm.getTarget());
-
-        tm.setTarget(diagram2);
-	assertEquals("Diagram2 should be the target", diagram2, tm.getTarget());
-
-	p.moveToTrash(package2);
-        Model.getPump().flushModelEvents();
-	assertEquals("The target is not reset to the first diagram",
-            p.getDiagrams().get(0), tm.getTarget());
-    }
-
-    /**
-     * Testing the Window Title of the ProjectBrowser.
-     */
-    public void testSetTitle() {
-        Project p = ProjectManager.getManager().getCurrentProject();
-        ProjectBrowser pb = ProjectBrowser.getInstance();
-        TargetManager tm = TargetManager.getInstance();
-
-        Object package1 =
-            Model.getModelManagementFactory().buildPackage("test1", null);
-        Object package2 =
-            Model.getModelManagementFactory().buildPackage("test2", null);
-        UMLClassDiagram diagram1 = new UMLClassDiagram(package1);
-        UMLClassDiagram diagram2 = new UMLClassDiagram(package2);
-        try {
-            diagram1.setName("diagram1");
-            diagram2.setName("diagram2");
-        } catch (PropertyVetoException e) {
-            assertNotNull("PropertyVetoException " + e, e);
-        }
-
-        p.addMember(diagram1);
-        p.addMember(diagram2);
-
-        Model.getPump().flushModelEvents();
-
-        tm.setTarget(diagram1);
-        assertTrue("Title should contain diagram1 name", 
-                pb.getTitle().indexOf(diagram1.getName()) != -1);
-
-        tm.setTarget(diagram2);
-        assertTrue("Title should contain diagram2 name", 
-                pb.getTitle().indexOf(diagram2.getName()) != -1);
-        
-        assertTrue("Title should contain application name", 
-                pb.getTitle().indexOf("Gurkburk") != -1);
-
-        assertTrue("Title should contain *", 
-                pb.getTitle().indexOf("*") != -1);
-
-        Action a = new ActionNew();
-        a.putValue("non-interactive", Boolean.TRUE);
-        a.actionPerformed(null);
-        
-        assertTrue("Title should not contain *", 
-                pb.getTitle().indexOf("*") == -1);
-    }
+    assertTrue("Title should not contain *", pb.getTitle().indexOf("*") == -1);
+  }
 }

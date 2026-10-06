@@ -26,9 +26,7 @@ package org.argouml.uml.ui.behavior.collaborations;
 
 import java.util.Collection;
 import java.util.Iterator;
-
 import junit.framework.TestCase;
-
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
@@ -38,118 +36,106 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  */
 public class TestUMLAssociationEndRoleBaseListModel extends TestCase {
 
-    private Object elem;
-    private UMLModelElementListModel2 model;
-    private Object baseAssoc;
-    private Object baseEnd;
-    private Object assocRole;
+  private Object elem;
+  private UMLModelElementListModel2 model;
+  private Object baseAssoc;
+  private Object baseEnd;
+  private Object assocRole;
 
-    /**
-     * Constructor for TestUMLAssociationEndRoleBaseListModel.
-     *
-     * @param arg0 is the name of the test case.
-     */
-    public TestUMLAssociationEndRoleBaseListModel(String arg0) {
-        super(arg0);
+  /**
+   * Constructor for TestUMLAssociationEndRoleBaseListModel.
+   *
+   * @param arg0 is the name of the test case.
+   */
+  public TestUMLAssociationEndRoleBaseListModel(String arg0) {
+    super(arg0);
+  }
+
+  /**
+   * @see junit.framework.TestCase#setUp()
+   */
+  protected void setUp() throws Exception {
+    super.setUp();
+
+    Object classifier = Model.getCoreFactory().createClass();
+    Object collaboration = Model.getCollaborationsFactory().buildCollaboration(classifier);
+
+    elem = Model.getCollaborationsFactory().createAssociationEndRole();
+
+    Object classNamespace = Model.getModelManagementFactory().createPackage();
+    baseAssoc =
+        Model.getCoreFactory()
+            .buildAssociation(
+                Model.getCoreFactory().buildClass("from", classNamespace),
+                false,
+                Model.getCoreFactory().buildClass("to", classNamespace),
+                true,
+                "association");
+    Model.getCoreHelper().addOwnedElement(collaboration, baseAssoc);
+
+    Object from = Model.getCollaborationsFactory().buildClassifierRole(collaboration);
+    Object to = Model.getCollaborationsFactory().buildClassifierRole(collaboration);
+
+    assocRole = Model.getCollaborationsFactory().buildAssociationRole(from, to);
+
+    Model.getCoreHelper().setName(assocRole, "TestAssocRole");
+
+    Model.getCoreHelper().setAssociation(elem, assocRole);
+    Model.getCollaborationsHelper().setBase(assocRole, baseAssoc);
+
+    baseEnd = Model.getCoreFactory().createAssociationEnd();
+    Model.getCoreHelper().setAssociation(baseEnd, baseAssoc);
+
+    model = new UMLAssociationEndRoleBaseListModel();
+    model.setTarget(elem);
+    Model.getPump().flushModelEvents();
+  }
+
+  /**
+   * @see junit.framework.TestCase#tearDown()
+   */
+  protected void tearDown() throws Exception {
+    Model.getUmlFactory().delete(elem);
+    Model.getUmlFactory().delete(assocRole);
+
+    Collection connections = Model.getFacade().getConnections(baseAssoc);
+    Model.getUmlFactory().delete(baseAssoc);
+
+    Iterator iter = connections.iterator();
+    while (iter.hasNext()) {
+      Model.getUmlFactory().delete(iter.next());
     }
+    connections = null;
 
+    Model.getUmlFactory().delete(baseEnd);
+    model = null;
+    super.tearDown();
+  }
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
+  /** Test setting the Base. */
+  public void testAdd() {
+    Model.getCollaborationsHelper().setBase(elem, baseEnd);
+    Model.getPump().flushModelEvents();
+    assertEquals(1, model.getSize());
+    assertEquals(baseEnd, model.getElementAt(0));
+  }
 
-        Object classifier = Model.getCoreFactory().createClass();
-        Object collaboration =
-            Model.getCollaborationsFactory().buildCollaboration(classifier);
-
-        elem = Model.getCollaborationsFactory().createAssociationEndRole();
-
-        Object classNamespace =
-	    Model.getModelManagementFactory().createPackage();
-        baseAssoc =
-            Model.getCoreFactory().buildAssociation(
-                    Model.getCoreFactory().buildClass("from", classNamespace),
-                    false,
-                    Model.getCoreFactory().buildClass("to", classNamespace),
-                    true,
-                    "association");
-        Model.getCoreHelper().addOwnedElement(collaboration, baseAssoc);
-
-        Object from =
-            Model.getCollaborationsFactory().buildClassifierRole(collaboration);
-        Object to =
-            Model.getCollaborationsFactory().buildClassifierRole(collaboration);
-
-        assocRole =
-            Model.getCollaborationsFactory().buildAssociationRole(from, to);
-
-        Model.getCoreHelper().setName(assocRole, "TestAssocRole");
-
-        Model.getCoreHelper().setAssociation(elem, assocRole);
-        Model.getCollaborationsHelper().setBase(assocRole, baseAssoc);
-
-        baseEnd = Model.getCoreFactory().createAssociationEnd();
-        Model.getCoreHelper().setAssociation(baseEnd, baseAssoc);
-
-        model = new UMLAssociationEndRoleBaseListModel();
-        model.setTarget(elem);
-        Model.getPump().flushModelEvents();
+  /** Testing that we have an empty model to begin with. */
+  public void testEmpty() {
+    assertEquals(0, model.getSize());
+    try {
+      model.getElementAt(0);
+      fail();
+    } catch (ArrayIndexOutOfBoundsException ex) {
+      // This is what we expect.
     }
+  }
 
-    /**
-     * @see junit.framework.TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        Model.getUmlFactory().delete(elem);
-        Model.getUmlFactory().delete(assocRole);
-
-        Collection connections = Model.getFacade().getConnections(baseAssoc);
-        Model.getUmlFactory().delete(baseAssoc);
-
-        Iterator iter = connections.iterator();
-        while (iter.hasNext()) {
-            Model.getUmlFactory().delete(iter.next());
-        }
-        connections = null;
-
-        Model.getUmlFactory().delete(baseEnd);
-        model = null;
-        super.tearDown();
-    }
-
-    /**
-     * Test setting the Base.
-     */
-    public void testAdd() {
-        Model.getCollaborationsHelper().setBase(elem, baseEnd);
-        Model.getPump().flushModelEvents();
-        assertEquals(1, model.getSize());
-        assertEquals(baseEnd, model.getElementAt(0));
-    }
-
-    /**
-     * Testing that we have an empty model to begin with.
-     */
-    public void testEmpty() {
-        assertEquals(0, model.getSize());
-        try {
-            model.getElementAt(0);
-            fail();
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            // This is what we expect.
-        }
-    }
-
-    /**
-     * Test removing.
-     */
-    public void testRemove() {
-        Model.getCollaborationsHelper().setBase(elem, baseEnd);
-        Model.getCollaborationsHelper().setBase(elem, null);
-        Model.getPump().flushModelEvents();
-        assertEquals(0, model.getSize());
-    }
-
+  /** Test removing. */
+  public void testRemove() {
+    Model.getCollaborationsHelper().setBase(elem, baseEnd);
+    Model.getCollaborationsHelper().setBase(elem, null);
+    Model.getPump().flushModelEvents();
+    assertEquals(0, model.getSize());
+  }
 }

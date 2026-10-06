@@ -39,56 +39,62 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 /**
- * An interactive test of the Graphics.drawArc and Graphics.fillArc
- * routines. Can be run either as a standalone application by
- * typing "java ArcTest" or as an applet in the AppletViewer.
+ * An interactive test of the Graphics.drawArc and Graphics.fillArc routines. Can be run either as a
+ * standalone application by typing "java ArcTest" or as an applet in the AppletViewer.
  */
-@SuppressWarnings({ "removal", "deprecation" })
+@SuppressWarnings({"removal", "deprecation"})
 public class ArcTest extends Applet {
-	private static final long serialVersionUID = -7401286294954689606L;
+  private static final long serialVersionUID = -7401286294954689606L;
 
-	ArcControls controls; // The controls for marking and filling arcs
-	ArcCanvas canvas; // The drawing area to display arcs
+  ArcControls controls; // The controls for marking and filling arcs
+  ArcCanvas canvas; // The drawing area to display arcs
 
-	public void destroy() {
-		remove(this.controls);
-		remove(this.canvas);
-	}
-	public String getAppletInfo() {
-		return "An interactive test of the Graphics.drawArc and \nGraphics.fillArc routines. Can be run \neither as a standalone application by typing 'java ArcTest' \nor as an applet in the AppletViewer.";
-	}
-	public void init() {
-		setLayout(new BorderLayout());
-		this.canvas = new ArcCanvas();
-		add("Center", this.canvas);
-		add("South", this.controls = new ArcControls(this.canvas));
-	}
-	public static void main(String args[]) {
-		Frame f = new Frame("ArcTest");
-		ArcTest arcTest = new ArcTest();
+  public void destroy() {
+    remove(this.controls);
+    remove(this.canvas);
+  }
 
-		arcTest.init();
-		arcTest.start();
+  public String getAppletInfo() {
+    return "An interactive test of the Graphics.drawArc and \nGraphics.fillArc routines. Can be run \neither as a standalone application by typing 'java ArcTest' \nor as an applet in the AppletViewer.";
+  }
 
-		f.addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent windowEvent) {
-				System.exit(0);
-			}
-		});
-		f.add("Center", arcTest);
-		f.setSize(300, 300);
-		f.setLocation(300, 300);
-		f.setVisible(true);
-	}
-	public void processEvent(AWTEvent e) {
-		if (e.getID() == Event.WINDOW_DESTROY) {
-			System.exit(0);
-		}
-	}
-	public void start() {
-		this.controls.setEnabled(true);
-	}
-	public void stop() {
-		this.controls.setEnabled(false);
-	}
+  public void init() {
+    setLayout(new BorderLayout());
+    this.canvas = new ArcCanvas();
+    add("Center", this.canvas);
+    add("South", this.controls = new ArcControls(this.canvas));
+  }
+
+  public static void main(String args[]) {
+    Frame f = new Frame("ArcTest");
+    ArcTest arcTest = new ArcTest();
+
+    arcTest.init();
+    arcTest.start();
+
+    f.addWindowListener(
+        new WindowAdapter() {
+          public void windowClosing(WindowEvent windowEvent) {
+            System.exit(0);
+          }
+        });
+    f.add("Center", arcTest);
+    f.setSize(300, 300);
+    f.setLocation(300, 300);
+    f.setVisible(true);
+  }
+
+  public void processEvent(AWTEvent e) {
+    if (e.getID() == Event.WINDOW_DESTROY) {
+      System.exit(0);
+    }
+  }
+
+  public void start() {
+    this.controls.setEnabled(true);
+  }
+
+  public void stop() {
+    this.controls.setEnabled(false);
+  }
 }

@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -17,13 +17,13 @@ import junit.framework.TestSuite;
  * @since 2013/04/28
  */
 public final class TestMoDecSolver extends TestSuite {
-	public static TestSuite suite() {
-		final TestMoDecSolver suite = new TestMoDecSolver();
-		suite.setName(TestMoDecSolver.class.getName());
+  public static TestSuite suite() {
+    final TestMoDecSolver suite = new TestMoDecSolver();
+    suite.setName(TestMoDecSolver.class.getName());
 
-		suite.addTestSuite(CallerTest.class);
-		suite.addTestSuite(MessageFollowsImmediatelyTest.class);
+    suite.addTestSuite(CallerTest.class);
+    suite.addTestSuite(MessageFollowsImmediatelyTest.class);
 
-		return suite;
-	}
+    return suite;
+  }
 }

@@ -26,11 +26,9 @@ package org.argouml.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-
 import org.argouml.application.api.QuadrantPanel;
 import org.argouml.i18n.Translator;
 import org.argouml.ui.explorer.ActionPerspectiveConfig;
@@ -44,91 +42,88 @@ import org.argouml.ui.explorer.TypeThenNameOrder;
 import org.tigris.toolbar.ToolBar;
 
 /**
- * The upper-left pane of the main ArgoUML window, contains a tree view
- * of the UML model. Currently named "Explorer" instead of "Navigator".<p>
+ * The upper-left pane of the main ArgoUML window, contains a tree view of the UML model. Currently
+ * named "Explorer" instead of "Navigator".
  *
- * The model can be viewed from different tree "Perspectives".<p>
+ * <p>The model can be viewed from different tree "Perspectives".
  *
- * Perspectives are now built in the Perspective Manager.<p>
+ * <p>Perspectives are now built in the Perspective Manager.
+ *
+ * <p>
  */
-class NavigatorPane
-    extends JPanel
-    implements QuadrantPanel {
+class NavigatorPane extends JPanel implements QuadrantPanel {
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    /**
-     * Constructs a new navigator panel.<p>
-     *
-     * This panel consists of a Combobox to select a navigation
-     * perspective, a combobox to select ordering,
-     * a JTree to display the UML model,
-     * and a configuration dialog to tailor the perspectives.
-     *
-     * @param splash The splash screen where to show progress.
-     */
-    public NavigatorPane(SplashScreen splash) {
+  /**
+   * Constructs a new navigator panel.
+   *
+   * <p>This panel consists of a Combobox to select a navigation perspective, a combobox to select
+   * ordering, a JTree to display the UML model, and a configuration dialog to tailor the
+   * perspectives.
+   *
+   * @param splash The splash screen where to show progress.
+   */
+  public NavigatorPane(SplashScreen splash) {
 
-        JComboBox perspectiveCombo = new PerspectiveComboBox();
-        JComboBox orderByCombo = new JComboBox();
-        ExplorerTree tree = new DnDExplorerTree();
-        ToolBar toolbar = new ToolBar();
+    JComboBox perspectiveCombo = new PerspectiveComboBox();
+    JComboBox orderByCombo = new JComboBox();
+    ExplorerTree tree = new DnDExplorerTree();
+    ToolBar toolbar = new ToolBar();
 
-        toolbar.setFloatable(false);
-        toolbar.add(new ActionPerspectiveConfig());
-        toolbar.add(perspectiveCombo);
+    toolbar.setFloatable(false);
+    toolbar.add(new ActionPerspectiveConfig());
+    toolbar.add(perspectiveCombo);
 
-        ToolBar toolbar2 = new ToolBar();
+    ToolBar toolbar2 = new ToolBar();
 
-        toolbar2.setFloatable(false);
+    toolbar2.setFloatable(false);
 
-        orderByCombo.addItem(new TypeThenNameOrder());
-        orderByCombo.addItem(new NameOrder());
+    orderByCombo.addItem(new TypeThenNameOrder());
+    orderByCombo.addItem(new NameOrder());
 
-        toolbar2.add(orderByCombo);
+    toolbar2.add(orderByCombo);
 
-        JPanel toolbarpanel = new JPanel();
-        toolbarpanel.setLayout(new BorderLayout());
-        toolbarpanel.add(toolbar, BorderLayout.NORTH);
-        toolbarpanel.add(toolbar2, BorderLayout.SOUTH);
+    JPanel toolbarpanel = new JPanel();
+    toolbarpanel.setLayout(new BorderLayout());
+    toolbarpanel.add(toolbar, BorderLayout.NORTH);
+    toolbarpanel.add(toolbar2, BorderLayout.SOUTH);
 
-        setLayout(new BorderLayout());
-        add(toolbarpanel, BorderLayout.NORTH);
-        add(new JScrollPane(tree), BorderLayout.CENTER);
+    setLayout(new BorderLayout());
+    add(toolbarpanel, BorderLayout.NORTH);
+    add(new JScrollPane(tree), BorderLayout.CENTER);
 
-        if (splash != null) {
-            splash.getStatusBar().showStatus(Translator.localize(
-		    "statusmsg.bar.making-navigator-pane-perspectives"));
-            splash.getStatusBar().showProgress(25);
-        }
-
-        perspectiveCombo.addItemListener((ExplorerTreeModel) tree.getModel());
-        orderByCombo.addItemListener((ExplorerTreeModel) tree.getModel());
-        PerspectiveManager.getInstance().loadUserPerspectives();
+    if (splash != null) {
+      splash
+          .getStatusBar()
+          .showStatus(Translator.localize("statusmsg.bar.making-navigator-pane-perspectives"));
+      splash.getStatusBar().showProgress(25);
     }
 
-    ////////////////////////////////////////////////////////////////
-    // methods
+    perspectiveCombo.addItemListener((ExplorerTreeModel) tree.getModel());
+    orderByCombo.addItemListener((ExplorerTreeModel) tree.getModel());
+    PerspectiveManager.getInstance().loadUserPerspectives();
+  }
 
-    /**
-     * @see java.awt.Component#getMinimumSize()
-     *
-     * sets minimum size to 120,100
-     */
-    public Dimension getMinimumSize() {
-        return new Dimension(120, 100);
-    }
+  ////////////////////////////////////////////////////////////////
+  // methods
 
-    /**
-     * @see org.argouml.application.api.QuadrantPanel#getQuadrant()
-     */
-    public int getQuadrant() {
-        return Q_TOP_LEFT;
-    }
+  /**
+   * @see java.awt.Component#getMinimumSize()
+   *     <p>sets minimum size to 120,100
+   */
+  public Dimension getMinimumSize() {
+    return new Dimension(120, 100);
+  }
 
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = 8403903607517813289L;
+  /**
+   * @see org.argouml.application.api.QuadrantPanel#getQuadrant()
+   */
+  public int getQuadrant() {
+    return Q_TOP_LEFT;
+  }
+
+  /** The UID. */
+  private static final long serialVersionUID = 8403903607517813289L;
 } /* end class NavigatorPane */

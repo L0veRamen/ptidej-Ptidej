@@ -25,56 +25,52 @@
 package org.argouml.uml.diagram.ui;
 
 import java.util.Iterator;
-
 import org.argouml.uml.diagram.static_structure.ui.FigClass;
 import org.tigris.gef.presentation.Fig;
 
 /**
- * Class to display a class in an Association Class
- * It must be used only from a FigAssociationClass
+ * Class to display a class in an Association Class It must be used only from a FigAssociationClass
  *
  * @author pepargouml
  */
 public class FigClassAssociationClass extends FigClass {
 
-    private static final long serialVersionUID = -4101337246957593739L;
-    
-    /**
-     * The constructor.
-     *
-     * @param owner the UML object
-     * @param x the x of the initial location
-     * @param y the y of the initial location
-     * @param w the initial width
-     * @param h the initial height
-     */
-    public FigClassAssociationClass(Object owner, int x, int y, int w, int h) {
-        super(owner, x, y, w, h);
-        enableSizeChecking(true);
-    }
+  private static final long serialVersionUID = -4101337246957593739L;
 
-    /**
-     * The constructor.
-     *
-     * @param owner the owner UML object
-     */
-    public FigClassAssociationClass(Object owner) {
-        super(null, owner);
-    }
-    
-    protected Fig getRemoveDelegate() {
-        // Look for the dashed edge
-        Iterator it = getFigEdges().iterator();
-        while (it.hasNext()) {
-            Object o = it.next();
-            if (o instanceof FigEdgeAssociationClass) {
-                // We have the dashed edge now find the opposite FigNode
-                FigEdgeAssociationClass dashedEdge =
-                    (FigEdgeAssociationClass) o;
-                return dashedEdge.getRemoveDelegate();
-            }
-        }
-        return null;
-    }
+  /**
+   * The constructor.
+   *
+   * @param owner the UML object
+   * @param x the x of the initial location
+   * @param y the y of the initial location
+   * @param w the initial width
+   * @param h the initial height
+   */
+  public FigClassAssociationClass(Object owner, int x, int y, int w, int h) {
+    super(owner, x, y, w, h);
+    enableSizeChecking(true);
+  }
 
+  /**
+   * The constructor.
+   *
+   * @param owner the owner UML object
+   */
+  public FigClassAssociationClass(Object owner) {
+    super(null, owner);
+  }
+
+  protected Fig getRemoveDelegate() {
+    // Look for the dashed edge
+    Iterator it = getFigEdges().iterator();
+    while (it.hasNext()) {
+      Object o = it.next();
+      if (o instanceof FigEdgeAssociationClass) {
+        // We have the dashed edge now find the opposite FigNode
+        FigEdgeAssociationClass dashedEdge = (FigEdgeAssociationClass) o;
+        return dashedEdge.getRemoveDelegate();
+      }
+    }
+    return null;
+  }
 } /* end class FigClassAssociationClass */

@@ -25,74 +25,63 @@
 package org.argouml.uml.diagram.static_structure.ui;
 
 import java.awt.event.ItemEvent;
-
 import javax.swing.JCheckBox;
-
 import org.argouml.ui.StylePanelFigNodeModelElement;
 
 /**
  * Stylepanel which adds an operation checkbox and depends on FigInterface.
+ *
  * @see FigInterface
- *
  * @author mkl
- *
  */
 public class StylePanelFigInterface extends StylePanelFigNodeModelElement {
 
-    private JCheckBox operCheckBox = new JCheckBox("Operations");
+  private JCheckBox operCheckBox = new JCheckBox("Operations");
 
-    /**
-     * Flag to indicate that a refresh is going on.
-     */
-    private boolean refreshTransaction;
+  /** Flag to indicate that a refresh is going on. */
+  private boolean refreshTransaction;
 
-    /**
-     * The constructor.
-     */
-    public StylePanelFigInterface() {
-        super();
+  /** The constructor. */
+  public StylePanelFigInterface() {
+    super();
 
-        addToDisplayPane(operCheckBox);
-        operCheckBox.setSelected(false);
-        operCheckBox.addItemListener(this);
+    addToDisplayPane(operCheckBox);
+    operCheckBox.setSelected(false);
+    operCheckBox.addItemListener(this);
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // accessors
+
+  /**
+   * @see org.argouml.ui.TabTarget#refresh()
+   */
+  public void refresh() {
+    refreshTransaction = true;
+    super.refresh();
+    FigInterface ti = (FigInterface) getPanelTarget();
+    operCheckBox.setSelected(ti.isOperationsVisible());
+    refreshTransaction = false;
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // event handling
+
+  /**
+   * @see java.awt.event.ItemListener#itemStateChanged(java.awt.event.ItemEvent)
+   */
+  public void itemStateChanged(ItemEvent e) {
+    if (!refreshTransaction) {
+      Object src = e.getSource();
+
+      if (src == operCheckBox) {
+        ((FigInterface) getPanelTarget()).setOperationsVisible(operCheckBox.isSelected());
+      } else {
+        super.itemStateChanged(e);
+      }
     }
+  }
 
-    ////////////////////////////////////////////////////////////////
-    // accessors
-
-    /**
-     * @see org.argouml.ui.TabTarget#refresh()
-     */
-    public void refresh() {
-        refreshTransaction = true;
-        super.refresh();
-        FigInterface ti = (FigInterface) getPanelTarget();
-        operCheckBox.setSelected(ti.isOperationsVisible());
-        refreshTransaction = false;
-    }
-
-    ////////////////////////////////////////////////////////////////
-    // event handling
-
-    /**
-     * @see java.awt.event.ItemListener#itemStateChanged(java.awt.event.ItemEvent)
-     */
-    public void itemStateChanged(ItemEvent e) {
-        if (!refreshTransaction) {
-            Object src = e.getSource();
-
-            if (src == operCheckBox) {
-                ((FigInterface) getPanelTarget())
-                    .setOperationsVisible(operCheckBox.isSelected());
-            } else {
-                super.itemStateChanged(e);
-            }
-        }
-    }
-
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -5908351031706234211L;
+  /** The UID. */
+  private static final long serialVersionUID = -5908351031706234211L;
 } /* end class StylePanelFigInterface */
-

@@ -27,114 +27,113 @@
   Author: Marcus Andersson andersson@users.sourceforge.net
 */
 
-
 package org.argouml.language.java.generator;
 
 import java.util.*;
 
 /**
-   This piece of code is a composition of several adjacent pieces of
-   code. The code piece can have holes.
-*/
+ * This piece of code is a composition of several adjacent pieces of code. The code piece can have
+ * holes.
+ */
 public class CompositeCodePiece extends CodePiece {
-    /** The code pieces this code piece consists of. */
-    private Vector codePieces;
+  /** The code pieces this code piece consists of. */
+  private Vector codePieces;
 
-    /**
-       Create a composite piece of code.
-
-       @param codePiece A starter code piece.
-    */
-    public CompositeCodePiece(CodePiece codePiece) {
-	codePieces = new Vector();
-	if (codePiece != null) {
-	    codePieces.addElement(codePiece);
-	}
+  /**
+   * Create a composite piece of code.
+   *
+   * @param codePiece A starter code piece.
+   */
+  public CompositeCodePiece(CodePiece codePiece) {
+    codePieces = new Vector();
+    if (codePiece != null) {
+      codePieces.addElement(codePiece);
     }
+  }
 
-    /**
-     * Append a code piece to the end.
-     *
-     * @param codePiece the given codepiece
-     */
-    public void add(CodePiece codePiece) {
-	if (codePiece != null) {
-	    codePieces.addElement(codePiece);
-	}
+  /**
+   * Append a code piece to the end.
+   *
+   * @param codePiece the given codepiece
+   */
+  public void add(CodePiece codePiece) {
+    if (codePiece != null) {
+      codePieces.addElement(codePiece);
     }
+  }
 
-    /**
-     *  @return the string representation for this piece of code
-     */
-    public StringBuffer getText() {
-	Iterator i = codePieces.iterator();
-	CodePiece cp = (CodePiece) i.next();
-	StringBuffer text = cp.getText();
-	int prevEnd = cp.getEndPosition();
-	int prevLine = cp.getEndLine();
+  /**
+   * @return the string representation for this piece of code
+   */
+  public StringBuffer getText() {
+    Iterator i = codePieces.iterator();
+    CodePiece cp = (CodePiece) i.next();
+    StringBuffer text = cp.getText();
+    int prevEnd = cp.getEndPosition();
+    int prevLine = cp.getEndLine();
 
-	for (; i.hasNext();) {
-	    cp = (CodePiece) i.next();
-	    int spaces = cp.getStartPosition() - prevEnd;
-	    if (prevLine != cp.getStartLine()) {
-		text.append('\n');
-		spaces--;
-	    }
-	    for (int j = 0; j < spaces; j++) {
-		text.append(' ');
-	    }
-	    text.append(cp.getText().toString());
-	    prevEnd = cp.getEndPosition();
-	    prevLine = cp.getEndLine();
-	}
-	return text;
+    for (; i.hasNext(); ) {
+      cp = (CodePiece) i.next();
+      int spaces = cp.getStartPosition() - prevEnd;
+      if (prevLine != cp.getStartLine()) {
+        text.append('\n');
+        spaces--;
+      }
+      for (int j = 0; j < spaces; j++) {
+        text.append(' ');
+      }
+      text.append(cp.getText().toString());
+      prevEnd = cp.getEndPosition();
+      prevLine = cp.getEndLine();
     }
+    return text;
+  }
 
-    /**
-     * Return the start position.
-     *
-     * @see org.argouml.language.java.generator.CodePiece#getStartPosition()
-     */
-    public int getStartPosition() {
-	if (codePieces.size() > 0) {
-	    return ((CodePiece) codePieces.firstElement()).getStartPosition();
-        }
-        return 0;
+  /**
+   * Return the start position.
+   *
+   * @see org.argouml.language.java.generator.CodePiece#getStartPosition()
+   */
+  public int getStartPosition() {
+    if (codePieces.size() > 0) {
+      return ((CodePiece) codePieces.firstElement()).getStartPosition();
     }
+    return 0;
+  }
 
-    /**
-     * Return the end position.
-     *
-     * @see org.argouml.language.java.generator.CodePiece#getEndPosition()
-     */
-    public int getEndPosition() {
-	if (codePieces.size() > 0) {
-	    return ((CodePiece) codePieces.lastElement()).getEndPosition();
-        }
-	return 0;
+  /**
+   * Return the end position.
+   *
+   * @see org.argouml.language.java.generator.CodePiece#getEndPosition()
+   */
+  public int getEndPosition() {
+    if (codePieces.size() > 0) {
+      return ((CodePiece) codePieces.lastElement()).getEndPosition();
     }
+    return 0;
+  }
 
-    /**
-     * Return the start line.
-     *
-     * @see org.argouml.language.java.generator.CodePiece#getStartLine()
-     */
-    public int getStartLine() {
-	if (codePieces.size() > 0) {
-	    return ((CodePiece) codePieces.firstElement()).getStartLine();
-        }
-        return 0;
+  /**
+   * Return the start line.
+   *
+   * @see org.argouml.language.java.generator.CodePiece#getStartLine()
+   */
+  public int getStartLine() {
+    if (codePieces.size() > 0) {
+      return ((CodePiece) codePieces.firstElement()).getStartLine();
     }
+    return 0;
+  }
 
-    /**
-     * Return the end line.
-     *
-     * @see org.argouml.language.java.generator.CodePiece#getEndLine()
-     */
-    public int getEndLine() {
-	if (codePieces.size() > 0) {
-	    return ((CodePiece) codePieces.lastElement()).getEndLine();
-        }
-        return 0;
+  /**
+   * Return the end line.
+   *
+   * @see org.argouml.language.java.generator.CodePiece#getEndLine()
+   */
+  public int getEndLine() {
+    if (codePieces.size() > 0) {
+      return ((CodePiece) codePieces.lastElement()).getEndLine();
     }
+    return 0;
+  }
 }

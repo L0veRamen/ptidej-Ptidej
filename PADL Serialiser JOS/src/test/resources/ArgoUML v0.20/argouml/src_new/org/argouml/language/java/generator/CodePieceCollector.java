@@ -27,119 +27,112 @@ package org.argouml.language.java.generator;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.Iterator;
 import java.util.Stack;
 import java.util.Vector;
-
 import org.argouml.application.api.Argo;
 import org.argouml.application.api.Configuration;
 
 /**
- * This class collects pieces of code when a source file is parsed,
- * and then updates the file with new code from the model.
+ * This class collects pieces of code when a source file is parsed, and then updates the file with
+ * new code from the model.
  *
- * taken from:
+ * <p>taken from:
  *
- * JavaRE - Code generation and reverse engineering for UML and Java.
+ * <p>JavaRE - Code generation and reverse engineering for UML and Java.
  *
  * @author Marcus Andersson andersson@users.sourceforge.net
  */
 public class CodePieceCollector {
-    /** Code pieces the parser found. */
-    private Vector codePieces;
+  /** Code pieces the parser found. */
+  private Vector codePieces;
 
-    /**
-       Constructor.
-    */
-    public CodePieceCollector() {
-	codePieces = new Vector();
+  /** Constructor. */
+  public CodePieceCollector() {
+    codePieces = new Vector();
+  }
+
+  /**
+   * The parser adds a code piece here. The code pieces will be inserted in sorted order in the
+   * codePieces vector.
+   *
+   * @param codePiece A named code piece found in the code.
+   */
+  public void add(NamedCodePiece codePiece) {
+    int index = 0;
+
+    // Insert in sorted order
+    for (Iterator i = codePieces.iterator(); i.hasNext(); index++) {
+      CodePiece cp = (CodePiece) i.next();
+      if (cp.getStartLine() > codePiece.getStartLine()
+          || (cp.getStartLine() == codePiece.getStartLine()
+              && cp.getStartPosition() > codePiece.getStartPosition())) {
+        break;
+      }
+    }
+    codePieces.insertElementAt(codePiece, index);
+  }
+
+  /**
+   * Replace all the code pieces in a source file with new code from the model, or maintain them if
+   * nothing is found in the model.
+   *
+   * @param source The source file.
+   * @param destination The destination file.
+   * @param mNamespace The package the source belongs to.
+   * @throws IOException if we cannot write or read from the files.
+   */
+  public void filter(File source, File destination, Object /*MNamespace*/ mNamespace)
+      throws IOException {
+    String encoding = null;
+    if (Configuration.getString(Argo.KEY_INPUT_SOURCE_ENCODING) == null
+        || Configuration.getString(Argo.KEY_INPUT_SOURCE_ENCODING).trim().equals("")) {
+      encoding = System.getProperty("file.encoding");
+    } else {
+      encoding = Configuration.getString(Argo.KEY_INPUT_SOURCE_ENCODING);
+    }
+    FileInputStream in = new FileInputStream(source);
+    FileOutputStream out = new FileOutputStream(destination);
+
+    BufferedReader reader = new BufferedReader(new InputStreamReader(in, encoding));
+    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, encoding));
+    int line = 0;
+    int column = 0;
+    Stack parseStateStack = new Stack();
+    parseStateStack.push(new ParseState(mNamespace));
+
+    for (Iterator i = codePieces.iterator(); i.hasNext(); ) {
+      NamedCodePiece cp = (NamedCodePiece) i.next();
+      // copy until code piece
+      while (line < cp.getStartLine()) {
+        line++;
+        column = 0;
+        writer.write(reader.readLine());
+        writer.newLine();
+      }
+      while (column < cp.getStartPosition()) {
+        writer.write(reader.read());
+        column++;
+      }
+      // write code piece
+      cp.write(reader, writer, parseStateStack);
+      line = cp.getEndLine();
+      column = cp.getEndPosition();
     }
 
-    /**
-       The parser adds a code piece here. The code pieces will be
-       inserted in sorted order in the codePieces vector.
-
-       @param codePiece A named code piece found in the code.
-    */
-    public void add(NamedCodePiece codePiece) {
-	int index = 0;
-
-	// Insert in sorted order
-	for (Iterator i = codePieces.iterator(); i.hasNext(); index++) {
-	    CodePiece cp = (CodePiece) i.next();
-	    if (cp.getStartLine() > codePiece.getStartLine()
-		|| (cp.getStartLine() == codePiece.getStartLine()
-		    && cp.getStartPosition() > codePiece.getStartPosition())) {
-		break;
-	    }
-	}
-	codePieces.insertElementAt(codePiece, index);
+    // Copy the rest of the file
+    String data;
+    while ((data = reader.readLine()) != null) {
+      writer.write(data);
+      writer.newLine();
     }
 
-    /**
-     * Replace all the code pieces in a source file with new code from
-     * the model, or maintain them if nothing is found in the model.
-     *
-     * @param source The source file.
-     * @param destination The destination file.
-     * @param mNamespace The package the source belongs to.
-     * @throws IOException if we cannot write or read from the files.
-     */
-    public void filter(File source,
-                       File destination,
-                       Object/*MNamespace*/ mNamespace) throws IOException {
-	String encoding = null;
-	if (Configuration.getString(Argo.KEY_INPUT_SOURCE_ENCODING) == null
-	    || Configuration.getString(Argo.KEY_INPUT_SOURCE_ENCODING)
-	    	.trim().equals("")) {
-	    encoding = System.getProperty("file.encoding");
-	} else {
-	    encoding = Configuration.getString(Argo.KEY_INPUT_SOURCE_ENCODING);
-	}
-	FileInputStream in = new FileInputStream(source);
-	FileOutputStream out = new FileOutputStream(destination);
-
-	BufferedReader reader =
-	    new BufferedReader(new InputStreamReader(in, encoding));
-	BufferedWriter writer =
-	    new BufferedWriter(new OutputStreamWriter(out, encoding));
-	int line = 0;
-	int column = 0;
-	Stack parseStateStack = new Stack();
-	parseStateStack.push(new ParseState(mNamespace));
-
-	for (Iterator i = codePieces.iterator(); i.hasNext();) {
-	    NamedCodePiece cp = (NamedCodePiece) i.next();
-	    // copy until code piece
-	    while (line < cp.getStartLine()) {
-		line++;
-		column = 0;
-		writer.write(reader.readLine());
-		writer.newLine();
-	    }
-	    while (column < cp.getStartPosition()) {
-		writer.write(reader.read());
-		column++;
-	    }
-	    // write code piece
-	    cp.write(reader, writer, parseStateStack);
-	    line = cp.getEndLine();
-	    column = cp.getEndPosition();
-	}
-
-	// Copy the rest of the file
-	String data;
-	while ((data = reader.readLine()) != null) {
-	    writer.write(data);
-	    writer.newLine();
-	}
-
-	reader.close();
-	writer.close();
-    }
+    reader.close();
+    writer.close();
+  }
 }

@@ -24,11 +24,8 @@
 
 package org.argouml.model.uml;
 
-
 import java.util.List;
-
 import org.argouml.model.DataTypesFactory;
-
 import ru.novosoft.uml.foundation.data_types.MActionExpression;
 import ru.novosoft.uml.foundation.data_types.MArgListsExpression;
 import ru.novosoft.uml.foundation.data_types.MBooleanExpression;
@@ -42,165 +39,150 @@ import ru.novosoft.uml.foundation.data_types.MTimeExpression;
 import ru.novosoft.uml.foundation.data_types.MTypeExpression;
 
 /**
- * Factory to create UML classes for the UML
- * Foundation::DataTypes package.<p>
+ * Factory to create UML classes for the UML Foundation::DataTypes package.
  *
- * TODO: Change visibility to package after reflection problem solved.
+ * <p>TODO: Change visibility to package after reflection problem solved.
  *
  * @since ARGO0.11.2
  * @author Thierry Lach
  */
-public class DataTypesFactoryImpl
-	extends AbstractUmlModelFactory
-	implements DataTypesFactory {
+public class DataTypesFactoryImpl extends AbstractUmlModelFactory implements DataTypesFactory {
 
-    /**
-     * The model implementation.
-     */
-    private NSUMLModelImplementation nsmodel;
+  /** The model implementation. */
+  private NSUMLModelImplementation nsmodel;
 
-    /**
-     * Don't allow instantiation.
-     *
-     * @param implementation To get other helpers and factories.
-     */
-    DataTypesFactoryImpl(NSUMLModelImplementation implementation) {
-        nsmodel = implementation;
-    }
+  /**
+   * Don't allow instantiation.
+   *
+   * @param implementation To get other helpers and factories.
+   */
+  DataTypesFactoryImpl(NSUMLModelImplementation implementation) {
+    nsmodel = implementation;
+  }
 
-    /**
-     * @see org.argouml.model.DataTypesFactory#createActionExpression(java.lang.String, java.lang.String)
-     */
-    public Object createActionExpression(String language,
-							      String body) {
-        MActionExpression expression = new MActionExpression(language, body);
-	super.initialize(expression);
-	return expression;
-    }
+  /**
+   * @see org.argouml.model.DataTypesFactory#createActionExpression(java.lang.String,
+   *     java.lang.String)
+   */
+  public Object createActionExpression(String language, String body) {
+    MActionExpression expression = new MActionExpression(language, body);
+    super.initialize(expression);
+    return expression;
+  }
 
-    /**
-     * @see org.argouml.model.DataTypesFactory#createArgListsExpression(java.lang.String, java.lang.String)
-     */
-    public Object createArgListsExpression(String language,
-            				   String body) {
-        MArgListsExpression expression =
-	    new MArgListsExpression(language, body);
-	super.initialize(expression);
-	return expression;
-    }
+  /**
+   * @see org.argouml.model.DataTypesFactory#createArgListsExpression(java.lang.String,
+   *     java.lang.String)
+   */
+  public Object createArgListsExpression(String language, String body) {
+    MArgListsExpression expression = new MArgListsExpression(language, body);
+    super.initialize(expression);
+    return expression;
+  }
 
-    /**
-     * @see org.argouml.model.DataTypesFactory#createBooleanExpression(java.lang.String, java.lang.String)
-     */
-    public Object createBooleanExpression(String language,
-					  String body) {
-        MBooleanExpression expression = new MBooleanExpression(language, body);
-	super.initialize(expression);
-	return expression;
-    }
+  /**
+   * @see org.argouml.model.DataTypesFactory#createBooleanExpression(java.lang.String,
+   *     java.lang.String)
+   */
+  public Object createBooleanExpression(String language, String body) {
+    MBooleanExpression expression = new MBooleanExpression(language, body);
+    super.initialize(expression);
+    return expression;
+  }
 
+  /**
+   * @see org.argouml.model.DataTypesFactory#createExpression(java.lang.String, java.lang.String)
+   */
+  public Object createExpression(String language, String body) {
+    MExpression expression = new MExpression(language, body);
+    super.initialize(expression);
+    return expression;
+  }
 
-    /**
-     * @see org.argouml.model.DataTypesFactory#createExpression(java.lang.String, java.lang.String)
-     */
-    public Object createExpression(String language, String body) {
-        MExpression expression = new MExpression(language, body);
-	super.initialize(expression);
-	return expression;
-    }
+  /**
+   * @see org.argouml.model.DataTypesFactory#createIterationExpression(java.lang.String,
+   *     java.lang.String)
+   */
+  public Object createIterationExpression(String language, String body) {
+    MIterationExpression expression = new MIterationExpression(language, body);
+    super.initialize(expression);
+    return expression;
+  }
 
-    /**
-     * @see org.argouml.model.DataTypesFactory#createIterationExpression(java.lang.String, java.lang.String)
-     */
-    public Object createIterationExpression(String language,
-					    String body) {
-        MIterationExpression expression =
-	    new MIterationExpression(language, body);
-	super.initialize(expression);
-	return expression;
-    }
+  /**
+   * @see org.argouml.model.DataTypesFactory#createMappingExpression(java.lang.String,
+   *     java.lang.String)
+   */
+  public Object createMappingExpression(String language, String body) {
+    MMappingExpression expression = new MMappingExpression(language, body);
+    super.initialize(expression);
+    return expression;
+  }
 
-    /**
-     * @see org.argouml.model.DataTypesFactory#createMappingExpression(java.lang.String, java.lang.String)
-     */
-    public Object createMappingExpression(String language,
-						      String body) {
-        MMappingExpression expression = new MMappingExpression(language, body);
-	super.initialize(expression);
-	return expression;
-    }
+  /**
+   * @see org.argouml.model.DataTypesFactory#createObjectSetExpression(java.lang.String,
+   *     java.lang.String)
+   */
+  public Object createObjectSetExpression(String language, String body) {
+    MObjectSetExpression expression = new MObjectSetExpression(language, body);
+    super.initialize(expression);
+    return expression;
+  }
 
-    /**
-     * @see org.argouml.model.DataTypesFactory#createObjectSetExpression(java.lang.String, java.lang.String)
-     */
-    public Object createObjectSetExpression(String language,
-							  String body) {
-        MObjectSetExpression expression =
-	    new MObjectSetExpression(language, body);
-	super.initialize(expression);
-	return expression;
-    }
+  /**
+   * @see org.argouml.model.DataTypesFactory#createProcedureExpression(java.lang.String,
+   *     java.lang.String)
+   */
+  public Object createProcedureExpression(String language, String body) {
+    MProcedureExpression expression = new MProcedureExpression(language, body);
+    super.initialize(expression);
+    return expression;
+  }
 
-    /**
-     * @see org.argouml.model.DataTypesFactory#createProcedureExpression(java.lang.String, java.lang.String)
-     */
-    public Object createProcedureExpression(String language,
-							  String body) {
-        MProcedureExpression expression =
-	    new MProcedureExpression(language, body);
-	super.initialize(expression);
-	return expression;
-    }
+  /**
+   * @see org.argouml.model.DataTypesFactory#createTimeExpression(java.lang.String,
+   *     java.lang.String)
+   */
+  public Object createTimeExpression(String language, String body) {
+    MTimeExpression expression = new MTimeExpression(language, body);
+    super.initialize(expression);
+    return expression;
+  }
 
-    /**
-     * @see org.argouml.model.DataTypesFactory#createTimeExpression(java.lang.String, java.lang.String)
-     */
-    public Object createTimeExpression(String language, String body) {
-        MTimeExpression expression = new MTimeExpression(language, body);
-	super.initialize(expression);
-	return expression;
-    }
+  /**
+   * @see org.argouml.model.DataTypesFactory#createTypeExpression(java.lang.String,
+   *     java.lang.String)
+   */
+  public Object createTypeExpression(String language, String body) {
+    MTypeExpression expression = new MTypeExpression(language, body);
+    super.initialize(expression);
+    return expression;
+  }
 
+  /**
+   * @see org.argouml.model.DataTypesFactory#createMultiplicity(int, int)
+   */
+  public Object createMultiplicity(int lower, int upper) {
+    MMultiplicity multiplicity = new MMultiplicity(lower, upper);
+    super.initialize(multiplicity);
+    return multiplicity;
+  }
 
-    /**
-     * @see org.argouml.model.DataTypesFactory#createTypeExpression(java.lang.String, java.lang.String)
-     */
-    public Object createTypeExpression(String language, String body) {
-        MTypeExpression expression = new MTypeExpression(language, body);
-	super.initialize(expression);
-	return expression;
-    }
+  /**
+   * @see org.argouml.model.DataTypesFactory#createMultiplicity(java.util.List)
+   */
+  public Object createMultiplicity(List range) {
+    MMultiplicity multiplicity = new MMultiplicity(range);
+    super.initialize(multiplicity);
+    return multiplicity;
+  }
 
-
-    /**
-     * @see org.argouml.model.DataTypesFactory#createMultiplicity(int, int)
-     */
-    public Object createMultiplicity(int lower, int upper) {
-        MMultiplicity multiplicity = new MMultiplicity(lower, upper);
-	super.initialize(multiplicity);
-	return multiplicity;
-    }
-
-
-    /**
-     * @see org.argouml.model.DataTypesFactory#createMultiplicity(java.util.List)
-     */
-    public Object createMultiplicity(List range) {
-        MMultiplicity multiplicity = new MMultiplicity(range);
-	super.initialize(multiplicity);
-	return multiplicity;
-    }
-
-
-    /**
-     * @see org.argouml.model.DataTypesFactory#createMultiplicity(java.lang.String)
-     */
-    public Object createMultiplicity(String str) {
-        MMultiplicity multiplicity = new MMultiplicity(str);
-	super.initialize(multiplicity);
-	return multiplicity;
-    }
-
-
+  /**
+   * @see org.argouml.model.DataTypesFactory#createMultiplicity(java.lang.String)
+   */
+  public Object createMultiplicity(String str) {
+    MMultiplicity multiplicity = new MMultiplicity(str);
+    super.initialize(multiplicity);
+    return multiplicity;
+  }
 }
-

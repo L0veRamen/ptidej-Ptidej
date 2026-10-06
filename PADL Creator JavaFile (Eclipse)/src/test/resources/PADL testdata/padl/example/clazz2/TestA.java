@@ -5,57 +5,52 @@ import padl.example.clazz1.Test2A;
 
 public class TestA extends Test2A {
 
-	int a;
+  int a;
 
-	TestB a2;
+  TestB a2;
 
-	Iterator iter;
+  Iterator iter;
 
-	Iterator[] TabIter;
+  Iterator[] TabIter;
 
-	public TestB getA2() {
-		return a2;
-	}
+  public TestB getA2() {
+    return a2;
+  }
 
-	
-	public void TestA(){
-		
-	}
-	
-	
-	public TestA(int a, TestB a2, Iterator iter, Iterator[] tabIter) {
-		super();
-		this.a = a;
-		this.a2 = a2;
-		this.iter = iter;
-		this.TabIter = tabIter;
-	}
+  public void TestA() {}
 
+  public TestA(int a, TestB a2, Iterator iter, Iterator[] tabIter) {
+    super();
+    this.a = a;
+    this.a2 = a2;
+    this.iter = iter;
+    this.TabIter = tabIter;
+  }
 
-	public void setA2(TestB _a2) {
-		a2 = _a2;
-	}
+  public void setA2(TestB _a2) {
+    a2 = _a2;
+  }
 
-	void m1(final int k, final float a, String s) {
+  void m1(final int k, final float a, String s) {
 
-		final int locale;
-		final Object oLocal = new Object();
+    final int locale;
+    final Object oLocal = new Object();
 
-		final Object oLocalTab = new Object[3];
+    final Object oLocalTab = new Object[3];
 
-		class ClassInMethod {
+    class ClassInMethod {
 
-			int f1;
-			Object j1;
-		}
-	}
+      int f1;
+      Object j1;
+    }
+  }
 
-	class MemberClass {
+  class MemberClass {
 
-		String memberClassField;
-		MemberClass(String aMemberClassField) {
-			memberClassField = aMemberClassField;
-		}
-	}
+    String memberClassField;
 
+    MemberClass(String aMemberClassField) {
+      memberClassField = aMemberClassField;
+    }
+  }
 }

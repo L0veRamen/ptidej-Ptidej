@@ -26,9 +26,7 @@ package org.argouml.uml.ui;
 
 import java.awt.event.ActionEvent;
 import java.util.Collection;
-
 import javax.swing.Action;
-
 import org.apache.log4j.Logger;
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.i18n.Translator;
@@ -42,144 +40,136 @@ import org.argouml.uml.diagram.DiagramSettings;
 import org.tigris.gef.undo.UndoableAction;
 
 /**
- * Abstract class that is the parent of all actions adding diagrams to ArgoUML.
- * The children of this class should implement createDiagram to do any specific
- * actions for creating a diagram and isValidNamespace that checks if some
- * namespace is valid to add the diagram to. <p>
- * 
- * ArgoUML shall never create a diagram for a read-only modelelement.<p>
- * 
- * TODO: This class should be merged with ActionNewDiagram.
+ * Abstract class that is the parent of all actions adding diagrams to ArgoUML. The children of this
+ * class should implement createDiagram to do any specific actions for creating a diagram and
+ * isValidNamespace that checks if some namespace is valid to add the diagram to.
+ *
+ * <p>ArgoUML shall never create a diagram for a read-only modelelement.
+ *
+ * <p>TODO: This class should be merged with ActionNewDiagram.
  *
  * @author jaap.branderhorst@xs4all.nl
  */
 public abstract class ActionAddDiagram extends UndoableAction {
-    /**
-     * Logger.
-     */
-    private static final Logger LOG =
-        Logger.getLogger(ActionAddDiagram.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(ActionAddDiagram.class);
 
-    /**
-     * Constructor for ActionAddDiagram.
-     *
-     * @param s the name for this action
-     */
-    public ActionAddDiagram(String s) {
-        super(Translator.localize(s),
-                ResourceLoaderWrapper.lookupIcon(s));
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize(s));
+  /**
+   * Constructor for ActionAddDiagram.
+   *
+   * @param s the name for this action
+   */
+  public ActionAddDiagram(String s) {
+    super(Translator.localize(s), ResourceLoaderWrapper.lookupIcon(s));
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize(s));
+  }
+
+  /*
+   * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
+   */
+  @Override
+  public void actionPerformed(ActionEvent e) {
+    // TODO: The project should be bound to the action when it is created?
+    Project p = ProjectManager.getManager().getCurrentProject();
+    Object ns = findNamespace();
+
+    if (ns != null && isValidNamespace(ns)) {
+      super.actionPerformed(e);
+      DiagramSettings settings = p.getProjectSettings().getDefaultDiagramSettings();
+      // TODO: We should really be passing the default settings to
+      // the diagram factory so they get set at creation time
+      ArgoDiagram diagram = createDiagram(ns, settings);
+
+      p.addMember(diagram);
+      // TODO: make the explorer listen to project member property
+      // changes...  to eliminate coupling on gui.
+      ExplorerEventAdaptor.getInstance().modelElementAdded(ns);
+      TargetManager.getInstance().setTarget(diagram);
+    } else {
+      LOG.error("No valid namespace found");
+      throw new IllegalStateException("No valid namespace found");
     }
+  }
 
-    /*
-     * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
-     */
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        // TODO: The project should be bound to the action when it is created?
-        Project p = ProjectManager.getManager().getCurrentProject();
-        Object ns = findNamespace();
-
-        if (ns != null && isValidNamespace(ns)) {
-            super.actionPerformed(e);
-            DiagramSettings settings = 
-                p.getProjectSettings().getDefaultDiagramSettings();
-            // TODO: We should really be passing the default settings to
-            // the diagram factory so they get set at creation time
-            ArgoDiagram diagram = createDiagram(ns, settings);
-                    
-            p.addMember(diagram);
-            //TODO: make the explorer listen to project member property
-            //changes...  to eliminate coupling on gui.
-            ExplorerEventAdaptor.getInstance().modelElementAdded(ns);
-            TargetManager.getInstance().setTarget(diagram);
-        } else {
-            LOG.error("No valid namespace found");
-            throw new IllegalStateException("No valid namespace found");
+  /**
+   * Find the right namespace for the diagram.
+   *
+   * @return the namespace or null
+   */
+  protected Object findNamespace() {
+    Project p = ProjectManager.getManager().getCurrentProject();
+    Object target = TargetManager.getInstance().getModelTarget();
+    Object ns = null;
+    if (target == null
+        || !Model.getFacade().isAModelElement(target)
+        || Model.getModelManagementHelper().isReadOnly(target)) {
+      // TODO: When read-only projects are supported (instead of just
+      // profiles), this could be a read-only extent as well
+      Collection c = p.getRoots();
+      if ((c != null) && !c.isEmpty()) {
+        target = c.iterator().next();
+      } // else what?
+    }
+    if (Model.getFacade().isANamespace(target)) {
+      ns = target;
+    } else {
+      Object owner = null;
+      if (Model.getFacade().isAOperation(target)) {
+        owner = Model.getFacade().getOwner(target);
+        if (owner != null && Model.getFacade().isANamespace(owner)) {
+          ns = owner;
         }
-    }
-
-    /**
-     * Find the right namespace for the diagram.
-     *
-     * @return the namespace or null
-     */
-    protected Object findNamespace() {
-        Project p = ProjectManager.getManager().getCurrentProject();
-        Object target = TargetManager.getInstance().getModelTarget();
-        Object ns = null;
-        if (target == null || !Model.getFacade().isAModelElement(target)
-                || Model.getModelManagementHelper().isReadOnly(target)) {
-            // TODO: When read-only projects are supported (instead of just
-            // profiles), this could be a read-only extent as well
-            Collection c = p.getRoots();
-            if ((c != null) && !c.isEmpty()) {
-                target = c.iterator().next();
-            } // else what?
+      }
+      if (ns == null && Model.getFacade().isAModelElement(target)) {
+        owner = Model.getFacade().getNamespace(target);
+        if (owner != null && Model.getFacade().isANamespace(owner)) {
+          ns = owner;
         }
-        if (Model.getFacade().isANamespace(target)) {
-            ns = target;
-        } else {
-            Object owner = null;
-            if (Model.getFacade().isAOperation(target)) {
-                owner = Model.getFacade().getOwner(target);
-                if (owner != null && Model.getFacade().isANamespace(owner)) {
-                    ns = owner;
-                }
-            }
-            if (ns == null && Model.getFacade().isAModelElement(target)) {
-                owner = Model.getFacade().getNamespace(target);
-                if (owner != null && Model.getFacade().isANamespace(owner)) {
-                    ns = owner;
-                }
-            }
-        }
-        if (ns == null) {
-            ns = p.getRoot();
-        }
-        return ns;
+      }
     }
-
-    /**
-     * Test if the given namespace is a valid namespace to add the diagram to.
-     *
-     * @param ns the namespace to check
-     * @return Returns <code>true</code> if valid.
-     */
-    public abstract boolean isValidNamespace(Object ns);
-
-    /**
-     * Creates the diagram. Classes derived from this class should implement any
-     * specific behaviour to create the diagram.
-     * 
-     * @param ns The namespace the UMLDiagram should get.
-     * @return UMLDiagram
-     * @deprecated for 0.27.3 by tfmorris. Subclasses should override
-     *             {@link #createDiagram(Object, DiagramSettings)}.  This method
-     *             is no longer abstract, so implementing classes may remove it.
-     */
-    @Deprecated
-    public ArgoDiagram createDiagram(@SuppressWarnings("unused") Object ns) {
-        // Do nothing during the deprecation period, then it can be removed.
-        return null;
+    if (ns == null) {
+      ns = p.getRoot();
     }
-    
-    /**
-     * Create a new diagram. To be implemented by subclasses. It will become
-     * abstract after 0.28 to enforce this requirement.
-     * 
-     * @param owner owner of the diagram. May be a namespace, statemachine, or
-     *            collaboration depending on the type of diagram.
-     * @param settings default rendering settings for all figs in the new
-     *            diagram
-     * @return newly created diagram
-     */
-    public ArgoDiagram createDiagram(Object owner, DiagramSettings settings) {
-        ArgoDiagram d = createDiagram(owner);
-        d.setDiagramSettings(settings);
-        return d;
-    }
+    return ns;
+  }
 
+  /**
+   * Test if the given namespace is a valid namespace to add the diagram to.
+   *
+   * @param ns the namespace to check
+   * @return Returns <code>true</code> if valid.
+   */
+  public abstract boolean isValidNamespace(Object ns);
+
+  /**
+   * Creates the diagram. Classes derived from this class should implement any specific behaviour to
+   * create the diagram.
+   *
+   * @param ns The namespace the UMLDiagram should get.
+   * @return UMLDiagram
+   * @deprecated for 0.27.3 by tfmorris. Subclasses should override {@link #createDiagram(Object,
+   *     DiagramSettings)}. This method is no longer abstract, so implementing classes may remove
+   *     it.
+   */
+  @Deprecated
+  public ArgoDiagram createDiagram(@SuppressWarnings("unused") Object ns) {
+    // Do nothing during the deprecation period, then it can be removed.
+    return null;
+  }
+
+  /**
+   * Create a new diagram. To be implemented by subclasses. It will become abstract after 0.28 to
+   * enforce this requirement.
+   *
+   * @param owner owner of the diagram. May be a namespace, statemachine, or collaboration depending
+   *     on the type of diagram.
+   * @param settings default rendering settings for all figs in the new diagram
+   * @return newly created diagram
+   */
+  public ArgoDiagram createDiagram(Object owner, DiagramSettings settings) {
+    ArgoDiagram d = createDiagram(owner);
+    d.setDiagramSettings(settings);
+    return d;
+  }
 }

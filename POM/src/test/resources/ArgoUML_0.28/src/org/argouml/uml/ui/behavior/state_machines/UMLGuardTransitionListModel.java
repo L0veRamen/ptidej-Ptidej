@@ -28,33 +28,30 @@ import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
 /**
- * The listmodel behind the transition property for a Guard on the Guard's
- * property panel.
+ * The listmodel behind the transition property for a Guard on the Guard's property panel.
+ *
  * @since Dec 14, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
 public class UMLGuardTransitionListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLGuardTransitionListModel.
-     */
-    public UMLGuardTransitionListModel() {
-        super("transition");
-    }
+  /** Constructor for UMLGuardTransitionListModel. */
+  public UMLGuardTransitionListModel() {
+    super("transition");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        removeAllElements();
-        addElement(Model.getFacade().getTransition(getTarget()));
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    removeAllElements();
+    addElement(Model.getFacade().getTransition(getTarget()));
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return element == Model.getFacade().getTransition(getTarget());
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return element == Model.getFacade().getTransition(getTarget());
+  }
 }

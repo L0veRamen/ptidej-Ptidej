@@ -31,60 +31,53 @@ import org.argouml.uml.diagram.DiagramFactory;
 import org.argouml.uml.diagram.state.ui.UMLStateDiagram;
 import org.argouml.uml.diagram.ui.UMLDiagram;
 
-/** 
- * Action to create a new statechart diagram.
- */
+/** Action to create a new statechart diagram. */
 public class ActionStateDiagram extends ActionAddDiagram {
 
-    ////////////////////////////////////////////////////////////////
-    // static variables
+  ////////////////////////////////////////////////////////////////
+  // static variables
 
-    private static final Logger LOG =
-        Logger.getLogger(ActionStateDiagram.class);
+  private static final Logger LOG = Logger.getLogger(ActionStateDiagram.class);
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    public ActionStateDiagram() {
-        super("action.state-diagram");
+  public ActionStateDiagram() {
+    super("action.state-diagram");
+  }
+
+  /**
+   * @see org.argouml.uml.ui.ActionAddDiagram#createDiagram(Object)
+   */
+  public UMLDiagram createDiagram(Object handle) {
+    Object target = TargetManager.getInstance().getModelTarget();
+    Object /*MStateMachine*/ machine = Model.getStateMachinesFactory().buildStateMachine(target);
+    return (UMLDiagram)
+        DiagramFactory.getInstance()
+            .createDiagram(UMLStateDiagram.class, Model.getFacade().getNamespace(machine), machine);
+  }
+
+  /**
+   * Overriden since it should only be possible to add statediagrams and activitydiagrams to
+   * classifiers and behavioral features.
+   *
+   * @see org.argouml.uml.ui.UMLAction#shouldBeEnabled()
+   */
+  public boolean shouldBeEnabled() {
+    return super.shouldBeEnabled()
+        && Model.getStateMachinesHelper()
+            .isAddingStatemachineAllowed(TargetManager.getInstance().getModelTarget());
+  }
+
+  /**
+   * @see org.argouml.uml.ui.ActionAddDiagram#isValidNamespace(Object)
+   */
+  public boolean isValidNamespace(Object handle) {
+    if (!Model.getFacade().isANamespace(handle)) {
+      LOG.error("No namespace as argument");
+      LOG.error(handle);
+      throw new IllegalArgumentException("The argument " + handle + "is not a namespace.");
     }
-
-    /**
-     * @see org.argouml.uml.ui.ActionAddDiagram#createDiagram(Object)
-     */
-    public UMLDiagram createDiagram(Object handle) {
-        Object target = TargetManager.getInstance().getModelTarget();
-        Object/*MStateMachine*/ machine =
-            Model.getStateMachinesFactory().buildStateMachine(target);
-        return (UMLDiagram)DiagramFactory.getInstance().createDiagram(
-                UMLStateDiagram.class, 
-                Model.getFacade().getNamespace(machine),
-                machine);
-    }
-
-    /**
-     * Overriden since it should only be possible to add statediagrams and
-     * activitydiagrams to classifiers and behavioral features.
-     * @see org.argouml.uml.ui.UMLAction#shouldBeEnabled()
-     */
-    public boolean shouldBeEnabled() {
-        return super.shouldBeEnabled()
-            && Model.getStateMachinesHelper().isAddingStatemachineAllowed(
-                    TargetManager.getInstance().getModelTarget());
-    }
-
-    /**
-     * @see org.argouml.uml.ui.ActionAddDiagram#isValidNamespace(Object)
-     */
-    public boolean isValidNamespace(Object handle) {
-        if (!Model.getFacade().isANamespace(handle)) {
-            LOG.error("No namespace as argument");
-            LOG.error(handle);
-            throw new IllegalArgumentException(
-                "The argument " + handle + "is not a namespace.");
-        }
-        return Model.getStateMachinesHelper()
-            .isAddingStatemachineAllowed(handle);
-    }
-
+    return Model.getStateMachinesHelper().isAddingStatemachineAllowed(handle);
+  }
 } /* end class ActionStateDiagram */

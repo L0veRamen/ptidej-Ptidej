@@ -34,33 +34,30 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  */
 public class UMLSignalContextListModel extends UMLModelElementListModel2 {
 
-    /**
-     * The constructor.
+  /** The constructor. */
+  public UMLSignalContextListModel() {
+    /*
+     * The event to listen to is "context", so that model updates
+     * get shown in the list. Reproduce this by adding a new operation,
+     * and see the result displayed in the list.
      */
-    public UMLSignalContextListModel() {
-        /*
-         * The event to listen to is "context", so that model updates
-         * get shown in the list. Reproduce this by adding a new operation,
-         * and see the result displayed in the list.
-         */
-        super("context");
-    }
+    super("context");
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (getTarget() != null) {
-            setAllElements(Model.getFacade().getContexts(getTarget()));
-        }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (getTarget() != null) {
+      setAllElements(Model.getFacade().getContexts(getTarget()));
     }
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(java.lang.Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().isABehavioralFeature(element)
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(java.lang.Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().isABehavioralFeature(element)
         && Model.getFacade().getContexts(getTarget()).contains(element);
-    }
-
+  }
 }

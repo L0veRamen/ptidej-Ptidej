@@ -1,85 +1,75 @@
 package com.oreilly.aspectjcookbook;
 
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
-public class MainApplication
-{
-   private List accounts;
-   private List employees;
-   
-   public MainApplication()
-   {
-      this.accounts = new ArrayList();
-      this.employees = new EmployeeCollection();
-   }
-   
-   public void addAccount(Account account)
-   {
-      this.accounts.add(account);
-   }
-   
-   public void addEmployee(Employee employee)
-   {
-      this.employees.add(employee);
-   }
-   
-   public void listAccounts()
-   {
+public class MainApplication {
+  private List accounts;
+  private List employees;
 
-   	System.out.println("List of accounts, count: " + this.accounts.size());
-      Iterator iterator = this.accounts.iterator();
-      while (iterator.hasNext())
-      {
-         System.out.println(iterator.next());
-      }
-      System.out.println("End of list of accounts");
-   }
-   
-   public void listEmployees()
-   {
+  public MainApplication() {
+    this.accounts = new ArrayList();
+    this.employees = new EmployeeCollection();
+  }
 
-   	System.out.println("List of employees, count: " + this.employees.size());
-      Iterator iterator = this.employees.iterator();
-      while (iterator.hasNext())
-      {
-         System.out.println(iterator.next());
-      }
-      System.out.println("End of list of employees");
-   }
-   
-   public int countAccounts()
-   {
-   	return this.accounts.size();
-   }
-   
-   public static void main(String[] args)
-   {
-      MainApplication application = new MainApplication();
-     
-      // List current accounts
-      application.listAccounts();
-      
-      // Setup a new accounts
-      BankAccount account = new BankAccount(application.countAccounts());
+  public void addAccount(Account account) {
+    this.accounts.add(account);
+  }
 
-      account.credit(50.0f + application.countAccounts());
+  public void addEmployee(Employee employee) {
+    this.employees.add(employee);
+  }
 
-      application.addAccount(account);
-      
-      // List current accounts
-      application.listAccounts();
-      
-      // List current employees
-      application.listEmployees();
-      
-      // Setup a new accounts
-      Employee employee = new Employee("Russ", "Intern");
+  public void listAccounts() {
 
-      application.addEmployee(employee);
-      
-      // List current accounts
-      application.listEmployees(); 
-   }
+    System.out.println("List of accounts, count: " + this.accounts.size());
+    Iterator iterator = this.accounts.iterator();
+    while (iterator.hasNext()) {
+      System.out.println(iterator.next());
+    }
+    System.out.println("End of list of accounts");
+  }
+
+  public void listEmployees() {
+
+    System.out.println("List of employees, count: " + this.employees.size());
+    Iterator iterator = this.employees.iterator();
+    while (iterator.hasNext()) {
+      System.out.println(iterator.next());
+    }
+    System.out.println("End of list of employees");
+  }
+
+  public int countAccounts() {
+    return this.accounts.size();
+  }
+
+  public static void main(String[] args) {
+    MainApplication application = new MainApplication();
+
+    // List current accounts
+    application.listAccounts();
+
+    // Setup a new accounts
+    BankAccount account = new BankAccount(application.countAccounts());
+
+    account.credit(50.0f + application.countAccounts());
+
+    application.addAccount(account);
+
+    // List current accounts
+    application.listAccounts();
+
+    // List current employees
+    application.listEmployees();
+
+    // Setup a new accounts
+    Employee employee = new Employee("Russ", "Intern");
+
+    application.addEmployee(employee);
+
+    // List current accounts
+    application.listEmployees();
+  }
 }

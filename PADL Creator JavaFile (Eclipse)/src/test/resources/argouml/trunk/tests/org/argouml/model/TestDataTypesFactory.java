@@ -25,88 +25,73 @@
 package org.argouml.model;
 
 import java.util.LinkedList;
-
 import junit.framework.TestCase;
 
-/**
- * Test the DataTypesFactory class.
- *
- */
+/** Test the DataTypesFactory class. */
 public class TestDataTypesFactory extends TestCase {
 
-    /**
-     * The constructor.
-     *
-     * @param n the name
-     */
-    public TestDataTypesFactory(String n) {
-	super(n);
-    }
+  /**
+   * The constructor.
+   *
+   * @param n the name
+   */
+  public TestDataTypesFactory(String n) {
+    super(n);
+  }
 
-    /**
-     * Test if this class is really a singleton.
-     */
-    public void testSingleton() {
+  /** Test if this class is really a singleton. */
+  public void testSingleton() {
 
-	Object o1 = Model.getDataTypesFactory();
+    Object o1 = Model.getDataTypesFactory();
 
-	Object o2 = Model.getDataTypesFactory();
+    Object o2 = Model.getDataTypesFactory();
 
-	assertTrue("Different singletons", o1 == o2);
+    assertTrue("Different singletons", o1 == o2);
+  }
 
-    }
+  /** Test creation. */
+  public void testCreates() {
 
-    /**
-     * Test creation.
-     */
-    public void testCreates() {
+    Object[] args = {
+      "language", "body",
+    };
 
-	Object[] args = {
-	    "language",
-	    "body",
-	};
+    String[] objs = {
+      "ActionExpression",
+      "ArgListsExpression",
+      "BooleanExpression",
+      "Expression",
+      "IterationExpression",
+      "MappingExpression",
+      "ObjectSetExpression",
+      "ProcedureExpression",
+      "TimeExpression",
+      "TypeExpression",
+      null,
+    };
 
-	String[] objs = {
-	    "ActionExpression",
-	    "ArgListsExpression",
-	    "BooleanExpression",
-	    "Expression",
-	    "IterationExpression",
-	    "MappingExpression",
-	    "ObjectSetExpression",
-	    "ProcedureExpression",
-	    "TimeExpression",
-	    "TypeExpression",
-	    null,
-	};
+    DataTypesFactory dtf = Model.getDataTypesFactory();
 
-	DataTypesFactory dtf = Model.getDataTypesFactory();
+    CheckUMLModelHelper.createAndRelease(dtf, objs, args);
 
-	CheckUMLModelHelper.createAndRelease(
-					     dtf,
-					     objs,
-					     args);
+    // Multiplicity
 
-	// Multiplicity
+    CheckUMLModelHelper.deleteAndRelease(dtf.createMultiplicity(1, 10));
 
-	CheckUMLModelHelper.deleteAndRelease(dtf.createMultiplicity(1, 10));
+    CheckUMLModelHelper.deleteAndRelease(dtf.createMultiplicity(new LinkedList()));
 
-	CheckUMLModelHelper.deleteAndRelease(
-		dtf.createMultiplicity(new LinkedList()));
+    CheckUMLModelHelper.deleteAndRelease(dtf.createMultiplicity("1..10"));
 
-	CheckUMLModelHelper.deleteAndRelease(dtf.createMultiplicity("1..10"));
-
-	// Do we need to add tests for the following?
-	//
-	// AggregationKind
-	// ChangeableKind
-	// MessageDirectionKind
-	// OrderingKind
-	// ParameterDirectionKind
-	// PseudostateKind
-	// ScopeKind
-	// VisibilityKind
-	//
-    }
-
+    // Do we need to add tests for the following?
+    //
+    // AggregationKind
+    // ChangeableKind
+    // MessageDirectionKind
+    // OrderingKind
+    // ParameterDirectionKind
+    // PseudostateKind
+    // ScopeKind
+    // VisibilityKind
+    //
+  }
 }

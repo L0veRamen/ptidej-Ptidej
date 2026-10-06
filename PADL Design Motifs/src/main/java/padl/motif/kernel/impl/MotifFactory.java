@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -22,31 +22,31 @@ import padl.motif.kernel.IMotifFactory;
  * @since 2013/07/11
  */
 public class MotifFactory extends Factory implements IMotifFactory {
-	private static final long serialVersionUID = 3342247491732965777L;
+  private static final long serialVersionUID = 3342247491732965777L;
 
-	private static IFactory UniqueInstance;
-	public static IFactory getInstance() {
-		if (MotifFactory.UniqueInstance == null) {
-			MotifFactory.UniqueInstance = new MotifFactory();
-		}
-		return MotifFactory.UniqueInstance;
-	}
+  private static IFactory UniqueInstance;
 
-	private MotifFactory() {
-	}
+  public static IFactory getInstance() {
+    if (MotifFactory.UniqueInstance == null) {
+      MotifFactory.UniqueInstance = new MotifFactory();
+    }
+    return MotifFactory.UniqueInstance;
+  }
 
-	public IDesignLevelModel createDesignLevelModel(char[] anID) {
-		final IDesignLevelModel designLevelModel = new DesignLevelModel(anID);
-		((DesignLevelModel) designLevelModel).setFactory(this);
-		((DesignLevelModel) designLevelModel).setEventGenerator(this
-			.getEventGenerator());
-		return designLevelModel;
-	}
-	public IDesignMotifModel createDesignMotifModel(char[] anID) {
-		final IDesignMotifModel designMotifModel = new DesignMotifModel(anID);
-		((DesignMotifModel) designMotifModel).setFactory(this);
-		// TODO Shouldn't it be implemented? 
-		//	((DesignMotifModel) designMotifModel).setEventGenerator(this.getEventGenerator());
-		return designMotifModel;
-	}
+  private MotifFactory() {}
+
+  public IDesignLevelModel createDesignLevelModel(char[] anID) {
+    final IDesignLevelModel designLevelModel = new DesignLevelModel(anID);
+    ((DesignLevelModel) designLevelModel).setFactory(this);
+    ((DesignLevelModel) designLevelModel).setEventGenerator(this.getEventGenerator());
+    return designLevelModel;
+  }
+
+  public IDesignMotifModel createDesignMotifModel(char[] anID) {
+    final IDesignMotifModel designMotifModel = new DesignMotifModel(anID);
+    ((DesignMotifModel) designMotifModel).setFactory(this);
+    // TODO Shouldn't it be implemented?
+    //	((DesignMotifModel) designMotifModel).setEventGenerator(this.getEventGenerator());
+    return designMotifModel;
+  }
 }

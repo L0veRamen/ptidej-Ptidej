@@ -25,7 +25,6 @@
 package org.argouml.uml.ui;
 
 import java.awt.event.ActionEvent;
-
 import org.apache.log4j.Logger;
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.i18n.Translator;
@@ -37,33 +36,27 @@ import org.argouml.ui.ProjectBrowser;
  * @stereotype singleton
  */
 public class ActionSaveProjectAs extends ActionSaveProject {
-    /**
-     * Logger.
-     */
-    private static final Logger LOG =
-        Logger.getLogger(ActionSaveProjectAs.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(ActionSaveProjectAs.class);
 
-    /**
-     * The constructor.
-     */
-    public ActionSaveProjectAs() {
-        super(Translator.localize("action.save-project-as"),
-                ResourceLoaderWrapper.lookupIcon("action.save-project-as"));
-    }
+  /** The constructor. */
+  public ActionSaveProjectAs() {
+    super(
+        Translator.localize("action.save-project-as"),
+        ResourceLoaderWrapper.lookupIcon("action.save-project-as"));
+  }
 
-    ////////////////////////////////////////////////////////////////
-    // main methods
+  ////////////////////////////////////////////////////////////////
+  // main methods
 
-    /*
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        LOG.info("Performing saveas action");
-        ProjectBrowser.getInstance().trySave(false, true);
-    }
+  /*
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    LOG.info("Performing saveas action");
+    ProjectBrowser.getInstance().trySave(false, true);
+  }
 
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -1209396991311217989L;
+  /** The UID. */
+  private static final long serialVersionUID = -1209396991311217989L;
 } /* end class ActionSaveProjectAs */

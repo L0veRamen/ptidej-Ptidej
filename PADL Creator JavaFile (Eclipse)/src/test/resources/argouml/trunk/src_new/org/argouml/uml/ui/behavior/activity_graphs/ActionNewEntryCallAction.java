@@ -25,35 +25,31 @@
 package org.argouml.uml.ui.behavior.activity_graphs;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.model.Model;
 import org.argouml.ui.targetmanager.TargetManager;
 import org.tigris.gef.undo.UndoableAction;
 
 /**
- * This action creates a new CallAction as a Entry activity 
- * for the state that is the current target.
- * 
+ * This action creates a new CallAction as a Entry activity for the state that is the current
+ * target.
+ *
  * @author michiel
  */
 class ActionNewEntryCallAction extends UndoableAction {
 
-    /**
-     * Constructor for ActionNewEntryCallAction.
-     */
-    public ActionNewEntryCallAction() {
-        super();
-    }
+  /** Constructor for ActionNewEntryCallAction. */
+  public ActionNewEntryCallAction() {
+    super();
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        Object t = TargetManager.getInstance().getModelTarget();
-        Object ca = Model.getCommonBehaviorFactory().createCallAction();
-        Model.getStateMachinesHelper().setEntry(t, ca);
-        TargetManager.getInstance().setTarget(ca);
-    }
-
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    Object t = TargetManager.getInstance().getModelTarget();
+    Object ca = Model.getCommonBehaviorFactory().createCallAction();
+    Model.getStateMachinesHelper().setEntry(t, ca);
+    TargetManager.getInstance().setTarget(ca);
+  }
 }

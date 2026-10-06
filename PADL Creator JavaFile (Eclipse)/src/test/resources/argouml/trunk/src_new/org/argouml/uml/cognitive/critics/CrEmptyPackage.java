@@ -25,12 +25,10 @@
 package org.argouml.uml.cognitive.critics;
 
 import java.util.Collection;
-
 import org.apache.log4j.Logger;
 import org.argouml.cognitive.Designer;
 import org.argouml.model.Model;
 import org.argouml.uml.cognitive.UMLDecision;
-
 
 /**
  * A critic whether a package/subsystem/model is empty.
@@ -38,41 +36,34 @@ import org.argouml.uml.cognitive.UMLDecision;
  * @author Jason Robbins
  */
 
-//TODO: different critic for packages consisting only
-//of references to elements of other packages?
+// TODO: different critic for packages consisting only
+// of references to elements of other packages?
 
 public class CrEmptyPackage extends CrUML {
-    /**
-     * Logger.
-     */
-    private static final Logger LOG = Logger.getLogger(CrEmptyPackage.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(CrEmptyPackage.class);
 
-    /**
-     * The constructor.
-     *
-     */
-    public CrEmptyPackage() {
-        setupHeadAndDesc();
-	addSupportedDecision(UMLDecision.MODULARITY);
-	addTrigger("ownedElement");
+  /** The constructor. */
+  public CrEmptyPackage() {
+    setupHeadAndDesc();
+    addSupportedDecision(UMLDecision.MODULARITY);
+    addTrigger("ownedElement");
+  }
+
+  /**
+   * @see org.argouml.uml.cognitive.critics.CrUML#predicate2( java.lang.Object,
+   *     org.argouml.cognitive.Designer)
+   */
+  public boolean predicate2(Object dm, Designer dsgr) {
+    //	LOG.debug("predicate2 on " + dm);
+    if (!(Model.getFacade().isAPackage(dm))) {
+      return NO_PROBLEM;
     }
-
-    /**
-     * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
-     * java.lang.Object, org.argouml.cognitive.Designer)
-     */
-    public boolean predicate2(Object dm, Designer dsgr) {
-//	LOG.debug("predicate2 on " + dm);
-	if (!(Model.getFacade().isAPackage(dm))) {
-	    return NO_PROBLEM;
-	}
-	Collection elems = Model.getFacade().getOwnedElements(dm);
-	if (elems.size() == 0) {
-            LOG.debug("PROBLEM_FOUND on " + dm);
-            return PROBLEM_FOUND;
-        }
-	return NO_PROBLEM;
+    Collection elems = Model.getFacade().getOwnedElements(dm);
+    if (elems.size() == 0) {
+      LOG.debug("PROBLEM_FOUND on " + dm);
+      return PROBLEM_FOUND;
     }
-
+    return NO_PROBLEM;
+  }
 } /* end class CrEmptyPackage */
-

@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -19,19 +19,18 @@ import sad.rule.creator.model.IVisitor;
  * @author Pierre Leduc
  */
 public class Rule extends Container implements IRule {
-	public Rule(final String anID) {
-		super(anID);
-	}
+  public Rule(final String anID) {
+    super(anID);
+  }
 
-	public void accept(final IVisitor aVisitor) {
-		aVisitor.open(this);
+  public void accept(final IVisitor aVisitor) {
+    aVisitor.open(this);
 
-		final Iterator iterator = this.getIteratorOnConstituents();
-		while (iterator.hasNext()) {
-			((IConstituent) iterator.next()).accept(aVisitor);
-		}
+    final Iterator iterator = this.getIteratorOnConstituents();
+    while (iterator.hasNext()) {
+      ((IConstituent) iterator.next()).accept(aVisitor);
+    }
 
-		aVisitor.close(this);
-	}
-
+    aVisitor.close(this);
+  }
 }

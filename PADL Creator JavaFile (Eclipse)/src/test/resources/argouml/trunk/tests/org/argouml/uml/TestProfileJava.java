@@ -24,44 +24,39 @@
 package org.argouml.uml;
 
 import java.util.Collection;
-
+import junit.framework.TestCase;
 import org.argouml.model.Model;
 
-import junit.framework.TestCase;
-
 /**
- * 
  * @author euluis
  * @since 0.20
  * @version 0.00
  */
 public class TestProfileJava extends TestCase {
-    
-    /**
-     * The constructor.
-     *
-     * @param name the name of the test.
-     */
-    public TestProfileJava(String name) {
-        super(name);
-    }
-    
-    /**
-     * Test whether we can load default model (profile). ProfileJava will throw
-     * an exception for an invalid profile model, but just create and return an
-     * empty model if the file for the profile doesn't exist. Check
-     * for both failure modes.
-     * 
-     * @throws ProfileException
-     *             exception thrown by ProfileJava for invalid profile file.
-     */
-    public void testLoadProfileModel() throws ProfileException {
-        ProfileJava profile = new ProfileJava();
-        Object model = profile.loadProfileModel();
-        assertNotNull("Can't load profile model", model);
-        Collection stereos = Model.getModelManagementHelper()
-                .getAllModelElementsOfKind(model,
-                        Model.getMetaTypes().getStereotype());
-        assertTrue("No stereotypes found in profile model", stereos.size() > 0);
-    }
+
+  /**
+   * The constructor.
+   *
+   * @param name the name of the test.
+   */
+  public TestProfileJava(String name) {
+    super(name);
+  }
+
+  /**
+   * Test whether we can load default model (profile). ProfileJava will throw an exception for an
+   * invalid profile model, but just create and return an empty model if the file for the profile
+   * doesn't exist. Check for both failure modes.
+   *
+   * @throws ProfileException exception thrown by ProfileJava for invalid profile file.
+   */
+  public void testLoadProfileModel() throws ProfileException {
+    ProfileJava profile = new ProfileJava();
+    Object model = profile.loadProfileModel();
+    assertNotNull("Can't load profile model", model);
+    Collection stereos =
+        Model.getModelManagementHelper()
+            .getAllModelElementsOfKind(model, Model.getMetaTypes().getStereotype());
+    assertTrue("No stereotypes found in profile model", stereos.size() > 0);
+  }
 }

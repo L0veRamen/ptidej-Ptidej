@@ -34,26 +34,23 @@ import org.argouml.uml.ui.UMLCheckBox2;
  */
 public class UMLFeatureOwnerScopeCheckBox extends UMLCheckBox2 {
 
-    /**
-     * Constructor for UMLFeatureOwnerScopeCheckBox.
-     */
-    public UMLFeatureOwnerScopeCheckBox() {
-        super(Translator.localize("label.static"),
-                ActionSetFeatureOwnerScope.getInstance(), "ownerScope");
-    }
+  /** Constructor for UMLFeatureOwnerScopeCheckBox. */
+  public UMLFeatureOwnerScopeCheckBox() {
+    super(
+        Translator.localize("label.static"),
+        ActionSetFeatureOwnerScope.getInstance(),
+        "ownerScope");
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLCheckBox2#buildModel()
-     */
-    public void buildModel() {
-        Object scope = Model.getFacade().getOwnerScope(getTarget());
-        if (scope != null
-                && scope.equals(
-                        Model.getScopeKind().getClassifier())) {
-            setSelected(true);
-        } else {
-            setSelected(false);
-        }
+  /**
+   * @see org.argouml.uml.ui.UMLCheckBox2#buildModel()
+   */
+  public void buildModel() {
+    Object scope = Model.getFacade().getOwnerScope(getTarget());
+    if (scope != null && scope.equals(Model.getScopeKind().getClassifier())) {
+      setSelected(true);
+    } else {
+      setSelected(false);
     }
-
+  }
 }

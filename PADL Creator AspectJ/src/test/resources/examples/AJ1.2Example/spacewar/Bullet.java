@@ -24,25 +24,26 @@ package spacewar;
 
 class Bullet extends SpaceObject {
 
-    static private final int SIZE = 3;        //Can't be changed for now!!!
-    static private int LIFETIME = 50;
+  private static final int SIZE = 3; // Can't be changed for now!!!
+  private static int LIFETIME = 50;
 
-    private int lifeLeft;
+  private int lifeLeft;
 
-    Bullet (Game theGame, double xP, double yP, double xV, double yV) {
-        super(theGame, xP, yP, xV, yV);
-        lifeLeft = LIFETIME;
-    }
+  Bullet(Game theGame, double xP, double yP, double xV, double yV) {
+    super(theGame, xP, yP, xV, yV);
+    lifeLeft = LIFETIME;
+  }
 
-    int getSize() { return SIZE; }
+  int getSize() {
+    return SIZE;
+  }
 
-    void handleCollision(SpaceObject obj) {
-        die();
-    }
+  void handleCollision(SpaceObject obj) {
+    die();
+  }
 
-    void clockTick() {
-        if (--lifeLeft == 0)
-            die();
-        super.clockTick();
-    }
+  void clockTick() {
+    if (--lifeLeft == 0) die();
+    super.clockTick();
+  }
 }

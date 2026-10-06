@@ -28,52 +28,51 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-
 import org.argouml.uml.diagram.static_structure.ui.FigEdgeNote;
 import org.tigris.gef.base.Layer;
 
 /**
  * Utility class for use by pgml.tee
+ *
  * @author Bob Tarling
  */
 public class PgmlUtility {
 
-    private PgmlUtility() {
-    }
+  private PgmlUtility() {}
 
-    /**
-     * Return just the comment edges for a specific layer.
-     * @param lay
-     */
-    public static List getCommentEdges(Layer lay) {
-        Collection edges = lay.getContentsEdgesOnly();
-        ArrayList comments = new ArrayList(edges.size());
-        Iterator it = edges.iterator();
-        while (it.hasNext()) {
-            Object o = it.next();
-            if (o instanceof FigEdgeNote) {
-                comments.add(o);
-            }
-        }
-        return comments;
+  /**
+   * Return just the comment edges for a specific layer.
+   *
+   * @param lay
+   */
+  public static List getCommentEdges(Layer lay) {
+    Collection edges = lay.getContentsEdgesOnly();
+    ArrayList comments = new ArrayList(edges.size());
+    Iterator it = edges.iterator();
+    while (it.hasNext()) {
+      Object o = it.next();
+      if (o instanceof FigEdgeNote) {
+        comments.add(o);
+      }
     }
-    
+    return comments;
+  }
 
-    /**
-     * Return just the edges for a specific layer that are not comment edges
-     * @param lay
-     */
-    public static List getNonCommentEdges(Layer lay) {
-        Collection edges = lay.getContentsEdgesOnly();
-        ArrayList nonComments = new ArrayList(edges.size());
-        Iterator it = edges.iterator();
-        while (it.hasNext()) {
-            Object o = it.next();
-            if (!(o instanceof FigEdgeNote)) {
-                nonComments.add(o);
-            }
-        }
-        return nonComments;
+  /**
+   * Return just the edges for a specific layer that are not comment edges
+   *
+   * @param lay
+   */
+  public static List getNonCommentEdges(Layer lay) {
+    Collection edges = lay.getContentsEdgesOnly();
+    ArrayList nonComments = new ArrayList(edges.size());
+    Iterator it = edges.iterator();
+    while (it.hasNext()) {
+      Object o = it.next();
+      if (!(o instanceof FigEdgeNote)) {
+        nonComments.add(o);
+      }
     }
-    
+    return nonComments;
+  }
 }

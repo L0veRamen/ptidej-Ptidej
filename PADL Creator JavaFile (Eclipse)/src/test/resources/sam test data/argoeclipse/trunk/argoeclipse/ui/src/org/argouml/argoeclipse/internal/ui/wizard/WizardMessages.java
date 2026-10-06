@@ -28,31 +28,31 @@ import org.eclipse.osgi.util.NLS;
 
 /**
  * Wizard message bundle.
+ *
  * @author Bogdan Pistol
  */
 public class WizardMessages extends NLS {
 
-    private static final String BUNDLE_NAME = 
-        "org.argouml.argoeclipse.internal.ui." //$NON-NLS-1$
-        + "wizard.WizardMessages"; //$NON-NLS-1$
-    
-    public static String pathError;
-    public static String filesystemLabel;
-    public static String workspaceLabel;
-    public static String containerLabel;
-    public static String filenameLabel;
-    public static String browseButton;
-    public static String useFilesystemLabel;
-    public static String useFilesystemDescription;
-    public static String filesSuffix;
-    public static String allFiles;
-    public static String filesystemFolderDialogTitle;
-    public static String containerSelectionTitle;
-    public static String overwriteDialogTitle;
-    public static String overwriteDialogDescription;
-        
-    static {
-        NLS.initializeMessages(BUNDLE_NAME, WizardMessages.class);
-    }
-    
+  private static final String BUNDLE_NAME =
+      "org.argouml.argoeclipse.internal.ui." //$NON-NLS-1$
+          + "wizard.WizardMessages"; //$NON-NLS-1$
+
+  public static String pathError;
+  public static String filesystemLabel;
+  public static String workspaceLabel;
+  public static String containerLabel;
+  public static String filenameLabel;
+  public static String browseButton;
+  public static String useFilesystemLabel;
+  public static String useFilesystemDescription;
+  public static String filesSuffix;
+  public static String allFiles;
+  public static String filesystemFolderDialogTitle;
+  public static String containerSelectionTitle;
+  public static String overwriteDialogTitle;
+  public static String overwriteDialogDescription;
+
+  static {
+    NLS.initializeMessages(BUNDLE_NAME, WizardMessages.class);
+  }
 }

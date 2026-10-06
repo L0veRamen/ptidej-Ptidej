@@ -20,77 +20,76 @@ along with this program; if not, write to the Free Software
 -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/contactview"
-    android:layout_width="match_parent"
-    android:layout_height="100dp"
-    android:background="@drawable/item_history_selector"
-    android:descendantFocusability="blocksDescendants">
+                android:id="@+id/contactview"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:background="@drawable/item_history_selector"
+                android:descendantFocusability="blocksDescendants">
 
     <ImageButton
-        android:id="@+id/photo"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_centerVertical="true"
-        android:background="@null"
-        android:scaleType="centerCrop" />
+            android:id="@+id/photo"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_centerVertical="true"
+            android:background="@null"
+            android:scaleType="centerCrop"/>
 
     <TextView
-        android:id="@+id/display_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/replay"
-        android:layout_toRightOf="@+id/photo"
-        android:paddingLeft="@dimen/padding_small"
-        android:singleLine="true"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Adrien" />
+            android:id="@+id/display_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/replay"
+            android:layout_toRightOf="@+id/photo"
+            android:paddingLeft="@dimen/padding_small"
+            android:singleLine="true"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Adrien"/>
 
     <TextView
-        android:id="@+id/date_start"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/display_name"
-        android:layout_toRightOf="@+id/photo"
-        android:paddingLeft="@dimen/padding_small"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:id="@+id/date_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/display_name"
+            android:layout_toRightOf="@+id/photo"
+            android:paddingLeft="@dimen/padding_small"
+            android:textAppearance="?android:attr/textAppearanceSmall"/>
 
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_toRightOf="@+id/photo"
-        android:paddingLeft="@dimen/padding_small"
-        android:weightSum="2" >
-
-        <TextView
-            android:id="@+id/incomings"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:singleLine="true"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@+id/photo"
+            android:paddingLeft="@dimen/padding_small"
+            android:weightSum="2">
 
         <TextView
-            android:id="@+id/outgoings"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:singleLine="true"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:id="@+id/incomings"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:singleLine="true"
+                android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+        <TextView
+                android:id="@+id/outgoings"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:singleLine="true"
+                android:textAppearance="?android:attr/textAppearanceSmall"/>
 
     </LinearLayout>
 
     <Button
-        android:id="@+id/replay"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:text="@string/hist_replay_button"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:visibility="gone" />
+            android:id="@+id/replay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:text="@string/hist_replay_button"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:visibility="gone"/>
 
 </RelativeLayout>

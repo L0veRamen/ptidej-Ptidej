@@ -27,76 +27,73 @@ import org.neodatis.odb.Objects;
 import org.neodatis.tool.IOUtil;
 
 public class Tutorial2 {
-	public static final String ODB_NAME = "tutorial2.odb";
+  public static final String ODB_NAME = "tutorial2.odb";
 
-	public Tutorial2() throws Exception {
-		IOUtil.deleteFile(ODB_NAME);
-	}
+  public Tutorial2() throws Exception {
+    IOUtil.deleteFile(ODB_NAME);
+  }
 
-	public void step20() throws Exception {
-		// Create instance
-		Sport sport = new Sport("volley-ball");
+  public void step20() throws Exception {
+    // Create instance
+    Sport sport = new Sport("volley-ball");
 
-		ODB odb = null;
-		ODBServer server = null;
-		try {
-			// Creates the server on port 8000
-			server = ODBFactory.openServer(8000);
-			// Tells the server to manage base 'base1' that points to the file tutorial2.odb
-			server.addBase("base1", ODB_NAME);
-			// Then starts the server to run in background
-			server.startServer(true);
-			
-			// Open the database client on the localhost on port 8000 and specify which database instance
-			odb = ODBFactory.openClient("localhost",8000,"base1");
+    ODB odb = null;
+    ODBServer server = null;
+    try {
+      // Creates the server on port 8000
+      server = ODBFactory.openServer(8000);
+      // Tells the server to manage base 'base1' that points to the file tutorial2.odb
+      server.addBase("base1", ODB_NAME);
+      // Then starts the server to run in background
+      server.startServer(true);
 
-			// Store the object
-			odb.store(sport);
-		} finally {
-			if (odb != null) {
-				// First close the client
-				odb.close();
-			}
-			if (server != null) {
-				// Then close the database server
-				server.close();
-			}
-		}
-	}
+      // Open the database client on the localhost on port 8000 and specify which database instance
+      odb = ODBFactory.openClient("localhost", 8000, "base1");
 
-	public void displayObjectsOf(Class clazz, String label1, String label2) throws Exception {
-		// Open the database
-		ODB odb = null;
+      // Store the object
+      odb.store(sport);
+    } finally {
+      if (odb != null) {
+        // First close the client
+        odb.close();
+      }
+      if (server != null) {
+        // Then close the database server
+        server.close();
+      }
+    }
+  }
 
-		try {
-			odb = ODBFactory.open(ODB_NAME);
-			// Get all object of type clazz
-			Objects objects = odb.getObjects(clazz);
+  public void displayObjectsOf(Class clazz, String label1, String label2) throws Exception {
+    // Open the database
+    ODB odb = null;
 
-			System.out.println("\n" + label1 + " : " + objects.size() + label2);
+    try {
+      odb = ODBFactory.open(ODB_NAME);
+      // Get all object of type clazz
+      Objects objects = odb.getObjects(clazz);
 
-			int i=1;
-			// display each object
-			while(objects.hasNext()) {
-				System.out.println((i++) + "\t: " + objects.next());
-			}
-			
-		} finally {
-			if (odb != null) {
-				// Close the database
-				odb.close();
-			}
-		}
-	}
+      System.out.println("\n" + label1 + " : " + objects.size() + label2);
 
-	
-	public static void main(String[] args) throws Exception {
+      int i = 1;
+      // display each object
+      while (objects.hasNext()) {
+        System.out.println((i++) + "\t: " + objects.next());
+      }
 
-		Tutorial2 tutorial2 = new Tutorial2();
+    } finally {
+      if (odb != null) {
+        // Close the database
+        odb.close();
+      }
+    }
+  }
 
-		tutorial2.step20();
-		tutorial2.displayObjectsOf(Sport.class, "Step 20", " sport(s):");
+  public static void main(String[] args) throws Exception {
 
-	}
+    Tutorial2 tutorial2 = new Tutorial2();
 
+    tutorial2.step20();
+    tutorial2.displayObjectsOf(Sport.class, "Step 20", " sport(s):");
+  }
 }

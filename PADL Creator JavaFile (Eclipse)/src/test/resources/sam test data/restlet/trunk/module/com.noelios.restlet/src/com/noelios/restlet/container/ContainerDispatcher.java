@@ -28,30 +28,29 @@ import org.restlet.data.Response;
 
 /**
  * Container dispatcher.
+ *
  * @author Jerome Louvel (contact@noelios.com)
  */
-public class ContainerDispatcher extends Dispatcher
-{
-	/** The parent context. */
-	private ContainerContext parentContext;
+public class ContainerDispatcher extends Dispatcher {
+  /** The parent context. */
+  private ContainerContext parentContext;
 
-	/**
-	 * Constructor.
-	 * @param parentContext The parent context.
-	 */
-	public ContainerDispatcher(ContainerContext parentContext)
-	{
-		this.parentContext = parentContext;
-	}
+  /**
+   * Constructor.
+   *
+   * @param parentContext The parent context.
+   */
+  public ContainerDispatcher(ContainerContext parentContext) {
+    this.parentContext = parentContext;
+  }
 
-	/**
-	 * Handles a call.
-	 * @param request The request to handle.
-	 * @param response The response to update.
-	 */
-	public void handle(Request request, Response response)
-	{
-		this.parentContext.getContainerHelper().getClientRouter().handle(request, response);
-	}
-
+  /**
+   * Handles a call.
+   *
+   * @param request The request to handle.
+   * @param response The response to update.
+   */
+  public void handle(Request request, Response response) {
+    this.parentContext.getContainerHelper().getClientRouter().handle(request, response);
+  }
 }

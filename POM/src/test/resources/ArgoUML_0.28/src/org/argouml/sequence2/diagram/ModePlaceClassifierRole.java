@@ -26,62 +26,56 @@ package org.argouml.sequence2.diagram;
 
 import java.awt.event.MouseEvent;
 import java.util.List;
-
 import org.tigris.gef.base.ModePlace;
 import org.tigris.gef.graph.GraphFactory;
 import org.tigris.gef.persistence.pgml.PgmlUtility;
 import org.tigris.gef.presentation.Fig;
 
 /**
- * Ensures that each new ClassifierRole has the same Y position and height as
- * all the existing ones.
- * 
+ * Ensures that each new ClassifierRole has the same Y position and height as all the existing ones.
+ *
  * @author bszanto
  * @author penyaskito
  */
 class ModePlaceClassifierRole extends ModePlace {
-    
-    /**
-     * @param gf The GraphFactory
-     * @param instructions A string with the instructions for the tooltip
-     */
-    public ModePlaceClassifierRole(GraphFactory gf, String instructions) {
-        super(gf, instructions);
-    }
-    
-    @Override
-    public void mousePressed(MouseEvent me) {
-        super.mousePressed(me);
-        postProcessing();
-    }
 
-    @Override
-    public void mouseDragged(MouseEvent me) {
-        super.mouseDragged(me);
-        postProcessing();
-    }
+  /**
+   * @param gf The GraphFactory
+   * @param instructions A string with the instructions for the tooltip
+   */
+  public ModePlaceClassifierRole(GraphFactory gf, String instructions) {
+    super(gf, instructions);
+  }
 
-    
-    /**
-     * Set height and Y position of the new CR as the already existing CRs.
-     */
-    private void postProcessing() {
-        List nodes = 
-            PgmlUtility.getContentsNoEdges(editor.getLayerManager().getActiveLayer());
-        int i = 0;
-        boolean figClassifierRoleFound = false;
-        Fig fig = null;
-    
-        // Get the first existing FigNode and if it exists set the
-        // y position and height of _pers to be the same as it.
-        while (i < nodes.size() && !figClassifierRoleFound) {
-            fig = (Fig) nodes.get(i);
-            if (fig != _pers && fig instanceof FigClassifierRole) {
-                _pers.setY(fig.getY());
-                _pers.setHeight(fig.getHeight());
-                figClassifierRoleFound = true;
-            }
-            i++;
-        }
+  @Override
+  public void mousePressed(MouseEvent me) {
+    super.mousePressed(me);
+    postProcessing();
+  }
+
+  @Override
+  public void mouseDragged(MouseEvent me) {
+    super.mouseDragged(me);
+    postProcessing();
+  }
+
+  /** Set height and Y position of the new CR as the already existing CRs. */
+  private void postProcessing() {
+    List nodes = PgmlUtility.getContentsNoEdges(editor.getLayerManager().getActiveLayer());
+    int i = 0;
+    boolean figClassifierRoleFound = false;
+    Fig fig = null;
+
+    // Get the first existing FigNode and if it exists set the
+    // y position and height of _pers to be the same as it.
+    while (i < nodes.size() && !figClassifierRoleFound) {
+      fig = (Fig) nodes.get(i);
+      if (fig != _pers && fig instanceof FigClassifierRole) {
+        _pers.setY(fig.getY());
+        _pers.setHeight(fig.getHeight());
+        figClassifierRoleFound = true;
+      }
+      i++;
     }
+  }
 }

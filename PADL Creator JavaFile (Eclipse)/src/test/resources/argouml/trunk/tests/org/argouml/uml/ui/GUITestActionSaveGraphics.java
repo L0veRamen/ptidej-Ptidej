@@ -25,9 +25,7 @@
 package org.argouml.uml.ui;
 
 import java.io.File;
-
 import junit.framework.TestCase;
-
 import org.argouml.util.CheckMain;
 
 /**
@@ -35,36 +33,33 @@ import org.argouml.util.CheckMain;
  */
 public class GUITestActionSaveGraphics extends TestCase {
 
-    private static final String OUTPUT_FILE = "test-out.gif";
+  private static final String OUTPUT_FILE = "test-out.gif";
 
-    /**
-     * Constructor for GUITestActionSaveGraphics.
-     *
-     * @param arg0 The name of the test case.
-     */
-    public GUITestActionSaveGraphics(String arg0) {
-        super(arg0);
-    }
+  /**
+   * Constructor for GUITestActionSaveGraphics.
+   *
+   * @param arg0 The name of the test case.
+   */
+  public GUITestActionSaveGraphics(String arg0) {
+    super(arg0);
+  }
 
-    /**
-     * Test dumping a diagram from a project with contents.
-     */
-    public void testProjectWithContents() {
-        File file =
-            CheckMain.getTestModel("testmodels/GUITestPropertyPanels.zargo");
+  /** Test dumping a diagram from a project with contents. */
+  public void testProjectWithContents() {
+    File file = CheckMain.getTestModel("testmodels/GUITestPropertyPanels.zargo");
 
-        new File(OUTPUT_FILE).delete();
+    new File(OUTPUT_FILE).delete();
 
-        CheckMain.callMain(new String[] {
-            "-nosplash",
-            "-command",
-            "org.argouml.uml.ui.ActionOpenProject=" + file.getAbsolutePath(),
-            "-command",
-            "org.argouml.uml.ui.ActionSaveGraphics=" + OUTPUT_FILE,
+    CheckMain.callMain(
+        new String[] {
+          "-nosplash",
+          "-command",
+          "org.argouml.uml.ui.ActionOpenProject=" + file.getAbsolutePath(),
+          "-command",
+          "org.argouml.uml.ui.ActionSaveGraphics=" + OUTPUT_FILE,
         });
-        assertTrue(new File(OUTPUT_FILE).exists());
+    assertTrue(new File(OUTPUT_FILE).exists());
 
-        new File(OUTPUT_FILE).delete();
-    }
+    new File(OUTPUT_FILE).delete();
+  }
 }
-

@@ -24,69 +24,63 @@
 
 package org.argouml.uml.reveng;
 
-
 /**
- * Common class that all settings types inherit from.  It provides
- * a label to be associated with the setting in the user interface.
+ * Common class that all settings types inherit from. It provides a label to be associated with the
+ * setting in the user interface.
  */
 public class Setting implements SettingsTypes.Setting {
 
-    /**
-     * The message of the Label
-     */
-    private String label;
+  /** The message of the Label */
+  private String label;
 
-    public Setting(String labelText) {
-        super();
-        label = labelText;
+  public Setting(String labelText) {
+    super();
+    label = labelText;
+  }
+
+  /*
+   * We return a new String with this message instead of the String that
+   * is the message because we don't want the user to be able to
+   * change the Label's message.
+   *
+   * @see org.argouml.uml.reveng.SettingsTypes.Setting#getLabel()
+   */
+  public final String getLabel() {
+    return new String(label);
+  }
+
+  /**
+   * Setting which specifies a boolean value. Typical user presentation would be labelled checkbox.
+   */
+  public class BooleanSelection extends Setting implements SettingsTypes.BooleanSelection {
+
+    private boolean defaultValue;
+    private boolean value;
+
+    /**
+     * Construct a new setting object which specifies a boolean selection.
+     *
+     * @param labelText the string to use for the user visible label
+     * @param initialValue the default value (true or false)
+     */
+    public BooleanSelection(String labelText, boolean initialValue) {
+      super(labelText);
+      this.defaultValue = initialValue;
+      value = initialValue;
     }
 
     /*
-     * We return a new String with this message instead of the String that
-     * is the message because we don't want the user to be able to
-     * change the Label's message.
-     * 
-     * @see org.argouml.uml.reveng.SettingsTypes.Setting#getLabel()
+     * @see org.argouml.uml.reveng.SettingsTypes.BooleanSelection#isSelected()
      */
-    public final String getLabel() {
-        return new String(label);
+    public final boolean isSelected() {
+      return value;
     }
 
-    /**
-     * Setting which specifies a boolean value.  Typical user presentation
-     * would be labelled checkbox.
+    /*
+     * @see org.argouml.uml.reveng.SettingsTypes.BooleanSelection#getDefaultValue()
      */
-    public class BooleanSelection extends Setting implements
-            SettingsTypes.BooleanSelection {
-        
-        private boolean defaultValue;
-        private boolean value;
-
-        
-        /**
-         * Construct a new setting object which specifies a boolean selection.
-         * 
-         * @param labelText the string to use for the user visible label
-         * @param initialValue the default value (true or false)
-         */
-        public BooleanSelection(String labelText, boolean initialValue) {
-            super(labelText);
-            this.defaultValue = initialValue;
-            value = initialValue;
-        }
-        
-        /*
-         * @see org.argouml.uml.reveng.SettingsTypes.BooleanSelection#isSelected()
-         */
-        public final boolean isSelected() {
-            return value;
-        }
-
-        /*
-         * @see org.argouml.uml.reveng.SettingsTypes.BooleanSelection#getDefaultValue()
-         */
-        public final boolean getDefaultValue() {
-            return defaultValue;
-        }
+    public final boolean getDefaultValue() {
+      return defaultValue;
     }
+  }
 }

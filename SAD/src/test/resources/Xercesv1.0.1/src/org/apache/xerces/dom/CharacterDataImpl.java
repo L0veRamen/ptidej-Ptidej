@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xerces" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -60,276 +60,236 @@ package org.apache.xerces.dom;
 import org.w3c.dom.*;
 
 /**
- * CharacterData is an abstract Node that can carry character data as its
- * Value.  It provides shared behavior for Text, CData, and
- * possibly other node types. All offsets are 0-based.
- * <p>
- * This implementation includes support for DOM Level 2 Mutation Events.
- * If the static boolean NodeImpl.MUTATIONEVENTS is not set true, that support
- * is disabled and can be optimized out to reduce code size.
+ * CharacterData is an abstract Node that can carry character data as its Value. It provides shared
+ * behavior for Text, CData, and possibly other node types. All offsets are 0-based.
+ *
+ * <p>This implementation includes support for DOM Level 2 Mutation Events. If the static boolean
+ * NodeImpl.MUTATIONEVENTS is not set true, that support is disabled and can be optimized out to
+ * reduce code size.
  *
  * @version
- * @since  PR-DOM-Level-1-19980818.
+ * @since PR-DOM-Level-1-19980818.
  */
-public abstract class CharacterDataImpl
-    extends NodeImpl 
-    implements CharacterData {
+public abstract class CharacterDataImpl extends NodeImpl implements CharacterData {
 
-    //
-    // Constants
-    //
+  //
+  // Constants
+  //
 
-    /** Serialization version. */
-    static final long serialVersionUID = 7931170150428474230L;
+  /** Serialization version. */
+  static final long serialVersionUID = 7931170150428474230L;
 
-    //
-    // Data
-    //
+  //
+  // Data
+  //
 
-    /** Empty child nodes. */
-    private static transient NodeList singletonNodeList = new NodeList() {
-        public Node item(int index) { return null; }
-        public int getLength() { return 0; }
-    };
+  /** Empty child nodes. */
+  private static transient NodeList singletonNodeList =
+      new NodeList() {
+        public Node item(int index) {
+          return null;
+        }
 
-    //
-    // Constructors
-    //
+        public int getLength() {
+          return 0;
+        }
+      };
 
-    /** Factory constructor. */
-    protected CharacterDataImpl(DocumentImpl ownerDocument, String data) {
-        super(ownerDocument, null, data);
+  //
+  // Constructors
+  //
+
+  /** Factory constructor. */
+  protected CharacterDataImpl(DocumentImpl ownerDocument, String data) {
+    super(ownerDocument, null, data);
+  }
+
+  //
+  // Node methods
+  //
+
+  /** Returns the node name. */
+  public abstract String getNodeName();
+
+  /** Returns an empty node list. */
+  public NodeList getChildNodes() {
+    return singletonNodeList;
+  }
+
+  //
+  // CharacterData methods
+  //
+
+  /**
+   * Retrieve character data currently stored in this node.
+   *
+   * @throws DOMExcpetion(DOMSTRING_SIZE_ERR) In some implementations, the stored data may exceed
+   *     the permitted length of strings. If so, getData() will throw this DOMException advising the
+   *     user to instead retrieve the data in chunks via the substring() operation.
+   */
+  public String getData() {
+    if (syncData) {
+      synchronizeData();
+    }
+    return value;
+  }
+
+  /**
+   * Report number of characters currently stored in this node's data. It may be 0, meaning that the
+   * value is an empty string.
+   */
+  public int getLength() {
+    if (syncData) {
+      synchronizeData();
+    }
+    return value.length();
+  }
+
+  /**
+   * Concatenate additional characters onto the end of the data stored in this node. Note that this,
+   * and insert(), are the paths by which a DOM could wind up accumulating more data than the
+   * language's strings can easily handle. (See above discussion.)
+   *
+   * @throws DOMException(NO_MODIFICATION_ALLOWED_ERR) if node is readonly.
+   */
+  public void appendData(String data) {
+
+    if (readOnly) {
+      throw new DOMExceptionImpl(
+          DOMException.NO_MODIFICATION_ALLOWED_ERR, "NO_MODIFICATION_ALLOWED_ERR");
     }
 
-    //
-    // Node methods
-    //
-
-    /** Returns the node name. */
-    public abstract String getNodeName();
-
-    /** Returns an empty node list. */
-    public NodeList getChildNodes() {
-        return singletonNodeList;
+    if (syncData) {
+      synchronizeData();
     }
 
-    //
-    // CharacterData methods
-    //
+    // Handles mutation event generation, if any
+    setNodeValue(value + data);
+  } // appendData(String)
 
-    /**
-     * Retrieve character data currently stored in this node.
-     * 
-     * @throws DOMExcpetion(DOMSTRING_SIZE_ERR) In some implementations,
-     * the stored data may exceed the permitted length of strings. If so,
-     * getData() will throw this DOMException advising the user to
-     * instead retrieve the data in chunks via the substring() operation.  
-     */
-    public String getData() {
-        if (syncData) {
-            synchronizeData();
-        }
-        return value;
+  /**
+   * Remove a range of characters from the node's value. Throws a DOMException if the offset is
+   * beyond the end of the string. However, a deletion _count_ that exceeds the available data is
+   * accepted as a delete-to-end request.
+   *
+   * @throws DOMException(INDEX_SIZE_ERR) if offset is negative or greater than length, or if count
+   *     is negative.
+   * @throws DOMException(NO_MODIFICATION_ALLOWED_ERR) if node is readonly.
+   */
+  public void deleteData(int offset, int count) throws DOMException {
+
+    if (readOnly) {
+      throw new DOMExceptionImpl(
+          DOMException.NO_MODIFICATION_ALLOWED_ERR, "NO_MODIFICATION_ALLOWED_ERR");
     }
 
-    /** 
-     * Report number of characters currently stored in this node's
-     * data. It may be 0, meaning that the value is an empty string. 
-     */
-    public int getLength() {   
-        if (syncData) {
-            synchronizeData();
-        }
-        return value.length();
-    }  
-
-    /** 
-     * Concatenate additional characters onto the end of the data
-     * stored in this node. Note that this, and insert(), are the paths
-     * by which a DOM could wind up accumulating more data than the
-     * language's strings can easily handle. (See above discussion.)
-     * 
-     * @throws DOMException(NO_MODIFICATION_ALLOWED_ERR) if node is readonly.
-     */
-    public void appendData(String data) {
-
-        if (readOnly) {
-        	throw new DOMExceptionImpl(
-        		DOMException.NO_MODIFICATION_ALLOWED_ERR,
-        		"NO_MODIFICATION_ALLOWED_ERR");
-        }
-
-        if (syncData) {
-            synchronizeData();
-        }
-        
-		// Handles mutation event generation, if any
-        setNodeValue(value+data);
-
-    } // appendData(String)
-
-    /**
-     * Remove a range of characters from the node's value. Throws a
-     * DOMException if the offset is beyond the end of the
-     * string. However, a deletion _count_ that exceeds the available
-     * data is accepted as a delete-to-end request.
-     * 
-     * @throws DOMException(INDEX_SIZE_ERR) if offset is negative or
-     * greater than length, or if count is negative.
-     * 
-     * @throws DOMException(NO_MODIFICATION_ALLOWED_ERR) if node is
-     * readonly.  
-     */
-    public void deleteData(int offset, int count) 
-        throws DOMException {
-
-        if (readOnly) {
-        	throw new DOMExceptionImpl(
-        		DOMException.NO_MODIFICATION_ALLOWED_ERR, 
-        		"NO_MODIFICATION_ALLOWED_ERR");
-        }
-
-        if (count < 0) {
-        	throw new DOMExceptionImpl(DOMException.INDEX_SIZE_ERR, 
-        	                           "INDEX_SIZE_ERR");
-        }
-
-        if (syncData) {
-            synchronizeData();
-        }
-        int tailLength = Math.max(value.length() - count - offset, 0);
-        try {
-		    // Handles mutation event generation, if any
-		    setNodeValue( value.substring(0, offset) + (tailLength > 0 
-		        ? value.substring(offset + count, offset + count + tailLength) 
-		        : "") );
-        }
-        catch (StringIndexOutOfBoundsException e) {
-        	throw new DOMExceptionImpl(DOMException.INDEX_SIZE_ERR, 
-        	                           "INDEX_SIZE_ERR");
-        }
-
-    } // deleteData(int,int)
-
-    /**
-     * Insert additional characters into the data stored in this node,
-     * at the offset specified.
-     *
-     * @throws DOMException(INDEX_SIZE_ERR) if offset is negative or
-     * greater than length.
-     *
-     * @throws DOMException(NO_MODIFICATION_ALLOWED_ERR) if node is readonly.  
-     */
-    public void insertData(int offset, String data) 
-        throws DOMException {
-
-        if (readOnly) {
-        	throw new DOMExceptionImpl(
-        		DOMException.NO_MODIFICATION_ALLOWED_ERR, 
-        		"NO_MODIFICATION_ALLOWED_ERR");
-        }
-
-        if (syncData) {
-            synchronizeData();
-        }
-        try {
-       		// Handles mutation event generation, if any
-            setNodeValue(
-                new StringBuffer(value).insert(offset, data).toString()
-                );
-        }
-        catch (StringIndexOutOfBoundsException e) {
-        	throw new DOMExceptionImpl(DOMException.INDEX_SIZE_ERR, 
-        	                           "INDEX_SIZE_ERR");
-        }
-
-    } // insertData(int,int)
-
-    /**
-     * Replace a series of characters at the specified (zero-based)
-     * offset with a new string, NOT necessarily of the same
-     * length. Convenience method, equivalent to a delete followed by an
-     * insert. Throws a DOMException if the specified offset is beyond
-     * the end of the existing data.
-     * 
-     * @param offset       The offset at which to begin replacing.
-     * 
-     * @param count        The number of characters to remove, 
-     * interpreted as in the delete() method.
-     * 
-     * @param data         The new string to be inserted at offset in place of
-     * the removed data. Note that the entire string will
-     * be inserted -- the count parameter does not affect
-     * insertion, and the new data may be longer or shorter
-     * than the substring it replaces.
-     * 
-     * @throws DOMException(INDEX_SIZE_ERR) if offset is negative or
-     * greater than length, or if count is negative.
-     * 
-     * @throws DOMException(NO_MODIFICATION_ALLOWED_ERR) if node is
-     * readonly.  
-     */
-    public void replaceData(int offset, int count, String data) 
-        throws DOMException {
-
-		// The read-only check is done by deleteData()
-		// ***** This could be more efficient w/r/t Mutation Events,
-		// specifically by aggregating DOMAttrModified and
-		// DOMSubtreeModified. But mutation events are 
-		// underspecified; I don't feel compelled
-		// to deal with it right now.
-		deleteData(offset, count);
-		insertData(offset, data);
-
-    } // replaceData(int,int,String)
-
-    /**
-     * Store character data into this node.
-     * 
-     * @throws DOMException(NO_MODIFICATION_ALLOWED_ERR) if node is readonly.
-     */
-    public void setData(String value) 
-        throws DOMException {
-        setNodeValue(value);
+    if (count < 0) {
+      throw new DOMExceptionImpl(DOMException.INDEX_SIZE_ERR, "INDEX_SIZE_ERR");
     }
 
-    /** 
-     * Substring is more than a convenience function. In some
-     * implementations of the DOM, where the stored data may exceed the
-     * length that can be returned in a single string, the only way to
-     * read it all is to extract it in chunks via this method.
-     *
-     * @param offset        Zero-based offset of first character to retrieve.
-     * @param count Number of characters to retrieve. 
-     *
-     * If the sum of offset and count exceeds the length, all characters
-     * to end of data are returned.
-     *
-     * @throws DOMException(INDEX_SIZE_ERR) if offset is negative or
-     * greater than length, or if count is negative.
-     *
-     * @throws DOMException(WSTRING_SIZE_ERR) In some implementations,
-     * count may exceed the permitted length of strings. If so,
-     * substring() will throw this DOMException advising the user to
-     * instead retrieve the data in smaller chunks.  
-     */
-    public String substringData(int offset, int count) 
-        throws DOMException {
+    if (syncData) {
+      synchronizeData();
+    }
+    int tailLength = Math.max(value.length() - count - offset, 0);
+    try {
+      // Handles mutation event generation, if any
+      setNodeValue(
+          value.substring(0, offset)
+              + (tailLength > 0
+                  ? value.substring(offset + count, offset + count + tailLength)
+                  : ""));
+    } catch (StringIndexOutOfBoundsException e) {
+      throw new DOMExceptionImpl(DOMException.INDEX_SIZE_ERR, "INDEX_SIZE_ERR");
+    }
+  } // deleteData(int,int)
 
-        if (syncData) {
-            synchronizeData();
-        }
-        
-        int length = value.length();
-        if (count < 0 || offset < 0 || offset > length - 1) {
-            throw new DOMExceptionImpl(DOMException.INDEX_SIZE_ERR, 
-                                       "INDEX_SIZE_ERR");
-        }
+  /**
+   * Insert additional characters into the data stored in this node, at the offset specified.
+   *
+   * @throws DOMException(INDEX_SIZE_ERR) if offset is negative or greater than length.
+   * @throws DOMException(NO_MODIFICATION_ALLOWED_ERR) if node is readonly.
+   */
+  public void insertData(int offset, String data) throws DOMException {
 
-        int tailIndex = Math.min(offset + count, length);
+    if (readOnly) {
+      throw new DOMExceptionImpl(
+          DOMException.NO_MODIFICATION_ALLOWED_ERR, "NO_MODIFICATION_ALLOWED_ERR");
+    }
 
-        return value.substring(offset, tailIndex);
+    if (syncData) {
+      synchronizeData();
+    }
+    try {
+      // Handles mutation event generation, if any
+      setNodeValue(new StringBuffer(value).insert(offset, data).toString());
+    } catch (StringIndexOutOfBoundsException e) {
+      throw new DOMExceptionImpl(DOMException.INDEX_SIZE_ERR, "INDEX_SIZE_ERR");
+    }
+  } // insertData(int,int)
 
-    } // substringData(int,int):String
+  /**
+   * Replace a series of characters at the specified (zero-based) offset with a new string, NOT
+   * necessarily of the same length. Convenience method, equivalent to a delete followed by an
+   * insert. Throws a DOMException if the specified offset is beyond the end of the existing data.
+   *
+   * @param offset The offset at which to begin replacing.
+   * @param count The number of characters to remove, interpreted as in the delete() method.
+   * @param data The new string to be inserted at offset in place of the removed data. Note that the
+   *     entire string will be inserted -- the count parameter does not affect insertion, and the
+   *     new data may be longer or shorter than the substring it replaces.
+   * @throws DOMException(INDEX_SIZE_ERR) if offset is negative or greater than length, or if count
+   *     is negative.
+   * @throws DOMException(NO_MODIFICATION_ALLOWED_ERR) if node is readonly.
+   */
+  public void replaceData(int offset, int count, String data) throws DOMException {
 
+    // The read-only check is done by deleteData()
+    // ***** This could be more efficient w/r/t Mutation Events,
+    // specifically by aggregating DOMAttrModified and
+    // DOMSubtreeModified. But mutation events are
+    // underspecified; I don't feel compelled
+    // to deal with it right now.
+    deleteData(offset, count);
+    insertData(offset, data);
+  } // replaceData(int,int,String)
+
+  /**
+   * Store character data into this node.
+   *
+   * @throws DOMException(NO_MODIFICATION_ALLOWED_ERR) if node is readonly.
+   */
+  public void setData(String value) throws DOMException {
+    setNodeValue(value);
+  }
+
+  /**
+   * Substring is more than a convenience function. In some implementations of the DOM, where the
+   * stored data may exceed the length that can be returned in a single string, the only way to read
+   * it all is to extract it in chunks via this method.
+   *
+   * @param offset Zero-based offset of first character to retrieve.
+   * @param count Number of characters to retrieve.
+   *     <p>If the sum of offset and count exceeds the length, all characters to end of data are
+   *     returned.
+   * @throws DOMException(INDEX_SIZE_ERR) if offset is negative or greater than length, or if count
+   *     is negative.
+   * @throws DOMException(WSTRING_SIZE_ERR) In some implementations, count may exceed the permitted
+   *     length of strings. If so, substring() will throw this DOMException advising the user to
+   *     instead retrieve the data in smaller chunks.
+   */
+  public String substringData(int offset, int count) throws DOMException {
+
+    if (syncData) {
+      synchronizeData();
+    }
+
+    int length = value.length();
+    if (count < 0 || offset < 0 || offset > length - 1) {
+      throw new DOMExceptionImpl(DOMException.INDEX_SIZE_ERR, "INDEX_SIZE_ERR");
+    }
+
+    int tailIndex = Math.min(offset + count, length);
+
+    return value.substring(offset, tailIndex);
+  } // substringData(int,int):String
 } // class CharacterDataImpl

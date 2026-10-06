@@ -34,20 +34,17 @@ import org.tigris.gef.base.SelectAllAction;
  */
 public class ActionSelectAll extends SelectAllAction {
 
-    /**
-     * The constructor.
-     */
-    public ActionSelectAll() {
-        this(Translator.localize("menu.item.select-all"));
-    }
+  /** The constructor. */
+  public ActionSelectAll() {
+    this(Translator.localize("menu.item.select-all"));
+  }
 
-    /**
-     * The Constructor.
-     * 
-     * @param name the name of the action
-     */
-    ActionSelectAll(String name) {
-        super(name);
-    }
-
+  /**
+   * The Constructor.
+   *
+   * @param name the name of the action
+   */
+  ActionSelectAll(String name) {
+    super(name);
+  }
 }

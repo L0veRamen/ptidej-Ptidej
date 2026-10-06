@@ -26,74 +26,64 @@ package org.argouml.uml.diagram.ui;
 
 import java.awt.event.ActionEvent;
 import java.util.Collection;
-
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.Model;
 import org.argouml.ui.targetmanager.TargetManager;
 import org.argouml.uml.ui.UMLAction;
 
 /**
- * Action to add an attribute to a classifier.<p>
+ * Action to add an attribute to a classifier.
+ *
+ * <p>
  *
  * @stereotype singleton
  */
 public class ActionAddAttribute extends UMLAction {
-    /**
-     * The constructor for this class.
-     */
-    public ActionAddAttribute() {
-        super("button.new-attribute", true, HAS_ICON);
+  /** The constructor for this class. */
+  public ActionAddAttribute() {
+    super("button.new-attribute", true, HAS_ICON);
+  }
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    Object target = TargetManager.getInstance().getModelTarget();
+    Object /*MClassifier*/ cls = null;
+
+    if (Model.getFacade().isAClassifier(target) || Model.getFacade().isAAssociationEnd(target)) {
+      cls = target;
+    } else if (Model.getFacade().isAFeature(target)
+        && Model.getFacade().isAClass(Model.getFacade().getOwner(target))) {
+      cls = Model.getFacade().getOwner(target);
+    } else {
+      return;
     }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-	Object target = TargetManager.getInstance().getModelTarget();
-	Object/*MClassifier*/ cls = null;
+    Collection propertyChangeListeners =
+        ProjectManager.getManager().getCurrentProject().findFigsForMember(cls);
+    Object intType = ProjectManager.getManager().getCurrentProject().findType("int");
+    Object model = ProjectManager.getManager().getCurrentProject().getModel();
+    Object attr =
+        Model.getCoreFactory().buildAttribute(cls, model, intType, propertyChangeListeners);
+    TargetManager.getInstance().setTarget(attr);
+    super.actionPerformed(ae);
+  }
 
-	if (Model.getFacade().isAClassifier(target)
-            || Model.getFacade().isAAssociationEnd(target)) {
-	    cls = target;
-	} else if (Model.getFacade().isAFeature(target)
-		 && Model.getFacade().isAClass(
-                                 Model.getFacade().getOwner(target))) {
-	    cls = Model.getFacade().getOwner(target);
-	} else {
-	    return;
-	}
-
-	Collection propertyChangeListeners =
-	    ProjectManager.getManager()
-	    	.getCurrentProject().findFigsForMember(cls);
-	Object intType =
-	    ProjectManager.getManager()
-	    	.getCurrentProject().findType("int");
-	Object model =
-	    ProjectManager.getManager()
-	    	.getCurrentProject().getModel();
-	Object attr =
-	    Model.getCoreFactory().buildAttribute(cls, model, intType,
-	            propertyChangeListeners);
-	TargetManager.getInstance().setTarget(attr);
-	super.actionPerformed(ae);
+  /**
+   * @see org.argouml.uml.ui.UMLAction#shouldBeEnabled()
+   */
+  public boolean shouldBeEnabled() {
+    /* Check if multiple items are selected: */
+    if (TargetManager.getInstance().getTargets().size() > 1) {
+      return false;
     }
 
-    /**
-     * @see org.argouml.uml.ui.UMLAction#shouldBeEnabled()
-     */
-    public boolean shouldBeEnabled() {
-        /* Check if multiple items are selected: */
-        if (TargetManager.getInstance().getTargets().size() > 1) {
-            return false;
-        }
-
-	Object target =  TargetManager.getInstance().getModelTarget();
-	return super.shouldBeEnabled()
-	       && (Model.getFacade().isAClass(target)
-		   || (Model.getFacade().isAFeature(target)
-		       && Model.getFacade().isAClass(
-                                       Model.getFacade().getOwner(target)))
-           || Model.getFacade().isAAssociationEnd(target));
-    }
+    Object target = TargetManager.getInstance().getModelTarget();
+    return super.shouldBeEnabled()
+        && (Model.getFacade().isAClass(target)
+            || (Model.getFacade().isAFeature(target)
+                && Model.getFacade().isAClass(Model.getFacade().getOwner(target)))
+            || Model.getFacade().isAAssociationEnd(target));
+  }
 } /* end class ActionAddAttribute */

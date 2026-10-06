@@ -32,37 +32,34 @@ import org.restlet.data.Protocol;
 
 /**
  * Guard access to a Restlet.
+ *
  * @author Jerome Louvel (contact@noelios.com)
  */
-public class Part09a implements Constants
-{
-	public static void main(String[] args) throws Exception
-	{
-		// Create a container
-		Container container = new Container();
-		container.getServers().add(Protocol.HTTP, 8182);
-		container.getClients().add(Protocol.FILE);
+public class Part09a implements Constants {
+  public static void main(String[] args) throws Exception {
+    // Create a container
+    Container container = new Container();
+    container.getServers().add(Protocol.HTTP, 8182);
+    container.getClients().add(Protocol.FILE);
 
-		// Create an application
-		Application application = new Application(container)
-		{
-			@Override
-			public Restlet createRoot()
-			{
-				// Create a Guard
-				Guard guard = new Guard(getContext(), ChallengeScheme.HTTP_BASIC, "Tutorial");
-				guard.getAuthorizations().put("scott", "tiger");
+    // Create an application
+    Application application =
+        new Application(container) {
+          @Override
+          public Restlet createRoot() {
+            // Create a Guard
+            Guard guard = new Guard(getContext(), ChallengeScheme.HTTP_BASIC, "Tutorial");
+            guard.getAuthorizations().put("scott", "tiger");
 
-				// Create a Directory able to return a deep hierarchy of files
-				Directory directory = new Directory(getContext(), ROOT_URI);
-				guard.setNext(directory);
-				return guard;
-			}
-		};
+            // Create a Directory able to return a deep hierarchy of files
+            Directory directory = new Directory(getContext(), ROOT_URI);
+            guard.setNext(directory);
+            return guard;
+          }
+        };
 
-		// Attach the application to the container and start it
-		container.getDefaultHost().attach("", application);
-		container.start();
-	}
-
+    // Attach the application to the container and start it
+    container.getDefaultHost().attach("", application);
+    container.start();
+  }
 }

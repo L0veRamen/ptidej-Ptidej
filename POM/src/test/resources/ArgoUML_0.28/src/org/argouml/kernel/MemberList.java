@@ -29,7 +29,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-
 import org.apache.log4j.Logger;
 import org.argouml.uml.ProjectMemberModel;
 import org.argouml.uml.cognitive.ProjectMemberTodoList;
@@ -37,291 +36,284 @@ import org.argouml.uml.diagram.ArgoDiagram;
 import org.argouml.uml.diagram.ProjectMemberDiagram;
 
 /**
- * List of ProjectMembers. <p>
- * 
- * <p>The project members are grouped into 4 categories: 
- * model, diagrams, the todo item list and the profile configuration. <p>
+ * List of ProjectMembers.
  *
- * <p>The purpose of these categories is to make sure that members are read 
- * and written in the correct order. 
- * 
- * <p>When reading the todo items it will fail if the diagrams elements or model
- * elements have not yet been read that they refer to. When reading diagrams
- * that will fail if the model elements don't yet exist that they refer to.
- * When loading the model that may fail if the correct profile has not been
- * loaded.
- * 
- * <p>Hence, the save (and therefore load) order is profile, model, diagrams,
- * todo items.
+ * <p>
  *
- * <p>This implementation supports only one profile configuration, one model
- * member, multiple diagram members, one todo list member.
- * 
- * <p>Comments by mvw: <p>
- * This class should be reworked to be independent 
- * of the org.argouml.uml package. That can be done by extending the 
- * ProjectMember interface with functions returning the sorting order, 
- * and if multiple entries of the same type are allowed. <p>
- * 
- * In preparation, this class is made simpler by deprecating 
- * all operations that are not part of the List interface.
- * 
+ * <p>The project members are grouped into 4 categories: model, diagrams, the todo item list and the
+ * profile configuration.
+ *
+ * <p>
+ *
+ * <p>The purpose of these categories is to make sure that members are read and written in the
+ * correct order.
+ *
+ * <p>When reading the todo items it will fail if the diagrams elements or model elements have not
+ * yet been read that they refer to. When reading diagrams that will fail if the model elements
+ * don't yet exist that they refer to. When loading the model that may fail if the correct profile
+ * has not been loaded.
+ *
+ * <p>Hence, the save (and therefore load) order is profile, model, diagrams, todo items.
+ *
+ * <p>This implementation supports only one profile configuration, one model member, multiple
+ * diagram members, one todo list member.
+ *
+ * <p>Comments by mvw:
+ *
+ * <p>This class should be reworked to be independent of the org.argouml.uml package. That can be
+ * done by extending the ProjectMember interface with functions returning the sorting order, and if
+ * multiple entries of the same type are allowed.
+ *
+ * <p>In preparation, this class is made simpler by deprecating all operations that are not part of
+ * the List interface.
+ *
  * @author Bob Tarling
  */
 class MemberList implements List<ProjectMember> {
 
-    /**
-     * Logger.
-     */
-    private static final Logger LOG = Logger.getLogger(MemberList.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(MemberList.class);
 
-    private AbstractProjectMember model;
+  private AbstractProjectMember model;
 
-    private List<ProjectMemberDiagram> diagramMembers = 
-        new ArrayList<ProjectMemberDiagram>(10);
+  private List<ProjectMemberDiagram> diagramMembers = new ArrayList<ProjectMemberDiagram>(10);
 
-    private AbstractProjectMember todoList;
-    private AbstractProjectMember profileConfiguration;
+  private AbstractProjectMember todoList;
+  private AbstractProjectMember profileConfiguration;
 
-    /**
-     * The constructor.
-     */
-    public MemberList() {
-        LOG.info("Creating a member list");
+  /** The constructor. */
+  public MemberList() {
+    LOG.info("Creating a member list");
+  }
+
+  public synchronized boolean add(ProjectMember member) {
+
+    if (member instanceof ProjectMemberModel) {
+      // Always put the model at the top
+      model = (AbstractProjectMember) member;
+      return true;
+    } else if (member instanceof ProjectMemberTodoList) {
+      // otherwise add the diagram at the start
+      setTodoList((AbstractProjectMember) member);
+      return true;
+    } else if (member instanceof ProfileConfiguration) {
+      profileConfiguration = (AbstractProjectMember) member;
+      return true;
+    } else if (member instanceof ProjectMemberDiagram) {
+      // otherwise add the diagram at the start
+      return diagramMembers.add((ProjectMemberDiagram) member);
+    }
+    return false;
+  }
+
+  public synchronized boolean remove(Object member) {
+    LOG.info("Removing a member");
+    if (member instanceof ArgoDiagram) {
+      return removeDiagram((ArgoDiagram) member);
+    }
+    ((AbstractProjectMember) member).remove();
+    if (model == member) {
+      model = null;
+      return true;
+    } else if (todoList == member) {
+      LOG.info("Removing todo list");
+      setTodoList(null);
+      return true;
+    } else if (profileConfiguration == member) {
+      LOG.info("Removing profile configuration");
+      profileConfiguration = null;
+      return true;
+    } else {
+      final boolean removed = diagramMembers.remove(member);
+      if (!removed) {
+        LOG.warn("Failed to remove diagram member " + member);
+      }
+      return removed;
+    }
+  }
+
+  public synchronized Iterator<ProjectMember> iterator() {
+    return buildOrderedMemberList().iterator();
+  }
+
+  public synchronized ListIterator<ProjectMember> listIterator() {
+    return buildOrderedMemberList().listIterator();
+  }
+
+  public synchronized ListIterator<ProjectMember> listIterator(int arg0) {
+    return buildOrderedMemberList().listIterator(arg0);
+  }
+
+  /**
+   * @return the list of members in the order that they need to be written out in.
+   */
+  private List<ProjectMember> buildOrderedMemberList() {
+    List<ProjectMember> temp = new ArrayList<ProjectMember>(size());
+    if (profileConfiguration != null) {
+      temp.add(profileConfiguration);
+    }
+    if (model != null) {
+      temp.add(model);
+    }
+    temp.addAll(diagramMembers);
+    if (todoList != null) {
+      temp.add(todoList);
+    }
+    return temp;
+  }
+
+  private boolean removeDiagram(ArgoDiagram d) {
+    for (ProjectMemberDiagram pmd : diagramMembers) {
+      if (pmd.getDiagram() == d) {
+        pmd.remove();
+        diagramMembers.remove(pmd);
+        return true;
+      }
+    }
+    LOG.debug("Failed to remove diagram " + d);
+    return false;
+  }
+
+  public synchronized int size() {
+    int size = diagramMembers.size();
+    if (model != null) {
+      ++size;
+    }
+    if (todoList != null) {
+      ++size;
+    }
+    if (profileConfiguration != null) {
+      ++size;
+    }
+    return size;
+  }
+
+  public synchronized boolean contains(Object member) {
+    if (todoList == member) {
+      return true;
+    }
+    if (model == member) {
+      return true;
+    }
+    if (profileConfiguration == member) {
+      return true;
+    }
+    return diagramMembers.contains(member);
+  }
+
+  public synchronized void clear() {
+    LOG.info("Clearing members");
+    if (model != null) {
+      model.remove();
+    }
+    if (todoList != null) {
+      todoList.remove();
+    }
+    if (profileConfiguration != null) {
+      profileConfiguration.remove();
+    }
+    Iterator membersIt = diagramMembers.iterator();
+    while (membersIt.hasNext()) {
+      ((AbstractProjectMember) membersIt.next()).remove();
+    }
+    diagramMembers.clear();
+  }
+
+  public synchronized ProjectMember get(int i) {
+    if (model != null) {
+      if (i == 0) {
+        return model;
+      }
+      --i;
     }
 
-    public synchronized boolean add(ProjectMember member) {
-
-        if (member instanceof ProjectMemberModel) {
-            // Always put the model at the top
-            model = (AbstractProjectMember) member;
-            return true;
-        } else if (member instanceof ProjectMemberTodoList) {
-            // otherwise add the diagram at the start
-            setTodoList((AbstractProjectMember) member);
-            return true;
-        } else if (member instanceof ProfileConfiguration) {
-            profileConfiguration = (AbstractProjectMember) member;
-            return true;
-        } else if (member instanceof ProjectMemberDiagram) {
-            // otherwise add the diagram at the start
-            return diagramMembers.add((ProjectMemberDiagram) member);
-        }
-        return false;
+    if (i == diagramMembers.size()) {
+      if (todoList != null) {
+        return todoList;
+      } else {
+        return profileConfiguration;
+      }
     }
 
-    public synchronized boolean remove(Object member) {
-        LOG.info("Removing a member");
-        if (member instanceof ArgoDiagram) {
-            return removeDiagram((ArgoDiagram) member);
-        }
-        ((AbstractProjectMember) member).remove();
-        if (model == member) {
-            model = null;
-            return true;
-        } else if (todoList == member) {
-            LOG.info("Removing todo list");
-            setTodoList(null);
-            return true;
-        } else if (profileConfiguration == member) {
-            LOG.info("Removing profile configuration");
-            profileConfiguration = null;
-            return true;
-        } else {
-            final boolean removed = diagramMembers.remove(member);
-            if (!removed) {
-                LOG.warn("Failed to remove diagram member " + member);
-            }
-            return removed;
-        }
+    if (i == (diagramMembers.size() + 1)) {
+      return profileConfiguration;
     }
 
-    public synchronized Iterator<ProjectMember> iterator() {
-        return buildOrderedMemberList().iterator();
+    return diagramMembers.get(i);
+  }
+
+  public synchronized boolean isEmpty() {
+    return size() == 0;
+  }
+
+  public synchronized ProjectMember[] toArray() {
+    ProjectMember[] temp = new ProjectMember[size()];
+    int pos = 0;
+    if (model != null) {
+      temp[pos++] = model;
     }
-
-    public synchronized ListIterator<ProjectMember> listIterator() {
-        return buildOrderedMemberList().listIterator();
+    for (ProjectMemberDiagram d : diagramMembers) {
+      temp[pos++] = d;
     }
-
-    public synchronized ListIterator<ProjectMember> listIterator(int arg0) {
-        return buildOrderedMemberList().listIterator(arg0);
+    if (todoList != null) {
+      temp[pos++] = todoList;
     }
-
-    /**
-     * @return the list of members in the order that they need to be written 
-     *         out in.
-     */
-    private List<ProjectMember> buildOrderedMemberList() {
-        List<ProjectMember> temp = 
-            new ArrayList<ProjectMember>(size());
-        if (profileConfiguration != null) {
-            temp.add(profileConfiguration);
-        }
-        if (model != null) {
-            temp.add(model);
-        }
-        temp.addAll(diagramMembers);
-        if (todoList != null) {
-            temp.add(todoList);
-        }
-        return temp;
+    if (profileConfiguration != null) {
+      temp[pos++] = profileConfiguration;
     }
-    
-    private boolean removeDiagram(ArgoDiagram d) {
-        for (ProjectMemberDiagram pmd : diagramMembers) {
-            if (pmd.getDiagram() == d) {
-                pmd.remove();
-                diagramMembers.remove(pmd);
-                return true;
-            }
-        }
-        LOG.debug("Failed to remove diagram " + d);
-        return false;
-    }
+    return temp;
+  }
 
-    public synchronized int size() {
-        int size = diagramMembers.size();
-        if (model != null) {
-            ++size;
-        }
-        if (todoList != null) {
-            ++size;
-        }
-        if (profileConfiguration != null) {
-            ++size;
-        }
-        return size;
-    }
+  private void setTodoList(AbstractProjectMember member) {
+    LOG.info("Setting todoList to " + member);
+    todoList = member;
+  }
 
-    public synchronized boolean contains(Object member) {
-        if (todoList == member) {
-            return true;
-        }
-        if (model == member) {
-            return true;
-        }
-        if (profileConfiguration == member) {
-            return true;
-        }
-        return diagramMembers.contains(member);
-    }
+  public <T> T[] toArray(T[] a) {
+    throw new UnsupportedOperationException();
+  }
 
-    public synchronized void clear() {
-        LOG.info("Clearing members");
-        if (model != null) {
-            model.remove();
-        }
-        if (todoList != null) {
-            todoList.remove();
-        }
-        if (profileConfiguration != null) {
-            profileConfiguration.remove();
-        }
-        Iterator membersIt = diagramMembers.iterator();
-        while (membersIt.hasNext()) {
-            ((AbstractProjectMember) membersIt.next()).remove();
-        }
-        diagramMembers.clear();
-    }
+  public boolean containsAll(Collection<?> arg0) {
+    throw new UnsupportedOperationException();
+  }
 
-    public synchronized ProjectMember get(int i) {
-        if (model != null) {
-            if (i == 0) {
-                return model;
-            }
-            --i;
-        }
+  public boolean addAll(Collection<? extends ProjectMember> arg0) {
+    throw new UnsupportedOperationException();
+  }
 
-        if (i == diagramMembers.size()) {
-            if (todoList != null) {
-                return todoList;
-            } else {
-                return profileConfiguration;
-            }
-        }
-        
-        if (i == (diagramMembers.size() + 1)) {
-            return profileConfiguration;
-        }
+  public boolean addAll(int arg0, Collection<? extends ProjectMember> arg1) {
+    throw new UnsupportedOperationException();
+  }
 
-        return diagramMembers.get(i);
-    }
+  public boolean removeAll(Collection<?> arg0) {
+    throw new UnsupportedOperationException();
+  }
 
-    public synchronized boolean isEmpty() {
-        return size() == 0;
-    }
+  public boolean retainAll(Collection<?> arg0) {
+    throw new UnsupportedOperationException();
+  }
 
-    public synchronized ProjectMember[] toArray() {
-        ProjectMember[] temp = new ProjectMember[size()];
-        int pos = 0;
-        if (model != null) {
-            temp[pos++] = model;
-        }
-        for (ProjectMemberDiagram d : diagramMembers) {
-            temp[pos++] = d;
-        }
-        if (todoList != null) {
-            temp[pos++] = todoList;
-        }
-        if (profileConfiguration != null) {
-            temp[pos++] = profileConfiguration;
-        }
-        return temp;
-    }
+  public ProjectMember set(int arg0, ProjectMember arg1) {
+    throw new UnsupportedOperationException();
+  }
 
-    private void setTodoList(AbstractProjectMember member) {
-        LOG.info("Setting todoList to " + member);
-        todoList = member;
-    }
+  public void add(int arg0, ProjectMember arg1) {
+    throw new UnsupportedOperationException();
+  }
 
-    public <T> T[] toArray(T[] a) {
-        throw new UnsupportedOperationException();
-    }
+  public ProjectMember remove(int arg0) {
+    throw new UnsupportedOperationException();
+  }
 
-    public boolean containsAll(Collection< ? > arg0) {
-        throw new UnsupportedOperationException();
-    }
+  public int indexOf(Object arg0) {
+    throw new UnsupportedOperationException();
+  }
 
-    public boolean addAll(Collection< ? extends ProjectMember> arg0) {
-        throw new UnsupportedOperationException();
-    }
+  public int lastIndexOf(Object arg0) {
+    throw new UnsupportedOperationException();
+  }
 
-    public boolean addAll(int arg0, Collection< ? extends ProjectMember> arg1) {
-        throw new UnsupportedOperationException();
-    }
-
-    public boolean removeAll(Collection< ? > arg0) {
-        throw new UnsupportedOperationException();
-    }
-
-    public boolean retainAll(Collection< ? > arg0) {
-        throw new UnsupportedOperationException();
-    }
-
-    public ProjectMember set(int arg0, ProjectMember arg1) {
-        throw new UnsupportedOperationException();
-    }
-
-    public void add(int arg0, ProjectMember arg1) {
-        throw new UnsupportedOperationException();
-    }
-
-    public ProjectMember remove(int arg0) {
-        throw new UnsupportedOperationException();
-    }
-
-    public int indexOf(Object arg0) {
-        throw new UnsupportedOperationException();
-    }
-
-    public int lastIndexOf(Object arg0) {
-        throw new UnsupportedOperationException();
-    }
-
-    public List<ProjectMember> subList(int arg0, int arg1) {
-        throw new UnsupportedOperationException();
-    }
-
-
+  public List<ProjectMember> subList(int arg0, int arg1) {
+    throw new UnsupportedOperationException();
+  }
 }

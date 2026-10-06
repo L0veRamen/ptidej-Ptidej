@@ -24,84 +24,75 @@
 
 package org.argouml.uml.ui.behavior.activity_graphs;
 
-import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.Collection;
-
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.Model;
 import org.argouml.model.UmlChangeEvent;
 import org.argouml.uml.ui.UMLComboBoxModel2;
 
 /**
- * A model for the type of an ObjectFlowState.
- * This combo shows the Classifier or the ClassifierInState! 
- * 
+ * A model for the type of an ObjectFlowState. This combo shows the Classifier or the
+ * ClassifierInState!
+ *
  * @since Oct 10, 2002
  * @author jaap.branderhorst@xs4all.nl, alexb
  */
-public class UMLObjectFlowStateClassifierComboBoxModel
-    extends UMLComboBoxModel2 {
+public class UMLObjectFlowStateClassifierComboBoxModel extends UMLComboBoxModel2 {
 
-    /**
-     * Constructor.
-     */
-    public UMLObjectFlowStateClassifierComboBoxModel() {
-        super("type", false);
+  /** Constructor. */
+  public UMLObjectFlowStateClassifierComboBoxModel() {
+    super("type", false);
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object o) {
+    return Model.getFacade().isAClassifier(o);
+  }
+
+  /**
+   * Get all Classifiers that are not ClassifierInState.
+   *
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    Object model = ProjectManager.getManager().getCurrentProject().getModel();
+    Collection newList = new ArrayList(Model.getCoreHelper().getAllClassifiers(model));
+
+    // get the current type - normally we won't need this, but who knows?
+    if (getTarget() != null) {
+      Object type = Model.getFacade().getType(getTarget());
+      if (type != null) if (!newList.contains(type)) newList.add(type);
     }
 
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object o) {
-        return Model.getFacade().isAClassifier(o);
+    setElements(newList);
+  }
+
+  /**
+   * Returns a Classifier that may be a ClassifierInState.
+   *
+   * <p>{@inheritDoc}
+   */
+  protected Object getSelectedModelElement() {
+    if (getTarget() != null) {
+      return Model.getFacade().getType(getTarget());
     }
+    return null;
+  }
 
-    /**
-     * Get all Classifiers that are not ClassifierInState.
-     * 
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        Object model =
-            ProjectManager.getManager().getCurrentProject().getModel();
-        Collection newList = 
-            new ArrayList(Model.getCoreHelper().getAllClassifiers(model));
-
-        // get the current type - normally we won't need this, but who knows?
-        if (getTarget() != null) {
-            Object type = Model.getFacade().getType(getTarget());
-            if (type != null)
-                if (!newList.contains(type)) newList.add(type);
-        }
-
-        setElements(newList);
-    }
-
-    /**
-     * Returns a Classifier that may be a ClassifierInState.
-     * 
-     * {@inheritDoc}
-     */
-    protected Object getSelectedModelElement() {
-        if (getTarget() != null) {
-            return Model.getFacade().getType(getTarget());
-        }
-        return null;
-    }
-
-    /**
-     * The function in the parent removes items from the list when deselected.
-     * We do not need that here.
-     * 
-     * @param evt
-     *            A PropertyChangeEvent object describing the event source and
-     *            the property that has changed.
-     */
-    public void modelChanged(UmlChangeEvent evt) {
-        buildingModel = true;
-        buildModelList();
-        buildingModel = false;
-        setSelectedItem(getSelectedModelElement());
-    }
+  /**
+   * The function in the parent removes items from the list when deselected. We do not need that
+   * here.
+   *
+   * @param evt A PropertyChangeEvent object describing the event source and the property that has
+   *     changed.
+   */
+  public void modelChanged(UmlChangeEvent evt) {
+    buildingModel = true;
+    buildModelList();
+    buildingModel = false;
+    setSelectedItem(getSelectedModelElement());
+  }
 }

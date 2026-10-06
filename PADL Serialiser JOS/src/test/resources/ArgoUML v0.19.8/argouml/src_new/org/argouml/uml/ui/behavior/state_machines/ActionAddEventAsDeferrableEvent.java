@@ -26,74 +26,71 @@ package org.argouml.uml.ui.behavior.state_machines;
 
 import java.util.Collection;
 import java.util.Vector;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.AbstractActionAddModelElement;
 
 /**
- * Provide a dialog which helps the user to select one event out of an existing list, 
- * which will be used as the trigger of the transition.
- * @author MarkusK
+ * Provide a dialog which helps the user to select one event out of an existing list, which will be
+ * used as the trigger of the transition.
  *
+ * @author MarkusK
  */
 public class ActionAddEventAsDeferrableEvent extends AbstractActionAddModelElement {
 
-    /**
-     * The one and only instance of this class.
-     */
-    public static final ActionAddEventAsDeferrableEvent SINGLETON = new ActionAddEventAsDeferrableEvent();
+  /** The one and only instance of this class. */
+  public static final ActionAddEventAsDeferrableEvent SINGLETON =
+      new ActionAddEventAsDeferrableEvent();
 
-    /**
-     * Constructor for ActionAddClassifierRoleBase.
-     */
-    protected ActionAddEventAsDeferrableEvent() {
-        super();
-        setMultiSelect(false);
+  /** Constructor for ActionAddClassifierRoleBase. */
+  protected ActionAddEventAsDeferrableEvent() {
+    super();
+    setMultiSelect(false);
+  }
+
+  /**
+   * @see org.argouml.uml.ui.AbstractActionAddModelElement#getChoices()
+   */
+  protected Vector getChoices() {
+    Vector vec = new Vector();
+    // TODO: the namespace of created events is currently the model. I think this is wrong, they
+    // should be
+    // in the namespace of the activitygraph!
+    //        vec.addAll(Model.getModelManagementHelper().getAllModelElementsOfKind(
+    //                Model.getFacade().getNamespace(getTarget()),
+    // Model.getMetaTypes().getEvent()));
+    vec.addAll(
+        Model.getModelManagementHelper()
+            .getAllModelElementsOfKind(
+                Model.getFacade().getModel(getTarget()), Model.getMetaTypes().getEvent()));
+
+    return vec;
+  }
+
+  /**
+   * @see org.argouml.uml.ui.AbstractActionAddModelElement#getSelected()
+   */
+  protected Vector getSelected() {
+    Vector vec = new Vector();
+    Collection events = Model.getFacade().getDeferrableEvents(getTarget());
+    if (events != null) vec.addAll(events);
+    return vec;
+  }
+
+  /**
+   * @see org.argouml.uml.ui.AbstractActionAddModelElement#getDialogTitle()
+   */
+  protected String getDialogTitle() {
+    return Translator.localize("dialog.title.add-events");
+  }
+
+  /**
+   * @see org.argouml.uml.ui.AbstractActionAddModelElement#doIt(java.util.Vector)
+   */
+  protected void doIt(Vector selected) {
+    Object state = getTarget();
+    if (selected != null && selected.size() != 0) {
+      Model.getStateMachinesHelper().addDeferrableEvent(state, selected.get(0));
     }
-
-    /**
-     * @see org.argouml.uml.ui.AbstractActionAddModelElement#getChoices()
-     */
-    protected Vector getChoices() {
-        Vector vec = new Vector();
-        // TODO: the namespace of created events is currently the model. I think this is wrong, they should be
-        // in the namespace of the activitygraph!
-//        vec.addAll(Model.getModelManagementHelper().getAllModelElementsOfKind(
-//                Model.getFacade().getNamespace(getTarget()), Model.getMetaTypes().getEvent()));
-      vec.addAll(Model.getModelManagementHelper().getAllModelElementsOfKind(
-      Model.getFacade().getModel(getTarget()), Model.getMetaTypes().getEvent()));
-
-        return vec;
-    }
-
-    /**
-     * @see org.argouml.uml.ui.AbstractActionAddModelElement#getSelected()
-     */
-    protected Vector getSelected() {
-        Vector vec = new Vector();
-        Collection events = Model.getFacade().getDeferrableEvents(getTarget());
-        if (events != null)
-            vec.addAll(events);
-        return vec;
-    }
-
-    /**
-     * @see org.argouml.uml.ui.AbstractActionAddModelElement#getDialogTitle()
-     */
-    protected String getDialogTitle() {
-        return Translator.localize("dialog.title.add-events");
-    }
-
-    /**
-     * @see org.argouml.uml.ui.AbstractActionAddModelElement#doIt(java.util.Vector)
-     */
-    protected void doIt(Vector selected) {
-        Object state = getTarget();
-        if (selected != null && selected.size() != 0) {
-            Model.getStateMachinesHelper().addDeferrableEvent(state,
-                    selected.get(0));
-        }
-    }
-
+  }
 }

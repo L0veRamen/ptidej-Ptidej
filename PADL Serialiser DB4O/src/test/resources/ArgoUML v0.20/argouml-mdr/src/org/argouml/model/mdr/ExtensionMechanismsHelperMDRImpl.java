@@ -29,7 +29,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
-
 import org.argouml.model.ExtensionMechanismsHelper;
 import org.omg.uml.foundation.core.ModelElement;
 import org.omg.uml.foundation.core.Namespace;
@@ -41,526 +40,468 @@ import org.omg.uml.modelmanagement.UmlPackage;
 
 /**
  * Helper class for UML Foundation::ExtensionMechanisms Package.
+ *
  * <p>
+ *
  * @since ARGO0.19.5
  * @author Ludovic Ma�tre
- * @author Tom Morris
- * derived from NSUML implementation by:
+ * @author Tom Morris derived from NSUML implementation by:
  * @author Thierry Lach
  */
 class ExtensionMechanismsHelperMDRImpl implements ExtensionMechanismsHelper {
 
-    /**
-     * The model implementation.
-     */
-    private MDRModelImplementation nsmodel;
+  /** The model implementation. */
+  private MDRModelImplementation nsmodel;
 
-    /**
-     * Don't allow instantiation.
-     * 
-     * @param implementation
-     *            To get other helpers and factories.
-     */
-    ExtensionMechanismsHelperMDRImpl(MDRModelImplementation implementation) {
-        nsmodel = implementation;
+  /**
+   * Don't allow instantiation.
+   *
+   * @param implementation To get other helpers and factories.
+   */
+  ExtensionMechanismsHelperMDRImpl(MDRModelImplementation implementation) {
+    nsmodel = implementation;
+  }
+
+  /**
+   * Returns all stereotypes in a namespace, and also those in the UmlPackages contained in the
+   * subnamespace.
+   *
+   * @param ns is the namespace.
+   * @return a Collection with the stereotypes.
+   */
+  public Collection getStereotypes(Object ns) {
+    if (!(ns instanceof Namespace)) {
+      throw new IllegalArgumentException();
     }
 
-    /**
-     * Returns all stereotypes in a namespace, and also those in the UmlPackages
-     * contained in the subnamespace.
-     * 
-     * @param ns
-     *            is the namespace.
-     * @return a Collection with the stereotypes.
-     */
-    public Collection getStereotypes(Object ns) {
-        if (!(ns instanceof Namespace)) {
-            throw new IllegalArgumentException();
-        }
+    List l = new ArrayList();
+    if (ns == null) {
+      return l;
+    }
+    // TODO: this could be a huge collection - find a more efficient way
+    Iterator it = ((Namespace) ns).getOwnedElement().iterator();
+    while (it.hasNext()) {
+      Object o = it.next();
+      if (o instanceof Stereotype) {
+        l.add(o);
+      } else if (o instanceof UmlPackage) {
+        l.addAll(getStereotypes(o));
+      }
+    }
+    return l;
+  }
 
-        List l = new ArrayList();
-        if (ns == null) {
-            return l;
-        }
-        // TODO: this could be a huge collection - find a more efficient way
-        Iterator it = ((Namespace) ns).getOwnedElement().iterator();
-        while (it.hasNext()) {
-            Object o = it.next();
-            if (o instanceof Stereotype) {
-                l.add(o);
-            } else if (o instanceof UmlPackage) {
-                l.addAll(getStereotypes(o));
-            }
-        }
-        return l;
+  /**
+   * Finds a stereotype in some namespace, but not in its subnamespaces. Returns null if no such
+   * stereotype is found.
+   *
+   * @return the stereotype found or null.
+   * @param ns is the namespace.
+   * @param stereo is the stereotype.
+   */
+  public Object getStereotype(Object ns, Object stereo) {
+    if (ns == null || !(ns instanceof Namespace)) {
+      throw new IllegalArgumentException("namespace");
     }
 
-    /**
-     * Finds a stereotype in some namespace, but not in its subnamespaces.
-     * Returns null if no such stereotype is found.
-     * 
-     * @return the stereotype found or null.
-     * @param ns
-     *            is the namespace.
-     * @param stereo
-     *            is the stereotype.
-     */
-    public Object getStereotype(Object ns, Object stereo) {
-        if (ns == null || !(ns instanceof Namespace)) {
-            throw new IllegalArgumentException("namespace");
-        }
-
-        if (ns == null || !(stereo instanceof Stereotype)) {
-            throw new IllegalArgumentException("stereotype");
-        }
-
-        String name = ((ModelElement) stereo).getName();
-        Collection baseClasses = ((Stereotype) stereo).getBaseClass();
-        if (name == null || baseClasses.size() != 1) {
-            return null;
-        }
-        String baseClass = (String) baseClasses.iterator().next();
-        
-        Iterator it = getStereotypes(ns).iterator();
-        while (it.hasNext()) {
-            Object o = it.next();
-            if (o instanceof Stereotype
-                    && name.equals(((Stereotype) o).getName())
-                    && ((Stereotype) o).getBaseClass().contains(baseClass)) {
-                return (Stereotype) o;
-            }
-        }
-        return null;
+    if (ns == null || !(stereo instanceof Stereotype)) {
+      throw new IllegalArgumentException("stereotype");
     }
 
-    /**
-     * Searches for a stereotype just like the given stereotype in the given
-     * collection of models. The given stereotype can not have its namespace set
-     * yet; otherwise it will be returned itself!
-     * 
-     * The stereotype to be matched must have a single BaseClass.
-     * 
-     * @param models
-     *            a collection of models
-     * @param stereo
-     *            is the given stereotype
-     * @return Stereotype
-     */
-    public Object getStereotype(Collection models, Object stereo) {
-        if (stereo == null) {
-            return null;
-        }
-        if (!(stereo instanceof Stereotype)) {
-            throw new IllegalArgumentException("stereotype");
-        }
+    String name = ((ModelElement) stereo).getName();
+    Collection baseClasses = ((Stereotype) stereo).getBaseClass();
+    if (name == null || baseClasses.size() != 1) {
+      return null;
+    }
+    String baseClass = (String) baseClasses.iterator().next();
 
-        String name = ((Stereotype) stereo).getName();
-        Collection baseClasses = ((Stereotype) stereo).getBaseClass();
-        if (name == null || baseClasses.size() != 1) {
-            return null;
-        }
-        String baseClass = (String) baseClasses.iterator().next();
-        
-        Iterator it2 = models.iterator();
-        while (it2.hasNext()) {
-            // TODO: this should call the single namespace form
-            // getStereotype(it2.next(); stereo);
-            Model model = (Model) it2.next();
-            Iterator it = getStereotypes(model).iterator();
-            while (it.hasNext()) {
-                Object o = it.next();
-                if (o instanceof Stereotype
-                        && name.equals(((Stereotype) o).getName())
-                        && ((Stereotype) o).getBaseClass().
-                            contains(baseClass)) {
-                    return (Stereotype) o;
-                }
-            }
-        }
-        return null;
+    Iterator it = getStereotypes(ns).iterator();
+    while (it.hasNext()) {
+      Object o = it.next();
+      if (o instanceof Stereotype
+          && name.equals(((Stereotype) o).getName())
+          && ((Stereotype) o).getBaseClass().contains(baseClass)) {
+        return (Stereotype) o;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Searches for a stereotype just like the given stereotype in the given collection of models. The
+   * given stereotype can not have its namespace set yet; otherwise it will be returned itself!
+   *
+   * <p>The stereotype to be matched must have a single BaseClass.
+   *
+   * @param models a collection of models
+   * @param stereo is the given stereotype
+   * @return Stereotype
+   */
+  public Object getStereotype(Collection models, Object stereo) {
+    if (stereo == null) {
+      return null;
+    }
+    if (!(stereo instanceof Stereotype)) {
+      throw new IllegalArgumentException("stereotype");
     }
 
-    /**
-     * @param m
-     *            the ModelElement
-     * @return the meta name of the ModelElement
-     */
-    public String getMetaModelName(Object m) {
-        if (m == null) {
-            return null;
-        }
-        if (!(m instanceof ModelElement)) {
-            throw new IllegalArgumentException();
-        }
+    String name = ((Stereotype) stereo).getName();
+    Collection baseClasses = ((Stereotype) stereo).getBaseClass();
+    if (name == null || baseClasses.size() != 1) {
+      return null;
+    }
+    String baseClass = (String) baseClasses.iterator().next();
 
-        return getMetaModelName(m.getClass());
+    Iterator it2 = models.iterator();
+    while (it2.hasNext()) {
+      // TODO: this should call the single namespace form
+      // getStereotype(it2.next(); stereo);
+      Model model = (Model) it2.next();
+      Iterator it = getStereotypes(model).iterator();
+      while (it.hasNext()) {
+        Object o = it.next();
+        if (o instanceof Stereotype
+            && name.equals(((Stereotype) o).getName())
+            && ((Stereotype) o).getBaseClass().contains(baseClass)) {
+          return (Stereotype) o;
+        }
+      }
+    }
+    return null;
+  }
+
+  /**
+   * @param m the ModelElement
+   * @return the meta name of the ModelElement
+   */
+  public String getMetaModelName(Object m) {
+    if (m == null) {
+      return null;
+    }
+    if (!(m instanceof ModelElement)) {
+      throw new IllegalArgumentException();
     }
 
-    /**
-     * @param clazz
-     *            the UML class
-     * @return the meta name of the UML class
-     */
-    protected String getMetaModelName(Class clazz) {
-        return nsmodel.getMetaTypes().getName(clazz);
+    return getMetaModelName(m.getClass());
+  }
+
+  /**
+   * @param clazz the UML class
+   * @return the meta name of the UML class
+   */
+  protected String getMetaModelName(Class clazz) {
+    return nsmodel.getMetaTypes().getName(clazz);
+  }
+
+  /**
+   * Returns all possible stereotypes for some modelelement. Possible stereotypes are those
+   * stereotypes that are owned by the same namespace the modelelement is owned by and that have a
+   * baseclass that is the same as the metamodelelement name of the modelelement.
+   *
+   * @param modelElement is the model element
+   * @param models the models to search in
+   * @return Collection
+   */
+  public Collection getAllPossibleStereotypes(Collection models, Object modelElement) {
+    ModelElement m = (ModelElement) modelElement;
+    List ret = new ArrayList();
+    if (m == null) {
+      return ret;
+    }
+    Iterator it = getStereotypes(models).iterator();
+    while (it.hasNext()) {
+      Stereotype stereo = (Stereotype) it.next();
+      if (isValidStereoType(m.getClass(), stereo)) {
+        ret.add(stereo);
+      }
+    }
+    return ret;
+  }
+
+  /**
+   * This function answers the question: Can we apply the given stereotype to the given class?
+   *
+   * @param clazz the class we want to apply the stereotype to
+   * @param stereo the given stereotype
+   * @return true if the stereotype may be applied
+   */
+  private boolean isValidStereoType(Class clazz, Object stereo) {
+    if (clazz == null || stereo == null || !(stereo instanceof Stereotype)) {
+      return false;
+    }
+    if (((Stereotype) stereo).getBaseClass().contains(getMetaModelName(clazz))) {
+      return true;
+    }
+    if (getMetaModelName(clazz).equals("ModelElement")) {
+      return false;
+    }
+    // Any stereotype is applicable to a tagdefinition
+    if (getMetaModelName(clazz).equals("TagDefinition")) return true;
+    Class[] interfaces = clazz.getInterfaces();
+    // TODO: I suppose that this also deal with multiple inheritance
+    for (int i = 0; i < interfaces.length; i++) {
+      if (isValidStereoType(interfaces[i], stereo)) return true;
+    }
+    // Old check on getSuperClass removed since this return the MDR classes
+    return false;
+  }
+
+  /**
+   * Returns true if the given stereotype has a baseclass that equals the baseclass of the given
+   * modelelement or one of the superclasses of the given modelelement.
+   *
+   * @param theModelElement is the model element
+   * @param theStereotype is the stereotype
+   * @return boolean
+   */
+  public boolean isValidStereoType(Object theModelElement, Object theStereotype) {
+    if (theModelElement == null) {
+      return false;
+    }
+    return isValidStereoType(theModelElement.getClass(), theStereotype);
+  }
+
+  /**
+   * Get all stereotypes from all Models in the list.
+   *
+   * <p>Finds all stereotypes owned by the Model objects and the UmlPackage owned by them.
+   *
+   * @return the collection of stereotypes in all models in the current project
+   * @param models the models to search
+   * @throws IllegalArgumentException if an member in the models is not a Model.
+   */
+  public Collection getStereotypes(Collection models) {
+    List ret = new ArrayList();
+    Iterator it = models.iterator();
+    while (it.hasNext()) {
+      Object model = it.next();
+      if (!(model instanceof Model)) {
+        throw new IllegalArgumentException(
+            "Expected to receive a collection of Models. "
+                + "The collection contained a "
+                + model.getClass().getName());
+      }
+      ret.addAll(getStereotypes(model));
+    }
+    return ret;
+  }
+
+  /**
+   * Sets the stereotype of some modelelement. The method also copies a stereotype that is not a
+   * part of the current model to the current model.
+   *
+   * <p>
+   *
+   * @param modelElement is the model element
+   * @param stereotype is the stereotype
+   */
+  public void addCopyStereotype(Object modelElement, Object stereotype) {
+    if (stereotype != null) {
+      stereotype =
+          nsmodel
+              .getModelManagementHelper()
+              .getCorrespondingElement(
+                  stereotype, nsmodel.getFacade().getModel(modelElement), true);
+    }
+    nsmodel.getCoreHelper().addStereotype(modelElement, stereotype);
+  }
+
+  /**
+   * Tests if a stereotype is a stereotype with some name and base class.
+   *
+   * @param object is the stereotype.
+   * @param name is the name of the stereotype.
+   * @param base is the base class of the stereotype.
+   * @return true if object is a stereotype with the desired characteristics.
+   */
+  public boolean isStereotype(Object object, String name, String base) {
+    if (object == null || !(object instanceof Stereotype)) {
+      return false;
     }
 
-    /**
-     * Returns all possible stereotypes for some modelelement. Possible
-     * stereotypes are those stereotypes that are owned by the same namespace
-     * the modelelement is owned by and that have a baseclass that is the same
-     * as the metamodelelement name of the modelelement.
-     * 
-     * @param modelElement
-     *            is the model element
-     * @param models
-     *            the models to search in
-     * @return Collection
-     */
-    public Collection getAllPossibleStereotypes(Collection models,
-            Object modelElement) {
-        ModelElement m = (ModelElement) modelElement;
-        List ret = new ArrayList();
-        if (m == null) {
-            return ret;
-        }
-        Iterator it = getStereotypes(models).iterator();
-        while (it.hasNext()) {
-            Stereotype stereo = (Stereotype) it.next();
-            if (isValidStereoType(m.getClass(), stereo)) {
-                ret.add(stereo);
-            }
-        }
-        return ret;
+    Stereotype st = (Stereotype) object;
+    if (name == null && st.getName() != null) {
+      return false;
+    }
+    if (base == null && !(st.getBaseClass().isEmpty())) {
+      return false;
     }
 
-    /**
-     * This function answers the question: Can we apply the given stereotype to
-     * the given class?
-     * 
-     * @param clazz
-     *            the class we want to apply the stereotype to
-     * @param stereo
-     *            the given stereotype
-     * @return true if the stereotype may be applied
-     */
-    private boolean isValidStereoType(Class clazz, Object stereo) {
-        if (clazz == null || stereo == null 
-                || !(stereo instanceof Stereotype)) {
-            return false;
-        }
-        if (((Stereotype) stereo).getBaseClass().contains(
-                getMetaModelName(clazz))) {
-            return true;
-        }
-        if (getMetaModelName(clazz).equals("ModelElement")) {
-            return false;
-        }
-        //Any stereotype is applicable to a tagdefinition
-        if (getMetaModelName(clazz).equals("TagDefinition"))
-            return true;
-        Class[] interfaces = clazz.getInterfaces();
-        //TODO: I suppose that this also deal with multiple inheritance
-        for (int i = 0; i < interfaces.length; i++) {
-            if (isValidStereoType(interfaces[i], stereo))
-                return true;
-        }
-        //Old check on getSuperClass removed since this return the MDR classes
-        return false;
+    return name.equals(st.getName()) && st.getBaseClass().contains(base);
+  }
+
+  /**
+   * Tests if a stereotype is or inherits from a stereotype with some name and base class.
+   *
+   * @param object is the stereotype.
+   * @param name is the name of the stereotype.
+   * @param base is the base class of the stereotype.
+   * @return true if object is a (descendant of a) stereotype with the desired characteristics.
+   */
+  public boolean isStereotypeInh(Object object, String name, String base) {
+    if (object == null || !(object instanceof Stereotype)) {
+      return false;
     }
-
-    /**
-     * Returns true if the given stereotype has a baseclass that equals the
-     * baseclass of the given modelelement or one of the superclasses of the
-     * given modelelement.
-     * 
-     * @param theModelElement
-     *            is the model element
-     * @param theStereotype
-     *            is the stereotype
-     * @return boolean
-     */
-    public boolean isValidStereoType(Object theModelElement,
-            Object theStereotype) {
-        if (theModelElement == null) {
-            return false;
-        }
-        return isValidStereoType(theModelElement.getClass(), theStereotype);
+    if (isStereotype(object, name, base)) {
+      return true;
     }
-
-    /**
-     * Get all stereotypes from all Models in the list.
-     * 
-     * Finds all stereotypes owned by the Model objects and the UmlPackage owned
-     * by them.
-     * 
-     * @return the collection of stereotypes in all models in the current
-     *         project
-     * @param models
-     *            the models to search
-     * @throws IllegalArgumentException
-     *             if an member in the models is not a Model.
-     */
-    public Collection getStereotypes(Collection models) {
-        List ret = new ArrayList();
-        Iterator it = models.iterator();
-        while (it.hasNext()) {
-            Object model = it.next();
-            if (!(model instanceof Model)) {
-                throw new IllegalArgumentException(
-                        "Expected to receive a collection of Models. "
-                                + "The collection contained a "
-                                + model.getClass().getName());
-            }
-            ret.addAll(getStereotypes(model));
-        }
-        return ret;
+    Iterator it = nsmodel.getCoreHelper().getSupertypes(object).iterator();
+    while (it.hasNext()) {
+      if (isStereotypeInh(it.next(), name, base)) {
+        return true;
+      }
     }
+    return false;
+  }
 
-    /**
-     * Sets the stereotype of some modelelement. The method also copies a
-     * stereotype that is not a part of the current model to the current model.
-     * <p>
-     * 
-     * @param modelElement
-     *            is the model element
-     * @param stereotype
-     *            is the stereotype
-     */
-    public void addCopyStereotype(Object modelElement, Object stereotype) {
-        if (stereotype != null) {
-            stereotype = nsmodel.getModelManagementHelper().
-                    getCorrespondingElement(stereotype,
-                            nsmodel.getFacade().getModel(modelElement), true);
-        }
-        nsmodel.getCoreHelper().addStereotype(modelElement, stereotype);
+  /**
+   * Add an extended element to a stereotype.
+   *
+   * @param handle Stereotype
+   * @param extendedElement ExtensionPoint
+   */
+  public void addExtendedElement(Object handle, Object extendedElement) {
+    if (handle instanceof Stereotype && extendedElement instanceof ModelElement) {
+      ((ModelElement) extendedElement).getStereotype().add(handle);
+      return;
     }
+    throw new IllegalArgumentException(
+        "handle: " + handle + " or extendedElement: " + extendedElement);
+  }
 
-    /**
-     * Tests if a stereotype is a stereotype with some name and base class.
-     * 
-     * @param object
-     *            is the stereotype.
-     * @param name
-     *            is the name of the stereotype.
-     * @param base
-     *            is the base class of the stereotype.
-     * @return true if object is a stereotype with the desired characteristics.
-     */
-    public boolean isStereotype(Object object, String name, String base) {
-        if (object == null || !(object instanceof Stereotype)) {
-            return false;
-        }
-
-        Stereotype st = (Stereotype) object;
-        if (name == null && st.getName() != null) {
-            return false;
-        }
-        if (base == null && !(st.getBaseClass().isEmpty()) ) {
-            return false;
-        }
-
-        return name.equals(st.getName()) && st.getBaseClass().contains(base);
+  /**
+   * Set the baseclass of some stereotype.
+   *
+   * @param handle the stereotype
+   * @param baseClass the baseclass
+   */
+  public void setBaseClass(Object handle, Object baseClass) {
+    if (handle instanceof Stereotype && baseClass instanceof String) {
+      /*
+       * TODO: UML 1.4 allows multiple baseclassses, but we restrict our
+       * implementation to a single baseclass for compatibility with other
+       * tools.
+       */
+      ((Stereotype) handle).getBaseClass().clear();
+      ((Stereotype) handle).getBaseClass().add(baseClass);
+      return;
     }
+    throw new IllegalArgumentException("handle: " + handle + " or baseClass: " + baseClass);
+  }
 
-    /**
-     * Tests if a stereotype is or inherits from a stereotype with some name and
-     * base class.
-     * 
-     * @param object
-     *            is the stereotype.
-     * @param name
-     *            is the name of the stereotype.
-     * @param base
-     *            is the base class of the stereotype.
-     * @return true if object is a (descendant of a) stereotype with the desired
-     *         characteristics.
-     */
-    public boolean isStereotypeInh(Object object, String name, String base) {
-        if (object == null || !(object instanceof Stereotype)) {
-            return false;
-        }
-        if (isStereotype(object, name, base)) {
-            return true;
-        }
-        Iterator it = nsmodel.getCoreHelper().getSupertypes(object).iterator();
-        while (it.hasNext()) {
-            if (isStereotypeInh(it.next(), name, base)) {
-                return true;
-            }
-        }
-        return false;
+  /**
+   * Set the icon for a stereotype.
+   *
+   * @param handle Stereotype
+   * @param icon String
+   */
+  public void setIcon(Object handle, Object icon) {
+    if (handle instanceof Stereotype && (icon == null || icon instanceof String)) {
+      ((Stereotype) handle).setIcon((String) icon);
+      return;
     }
+    throw new IllegalArgumentException("handle: " + handle + " or icon: " + icon);
+  }
 
-    /**
-     * Add an extended element to a stereotype.
-     * 
-     * @param handle
-     *            Stereotype
-     * @param extendedElement
-     *            ExtensionPoint
-     */
-    public void addExtendedElement(Object handle, Object extendedElement) {
-        if (handle instanceof Stereotype
-                && extendedElement instanceof ModelElement) {
-            ((ModelElement) extendedElement).getStereotype().add(handle);
-            return;
-        }
-        throw new IllegalArgumentException("handle: " + handle
-                + " or extendedElement: " + extendedElement);
+  /**
+   * Set the Tag of a TaggedValue.
+   *
+   * @param handle TaggedValue
+   * @param tag String
+   */
+  public void setTag(Object handle, Object tag) {
+    if (handle instanceof TaggedValue) {
+      TaggedValue tv = (TaggedValue) handle;
+      if (tag instanceof TagDefinition) {
+        tag =
+            nsmodel
+                .getModelManagementHelper()
+                .getCorrespondingElement(tag, nsmodel.getFacade().getModel(handle), true);
+        tv.setType((TagDefinition) tag);
+      } else {
+        // TODO: Remove old UML 1.3 code
+        // preserve old behavior
+        TagDefinition td = tv.getType();
+        if (tag == null) tag = "";
+        if (td == null) {
+          td =
+              (TagDefinition)
+                  ((ExtensionMechanismsFactoryMDRImpl) nsmodel.getExtensionMechanismsFactory())
+                      .getTagDefinition(tag.toString());
+          tv.setType(td);
+        } else td.setName(tag.toString());
+      }
     }
+  }
 
-    /**
-     * Set the baseclass of some stereotype.
-     * 
-     * @param handle
-     *            the stereotype
-     * @param baseClass
-     *            the baseclass
-     */
-    public void setBaseClass(Object handle, Object baseClass) {
-        if (handle instanceof Stereotype && baseClass instanceof String) {
-            /*
-             * TODO: UML 1.4 allows multiple baseclassses, but we restrict our
-             * implementation to a single baseclass for compatibility with other
-             * tools.
-             */
-            ((Stereotype) handle).getBaseClass().clear();
-            ((Stereotype) handle).getBaseClass().add(baseClass);
-            return;
-        }
-        throw new IllegalArgumentException("handle: " + handle
-                + " or baseClass: " + baseClass);
+  /**
+   * Sets a value of some taggedValue.
+   *
+   * @param handle is the tagged value
+   * @param value is the value
+   */
+  public void setValueOfTag(Object handle, String value) {
+    if (handle instanceof TaggedValue) {
+      TaggedValue tv = (TaggedValue) handle;
+      // TODO: It *seems* that the other CASE tools manage only one
+      // dataValue.
+      tv.getDataValue().clear();
+      tv.getDataValue().add(value);
     }
+  }
 
-    /**
-     * Set the icon for a stereotype.
-     * 
-     * @param handle
-     *            Stereotype
-     * @param icon
-     *            String
-     */
-    public void setIcon(Object handle, Object icon) {
-        if (handle instanceof Stereotype
-                && (icon == null || icon instanceof String)) {
-            ((Stereotype) handle).setIcon((String) icon);
-            return;
-        }
-        throw new IllegalArgumentException("handle: " + handle + " or icon: "
-                + icon);
+  /**
+   * @see org.argouml.model.ExtensionMechanismsHelper#addTaggedValue(java.lang.Object,
+   *     java.lang.Object)
+   */
+  public void addTaggedValue(Object handle, Object taggedValue) {
+    if (handle instanceof ModelElement && taggedValue instanceof TaggedValue) {
+      ((ModelElement) handle).getTaggedValue().add(taggedValue);
+      return;
     }
+    throw new IllegalArgumentException("handle: " + handle + " or taggedValue: " + taggedValue);
+  }
 
-    /**
-     * Set the Tag of a TaggedValue.
-     * 
-     * @param handle
-     *            TaggedValue
-     * @param tag
-     *            String
-     */
-    public void setTag(Object handle, Object tag) {
-        if (handle instanceof TaggedValue) {
-            TaggedValue tv = (TaggedValue) handle;
-            if (tag instanceof TagDefinition) {
-                tag = nsmodel.getModelManagementHelper()
-                        .getCorrespondingElement(tag,
-                                nsmodel.getFacade().getModel(handle), true);
-                tv.setType((TagDefinition) tag);
-            } else {
-                // TODO: Remove old UML 1.3 code
-                //preserve old behavior
-                TagDefinition td = tv.getType();
-                if (tag == null)
-                    tag = "";
-                if (td == null) {
-                    td = (TagDefinition) ((ExtensionMechanismsFactoryMDRImpl) nsmodel
-                            .getExtensionMechanismsFactory())
-                            .getTagDefinition(tag.toString());
-                    tv.setType(td);
-                } else
-                    td.setName(tag.toString());
-            }
-        }
+  /**
+   * @see org.argouml.model.ExtensionMechanismsHelper#removeTaggedValue(java.lang.Object,
+   *     java.lang.Object)
+   */
+  public void removeTaggedValue(Object handle, Object taggedValue) {
+    if (handle instanceof ModelElement && taggedValue instanceof TaggedValue) {
+      ((ModelElement) handle).getTaggedValue().remove(taggedValue);
+      return;
     }
+    throw new IllegalArgumentException("handle: " + handle + " or taggedValue: " + taggedValue);
+  }
 
-    /**
-     * Sets a value of some taggedValue.
-     * 
-     * @param handle
-     *            is the tagged value
-     * @param value
-     *            is the value
-     */
-    public void setValueOfTag(Object handle, String value) {
-        if (handle instanceof TaggedValue) {
-            TaggedValue tv = (TaggedValue) handle;
-            // TODO: It *seems* that the other CASE tools manage only one
-            // dataValue.
-            tv.getDataValue().clear();
-            tv.getDataValue().add(value);
+  /**
+   * @see org.argouml.model.ExtensionMechanismsHelper#setTaggedValue(java.lang.Object,
+   *     java.util.Collection)
+   */
+  public void setTaggedValue(Object handle, Collection taggedValues) {
+    if (handle instanceof ModelElement) {
+      Collection tv = org.argouml.model.Model.getFacade().getTaggedValuesCollection(handle);
+      if (!tv.isEmpty()) {
+        Vector tvs = new Vector(tv);
+        Iterator toRemove = tvs.iterator();
+        while (toRemove.hasNext()) {
+          Object value = toRemove.next();
+          if (!taggedValues.contains(value)) {
+            tv.remove(value);
+          }
         }
-    }
-
-    /**
-     * @see org.argouml.model.ExtensionMechanismsHelper#addTaggedValue(java.lang.Object,
-     *      java.lang.Object)
-     */
-    public void addTaggedValue(Object handle, Object taggedValue) {
-        if (handle instanceof ModelElement
-                && taggedValue instanceof TaggedValue) {
-            ((ModelElement) handle).getTaggedValue().add(taggedValue);
-            return;
+      }
+      if (!taggedValues.isEmpty()) {
+        Iterator toAdd = taggedValues.iterator();
+        while (toAdd.hasNext()) {
+          Object value = toAdd.next();
+          if (!tv.contains(value)) {
+            tv.add(value);
+          }
         }
-        throw new IllegalArgumentException("handle: " + handle
-                + " or taggedValue: " + taggedValue);
+      }
+      return;
     }
-
-    /**
-     * @see org.argouml.model.ExtensionMechanismsHelper#removeTaggedValue(java.lang.Object,
-     *      java.lang.Object)
-     */
-    public void removeTaggedValue(Object handle, Object taggedValue) {
-        if (handle instanceof ModelElement
-                && taggedValue instanceof TaggedValue) {
-            ((ModelElement) handle).getTaggedValue().remove(taggedValue);
-            return;
-        }
-        throw new IllegalArgumentException("handle: " + handle
-                + " or taggedValue: " + taggedValue);
-    }
-
-    /**
-     * @see org.argouml.model.ExtensionMechanismsHelper#setTaggedValue(java.lang.Object,
-     *      java.util.Collection)
-     */
-    public void setTaggedValue(Object handle, Collection taggedValues) {
-        if (handle instanceof ModelElement) {
-            Collection tv = org.argouml.model.Model.getFacade().
-                    getTaggedValuesCollection(handle);
-            if (!tv.isEmpty()) {
-                Vector tvs = new Vector(tv);
-                Iterator toRemove = tvs.iterator();
-                while (toRemove.hasNext()) {
-                    Object value = toRemove.next();
-                    if (!taggedValues.contains(value)) {
-                        tv.remove(value);
-                    }
-                }
-            }
-            if (!taggedValues.isEmpty()) {
-                Iterator toAdd = taggedValues.iterator();
-                while (toAdd.hasNext()) {
-                    Object value = toAdd.next();
-                    if (!tv.contains(value)) {
-                        tv.add(value);
-                    }
-                }
-            }
-            return;
-        }
-        throw new IllegalArgumentException("handle: " + handle
-                + " or taggedValues: " + taggedValues);
-    }
-
+    throw new IllegalArgumentException("handle: " + handle + " or taggedValues: " + taggedValues);
+  }
 }

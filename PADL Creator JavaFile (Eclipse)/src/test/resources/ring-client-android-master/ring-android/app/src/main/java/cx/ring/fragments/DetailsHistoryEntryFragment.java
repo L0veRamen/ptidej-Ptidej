@@ -20,7 +20,6 @@
 
 package cx.ring.fragments;
 
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
@@ -35,202 +34,200 @@ import cx.ring.R;
 import cx.ring.adapters.ContactPictureTask;
 import cx.ring.history.HistoryCall;
 import cx.ring.history.HistoryEntry;
-import cx.ring.model.account.Account;
-import cx.ring.model.SipCall;
 import cx.ring.service.IDRingService;
-
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.NavigableMap;
-import java.util.Random;
 
 public class DetailsHistoryEntryFragment extends Fragment {
 
-    DetailHistoryAdapter mAdapter;
-    HistoryEntry toDisplay;
-    @SuppressWarnings("unused")
-    private static final String TAG = DetailsHistoryEntryFragment.class.getSimpleName();
-    ContactPictureTask tasker;
+  DetailHistoryAdapter mAdapter;
+  HistoryEntry toDisplay;
 
-    private ListView lvMain;
-    private LinearLayout llMain;
-    private RelativeLayout iv;
+  @SuppressWarnings("unused")
+  private static final String TAG = DetailsHistoryEntryFragment.class.getSimpleName();
 
-    private Callbacks mCallbacks = sDummyCallbacks;
+  ContactPictureTask tasker;
 
-    private static Callbacks sDummyCallbacks = new Callbacks() {
+  private ListView lvMain;
+  private LinearLayout llMain;
+  private RelativeLayout iv;
+
+  private Callbacks mCallbacks = sDummyCallbacks;
+
+  private static Callbacks sDummyCallbacks =
+      new Callbacks() {
 
         @Override
         public IDRingService getService() {
-            return null;
+          return null;
         }
 
         @Override
-        public void onCall(String account, String number) {
-        }
+        public void onCall(String account, String number) {}
+      };
 
-    };
+  public interface Callbacks {
 
-    public interface Callbacks {
+    IDRingService getService();
 
-        IDRingService getService();
+    void onCall(String account, String number);
+  }
 
-        void onCall(String account, String number);
+  @Override
+  public void onAttach(Activity activity) {
+    super.onAttach(activity);
 
+    if (!(activity instanceof Callbacks)) {
+      throw new IllegalStateException("Activity must implement fragment's callbacks.");
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    mCallbacks = (Callbacks) activity;
+  }
 
-        if (!(activity instanceof Callbacks)) {
-            throw new IllegalStateException("Activity must implement fragment's callbacks.");
-        }
+  @Override
+  public void onDetach() {
+    super.onDetach();
+    mCallbacks = sDummyCallbacks;
+  }
 
-        mCallbacks = (Callbacks) activity;
-    }
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mCallbacks = sDummyCallbacks;
-    }
+    toDisplay = (HistoryEntry) getArguments().get("entry");
+    mAdapter = new DetailHistoryAdapter(toDisplay.getCalls(), getActivity());
+  }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+  @Override
+  public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
+    View inflatedView = inflater.inflate(R.layout.frag_history_detail, parent, false);
 
-        toDisplay = (HistoryEntry) getArguments().get("entry");
-        mAdapter = new DetailHistoryAdapter(toDisplay.getCalls(), getActivity());
-    }
+    llMain = (LinearLayout) inflatedView.findViewById(R.id.llMain);
+    /*llMainHolder = (LinearLayout) inflatedView.findViewById(R.id.llMainHolder);*/
+    lvMain = (ListView) inflatedView.findViewById(R.id.lvMain);
+    lvMain.setAdapter(mAdapter);
+    iv = (RelativeLayout) inflatedView.findViewById(R.id.iv);
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-        View inflatedView = inflater.inflate(R.layout.frag_history_detail, parent, false);
+    ((TextView) iv.findViewById(R.id.history_call_name))
+        .setText(toDisplay.getContact().getDisplayName());
 
-        llMain = (LinearLayout) inflatedView.findViewById(R.id.llMain);
-        /*llMainHolder = (LinearLayout) inflatedView.findViewById(R.id.llMainHolder);*/
-        lvMain = (ListView) inflatedView.findViewById(R.id.lvMain);
-        lvMain.setAdapter(mAdapter);
-        iv = (RelativeLayout) inflatedView.findViewById(R.id.iv);
-
-        ((TextView) iv.findViewById(R.id.history_call_name)).setText(toDisplay.getContact().getDisplayName());
-
-        tasker = new ContactPictureTask(getActivity(), (ImageView) inflatedView.findViewById(R.id.contact_photo), toDisplay.getContact());
-        tasker.run();
-//        ((TextView) iv.findViewById(R.id.history_entry_number)).setText(getString(R.string.detail_hist_call_number, toDisplay.getNumber()));
-        iv.findViewById(R.id.history_call_name).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
+    tasker =
+        new ContactPictureTask(
+            getActivity(),
+            (ImageView) inflatedView.findViewById(R.id.contact_photo),
+            toDisplay.getContact());
+    tasker.run();
+    //        ((TextView)
+    // iv.findViewById(R.id.history_entry_number)).setText(getString(R.string.detail_hist_call_number, toDisplay.getNumber()));
+    iv.findViewById(R.id.history_call_name)
+        .setOnClickListener(
+            new OnClickListener() {
+              @Override
+              public void onClick(View v) {
                 mCallbacks.onCall(toDisplay.getAccountID(), toDisplay.getNumber());
-            }
-        });
-        return inflatedView;
+              }
+            });
+    return inflatedView;
+  }
+
+  public void onActivityCreated(Bundle savedInstanceState) {
+    super.onActivityCreated(savedInstanceState);
+  }
+
+  private class DetailHistoryAdapter extends BaseAdapter implements ListAdapter {
+
+    ArrayList<HistoryCall> dataset;
+    Context mContext;
+
+    public DetailHistoryAdapter(NavigableMap<Long, HistoryCall> calls, Context c) {
+      dataset = new ArrayList<HistoryCall>(calls.descendingMap().values());
+      mContext = c;
     }
 
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
+    @Override
+    public int getCount() {
+      return dataset.size();
     }
 
-    private class DetailHistoryAdapter extends BaseAdapter implements ListAdapter {
-
-        ArrayList<HistoryCall> dataset;
-        Context mContext;
-
-        public DetailHistoryAdapter(NavigableMap<Long, HistoryCall> calls, Context c) {
-            dataset = new ArrayList<HistoryCall>(calls.descendingMap().values());
-            mContext = c;
-        }
-
-        @Override
-        public int getCount() {
-            return dataset.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return dataset.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            HistoryCallView entryView = null;
-
-            if (convertView == null) {
-                // Get a new instance of the row layout view
-                LayoutInflater inflater = LayoutInflater.from(mContext);
-                convertView = inflater.inflate(R.layout.item_history_call, null);
-
-                // Hold the view objects in an object
-                // so they don't need to be re-fetched
-                entryView = new HistoryCallView();
-                entryView.historyCallState = (TextView) convertView.findViewById(R.id.history_call_state);
-                entryView.formatted_date = (TextView) convertView.findViewById(R.id.history_call_date_formatted);
-                entryView.formatted_hour = (TextView) convertView.findViewById(R.id.history_call_hour);
-                entryView.record = (Button) convertView.findViewById(R.id.history_call_record);
-                entryView.duration = (TextView) convertView.findViewById(R.id.history_call_duration);
-
-                convertView.setTag(entryView);
-            } else {
-                entryView = (HistoryCallView) convertView.getTag();
-            }
-
-            final HistoryCall item = dataset.get(position);
-
-            entryView.historyCallState.setText(item.getDirection());
-            entryView.formatted_date.setText(item.getDate());
-            entryView.duration.setText(item.getDurationString());
-            entryView.formatted_hour.setText(item.getStartString("h:mm a"));
-            if (item.isIncoming() && item.isMissed())
-                convertView.setBackgroundColor(getResources().getColor(R.color.holo_red_light));
-
-            if (item.hasRecord()) {
-                entryView.record.setVisibility(View.VISIBLE);
-                entryView.record.setTag(R.id.history_call_record, true);
-                entryView.record.setOnClickListener(new OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-                        try {
-                            if ((Boolean) v.getTag(R.id.history_call_record)) {
-                                mCallbacks.getService().startRecordedFilePlayback(item.getRecordPath());
-                                v.setTag(R.id.replay, false);
-                                ((Button) v).setText(getString(R.string.hist_replay_button_stop));
-                            } else {
-                                mCallbacks.getService().stopRecordedFilePlayback(item.getRecordPath());
-                                v.setTag(R.id.history_call_record, true);
-                                ((Button) v).setText(getString(R.string.hist_replay_button));
-                            }
-                        } catch (RemoteException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-                    }
-                });
-            }
-
-            return convertView;
-        }
-
-        /**
-         * ******************
-         * ViewHolder Pattern
-         * *******************
-         */
-        public class HistoryCallView {
-            protected TextView historyCallState;
-            protected TextView formatted_date;
-            protected TextView formatted_hour;
-            protected Button record;
-            protected TextView duration;
-        }
-
+    @Override
+    public Object getItem(int position) {
+      return dataset.get(position);
     }
 
+    @Override
+    public long getItemId(int position) {
+      return 0;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+      HistoryCallView entryView = null;
+
+      if (convertView == null) {
+        // Get a new instance of the row layout view
+        LayoutInflater inflater = LayoutInflater.from(mContext);
+        convertView = inflater.inflate(R.layout.item_history_call, null);
+
+        // Hold the view objects in an object
+        // so they don't need to be re-fetched
+        entryView = new HistoryCallView();
+        entryView.historyCallState = (TextView) convertView.findViewById(R.id.history_call_state);
+        entryView.formatted_date =
+            (TextView) convertView.findViewById(R.id.history_call_date_formatted);
+        entryView.formatted_hour = (TextView) convertView.findViewById(R.id.history_call_hour);
+        entryView.record = (Button) convertView.findViewById(R.id.history_call_record);
+        entryView.duration = (TextView) convertView.findViewById(R.id.history_call_duration);
+
+        convertView.setTag(entryView);
+      } else {
+        entryView = (HistoryCallView) convertView.getTag();
+      }
+
+      final HistoryCall item = dataset.get(position);
+
+      entryView.historyCallState.setText(item.getDirection());
+      entryView.formatted_date.setText(item.getDate());
+      entryView.duration.setText(item.getDurationString());
+      entryView.formatted_hour.setText(item.getStartString("h:mm a"));
+      if (item.isIncoming() && item.isMissed())
+        convertView.setBackgroundColor(getResources().getColor(R.color.holo_red_light));
+
+      if (item.hasRecord()) {
+        entryView.record.setVisibility(View.VISIBLE);
+        entryView.record.setTag(R.id.history_call_record, true);
+        entryView.record.setOnClickListener(
+            new OnClickListener() {
+
+              @Override
+              public void onClick(View v) {
+                try {
+                  if ((Boolean) v.getTag(R.id.history_call_record)) {
+                    mCallbacks.getService().startRecordedFilePlayback(item.getRecordPath());
+                    v.setTag(R.id.replay, false);
+                    ((Button) v).setText(getString(R.string.hist_replay_button_stop));
+                  } else {
+                    mCallbacks.getService().stopRecordedFilePlayback(item.getRecordPath());
+                    v.setTag(R.id.history_call_record, true);
+                    ((Button) v).setText(getString(R.string.hist_replay_button));
+                  }
+                } catch (RemoteException e) {
+                  // TODO Auto-generated catch block
+                  e.printStackTrace();
+                }
+              }
+            });
+      }
+
+      return convertView;
+    }
+
+    /** ****************** ViewHolder Pattern ******************* */
+    public class HistoryCallView {
+      protected TextView historyCallState;
+      protected TextView formatted_date;
+      protected TextView formatted_hour;
+      protected Button record;
+      protected TextView duration;
+    }
+  }
 }

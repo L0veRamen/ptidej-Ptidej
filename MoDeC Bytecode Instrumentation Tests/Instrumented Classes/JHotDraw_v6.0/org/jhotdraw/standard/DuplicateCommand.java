@@ -21,38 +21,37 @@ import org.jhotdraw.util.*;
  */
 public class DuplicateCommand extends FigureTransferCommand {
 
-   /**
-	* Constructs a duplicate command.
-	* @param name the command name
-	 * @param newDrawingEditor the DrawingEditor which manages the views
-	*/
-	public DuplicateCommand(String name, DrawingEditor newDrawingEditor) {
-		super(name, newDrawingEditor);
-	}
+  /**
+   * Constructs a duplicate command.
+   *
+   * @param name the command name
+   * @param newDrawingEditor the DrawingEditor which manages the views
+   */
+  public DuplicateCommand(String name, DrawingEditor newDrawingEditor) {
+    super(name, newDrawingEditor);
+  }
 
-	public void execute() {
-		super.execute();
-		setUndoActivity(createUndoActivity());
-		FigureSelection selection = view().getFigureSelection();
+  public void execute() {
+    super.execute();
+    setUndoActivity(createUndoActivity());
+    FigureSelection selection = view().getFigureSelection();
 
-		// create duplicate figure(s)
-		FigureEnumeration figures = (FigureEnumeration)selection.getData(StandardFigureSelection.TYPE);
-		getUndoActivity().setAffectedFigures(figures);
+    // create duplicate figure(s)
+    FigureEnumeration figures = (FigureEnumeration) selection.getData(StandardFigureSelection.TYPE);
+    getUndoActivity().setAffectedFigures(figures);
 
-		view().clearSelection();
-		getUndoActivity().setAffectedFigures(
-			insertFigures(getUndoActivity().getAffectedFigures(), 10, 10));
-		view().checkDamage();
-	}
+    view().clearSelection();
+    getUndoActivity()
+        .setAffectedFigures(insertFigures(getUndoActivity().getAffectedFigures(), 10, 10));
+    view().checkDamage();
+  }
 
-	protected boolean isExecutableWithView() {
-		return view().selectionCount() > 0;
-	}
+  protected boolean isExecutableWithView() {
+    return view().selectionCount() > 0;
+  }
 
-	/**
-	 * Factory method for undo activity
-	 */
-	protected Undoable createUndoActivity() {
-		return new PasteCommand.UndoActivity(view());
-	}
+  /** Factory method for undo activity */
+  protected Undoable createUndoActivity() {
+    return new PasteCommand.UndoActivity(view());
+  }
 }

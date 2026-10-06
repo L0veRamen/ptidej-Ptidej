@@ -29,7 +29,6 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Vector;
-
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.Model;
 import org.argouml.ui.ArgoDiagram;
@@ -39,112 +38,95 @@ import org.argouml.uml.generator.ui.ClassGenerationDialog;
 
 /**
  * Action to trigger code generation for one or more classes.
- * <p>
- * In fact, only all named classes and interfaces 
- * on the active diagram are generated. 
- * Or, if this delivers an empty collection, all selected classes, interfaces 
- * and the contents of selected packages are generated 
- * (independent if they are named or not). <p>
- * TODO: Implement a more logical behaviour.
+ *
+ * <p>In fact, only all named classes and interfaces on the active diagram are generated. Or, if
+ * this delivers an empty collection, all selected classes, interfaces and the contents of selected
+ * packages are generated (independent if they are named or not).
+ *
+ * <p>TODO: Implement a more logical behaviour.
  */
 public class ActionGenerateAll extends UMLAction {
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    /**
-     * Constructor.
-     */
-    public ActionGenerateAll() {
-	super("action.generate-all-classes", true, NO_ICON);
+  /** Constructor. */
+  public ActionGenerateAll() {
+    super("action.generate-all-classes", true, NO_ICON);
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // main methods
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    ArgoDiagram activeDiagram = ProjectManager.getManager().getCurrentProject().getActiveDiagram();
+    if (!(activeDiagram instanceof UMLClassDiagram)) {
+      return;
     }
 
+    UMLClassDiagram d = (UMLClassDiagram) activeDiagram;
+    Vector classes = new Vector();
+    Vector nodes = (Vector) d.getNodes(new Vector());
+    Enumeration elems = nodes.elements();
+    while (elems.hasMoreElements()) {
+      Object owner = elems.nextElement();
+      if (!Model.getFacade().isAClass(owner) && !Model.getFacade().isAInterface(owner)) {
 
-    ////////////////////////////////////////////////////////////////
-    // main methods
+        continue;
+      }
+      String name = Model.getFacade().getName(owner);
+      if (name == null || name.length() == 0 || Character.isDigit(name.charAt(0))) {
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-	ArgoDiagram activeDiagram =
-	    ProjectManager.getManager().getCurrentProject().getActiveDiagram();
-	if (!(activeDiagram instanceof UMLClassDiagram)) {
-	    return;
-	}
-
-	UMLClassDiagram d = (UMLClassDiagram) activeDiagram;
-	Vector classes = new Vector();
-	Vector nodes = (Vector) d.getNodes(new Vector());
-	Enumeration elems = nodes.elements();
-	while (elems.hasMoreElements()) {
-	    Object owner = elems.nextElement();
-	    if (!Model.getFacade().isAClass(owner)
-		&& !Model.getFacade().isAInterface(owner)) {
-
-		continue;
-
-	    }
-	    String name = Model.getFacade().getName(owner);
-	    if (name == null
-		|| name.length() == 0
-		|| Character.isDigit(name.charAt(0))) {
-
-		continue;
-
-	    }
-            classes.addElement(owner);
-	}
-
-	if (classes.size() == 0) {
-
-            Iterator selectedObjects =
-                TargetManager.getInstance().getTargets().iterator();
-
-	    while (selectedObjects.hasNext()) {
-		Object selected = selectedObjects.next();
-		if (Model.getFacade().isAPackage(selected)) {
-		    addCollection(Model.getModelManagementHelper()
-				  .getAllModelElementsOfKind(
-                                      selected,
-		                      Model.getMetaTypes().getUMLClass()),
-				  classes);
-		    addCollection(Model.getModelManagementHelper()
-				  .getAllModelElementsOfKind(
-                                      selected,
-			              Model.getMetaTypes().getInterface()),
-				  classes);
-		} else if (Model.getFacade().isAClass(selected)
-			   || Model.getFacade().isAInterface(selected)) {
-		    if (!classes.contains(selected)) {
-		        classes.addElement(selected);
-		    }
-		}
-	    }
-	}
-	ClassGenerationDialog cgd = new ClassGenerationDialog(classes);
-	cgd.setVisible(true);
+        continue;
+      }
+      classes.addElement(owner);
     }
 
-    /**
-     * @see org.argouml.uml.ui.UMLAction#shouldBeEnabled()
-     */
-    public boolean shouldBeEnabled() {
-	ArgoDiagram activeDiagram =
-	    ProjectManager.getManager().getCurrentProject().getActiveDiagram();
-	return super.shouldBeEnabled()
-	    && (activeDiagram instanceof UMLClassDiagram);
-    }
+    if (classes.size() == 0) {
 
-    /**
-     * Adds elements from collection without duplicates.
-     */
-    private void addCollection(Collection c, Vector v) {
-        for (Iterator it = c.iterator(); it.hasNext();) {
-            Object o = it.next();
-            if (!v.contains(o)) {
-                v.addElement(o);
-            }
+      Iterator selectedObjects = TargetManager.getInstance().getTargets().iterator();
+
+      while (selectedObjects.hasNext()) {
+        Object selected = selectedObjects.next();
+        if (Model.getFacade().isAPackage(selected)) {
+          addCollection(
+              Model.getModelManagementHelper()
+                  .getAllModelElementsOfKind(selected, Model.getMetaTypes().getUMLClass()),
+              classes);
+          addCollection(
+              Model.getModelManagementHelper()
+                  .getAllModelElementsOfKind(selected, Model.getMetaTypes().getInterface()),
+              classes);
+        } else if (Model.getFacade().isAClass(selected)
+            || Model.getFacade().isAInterface(selected)) {
+          if (!classes.contains(selected)) {
+            classes.addElement(selected);
+          }
         }
+      }
     }
+    ClassGenerationDialog cgd = new ClassGenerationDialog(classes);
+    cgd.setVisible(true);
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLAction#shouldBeEnabled()
+   */
+  public boolean shouldBeEnabled() {
+    ArgoDiagram activeDiagram = ProjectManager.getManager().getCurrentProject().getActiveDiagram();
+    return super.shouldBeEnabled() && (activeDiagram instanceof UMLClassDiagram);
+  }
+
+  /** Adds elements from collection without duplicates. */
+  private void addCollection(Collection c, Vector v) {
+    for (Iterator it = c.iterator(); it.hasNext(); ) {
+      Object o = it.next();
+      if (!v.contains(o)) {
+        v.addElement(o);
+      }
+    }
+  }
 } /* end class ActionGenerateAll */

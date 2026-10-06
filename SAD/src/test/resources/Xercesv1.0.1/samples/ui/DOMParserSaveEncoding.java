@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xerces" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -55,57 +55,50 @@
  * <http://www.apache.org/>.
  */
 package ui;
-import org.xml.sax.InputSource;
-import org.w3c.dom.Attr;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.apache.xerces.readers.MIME2Java;
+
 import org.apache.xerces.parsers.DOMParser;
+import org.apache.xerces.readers.MIME2Java;
 
-    /**
-     *  The DOMParserSaveEncoding class extends DOMParser. It also provides
-     *  the Java Encoding of the XML document by overriding the startDocument method 
-     *  and providing a way to capture the MIME encoding from the XML document which
-     *  in turn is converted to the Java Encoding by the internal MIME2Java class.
-     *   
-     */
+/**
+ * The DOMParserSaveEncoding class extends DOMParser. It also provides the Java Encoding of the XML
+ * document by overriding the startDocument method and providing a way to capture the MIME encoding
+ * from the XML document which in turn is converted to the Java Encoding by the internal MIME2Java
+ * class.
+ */
+public class DOMParserSaveEncoding extends DOMParser {
+  String _mimeEncoding = "DEFAULT"; // Default  MIME so we check the file.encoding
 
-  
-public class DOMParserSaveEncoding extends DOMParser
-  {
-   String _mimeEncoding = "DEFAULT";//Default  MIME so we check the file.encoding
-   private void setMimeEncoding( String encoding ) {
-      _mimeEncoding = encoding;
-   }
-   private String getMimeEncoding() {
-      return (_mimeEncoding);
-   }
-   public String getJavaEncoding() {
-      String javaEncoding = null;
-      String mimeEncoding = getMimeEncoding();
-
-      if( mimeEncoding != null )
-      {
-      if( mimeEncoding.equals( "DEFAULT" ) )
-         javaEncoding = System.getProperty( "file.encoding" );
-      else if( ( javaEncoding = MIME2Java.convert( mimeEncoding ) ) == null )
-         javaEncoding = "UTF8";      // We always return an encoding.
-      }
-
-      if( javaEncoding == null )  // Should never return null
-         javaEncoding = "UTF8";
-
-      return (javaEncoding);
-   }
-   public void startDocument( int versionIndex, int encodingIndex, int standAloneIndex ) {
-      String encoding = null;
-      if ( encodingIndex != -1 ) {
-         encoding            = fStringPool.toString( encodingIndex );
-         setMimeEncoding( encoding );
-      }
-      super.startDocument( versionIndex,  encodingIndex, standAloneIndex );//passes control to superclass
-   }
-
+  private void setMimeEncoding(String encoding) {
+    _mimeEncoding = encoding;
   }
-    
+
+  private String getMimeEncoding() {
+    return (_mimeEncoding);
+  }
+
+  public String getJavaEncoding() {
+    String javaEncoding = null;
+    String mimeEncoding = getMimeEncoding();
+
+    if (mimeEncoding != null) {
+      if (mimeEncoding.equals("DEFAULT")) javaEncoding = System.getProperty("file.encoding");
+      else if ((javaEncoding = MIME2Java.convert(mimeEncoding)) == null)
+        javaEncoding = "UTF8"; // We always return an encoding.
+    }
+
+    if (javaEncoding == null) // Should never return null
+    javaEncoding = "UTF8";
+
+    return (javaEncoding);
+  }
+
+  public void startDocument(int versionIndex, int encodingIndex, int standAloneIndex) {
+    String encoding = null;
+    if (encodingIndex != -1) {
+      encoding = fStringPool.toString(encodingIndex);
+      setMimeEncoding(encoding);
+    }
+    super.startDocument(
+        versionIndex, encodingIndex, standAloneIndex); // passes control to superclass
+  }
+}

@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xerces" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -60,88 +60,78 @@ package org.apache.xerces.dom;
 import org.w3c.dom.*;
 
 /**
- * XML provides the CDATA markup to allow a region of text in which
- * most of the XML delimiter recognition does not take place. This is
- * intended to ease the task of quoting XML fragments and other
- * programmatic information in a document's text without needing to
- * escape these special characters. It's primarily a convenience feature
- * for those who are hand-editing XML.
- * <P>
- * CDATASection is an Extended DOM feature, and is not used in HTML 
- * contexts.
- * <P>
- * Within the DOM, CDATASections are treated essentially as Text
- * blocks. Their distinct type is retained in order to allow us to
- * properly recreate the XML syntax when we write them out.
- * <P>
- * Reminder: CDATA IS NOT A COMPLETELY GENERAL SOLUTION; it can't
- * quote its own end-of-block marking. If you need to write out a
- * CDATA that contains the ]]> sequence, it's your responsibility to
- * split that string over two successive CDATAs at that time.
- * <P>
- * CDATA does not participate in Element.normalize() processing.
+ * XML provides the CDATA markup to allow a region of text in which most of the XML delimiter
+ * recognition does not take place. This is intended to ease the task of quoting XML fragments and
+ * other programmatic information in a document's text without needing to escape these special
+ * characters. It's primarily a convenience feature for those who are hand-editing XML.
+ *
+ * <p>CDATASection is an Extended DOM feature, and is not used in HTML contexts.
+ *
+ * <p>Within the DOM, CDATASections are treated essentially as Text blocks. Their distinct type is
+ * retained in order to allow us to properly recreate the XML syntax when we write them out.
+ *
+ * <p>Reminder: CDATA IS NOT A COMPLETELY GENERAL SOLUTION; it can't quote its own end-of-block
+ * marking. If you need to write out a CDATA that contains the ]]> sequence, it's your
+ * responsibility to split that string over two successive CDATAs at that time.
+ *
+ * <p>CDATA does not participate in Element.normalize() processing.
  *
  * @version
- * @since  PR-DOM-Level-1-19980818.
+ * @since PR-DOM-Level-1-19980818.
  */
-public class DeferredCDATASectionImpl 
-    extends CDATASectionImpl 
-    implements DeferredNode {
+public class DeferredCDATASectionImpl extends CDATASectionImpl implements DeferredNode {
 
-    //
-    // Constants
-    //
+  //
+  // Constants
+  //
 
-    /** Serialization version. */
-    static final long serialVersionUID = 1983580632355645726L;
+  /** Serialization version. */
+  static final long serialVersionUID = 1983580632355645726L;
 
-    //
-    // Data
-    //
+  //
+  // Data
+  //
 
-    /** Node index. */
-    protected transient int fNodeIndex;
+  /** Node index. */
+  protected transient int fNodeIndex;
 
-    //
-    // Constructors
-    //
+  //
+  // Constructors
+  //
 
-    /**
-     * This is the deferred constructor. Only the fNodeIndex is given here. All other data,
-     * can be requested from the ownerDocument via the index.
-     */
-    DeferredCDATASectionImpl(DeferredDocumentImpl ownerDocument, int nodeIndex) {
-        super(ownerDocument, null);
+  /**
+   * This is the deferred constructor. Only the fNodeIndex is given here. All other data, can be
+   * requested from the ownerDocument via the index.
+   */
+  DeferredCDATASectionImpl(DeferredDocumentImpl ownerDocument, int nodeIndex) {
+    super(ownerDocument, null);
 
-        fNodeIndex = nodeIndex;
-        syncData = true;
+    fNodeIndex = nodeIndex;
+    syncData = true;
+  } // <init>(DeferredDocumentImpl,int)
 
-    } // <init>(DeferredDocumentImpl,int)
-    
-    //
-    // DeferredNode methods
-    //
+  //
+  // DeferredNode methods
+  //
 
-    /** Returns the node index. */
-    public int getNodeIndex() {
-        return fNodeIndex;
-    }
+  /** Returns the node index. */
+  public int getNodeIndex() {
+    return fNodeIndex;
+  }
 
-    //
-    // Protected methods
-    //
+  //
+  // Protected methods
+  //
 
-    /** Synchronizes the data (name and value) for fast nodes. */
-    protected void synchronizeData() {
+  /** Synchronizes the data (name and value) for fast nodes. */
+  protected void synchronizeData() {
 
-        // no need to sync in the future
-        syncData = false;
+    // no need to sync in the future
+    syncData = false;
 
-        // fluff data
-        DeferredDocumentImpl ownerDocument = (DeferredDocumentImpl)this.ownerDocument;
-        value = ownerDocument.getNodeValueString(fNodeIndex);
-        ignorableWhitespace = ownerDocument.getFirstChild(fNodeIndex) == 1;
-
-    } // synchronizeData()
-
+    // fluff data
+    DeferredDocumentImpl ownerDocument = (DeferredDocumentImpl) this.ownerDocument;
+    value = ownerDocument.getNodeValueString(fNodeIndex);
+    ignorableWhitespace = ownerDocument.getFirstChild(fNodeIndex) == 1;
+  } // synchronizeData()
 } // class DeferredCDATASectionImpl

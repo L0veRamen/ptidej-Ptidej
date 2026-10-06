@@ -27,41 +27,31 @@ package org.argouml.uml.ui.behavior.use_cases;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
-
 /**
  * @since Oct 5, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
 public class UMLExtendBaseListModel extends UMLModelElementListModel2 {
 
+  /** Constructor for UMLExtendBaseComboBoxModel. */
+  public UMLExtendBaseListModel() {
+    super("base");
+    Model.getPump()
+        .addClassModelEventListener(this, Model.getMetaTypes().getNamespace(), "ownedElement");
+  }
 
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (!isEmpty()) removeAllElements();
+    addElement(Model.getFacade().getBase(getTarget()));
+  }
 
-
-
-    /**
-     * Constructor for UMLExtendBaseComboBoxModel.
-     */
-    public UMLExtendBaseListModel() {
-        super("base");
-        Model.getPump().addClassModelEventListener(this,
-                Model.getMetaTypes().getNamespace(), "ownedElement");
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (!isEmpty())
-            removeAllElements();
-        addElement(Model.getFacade().getBase(getTarget()));
-    }
-
-
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().isAUseCase(element);
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().isAUseCase(element);
+  }
 }

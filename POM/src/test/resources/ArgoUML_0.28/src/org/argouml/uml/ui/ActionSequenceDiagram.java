@@ -24,29 +24,22 @@
 
 package org.argouml.uml.ui;
 
-import org.argouml.uml.diagram.DiagramFactory;
 import org.argouml.uml.diagram.ArgoDiagram;
+import org.argouml.uml.diagram.DiagramFactory;
 
-/**
- * Action to add a new sequence diagram.
- */
+/** Action to add a new sequence diagram. */
 public final class ActionSequenceDiagram extends ActionNewDiagram {
 
-    /**
-     * Constructor.
-     */
-    public ActionSequenceDiagram() {
-        super("action.sequence-diagram");
-    }
+  /** Constructor. */
+  public ActionSequenceDiagram() {
+    super("action.sequence-diagram");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.ActionNewDiagram#createDiagram()
-     */
-    public ArgoDiagram createDiagram(Object namespace) {
-        return DiagramFactory.getInstance().createDiagram(
-                DiagramFactory.DiagramType.Sequence,
-                createCollaboration(namespace),
-                null);
-    }
-
+  /*
+   * @see org.argouml.uml.ui.ActionNewDiagram#createDiagram()
+   */
+  public ArgoDiagram createDiagram(Object namespace) {
+    return DiagramFactory.getInstance()
+        .createDiagram(DiagramFactory.DiagramType.Sequence, createCollaboration(namespace), null);
+  }
 }

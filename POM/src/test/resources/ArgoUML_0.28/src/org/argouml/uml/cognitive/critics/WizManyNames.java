@@ -26,116 +26,97 @@ package org.argouml.uml.cognitive.critics;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
-
 import javax.swing.JPanel;
-
 import org.apache.log4j.Logger;
 import org.argouml.cognitive.ui.WizStepManyTextFields;
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 
 /**
- * A non-modal wizard to help the user change the name of a ModelElement to a
- * better name.
- * 
+ * A non-modal wizard to help the user change the name of a ModelElement to a better name.
+ *
  * @author jrobbins
  */
 public class WizManyNames extends UMLWizard {
-    /**
-     * Logger.
-     */
-    private static final Logger LOG = Logger.getLogger(WizManyNames.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(WizManyNames.class);
 
-    /**
-     * The text that describes what to be done.
-     */
-    private String instructions = Translator
-            .localize("critics.WizManyNames-ins");
+  /** The text that describes what to be done. */
+  private String instructions = Translator.localize("critics.WizManyNames-ins");
 
-    /**
-     * A list of model elements.
-     */
-    private List mes;
+  /** A list of model elements. */
+  private List mes;
 
-    private WizStepManyTextFields step1;
+  private WizStepManyTextFields step1;
 
-    /**
-     * The constructor.
-     * 
-     */
-    public WizManyNames() {
+  /** The constructor. */
+  public WizManyNames() {}
+
+  /**
+   * Set the list of offending ModelElements.
+   *
+   * @param elements the list of offending ModelElements
+   */
+  public void setModelElements(List elements) {
+    int mSize = elements.size();
+    for (int i = 0; i < 3 && i < mSize; ++i) {
+      if (!Model.getFacade().isAModelElement(elements.get(i))) {
+        throw new IllegalArgumentException(
+            "The list should contain model elements in " + "the first 3 positions");
+      }
     }
 
+    mes = elements;
+  }
 
-    /**
-     * Set the list of offending ModelElements.
-     * 
-     * @param elements the list of offending ModelElements
-     */
-    public void setModelElements(List elements) {
-        int mSize = elements.size();
-        for (int i = 0; i < 3 && i < mSize; ++i) {
-            if (!Model.getFacade().isAModelElement(elements.get(i))) {
-                throw new IllegalArgumentException(
-                        "The list should contain model elements in "
-                                + "the first 3 positions");
-            }
+  /*
+   * @see org.argouml.cognitive.ui.Wizard#makePanel(int)
+   */
+  public JPanel makePanel(int newStep) {
+    switch (newStep) {
+      case 1:
+        if (step1 == null) {
+          List<String> names = new ArrayList<String>();
+          int size = mes.size();
+          for (int i = 0; i < size; i++) {
+            Object me = mes.get(i);
+            names.add(Model.getFacade().getName(me));
+          }
+          step1 = new WizStepManyTextFields(this, instructions, names);
         }
+        return step1;
 
-        mes = elements;
+      default:
     }
-    
-    /*
-     * @see org.argouml.cognitive.ui.Wizard#makePanel(int)
-     */
-    public JPanel makePanel(int newStep) {
-        switch (newStep) {
-        case 1:
-            if (step1 == null) {
-                List<String> names = new ArrayList<String>();
-                int size = mes.size();
-                for (int i = 0; i < size; i++) {
-                    Object me = mes.get(i);
-                    names.add(Model.getFacade().getName(me));
-                }
-                step1 = new WizStepManyTextFields(this, instructions, names);
-            }
-            return step1;
+    return null;
+  }
 
-        default:
+  /*
+   * @see org.argouml.cognitive.ui.Wizard#doAction(int)
+   */
+  public void doAction(int oldStep) {
+    LOG.debug("doAction " + oldStep);
+    switch (oldStep) {
+      case 1:
+        List<String> newNames = null;
+        if (step1 != null) {
+          newNames = step1.getStringList();
         }
-        return null;
-    }
-
-    /*
-     * @see org.argouml.cognitive.ui.Wizard#doAction(int)
-     */
-    public void doAction(int oldStep) {
-        LOG.debug("doAction " + oldStep);
-        switch (oldStep) {
-        case 1:
-            List<String> newNames = null;
-            if (step1 != null) {
-                newNames = step1.getStringList();
-            }
-            try {
-                int size = mes.size();
-                for (int i = 0; i < size; i++) {
-                    Object me = mes.get(i);
-                    Model.getCoreHelper().setName(me, newNames.get(i));
-                }
-            } catch (Exception pve) {
-                LOG.error("could not set name", pve);
-            }
-            break;
-
-        default:
+        try {
+          int size = mes.size();
+          for (int i = 0; i < size; i++) {
+            Object me = mes.get(i);
+            Model.getCoreHelper().setName(me, newNames.get(i));
+          }
+        } catch (Exception pve) {
+          LOG.error("could not set name", pve);
         }
-    }
+        break;
 
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -2827847568754795770L;
+      default:
+    }
+  }
+
+  /** The UID. */
+  private static final long serialVersionUID = -2827847568754795770L;
 }

@@ -23,77 +23,77 @@
 // UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 package org.argouml.uml.ui;
 
+import junit.framework.TestCase;
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.Model;
 import org.argouml.ui.targetmanager.TargetEvent;
 import org.argouml.uml.ui.foundation.extension_mechanisms.UMLTagDefinitionComboBoxModel;
 
-import junit.framework.TestCase;
-
 /**
  * Test cases for the UMLTagDefinitionComboBoxModel class.
- * 
+ *
  * @author euluis
  * @since 0.20
  */
 public class TestUMLTagDefinitionComboBoxModel extends TestCase {
 
-    private Object model;
+  private Object model;
 
-    private Object theClass;
+  private Object theClass;
 
-    private Object theStereotype;
-    
-    private Project proj;
+  private Object theStereotype;
 
-    /**
-     * Default constructor.
-     */
-    public TestUMLTagDefinitionComboBoxModel() {
-        super("TestUMLTagDefinitionComboBoxModel");
-    }
-    /**
-     * Constructor.
-     * @param arg0 test name
-     */
-    public TestUMLTagDefinitionComboBoxModel(String arg0) {
-        super(arg0);
-    }
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        proj = ProjectManager.getManager().getCurrentProject();
-        model = proj.getModel();
+  private Project proj;
 
-        theClass = Model.getCoreFactory().buildClass("TheClass", model);
-        theStereotype = Model.getExtensionMechanismsFactory().buildStereotype(
-                theClass, "containedStereotype", model);
-    }
+  /** Default constructor. */
+  public TestUMLTagDefinitionComboBoxModel() {
+    super("TestUMLTagDefinitionComboBoxModel");
+  }
 
-    /**
-     * Test if a tag definition owned by a stereotype is available to be 
-     * applied in a class to which the stereotype is applied.
-     */
-    public void testTagDefinitionFromStereotypeApplicableToStereotypedClass() {
-        Object theTagDefinition = Model.getExtensionMechanismsFactory().
-            buildTagDefinition("TagDefinition", theStereotype, null);
-        // Testing with more than one, since it failed with a manual test I 
-        // made.
-        Object theTagDefinition2 = Model.getExtensionMechanismsFactory().
-            buildTagDefinition("TagDefinition2", theStereotype, null);
-        Model.getCoreHelper().addStereotype(theClass, theStereotype);
-        UMLTagDefinitionComboBoxModel tagDefComboBoxModel = 
-            new UMLTagDefinitionComboBoxModel();
-        Object[] added = {theClass};
-        tagDefComboBoxModel.targetAdded(new TargetEvent(this, "TARGET_ADDED", 
-            new Object[0], added));
-        assertTrue("The TagDefinition should be contained!", 
-            tagDefComboBoxModel.contains(theTagDefinition));
-        assertTrue("The TagDefinition2 should be contained!", 
-            tagDefComboBoxModel.contains(theTagDefinition2));
-    }
+  /**
+   * Constructor.
+   *
+   * @param arg0 test name
+   */
+  public TestUMLTagDefinitionComboBoxModel(String arg0) {
+    super(arg0);
+  }
 
+  /**
+   * @see junit.framework.TestCase#setUp()
+   */
+  protected void setUp() throws Exception {
+    super.setUp();
+    proj = ProjectManager.getManager().getCurrentProject();
+    model = proj.getModel();
+
+    theClass = Model.getCoreFactory().buildClass("TheClass", model);
+    theStereotype =
+        Model.getExtensionMechanismsFactory()
+            .buildStereotype(theClass, "containedStereotype", model);
+  }
+
+  /**
+   * Test if a tag definition owned by a stereotype is available to be applied in a class to which
+   * the stereotype is applied.
+   */
+  public void testTagDefinitionFromStereotypeApplicableToStereotypedClass() {
+    Object theTagDefinition =
+        Model.getExtensionMechanismsFactory()
+            .buildTagDefinition("TagDefinition", theStereotype, null);
+    // Testing with more than one, since it failed with a manual test I
+    // made.
+    Object theTagDefinition2 =
+        Model.getExtensionMechanismsFactory()
+            .buildTagDefinition("TagDefinition2", theStereotype, null);
+    Model.getCoreHelper().addStereotype(theClass, theStereotype);
+    UMLTagDefinitionComboBoxModel tagDefComboBoxModel = new UMLTagDefinitionComboBoxModel();
+    Object[] added = {theClass};
+    tagDefComboBoxModel.targetAdded(new TargetEvent(this, "TARGET_ADDED", new Object[0], added));
+    assertTrue(
+        "The TagDefinition should be contained!", tagDefComboBoxModel.contains(theTagDefinition));
+    assertTrue(
+        "The TagDefinition2 should be contained!", tagDefComboBoxModel.contains(theTagDefinition2));
+  }
 }

@@ -27,26 +27,24 @@ package org.argouml.uml.notation;
 import org.argouml.model.Model;
 
 /**
- * This abstract class forms the basis of all Notation providers 
- * for the text shown in the Fig that represents a nodeInstance. 
- * Subclass this for all languages.
- * 
+ * This abstract class forms the basis of all Notation providers for the text shown in the Fig that
+ * represents a nodeInstance. Subclass this for all languages.
+ *
  * @author mvw@tigris.org
  */
 public abstract class NodeInstanceNotation extends ValueHandler {
 
-    protected Object myNodeInstance;
-    
-    /**
-     * The constructor.
-     * 
-     * @param nodeInstance the nodeInstance of which we handle the text
-     */
-    public NodeInstanceNotation(Object nodeInstance) {
-        if (!Model.getFacade().isANodeInstance(nodeInstance)) {
-            throw new IllegalArgumentException("This is not a NodeInstance.");
-        }
-        myNodeInstance = nodeInstance;
-    }
+  protected Object myNodeInstance;
 
+  /**
+   * The constructor.
+   *
+   * @param nodeInstance the nodeInstance of which we handle the text
+   */
+  public NodeInstanceNotation(Object nodeInstance) {
+    if (!Model.getFacade().isANodeInstance(nodeInstance)) {
+      throw new IllegalArgumentException("This is not a NodeInstance.");
+    }
+    myNodeInstance = nodeInstance;
+  }
 }

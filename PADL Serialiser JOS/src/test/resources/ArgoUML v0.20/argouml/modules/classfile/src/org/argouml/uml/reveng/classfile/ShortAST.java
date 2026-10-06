@@ -26,53 +26,48 @@ package org.argouml.uml.reveng.classfile;
 
 import antlr.*;
 
-
-/**
- * A special AST node, that holds a short integer.
- */
+/** A special AST node, that holds a short integer. */
 class ShortAST extends CommonAST {
 
-    /////////////////
-    // Instance vars.
+  /////////////////
+  // Instance vars.
 
-    // The short buffer.
-    private short shortValue = 0;
+  // The short buffer.
+  private short shortValue = 0;
 
+  ///////////////
+  // Constructors
 
-    ///////////////
-    // Constructors
+  /**
+   * Create a new ShortAST instance.
+   *
+   * @param type The type of the AST node.
+   * @param val The short value.
+   */
+  ShortAST(int type, short val) {
+    super();
+    setType(type);
+    setShortValue(val);
+  }
 
-    /**
-     * Create a new ShortAST instance.
-     *
-     * @param type The type of the AST node.
-     * @param val The short value.
-     */
-    ShortAST(int type, short val) {
-        super();
-	setType(type);
-        setShortValue(val);
-    }
+  //////////
+  // Methods
 
+  /**
+   * Get the value of the short buffer
+   *
+   * @return The value of the short buffer.
+   */
+  final short getShortValue() {
+    return shortValue;
+  }
 
-    //////////
-    // Methods
-
-    /**
-     * Get the value of the short buffer
-     *
-     * @return The value of the short buffer.
-     */
-    final short getShortValue() {
-	return shortValue;
-    }
-
-    /**
-     * Set the value of the short buffer.
-     *
-     * @param val The new value for the buffer.
-     */
-    final void setShortValue(short val) {
-        shortValue = val;
-    }
+  /**
+   * Set the value of the short buffer.
+   *
+   * @param val The new value for the buffer.
+   */
+  final void setShortValue(short val) {
+    shortValue = val;
+  }
 }

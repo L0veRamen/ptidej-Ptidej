@@ -25,43 +25,38 @@
 package org.argouml.core.propertypanels.ui;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.AbstractActionRemoveElement;
 
 /**
- * This Action removes a Reception from a Signal.
- * TODO: We shouldn't have knowledge of GEF classes here
- * 
+ * This Action removes a Reception from a Signal. TODO: We shouldn't have knowledge of GEF classes
+ * here
+ *
  * @author Michiel
  */
 class ActionRemoveReceptionSignal extends AbstractActionRemoveElement {
 
-    /**
-     * Construct an Action which removes a Reception from a Signal.
-     */
-    public ActionRemoveReceptionSignal() {
-        super(Translator.localize("menu.popup.remove"));
-    }
+  /** Construct an Action which removes a Reception from a Signal. */
+  public ActionRemoveReceptionSignal() {
+    super(Translator.localize("menu.popup.remove"));
+  }
 
-    /*
-     * @see org.tigris.gef.undo.UndoableAction#actionPerformed(java.awt.event.ActionEvent)
-     */
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        Object reception = getObjectToRemove(); 
-        if (reception != null) {
-            Object signal = getTarget();
-            if (Model.getFacade().isASignal(signal)) {
-                // TODO: Should we delete the Reception?  A Reception
-                // without a Signal violates the cardinality of 1 in
-                // the metamodel - tfm - 20070308
-                Model.getCommonBehaviorHelper().removeReception(signal, 
-                        reception);
-            }
-        }
+  /*
+   * @see org.tigris.gef.undo.UndoableAction#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    Object reception = getObjectToRemove();
+    if (reception != null) {
+      Object signal = getTarget();
+      if (Model.getFacade().isASignal(signal)) {
+        // TODO: Should we delete the Reception?  A Reception
+        // without a Signal violates the cardinality of 1 in
+        // the metamodel - tfm - 20070308
+        Model.getCommonBehaviorHelper().removeReception(signal, reception);
+      }
     }
-
+  }
 }

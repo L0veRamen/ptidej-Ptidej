@@ -27,41 +27,36 @@ package org.argouml.ui.explorer.rules;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 
 /**
  * @author mvw@tigris.org
- *
  */
 public class GoModelToNode extends AbstractPerspectiveRule {
 
-    /*
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
-     */
-    public String getRuleName() {
-        return Translator.localize("misc.model.node");
-    }
+  /*
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
+   */
+  public String getRuleName() {
+    return Translator.localize("misc.model.node");
+  }
 
-    /*
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
-     */
-    public Collection getChildren(Object parent) {
-        if (Model.getFacade().isAModel(parent)) {
-            return
-                Model.getModelManagementHelper().getAllModelElementsOfKind(
-                        parent,
-                        Model.getMetaTypes().getNode());
-        }
-        return Collections.EMPTY_SET;
+  /*
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
+   */
+  public Collection getChildren(Object parent) {
+    if (Model.getFacade().isAModel(parent)) {
+      return Model.getModelManagementHelper()
+          .getAllModelElementsOfKind(parent, Model.getMetaTypes().getNode());
     }
+    return Collections.EMPTY_SET;
+  }
 
-    /*
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
-     */
-    public Set getDependencies(Object parent) {
-        return Collections.EMPTY_SET;
-    }
-
+  /*
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
+   */
+  public Set getDependencies(Object parent) {
+    return Collections.EMPTY_SET;
+  }
 }

@@ -28,46 +28,45 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 
 /**
- * Rule for SubmachineState to StateMachine. This enables the user to easily
- * browse the submachine states.
+ * Rule for SubmachineState to StateMachine. This enables the user to easily browse the submachine
+ * states.
  *
  * @author MarkusK
  */
 public class GoSubmachineStateToStateMachine extends AbstractPerspectiveRule {
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
-     */
-    public String getRuleName() {
-        return Translator.localize("misc.submachine-state.state-machine");
-    }
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
+   */
+  public String getRuleName() {
+    return Translator.localize("misc.submachine-state.state-machine");
+  }
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
-     */
-    public Collection getChildren(Object parent) {
-        if (Model.getFacade().isASubmachineState(parent)) {
-            ArrayList list = new ArrayList();
-            list.add(Model.getFacade().getSubmachine(parent));
-            return list;
-        }
-        return null;
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
+   */
+  public Collection getChildren(Object parent) {
+    if (Model.getFacade().isASubmachineState(parent)) {
+      ArrayList list = new ArrayList();
+      list.add(Model.getFacade().getSubmachine(parent));
+      return list;
     }
+    return null;
+  }
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
-     */
-    public Set getDependencies(Object parent) {
-        if (Model.getFacade().isASubmachineState(parent)) {
-            Set set = new HashSet();
-            set.add(parent);
-            return set;
-        }
-        return null;
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
+   */
+  public Set getDependencies(Object parent) {
+    if (Model.getFacade().isASubmachineState(parent)) {
+      Set set = new HashSet();
+      set.add(parent);
+      return set;
     }
+    return null;
+  }
 }

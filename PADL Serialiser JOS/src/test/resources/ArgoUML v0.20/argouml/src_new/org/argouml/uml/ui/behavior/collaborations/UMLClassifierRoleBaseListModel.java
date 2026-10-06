@@ -29,31 +29,29 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
 
 /**
  * Shows the bases belonging to some classifierrole.
+ *
  * @since Oct 3, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
 public class UMLClassifierRoleBaseListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLClassifierRoleBaseListModel.
-     */
-    public UMLClassifierRoleBaseListModel() {
-        super("base");
-    }
+  /** Constructor for UMLClassifierRoleBaseListModel. */
+  public UMLClassifierRoleBaseListModel() {
+    super("base");
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        setAllElements(Model.getFacade().getBases(getTarget()));
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    setAllElements(Model.getFacade().getBases(getTarget()));
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ elem) {
-        return Model.getFacade().isAClassifier(elem)
-            && Model.getFacade().getBases(getTarget()).contains(elem);
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ elem) {
+    return Model.getFacade().isAClassifier(elem)
+        && Model.getFacade().getBases(getTarget()).contains(elem);
+  }
 }

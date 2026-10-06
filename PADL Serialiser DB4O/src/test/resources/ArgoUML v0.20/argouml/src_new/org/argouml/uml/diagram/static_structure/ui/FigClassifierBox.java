@@ -29,7 +29,6 @@ import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.util.Iterator;
 import java.util.List;
-
 import org.argouml.ui.targetmanager.TargetManager;
 import org.argouml.uml.diagram.ui.CompartmentFigText;
 import org.argouml.uml.diagram.ui.FigFeaturesCompartment;
@@ -43,215 +42,203 @@ import org.tigris.gef.presentation.Fig;
 import org.tigris.gef.presentation.FigGroup;
 
 /**
- * Class to display graphics for a UML Class in a diagram.<p>
- * 
- * Note that the upper line of the name box will be blanked out 
- * if there is eventually a stereotype above.
+ * Class to display graphics for a UML Class in a diagram.
+ *
+ * <p>Note that the upper line of the name box will be blanked out if there is eventually a
+ * stereotype above.
  */
-abstract public class FigClassifierBox extends FigNodeModelElement
-        implements OperationsCompartmentContainer {
+public abstract class FigClassifierBox extends FigNodeModelElement
+    implements OperationsCompartmentContainer {
 
-    /**
-     * The Fig for the operations compartment (if any).
-     */
-    protected FigOperationsCompartment operationsFig;
+  /** The Fig for the operations compartment (if any). */
+  protected FigOperationsCompartment operationsFig;
 
-    /**
-     * Text highlighted by mouse actions on the diagram.<p>
-     */
-    protected CompartmentFigText highlightedFigText = null;
+  /**
+   * Text highlighted by mouse actions on the diagram.
+   *
+   * <p>
+   */
+  protected CompartmentFigText highlightedFigText = null;
 
-    FigClassifierBox() {
-        // this rectangle marks the operation section; all operations
-        // are inside it
-        operationsFig =
-            new FigOperationsCompartment(
-                    10, 31 + ROWHEIGHT, 60, ROWHEIGHT + 2);
+  FigClassifierBox() {
+    // this rectangle marks the operation section; all operations
+    // are inside it
+    operationsFig = new FigOperationsCompartment(10, 31 + ROWHEIGHT, 60, ROWHEIGHT + 2);
 
-        // Set properties of the stereotype box. Make it 1 pixel higher than
-        // before, so it overlaps the name box, and the blanking takes out both
-        // lines. Initially not set to be displayed, but this will be changed
-        // when we try to render it, if we find we have a stereotype.
-        getStereotypeFig().setFilled(true);
-        getStereotypeFig().setLineWidth(1);
-        // +1 to have 1 pixel overlap with getNameFig()
-        getStereotypeFig().setHeight(STEREOHEIGHT + 1);
+    // Set properties of the stereotype box. Make it 1 pixel higher than
+    // before, so it overlaps the name box, and the blanking takes out both
+    // lines. Initially not set to be displayed, but this will be changed
+    // when we try to render it, if we find we have a stereotype.
+    getStereotypeFig().setFilled(true);
+    getStereotypeFig().setLineWidth(1);
+    // +1 to have 1 pixel overlap with getNameFig()
+    getStereotypeFig().setHeight(STEREOHEIGHT + 1);
+  }
 
-    }
-
-    /**
-     * @see java.lang.Object#clone()
-     */
-    public Object clone() {
-        FigClassifierBox figClone = (FigClassifierBox) super.clone();
-        Iterator thisIter = this.getFigs().iterator();
-        while (thisIter.hasNext()) {
-            Fig thisFig = (Fig) thisIter.next();
-            if (thisFig == operationsFig) {
-                figClone.operationsFig = (FigOperationsCompartment) thisFig;
-                return figClone;
-            }
-        }
+  /**
+   * @see java.lang.Object#clone()
+   */
+  public Object clone() {
+    FigClassifierBox figClone = (FigClassifierBox) super.clone();
+    Iterator thisIter = this.getFigs().iterator();
+    while (thisIter.hasNext()) {
+      Fig thisFig = (Fig) thisIter.next();
+      if (thisFig == operationsFig) {
+        figClone.operationsFig = (FigOperationsCompartment) thisFig;
         return figClone;
+      }
+    }
+    return figClone;
+  }
+
+  private void addFigsNoCalcBounds() {
+    setSuppressCalcBounds(true);
+    addFigs();
+    setSuppressCalcBounds(false);
+  }
+
+  private void addFigs() {
+    addFig(getStereotypeFig()); // 0
+    addFig(getNameFig()); // 1
+    addFig(getBigPort()); // 2
+  }
+
+  /**
+   * Updates the operations box. Called from modelchanged if there is a modelevent effecting the
+   * attributes and from renderingChanged in all cases.
+   */
+  protected void updateOperations() {
+    if (!isOperationsVisible()) {
+      return;
+    }
+    operationsFig.populate();
+    Fig operPort = operationsFig.getBigPort();
+
+    int xpos = operPort.getX();
+    int ypos = operPort.getY();
+
+    Rectangle rect = getBounds();
+    // ouch ugly but that's for a next refactoring
+    // TODO: make setBounds, calcBounds and updateBounds consistent
+    setBounds(rect.x, rect.y, rect.width, rect.height);
+    damage();
+  }
+
+  /**
+   * @return The vector of graphics for operations (if any). First one is the rectangle for the
+   *     entire operations box.
+   */
+  protected FigOperationsCompartment getOperationsFig() {
+    return operationsFig;
+  }
+
+  /**
+   * Get the bounds of the operations compartment
+   *
+   * @return the bounds of the operations compartment
+   */
+  public Rectangle getOperationsBounds() {
+    return operationsFig.getBounds();
+  }
+
+  /**
+   * Returns the visibility status of the operations compartment
+   *
+   * @return true if the operations are visible, false otherwise
+   * @see org.argouml.uml.diagram.ui.OperationsCompartmentContainer#isOperationsVisible()
+   */
+  public boolean isOperationsVisible() {
+    return operationsFig.isVisible();
+  }
+
+  /**
+   * @see org.tigris.gef.presentation.Fig#translate(int, int)
+   */
+  public void translate(int dx, int dy) {
+    super.translate(dx, dy);
+    Editor ce = Globals.curEditor();
+    Selection sel = ce.getSelectionManager().findSelectionFor(this);
+    if (sel instanceof SelectionClass) {
+      ((SelectionClass) sel).hideButtons();
+    }
+  }
+
+  /**
+   * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
+   */
+  public void mouseClicked(MouseEvent mouseEvent) {
+
+    if (mouseEvent.isConsumed()) {
+      return;
+    }
+    super.mouseClicked(mouseEvent);
+    if (mouseEvent.isShiftDown() && TargetManager.getInstance().getTargets().size() > 0) {
+      return;
     }
 
-
-
-    private void addFigsNoCalcBounds() {
-        setSuppressCalcBounds(true);
-        addFigs();
-        setSuppressCalcBounds(false);
+    Editor ce = Globals.curEditor();
+    Selection sel = ce.getSelectionManager().findSelectionFor(this);
+    if (sel instanceof SelectionClass) {
+      ((SelectionClass) sel).hideButtons();
     }
+    unhighlight();
 
-    private void addFigs() {
-        addFig(getStereotypeFig());  //0
-        addFig(getNameFig());        //1
-        addFig(getBigPort());        //2
+    Rectangle r = new Rectangle(mouseEvent.getX() - 1, mouseEvent.getY() - 1, 2, 2);
+
+    Fig f = hitFig(r);
+    if (f instanceof FigFeaturesCompartment) {
+      FigFeaturesCompartment figCompartment = (FigFeaturesCompartment) f;
+      f = figCompartment.hitFig(r);
+      if (f instanceof CompartmentFigText) {
+        ((CompartmentFigText) f).setHighlighted(true);
+        highlightedFigText = (CompartmentFigText) f;
+        TargetManager.getInstance().setTarget(f);
+      }
     }
+  }
 
+  /**
+   * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
+   */
+  public void mouseExited(MouseEvent me) {
+    super.mouseExited(me);
+    unhighlight();
+  }
 
-    /**
-     * Updates the operations box. Called from modelchanged if there is
-     * a modelevent effecting the attributes and from renderingChanged in all
-     * cases.
-     */
-    protected void updateOperations() {
-        if (!isOperationsVisible()) {
-            return;
-        }
-        operationsFig.populate();
-        Fig operPort = operationsFig.getBigPort();
+  /**
+   * Remove the highlight from the currently highlit FigText
+   *
+   * @return the FigText that had highlight removed
+   */
+  protected CompartmentFigText unhighlight() {
+    return unhighlight(operationsFig);
+  }
 
-        int xpos = operPort.getX();
-        int ypos = operPort.getY();
-
-        Rectangle rect = getBounds();
-        // ouch ugly but that's for a next refactoring
-        // TODO: make setBounds, calcBounds and updateBounds consistent
-        setBounds(rect.x, rect.y, rect.width, rect.height);
-        damage();
+  protected final CompartmentFigText unhighlight(FigFeaturesCompartment fc) {
+    Fig ft;
+    for (int i = 1; i < fc.getFigs().size(); i++) {
+      ft = fc.getFigAt(i);
+      if (ft instanceof CompartmentFigText && ((CompartmentFigText) ft).isHighlighted()) {
+        ((CompartmentFigText) ft).setHighlighted(false);
+        highlightedFigText = null;
+        return ((CompartmentFigText) ft);
+      }
     }
+    return null;
+  }
 
-    /**
-     * @return The vector of graphics for operations (if any).
-     * First one is the rectangle for the entire operations box.
-     */
-    protected FigOperationsCompartment getOperationsFig() {
-        return operationsFig;
+  protected void createFeatureIn(FigGroup fg, InputEvent ie) {
+    if (!(fg instanceof FigFeaturesCompartment)) {
+      return;
     }
-
-    /**
-     * Get the bounds of the operations compartment
-     *
-     * @return the bounds of the operations compartment
-     */
-    public Rectangle getOperationsBounds() {
-        return operationsFig.getBounds();
+    ((FigFeaturesCompartment) fg).createFeature();
+    List figList = fg.getFigs();
+    CompartmentFigText ft = (CompartmentFigText) figList.get(figList.size() - 1);
+    if (ft != null) {
+      ft.startTextEditor(ie);
+      ft.setHighlighted(true);
+      highlightedFigText = ft;
     }
-
-    /**
-     * Returns the visibility status of the operations compartment
-     * @return true if the operations are visible, false otherwise
-     *
-     * @see org.argouml.uml.diagram.ui.OperationsCompartmentContainer#isOperationsVisible()
-     */
-    public boolean isOperationsVisible() {
-        return operationsFig.isVisible();
-    }
-
-    /**
-     * @see org.tigris.gef.presentation.Fig#translate(int, int)
-     */
-    public void translate(int dx, int dy) {
-        super.translate(dx, dy);
-        Editor ce = Globals.curEditor();
-        Selection sel = ce.getSelectionManager().findSelectionFor(this);
-        if (sel instanceof SelectionClass) {
-            ((SelectionClass) sel).hideButtons();
-        }
-    }
-
-    /**
-     * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
-     */
-    public void mouseClicked(MouseEvent mouseEvent) {
-
-        if (mouseEvent.isConsumed()) {
-            return;
-        }
-        super.mouseClicked(mouseEvent);
-        if (mouseEvent.isShiftDown()
-                && TargetManager.getInstance().getTargets().size() > 0) {
-            return;
-        }
-
-        Editor ce = Globals.curEditor();
-        Selection sel = ce.getSelectionManager().findSelectionFor(this);
-        if (sel instanceof SelectionClass) {
-            ((SelectionClass) sel).hideButtons();
-        }
-        unhighlight();
-
-        Rectangle r = new Rectangle(
-                mouseEvent.getX() - 1,
-                mouseEvent.getY() - 1,
-                2,
-                2);
-
-        Fig f = hitFig(r);
-        if (f instanceof FigFeaturesCompartment) {
-            FigFeaturesCompartment figCompartment = (FigFeaturesCompartment) f;
-            f = figCompartment.hitFig(r);
-            if (f instanceof CompartmentFigText) {
-                ((CompartmentFigText) f).setHighlighted(true);
-                highlightedFigText = (CompartmentFigText) f;
-                TargetManager.getInstance().setTarget(f);
-            }
-        }
-    }
-
-    /**
-     * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
-     */
-    public void mouseExited(MouseEvent me) {
-        super.mouseExited(me);
-        unhighlight();
-    }
-
-    /**
-     * Remove the highlight from the currently highlit FigText
-     * @return the FigText that had highlight removed
-     */
-    protected CompartmentFigText unhighlight() {
-        return unhighlight(operationsFig);
-    }
-
-    final protected CompartmentFigText unhighlight(FigFeaturesCompartment fc) {
-        Fig ft;
-        for (int i = 1; i < fc.getFigs().size(); i++) {
-            ft = fc.getFigAt(i);
-            if (ft instanceof CompartmentFigText && ((CompartmentFigText)ft).isHighlighted()) {
-                ((CompartmentFigText)ft).setHighlighted(false);
-                highlightedFigText = null;
-                return ((CompartmentFigText)ft);
-            }
-        }
-        return null;
-    }
-
-    protected void createFeatureIn(FigGroup fg, InputEvent ie) {
-        if (!(fg instanceof FigFeaturesCompartment)) {
-            return;
-        }
-        ((FigFeaturesCompartment)fg).createFeature();
-        List figList = fg.getFigs();
-        CompartmentFigText ft =
-            (CompartmentFigText) figList.get(figList.size() - 1);
-        if (ft != null) {
-            ft.startTextEditor(ie);
-            ft.setHighlighted(true);
-            highlightedFigText = ft;
-        }
-        ie.consume();
-    }
+    ie.consume();
+  }
 } /* end class FigClass */

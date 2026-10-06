@@ -32,7 +32,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.Writer;
-
 import org.apache.log4j.Logger;
 import org.argouml.cognitive.Designer;
 import org.argouml.kernel.Project;
@@ -44,95 +43,86 @@ import org.tigris.gef.ocl.TemplateReader;
 
 /**
  * The file persister for the Todo members.
+ *
  * @author Bob Tarling
  */
 class TodoListMemberFilePersister extends MemberFilePersister {
 
-    private static final Logger LOG =
-        Logger.getLogger(ProjectMemberTodoList.class);
+  private static final Logger LOG = Logger.getLogger(ProjectMemberTodoList.class);
 
-    private static final String TO_DO_TEE = "/org/argouml/persistence/todo.tee";
+  private static final String TO_DO_TEE = "/org/argouml/persistence/todo.tee";
 
-    /**
-     * Load the todo member.
-     * @see org.argouml.persistence.MemberFilePersister#load(org.argouml.kernel.Project,
-     * java.io.InputStream)
-     */
-    public void load(Project project, InputStream inputStream)
-        throws OpenException {
+  /**
+   * Load the todo member.
+   *
+   * @see org.argouml.persistence.MemberFilePersister#load(org.argouml.kernel.Project,
+   *     java.io.InputStream)
+   */
+  public void load(Project project, InputStream inputStream) throws OpenException {
 
-        try {
-            TodoParser parser = new TodoParser();
-            Reader reader = new InputStreamReader(inputStream,
-                    PersistenceManager.getEncoding());
-            parser.readTodoList(reader);
-            ProjectMemberTodoList pm = new ProjectMemberTodoList("", project);
-            project.addMember(pm);
-        } catch (Exception e) {
-            throw new OpenException(e);
-        }
+    try {
+      TodoParser parser = new TodoParser();
+      Reader reader = new InputStreamReader(inputStream, PersistenceManager.getEncoding());
+      parser.readTodoList(reader);
+      ProjectMemberTodoList pm = new ProjectMemberTodoList("", project);
+      project.addMember(pm);
+    } catch (Exception e) {
+      throw new OpenException(e);
+    }
+  }
+
+  /**
+   * @see org.argouml.persistence.MemberFilePersister#getMainTag()
+   */
+  public final String getMainTag() {
+    return "todo";
+  }
+
+  /**
+   * Throws InvalidArgumentException if no writer specified.
+   *
+   * @see org.argouml.persistence.MemberFilePersister#save( org.argouml.kernel.ProjectMember,
+   *     java.io.Writer, java.lang.Integer)
+   */
+  public void save(ProjectMember member, Writer writer, Integer indent) throws SaveException {
+
+    LOG.info("Saving todo list");
+
+    if (writer == null) {
+      throw new IllegalArgumentException("No writer specified to save todo list");
     }
 
-    /**
-     * @see org.argouml.persistence.MemberFilePersister#getMainTag()
-     */
-    public final String getMainTag() {
-        return "todo";
+    OCLExpander expander;
+    try {
+      expander = new OCLExpander(TemplateReader.getInstance().read(TO_DO_TEE));
+    } catch (ExpansionException e) {
+      throw new SaveException(e);
     }
 
-    /**
-     *
-     * Throws InvalidArgumentException if no writer specified.
-     *
-     * @see org.argouml.persistence.MemberFilePersister#save(
-     *         org.argouml.kernel.ProjectMember, java.io.Writer,
-     *         java.lang.Integer)
-     */
-    public void save(ProjectMember member, Writer writer, Integer indent)
-    	throws SaveException {
-
-        LOG.info("Saving todo list");
-
-        if (writer == null) {
-            throw new IllegalArgumentException(
-                    "No writer specified to save todo list");
-        }
-
-        OCLExpander expander;
-        try {
-            expander =
-                new OCLExpander(TemplateReader.getInstance().read(TO_DO_TEE));
-        } catch (ExpansionException e) {
-            throw new SaveException(e);
-        }
-
-        if (indent == null) {
-            try {
-                Designer.disableCritiquing();
-                expander.expand(writer, member);
-            } catch (ExpansionException e) {
-                throw new SaveException(e);
-            } finally {
-                Designer.enableCritiquing();
-            }
-        } else {
-            try {
-                File tempFile = File.createTempFile("todo", null);
-                tempFile.deleteOnExit();
-                FileWriter w = new FileWriter(tempFile);
-                expander.expand(w, member);
-                w.close();
-                addXmlFileToWriter(
-                        (PrintWriter) writer,
-                        tempFile,
-                        indent.intValue());
-            } catch (ExpansionException e) {
-                throw new SaveException(e);
-            } catch (IOException e) {
-                throw new SaveException(e);
-            }
-        }
-
-        LOG.debug("Done saving TO DO LIST!!!");
+    if (indent == null) {
+      try {
+        Designer.disableCritiquing();
+        expander.expand(writer, member);
+      } catch (ExpansionException e) {
+        throw new SaveException(e);
+      } finally {
+        Designer.enableCritiquing();
+      }
+    } else {
+      try {
+        File tempFile = File.createTempFile("todo", null);
+        tempFile.deleteOnExit();
+        FileWriter w = new FileWriter(tempFile);
+        expander.expand(w, member);
+        w.close();
+        addXmlFileToWriter((PrintWriter) writer, tempFile, indent.intValue());
+      } catch (ExpansionException e) {
+        throw new SaveException(e);
+      } catch (IOException e) {
+        throw new SaveException(e);
+      }
     }
+
+    LOG.debug("Done saving TO DO LIST!!!");
+  }
 }

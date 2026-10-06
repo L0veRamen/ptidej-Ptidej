@@ -26,49 +26,42 @@ package org.argouml.uml.diagram.ui;
 
 import java.awt.event.ActionEvent;
 import java.util.Iterator;
-
 import org.argouml.uml.ui.UMLAction;
 import org.tigris.gef.base.Globals;
 import org.tigris.gef.base.Selection;
 import org.tigris.gef.presentation.Fig;
 
 /**
- * Action to set or unset the display of the path (namespace) for elements
- * supporting such an action.
+ * Action to set or unset the display of the path (namespace) for elements supporting such an
+ * action.
  *
  * @see org.argouml.uml.diagram.ui.PathContainer
  * @author MarkusK
  */
 public class ActionSetPath extends UMLAction {
 
-    private boolean display;
+  private boolean display;
 
-    public static final UMLAction SHOW = new ActionSetPath("action.show-path",
-            true);
+  public static final UMLAction SHOW = new ActionSetPath("action.show-path", true);
 
-    public static final UMLAction HIDE = new ActionSetPath("action.hide-path",
-            false);
+  public static final UMLAction HIDE = new ActionSetPath("action.hide-path", false);
 
-    /**
-     * @param key
-     *            key for i18n text to display
-     * @param display
-     *            whether to show the path or not.
-     */
-    protected ActionSetPath(String key, boolean display) {
-        super(key, true, NO_ICON);
-        this.display = display;
+  /**
+   * @param key key for i18n text to display
+   * @param display whether to show the path or not.
+   */
+  protected ActionSetPath(String key, boolean display) {
+    super(key, true, NO_ICON);
+    this.display = display;
+  }
+
+  public void actionPerformed(ActionEvent ae) {
+    Iterator i = Globals.curEditor().getSelectionManager().selections().iterator();
+    while (i.hasNext()) {
+      Selection sel = (Selection) i.next();
+      Fig f = sel.getContent();
+
+      if (f instanceof PathContainer) ((PathContainer) f).setPathVisible(display);
     }
-
-    public void actionPerformed(ActionEvent ae) {
-        Iterator i = Globals.curEditor().getSelectionManager().selections()
-                .iterator();
-        while (i.hasNext()) {
-            Selection sel = (Selection) i.next();
-            Fig f = sel.getContent();
-
-            if (f instanceof PathContainer)
-                ((PathContainer) f).setPathVisible(display);
-        }
-    }
+  }
 }

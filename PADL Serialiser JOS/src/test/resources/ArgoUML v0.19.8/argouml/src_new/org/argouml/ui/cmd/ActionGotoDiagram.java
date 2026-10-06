@@ -25,7 +25,6 @@
 package org.argouml.ui.cmd;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.application.api.CommandLineInterface;
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
@@ -38,40 +37,33 @@ import org.tigris.gef.base.Diagram;
 // items on view menu
 
 /**
- * This Action will display a dialogbox listing all diagrams.
- * Doubleclicking on any listed diagram selects it.
- *
+ * This Action will display a dialogbox listing all diagrams. Doubleclicking on any listed diagram
+ * selects it.
  */
-public class ActionGotoDiagram
-	extends UMLAction
-	implements CommandLineInterface {
+public class ActionGotoDiagram extends UMLAction implements CommandLineInterface {
 
-    /**
-     * The constructor.
-     */
-    public ActionGotoDiagram() {
-        super("action.goto-diagram", NO_ICON);
+  /** The constructor. */
+  public ActionGotoDiagram() {
+    super("action.goto-diagram", NO_ICON);
+  }
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    new GotoDialog().setVisible(true);
+  }
+
+  /**
+   * @see org.argouml.application.api.CommandLineInterface#doCommand(java.lang.String)
+   */
+  public boolean doCommand(String argument) {
+    Project p = ProjectManager.getManager().getCurrentProject();
+    Diagram d = p.getDiagram(argument);
+    if (d != null) {
+      TargetManager.getInstance().setTarget(d);
+      return true;
     }
-
-
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-        new GotoDialog().setVisible(true);
-    }
-
-    /**
-     * @see org.argouml.application.api.CommandLineInterface#doCommand(java.lang.String)
-     */
-    public boolean doCommand(String argument) {
-	Project p = ProjectManager.getManager().getCurrentProject();
-        Diagram d = p.getDiagram(argument);
-        if (d != null) {
-            TargetManager.getInstance().setTarget(d);
-            return true;
-        }
-        return false;
-    }
+    return false;
+  }
 } /* end class ActionGotoDiagram */
-

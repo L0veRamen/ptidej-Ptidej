@@ -31,55 +31,44 @@ import org.argouml.uml.ui.foundation.core.PropPanelClassifier;
 import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
 import org.argouml.util.ConfigLoader;
 
-
 /**
- * Builds the property panel for a actor.<p>
+ * Builds the property panel for a actor.
  *
- * This is a type of Classifier, and like other Classifiers can have
- * attributes and operations (some processes use these to define
- * requirements). <em>Note</em>. ArgoUML has no way to display these.<p>
+ * <p>This is a type of Classifier, and like other Classifiers can have attributes and operations
+ * (some processes use these to define requirements). <em>Note</em>. ArgoUML has no way to display
+ * these.
+ *
+ * <p>
  *
  * @author jrobbins
  */
-
 public class PropPanelActor extends PropPanelClassifier {
 
-    /**
-     * <p>Constructor. Builds up the various fields required.</p>
-     */
-    public PropPanelActor() {
-    	super("Actor", lookupIcon("Actor"),
-                ConfigLoader.getTabPropsOrientation());
+  /** Constructor. Builds up the various fields required. */
+  public PropPanelActor() {
+    super("Actor", lookupIcon("Actor"), ConfigLoader.getTabPropsOrientation());
 
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.stereotype"), getStereotypeSelector());
 
-    	addField(Translator.localize("label.name"),
-                getNameTextField());
-    	addField(Translator.localize("label.stereotype"),
-                getStereotypeSelector());
+    addField(Translator.localize("label.namespace"), getNamespaceSelector());
 
-    	addField(Translator.localize("label.namespace"),
-                getNamespaceSelector());
+    add(getModifiersPanel());
 
-        add(getModifiersPanel());
+    addSeperator();
 
-    	addSeperator();
+    addField(Translator.localize("label.generalizations"), getGeneralizationScroll());
+    addField(Translator.localize("label.specializations"), getSpecializationScroll());
 
-    	addField(Translator.localize("label.generalizations"),
-                getGeneralizationScroll());
-    	addField(Translator.localize("label.specializations"),
-                getSpecializationScroll());
+    addSeperator();
 
-    	addSeperator();
+    addField(Translator.localize("label.association-ends"), getAssociationEndScroll());
 
-    	addField(Translator.localize("label.association-ends"),
-            getAssociationEndScroll());
-
-        // The toolbar buttons that go at the top:
-        addAction(new ActionNavigateContainerElement());
-        addAction(new ActionNewActor());
-        addAction(getActionNewReception());
-        addAction(new ActionNewStereotype());
-        addAction(new ActionDeleteSingleModelElement());
-    }
-
+    // The toolbar buttons that go at the top:
+    addAction(new ActionNavigateContainerElement());
+    addAction(new ActionNewActor());
+    addAction(getActionNewReception());
+    addAction(new ActionNewStereotype());
+    addAction(new ActionDeleteSingleModelElement());
+  }
 } /* end class PropActor */

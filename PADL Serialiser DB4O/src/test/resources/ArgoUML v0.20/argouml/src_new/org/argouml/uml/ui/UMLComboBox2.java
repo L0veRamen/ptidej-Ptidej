@@ -25,117 +25,115 @@
 package org.argouml.uml.ui;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.JComboBox;
-
 import org.argouml.ui.LookAndFeelMgr;
 import org.argouml.ui.targetmanager.TargetEvent;
 import org.argouml.ui.targetmanager.TargetListener;
 import org.argouml.ui.targetmanager.TargettableModelView;
 
 /**
- * ComboBox for UML modelelements. <p>
+ * ComboBox for UML modelelements.
  *
- * This implementation does not use
- * reflection and seperates Model, View and Controller better then does
- * UMLComboBox. The ancient UMLComboBoxModel and UMLComboBox are
- * replaced with this implementation to improve performance.
+ * <p>This implementation does not use reflection and seperates Model, View and Controller better
+ * then does UMLComboBox. The ancient UMLComboBoxModel and UMLComboBox are replaced with this
+ * implementation to improve performance.
  */
-public class UMLComboBox2
-    extends JComboBox implements TargettableModelView, TargetListener {
+public class UMLComboBox2 extends JComboBox implements TargettableModelView, TargetListener {
 
-    /**
-     * Constructor for UMLComboBox2.
-     * @deprecated As of ArgoUml version unknown (before 0.13.5),
-     * replaced by {@link #UMLComboBox2(UMLComboBoxModel2, UMLAction, boolean)}
-     * @param arg0 the ComboBoxModel
-     */
-    protected UMLComboBox2(UMLComboBoxModel2 arg0) {
-        super(arg0);
-        setFont(LookAndFeelMgr.getInstance().getSmallFont());
-        addActionListener(this);
+  /**
+   * Constructor for UMLComboBox2.
+   *
+   * @deprecated As of ArgoUml version unknown (before 0.13.5), replaced by {@link
+   *     #UMLComboBox2(UMLComboBoxModel2, UMLAction, boolean)}
+   * @param arg0 the ComboBoxModel
+   */
+  protected UMLComboBox2(UMLComboBoxModel2 arg0) {
+    super(arg0);
+    setFont(LookAndFeelMgr.getInstance().getSmallFont());
+    addActionListener(this);
+  }
+
+  /**
+   * Constructor for UMLComboBox2. Via the given action, the action for this combobox is done.
+   *
+   * @param arg0 the ComboBoxModel
+   * @param action the action
+   * @param showIcon true if an icon should be shown in front of the items
+   */
+  public UMLComboBox2(UMLComboBoxModel2 arg0, UMLAction action, boolean showIcon) {
+    super(arg0);
+    setFont(LookAndFeelMgr.getInstance().getSmallFont());
+    addActionListener(action);
+    // setDoubleBuffered(true);
+    setRenderer(new UMLListCellRenderer2(showIcon));
+  }
+
+  /**
+   * The constructor.
+   *
+   * @param arg0 the ComboBoxModel
+   * @param action the action
+   */
+  public UMLComboBox2(UMLComboBoxModel2 arg0, UMLAction action) {
+    this(arg0, action, true);
+  }
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
+   */
+  public void actionPerformed(ActionEvent arg0) {
+    int i = getSelectedIndex();
+    if (i >= 0) {
+      doIt(arg0);
     }
+  }
 
-    /**
-     * Constructor for UMLComboBox2. Via the given action, the
-     * action for this combobox is done.
-     * @param arg0 the ComboBoxModel
-     * @param action the action
-     * @param showIcon true if an icon should be shown in front of the items
-     */
-    public UMLComboBox2(UMLComboBoxModel2 arg0, UMLAction action,
-			boolean showIcon) {
-        super(arg0);
-        setFont(LookAndFeelMgr.getInstance().getSmallFont());
-        addActionListener(action);
-        // setDoubleBuffered(true);
-        setRenderer(new UMLListCellRenderer2(showIcon));
+  /**
+   * The 'body' of the actionPerformed method. Is only called if there is actually a selection made.
+   *
+   * @param event the event
+   */
+  protected void doIt(ActionEvent event) {}
+
+  /**
+   * Utility method to get the current target
+   *
+   * @return Object
+   */
+  public Object getTarget() {
+    return ((UMLComboBoxModel2) getModel()).getTarget();
+  }
+
+  /**
+   * @see TargettableModelView#getTargettableModel()
+   */
+  public TargetListener getTargettableModel() {
+    return (TargetListener) getModel();
+  }
+
+  /**
+   * @see
+   *     org.argouml.ui.targetmanager.TargetListener#targetAdded(org.argouml.ui.targetmanager.TargetEvent)
+   */
+  public void targetAdded(TargetEvent e) {
+    if (e.getNewTarget() != getTarget()) {
+      removeActionListener(this);
     }
+  }
 
-    /**
-     * The constructor.
-     *
-     * @param arg0 the ComboBoxModel
-     * @param action the action
-     */
-    public UMLComboBox2(UMLComboBoxModel2 arg0, UMLAction action) {
-        this(arg0, action, true);
-    }
+  /**
+   * @see
+   *     org.argouml.ui.targetmanager.TargetListener#targetRemoved(org.argouml.ui.targetmanager.TargetEvent)
+   */
+  public void targetRemoved(TargetEvent e) {
+    removeActionListener(this);
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
-     */
-    public void actionPerformed(ActionEvent arg0) {
-        int i = getSelectedIndex();
-        if (i >= 0) {
-            doIt(arg0);
-        }
-    }
-
-    /**
-     * The 'body' of the actionPerformed method. Is only called if there is
-     * actually a selection made.
-     *
-     * @param event the event
-     */
-    protected void doIt(ActionEvent event) { }
-
-    /**
-     * Utility method to get the current target
-     * @return Object
-     */
-    public Object getTarget() {
-        return ((UMLComboBoxModel2) getModel()).getTarget();
-    }
-
-
-    /**
-     * @see TargettableModelView#getTargettableModel()
-     */
-    public TargetListener getTargettableModel() {
-        return (TargetListener) getModel();
-    }
-
-    /**
-     * @see org.argouml.ui.targetmanager.TargetListener#targetAdded(org.argouml.ui.targetmanager.TargetEvent)
-     */
-    public void targetAdded(TargetEvent e) {
-        if (e.getNewTarget() != getTarget()) {
-            removeActionListener(this);
-        }
-    }
-
-    /**
-     * @see org.argouml.ui.targetmanager.TargetListener#targetRemoved(org.argouml.ui.targetmanager.TargetEvent)
-     */
-    public void targetRemoved(TargetEvent e) {
-        removeActionListener(this);
-    }
-
-    /**
-     * @see org.argouml.ui.targetmanager.TargetListener#targetSet(org.argouml.ui.targetmanager.TargetEvent)
-     */
-    public void targetSet(TargetEvent e) {
-        addActionListener(this);
-    }
+  /**
+   * @see
+   *     org.argouml.ui.targetmanager.TargetListener#targetSet(org.argouml.ui.targetmanager.TargetEvent)
+   */
+  public void targetSet(TargetEvent e) {
+    addActionListener(this);
+  }
 }

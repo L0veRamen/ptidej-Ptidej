@@ -26,74 +26,66 @@ package org.argouml.uml.cognitive.critics;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.JPanel;
-
 import org.argouml.cognitive.ui.WizStepCue;
 
 /**
- *  A cue card wizard presents the user with a deck of instructions.
+ * A cue card wizard presents the user with a deck of instructions.
  *
  * @see org.argouml.cognitive.ui.WizStepCue
- *
  * @author jrobbins
  */
 public class WizCueCards extends UMLWizard {
 
-    private List cues = new ArrayList();
+  private List cues = new ArrayList();
 
-    /**
-     * The constructor.
-     */
-    public WizCueCards() { }
+  /** The constructor. */
+  public WizCueCards() {}
 
-    /*
-     * @see org.argouml.cognitive.ui.Wizard#getNumSteps()
-     */
-    @Override
-    public int getNumSteps() {
-        return cues.size();
+  /*
+   * @see org.argouml.cognitive.ui.Wizard#getNumSteps()
+   */
+  @Override
+  public int getNumSteps() {
+    return cues.size();
+  }
+
+  /**
+   * @param s the text for the wizard step
+   */
+  public void addCue(String s) {
+    cues.add(s);
+  }
+
+  /**
+   * Create a new panel for the given step. Returns a newly created panel or null if there isn't
+   * that many steps.
+   *
+   * @see org.argouml.cognitive.critics.Wizard#makePanel(int)
+   */
+  public JPanel makePanel(int newStep) {
+    if (newStep <= getNumSteps()) {
+      String c = (String) cues.get(newStep - 1);
+      return new WizStepCue(this, c);
     }
+    return null;
+  }
 
-    /**
-     * @param s the text for the wizard step
-     */
-    public void addCue(String s) {
-        cues.add(s);
-    }
+  /**
+   * This wizard never takes action, it just displays step by step instructions.
+   *
+   * @see org.argouml.cognitive.critics.Wizard#doAction(int)
+   */
+  public void doAction(int oldStep) {}
 
-    /**
-     * Create a new panel for the given step.
-     * Returns a newly created panel or null if there isn't that many steps.
-     *
-     * @see org.argouml.cognitive.critics.Wizard#makePanel(int)
-     */
-    public JPanel makePanel(int newStep) {
-	if (newStep <= getNumSteps()) {
-	    String c = (String) cues.get(newStep - 1);
-	    return new WizStepCue(this, c);
-	}
-	return null;
-    }
-
-    /**
-     * This wizard never takes action, it just displays step by step
-     * instructions.
-     *
-     * @see org.argouml.cognitive.critics.Wizard#doAction(int)
-     */
-    public void doAction(int oldStep) {  }
-
-    /**
-     * This wizard cannot automatically finish the task. It can only be
-     * finished when the user is on the last step.
-     *
-     * @see org.argouml.cognitive.critics.Wizard#canFinish()
-     */
-    @Override
-    public boolean canFinish() {
-	return getStep() == getNumSteps();
-    }
-
-
+  /**
+   * This wizard cannot automatically finish the task. It can only be finished when the user is on
+   * the last step.
+   *
+   * @see org.argouml.cognitive.critics.Wizard#canFinish()
+   */
+  @Override
+  public boolean canFinish() {
+    return getStep() == getNumSteps();
+  }
 }

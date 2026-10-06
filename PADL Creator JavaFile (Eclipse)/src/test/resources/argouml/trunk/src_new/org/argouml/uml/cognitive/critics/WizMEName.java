@@ -25,118 +25,110 @@
 package org.argouml.uml.cognitive.critics;
 
 import javax.swing.JPanel;
-
 import org.apache.log4j.Logger;
 import org.argouml.cognitive.ui.WizStepTextField;
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 
 /**
- * A non-modal wizard to help the user change the name of a
- * MModelElement to a better name.
+ * A non-modal wizard to help the user change the name of a MModelElement to a better name.
  *
  * @author jrobbins
  */
 public class WizMEName extends UMLWizard {
-    private static final Logger LOG = Logger.getLogger(WizMEName.class);
+  private static final Logger LOG = Logger.getLogger(WizMEName.class);
 
-    private String instructions = Translator.localize("critics.WizMEName-ins");
-    private String label = Translator.localize("label.name");
-    private boolean mustEdit = false;
+  private String instructions = Translator.localize("critics.WizMEName-ins");
+  private String label = Translator.localize("label.name");
+  private boolean mustEdit = false;
 
-    private WizStepTextField step1 = null;
+  private WizStepTextField step1 = null;
 
-    private String origSuggest;
+  private String origSuggest;
 
-    /**
-     * The constructor.
-     *
-     */
-    public WizMEName() { }
+  /** The constructor. */
+  public WizMEName() {}
 
-    /**
-     * @param s the instructions
-     */
-    public void setInstructions(String s) { instructions = s; }
+  /**
+   * @param s the instructions
+   */
+  public void setInstructions(String s) {
+    instructions = s;
+  }
 
-    /**
-     * @param b if true, then the wizard step needs userinput,
-     *          i.e. it must be edited
-     */
-    public void setMustEdit(boolean b) { mustEdit = b; }
+  /**
+   * @param b if true, then the wizard step needs userinput, i.e. it must be edited
+   */
+  public void setMustEdit(boolean b) {
+    mustEdit = b;
+  }
 
-    /**
-     * Create a new panel for the given step.
-     *
-     * @see org.argouml.cognitive.ui.Wizard#makePanel(int)
-     */
-    public JPanel makePanel(int newStep) {
-	switch (newStep) {
-	case 1:
-	    if (step1 == null) {
-		step1 = new WizStepTextField(this, instructions,
-					      label, offerSuggestion());
-	    }
-	    return step1;
-	}
-	return null;
+  /**
+   * Create a new panel for the given step.
+   *
+   * @see org.argouml.cognitive.ui.Wizard#makePanel(int)
+   */
+  public JPanel makePanel(int newStep) {
+    switch (newStep) {
+      case 1:
+        if (step1 == null) {
+          step1 = new WizStepTextField(this, instructions, label, offerSuggestion());
+        }
+        return step1;
     }
+    return null;
+  }
 
-    /**
-     * @see org.argouml.uml.cognitive.critics.UMLWizard#setSuggestion(java.lang.String)
-     */
-    public void setSuggestion(String s) {
-        origSuggest = s;
-        super.setSuggestion(s);
+  /**
+   * @see org.argouml.uml.cognitive.critics.UMLWizard#setSuggestion(java.lang.String)
+   */
+  public void setSuggestion(String s) {
+    origSuggest = s;
+    super.setSuggestion(s);
+  }
+
+  /**
+   * Return false if the user has not edited the text and they were required to.
+   *
+   * @see org.argouml.cognitive.ui.Wizard#canGoNext()
+   */
+  public boolean canGoNext() {
+    if (!super.canGoNext()) return false;
+    if (step1 != null) {
+      boolean changed = origSuggest.equals(step1.getText());
+      if (mustEdit && !changed) return false;
     }
+    return true;
+  }
 
-
-    /**
-     * Return false if the user has not edited the text and they were required
-     * to.
-     *
-     * @see org.argouml.cognitive.ui.Wizard#canGoNext()
-     */
-    public boolean canGoNext() {
-	if (!super.canGoNext()) return false;
-	if (step1 != null) {
-	    boolean changed = origSuggest.equals(step1.getText());
-	    if (mustEdit && !changed) return false;
-	}
-	return true;
+  /**
+   * Take action at the completion of a step. For example, when the given step is 0, do nothing; and
+   * when the given step is 1, do the first action. Argo non-modal wizards should take action as
+   * they do along, as soon as possible, they should not wait until the final step.
+   *
+   * @see org.argouml.cognitive.ui.Wizard#doAction(int)
+   */
+  public void doAction(int oldStep) {
+    LOG.debug("doAction " + oldStep);
+    switch (oldStep) {
+      case 1:
+        String newName = getSuggestion();
+        if (step1 != null) {
+          newName = step1.getText();
+        }
+        try {
+          Object me = getModelElement();
+          Model.getCoreHelper().setName(me, newName);
+        } catch (Exception pve) {
+          LOG.error("could not set name", pve);
+        }
     }
+  }
 
-    /**
-     * Take action at the completion of a step. For example, when the
-     * given step is 0, do nothing; and when the given step is 1, do
-     * the first action.  Argo non-modal wizards should take action as
-     * they do along, as soon as possible, they should not wait until
-     * the final step.
-     *
-     * @see org.argouml.cognitive.ui.Wizard#doAction(int)
-     */
-    public void doAction(int oldStep) {
-	LOG.debug("doAction " + oldStep);
-	switch (oldStep) {
-	case 1:
-	    String newName = getSuggestion();
-	    if (step1 != null) {
-	        newName = step1.getText();
-	    }
-	    try {
-		Object me = getModelElement();
-		Model.getCoreHelper().setName(me, newName);
-	    }
-	    catch (Exception pve) {
-		LOG.error("could not set name", pve);
-	    }
-	}
-    }
-
-    /**
-     * @return Returns the instructions.
-     */
-    protected String getInstructions() {
-        return instructions;
-    }
+  /**
+   * @return Returns the instructions.
+   */
+  protected String getInstructions() {
+    return instructions;
+  }
 } /* end class WizMEName */

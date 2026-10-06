@@ -11,80 +11,65 @@
 
 package org.jhotdraw.standard;
 
+import java.awt.Point;
 import org.jhotdraw.framework.*;
 import org.jhotdraw.util.Undoable;
-import java.awt.Point;
 
 /**
- * A handle to reconnect the end point of
- * a connection to another figure.
+ * A handle to reconnect the end point of a connection to another figure.
  *
  * @version <$CURRENT_VERSION$>
  */
 public class ChangeConnectionEndHandle extends ChangeConnectionHandle {
 
-	/**
-	 * Constructs the connection handle.
-	 */
-	public ChangeConnectionEndHandle(ConnectionFigure owner) {
-		super(owner);
-	}
+  /** Constructs the connection handle. */
+  public ChangeConnectionEndHandle(ConnectionFigure owner) {
+    super(owner);
+  }
 
-	/**
-	 * Gets the end figure of a connection.
-	 */
-	protected Connector target() {
-		return getConnection().getEndConnector();
-	}
+  /** Gets the end figure of a connection. */
+  protected Connector target() {
+    return getConnection().getEndConnector();
+  }
 
-	/**
-	 * Disconnects the end figure.
-	 */
-	protected void disconnect() {
-		getConnection().disconnectEnd();
-	}
+  /** Disconnects the end figure. */
+  protected void disconnect() {
+    getConnection().disconnectEnd();
+  }
 
-	/**
-	 * Sets the end of the connection.
-	 */
-	protected void connect(Connector c) {
-		getConnection().connectEnd(c);
-	}
+  /** Sets the end of the connection. */
+  protected void connect(Connector c) {
+    getConnection().connectEnd(c);
+  }
 
-	/**
-	 * Sets the end point of the connection.
-	 */
-	protected void setPoint(int x, int y) {
-		getConnection().endPoint(x, y);
-	}
+  /** Sets the end point of the connection. */
+  protected void setPoint(int x, int y) {
+    getConnection().endPoint(x, y);
+  }
 
-	/**
-	 * Returns the end point of the connection.
-	 */
-	public Point locate() {
-		return getConnection().endPoint();
-	}
+  /** Returns the end point of the connection. */
+  public Point locate() {
+    return getConnection().endPoint();
+  }
 
-	/**
-	 * Factory method for undo activity
-	 */
-	protected Undoable createUndoActivity(DrawingView newView) {
-		return new ChangeConnectionEndHandle.UndoActivity(newView);
-	}
+  /** Factory method for undo activity */
+  protected Undoable createUndoActivity(DrawingView newView) {
+    return new ChangeConnectionEndHandle.UndoActivity(newView);
+  }
 
-	public static class UndoActivity extends ChangeConnectionHandle.UndoActivity {
-		public UndoActivity(DrawingView newView) {
-			super(newView);
-		}
+  public static class UndoActivity extends ChangeConnectionHandle.UndoActivity {
+    public UndoActivity(DrawingView newView) {
+      super(newView);
+    }
 
-		protected Connector replaceConnector(ConnectionFigure connection) {
-			Connector tempEndConnector = connection.getEndConnector();
-			connection.connectEnd(getOldConnector());
-			return tempEndConnector;
-		}
-	}
+    protected Connector replaceConnector(ConnectionFigure connection) {
+      Connector tempEndConnector = connection.getEndConnector();
+      connection.connectEnd(getOldConnector());
+      return tempEndConnector;
+    }
+  }
 
-    protected boolean canConnectTo(Figure figure) {
-        return getConnection().canConnect(source().owner(), figure);
-	}
+  protected boolean canConnectTo(Figure figure) {
+    return getConnection().canConnect(source().owner(), figure);
+  }
 }

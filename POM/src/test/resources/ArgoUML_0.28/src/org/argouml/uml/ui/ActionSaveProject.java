@@ -25,11 +25,9 @@
 package org.argouml.uml.ui;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Icon;
-
 import org.apache.log4j.Logger;
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.i18n.Translator;
@@ -42,78 +40,74 @@ import org.argouml.ui.ProjectBrowser;
  * @see ActionOpenProject
  */
 public class ActionSaveProject extends AbstractAction {
-	
-    private static final long serialVersionUID = -5579548202585774293L;
-	/**
-     * Logger.
-     */
-    private static final Logger LOG = Logger.getLogger(ActionSaveProject.class);
 
-    /**
-     * The constructor.
-     */
-    public ActionSaveProject() {
-        super(Translator.localize("action.save-project"),
-                ResourceLoaderWrapper.lookupIcon("action.save-project"));
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize("action.save-project"));
-        super.setEnabled(false);
-    }
+  private static final long serialVersionUID = -5579548202585774293L;
 
-    /**
-     * The constructor.
-     * @param name the name of the action.
-     * @param icon the icon to represent this action graphically.
-     */
-    protected ActionSaveProject(String name, Icon icon) {
-        super(name, icon);
-    }
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(ActionSaveProject.class);
 
-    /*
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        LOG.info("Performing save action");
-        ProjectBrowser.getInstance().trySave(
-                ProjectManager.getManager().getCurrentProject() != null
-                        && ProjectManager.getManager().getCurrentProject()
-                                .getURI() != null);
-    }
+  /** The constructor. */
+  public ActionSaveProject() {
+    super(
+        Translator.localize("action.save-project"),
+        ResourceLoaderWrapper.lookupIcon("action.save-project"));
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize("action.save-project"));
+    super.setEnabled(false);
+  }
 
-    /**
-     * Set the enabled state of the save action. When we become enabled inform
-     * the user by highlighting the title bar with an asterisk. This method is
-     * undoable.  This method is synchronized so that it can be used from any
-     * thread without external synchronization.
-     * 
-     * @param isEnabled new state for save command
-     */
-    @Override
-    public synchronized void setEnabled(final boolean isEnabled) {
-        if (isEnabled == this.enabled) {
-            return;
-        }
-        if (LOG.isDebugEnabled()) {
-            if (!enabled && isEnabled) {
-                Throwable throwable = new Throwable();
-                throwable.fillInStackTrace();
-                LOG.debug("Save action enabled by  ", throwable);
-            } else {
-                LOG.debug("Save state changed from " + enabled + " to "
-                        + isEnabled);
-            }
-        }
-        internalSetEnabled(isEnabled);
-    }
-    
-    /**
-     * Set the enabled state of this action and displays the save indicator
-     * @param isEnabled true to enable the action
-     */
-    private void internalSetEnabled(boolean isEnabled) {
-        super.setEnabled(isEnabled);
-        ProjectBrowser.getInstance().showSaveIndicator();
-    }
+  /**
+   * The constructor.
+   *
+   * @param name the name of the action.
+   * @param icon the icon to represent this action graphically.
+   */
+  protected ActionSaveProject(String name, Icon icon) {
+    super(name, icon);
+  }
 
+  /*
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    LOG.info("Performing save action");
+    ProjectBrowser.getInstance()
+        .trySave(
+            ProjectManager.getManager().getCurrentProject() != null
+                && ProjectManager.getManager().getCurrentProject().getURI() != null);
+  }
+
+  /**
+   * Set the enabled state of the save action. When we become enabled inform the user by
+   * highlighting the title bar with an asterisk. This method is undoable. This method is
+   * synchronized so that it can be used from any thread without external synchronization.
+   *
+   * @param isEnabled new state for save command
+   */
+  @Override
+  public synchronized void setEnabled(final boolean isEnabled) {
+    if (isEnabled == this.enabled) {
+      return;
+    }
+    if (LOG.isDebugEnabled()) {
+      if (!enabled && isEnabled) {
+        Throwable throwable = new Throwable();
+        throwable.fillInStackTrace();
+        LOG.debug("Save action enabled by  ", throwable);
+      } else {
+        LOG.debug("Save state changed from " + enabled + " to " + isEnabled);
+      }
+    }
+    internalSetEnabled(isEnabled);
+  }
+
+  /**
+   * Set the enabled state of this action and displays the save indicator
+   *
+   * @param isEnabled true to enable the action
+   */
+  private void internalSetEnabled(boolean isEnabled) {
+    super.setEnabled(isEnabled);
+    ProjectBrowser.getInstance().showSaveIndicator();
+  }
 }

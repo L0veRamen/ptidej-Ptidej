@@ -26,89 +26,84 @@ package org.argouml.uml.reveng.classfile;
 
 import antlr.*;
 
-
-/**
- * A special AST node, that holds a Java object.
- */
+/** A special AST node, that holds a Java object. */
 class ObjectAST extends CommonAST {
 
-    /////////////////
-    // Instance vars.
+  /////////////////
+  // Instance vars.
 
-    // The buffer.
-    private Object object = null;
+  // The buffer.
+  private Object object = null;
 
+  ///////////////
+  // Constructors
 
-    ///////////////
-    // Constructors
+  /**
+   * Create a new instance.
+   *
+   * @param type The type of the AST node.
+   * @param val The Object.
+   */
+  ObjectAST(int type, Object val) {
+    super();
+    setType(type);
+    setObjectValue(val);
+  }
 
-    /**
-     * Create a new instance.
-     *
-     * @param type The type of the AST node.
-     * @param val The Object.
-     */
-    ObjectAST(int type, Object val) {
-        super();
-	setType(type);
-        setObjectValue(val);
-    }
+  //////////
+  // Methods
 
+  /**
+   * Get the value of the buffer.
+   *
+   * @return The value of the buffer.
+   */
+  final Object getObjectValue() {
+    return object;
+  }
 
-    //////////
-    // Methods
+  /**
+   * Set the value of the buffer.
+   *
+   * @param val The new value for the buffer.
+   */
+  final void setObjectValue(Object val) {
+    object = val;
+  }
 
-    /**
-     * Get the value of the buffer.
-     *
-     * @return The value of the buffer.
-     */
-    final Object getObjectValue() {
-	return object;
-    }
+  /**
+   * Get the object buffer as an int.
+   *
+   * @return The value of the buffer as a int.
+   */
+  final int getIntegerValue() {
+    return ((Integer) object).intValue();
+  }
 
-    /**
-     * Set the value of the buffer.
-     *
-     * @param val The new value for the buffer.
-     */
-    final void setObjectValue(Object val) {
-        object = val;
-    }
+  /**
+   * Get the object buffer as a long.
+   *
+   * @return The value of the buffer as a long.
+   */
+  final long getLongValue() {
+    return ((Long) object).longValue();
+  }
 
-    /**
-     * Get the object buffer as an int.
-     *
-     * @return The value of the buffer as a int.
-     */
-    final int getIntegerValue() {
-	return ((Integer) object).intValue();
-    }
+  /**
+   * Get the object buffer as a float.
+   *
+   * @return The value of the buffer as a float.
+   */
+  final float getFloatValue() {
+    return ((Float) object).shortValue();
+  }
 
-    /**
-     * Get the object buffer as a long.
-     *
-     * @return The value of the buffer as a long.
-     */
-    final long getLongValue() {
-	return ((Long) object).longValue();
-    }
-
-    /**
-     * Get the object buffer as a float.
-     *
-     * @return The value of the buffer as a float.
-     */
-    final float getFloatValue() {
-	return ((Float) object).shortValue();
-    }
-
-    /**
-     * Get the object buffer as a double.
-     *
-     * @return The value of the buffer as a double.
-     */
-    final double getDoubleValue() {
-	return ((Double) object).doubleValue();
-    }
+  /**
+   * Get the object buffer as a double.
+   *
+   * @return The value of the buffer as a double.
+   */
+  final double getDoubleValue() {
+    return ((Double) object).doubleValue();
+  }
 }

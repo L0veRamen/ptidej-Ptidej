@@ -26,7 +26,6 @@ package org.argouml.uml.ui.behavior.state_machines;
 
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.uml.ui.foundation.core.ActionNewParameter;
 import org.argouml.util.ConfigLoader;
@@ -34,36 +33,26 @@ import org.argouml.util.ConfigLoader;
 /**
  * The properties panel for a SignalEvent.
  *
- *
  * @author oliver.heyden
  */
 public class PropPanelSignalEvent extends PropPanelEvent {
 
-    /**
-     * The constructor.
-     *
-     */
-    public PropPanelSignalEvent() {
-        super("Signal event", lookupIcon("SignalEvent"),
-              ConfigLoader.getTabPropsOrientation());
-    }
+  /** The constructor. */
+  public PropPanelSignalEvent() {
+    super("Signal event", lookupIcon("SignalEvent"), ConfigLoader.getTabPropsOrientation());
+  }
 
-    /**
-     * @see org.argouml.uml.ui.behavior.state_machines.PropPanelEvent#initialize()
-     */
-    public void initialize() {
-        super.initialize();
+  /**
+   * @see org.argouml.uml.ui.behavior.state_machines.PropPanelEvent#initialize()
+   */
+  public void initialize() {
+    super.initialize();
 
-        JList signalList = new UMLSignalEventSignalList(
-                new UMLSignalEventSignalListModel());
-        signalList.setVisibleRowCount(1);
-        addField(Translator.localize("label.signal"),
-                new JScrollPane(signalList));
+    JList signalList = new UMLSignalEventSignalList(new UMLSignalEventSignalListModel());
+    signalList.setVisibleRowCount(1);
+    addField(Translator.localize("label.signal"), new JScrollPane(signalList));
 
-        addAction(new ActionNewParameter());
-        addAction(getDeleteAction());
-    }
-
+    addAction(new ActionNewParameter());
+    addAction(getDeleteAction());
+  }
 }
-
-

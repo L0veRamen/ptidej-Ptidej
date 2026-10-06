@@ -10,65 +10,47 @@
 
 package choco.palm.search;
 
-import java.util.List;
 import choco.branch.AbstractBranching;
 import choco.branch.ObjectBranching;
+import java.util.List;
 
-/**
- * Abstract class for branching algorithms.
- */
+/** Abstract class for branching algorithms. */
+public abstract class PalmAbstractBranching extends AbstractBranching implements ObjectBranching {
 
-public abstract class PalmAbstractBranching extends AbstractBranching implements
-		ObjectBranching {
+  /** The extender the branching which uses this branching. */
+  protected PalmExtend extender;
 
-	/**
-	 * The extender the branching which uses this branching.
-	 */
+  /**
+   * Checks if decisions are acceptable.
+   *
+   * @param csts The decisions that will be taken.
+   */
+  public abstract boolean checkAcceptable(List csts);
 
-	protected PalmExtend extender;
+  /** Gets the extender which uses this branching. */
+  public PalmExtend getExtender() {
+    return this.extender;
+  }
 
-	/**
-	 * Checks if decisions are acceptable.
-	 * @param csts The decisions that will be taken.
-	 */
+  /** Learns from rejection for unacceptable decisions. */
+  public abstract void learnFromRejection();
 
-	public abstract boolean checkAcceptable(List csts);
+  /*
+   * Computes decisions authorized by the learner that can be taken on the specified item by the solver.
+   * @param var The item the solver branchs on.
+   */
+  public List selectAuthorizedDecisions(final Object item) {
+    final PalmLearn learner = this.extender.manager.learning;
+    List decisionlist = (List) this.getNextBranch(item, null);
+    while (!this.checkAcceptable(decisionlist) | !learner.checkAcceptable(decisionlist)) {
+      this.learnFromRejection();
+      decisionlist = (List) this.getNextBranch(item, decisionlist);
+    }
+    return decisionlist;
+  }
 
-	/**
-	 * Gets the extender which uses this branching.
-	 */
-
-	public PalmExtend getExtender() {
-		return this.extender;
-	}
-
-	/**
-	 * Learns from rejection for unacceptable decisions.
-	 */
-
-	public abstract void learnFromRejection();
-
-	/*
-	 * Computes decisions authorized by the learner that can be taken on the specified item by the solver.
-	 * @param var The item the solver branchs on.
-	 */
-	public List selectAuthorizedDecisions(final Object item) {
-		final PalmLearn learner = this.extender.manager.learning;
-		List decisionlist = (List) this.getNextBranch(item, null);
-		while (!this.checkAcceptable(decisionlist)
-				| !learner.checkAcceptable(decisionlist)) {
-			this.learnFromRejection();
-			decisionlist = (List) this.getNextBranch(item, decisionlist);
-		}
-		return decisionlist;
-	}
-
-	/**
-	 * Sets the extender which uses this branching.
-	 */
-
-	public void setExtender(final PalmExtend extender) {
-		this.extender = extender;
-	}
-
+  /** Sets the extender which uses this branching. */
+  public void setExtender(final PalmExtend extender) {
+    this.extender = extender;
+  }
 }

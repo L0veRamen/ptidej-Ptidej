@@ -31,31 +31,26 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  * ListModel for the stimuli an instance receives.
  *
  * @author mkl
- *
  */
 public class UMLStimulusReceiverListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor.
-     */
-    public UMLStimulusReceiverListModel() {
-        super("receiver");
-    }
+  /** Constructor. */
+  public UMLStimulusReceiverListModel() {
+    super("receiver");
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        removeAllElements();
-        addElement(Model.getFacade().getReceiver(getTarget()));
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    removeAllElements();
+    addElement(Model.getFacade().getReceiver(getTarget()));
+  }
 
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ element) {
-        return Model.getFacade().getReceiver(getTarget()) == element;
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ element) {
+    return Model.getFacade().getReceiver(getTarget()) == element;
+  }
 }

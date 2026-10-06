@@ -27,7 +27,6 @@ package org.argouml.uml.ui.behavior.common_behavior;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
-
 import org.argouml.i18n.Translator;
 import org.argouml.uml.ui.ActionDeleteSingleModelElement;
 import org.argouml.uml.ui.ActionNavigateContainerElement;
@@ -40,61 +39,46 @@ import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
 import org.argouml.util.ConfigLoader;
 import org.tigris.swidgets.GridLayout2;
 
-/**
- * PropertyPanel for a Reception.
- */
+/** PropertyPanel for a Reception. */
 public class PropPanelReception extends PropPanelModelElement {
-    
-    private JPanel modifiersPanel;
 
-    /**
-     * The constructor.
-     *
-     */
-    public PropPanelReception() {
-        super("Reception", lookupIcon("Reception"), ConfigLoader
-                .getTabPropsOrientation());
+  private JPanel modifiersPanel;
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.stereotype"),
-                getStereotypeSelector());
-        addField(Translator.localize("label.namespace"),
-                getNamespaceSelector());
-        
-        modifiersPanel =
-            new JPanel(new GridLayout2());
-        modifiersPanel.setBorder(
-            new TitledBorder(Translator.localize(
-                    "label.modifiers")));
+  /** The constructor. */
+  public PropPanelReception() {
+    super("Reception", lookupIcon("Reception"), ConfigLoader.getTabPropsOrientation());
 
-        modifiersPanel.add(
-                            new UMLGeneralizableElementAbstractCheckBox());
-        modifiersPanel.add(
-                            new UMLGeneralizableElementLeafCheckBox());
-        modifiersPanel.add(
-                            new UMLGeneralizableElementRootCheckBox());
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.stereotype"), getStereotypeSelector());
+    addField(Translator.localize("label.namespace"), getNamespaceSelector());
 
-        add(modifiersPanel);
+    modifiersPanel = new JPanel(new GridLayout2());
+    modifiersPanel.setBorder(new TitledBorder(Translator.localize("label.modifiers")));
 
-        addSeperator();
+    modifiersPanel.add(new UMLGeneralizableElementAbstractCheckBox());
+    modifiersPanel.add(new UMLGeneralizableElementLeafCheckBox());
+    modifiersPanel.add(new UMLGeneralizableElementRootCheckBox());
 
-        addField(Translator.localize("label.signal"),
-                new UMLReceptionSignalComboBox(this,
-                        new UMLReceptionSignalComboBoxModel()));
+    add(modifiersPanel);
 
-        UMLTextArea2 specText = new UMLTextArea2(
-                new UMLReceptionSpecificationDocument());
-        specText.setLineWrap(true);
-        specText.setRows(5);
-        JScrollPane specificationScroll = new JScrollPane(specText,
-                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        addField(Translator.localize("label.specification"),
-                specificationScroll);
+    addSeperator();
 
-        addAction(new ActionNavigateContainerElement());
-        addAction(new ActionNewStereotype());
-        addAction(new ActionDeleteSingleModelElement());
-    }
+    addField(
+        Translator.localize("label.signal"),
+        new UMLReceptionSignalComboBox(this, new UMLReceptionSignalComboBoxModel()));
+
+    UMLTextArea2 specText = new UMLTextArea2(new UMLReceptionSpecificationDocument());
+    specText.setLineWrap(true);
+    specText.setRows(5);
+    JScrollPane specificationScroll =
+        new JScrollPane(
+            specText,
+            JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    addField(Translator.localize("label.specification"), specificationScroll);
+
+    addAction(new ActionNavigateContainerElement());
+    addAction(new ActionNewStereotype());
+    addAction(new ActionDeleteSingleModelElement());
+  }
 }

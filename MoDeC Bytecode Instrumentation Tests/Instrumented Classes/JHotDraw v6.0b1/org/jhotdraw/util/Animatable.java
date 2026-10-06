@@ -17,8 +17,6 @@ package org.jhotdraw.util;
  * @version <$CURRENT_VERSION$>
  */
 public interface Animatable {
-	/**
-	 * Perform a step of the animation.
-	 */
-	void animationStep();
+  /** Perform a step of the animation. */
+  void animationStep();
 }

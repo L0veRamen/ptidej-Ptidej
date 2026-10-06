@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -14,17 +14,17 @@ import junit.framework.TestSuite;
 
 /**
  * @author Yann-Gaël Guéhéneuc
- * @since  2008/12/04
+ * @since 2008/12/04
  */
 public final class TestAllPtidej extends TestSuite {
-	public static TestSuite suite() {
-		final TestAllPtidej suite = new TestAllPtidej();
-		suite.setName(TestAllPtidej.class.getName());
+  public static TestSuite suite() {
+    final TestAllPtidej suite = new TestAllPtidej();
+    suite.setName(TestAllPtidej.class.getName());
 
-		suite.addTest(TestCreators.suite());
-		suite.addTest(TestDeMIMA.suite());
-		suite.addTest(TestOthers.suite());
+    suite.addTest(TestCreators.suite());
+    suite.addTest(TestDeMIMA.suite());
+    suite.addTest(TestOthers.suite());
 
-		return suite;
-	}
+    return suite;
+  }
 }

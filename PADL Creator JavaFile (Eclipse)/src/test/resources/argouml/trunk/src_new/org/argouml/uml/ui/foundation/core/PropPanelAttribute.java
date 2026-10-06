@@ -25,10 +25,8 @@
 package org.argouml.uml.ui.foundation.core;
 
 import java.util.List;
-
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.ui.targetmanager.TargetManager;
@@ -44,138 +42,120 @@ import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
 import org.argouml.util.ConfigLoader;
 
 /**
- * The properties panel for an Attribute of a Classifier, 
- * and the Qualifier of an AssociationEnd.
+ * The properties panel for an Attribute of a Classifier, and the Qualifier of an AssociationEnd.
  *
  * @author jrobbins
  * @author jaap.branderhorst
  */
 public class PropPanelAttribute extends PropPanelStructuralFeature {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = -5596689167193050170L;
+  /** The serial version. */
+  private static final long serialVersionUID = -5596689167193050170L;
 
-    /**
-     * The constructor.
-     *
-     */
-    public PropPanelAttribute() {
-        super("Attribute", ConfigLoader.getTabPropsOrientation());
+  /** The constructor. */
+  public PropPanelAttribute() {
+    super("Attribute", ConfigLoader.getTabPropsOrientation());
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.owner"),
-                getOwnerScroll());
-        addField(Translator.localize("label.multiplicity"),
-                getMultiplicityComboBox());
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.owner"), getOwnerScroll());
+    addField(Translator.localize("label.multiplicity"), getMultiplicityComboBox());
 
-        addSeparator();
-        
-        add(getVisibilityPanel());
-        add(getChangeabilityRadioButtonPanel());
+    addSeparator();
 
-        JPanel modifiersPanel = createBorderPanel(
-                Translator.localize("label.modifiers"));
-        modifiersPanel.add(getOwnerScopeCheckbox());
-        add(modifiersPanel);
-        
-        addSeparator();
+    add(getVisibilityPanel());
+    add(getChangeabilityRadioButtonPanel());
 
-        addField(Translator.localize("label.type"),
-                new UMLComboBoxNavigator(
-                        this,
-                        Translator.localize("label.class.navigate.tooltip"),
-                        getTypeComboBox()));
+    JPanel modifiersPanel = createBorderPanel(Translator.localize("label.modifiers"));
+    modifiersPanel.add(getOwnerScopeCheckbox());
+    add(modifiersPanel);
 
-        UMLExpressionModel2 initialModel = new UMLInitialValueExpressionModel(
-                this, "initialValue");
-        JPanel initialPanel = createBorderPanel(Translator
-                .localize("label.initial-value"));
-        initialPanel.add(new JScrollPane(new UMLExpressionBodyField(
-                initialModel, true)));
-        initialPanel.add(new UMLExpressionLanguageField(initialModel,
-                false));
-        add(initialPanel);
+    addSeparator();
 
-        addAction(new ActionNavigateContainerElement());
-        addAction(new ActionNavigateUpPreviousDown() {
-            public List getFamily(Object parent) {
-                if (Model.getFacade().isAAssociationEnd(parent)) {
-                    return Model.getFacade().getQualifiers(parent);
-                }
-                return Model.getFacade().getAttributes(parent);
+    addField(
+        Translator.localize("label.type"),
+        new UMLComboBoxNavigator(
+            this, Translator.localize("label.class.navigate.tooltip"), getTypeComboBox()));
+
+    UMLExpressionModel2 initialModel = new UMLInitialValueExpressionModel(this, "initialValue");
+    JPanel initialPanel = createBorderPanel(Translator.localize("label.initial-value"));
+    initialPanel.add(new JScrollPane(new UMLExpressionBodyField(initialModel, true)));
+    initialPanel.add(new UMLExpressionLanguageField(initialModel, false));
+    add(initialPanel);
+
+    addAction(new ActionNavigateContainerElement());
+    addAction(
+        new ActionNavigateUpPreviousDown() {
+          public List getFamily(Object parent) {
+            if (Model.getFacade().isAAssociationEnd(parent)) {
+              return Model.getFacade().getQualifiers(parent);
             }
+            return Model.getFacade().getAttributes(parent);
+          }
 
-            public Object getParent(Object child) {
-                return Model.getFacade().getModelElementContainer(child);
-            }
+          public Object getParent(Object child) {
+            return Model.getFacade().getModelElementContainer(child);
+          }
         });
-        addAction(new ActionNavigateUpNextDown() {
-            public List getFamily(Object parent) {
-                if (Model.getFacade().isAAssociationEnd(parent)) {
-                    return Model.getFacade().getQualifiers(parent);
-                }
-                return Model.getFacade().getAttributes(parent);
+    addAction(
+        new ActionNavigateUpNextDown() {
+          public List getFamily(Object parent) {
+            if (Model.getFacade().isAAssociationEnd(parent)) {
+              return Model.getFacade().getQualifiers(parent);
             }
+            return Model.getFacade().getAttributes(parent);
+          }
 
-            public Object getParent(Object child) {
-                return Model.getFacade().getModelElementContainer(child);
-            }
+          public Object getParent(Object child) {
+            return Model.getFacade().getModelElementContainer(child);
+          }
         });
-        addAction(TargetManager.getInstance().getAddAttributeAction());
-        addAction(new ActionAddDataType());
-        addAction(new ActionAddEnumeration());
-        addAction(new ActionNewStereotype());
-        addAction(getDeleteAction());
-    }
-
-
+    addAction(TargetManager.getInstance().getAddAttributeAction());
+    addAction(new ActionAddDataType());
+    addAction(new ActionAddEnumeration());
+    addAction(new ActionNewStereotype());
+    addAction(getDeleteAction());
+  }
 } /* end class PropPanelAttribute */
 
 class UMLInitialValueExpressionModel extends UMLExpressionModel2 {
 
-    /**
-     * The constructor.
-     *
-     * @param container the container of UML user interface components
-     * @param propertyName the name of the property
-     */
-    public UMLInitialValueExpressionModel(UMLUserInterfaceContainer container,
-            String propertyName) {
-        super(container, propertyName);
+  /**
+   * The constructor.
+   *
+   * @param container the container of UML user interface components
+   * @param propertyName the name of the property
+   */
+  public UMLInitialValueExpressionModel(UMLUserInterfaceContainer container, String propertyName) {
+    super(container, propertyName);
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLExpressionModel2#getExpression()
+   */
+  public Object getExpression() {
+    Object target = TargetManager.getInstance().getTarget();
+    if (target == null) {
+      return null;
     }
+    return Model.getFacade().getInitialValue(target);
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLExpressionModel2#getExpression()
-     */
-    public Object getExpression() {
-        Object target = TargetManager.getInstance().getTarget();
-        if (target == null) {
-            return null;
-        }
-        return Model.getFacade().getInitialValue(target);
+  /**
+   * @see org.argouml.uml.ui.UMLExpressionModel2#setExpression(java.lang.Object)
+   */
+  public void setExpression(Object expression) {
+    Object target = TargetManager.getInstance().getTarget();
+
+    if (target == null) {
+      throw new IllegalStateException("There is no target for " + getContainer());
     }
+    Model.getCoreHelper().setInitialValue(target, expression);
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLExpressionModel2#setExpression(java.lang.Object)
-     */
-    public void setExpression(Object expression) {
-        Object target = TargetManager.getInstance().getTarget();
-
-        if (target == null) {
-            throw new IllegalStateException(
-                    "There is no target for " + getContainer());
-        }
-        Model.getCoreHelper().setInitialValue(target, expression);
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLExpressionModel2#newExpression()
-     */
-    public Object newExpression() {
-        return Model.getDataTypesFactory().createExpression("", "");
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLExpressionModel2#newExpression()
+   */
+  public Object newExpression() {
+    return Model.getDataTypesFactory().createExpression("", "");
+  }
 }

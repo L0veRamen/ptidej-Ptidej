@@ -33,82 +33,74 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Writer;
-
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectMember;
 
 /**
  * A base class file persister for project members.
+ *
  * @author Bob Tarling
  */
 abstract class MemberFilePersister {
-    /**
-     * Load the member based on instance variables
-     * which should have been setup in the constructor.
-     *
-     * @param project the project to persist
-     * @param inputStream the inputStream to parse to load the member.
-     * @throws OpenException on any parsing errors.
-     */
-    public abstract void load(Project project, InputStream inputStream)
-        throws OpenException;
+  /**
+   * Load the member based on instance variables which should have been setup in the constructor.
+   *
+   * @param project the project to persist
+   * @param inputStream the inputStream to parse to load the member.
+   * @throws OpenException on any parsing errors.
+   */
+  public abstract void load(Project project, InputStream inputStream) throws OpenException;
 
-    /**
-     * Gets the tag name which is the root tag for this member.
-     * @return tag name.
-     */
-    public abstract String getMainTag();
+  /**
+   * Gets the tag name which is the root tag for this member.
+   *
+   * @return tag name.
+   */
+  public abstract String getMainTag();
 
-    /**
-     * Save the projectmember as XML to the given writer.
-     *
-     * @param member The project member to save.
-     * @param writer The Writer to which appen the save.
-     * @param indent The offset to which to indent the XML
-     * @throws SaveException if the save fails
-     */
-    public abstract void save(
-            ProjectMember member,
-            Writer writer,
-            Integer indent) throws SaveException;
+  /**
+   * Save the projectmember as XML to the given writer.
+   *
+   * @param member The project member to save.
+   * @param writer The Writer to which appen the save.
+   * @param indent The offset to which to indent the XML
+   * @throws SaveException if the save fails
+   */
+  public abstract void save(ProjectMember member, Writer writer, Integer indent)
+      throws SaveException;
 
-    /**
-     * Send an existing file of XML to the PrintWriter.
-     * @param writer the PrintWriter.
-     * @param file the File
-     * @param indent How far to indent in the writer.
-     * @throws SaveException on any errors.
-     */
-    protected void addXmlFileToWriter(PrintWriter writer, File file, int indent)
-        throws SaveException {
-        try {
-            String padding =
-                "                                          "
-                	.substring(0, indent);
-            BufferedReader reader =
-                new BufferedReader(
-                        new InputStreamReader(
-                                new FileInputStream(file), 
-                                PersistenceManager.getEncoding()));
+  /**
+   * Send an existing file of XML to the PrintWriter.
+   *
+   * @param writer the PrintWriter.
+   * @param file the File
+   * @param indent How far to indent in the writer.
+   * @throws SaveException on any errors.
+   */
+  protected void addXmlFileToWriter(PrintWriter writer, File file, int indent)
+      throws SaveException {
+    try {
+      String padding = "                                          ".substring(0, indent);
+      BufferedReader reader =
+          new BufferedReader(
+              new InputStreamReader(new FileInputStream(file), PersistenceManager.getEncoding()));
 
-            // Skip the <?xml... first line
-            String line = reader.readLine();
-            while (line != null && (line.startsWith("<?xml ")
-                    || line.startsWith("<!DOCTYPE "))) {
-                line = reader.readLine();
-            }
+      // Skip the <?xml... first line
+      String line = reader.readLine();
+      while (line != null && (line.startsWith("<?xml ") || line.startsWith("<!DOCTYPE "))) {
+        line = reader.readLine();
+      }
 
-            while (line != null) {
-                (writer).print(padding);
-                (writer).println(line);
-                line = reader.readLine();
-            }
-            reader.close();
-        } catch (FileNotFoundException e) {
-            throw new SaveException(e);
-        } catch (IOException e) {
-            throw new SaveException(e);
-        }
+      while (line != null) {
+        (writer).print(padding);
+        (writer).println(line);
+        line = reader.readLine();
+      }
+      reader.close();
+    } catch (FileNotFoundException e) {
+      throw new SaveException(e);
+    } catch (IOException e) {
+      throw new SaveException(e);
     }
-
+  }
 }

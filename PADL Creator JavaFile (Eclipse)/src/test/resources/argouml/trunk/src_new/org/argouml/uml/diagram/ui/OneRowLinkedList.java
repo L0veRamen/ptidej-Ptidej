@@ -25,35 +25,31 @@
 package org.argouml.uml.diagram.ui;
 
 import java.awt.Color;
-
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
-
 import org.argouml.ui.LookAndFeelMgr;
 import org.argouml.uml.ui.UMLLinkMouseListener;
 import org.argouml.uml.ui.UMLLinkedListCellRenderer;
 
-/**
- * A JList that just has one row.
- */
+/** A JList that just has one row. */
 public class OneRowLinkedList extends JList {
-    /**
-     * The constructor.
-     *
-     * @param dataModel the data model
-     */
-    public OneRowLinkedList(DefaultListModel dataModel) {
-        super();
-        setModel(dataModel);
-        setDoubleBuffered(true);
-        setCellRenderer(new UMLLinkedListCellRenderer(true));
-        setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        setForeground(Color.blue);
-        setSelectionForeground(Color.blue.darker());
-        UMLLinkMouseListener mouseListener = new UMLLinkMouseListener(this);
-        setFont(LookAndFeelMgr.getInstance().getStandardFont());
-        addMouseListener(mouseListener);
-        setVisibleRowCount(1);
-    }
+  /**
+   * The constructor.
+   *
+   * @param dataModel the data model
+   */
+  public OneRowLinkedList(DefaultListModel dataModel) {
+    super();
+    setModel(dataModel);
+    setDoubleBuffered(true);
+    setCellRenderer(new UMLLinkedListCellRenderer(true));
+    setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    setForeground(Color.blue);
+    setSelectionForeground(Color.blue.darker());
+    UMLLinkMouseListener mouseListener = new UMLLinkMouseListener(this);
+    setFont(LookAndFeelMgr.getInstance().getStandardFont());
+    addMouseListener(mouseListener);
+    setVisibleRowCount(1);
+  }
 }

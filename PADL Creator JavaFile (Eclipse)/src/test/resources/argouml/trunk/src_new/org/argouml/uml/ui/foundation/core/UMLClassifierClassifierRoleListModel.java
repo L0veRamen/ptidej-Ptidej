@@ -28,35 +28,29 @@ import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
 /**
- *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 26, 2003
  */
-public class UMLClassifierClassifierRoleListModel
-    extends UMLModelElementListModel2 {
+public class UMLClassifierClassifierRoleListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLClassifierClassifierRoleListModel.
-     */
-    public UMLClassifierClassifierRoleListModel() {
-        super("classifierRole");
+  /** Constructor for UMLClassifierClassifierRoleListModel. */
+  public UMLClassifierClassifierRoleListModel() {
+    super("classifierRole");
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (getTarget() != null) {
+      setAllElements(Model.getFacade().getClassifierRoles(getTarget()));
     }
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (getTarget() != null) {
-            setAllElements(Model.getFacade().getClassifierRoles(getTarget()));
-        }
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ element) {
-        return Model.getFacade().getClassifierRoles(getTarget())
-        	.contains(element);
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ element) {
+    return Model.getFacade().getClassifierRoles(getTarget()).contains(element);
+  }
 }

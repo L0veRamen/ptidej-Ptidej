@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -22,26 +22,25 @@ import sad.codesmell.property.ICodeSmellProperty;
  */
 public class FieldProperty implements ICodeSmellProperty {
 
-	final private IField iField;
+  private final IField iField;
 
-	public FieldProperty(IField field) {
-		this.iField = field;
-	}
+  public FieldProperty(IField field) {
+    this.iField = field;
+  }
 
-	public IField getIField() {
-		return this.iField;
-	}
+  public IField getIField() {
+    return this.iField;
+  }
 
-	public String getIDField() {
-		return this.iField.getDisplayID();
-	}
+  public String getIDField() {
+    return this.iField.getDisplayID();
+  }
 
-	public String toString(final int count, final int propertyCount, final String codesmellName) {
-		final StringBuffer buffer = new StringBuffer();
-		buffer.append("\n" + count + ".100." + codesmellName + ".FieldName-" + propertyCount + " = ");
-		buffer.append(this.getIDField());
+  public String toString(final int count, final int propertyCount, final String codesmellName) {
+    final StringBuffer buffer = new StringBuffer();
+    buffer.append("\n" + count + ".100." + codesmellName + ".FieldName-" + propertyCount + " = ");
+    buffer.append(this.getIDField());
 
-		return buffer.toString();
-	}
-
+    return buffer.toString();
+  }
 }

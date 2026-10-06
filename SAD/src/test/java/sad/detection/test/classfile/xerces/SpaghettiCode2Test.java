@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -12,10 +12,8 @@ package sad.detection.test.classfile.xerces;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-
-import org.junit.Assert;
-
 import junit.framework.TestCase;
+import org.junit.Assert;
 import padl.generator.helper.ModelGenerator;
 import padl.kernel.IIdiomLevelModel;
 import sad.designsmell.detection.IDesignSmellDetection;
@@ -27,28 +25,29 @@ import util.io.ProxyDisk;
  * @since 2010/02/10
  */
 public final class SpaghettiCode2Test extends TestCase {
-	private static IIdiomLevelModel IdiomLevelModel;
-	private static final String NAME = "Xercesv2.7.0.jar";
-	private static final String PATH = "../SAD/target/test-classes/Xercesv2.7.0.jar";
+  private static IIdiomLevelModel IdiomLevelModel;
+  private static final String NAME = "Xercesv2.7.0.jar";
+  private static final String PATH = "../SAD/target/test-classes/Xercesv2.7.0.jar";
 
-	public SpaghettiCode2Test(final String name) {
-		super(name);
-	}
+  public SpaghettiCode2Test(final String name) {
+    super(name);
+  }
 
-	protected void setUp() throws Exception {
-		if (SpaghettiCode2Test.IdiomLevelModel == null) {
-			SpaghettiCode2Test.IdiomLevelModel = ModelGenerator
-					.generateModelFromClassFilesDirectories(
-							new String[] { SpaghettiCode2Test.PATH });
-		}
-	}
+  protected void setUp() throws Exception {
+    if (SpaghettiCode2Test.IdiomLevelModel == null) {
+      SpaghettiCode2Test.IdiomLevelModel =
+          ModelGenerator.generateModelFromClassFilesDirectories(
+              new String[] {SpaghettiCode2Test.PATH});
+    }
+  }
 
-	public void testSpaghettiCode() throws IOException {
-		final IDesignSmellDetection ad = new SpaghettiCodeDetection();
-		ad.detect(SpaghettiCode2Test.IdiomLevelModel);
-		ad.output(new PrintWriter(ProxyDisk.getInstance().fileTempOutput(
-				SpaghettiCode2Test.NAME + "_SpaghettiCode.ini")));
-		Assert.assertEquals("Incorrect number of spaghetti code found", 1,
-				ad.getDesignSmells().size());
-	}
+  public void testSpaghettiCode() throws IOException {
+    final IDesignSmellDetection ad = new SpaghettiCodeDetection();
+    ad.detect(SpaghettiCode2Test.IdiomLevelModel);
+    ad.output(
+        new PrintWriter(
+            ProxyDisk.getInstance()
+                .fileTempOutput(SpaghettiCode2Test.NAME + "_SpaghettiCode.ini")));
+    Assert.assertEquals("Incorrect number of spaghetti code found", 1, ad.getDesignSmells().size());
+  }
 }

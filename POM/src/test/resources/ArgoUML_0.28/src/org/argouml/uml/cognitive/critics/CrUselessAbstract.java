@@ -31,7 +31,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
 import org.argouml.cognitive.Designer;
 import org.argouml.cognitive.Goal;
 import org.argouml.cognitive.ListSet;
@@ -39,77 +38,69 @@ import org.argouml.model.Model;
 import org.argouml.uml.cognitive.UMLDecision;
 import org.argouml.util.ChildGenerator;
 
-
-/** A critic to detect when a class can never have instances (of
+/**
+ * A critic to detect when a class can never have instances (of
  *
- * @author jrobbins
- *  itself of any subclasses). */
+ * @author jrobbins itself of any subclasses).
+ */
 public class CrUselessAbstract extends CrUML {
 
-    /**
-     * The constructor.
-     */
-    public CrUselessAbstract() {
-        setupHeadAndDesc();
-	addSupportedDecision(UMLDecision.INHERITANCE);
-	addSupportedGoal(Goal.getUnspecifiedGoal());
-	addTrigger("specialization");
-	addTrigger("isAbstract");
-    }
+  /** The constructor. */
+  public CrUselessAbstract() {
+    setupHeadAndDesc();
+    addSupportedDecision(UMLDecision.INHERITANCE);
+    addSupportedGoal(Goal.getUnspecifiedGoal());
+    addTrigger("specialization");
+    addTrigger("isAbstract");
+  }
 
-    /*
-     * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
-     *      java.lang.Object, org.argouml.cognitive.Designer)
-     */
-    @Override
-    public boolean predicate2(Object dm, Designer dsgr) {
-	if (!(Model.getFacade().isAClass(dm))) {
-            return false;
-        }
-	Object cls = dm;
-	if (!Model.getFacade().isAbstract(cls)) {
-	    return false;  // original class was not abstract
-	}
-	ListSet derived =
-	    (new ListSet(cls)).reachable(new ChildGenDerivedClasses());
-        for (Object c : derived) {
-	    if (!Model.getFacade().isAbstract(c)) {
-		return false;  // found a concrete subclass
-            }
-	}
-	return true; // no concrete subclasses defined, this class is "useless"
+  /*
+   * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
+   *      java.lang.Object, org.argouml.cognitive.Designer)
+   */
+  @Override
+  public boolean predicate2(Object dm, Designer dsgr) {
+    if (!(Model.getFacade().isAClass(dm))) {
+      return false;
     }
+    Object cls = dm;
+    if (!Model.getFacade().isAbstract(cls)) {
+      return false; // original class was not abstract
+    }
+    ListSet derived = (new ListSet(cls)).reachable(new ChildGenDerivedClasses());
+    for (Object c : derived) {
+      if (!Model.getFacade().isAbstract(c)) {
+        return false; // found a concrete subclass
+      }
+    }
+    return true; // no concrete subclasses defined, this class is "useless"
+  }
 
-    /*
-     * @see org.argouml.uml.cognitive.critics.CrUML#getCriticizedDesignMaterials()
-     */
-    @Override
-    public Set<Object> getCriticizedDesignMaterials() {
-        Set<Object> ret = new HashSet<Object>();
-        ret.add(Model.getMetaTypes().getUMLClass());
-        return ret;
-    }
-    
+  /*
+   * @see org.argouml.uml.cognitive.critics.CrUML#getCriticizedDesignMaterials()
+   */
+  @Override
+  public Set<Object> getCriticizedDesignMaterials() {
+    Set<Object> ret = new HashSet<Object>();
+    ret.add(Model.getMetaTypes().getUMLClass());
+    return ret;
+  }
 } /* end class CrUselessAbstract */
 
-
-
 class ChildGenDerivedClasses implements ChildGenerator {
-    public Iterator childIterator(Object o) {
-        Object c = o;
-        Collection specs = new ArrayList(Model.getFacade()
-                .getSpecializations(c));
-        if (specs == null) {
-            return Collections.emptySet().iterator();
-        }
-        List specClasses = new ArrayList(specs.size());
-        for (Object g : specs) {
-            Object ge = Model.getFacade().getSpecific(g);
-            if (ge != null) {
-                specClasses.add(ge);
-            }
-        }
-        return specClasses.iterator();
+  public Iterator childIterator(Object o) {
+    Object c = o;
+    Collection specs = new ArrayList(Model.getFacade().getSpecializations(c));
+    if (specs == null) {
+      return Collections.emptySet().iterator();
     }
-
+    List specClasses = new ArrayList(specs.size());
+    for (Object g : specs) {
+      Object ge = Model.getFacade().getSpecific(g);
+      if (ge != null) {
+        specClasses.add(ge);
+      }
+    }
+    return specClasses.iterator();
+  }
 }

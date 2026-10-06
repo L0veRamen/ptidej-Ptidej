@@ -28,95 +28,82 @@ import java.io.File;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Vector;
-
 import org.apache.log4j.Logger;
 
 /**
- * Adapter that implements CodeGeneration using a FileGeneration implementation.
- * When requested to return file names or file contents, it generates all files
- * in a temporary directory and reads them.
- * TODO: Remove this class when all code generators implements the new
- * CodeGenerator interface directly.
- * 
- * @deprecated in 0.23.3 by thn.  Not used in core ArgoUML any more.
+ * Adapter that implements CodeGeneration using a FileGeneration implementation. When requested to
+ * return file names or file contents, it generates all files in a temporary directory and reads
+ * them. TODO: Remove this class when all code generators implements the new CodeGenerator interface
+ * directly.
  *
+ * @deprecated in 0.23.3 by thn. Not used in core ArgoUML any more.
  * @author Daniele Tamino
  */
 public class FileGeneratorAdapter implements CodeGenerator {
-    /**
-     * Logger.
-     */
-    private static final Logger LOG =
-        Logger.getLogger(FileGeneratorAdapter.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(FileGeneratorAdapter.class);
 
-    private FileGenerator fileGen;
+  private FileGenerator fileGen;
 
-    /**
-     * @param fg The FileGenerator to wrap.
-     */
-    public FileGeneratorAdapter(FileGenerator fg) {
-        fileGen = fg;
-        LOG.debug("Wrapping " + fg + " info FileGeneratorAdapter");
+  /**
+   * @param fg The FileGenerator to wrap.
+   */
+  public FileGeneratorAdapter(FileGenerator fg) {
+    fileGen = fg;
+    LOG.debug("Wrapping " + fg + " info FileGeneratorAdapter");
+  }
+
+  /**
+   * @see org.argouml.uml.generator.CodeGenerator#generate( java.util.Collection, boolean)
+   */
+  public Collection generate(Collection elements, boolean deps) {
+    LOG.debug("generate() called");
+    File tmpdir = null;
+    try {
+      tmpdir = TempFileUtils.createTempDir();
+      if (tmpdir != null) {
+        generateFiles(elements, tmpdir.getPath(), deps);
+        return TempFileUtils.readAllFiles(tmpdir);
+      }
+      return new Vector();
+    } finally {
+      if (tmpdir != null) {
+        TempFileUtils.deleteDir(tmpdir);
+      }
+      LOG.debug("generate() terminated");
     }
+  }
 
-    /**
-     * @see org.argouml.uml.generator.CodeGenerator#generate(
-     *      java.util.Collection, boolean)
-     */
-    public Collection generate(Collection elements, boolean deps) {
-        LOG.debug("generate() called");
-        File tmpdir = null;
-        try {
-            tmpdir = TempFileUtils.createTempDir();
-            if (tmpdir != null) {
-                generateFiles(elements, tmpdir.getPath(), deps);
-                return TempFileUtils.readAllFiles(tmpdir);
-            }
-            return new Vector();
-        } finally {
-            if (tmpdir != null) {
-                TempFileUtils.deleteDir(tmpdir);
-            }
-            LOG.debug("generate() terminated");
-        }
+  /**
+   * @see org.argouml.uml.generator.CodeGenerator#generateFiles( java.util.Collection,
+   *     java.lang.String, boolean)
+   */
+  public Collection generateFiles(Collection elements, String path, boolean deps) {
+    LOG.debug("generateFiles() called");
+    // TODO: 'deps' is ignored here
+    for (Iterator it = elements.iterator(); it.hasNext(); ) {
+      fileGen.generateFile2(it.next(), path);
     }
+    return TempFileUtils.readFileNames(new File(path));
+  }
 
-    /**
-     * @see org.argouml.uml.generator.CodeGenerator#generateFiles(
-     *      java.util.Collection, java.lang.String, boolean)
-     */
-    public Collection generateFiles(Collection elements, String path,
-            boolean deps) {
-        LOG.debug("generateFiles() called");
-        // TODO: 'deps' is ignored here
-        for (Iterator it = elements.iterator(); it.hasNext();) {
-            fileGen.generateFile2(it.next(), path);
-        }
-        return TempFileUtils.readFileNames(new File(path));
+  /**
+   * @see org.argouml.uml.generator.CodeGenerator#generateFileList( java.util.Collection, boolean)
+   */
+  public Collection generateFileList(Collection elements, boolean deps) {
+    LOG.debug("generateFileList() called");
+    // TODO: 'deps' is ignored here
+    File tmpdir = null;
+    try {
+      tmpdir = TempFileUtils.createTempDir();
+      for (Iterator it = elements.iterator(); it.hasNext(); ) {
+        fileGen.generateFile2(it.next(), tmpdir.getName());
+      }
+      return TempFileUtils.readFileNames(tmpdir);
+    } finally {
+      if (tmpdir != null) {
+        TempFileUtils.deleteDir(tmpdir);
+      }
     }
-
-    /**
-     * @see org.argouml.uml.generator.CodeGenerator#generateFileList(
-     *      java.util.Collection, boolean)
-     */
-    public Collection generateFileList(Collection elements, boolean deps) {
-        LOG.debug("generateFileList() called");
-        // TODO: 'deps' is ignored here
-        File tmpdir = null;
-        try {
-            tmpdir = TempFileUtils.createTempDir();
-            for (Iterator it = elements.iterator(); it.hasNext();) {
-                fileGen.generateFile2(it.next(), tmpdir.getName());
-            }
-            return TempFileUtils.readFileNames(tmpdir);
-        } finally {
-            if (tmpdir != null) {
-                TempFileUtils.deleteDir(tmpdir);
-            }
-        }
-    }
-
-
-
-
+  }
 }

@@ -26,38 +26,34 @@ package org.argouml.notation.providers;
 
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
-
 import org.argouml.model.Model;
 import org.argouml.notation.NotationProvider;
 
 /**
- * This abstract class forms the basis of all Notation providers
- * for the text shown in the Fig that represents the ClassifierRole.
- * Subclass this for all languages.
- * 
+ * This abstract class forms the basis of all Notation providers for the text shown in the Fig that
+ * represents the ClassifierRole. Subclass this for all languages.
+ *
  * @author Michiel
  */
 public abstract class ClassifierRoleNotation extends NotationProvider {
-    
-    /**
-     * The Constructor. 
-     *
-     * @param classifierRole the UML element
-     */
-    public ClassifierRoleNotation(Object classifierRole) {
-        if (!Model.getFacade().isAClassifierRole(classifierRole)) {
-            throw new IllegalArgumentException("This is not a ClassifierRole.");
-        }
-    }
 
-    @Override
-    public void initialiseListener(PropertyChangeListener listener, 
-            Object modelElement) {
-        super.initialiseListener(listener, modelElement);
-        Collection classifiers = Model.getFacade().getBases(modelElement);
-        for (Object c : classifiers) {
-            addElementListener(listener, c, "name");
-        }
+  /**
+   * The Constructor.
+   *
+   * @param classifierRole the UML element
+   */
+  public ClassifierRoleNotation(Object classifierRole) {
+    if (!Model.getFacade().isAClassifierRole(classifierRole)) {
+      throw new IllegalArgumentException("This is not a ClassifierRole.");
     }
+  }
 
+  @Override
+  public void initialiseListener(PropertyChangeListener listener, Object modelElement) {
+    super.initialiseListener(listener, modelElement);
+    Collection classifiers = Model.getFacade().getBases(modelElement);
+    for (Object c : classifiers) {
+      addElementListener(listener, c, "name");
+    }
+  }
 }

@@ -26,7 +26,6 @@
 package org.argouml.uml.ui.behavior.common_behavior;
 
 import javax.swing.Action;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 
@@ -36,32 +35,25 @@ import org.argouml.model.Model;
  */
 public class ActionNewReturnAction extends ActionNewAction {
 
-    private static final ActionNewReturnAction SINGLETON =
-        new ActionNewReturnAction();
+  private static final ActionNewReturnAction SINGLETON = new ActionNewReturnAction();
 
-    /**
-     * Constructor for ActionNewReturnAction.
-     */
-    protected ActionNewReturnAction() {
-        super();
-        putValue(Action.NAME, Translator.localize(
-                "button.new-returnaction"));
-    }
+  /** Constructor for ActionNewReturnAction. */
+  protected ActionNewReturnAction() {
+    super();
+    putValue(Action.NAME, Translator.localize("button.new-returnaction"));
+  }
 
+  /**
+   * @see org.argouml.uml.ui.behavior.common_behavior.ActionNewAction#createAction()
+   */
+  protected Object createAction() {
+    return Model.getCommonBehaviorFactory().createReturnAction();
+  }
 
-    /**
-     * @see org.argouml.uml.ui.behavior.common_behavior.ActionNewAction#createAction()
-     */
-    protected Object createAction() {
-        return Model.getCommonBehaviorFactory().createReturnAction();
-    }
-
-
-    /**
-     * @return Returns the SINGLETON.
-     */
-    public static ActionNewReturnAction getInstance() {
-        return SINGLETON;
-    }
-
+  /**
+   * @return Returns the SINGLETON.
+   */
+  public static ActionNewReturnAction getInstance() {
+    return SINGLETON;
+  }
 }

@@ -25,9 +25,7 @@
 package org.argouml.uml.cognitive.critics;
 
 import junit.framework.TestCase;
-
 import org.argouml.model.Model;
-
 
 /**
  * Testing the class {@link CrUnconventionalOperName}.
@@ -35,35 +33,31 @@ import org.argouml.model.Model;
  * @author mkl
  */
 public class TestCrUnconventionalOperName extends TestCase {
-    /**
-     * An instance of the class to test.
-     */
-    private CrUnconventionalOperName cr = new CrUnconventionalOperName();
+  /** An instance of the class to test. */
+  private CrUnconventionalOperName cr = new CrUnconventionalOperName();
 
-    /**
-     * Constructor.
-     *
-     * @param arg0 The test case name.
-     */
-    public TestCrUnconventionalOperName(String arg0) {
-        super(arg0);
-    }
+  /**
+   * Constructor.
+   *
+   * @param arg0 The test case name.
+   */
+  public TestCrUnconventionalOperName(String arg0) {
+    super(arg0);
+  }
 
-    /**
-     * Testing of computeSuggestion.
-     */
-    public void testComputeSuggestion() {
-        assertEquals("", cr.computeSuggestion(null));
-        assertEquals("test", cr.computeSuggestion("Test"));
-        assertEquals("t", cr.computeSuggestion("T"));
-    }
-    
-    public void testPredicate2() {
-        Object me = Model.getCoreFactory().createOperation();
-        Model.getCoreHelper().setName(me, null);
-        assertFalse(cr.predicate2(me, null));
-        
-        Model.getCoreHelper().setName(me, "UpperCase");
-        assertTrue(cr.predicate2(me, null));
-    }
+  /** Testing of computeSuggestion. */
+  public void testComputeSuggestion() {
+    assertEquals("", cr.computeSuggestion(null));
+    assertEquals("test", cr.computeSuggestion("Test"));
+    assertEquals("t", cr.computeSuggestion("T"));
+  }
+
+  public void testPredicate2() {
+    Object me = Model.getCoreFactory().createOperation();
+    Model.getCoreHelper().setName(me, null);
+    assertFalse(cr.predicate2(me, null));
+
+    Model.getCoreHelper().setName(me, "UpperCase");
+    assertTrue(cr.predicate2(me, null));
+  }
 }

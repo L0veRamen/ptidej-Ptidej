@@ -24,217 +24,214 @@
 
 package org.argouml.model;
 
-
 /**
- * The interface for the factory of the CommonBehavior.<p>
+ * The interface for the factory of the CommonBehavior.
  *
- * Created from the old CommonBehaviorFactory.
+ * <p>Created from the old CommonBehaviorFactory.
  */
 public interface CommonBehaviorFactory {
 
-    /**
-     * Create an empty but initialized instance of a UML ActionSequence.
-     *
-     * @return an initialized UML ActionSequence instance.
-     */
-    Object createActionSequence();
+  /**
+   * Create an empty but initialized instance of a UML ActionSequence.
+   *
+   * @return an initialized UML ActionSequence instance.
+   */
+  Object createActionSequence();
 
-    /**
-     * Create an empty but initialized instance of a UML Argument.
-     *
-     * @return an initialized UML Argument instance.
-     */
-    Object createArgument();
+  /**
+   * Create an empty but initialized instance of a UML Argument.
+   *
+   * @return an initialized UML Argument instance.
+   */
+  Object createArgument();
 
-    /**
-     * Create an empty but initialized instance of a UML AttributeLink.
-     *
-     * @return an initialized UML AttributeLink instance.
-     */
-    Object createAttributeLink();
+  /**
+   * Create an empty but initialized instance of a UML AttributeLink.
+   *
+   * @return an initialized UML AttributeLink instance.
+   */
+  Object createAttributeLink();
 
-    /**
-     * Create an empty but initialized instance of a UML CallAction.
-     *
-     * @return an initialized UML CallAction instance.
-     */
-    Object createCallAction();
+  /**
+   * Create an empty but initialized instance of a UML CallAction.
+   *
+   * @return an initialized UML CallAction instance.
+   */
+  Object createCallAction();
 
-    /**
-     * Create an empty but initialized instance of a UML ComponentInstance.
-     *
-     * @return an initialized UML ComponentInstance instance.
-     */
-    Object createComponentInstance();
+  /**
+   * Create an empty but initialized instance of a UML ComponentInstance.
+   *
+   * @return an initialized UML ComponentInstance instance.
+   */
+  Object createComponentInstance();
 
-    /**
-     * Create an empty but initialized instance of a UML CreateAction.
-     *
-     * @return an initialized UML CreateAction instance.
-     */
-    Object createCreateAction();
+  /**
+   * Create an empty but initialized instance of a UML CreateAction.
+   *
+   * @return an initialized UML CreateAction instance.
+   */
+  Object createCreateAction();
 
-    /**
-     * Create an empty but initialized instance of a UML DestroyAction.
-     *
-     * @return an initialized UML DestroyAction instance.
-     */
-    Object createDestroyAction();
+  /**
+   * Create an empty but initialized instance of a UML DestroyAction.
+   *
+   * @return an initialized UML DestroyAction instance.
+   */
+  Object createDestroyAction();
 
-    /**
-     * Create an empty but initialized instance of a UML Exception.
-     *
-     * @return an initialized UML Exception instance.
-     */
-    Object createException();
+  /**
+   * Create an empty but initialized instance of a UML Exception.
+   *
+   * @return an initialized UML Exception instance.
+   */
+  Object createException();
 
-    /**
-     * Create an empty but initialized instance of a UML Link.
-     *
-     * @return an initialized UML Link instance.
-     */
-    Object createLink();
+  /**
+   * Create an empty but initialized instance of a UML Link.
+   *
+   * @return an initialized UML Link instance.
+   */
+  Object createLink();
 
-    /**
-     * Create an empty but initialized instance of a UML LinkEnd.
-     *
-     * @return an initialized UML LinkEnd instance.
-     */
-    Object createLinkEnd();
+  /**
+   * Create an empty but initialized instance of a UML LinkEnd.
+   *
+   * @return an initialized UML LinkEnd instance.
+   */
+  Object createLinkEnd();
 
-    /**
-     * Create an empty but initialized instance of a UML LinkObject.
-     *
-     * @return an initialized UML LinkObject instance.
-     */
-    Object createLinkObject();
+  /**
+   * Create an empty but initialized instance of a UML LinkObject.
+   *
+   * @return an initialized UML LinkObject instance.
+   */
+  Object createLinkObject();
 
-    /**
-     * Create an empty but initialized instance of a UML NodeInstance.
-     *
-     * @return an initialized UML NodeInstance instance.
-     */
-    Object createNodeInstance();
+  /**
+   * Create an empty but initialized instance of a UML NodeInstance.
+   *
+   * @return an initialized UML NodeInstance instance.
+   */
+  Object createNodeInstance();
 
-    /**
-     * Create an empty but initialized instance of a UML Object.
-     *
-     * @return an initialized UML Object instance.
-     */
-    Object createObject();
+  /**
+   * Create an empty but initialized instance of a UML Object.
+   *
+   * @return an initialized UML Object instance.
+   */
+  Object createObject();
 
-    /**
-     * Create an empty but initialized instance of a UML Reception.
-     *
-     * @return an initialized UML Reception instance.
-     */
-    Object createReception();
+  /**
+   * Create an empty but initialized instance of a UML Reception.
+   *
+   * @return an initialized UML Reception instance.
+   */
+  Object createReception();
 
-    /**
-     * Create an empty but initialized instance of a UML ReturnAction.
-     *
-     * @return an initialized UML ReturnAction instance.
-     */
-    Object createReturnAction();
+  /**
+   * Create an empty but initialized instance of a UML ReturnAction.
+   *
+   * @return an initialized UML ReturnAction instance.
+   */
+  Object createReturnAction();
 
-    /**
-     * Create an empty but initialized instance of a UML SendAction.
-     *
-     * @return an initialized UML SendAction instance.
-     */
-    Object createSendAction();
+  /**
+   * Create an empty but initialized instance of a UML SendAction.
+   *
+   * @return an initialized UML SendAction instance.
+   */
+  Object createSendAction();
 
-    /**
-     * Create an empty but initialized instance of a UML Signal.
-     *
-     * @return an initialized UML Signal instance.
-     */
-    Object createSignal();
+  /**
+   * Create an empty but initialized instance of a UML Signal.
+   *
+   * @return an initialized UML Signal instance.
+   */
+  Object createSignal();
 
-    /**
-     * Create an empty but initialized instance of a UML Stimulus.
-     *
-     * @return an initialized UML Stimulus instance.
-     */
-    Object createStimulus();
+  /**
+   * Create an empty but initialized instance of a UML Stimulus.
+   *
+   * @return an initialized UML Stimulus instance.
+   */
+  Object createStimulus();
 
-    /**
-     * Create an empty but initialized instance of a UML TerminateAction.
-     *
-     * @return an initialized UML TerminateAction instance.
-     */
-    Object createTerminateAction();
+  /**
+   * Create an empty but initialized instance of a UML TerminateAction.
+   *
+   * @return an initialized UML TerminateAction instance.
+   */
+  Object createTerminateAction();
 
-    /**
-     * Create an empty but initialized instance of a UML UninterpretedAction.
-     *
-     * @return an initialized UML UninterpretedAction instance.
-     */
-    Object createUninterpretedAction();
+  /**
+   * Create an empty but initialized instance of a UML UninterpretedAction.
+   *
+   * @return an initialized UML UninterpretedAction instance.
+   */
+  Object createUninterpretedAction();
 
-    /**
-     * Builds a CallAction belonging to operation oper with a given name.
-     * Ownership of this modelelement is not set! It is unwise to build a
-     * callaction without an operation since the multiplicity according to the
-     * UML spec 1.3 is 1..1. Therefore precondition is that there is an
-     * operation.
-     *
-     * @param oper the given operation
-     * @param name the name for the CallAction
-     * @return MCallAction
-     */
-    Object buildCallAction(Object oper, String name);
+  /**
+   * Builds a CallAction belonging to operation oper with a given name. Ownership of this
+   * modelelement is not set! It is unwise to build a callaction without an operation since the
+   * multiplicity according to the UML spec 1.3 is 1..1. Therefore precondition is that there is an
+   * operation.
+   *
+   * @param oper the given operation
+   * @param name the name for the CallAction
+   * @return MCallAction
+   */
+  Object buildCallAction(Object oper, String name);
 
-    /**
-     * Builds a new uninterpreted action. If the argument is an action state,
-     * the new action is set as the entry action.
-     *
-     * @param actionState the given action state or null
-     * @return the newly build UninterpretedAction
-     */
-    Object buildUninterpretedAction(Object actionState);
+  /**
+   * Builds a new uninterpreted action. If the argument is an action state, the new action is set as
+   * the entry action.
+   *
+   * @param actionState the given action state or null
+   * @return the newly build UninterpretedAction
+   */
+  Object buildUninterpretedAction(Object actionState);
 
-    /**
-     * Builds a Link between two Instances.
-     *
-     * @param fromInstance the first given instance
-     * @param toInstance   the second given instance
-     * @return the newly build link
-     */
-    Object buildLink(Object fromInstance, Object toInstance);
+  /**
+   * Builds a Link between two Instances.
+   *
+   * @param fromInstance the first given instance
+   * @param toInstance the second given instance
+   * @return the newly build link
+   */
+  Object buildLink(Object fromInstance, Object toInstance);
 
-    /**
-     * Builds an action (actually an CallAction) for some message.
-     *
-     * @param message the given message
-     * @return the newly build callAction
-     */
-    Object buildAction(Object message);
+  /**
+   * Builds an action (actually an CallAction) for some message.
+   *
+   * @param message the given message
+   * @return the newly build callAction
+   */
+  Object buildAction(Object message);
 
-    /**
-     * Builds a signal belonging to some behavioralfeature.
-     *
-     * @param feature the given behaviouralfeature
-     * @return the newly build Signal
-     */
-    Object buildSignal(Object feature);
+  /**
+   * Builds a signal belonging to some behavioralfeature.
+   *
+   * @param feature the given behaviouralfeature
+   * @return the newly build Signal
+   */
+  Object buildSignal(Object feature);
 
-    /**
-     * Builds a stimulus based on a given link. The link must have two
-     * linkends that are connected to an instance. These instances are
-     * used as sender and receiver of the stimulus. The source will
-     * become the sender, the destination the receiver.
-     *
-     * @param link the link
-     * @return the stimulus
-     */
-    Object buildStimulus(Object link);
+  /**
+   * Builds a stimulus based on a given link. The link must have two linkends that are connected to
+   * an instance. These instances are used as sender and receiver of the stimulus. The source will
+   * become the sender, the destination the receiver.
+   *
+   * @param link the link
+   * @return the stimulus
+   */
+  Object buildStimulus(Object link);
 
-    /**
-     * Builds a reception belonging to some classifier.
-     *
-     * @param aClassifier the given classifier (or null)
-     * @return the newly created reception
-     */
-    Object buildReception(Object aClassifier);
+  /**
+   * Builds a reception belonging to some classifier.
+   *
+   * @param aClassifier the given classifier (or null)
+   * @return the newly created reception
+   */
+  Object buildReception(Object aClassifier);
 }

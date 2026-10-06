@@ -1,13 +1,10 @@
 package net.intensicode.idea.config;
 
-/**
- * TODO: Describe this!
- */
-public interface CommentConfiguration
-{
-    String getLineCommentPrefix();
+/** TODO: Describe this! */
+public interface CommentConfiguration {
+  String getLineCommentPrefix();
 
-    String getBlockCommentPrefix();
+  String getBlockCommentPrefix();
 
-    String getBlockCommentSuffix();
+  String getBlockCommentSuffix();
 }

@@ -26,24 +26,24 @@ package org.argouml.model;
 
 /**
  * The different ChangeableKinds.
- * 
- * @deprecated for 0.25.4 by tfmorris. This enumeration has been removed from
- *             UML 2. Use the getter for the isReadOnly attribute.
+ *
+ * @deprecated for 0.25.4 by tfmorris. This enumeration has been removed from UML 2. Use the getter
+ *     for the isReadOnly attribute.
  */
 @Deprecated
 public interface ChangeableKind {
-    /**
-     * @return Returns the AddOnly ChangeableKind.
-     */
-    Object getAddOnly();
+  /**
+   * @return Returns the AddOnly ChangeableKind.
+   */
+  Object getAddOnly();
 
-    /**
-     * @return Returns the Changeable ChangeableKind.
-     */
-    Object getChangeable();
+  /**
+   * @return Returns the Changeable ChangeableKind.
+   */
+  Object getChangeable();
 
-    /**
-     * @return Returns the Frozen ChangeableKind.
-     */
-    Object getFrozen();
+  /**
+   * @return Returns the Frozen ChangeableKind.
+   */
+  Object getFrozen();
 }

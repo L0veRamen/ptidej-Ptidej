@@ -13,7 +13,7 @@
 
     <uses-sdk
             android:minSdkVersion="15"
-            android:targetSdkVersion="22" />
+            android:targetSdkVersion="22"/>
     <!--
     This declares that this application uses the instrumentation test runner targeting
     the package of org.sflphone.  To run the tests use the command:

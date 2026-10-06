@@ -26,9 +26,7 @@
 package org.argouml.uml.ui.foundation.core;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.Action;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLComboBox2;
@@ -40,57 +38,45 @@ import org.tigris.gef.undo.UndoableAction;
  */
 public class ActionSetFeatureOwner extends UndoableAction {
 
-    private static final ActionSetFeatureOwner SINGLETON =
-        new ActionSetFeatureOwner();
+  private static final ActionSetFeatureOwner SINGLETON = new ActionSetFeatureOwner();
 
-    /**
-     * Constructor for ActionSetStructuralFeatureType.
-     */
-    protected ActionSetFeatureOwner() {
-        super(Translator.localize("Set"), null);
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize("Set"));
+  /** Constructor for ActionSetStructuralFeatureType. */
+  protected ActionSetFeatureOwner() {
+    super(Translator.localize("Set"), null);
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize("Set"));
+  }
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    Object source = e.getSource();
+    Object oldClassifier = null;
+    Object newClassifier = null;
+    Object feature = null;
+    if (source instanceof UMLComboBox2) {
+      UMLComboBox2 box = (UMLComboBox2) source;
+      Object o = box.getTarget();
+      if (Model.getFacade().isAFeature(o)) {
+        feature = /*(MFeature)*/ o;
+        oldClassifier = Model.getFacade().getOwner(feature);
+      }
+      o = box.getSelectedItem();
+      if (Model.getFacade().isAClassifier(o)) {
+        newClassifier = /*(MClassifier)*/ o;
+      }
     }
-
-
-
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        Object source = e.getSource();
-        Object oldClassifier = null;
-        Object newClassifier = null;
-        Object feature = null;
-        if (source instanceof UMLComboBox2) {
-            UMLComboBox2 box = (UMLComboBox2) source;
-            Object o = box.getTarget();
-            if (Model.getFacade().isAFeature(o)) {
-                feature = /*(MFeature)*/ o;
-                oldClassifier = Model.getFacade().getOwner(feature);
-            }
-            o = box.getSelectedItem();
-            if (Model.getFacade().isAClassifier(o)) {
-                newClassifier = /*(MClassifier)*/ o;
-            }
-        }
-        if (newClassifier != oldClassifier
-                && feature != null
-                && newClassifier != null) {
-            Model.getCoreHelper().setOwner(feature, newClassifier);
-        }
-
+    if (newClassifier != oldClassifier && feature != null && newClassifier != null) {
+      Model.getCoreHelper().setOwner(feature, newClassifier);
     }
+  }
 
-
-
-    /**
-     * @return Returns the sINGLETON.
-     */
-    public static ActionSetFeatureOwner getInstance() {
-        return SINGLETON;
-    }
-
+  /**
+   * @return Returns the sINGLETON.
+   */
+  public static ActionSetFeatureOwner getInstance() {
+    return SINGLETON;
+  }
 }

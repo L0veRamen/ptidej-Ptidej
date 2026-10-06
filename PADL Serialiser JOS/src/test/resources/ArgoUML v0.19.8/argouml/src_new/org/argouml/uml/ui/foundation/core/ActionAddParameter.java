@@ -26,9 +26,7 @@ package org.argouml.uml.ui.foundation.core;
 
 import java.awt.event.ActionEvent;
 import java.util.Collection;
-
 import javax.swing.Action;
-
 import org.argouml.i18n.Translator;
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
@@ -36,44 +34,39 @@ import org.argouml.model.Model;
 import org.argouml.ui.targetmanager.TargetManager;
 import org.argouml.uml.ui.AbstractActionNewModelElement;
 
-
 /**
- * Action to create a new parameter "next to" the existing parameter
- * (that is actually selected by the user).
+ * Action to create a new parameter "next to" the existing parameter (that is actually selected by
+ * the user).
  *
  * @author Michiel
  */
 class ActionAddParameter extends AbstractActionNewModelElement {
 
-    /**
-     * The constructor.
-     */
-    public ActionAddParameter() {
-        super("button.new-parameter");
-        putValue(Action.NAME, Translator.localize("button.new-parameter"));
-    }
+  /** The constructor. */
+  public ActionAddParameter() {
+    super("button.new-parameter");
+    putValue(Action.NAME, Translator.localize("button.new-parameter"));
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        Object target = TargetManager.getInstance().getModelTarget();
-        Object feature = null;
-        if (Model.getFacade().isAParameter(target)) {
-            feature = Model.getFacade().getBehavioralFeature(target);
-            if (feature != null) {
-                Project currentProject =
-                    ProjectManager.getManager().getCurrentProject();
-                Object model = currentProject.getModel();
-                Object voidType = currentProject.findType("void");
-                Collection propertyChangeListeners =
-                    currentProject.findFigsForMember(feature);
-                TargetManager.getInstance().setTarget(
-                        Model.getCoreFactory().buildParameter(
-                                feature, model, voidType,
-                                propertyChangeListeners));
-                super.actionPerformed(e);
-            }
-        }
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    Object target = TargetManager.getInstance().getModelTarget();
+    Object feature = null;
+    if (Model.getFacade().isAParameter(target)) {
+      feature = Model.getFacade().getBehavioralFeature(target);
+      if (feature != null) {
+        Project currentProject = ProjectManager.getManager().getCurrentProject();
+        Object model = currentProject.getModel();
+        Object voidType = currentProject.findType("void");
+        Collection propertyChangeListeners = currentProject.findFigsForMember(feature);
+        TargetManager.getInstance()
+            .setTarget(
+                Model.getCoreFactory()
+                    .buildParameter(feature, model, voidType, propertyChangeListeners));
+        super.actionPerformed(e);
+      }
     }
+  }
 }

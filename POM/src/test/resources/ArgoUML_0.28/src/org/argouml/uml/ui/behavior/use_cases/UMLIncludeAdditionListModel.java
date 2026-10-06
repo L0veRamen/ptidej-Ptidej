@@ -28,23 +28,21 @@ import org.argouml.model.Model;
 
 /**
  * List model to hold use cases of an includes additions.
- * 
+ *
  * @author MarkusK
  */
 public class UMLIncludeAdditionListModel extends UMLIncludeListModel {
 
-    /**
-     * Constructor for UMLIncludeAdditionListModel.
-     */
-    public UMLIncludeAdditionListModel() {
-        super("addition");
-    }
+  /** Constructor for UMLIncludeAdditionListModel. */
+  public UMLIncludeAdditionListModel() {
+    super("addition");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        super.buildModelList();
-        addElement(Model.getFacade().getAddition(getTarget()));
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    super.buildModelList();
+    addElement(Model.getFacade().getAddition(getTarget()));
+  }
 }

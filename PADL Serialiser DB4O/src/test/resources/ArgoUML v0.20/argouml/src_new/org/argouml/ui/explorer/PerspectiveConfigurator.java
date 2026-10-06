@@ -41,7 +41,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
@@ -57,7 +56,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
 import org.apache.log4j.Logger;
 import org.argouml.i18n.Translator;
 import org.argouml.swingext.SpacerPanel;
@@ -65,800 +63,742 @@ import org.argouml.ui.ArgoDialog;
 import org.argouml.ui.explorer.rules.PerspectiveRule;
 
 /**
- * The "Configure Perspectives" dialog.<p>
+ * The "Configure Perspectives" dialog.
  *
- * This class implements the following features:<p>
+ * <p>This class implements the following features:
+ *
+ * <p>
+ *
  * <ul>
- * <li>- saving perspectives to the user profile.
- * <li>- adding new perspectives.
- * <li>- deleting perspectives.
- * <li>- renaming perspectives.
- * <li>- duplicating existing perspectives.
- * <li>- reordering perspectives.
- * <li>- selecting any number and combination of rules for a perspective.
- * </ul><p>
+ *   <li>- saving perspectives to the user profile.
+ *   <li>- adding new perspectives.
+ *   <li>- deleting perspectives.
+ *   <li>- renaming perspectives.
+ *   <li>- duplicating existing perspectives.
+ *   <li>- reordering perspectives.
+ *   <li>- selecting any number and combination of rules for a perspective.
+ * </ul>
  *
- * This dialog behaves almost exactly as described in
+ * <p>This dialog behaves almost exactly as described in
  * http://java.sun.com/products/jlf/at/book/Idioms6.html#57371
  *
  * @since 21 December 2003.
- * @author  alexb
+ * @author alexb
  */
 public class PerspectiveConfigurator extends ArgoDialog {
-    /**
-     * Logger.
-     */
-    private static final Logger LOG =
-	Logger.getLogger(PerspectiveConfigurator.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(PerspectiveConfigurator.class);
 
-    /**
-     * Insets in pixels.
-     */
-    private static final int INSET_PX = 3;
+  /** Insets in pixels. */
+  private static final int INSET_PX = 3;
 
-    ////////////////////////////////////////////////////////////////
-    // instance variables
+  ////////////////////////////////////////////////////////////////
+  // instance variables
 
-    private JPanel  configPanelNorth;
-    private JPanel  configPanelSouth;
-    private JSplitPane splitPane;
-    private JTextField renameTextField;
-    private JButton newPerspectiveButton;
-    private JButton removePerspectiveButton;
-    private JButton duplicatePerspectiveButton;
-    private JButton moveUpButton, moveDownButton;
-    private JButton addRuleButton;
-    private JButton removeRuleButton;
-    private JButton resetToDefaultButton;
+  private JPanel configPanelNorth;
 
-    private JList   perspectiveList;
-    private JList   perspectiveRulesList;
-    private JList   ruleLibraryList;
-    private DefaultListModel perspectiveListModel;       // at the top
-    private DefaultListModel perspectiveRulesListModel;  // right bottom
-    private DefaultListModel ruleLibraryListModel;       // left bottom
+  private JPanel configPanelSouth;
+  private JSplitPane splitPane;
+  private JTextField renameTextField;
+  private JButton newPerspectiveButton;
+  private JButton removePerspectiveButton;
+  private JButton duplicatePerspectiveButton;
+  private JButton moveUpButton, moveDownButton;
+  private JButton addRuleButton;
+  private JButton removeRuleButton;
+  private JButton resetToDefaultButton;
 
-    private JLabel persLabel;
-    private JLabel ruleLibLabel;
-    private JLabel rulesLabel;
+  private JList perspectiveList;
+  private JList perspectiveRulesList;
+  private JList ruleLibraryList;
+  private DefaultListModel perspectiveListModel; // at the top
+  private DefaultListModel perspectiveRulesListModel; // right bottom
+  private DefaultListModel ruleLibraryListModel; // left bottom
 
-    /**
-     * Creates a new instance of PerspectiveDesignerDialog.
-     *
-     * @param parent the parent frame
-     */
-    public PerspectiveConfigurator(Frame parent) {
+  private JLabel persLabel;
+  private JLabel ruleLibLabel;
+  private JLabel rulesLabel;
 
-        super(parent,
-	      Translator.localize("dialog.title.configure-perspectives"),
-	      ArgoDialog.OK_CANCEL_OPTION,
-	      true); // the dialog is modal
+  /**
+   * Creates a new instance of PerspectiveDesignerDialog.
+   *
+   * @param parent the parent frame
+   */
+  public PerspectiveConfigurator(Frame parent) {
 
-        configPanelNorth = new JPanel();
-        configPanelSouth = new JPanel();
+    super(
+        parent,
+        Translator.localize("dialog.title.configure-perspectives"),
+        ArgoDialog.OK_CANCEL_OPTION,
+        true); // the dialog is modal
 
-        makeLists();
+    configPanelNorth = new JPanel();
+    configPanelSouth = new JPanel();
 
-        makeButtons();
+    makeLists();
 
-        makeLayout();
-        updateRuleLabel();
+    makeButtons();
 
-        makeListeners();
+    makeLayout();
+    updateRuleLabel();
 
-        loadPerspectives();
-        loadLibrary();
-        //sortJListModel(ruleLibraryList);
+    makeListeners();
 
-        splitPane =
-            new JSplitPane(JSplitPane.VERTICAL_SPLIT,
-                    configPanelNorth, configPanelSouth);
-        splitPane.setContinuousLayout(true);
+    loadPerspectives();
+    loadLibrary();
+    // sortJListModel(ruleLibraryList);
 
-        setContent(splitPane);
-    }
+    splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, configPanelNorth, configPanelSouth);
+    splitPane.setContinuousLayout(true);
 
-    /**
-     * Make the lists on the dialog box and fill them.
-     */
-    private void makeLists() {
-        renameTextField = new JTextField();
+    setContent(splitPane);
+  }
 
-        perspectiveListModel = new DefaultListModel();
-        perspectiveList = new JList(perspectiveListModel);
-        perspectiveRulesListModel = new DefaultListModel();
-        perspectiveRulesList = new JList(perspectiveRulesListModel);
-        ruleLibraryListModel = new DefaultListModel();
-        ruleLibraryList = new JList(ruleLibraryListModel);
+  /** Make the lists on the dialog box and fill them. */
+  private void makeLists() {
+    renameTextField = new JTextField();
 
-        perspectiveList.setBorder(BorderFactory.createEmptyBorder(
-                INSET_PX, INSET_PX, INSET_PX, INSET_PX));
-        perspectiveRulesList.setBorder(BorderFactory.createEmptyBorder(
-                INSET_PX, INSET_PX, INSET_PX, INSET_PX));
-        ruleLibraryList.setBorder(BorderFactory.createEmptyBorder(
-                INSET_PX, INSET_PX, INSET_PX, INSET_PX));
+    perspectiveListModel = new DefaultListModel();
+    perspectiveList = new JList(perspectiveListModel);
+    perspectiveRulesListModel = new DefaultListModel();
+    perspectiveRulesList = new JList(perspectiveRulesListModel);
+    ruleLibraryListModel = new DefaultListModel();
+    ruleLibraryList = new JList(ruleLibraryListModel);
 
-        perspectiveList.setSelectionMode(
-                ListSelectionModel.SINGLE_SELECTION);
-        perspectiveRulesList.setSelectionMode(
-                ListSelectionModel.SINGLE_SELECTION);
-        ruleLibraryList.setSelectionMode(
-                ListSelectionModel.SINGLE_SELECTION);
-    }
+    perspectiveList.setBorder(
+        BorderFactory.createEmptyBorder(INSET_PX, INSET_PX, INSET_PX, INSET_PX));
+    perspectiveRulesList.setBorder(
+        BorderFactory.createEmptyBorder(INSET_PX, INSET_PX, INSET_PX, INSET_PX));
+    ruleLibraryList.setBorder(
+        BorderFactory.createEmptyBorder(INSET_PX, INSET_PX, INSET_PX, INSET_PX));
 
-    /**
-     * Make the buttons on the dialog box with localized strings and mnemonics.
-     */
-    private void makeButtons() {
-        newPerspectiveButton = new JButton();
-        nameButton(newPerspectiveButton, "button.new");
-        newPerspectiveButton.setToolTipText(
-                Translator.localize("button.new.tooltip"));
+    perspectiveList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    perspectiveRulesList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    ruleLibraryList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+  }
 
-        removePerspectiveButton = new JButton();
-        nameButton(removePerspectiveButton, "button.remove");
-        removePerspectiveButton.setToolTipText(
-                Translator.localize("button.remove.tooltip"));
+  /** Make the buttons on the dialog box with localized strings and mnemonics. */
+  private void makeButtons() {
+    newPerspectiveButton = new JButton();
+    nameButton(newPerspectiveButton, "button.new");
+    newPerspectiveButton.setToolTipText(Translator.localize("button.new.tooltip"));
 
-        duplicatePerspectiveButton = new JButton();
-        nameButton(duplicatePerspectiveButton, "button.duplicate");
-        duplicatePerspectiveButton.setToolTipText(
-                Translator.localize("button.duplicate.tooltip"));
+    removePerspectiveButton = new JButton();
+    nameButton(removePerspectiveButton, "button.remove");
+    removePerspectiveButton.setToolTipText(Translator.localize("button.remove.tooltip"));
 
-        moveUpButton = new JButton();
-        nameButton(moveUpButton, "button.move-up");
-        moveUpButton.setToolTipText(
-                Translator.localize("button.move-up.tooltip"));
+    duplicatePerspectiveButton = new JButton();
+    nameButton(duplicatePerspectiveButton, "button.duplicate");
+    duplicatePerspectiveButton.setToolTipText(Translator.localize("button.duplicate.tooltip"));
 
-        moveDownButton = new JButton();
-        nameButton(moveDownButton, "button.move-down");
-        moveDownButton.setToolTipText(
-                Translator.localize("button.move-down.tooltip"));
+    moveUpButton = new JButton();
+    nameButton(moveUpButton, "button.move-up");
+    moveUpButton.setToolTipText(Translator.localize("button.move-up.tooltip"));
 
-        addRuleButton = new JButton(">>");
-        addRuleButton.setToolTipText(Translator.localize("button.add-rule"));
-        removeRuleButton = new JButton("<<");
-        removeRuleButton.setToolTipText(Translator.localize(
-                "button.remove-rule"));
+    moveDownButton = new JButton();
+    nameButton(moveDownButton, "button.move-down");
+    moveDownButton.setToolTipText(Translator.localize("button.move-down.tooltip"));
 
-        resetToDefaultButton = new JButton();
-        nameButton(resetToDefaultButton, "button.restore-defaults");
-        resetToDefaultButton.setToolTipText(
-                Translator.localize("button.restore-defaults.tooltip"));
+    addRuleButton = new JButton(">>");
+    addRuleButton.setToolTipText(Translator.localize("button.add-rule"));
+    removeRuleButton = new JButton("<<");
+    removeRuleButton.setToolTipText(Translator.localize("button.remove-rule"));
 
-        //disable the buttons for now, since no selection has been made yet
-        removePerspectiveButton.setEnabled(false);
-        duplicatePerspectiveButton.setEnabled(false);
-        moveUpButton.setEnabled(false);
-        moveDownButton.setEnabled(false);
-        addRuleButton.setEnabled(false);
-        removeRuleButton.setEnabled(false);
-        renameTextField.setEnabled(false);
-    }
+    resetToDefaultButton = new JButton();
+    nameButton(resetToDefaultButton, "button.restore-defaults");
+    resetToDefaultButton.setToolTipText(Translator.localize("button.restore-defaults.tooltip"));
 
-    /**
-     * Make the layout for the dialog box.
-     */
-    private void makeLayout() {
-        GridBagLayout gb = new GridBagLayout();
-        configPanelNorth.setLayout(gb);
-        configPanelSouth.setLayout(gb);
-        GridBagConstraints c = new GridBagConstraints();
-        c.ipadx = 3;
-        c.ipady = 3;
+    // disable the buttons for now, since no selection has been made yet
+    removePerspectiveButton.setEnabled(false);
+    duplicatePerspectiveButton.setEnabled(false);
+    moveUpButton.setEnabled(false);
+    moveDownButton.setEnabled(false);
+    addRuleButton.setEnabled(false);
+    removeRuleButton.setEnabled(false);
+    renameTextField.setEnabled(false);
+  }
 
-        persLabel = new JLabel(); // the text will be set later
-        persLabel.setBorder(BorderFactory.createEmptyBorder(
-                INSET_PX, INSET_PX, INSET_PX, INSET_PX));
-        c.fill = GridBagConstraints.BOTH;
-        c.gridx = 0;
-        c.gridy = 0;
-        c.gridwidth = 3;
-        c.weightx = 1.0;  c.weighty = 0.0;
-        gb.setConstraints(persLabel, c);
-        configPanelNorth.add(persLabel);
+  /** Make the layout for the dialog box. */
+  private void makeLayout() {
+    GridBagLayout gb = new GridBagLayout();
+    configPanelNorth.setLayout(gb);
+    configPanelSouth.setLayout(gb);
+    GridBagConstraints c = new GridBagConstraints();
+    c.ipadx = 3;
+    c.ipady = 3;
 
-        JPanel persPanel = new JPanel(new BorderLayout());
-        JScrollPane persScroll =
-            new JScrollPane(perspectiveList,
-			    JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-			    JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        persPanel.add(renameTextField, BorderLayout.NORTH);
-        persPanel.add(persScroll, BorderLayout.CENTER);
-        c.gridx = 0;
-        c.gridy = 1;
-        c.gridwidth = 4;
-        c.weightx = 1.0;  c.weighty = 1.0;
-        gb.setConstraints(persPanel, c);
-        configPanelNorth.add(persPanel);
+    persLabel = new JLabel(); // the text will be set later
+    persLabel.setBorder(BorderFactory.createEmptyBorder(INSET_PX, INSET_PX, INSET_PX, INSET_PX));
+    c.fill = GridBagConstraints.BOTH;
+    c.gridx = 0;
+    c.gridy = 0;
+    c.gridwidth = 3;
+    c.weightx = 1.0;
+    c.weighty = 0.0;
+    gb.setConstraints(persLabel, c);
+    configPanelNorth.add(persLabel);
 
-        JPanel persButtons = new JPanel(new GridLayout(6, 1, 0, 5));
-        persButtons.add(newPerspectiveButton);
-        persButtons.add(removePerspectiveButton);
-        persButtons.add(duplicatePerspectiveButton);
-        persButtons.add(moveUpButton);
-        persButtons.add(moveDownButton);
-        persButtons.add(resetToDefaultButton);
-        JPanel persButtonWrapper =
-	    new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
-        persButtonWrapper.add(persButtons);
-        c.gridx = 4;
-        c.gridy = 1;
-        c.gridwidth = 1;
-        c.weightx = 0.0;  c.weighty = 0.0;
-        c.ipadx = 0;      c.ipady = 0;
-        c.insets = new Insets(0, 5, 0, 0);
-        gb.setConstraints(persButtonWrapper, c);
-        configPanelNorth.add(persButtonWrapper);
+    JPanel persPanel = new JPanel(new BorderLayout());
+    JScrollPane persScroll =
+        new JScrollPane(
+            perspectiveList,
+            JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    persPanel.add(renameTextField, BorderLayout.NORTH);
+    persPanel.add(persScroll, BorderLayout.CENTER);
+    c.gridx = 0;
+    c.gridy = 1;
+    c.gridwidth = 4;
+    c.weightx = 1.0;
+    c.weighty = 1.0;
+    gb.setConstraints(persPanel, c);
+    configPanelNorth.add(persPanel);
 
-        ruleLibLabel = new JLabel(); // the text will be set later
-        ruleLibLabel.setBorder(BorderFactory.createEmptyBorder(
-                INSET_PX, INSET_PX, INSET_PX, INSET_PX));
-        c.gridx = 0;
-        c.gridy = 3;
-        c.gridwidth = 1;
-        c.weightx = 1.0;
-        c.weighty = 0.0;
-        c.ipadx = 3;
-        c.ipady = 3;
-        c.insets = new Insets(10, 0, 0, 0);
-        gb.setConstraints(ruleLibLabel, c);
-        configPanelSouth.add(ruleLibLabel);
+    JPanel persButtons = new JPanel(new GridLayout(6, 1, 0, 5));
+    persButtons.add(newPerspectiveButton);
+    persButtons.add(removePerspectiveButton);
+    persButtons.add(duplicatePerspectiveButton);
+    persButtons.add(moveUpButton);
+    persButtons.add(moveDownButton);
+    persButtons.add(resetToDefaultButton);
+    JPanel persButtonWrapper = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+    persButtonWrapper.add(persButtons);
+    c.gridx = 4;
+    c.gridy = 1;
+    c.gridwidth = 1;
+    c.weightx = 0.0;
+    c.weighty = 0.0;
+    c.ipadx = 0;
+    c.ipady = 0;
+    c.insets = new Insets(0, 5, 0, 0);
+    gb.setConstraints(persButtonWrapper, c);
+    configPanelNorth.add(persButtonWrapper);
 
-        addRuleButton.setMargin(new Insets(2, 15, 2, 15));
-        removeRuleButton.setMargin(new Insets(2, 15, 2, 15));
-        JPanel xferButtons = new JPanel();
-        xferButtons.setLayout(new BoxLayout(xferButtons, BoxLayout.Y_AXIS));
-        xferButtons.add(addRuleButton);
-        xferButtons.add(new SpacerPanel());
-        xferButtons.add(removeRuleButton);
-        c.gridx = 2;
-        c.gridy = 4;
-        c.weightx = 0.0;
-        c.weighty = 0.0;
-        c.insets = new Insets(0, 3, 0, 5);
-        gb.setConstraints(xferButtons, c);
-        configPanelSouth.add(xferButtons);
+    ruleLibLabel = new JLabel(); // the text will be set later
+    ruleLibLabel.setBorder(BorderFactory.createEmptyBorder(INSET_PX, INSET_PX, INSET_PX, INSET_PX));
+    c.gridx = 0;
+    c.gridy = 3;
+    c.gridwidth = 1;
+    c.weightx = 1.0;
+    c.weighty = 0.0;
+    c.ipadx = 3;
+    c.ipady = 3;
+    c.insets = new Insets(10, 0, 0, 0);
+    gb.setConstraints(ruleLibLabel, c);
+    configPanelSouth.add(ruleLibLabel);
 
-        rulesLabel = new JLabel(); // the text will be set later
-        rulesLabel.setBorder(BorderFactory.createEmptyBorder(
-                INSET_PX, INSET_PX, INSET_PX, INSET_PX));
-        c.gridx = 3;
-        c.gridy = 3;
-        c.gridwidth = 1;
-        c.weightx = 1.0;
-        c.insets = new Insets(10, 0, 0, 0);
-        gb.setConstraints(rulesLabel, c);
-        configPanelSouth.add(rulesLabel);
+    addRuleButton.setMargin(new Insets(2, 15, 2, 15));
+    removeRuleButton.setMargin(new Insets(2, 15, 2, 15));
+    JPanel xferButtons = new JPanel();
+    xferButtons.setLayout(new BoxLayout(xferButtons, BoxLayout.Y_AXIS));
+    xferButtons.add(addRuleButton);
+    xferButtons.add(new SpacerPanel());
+    xferButtons.add(removeRuleButton);
+    c.gridx = 2;
+    c.gridy = 4;
+    c.weightx = 0.0;
+    c.weighty = 0.0;
+    c.insets = new Insets(0, 3, 0, 5);
+    gb.setConstraints(xferButtons, c);
+    configPanelSouth.add(xferButtons);
 
-        c.gridx = 0;
-        c.gridy = 4;
-        c.weighty = 1.0;
-        c.gridwidth = 2;
-        c.gridheight = 2;
-        c.insets = new Insets(0, 0, 0, 0);
-        JScrollPane ruleLibScroll =
-	    new JScrollPane(ruleLibraryList,
-			    JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-			    JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        gb.setConstraints(ruleLibScroll, c);
-        configPanelSouth.add(ruleLibScroll);
+    rulesLabel = new JLabel(); // the text will be set later
+    rulesLabel.setBorder(BorderFactory.createEmptyBorder(INSET_PX, INSET_PX, INSET_PX, INSET_PX));
+    c.gridx = 3;
+    c.gridy = 3;
+    c.gridwidth = 1;
+    c.weightx = 1.0;
+    c.insets = new Insets(10, 0, 0, 0);
+    gb.setConstraints(rulesLabel, c);
+    configPanelSouth.add(rulesLabel);
 
-        c.gridx = 3;
-        c.gridy = 4;
-        c.gridwidth = 2;
-        c.gridheight = 2;
-        JScrollPane rulesScroll =
-            new JScrollPane(perspectiveRulesList,
-			    JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-			    JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        gb.setConstraints(rulesScroll, c);
-        configPanelSouth.add(rulesScroll);
-    }
+    c.gridx = 0;
+    c.gridy = 4;
+    c.weighty = 1.0;
+    c.gridwidth = 2;
+    c.gridheight = 2;
+    c.insets = new Insets(0, 0, 0, 0);
+    JScrollPane ruleLibScroll =
+        new JScrollPane(
+            ruleLibraryList,
+            JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    gb.setConstraints(ruleLibScroll, c);
+    configPanelSouth.add(ruleLibScroll);
 
-    /**
-     * Add action listeners to the buttons and lists.
-     */
-    private void makeListeners() {
-        renameTextField.addActionListener(new RenameListener());
-        renameTextField.getDocument().addDocumentListener(
-                new RenameDocumentListener());
+    c.gridx = 3;
+    c.gridy = 4;
+    c.gridwidth = 2;
+    c.gridheight = 2;
+    JScrollPane rulesScroll =
+        new JScrollPane(
+            perspectiveRulesList,
+            JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    gb.setConstraints(rulesScroll, c);
+    configPanelSouth.add(rulesScroll);
+  }
 
+  /** Add action listeners to the buttons and lists. */
+  private void makeListeners() {
+    renameTextField.addActionListener(new RenameListener());
+    renameTextField.getDocument().addDocumentListener(new RenameDocumentListener());
 
-        newPerspectiveButton.addActionListener(new NewPerspectiveListener());
-        removePerspectiveButton.addActionListener(
-                new RemovePerspectiveListener());
-        duplicatePerspectiveButton.addActionListener(
-                new DuplicatePerspectiveListener());
-        moveUpButton.addActionListener(new MoveUpListener());
-        moveDownButton.addActionListener(new MoveDownListener());
-        addRuleButton.addActionListener(new RuleListener());
-        removeRuleButton.addActionListener(new RuleListener());
-        resetToDefaultButton.addActionListener(new ResetListener());
+    newPerspectiveButton.addActionListener(new NewPerspectiveListener());
+    removePerspectiveButton.addActionListener(new RemovePerspectiveListener());
+    duplicatePerspectiveButton.addActionListener(new DuplicatePerspectiveListener());
+    moveUpButton.addActionListener(new MoveUpListener());
+    moveDownButton.addActionListener(new MoveDownListener());
+    addRuleButton.addActionListener(new RuleListener());
+    removeRuleButton.addActionListener(new RuleListener());
+    resetToDefaultButton.addActionListener(new ResetListener());
 
-        perspectiveList.addListSelectionListener(
-                new PerspectiveListSelectionListener());
-        perspectiveRulesList.addListSelectionListener(
-                new RulesListSelectionListener());
-        perspectiveRulesList.addMouseListener(new RuleListMouseListener());
-        ruleLibraryList.addListSelectionListener(
-                new LibraryListSelectionListener());
-        ruleLibraryList.addMouseListener(new RuleListMouseListener());
+    perspectiveList.addListSelectionListener(new PerspectiveListSelectionListener());
+    perspectiveRulesList.addListSelectionListener(new RulesListSelectionListener());
+    perspectiveRulesList.addMouseListener(new RuleListMouseListener());
+    ruleLibraryList.addListSelectionListener(new LibraryListSelectionListener());
+    ruleLibraryList.addMouseListener(new RuleListMouseListener());
 
-        getOkButton().addActionListener(new OkListener());
-    }
+    getOkButton().addActionListener(new OkListener());
+  }
 
-    /**
-     * Load all the existing rules from the perspective manager
-     * for presentation. These will be presented as the library of rules
-     * the user may pick from.
-     */
-    private void loadLibrary() {
-        List rulesLib = new ArrayList();
-        // get them
-        rulesLib.addAll(PerspectiveManager.getInstance().getRules());
-        // sort them
-        Collections.sort(rulesLib, new Comparator() {
-            public int compare(Object o1, Object o2) {
+  /**
+   * Load all the existing rules from the perspective manager for presentation. These will be
+   * presented as the library of rules the user may pick from.
+   */
+  private void loadLibrary() {
+    List rulesLib = new ArrayList();
+    // get them
+    rulesLib.addAll(PerspectiveManager.getInstance().getRules());
+    // sort them
+    Collections.sort(
+        rulesLib,
+        new Comparator() {
+          public int compare(Object o1, Object o2) {
             return o1.toString().compareTo(o2.toString());
-            }
+          }
         });
-        // remove the ones already selected (if a perspective is selected)
-        ExplorerPerspective selPers =
-            (ExplorerPerspective) perspectiveList.getSelectedValue();
-        if (selPers != null) {
-            Iterator it1 = selPers.getList().iterator();
-            while (it1.hasNext()) {
-                Object persRule = it1.next();
-                Iterator it2 = rulesLib.iterator();
-                while (it2.hasNext()) {
-                    Object libRule = it2.next();
-                    if (libRule.toString().equals(persRule.toString())) {
-                        rulesLib.remove(libRule);
-                        break;
-                    }
-                }
-            }
+    // remove the ones already selected (if a perspective is selected)
+    ExplorerPerspective selPers = (ExplorerPerspective) perspectiveList.getSelectedValue();
+    if (selPers != null) {
+      Iterator it1 = selPers.getList().iterator();
+      while (it1.hasNext()) {
+        Object persRule = it1.next();
+        Iterator it2 = rulesLib.iterator();
+        while (it2.hasNext()) {
+          Object libRule = it2.next();
+          if (libRule.toString().equals(persRule.toString())) {
+            rulesLib.remove(libRule);
+            break;
+          }
         }
-        // add them
-        ruleLibraryListModel.clear();
-        for (int i = 0; i < rulesLib.size(); i++) {
-            ruleLibraryListModel.addElement(rulesLib.get(i));
-        }
-        updateLibLabel();
+      }
+    }
+    // add them
+    ruleLibraryListModel.clear();
+    for (int i = 0; i < rulesLib.size(); i++) {
+      ruleLibraryListModel.addElement(rulesLib.get(i));
+    }
+    updateLibLabel();
+  }
+
+  /** Load the perspectives from the perspective manager for presentation. */
+  private void loadPerspectives() {
+    List perspectives = new ArrayList();
+    perspectives.addAll(PerspectiveManager.getInstance().getPerspectives());
+
+    // must add an editable list of new ExplorerPerspective's
+    // to the list model so that the orginal ones are not changed
+    // in the case of a cancel action by the user.
+    for (int i = 0; i < perspectives.size(); i++) {
+      ExplorerPerspective perspective = (ExplorerPerspective) perspectives.get(i);
+      Object[] ruleArray = perspective.getRulesArray();
+
+      ExplorerPerspective editablePerspective = new ExplorerPerspective(perspective.toString());
+      for (int r = 0; r < ruleArray.length; r++) {
+        editablePerspective.addRule((PerspectiveRule) ruleArray[r]);
+      }
+
+      perspectiveListModel.addElement(editablePerspective);
     }
 
-    /**
-     * Load the perspectives from the perspective manager for presentation.
-     */
-    private void loadPerspectives() {
-        List perspectives = new ArrayList();
-        perspectives.addAll(PerspectiveManager.getInstance().getPerspectives());
+    updatePersLabel();
+  }
 
-        // must add an editable list of new ExplorerPerspective's
-        // to the list model so that the orginal ones are not changed
-        // in the case of a cancel action by the user.
-        for (int i = 0; i < perspectives.size(); i++) {
-            ExplorerPerspective perspective =
-                (ExplorerPerspective) perspectives.get(i);
-            Object[] ruleArray = perspective.getRulesArray();
+  /** Update the label above the list of perspectives with count. */
+  private void updatePersLabel() {
+    persLabel.setText(
+        Translator.localize("label.perspectives") + " (" + perspectiveListModel.size() + ")");
+  }
 
-            ExplorerPerspective editablePerspective =
-                new ExplorerPerspective(perspective.toString());
-            for (int r = 0; r < ruleArray.length; r++) {
-                editablePerspective.addRule((PerspectiveRule) ruleArray[r]);
-            }
+  /** Update the label above the library of rules list with count. */
+  private void updateLibLabel() {
+    // update the label (which shows the number of rules)
+    ruleLibLabel.setText(
+        Translator.localize("label.rules-library") + " (" + ruleLibraryListModel.size() + ")");
+  }
 
-            perspectiveListModel.addElement(editablePerspective);
-        }
+  /** Update the label above the library of rules list with count. */
+  private void updateRuleLabel() {
+    // update the label (which shows the number of rules)
+    rulesLabel.setText(
+        Translator.localize("label.selected-rules")
+            + " ("
+            + perspectiveRulesListModel.size()
+            + ")");
+  }
 
-        updatePersLabel();
+  /**
+   * @param list the JList to be sorted
+   */
+  private void sortJListModel(JList list) {
+    DefaultListModel model = (DefaultListModel) list.getModel();
+    List all = new ArrayList();
+    for (int i = 0; i < model.getSize(); i++) {
+      all.add(model.getElementAt(i));
     }
-
-    /**
-     * Update the label above the list of perspectives with count.
-     */
-    private void updatePersLabel() {
-        persLabel.setText(Translator.localize("label.perspectives")
-                + " (" + perspectiveListModel.size() + ")");
-    }
-
-    /**
-     * Update the label above the library of rules list with count.
-     */
-    private void updateLibLabel() {
-        // update the label (which shows the number of rules)
-        ruleLibLabel.setText(Translator.localize("label.rules-library")
-                + " (" + ruleLibraryListModel.size() + ")");
-    }
-
-    /**
-     * Update the label above the library of rules list with count.
-     */
-    private void updateRuleLabel() {
-        // update the label (which shows the number of rules)
-        rulesLabel.setText(Translator.localize("label.selected-rules")
-                + " (" + perspectiveRulesListModel.size() + ")");
-    }
-
-    /**
-     * @param list the JList to be sorted
-     */
-    private void sortJListModel(JList list) {
-        DefaultListModel model = (DefaultListModel) list.getModel();
-        List all = new ArrayList();
-        for (int i = 0; i < model.getSize(); i++) {
-            all.add(model.getElementAt(i));
-        }
-        model.clear();
-        Collections.sort(all, new Comparator() {
-            public int compare(Object o1, Object o2) {
+    model.clear();
+    Collections.sort(
+        all,
+        new Comparator() {
+          public int compare(Object o1, Object o2) {
             return o1.toString().compareTo(o2.toString());
-            }
+          }
         });
-        Iterator it = all.iterator();
+    Iterator it = all.iterator();
+    while (it.hasNext()) {
+      model.addElement(it.next());
+    }
+  }
+
+  /**
+   * Handles pressing the OK button.
+   *
+   * <p>Updates the perspectives in the explorer, saves the user perspectives and exits.
+   */
+  class OkListener implements ActionListener {
+    public void actionPerformed(ActionEvent e) {
+
+      PerspectiveManager.getInstance().removeAllPerspectives();
+
+      for (int i = 0; i < perspectiveListModel.getSize(); i++) {
+        Object elem = perspectiveListModel.getElementAt(i);
+        PerspectiveManager.getInstance().addPerspective(elem);
+      }
+
+      PerspectiveManager.getInstance().saveUserPerspectives();
+    }
+  }
+
+  /**
+   * Handles pressing the Reset-To-Default button.
+   *
+   * <p>Resets all prerspectives to the build-in defaults.
+   */
+  class ResetListener implements ActionListener {
+    public void actionPerformed(ActionEvent e) {
+
+      Collection c = PerspectiveManager.getInstance().getDefaultPerspectives();
+      if (c.size() > 0) {
+        perspectiveListModel.removeAllElements();
+        Iterator it = c.iterator();
         while (it.hasNext()) {
-            model.addElement(it.next());
+          perspectiveListModel.addElement(it.next());
         }
+        updatePersLabel();
+      }
     }
+  }
 
-    /**
-     * Handles pressing the OK button. <p>
-     *
-     * Updates the perspectives in the explorer,
-     * saves the user perspectives and exits.
-     */
-    class OkListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-
-            PerspectiveManager.getInstance().removeAllPerspectives();
-
-            for (int i = 0; i < perspectiveListModel.getSize(); i++) {
-                Object elem = perspectiveListModel.getElementAt(i);
-                PerspectiveManager.getInstance().addPerspective(elem);
-            }
-
-            PerspectiveManager.getInstance().saveUserPerspectives();
-        }
+  /** Handles pressing the "New" button. */
+  class NewPerspectiveListener implements ActionListener {
+    public void actionPerformed(ActionEvent e) {
+      Object[] msgArgs = {
+        new Integer((perspectiveList.getModel().getSize() + 1)),
+      };
+      ExplorerPerspective newPers =
+          new ExplorerPerspective(
+              Translator.messageFormat("dialog.perspective.explorer-perspective", msgArgs));
+      perspectiveListModel.insertElementAt(newPers, 0);
+      perspectiveList.setSelectedValue(newPers, true);
+      perspectiveRulesListModel.clear();
+      updatePersLabel();
+      updateRuleLabel();
     }
+  }
 
-    /**
-     * Handles pressing the Reset-To-Default button. <p>
-     *
-     * Resets all prerspectives to the build-in defaults.
-     */
-    class ResetListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-
-            Collection c =
-                PerspectiveManager.getInstance().getDefaultPerspectives();
-            if (c.size() > 0) {
-                perspectiveListModel.removeAllElements();
-                Iterator it = c.iterator();
-                while (it.hasNext()) {
-                    perspectiveListModel.addElement(it.next());
-                }
-                updatePersLabel();
-            }
-        }
+  /** Handles pressing the "Remove" button. */
+  class RemovePerspectiveListener implements ActionListener {
+    public void actionPerformed(ActionEvent e) {
+      Object sel = perspectiveList.getSelectedValue();
+      if (perspectiveListModel.getSize() > 1) {
+        perspectiveListModel.removeElement(sel);
+      }
+      perspectiveList.setSelectedIndex(0);
+      if (perspectiveListModel.getSize() == 1) {
+        removePerspectiveButton.setEnabled(false);
+      }
+      updatePersLabel();
     }
+  }
 
-    /**
-     * Handles pressing the "New" button.
-     */
-    class NewPerspectiveListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            Object[] msgArgs = {
-                new Integer((perspectiveList.getModel().getSize() + 1)),
-	    };
-	    ExplorerPerspective newPers =
-		new ExplorerPerspective(Translator.messageFormat(
-                    "dialog.perspective.explorer-perspective", msgArgs));
-	    perspectiveListModel.insertElementAt(newPers, 0);
-	    perspectiveList.setSelectedValue(newPers, true);
-	    perspectiveRulesListModel.clear();
-	    updatePersLabel();
-	    updateRuleLabel();
-        }
+  /** Handles pressing the Duplicate button. */
+  class DuplicatePerspectiveListener implements ActionListener {
+    public void actionPerformed(ActionEvent e) {
+      Object sel = perspectiveList.getSelectedValue();
+      if (sel != null) {
+        Object[] msgArgs = {sel.toString()};
+        ExplorerPerspective newPers =
+            ((ExplorerPerspective) sel)
+                .makeNamedClone(Translator.messageFormat("dialog.perspective.copy-of", msgArgs));
+        perspectiveListModel.insertElementAt(newPers, 0);
+        perspectiveList.setSelectedValue(newPers, true);
+      }
+      updatePersLabel();
     }
+  }
 
-    /**
-     * Handles pressing the "Remove" button.
-     */
-    class RemovePerspectiveListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            Object sel = perspectiveList.getSelectedValue();
-            if (perspectiveListModel.getSize() > 1) {
-                perspectiveListModel.removeElement(sel);
-            }
-            perspectiveList.setSelectedIndex(0);
-            if (perspectiveListModel.getSize() == 1) {
-                removePerspectiveButton.setEnabled(false);
-	    }
-            updatePersLabel();
-        }
+  /** Handles pressing the ">>" or "<<" buttons. */
+  class RuleListener implements ActionListener {
+    public void actionPerformed(ActionEvent e) {
+
+      Object src = e.getSource();
+      if (perspectiveList.getSelectedValue() == null) {
+        return;
+      }
+      if (src == addRuleButton) {
+        doAddRule();
+      } else if (src == removeRuleButton) {
+        doRemoveRule();
+      }
     }
+  }
 
-    /**
-     * Handles pressing the Duplicate button.
-     */
-    class DuplicatePerspectiveListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            Object sel = perspectiveList.getSelectedValue();
-            if (sel != null) {
-                Object[] msgArgs = {sel.toString() };
-                ExplorerPerspective newPers =
-                    ((ExplorerPerspective) sel).makeNamedClone(Translator
-                        .messageFormat("dialog.perspective.copy-of", msgArgs));
-                perspectiveListModel.insertElementAt(newPers, 0);
-                perspectiveList.setSelectedValue(newPers, true);
-            }
-            updatePersLabel();
-        }
+  /**
+   * Handles double-clicking on the library list or on the ruleslist. This triggers the same
+   * functions as ">>" or "<<".
+   */
+  class RuleListMouseListener extends MouseAdapter {
+    public void mouseClicked(MouseEvent me) {
+      Object src = me.getSource();
+      if (me.getClickCount() != 2 || perspectiveList.getSelectedValue() == null) {
+        return;
+      }
+
+      if (src == ruleLibraryList && addRuleButton.isEnabled()) {
+        doAddRule();
+      }
+      if (src == perspectiveRulesList && removeRuleButton.isEnabled()) {
+        doRemoveRule();
+      }
     }
+  }
 
-    /**
-     * Handles pressing the ">>" or "<<" buttons.
-     */
-    class RuleListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
+  /**
+   * Add the currently selected rule from the library to the rules list for the current perspective.
+   */
+  private void doAddRule() {
+    Object sel = ruleLibraryList.getSelectedValue();
+    int selLibNr = ruleLibraryList.getSelectedIndex();
+    try {
+      String ruleName = sel.getClass().getName();
+      PerspectiveRule newRule = (PerspectiveRule) Class.forName(ruleName).newInstance();
 
-            Object src = e.getSource();
-            if (perspectiveList.getSelectedValue() == null) {
-                return;
-            }
-            if (src == addRuleButton) {
-                doAddRule();
-            } else if (src == removeRuleButton) {
-                doRemoveRule();
-            }
-        }
+      perspectiveRulesListModel.insertElementAt(newRule, 0);
+      ((ExplorerPerspective) perspectiveList.getSelectedValue()).addRule(newRule);
+      sortJListModel(perspectiveRulesList);
+      perspectiveRulesList.setSelectedValue(newRule, true);
+      // remove the rule from the library list
+      loadLibrary();
+      // set the newly selected item in the library list
+      if (!(ruleLibraryListModel.size() > selLibNr)) {
+        selLibNr = ruleLibraryListModel.size() - 1;
+      }
+      ruleLibraryList.setSelectedIndex(selLibNr);
+      updateRuleLabel();
+    } catch (Exception e) {
+      LOG.error("problem adding rule");
     }
+  }
 
-    /**
-     * Handles double-clicking on the library list or on the ruleslist.
-     * This triggers the same functions as ">>" or "<<".
-     */
-    class RuleListMouseListener extends MouseAdapter {
-        public void mouseClicked(MouseEvent me) {
-            Object src = me.getSource();
-            if (me.getClickCount() != 2
-		|| perspectiveList.getSelectedValue() == null) {
-		return;
-	    }
+  /** Remove the currently selected rule from the rules list for the current perspective. */
+  private void doRemoveRule() {
+    int selLibNr = ruleLibraryList.getSelectedIndex();
+    PerspectiveRule sel = (PerspectiveRule) perspectiveRulesList.getSelectedValue();
+    int selectedItem = perspectiveRulesList.getSelectedIndex();
+    Object selPers = perspectiveList.getSelectedValue();
 
-            if (src == ruleLibraryList && addRuleButton.isEnabled()) {
-                doAddRule();
-	    }
-            if (src == perspectiveRulesList && removeRuleButton.isEnabled()) {
-                doRemoveRule();
-	    }
-        }
+    perspectiveRulesListModel.removeElement(sel);
+    ((ExplorerPerspective) selPers).removeRule(sel);
+
+    if (perspectiveRulesListModel.getSize() > selectedItem) {
+      perspectiveRulesList.setSelectedIndex(selectedItem);
+    } else if (perspectiveRulesListModel.getSize() > 0) {
+      perspectiveRulesList.setSelectedIndex(perspectiveRulesListModel.getSize() - 1);
     }
+    loadLibrary();
+    // set the newly selected item in the library list
+    ruleLibraryList.setSelectedIndex(selLibNr);
+    updateRuleLabel();
+  }
 
+  /** Handles pressing the move up button. */
+  class MoveUpListener implements ActionListener {
     /**
-     * Add the currently selected rule from the library to the rules list
-     * for the current perspective.
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
-    private void doAddRule() {
-        Object sel = ruleLibraryList.getSelectedValue();
-        int selLibNr = ruleLibraryList.getSelectedIndex();
-        try {
-            String ruleName = sel.getClass().getName();
-            PerspectiveRule newRule =
-                (PerspectiveRule) Class.forName(ruleName).newInstance();
-
-            perspectiveRulesListModel.insertElementAt(newRule, 0);
-            ((ExplorerPerspective) perspectiveList.getSelectedValue())
-                .addRule(newRule);
-            sortJListModel(perspectiveRulesList);
-            perspectiveRulesList.setSelectedValue(newRule, true);
-            // remove the rule from the library list
-            loadLibrary();
-            // set the newly selected item in the library list
-            if (!(ruleLibraryListModel.size() > selLibNr)) {
-                selLibNr = ruleLibraryListModel.size() - 1;
-            }
-            ruleLibraryList.setSelectedIndex(selLibNr);
-            updateRuleLabel();
-        } catch (Exception e) {
-            LOG.error("problem adding rule");
-        }
+    public void actionPerformed(ActionEvent e) {
+      int sel = perspectiveList.getSelectedIndex();
+      if (sel > 0) {
+        Object selObj = perspectiveListModel.get(sel);
+        Object prevObj = perspectiveListModel.get(sel - 1);
+        perspectiveListModel.set(sel, prevObj);
+        perspectiveListModel.set(sel - 1, selObj);
+        perspectiveList.setSelectedIndex(sel - 1);
+        perspectiveList.ensureIndexIsVisible(sel - 1);
+      }
     }
+  }
 
-    /**
-     * Remove the currently selected rule from the rules list
-     * for the current perspective.
-     */
-    private void doRemoveRule() {
-        int selLibNr = ruleLibraryList.getSelectedIndex();
-        PerspectiveRule sel =
-	    (PerspectiveRule) perspectiveRulesList.getSelectedValue();
-        int selectedItem = perspectiveRulesList.getSelectedIndex();
-	Object selPers = perspectiveList.getSelectedValue();
-
-        perspectiveRulesListModel.removeElement(sel);
-        ((ExplorerPerspective) selPers).removeRule(sel);
-
-        if (perspectiveRulesListModel.getSize() > selectedItem) {
-            perspectiveRulesList.setSelectedIndex(selectedItem);
-        } else if (perspectiveRulesListModel.getSize() > 0) {
-            perspectiveRulesList.setSelectedIndex(
-                    perspectiveRulesListModel.getSize() - 1);
-        }
-        loadLibrary();
-        // set the newly selected item in the library list
-        ruleLibraryList.setSelectedIndex(selLibNr);
-        updateRuleLabel();
+  /** Handles pressing the move down button. */
+  class MoveDownListener implements ActionListener {
+    public void actionPerformed(ActionEvent e) {
+      int sel = perspectiveList.getSelectedIndex();
+      if (sel < (perspectiveListModel.getSize() - 1)) {
+        Object selObj = perspectiveListModel.get(sel);
+        Object nextObj = perspectiveListModel.get(sel + 1);
+        perspectiveListModel.set(sel, nextObj);
+        perspectiveListModel.set(sel + 1, selObj);
+        perspectiveList.setSelectedIndex(sel + 1);
+        perspectiveList.ensureIndexIsVisible(sel + 1);
+      }
     }
+  }
 
-    /**
-     * Handles pressing the move up button.
-     */
-    class MoveUpListener implements ActionListener {
-        /**
-         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+  /**
+   * Handles confirming a changed text in the text-entry field (e.g. pressing Enter) for the
+   * perspective name.
+   */
+  class RenameListener implements ActionListener {
+    public void actionPerformed(ActionEvent e) {
+      int sel = perspectiveList.getSelectedIndex();
+      Object selPers = perspectiveList.getSelectedValue();
+      String newName = renameTextField.getText();
+      if (sel >= 0 && newName.length() > 0) {
+        ((ExplorerPerspective) selPers).setName(newName);
+        perspectiveListModel.set(sel, selPers);
+        /* TODO: Replace the functioncall in the next line
+         * by .requestFocusInWindow() once
+         * we do not support Java 1.3 any more.
          */
-        public void actionPerformed(ActionEvent e) {
-            int sel = perspectiveList.getSelectedIndex();
-            if (sel > 0) {
-                Object selObj = perspectiveListModel.get(sel);
-                Object prevObj = perspectiveListModel.get(sel - 1);
-                perspectiveListModel.set(sel, prevObj);
-                perspectiveListModel.set(sel - 1, selObj);
-                perspectiveList.setSelectedIndex(sel - 1);
-                perspectiveList.ensureIndexIsVisible(sel - 1);
-            }
-        }
+        perspectiveList.requestFocus();
+      }
+    }
+  }
+
+  /** Handles changes in the text in the text-entry field for the perspective name. */
+  class RenameDocumentListener implements DocumentListener {
+    public void insertUpdate(DocumentEvent e) {
+      update();
     }
 
+    public void removeUpdate(DocumentEvent e) {
+      update();
+    }
+
+    public void changedUpdate(DocumentEvent e) {
+      update();
+    }
+
+    private void update() {
+      int sel = perspectiveList.getSelectedIndex();
+      Object selPers = perspectiveList.getSelectedValue();
+      String newName = renameTextField.getText();
+      if (sel >= 0 && newName.length() > 0) {
+        ((ExplorerPerspective) selPers).setName(newName);
+        perspectiveListModel.set(sel, selPers);
+      }
+    }
+  }
+
+  /** Handles selection changes in the perspective list. */
+  class PerspectiveListSelectionListener implements ListSelectionListener {
     /**
-     * Handles pressing the move down button.
+     * @see
+     *     javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
      */
-    class MoveDownListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            int sel = perspectiveList.getSelectedIndex();
-            if (sel < (perspectiveListModel.getSize() - 1)) {
-                Object selObj = perspectiveListModel.get(sel);
-                Object nextObj = perspectiveListModel.get(sel + 1);
-                perspectiveListModel.set(sel, nextObj);
-                perspectiveListModel.set(sel + 1, selObj);
-                perspectiveList.setSelectedIndex(sel + 1);
-                perspectiveList.ensureIndexIsVisible(sel + 1);
-            }
-        }
-    }
+    public void valueChanged(ListSelectionEvent lse) {
+      if (lse.getValueIsAdjusting()) {
+        return;
+      }
 
+      Object selPers = perspectiveList.getSelectedValue();
+      loadLibrary();
+      Object selRule = ruleLibraryList.getSelectedValue();
+      renameTextField.setEnabled(selPers != null);
+      removePerspectiveButton.setEnabled(selPers != null);
+      duplicatePerspectiveButton.setEnabled(selPers != null);
+      moveUpButton.setEnabled(perspectiveList.getSelectedIndex() > 0);
+      moveDownButton.setEnabled(
+          (selPers != null)
+              && (perspectiveList.getSelectedIndex() < (perspectiveList.getModel().getSize() - 1)));
+
+      if (selPers == null) {
+        return;
+      }
+      renameTextField.setText(selPers.toString());
+
+      ExplorerPerspective pers = (ExplorerPerspective) selPers;
+      perspectiveRulesListModel.clear();
+
+      for (int i = 0; i < pers.getRulesArray().length; i++) {
+        perspectiveRulesListModel.insertElementAt(pers.getRulesArray()[i], 0);
+      }
+      sortJListModel(perspectiveRulesList);
+      addRuleButton.setEnabled(selPers != null && selRule != null);
+      updateRuleLabel();
+    }
+  }
+
+  /** Handles selection changes in the rules list. */
+  class RulesListSelectionListener implements ListSelectionListener {
     /**
-     * Handles confirming a changed text in the text-entry field
-     * (e.g. pressing Enter) for the perspective name.
+     * @see
+     *     javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
      */
-    class RenameListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            int sel = perspectiveList.getSelectedIndex();
-            Object selPers = perspectiveList.getSelectedValue();
-            String newName = renameTextField.getText();
-            if (sel >= 0 && newName.length() > 0) {
-                ((ExplorerPerspective) selPers).setName(newName);
-                perspectiveListModel.set(sel, selPers);
-                /* TODO: Replace the functioncall in the next line
-                 * by .requestFocusInWindow() once
-                 * we do not support Java 1.3 any more.
-                 */
-                perspectiveList.requestFocus();
-            }
-        }
-    }
+    public void valueChanged(ListSelectionEvent lse) {
+      if (lse.getValueIsAdjusting()) {
+        return;
+      }
 
+      Object selPers = null;
+      if (perspectiveListModel.size() > 0) {
+        selPers = perspectiveList.getSelectedValue();
+      }
+
+      Object selRule = null;
+      if (perspectiveRulesListModel.size() > 0) {
+        selRule = perspectiveRulesList.getSelectedValue();
+      }
+
+      removeRuleButton.setEnabled(selPers != null && selRule != null);
+    }
+  }
+
+  /** Handles selection changes in the library list. */
+  class LibraryListSelectionListener implements ListSelectionListener {
     /**
-     * Handles changes in the text in the text-entry field
-     * for the perspective name.
+     * @see
+     *     javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
      */
-    class RenameDocumentListener implements DocumentListener {
-        public void insertUpdate(DocumentEvent e) {
-            update();
-        }
-        public void removeUpdate(DocumentEvent e) {
-            update();
-        }
-        public void changedUpdate(DocumentEvent e) {
-            update();
-        }
-        private void update() {
-            int sel = perspectiveList.getSelectedIndex();
-            Object selPers = perspectiveList.getSelectedValue();
-            String newName = renameTextField.getText();
-            if (sel >= 0 && newName.length() > 0) {
-                ((ExplorerPerspective) selPers).setName(newName);
-                perspectiveListModel.set(sel, selPers);
-            }
-        }
+    public void valueChanged(ListSelectionEvent lse) {
+      if (lse.getValueIsAdjusting()) {
+        return;
+      }
 
+      Object selPers = perspectiveList.getSelectedValue();
+      Object selRule = ruleLibraryList.getSelectedValue();
+      addRuleButton.setEnabled(selPers != null && selRule != null);
     }
-
-    /**
-     * Handles selection changes in the perspective list.
-     */
-    class PerspectiveListSelectionListener implements ListSelectionListener {
-        /**
-         * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
-         */
-        public void valueChanged(ListSelectionEvent lse) {
-            if (lse.getValueIsAdjusting()) {
-                return;
-            }
-
-            Object selPers = perspectiveList.getSelectedValue();
-            loadLibrary();
-            Object selRule = ruleLibraryList.getSelectedValue();
-            renameTextField.setEnabled(selPers != null);
-            removePerspectiveButton.setEnabled(selPers != null);
-            duplicatePerspectiveButton.setEnabled(selPers != null);
-            moveUpButton.setEnabled(perspectiveList.getSelectedIndex() > 0);
-            moveDownButton.setEnabled((selPers != null)
-                    && (perspectiveList.getSelectedIndex()
-                            < (perspectiveList.getModel().getSize() - 1)));
-
-            if (selPers == null) {
-                return;
-            }
-            renameTextField.setText(selPers.toString());
-
-            ExplorerPerspective pers = (ExplorerPerspective) selPers;
-            perspectiveRulesListModel.clear();
-
-            for (int i = 0; i < pers.getRulesArray().length; i++) {
-                perspectiveRulesListModel.insertElementAt(
-                                pers.getRulesArray()[i], 0);
-            }
-            sortJListModel(perspectiveRulesList);
-            addRuleButton.setEnabled(selPers != null && selRule != null);
-            updateRuleLabel();
-        }
-    }
-
-    /**
-     * Handles selection changes in the rules list.
-     */
-    class RulesListSelectionListener implements ListSelectionListener {
-        /**
-         * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
-         */
-        public void valueChanged(ListSelectionEvent lse) {
-            if (lse.getValueIsAdjusting()) {
-                return;
-            }
-
-            Object selPers = null;
-            if (perspectiveListModel.size() > 0) {
-                selPers = perspectiveList.getSelectedValue();
-            }
-
-            Object selRule = null;
-            if (perspectiveRulesListModel.size() > 0) {
-                selRule = perspectiveRulesList.getSelectedValue();
-            }
-
-            removeRuleButton.setEnabled(selPers != null && selRule != null);
-        }
-    }
-
-    /**
-     * Handles selection changes in the library list.
-     *
-     */
-    class LibraryListSelectionListener implements ListSelectionListener {
-        /**
-         * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
-         */
-        public void valueChanged(ListSelectionEvent lse) {
-            if (lse.getValueIsAdjusting()) {
-                return;
-            }
-
-            Object selPers = perspectiveList.getSelectedValue();
-            Object selRule = ruleLibraryList.getSelectedValue();
-            addRuleButton.setEnabled(selPers != null && selRule != null);
-        }
-    }
+  }
 }

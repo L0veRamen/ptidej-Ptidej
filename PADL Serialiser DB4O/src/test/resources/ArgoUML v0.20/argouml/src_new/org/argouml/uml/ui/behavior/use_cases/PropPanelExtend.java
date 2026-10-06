@@ -25,12 +25,10 @@
 package org.argouml.uml.ui.behavior.use_cases;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.Action;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.ui.targetmanager.TargetManager;
@@ -47,130 +45,106 @@ import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
 import org.argouml.util.ConfigLoader;
 
 /**
- * Builds the property panel for an Extend relationship.<p>
+ * Builds the property panel for an Extend relationship.
  *
- * This is a type of Relationship, but, since Relationship has no semantic
- *   meaning of its own, we derive directly from PropPanelModelElement (as
- *   other children of Relationship do).<p>
+ * <p>This is a type of Relationship, but, since Relationship has no semantic meaning of its own, we
+ * derive directly from PropPanelModelElement (as other children of Relationship do).
  *
- * TODO: this property panel needs refactoring to remove dependency on
- *       old gui components.
+ * <p>TODO: this property panel needs refactoring to remove dependency on old gui components.
  *
  * @author mail@jeremybennett.com
  */
 public class PropPanelExtend extends PropPanelModelElement {
 
+  /**
+   * Constructor. Builds up the various fields required. TODO: improve the conditionfield so it can
+   * be checked and the OCL editor can be used.
+   */
+  public PropPanelExtend() {
+    super("Extend", lookupIcon("Extend"), ConfigLoader.getTabPropsOrientation());
 
-    /**
-     * Constructor. Builds up the various fields required.
-     * TODO: improve the conditionfield so it can be checked and the
-     * OCL editor can be used.
-     */
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.stereotype"), getStereotypeSelector());
+    addField(Translator.localize("label.namespace"), getNamespaceScroll());
 
-    public PropPanelExtend() {
-        super("Extend", lookupIcon("Extend"),
-                ConfigLoader.getTabPropsOrientation());
+    addSeperator();
 
-        addField(Translator.localize("label.name"),
-		 getNameTextField());
-        addField(Translator.localize("label.stereotype"),
-                getStereotypeSelector());
-        addField(Translator.localize("label.namespace"),
-		 getNamespaceScroll());
+    // Link to the two ends.
+    addField(
+        Translator.localize("label.usecase-base"),
+        getSingleRowScroll(new UMLLinkedList(new UMLExtendBaseListModel())));
 
-        addSeperator();
+    addField(
+        Translator.localize("label.extension"),
+        getSingleRowScroll(new UMLLinkedList(new UMLExtendExtensionListModel())));
 
+    JList extensionPointList =
+        new UMLMutableLinkedList(
+            new UMLExtendExtensionPointListModel(),
+            ActionAddExtendExtensionPoint.getInstance(),
+            ActionNewExtendExtensionPoint.SINGLETON);
+    addField(Translator.localize("label.extension-points"), new JScrollPane(extensionPointList));
 
-        // Link to the two ends.
-        addField(Translator.localize("label.usecase-base"),
-                getSingleRowScroll(new UMLLinkedList(
-                        new UMLExtendBaseListModel())));
+    addSeperator();
 
-        addField(Translator.localize("label.extension"),
-                getSingleRowScroll(new UMLLinkedList(
-                        new UMLExtendExtensionListModel())));
+    UMLExpressionModel2 conditionModel = new UMLConditionExpressionModel(this, "condition");
 
-        JList extensionPointList =
-	    new UMLMutableLinkedList(new UMLExtendExtensionPointListModel(),
-		ActionAddExtendExtensionPoint.getInstance(),
-		ActionNewExtendExtensionPoint.SINGLETON);
-        addField(Translator.localize("label.extension-points"),
-		new JScrollPane(extensionPointList));
+    JTextArea conditionArea = new UMLExpressionBodyField(conditionModel, true);
+    conditionArea.setRows(5);
+    JScrollPane conditionScroll = new JScrollPane(conditionArea);
 
-        addSeperator();
+    addField("Condition:", conditionScroll);
 
-        UMLExpressionModel2 conditionModel =
-            new UMLConditionExpressionModel(this, "condition");
+    // Add the toolbar buttons:
+    addAction(new ActionNavigateNamespace());
+    addAction(new ActionNewExtensionPoint());
+    addAction(new ActionNewStereotype());
+    addAction(new ActionDeleteSingleModelElement());
+  }
 
-        JTextArea conditionArea =
-            new UMLExpressionBodyField(conditionModel, true);
-        conditionArea.setRows(5);
-        JScrollPane conditionScroll =
-            new JScrollPane(conditionArea);
+  /**
+   * @return a scrollpane with a single row
+   */
+  protected JScrollPane getSingleRowScroll(JList list) {
+    list.setVisibleRowCount(1);
+    JScrollPane scroll = new JScrollPane(list);
 
-        addField("Condition:", conditionScroll);
+    return scroll;
+  }
 
-        // Add the toolbar buttons:
-        addAction(new ActionNavigateNamespace());
-        addAction(new ActionNewExtensionPoint());
-        addAction(new ActionNewStereotype());
-        addAction(new ActionDeleteSingleModelElement());
+  /**
+   * Invoked by the "New Extension Point" toolbar button to create a new extension point for this
+   * extend relationship in the same namespace as the current extend relationship.
+   *
+   * <p>This code uses getFactory and adds the extension point to the current extend relationship.
+   *
+   * <p>
+   */
+  private class ActionNewExtensionPoint extends AbstractActionNewModelElement {
+
+    /** The constructor. */
+    public ActionNewExtensionPoint() {
+      super("button.new-extension-point");
+      putValue(Action.NAME, Translator.localize("button.new-extension-point"));
     }
 
     /**
-     * @return a scrollpane with a single row
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
-    protected JScrollPane getSingleRowScroll(JList list) {
-        list.setVisibleRowCount(1);
-        JScrollPane scroll = new JScrollPane(list);
-
-        return scroll;
-    }
-
-
-    /**
-     * Invoked by the "New Extension Point" toolbar button to create a new
-     * extension point for this extend relationship in the same namespace as the
-     * current extend relationship.
-     * <p>
-     * This code uses getFactory and adds the extension point to the current
-     * extend relationship.
-     * <p>
-     */
-    private class ActionNewExtensionPoint
-        extends AbstractActionNewModelElement {
-
-        /**
-         * The constructor.
-         */
-        public ActionNewExtensionPoint() {
-            super("button.new-extension-point");
-            putValue(Action.NAME,
-                    Translator.localize("button.new-extension-point"));
+    public void actionPerformed(ActionEvent e) {
+      Object target = TargetManager.getInstance().getModelTarget();
+      if (Model.getFacade().isAExtend(target)) {
+        Object ns = Model.getFacade().getNamespace(target);
+        if (ns != null) {
+          if (Model.getFacade().getBase(target) != null) {
+            Object extensionPoint =
+                Model.getUseCasesFactory().buildExtensionPoint(Model.getFacade().getBase(target));
+            Model.getUseCasesHelper().addExtensionPoint(target, extensionPoint);
+            TargetManager.getInstance().setTarget(extensionPoint);
+            super.actionPerformed(e);
+          }
         }
-
-        /**
-         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-         */
-        public void actionPerformed(ActionEvent e) {
-            Object target = TargetManager.getInstance().getModelTarget();
-            if (Model.getFacade().isAExtend(target)) {
-                Object ns = Model.getFacade().getNamespace(target);
-                if (ns != null) {
-                    if (Model.getFacade().getBase(target) != null) {
-                        Object extensionPoint =
-                            Model.getUseCasesFactory()
-                            	.buildExtensionPoint(
-                            	        Model.getFacade().getBase(target));
-                        Model.getUseCasesHelper().addExtensionPoint(
-                                target,
-                                extensionPoint);
-                        TargetManager.getInstance().setTarget(extensionPoint);
-                        super.actionPerformed(e);
-                    }
-                }
-            }
-        }
+      }
     }
-
+  }
 } /* end class PropPanelExtend */

@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -13,14 +13,14 @@ package padl.creator.aspectj.test;
 import junit.framework.TestSuite;
 
 public class TestCreatorAspectJ extends TestSuite {
-	public static TestSuite suite() {
-		final TestCreatorAspectJ suite = new TestCreatorAspectJ();
-		suite.setName(TestCreatorAspectJ.class.getName());
+  public static TestSuite suite() {
+    final TestCreatorAspectJ suite = new TestCreatorAspectJ();
+    suite.setName(TestCreatorAspectJ.class.getName());
 
-		suite.addTestSuite(AOTest.class);
-		suite.addTestSuite(ModelCreationTest.class);
-		suite.addTestSuite(OOTest.class);
+    suite.addTestSuite(AOTest.class);
+    suite.addTestSuite(ModelCreationTest.class);
+    suite.addTestSuite(OOTest.class);
 
-		return suite;
-	}
+    return suite;
+  }
 }

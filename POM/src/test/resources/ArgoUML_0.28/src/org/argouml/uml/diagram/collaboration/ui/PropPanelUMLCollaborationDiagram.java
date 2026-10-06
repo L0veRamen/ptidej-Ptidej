@@ -28,18 +28,13 @@ import org.argouml.i18n.Translator;
 import org.argouml.uml.diagram.ui.PropPanelDiagram;
 
 /**
- *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 3, 2003
  */
 class PropPanelUMLCollaborationDiagram extends PropPanelDiagram {
 
-    /**
-     * Constructor for PropPanelUMLCollaborationDiagram.
-     */
-    public PropPanelUMLCollaborationDiagram() {
-        super(Translator.localize("label.collaboration-diagram"),
-                lookupIcon("CollaborationDiagram"));
-    }
-
+  /** Constructor for PropPanelUMLCollaborationDiagram. */
+  public PropPanelUMLCollaborationDiagram() {
+    super(Translator.localize("label.collaboration-diagram"), lookupIcon("CollaborationDiagram"));
+  }
 }

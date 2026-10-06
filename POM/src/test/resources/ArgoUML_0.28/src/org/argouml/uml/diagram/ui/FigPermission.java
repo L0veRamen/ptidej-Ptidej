@@ -29,64 +29,59 @@ import org.tigris.gef.base.Layer;
 
 /**
  * The Fig for a permission, which is a form of dependency.
- * <p>
- * TODO: In UML 2.x, the import and access Permissions have become
- * PackageImports with public visibility and non-public visibility respectively.
- * (ArgoUML only supports the <<import>> Permission currently). The friend
- * Permission has been dropped. Also the type hierarchy has been reorganized so
- * that PackageImport is not a subtype of Dependency.
- * 
+ *
+ * <p>TODO: In UML 2.x, the import and access Permissions have become PackageImports with public
+ * visibility and non-public visibility respectively. (ArgoUML only supports the <<import>>
+ * Permission currently). The friend Permission has been dropped. Also the type hierarchy has been
+ * reorganized so that PackageImport is not a subtype of Dependency.
+ *
  * @author Markus Klink
  */
 public class FigPermission extends FigDependency {
 
-    /**
-     * The constructor.
-     * @deprecated for 0.27.3 by tfmorris. Use
-     *             {@link #FigPermission(Object, DiagramSettings)}.
-     */
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    public FigPermission() {
-        super();
-    }
+  /**
+   * The constructor.
+   *
+   * @deprecated for 0.27.3 by tfmorris. Use {@link #FigPermission(Object, DiagramSettings)}.
+   */
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  public FigPermission() {
+    super();
+  }
 
-    /**
-     * The constructor.
-     *
-     * @param edge the edge
-     * @deprecated for 0.27.3 by tfmorris. Use
-     *             {@link #FigPermission(Object, DiagramSettings)}.
-     */
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    public FigPermission(Object edge) {
-        super(edge);
-    }
+  /**
+   * The constructor.
+   *
+   * @param edge the edge
+   * @deprecated for 0.27.3 by tfmorris. Use {@link #FigPermission(Object, DiagramSettings)}.
+   */
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  public FigPermission(Object edge) {
+    super(edge);
+  }
 
-    /**
-     * The constructor.
-     *
-     * @param edge the edge
-     * @param lay the layer
-     * @deprecated for 0.27.3 by tfmorris. Use
-     *             {@link #FigPermission(Object, DiagramSettings)}.
-     */
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    public FigPermission(Object edge, Layer lay) {
-        super(edge, lay);
-    }
-    
-    /**
-     * Construct a Fig.
-     * 
-     * @param owner owning UML element
-     * @param settings render settings
-     */
-    public FigPermission(Object owner, DiagramSettings settings) {
-        super(owner, settings);
-    }
+  /**
+   * The constructor.
+   *
+   * @param edge the edge
+   * @param lay the layer
+   * @deprecated for 0.27.3 by tfmorris. Use {@link #FigPermission(Object, DiagramSettings)}.
+   */
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  public FigPermission(Object edge, Layer lay) {
+    super(edge, lay);
+  }
 
+  /**
+   * Construct a Fig.
+   *
+   * @param owner owning UML element
+   * @param settings render settings
+   */
+  public FigPermission(Object owner, DiagramSettings settings) {
+    super(owner, settings);
+  }
 }
-

@@ -28,43 +28,41 @@ import org.argouml.uml.generator.GeneratorDisplay;
 import org.argouml.uml.generator.ParserDisplay;
 import org.argouml.uml.notation.ActionStateNotation;
 
-
 /**
  * @author mvw@tigris.org
  */
 public class ActionStateNotationUml extends ActionStateNotation {
 
-    /**
-     * The constructor.
-     * 
-     * @param actionState
-     */
-    public ActionStateNotationUml(Object actionState) {
-        super(actionState);
-    }
+  /**
+   * The constructor.
+   *
+   * @param actionState
+   */
+  public ActionStateNotationUml(Object actionState) {
+    super(actionState);
+  }
 
-    /**
-     * @see org.argouml.notation.NotationProvider4#parse(java.lang.String)
-     */
-    public String parse(String text) {
-        //TODO: Make the next call inline - replace ParserDisplay
-        ParserDisplay.SINGLETON.parseActionState(text, myActionState);
-        return toString();
-    }
+  /**
+   * @see org.argouml.notation.NotationProvider4#parse(java.lang.String)
+   */
+  public String parse(String text) {
+    // TODO: Make the next call inline - replace ParserDisplay
+    ParserDisplay.SINGLETON.parseActionState(text, myActionState);
+    return toString();
+  }
 
-    /**
-     * @see org.argouml.notation.NotationProvider4#getParsingHelp()
-     */
-    public String getParsingHelp() {
-        return "parsing.help.fig-actionstate";
-    }
+  /**
+   * @see org.argouml.notation.NotationProvider4#getParsingHelp()
+   */
+  public String getParsingHelp() {
+    return "parsing.help.fig-actionstate";
+  }
 
-    /**
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-        /* TODO: copy this here inline! Replace GeneratorDisplay. */
-        return GeneratorDisplay.getInstance().generateActionState(myActionState);
-    }
-
+  /**
+   * @see java.lang.Object#toString()
+   */
+  public String toString() {
+    /* TODO: copy this here inline! Replace GeneratorDisplay. */
+    return GeneratorDisplay.getInstance().generateActionState(myActionState);
+  }
 }

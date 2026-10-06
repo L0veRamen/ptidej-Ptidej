@@ -28,36 +28,33 @@ import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLPlainTextDocument;
 
 class UMLCommentBodyDocument extends UMLPlainTextDocument {
-    
-    /**
-     * Constructor for UMLCommentBodyDocument.
-     */
-    public UMLCommentBodyDocument() {
-        super("body"); 
-        /*
-         * TODO: This is probably not the right location
-         * for switching off the "filterNewlines".
-         * The setting gets lost after selecting a different
-         * ModelElement in the diagram.
-         * BTW, see how it is used in
-         * javax.swing.text.PlainDocument.
-         * See issue 1812.
-         */
-        putProperty("filterNewlines", Boolean.FALSE);
-    }
-    
+
+  /** Constructor for UMLCommentBodyDocument. */
+  public UMLCommentBodyDocument() {
+    super("body");
     /*
-     * @see org.argouml.uml.ui.UMLPlainTextDocument#setProperty(java.lang.String)
+     * TODO: This is probably not the right location
+     * for switching off the "filterNewlines".
+     * The setting gets lost after selecting a different
+     * ModelElement in the diagram.
+     * BTW, see how it is used in
+     * javax.swing.text.PlainDocument.
+     * See issue 1812.
      */
-    protected void setProperty(String text) {
-        Model.getCoreHelper().setBody(getTarget(), text);
-    }
-    
-    /*
-     * @see org.argouml.uml.ui.UMLPlainTextDocument#getProperty()
-     */
-    protected String getProperty() {
-        return (String) Model.getFacade().getBody(getTarget());
-    }
-    
+    putProperty("filterNewlines", Boolean.FALSE);
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLPlainTextDocument#setProperty(java.lang.String)
+   */
+  protected void setProperty(String text) {
+    Model.getCoreHelper().setBody(getTarget(), text);
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLPlainTextDocument#getProperty()
+   */
+  protected String getProperty() {
+    return (String) Model.getFacade().getBody(getTarget());
+  }
 }

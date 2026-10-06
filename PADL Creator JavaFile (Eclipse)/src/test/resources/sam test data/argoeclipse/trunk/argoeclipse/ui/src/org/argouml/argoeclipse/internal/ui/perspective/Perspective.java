@@ -29,49 +29,61 @@ import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
 /**
- * This deals with the perspective named ArgoUML. The layout will have effect if
- * we run for the first time eclipse with this plugin or if we reset the
- * perspective.
- * 
+ * This deals with the perspective named ArgoUML. The layout will have effect if we run for the
+ * first time eclipse with this plugin or if we reset the perspective.
+ *
  * @author Bogdan Pistol
  */
 public class Perspective implements IPerspectiveFactory {
-  
-    /**
-     * The layout of the perspective will be with the views
-     * to the left side and the editor in the right side.
-     * 
-     * @param layout controls the layout
-     */
-    public void createInitialLayout(IPageLayout layout) {
-        String editorArea = layout.getEditorArea();
 
-        IFolderLayout leftFolder = layout.createFolder(
-                "leftFolder", //$NON-NLS-1$
-                IPageLayout.LEFT, (float) 0.25, editorArea);
+  /**
+   * The layout of the perspective will be with the views to the left side and the editor in the
+   * right side.
+   *
+   * @param layout controls the layout
+   */
+  public void createInitialLayout(IPageLayout layout) {
+    String editorArea = layout.getEditorArea();
 
-        leftFolder.addView("org.argouml.argoeclipse.internal.ui" //$NON-NLS-1$
-                + ".views.ExplorerView"); //$NON-NLS-1$
-        leftFolder.addView(IPageLayout.ID_RES_NAV);        
+    IFolderLayout leftFolder =
+        layout.createFolder(
+            "leftFolder", //$NON-NLS-1$
+            IPageLayout.LEFT,
+            (float) 0.25,
+            editorArea);
 
-        layout.addView("org.argouml.argoeclipse.internal.ui" //$NON-NLS-1$
-                + ".views.ToDoView", //$NON-NLS-1$
-                IPageLayout.BOTTOM, (float) 0.75, "leftFolder"); //$NON-NLS-1$
+    leftFolder.addView(
+        "org.argouml.argoeclipse.internal.ui" //$NON-NLS-1$
+            + ".views.ExplorerView"); //$NON-NLS-1$
+    leftFolder.addView(IPageLayout.ID_RES_NAV);
 
-        IFolderLayout bottomFolder = layout.createFolder(
-                "bottomFolder", //$NON-NLS-1$
-                IPageLayout.BOTTOM, (float) 0.60, editorArea);
+    layout.addView(
+        "org.argouml.argoeclipse.internal.ui" //$NON-NLS-1$
+            + ".views.ToDoView", //$NON-NLS-1$
+        IPageLayout.BOTTOM,
+        (float) 0.75,
+        "leftFolder"); //$NON-NLS-1$
 
-        bottomFolder.addView("org.argouml.argoeclipse.internal.ui" //$NON-NLS-1$
-                + ".views.DetailsView0"); //$NON-NLS-1$
+    IFolderLayout bottomFolder =
+        layout.createFolder(
+            "bottomFolder", //$NON-NLS-1$
+            IPageLayout.BOTTOM,
+            (float) 0.60,
+            editorArea);
 
-        layout.addShowViewShortcut("org.argouml.argoeclipse" //$NON-NLS-1$
-                + ".internal.ui.views.ExplorerView"); //$NON-NLS-1$
-        layout.addShowViewShortcut(IPageLayout.ID_RES_NAV);
-        layout.addShowViewShortcut("org.argouml.argoeclipse" //$NON-NLS-1$
-                + ".internal.ui.views.ToDoView"); //$NON-NLS-1$
-        layout.addShowViewShortcut("org.argouml.argoeclipse" //$NON-NLS-1$
-                + ".internal.ui.views.DetailsView0"); //$NON-NLS-1$
-    }
+    bottomFolder.addView(
+        "org.argouml.argoeclipse.internal.ui" //$NON-NLS-1$
+            + ".views.DetailsView0"); //$NON-NLS-1$
 
+    layout.addShowViewShortcut(
+        "org.argouml.argoeclipse" //$NON-NLS-1$
+            + ".internal.ui.views.ExplorerView"); //$NON-NLS-1$
+    layout.addShowViewShortcut(IPageLayout.ID_RES_NAV);
+    layout.addShowViewShortcut(
+        "org.argouml.argoeclipse" //$NON-NLS-1$
+            + ".internal.ui.views.ToDoView"); //$NON-NLS-1$
+    layout.addShowViewShortcut(
+        "org.argouml.argoeclipse" //$NON-NLS-1$
+            + ".internal.ui.views.DetailsView0"); //$NON-NLS-1$
+  }
 }

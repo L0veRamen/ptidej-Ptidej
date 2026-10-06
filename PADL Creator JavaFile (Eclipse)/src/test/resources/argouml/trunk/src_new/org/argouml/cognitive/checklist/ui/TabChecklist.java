@@ -32,7 +32,6 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.VetoableChangeListener;
-
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -41,7 +40,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
-
 import org.apache.log4j.Logger;
 import org.argouml.cognitive.Translator;
 import org.argouml.cognitive.checklist.CheckItem;
@@ -49,370 +47,358 @@ import org.argouml.cognitive.checklist.CheckManager;
 import org.argouml.cognitive.checklist.Checklist;
 import org.argouml.cognitive.checklist.ChecklistStatus;
 import org.argouml.model.Model;
-import org.argouml.ui.LookAndFeelMgr;
 import org.argouml.ui.AbstractArgoJPanel;
+import org.argouml.ui.LookAndFeelMgr;
 import org.argouml.ui.targetmanager.TargetEvent;
 import org.argouml.uml.ui.TabModelTarget;
 import org.tigris.gef.presentation.Fig;
 
-/**
- * Tab to show the checklist for a certain element.
- */
+/** Tab to show the checklist for a certain element. */
 public class TabChecklist extends AbstractArgoJPanel
     implements TabModelTarget, ActionListener, ListSelectionListener {
 
-    ////////////////////////////////////////////////////////////////
-    // instance variables
-    private Object target;
-    private TableModelChecklist tableModel = null;
-    private boolean shouldBeEnabled = false;
-    private JTable table = new JTable(10, 2);
+  ////////////////////////////////////////////////////////////////
+  // instance variables
+  private Object target;
 
-    /**
-     * The constructor.
-     */
-    public TabChecklist() {
-	super("tab.checklist");
+  private TableModelChecklist tableModel = null;
+  private boolean shouldBeEnabled = false;
+  private JTable table = new JTable(10, 2);
 
-	tableModel = new TableModelChecklist(this);
-	table.setModel(tableModel);
+  /** The constructor. */
+  public TabChecklist() {
+    super("tab.checklist");
 
-	Font labelFont = LookAndFeelMgr.getInstance().getStandardFont();
-	table.setFont(labelFont);
+    tableModel = new TableModelChecklist(this);
+    table.setModel(tableModel);
 
-	table.setIntercellSpacing(new Dimension(0, 1));
-	table.setShowVerticalLines(false);
-	table.getSelectionModel().addListSelectionListener(this);
-	table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+    Font labelFont = LookAndFeelMgr.getInstance().getStandardFont();
+    table.setFont(labelFont);
 
-	TableColumn checkCol = table.getColumnModel().getColumn(0);
-	TableColumn descCol = table.getColumnModel().getColumn(1);
-	checkCol.setMinWidth(20);
-	checkCol.setMaxWidth(30);
-	checkCol.setWidth(30);
-	descCol.setPreferredWidth(900);
-	table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
-	table.sizeColumnsToFit(-1);
+    table.setIntercellSpacing(new Dimension(0, 1));
+    table.setShowVerticalLines(false);
+    table.getSelectionModel().addListSelectionListener(this);
+    table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
 
-	JScrollPane sp = new JScrollPane(table);
+    TableColumn checkCol = table.getColumnModel().getColumn(0);
+    TableColumn descCol = table.getColumnModel().getColumn(1);
+    checkCol.setMinWidth(20);
+    checkCol.setMaxWidth(30);
+    checkCol.setWidth(30);
+    descCol.setPreferredWidth(900);
+    table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+    table.sizeColumnsToFit(-1);
 
-	setLayout(new BorderLayout());
-	add(new JLabel(Translator.localize("tab.checklist.warning")),
-	    BorderLayout.NORTH);
-	add(sp, BorderLayout.CENTER);
+    JScrollPane sp = new JScrollPane(table);
+
+    setLayout(new BorderLayout());
+    add(new JLabel(Translator.localize("tab.checklist.warning")), BorderLayout.NORTH);
+    add(sp, BorderLayout.CENTER);
+  }
+
+  /**
+   * Converts a selected element to a target that is appropriate for a checklist.
+   *
+   * <p>The argument can be either a Fig, if a Figure when something is selected from a diagram or a
+   * model element when an object is selected from the explorer.
+   *
+   * <p>
+   *
+   * @param t that is an object.
+   * @return target that is always model element.
+   */
+  private Object findTarget(Object t) {
+    if (t instanceof Fig) {
+      Fig f = (Fig) t;
+      t = f.getOwner();
+    }
+    return t;
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // accessors
+  /**
+   * Actually prepares the Tab.
+   *
+   * @param t is the target to show the list for.
+   */
+  public void setTarget(Object t) {
+    target = findTarget(t);
+
+    if (target == null) {
+      shouldBeEnabled = false;
+      return;
     }
 
-
-    /**
-     * Converts a selected element to a target that is appropriate for a
-     * checklist.<p>
-     *
-     * The argument can be either
-     * a Fig, if a Figure when something is selected from a diagram
-     * or a model element when an object is selected from the explorer.<p>
-     *
-     * @param t that is an object.
-     * @return target that is always model element.
-     */
-    private Object findTarget(Object t) {
-        if (t instanceof Fig) {
-            Fig f = (Fig) t;
-            t = f.getOwner();
-        }
-        return t;
+    shouldBeEnabled = true;
+    Checklist cl = CheckManager.getChecklistFor(target);
+    if (cl == null) {
+      target = null;
+      shouldBeEnabled = false;
+      return;
     }
 
+    tableModel.setTarget(target);
 
-    ////////////////////////////////////////////////////////////////
-    // accessors
-    /**
-     * Actually prepares the Tab.
-     *
-     * @param t is the target to show the list for.
-     */
-    public void setTarget(Object t) {
-        target = findTarget(t);
+    resizeColumns();
+  }
 
-        if (target == null) {
-            shouldBeEnabled = false;
-            return;
-        }
+  /*
+   * @see org.argouml.ui.TabTarget#getTarget()
+   */
+  public Object getTarget() {
+    return target;
+  }
 
-	shouldBeEnabled = true;
-	Checklist cl = CheckManager.getChecklistFor(target);
-	if (cl == null) {
-	    target = null;
-	    shouldBeEnabled = false;
-	    return;
-	}
+  /**
+   * @see org.argouml.ui.TabTarget#refresh()
+   */
+  public void refresh() {
+    setTarget(target);
+  }
 
-	tableModel.setTarget(target);
+  /**
+   * Decides if the tab should be enabled or not.
+   *
+   * <p>
+   *
+   * @param t is the object element that it is then enabled for
+   * @return true if it should be enabled.
+   */
+  public boolean shouldBeEnabled(Object t) {
+    t = findTarget(t);
 
-	resizeColumns();
+    if (t == null) {
+      shouldBeEnabled = false;
+      return shouldBeEnabled;
     }
 
-    /*
-     * @see org.argouml.ui.TabTarget#getTarget()
-     */
-    public Object getTarget() { return target; }
-
-    /**
-     * @see org.argouml.ui.TabTarget#refresh()
-     */
-    public void refresh() { setTarget(target); }
-
-    /**
-     * Decides if the tab should be enabled or not.<p>
-     *
-     * @param t is the object element that it is then enabled for
-     * @return true if it should be enabled.
-     */
-    public boolean shouldBeEnabled(Object t) {
-        t = findTarget(t);
-
-        if (t == null) {
-            shouldBeEnabled = false;
-            return shouldBeEnabled;
-        }
-
-	shouldBeEnabled = true;
-	Checklist cl = CheckManager.getChecklistFor(t);
-	if (cl == null) {
-	    shouldBeEnabled = false;
-	    return shouldBeEnabled;
-	}
-
-	return shouldBeEnabled;
+    shouldBeEnabled = true;
+    Checklist cl = CheckManager.getChecklistFor(t);
+    if (cl == null) {
+      shouldBeEnabled = false;
+      return shouldBeEnabled;
     }
 
-    /**
-     * Resize the columns to fit.
-     */
-    public void resizeColumns() {
-        TableColumn checkCol = table.getColumnModel().getColumn(0);
-        TableColumn descCol = table.getColumnModel().getColumn(1);
-        checkCol.setMinWidth(20);
-        checkCol.setMaxWidth(30);
-        checkCol.setWidth(30);
-        descCol.setPreferredWidth(900);
-        table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
-        table.sizeColumnsToFit(0);
-        validate();
-    }
+    return shouldBeEnabled;
+  }
 
-    ////////////////////////////////////////////////////////////////
-    // event handling
+  /** Resize the columns to fit. */
+  public void resizeColumns() {
+    TableColumn checkCol = table.getColumnModel().getColumn(0);
+    TableColumn descCol = table.getColumnModel().getColumn(1);
+    checkCol.setMinWidth(20);
+    checkCol.setMaxWidth(30);
+    checkCol.setWidth(30);
+    descCol.setPreferredWidth(900);
+    table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+    table.sizeColumnsToFit(0);
+    validate();
+  }
 
-    /*
-     * Enable buttons when selection made.
-     *
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-    }
+  ////////////////////////////////////////////////////////////////
+  // event handling
 
-    /*
-     * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
-     */
-    public void valueChanged(ListSelectionEvent lse) {
-    }
+  /*
+   * Enable buttons when selection made.
+   *
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {}
 
-    /*
-     * @see org.argouml.ui.targetmanager.TargetListener#targetAdded(org.argouml.ui.targetmanager.TargetEvent)
-     */
-    public void targetAdded(TargetEvent e) {
+  /*
+   * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
+   */
+  public void valueChanged(ListSelectionEvent lse) {}
 
-    }
+  /*
+   * @see org.argouml.ui.targetmanager.TargetListener#targetAdded(org.argouml.ui.targetmanager.TargetEvent)
+   */
+  public void targetAdded(TargetEvent e) {}
 
-    /*
-     * @see org.argouml.ui.targetmanager.TargetListener#targetRemoved(org.argouml.ui.targetmanager.TargetEvent)
-     */
-    public void targetRemoved(TargetEvent e) {
-	setTarget(e.getNewTarget());
-    }
+  /*
+   * @see org.argouml.ui.targetmanager.TargetListener#targetRemoved(org.argouml.ui.targetmanager.TargetEvent)
+   */
+  public void targetRemoved(TargetEvent e) {
+    setTarget(e.getNewTarget());
+  }
 
-    /*
-     * @see org.argouml.ui.targetmanager.TargetListener#targetSet(org.argouml.ui.targetmanager.TargetEvent)
-     */
-    public void targetSet(TargetEvent e) {
-	setTarget(e.getNewTarget());
-    }
-
+  /*
+   * @see org.argouml.ui.targetmanager.TargetListener#targetSet(org.argouml.ui.targetmanager.TargetEvent)
+   */
+  public void targetSet(TargetEvent e) {
+    setTarget(e.getNewTarget());
+  }
 } /* end class TabChecklist */
 
-
-
-
-/**
- * The table model for checklists.
- */
+/** The table model for checklists. */
 class TableModelChecklist extends AbstractTableModel
     implements VetoableChangeListener, PropertyChangeListener {
-    /**
-     * Logger.
-     */
-    private static final Logger LOG =
-        Logger.getLogger(TableModelChecklist.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(TableModelChecklist.class);
 
-    ////////////////
-    // instance varables
-    private Object target;
-    private TabChecklist panel;
+  ////////////////
+  // instance varables
+  private Object target;
 
-    ////////////////
-    // constructor
-    /**
-     * Constructor.
-     *
-     * @param tc The TabChecklist to show.
-     */
-    public TableModelChecklist(TabChecklist tc) {
-        panel = tc;
+  private TabChecklist panel;
+
+  ////////////////
+  // constructor
+  /**
+   * Constructor.
+   *
+   * @param tc The TabChecklist to show.
+   */
+  public TableModelChecklist(TabChecklist tc) {
+    panel = tc;
+  }
+
+  ////////////////
+  // accessors
+
+  /**
+   * This function is called when the target is changed (by the user). It updates the items, and
+   * causes events to arrive when the UML model of the new target gets updated.
+   *
+   * <p>Limited to the target name changes, to reduce the number of events fired.
+   *
+   * @param t the new target
+   */
+  public void setTarget(Object t) {
+    if (Model.getFacade().isAElement(target)) {
+      Model.getPump().removeModelEventListener(this, target);
     }
-
-    ////////////////
-    // accessors
-
-    /**
-     * This function is called when the target is changed (by the user).
-     * It updates the items, and causes events to arrive when the UML model
-     * of the new target gets updated.<p>
-     *
-     * Limited to the target name changes, to reduce the number of events fired.
-     *
-     * @param t the new target
-     */
-    public void setTarget(Object t) {
-	if (Model.getFacade().isAElement(target)) {
-	    Model.getPump().removeModelEventListener(this, target);
-	}
-	target = t;
-	if (Model.getFacade().isAElement(target)) {
-	    Model.getPump().addModelEventListener(this, target, "name");
-	}
-	fireTableStructureChanged();
+    target = t;
+    if (Model.getFacade().isAElement(target)) {
+      Model.getPump().addModelEventListener(this, target, "name");
     }
+    fireTableStructureChanged();
+  }
 
-    ////////////////
-    // TableModel implemetation
-    /**
-     * @see javax.swing.table.TableModel#getColumnCount()
-     */
-    public int getColumnCount() { return 2; }
+  ////////////////
+  // TableModel implemetation
+  /**
+   * @see javax.swing.table.TableModel#getColumnCount()
+   */
+  public int getColumnCount() {
+    return 2;
+  }
 
-    /**
-     * @see javax.swing.table.TableModel#getColumnName(int)
-     */
-    public String  getColumnName(int c) {
-	if (c == 0) {
-	    return "X";
-	}
-	if (c == 1) {
-	    return Translator.localize("tab.checklist.description");
-	}
-	return "XXX";
+  /**
+   * @see javax.swing.table.TableModel#getColumnName(int)
+   */
+  public String getColumnName(int c) {
+    if (c == 0) {
+      return "X";
     }
-
-    /**
-     * @see javax.swing.table.TableModel#getColumnClass(int)
-     */
-    public Class getColumnClass(int c) {
-	if (c == 0) {
-	    return Boolean.class;
-	}
-	if (c == 1) {
-	    return String.class;
-	}
-	return String.class;
+    if (c == 1) {
+      return Translator.localize("tab.checklist.description");
     }
+    return "XXX";
+  }
 
-    /**
-     * @see javax.swing.table.TableModel#isCellEditable(int, int)
-     */
-    public boolean isCellEditable(int row, int col) {
-	return col == 0;
+  /**
+   * @see javax.swing.table.TableModel#getColumnClass(int)
+   */
+  public Class getColumnClass(int c) {
+    if (c == 0) {
+      return Boolean.class;
     }
-
-    /**
-     * @see javax.swing.table.TableModel#getRowCount()
-     */
-    public int getRowCount() {
-	if (target == null) {
-	    return 0;
-	}
-	Checklist cl = CheckManager.getChecklistFor(target);
-	if (cl == null) {
-	    return 0;
-	}
-	return cl.size();
+    if (c == 1) {
+      return String.class;
     }
+    return String.class;
+  }
 
-    /**
-     * @see javax.swing.table.TableModel#getValueAt(int, int)
-     */
-    public Object getValueAt(int row, int col) {
-	Checklist cl = CheckManager.getChecklistFor(target);
-	if (cl == null) {
-	    return "no checklist";
-	}
-	CheckItem ci = cl.elementAt(row);
-	if (col == 0) {
-	    ChecklistStatus stat = CheckManager.getStatusFor(target);
-	    return (stat.contains(ci)) ? Boolean.TRUE : Boolean.FALSE;
-	} else if (col == 1) {
-	    return ci.getDescription(target);
-	} else {
-	    return "CL-" + row * 2 + col;
-	}
+  /**
+   * @see javax.swing.table.TableModel#isCellEditable(int, int)
+   */
+  public boolean isCellEditable(int row, int col) {
+    return col == 0;
+  }
+
+  /**
+   * @see javax.swing.table.TableModel#getRowCount()
+   */
+  public int getRowCount() {
+    if (target == null) {
+      return 0;
     }
-
-    /**
-     * @see javax.swing.table.TableModel#setValueAt(java.lang.Object, int, int)
-     */
-    public void setValueAt(Object aValue, int rowIndex, int columnIndex)  {
-	LOG.debug("setting table value " + rowIndex + ", " + columnIndex);
-	if (columnIndex != 0) {
-	    return;
-	}
-	if (!(aValue instanceof Boolean)) {
-	    return;
-	}
-	boolean val = ((Boolean) aValue).booleanValue();
-	Checklist cl = CheckManager.getChecklistFor(target);
-	if (cl == null) {
-	    return;
-	}
-	CheckItem ci = cl.elementAt(rowIndex);
-	if (columnIndex == 0) {
-	    ChecklistStatus stat = CheckManager.getStatusFor(target);
-	    if (val) {
-	        stat.addItem(ci);
-	    } else {
-	        stat.removeItem(ci);
-	    }
-	}
+    Checklist cl = CheckManager.getChecklistFor(target);
+    if (cl == null) {
+      return 0;
     }
+    return cl.size();
+  }
 
-    ////////////////
-    // event handlers
+  /**
+   * @see javax.swing.table.TableModel#getValueAt(int, int)
+   */
+  public Object getValueAt(int row, int col) {
+    Checklist cl = CheckManager.getChecklistFor(target);
+    if (cl == null) {
+      return "no checklist";
+    }
+    CheckItem ci = cl.elementAt(row);
+    if (col == 0) {
+      ChecklistStatus stat = CheckManager.getStatusFor(target);
+      return (stat.contains(ci)) ? Boolean.TRUE : Boolean.FALSE;
+    } else if (col == 1) {
+      return ci.getDescription(target);
+    } else {
+      return "CL-" + row * 2 + col;
+    }
+  }
 
-    /**
-     * @see java.beans.VetoableChangeListener#vetoableChange(java.beans.PropertyChangeEvent)
-     */
-    public void vetoableChange(PropertyChangeEvent pce) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                fireTableStructureChanged();
-                panel.resizeColumns();
-            }
+  /**
+   * @see javax.swing.table.TableModel#setValueAt(java.lang.Object, int, int)
+   */
+  public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+    LOG.debug("setting table value " + rowIndex + ", " + columnIndex);
+    if (columnIndex != 0) {
+      return;
+    }
+    if (!(aValue instanceof Boolean)) {
+      return;
+    }
+    boolean val = ((Boolean) aValue).booleanValue();
+    Checklist cl = CheckManager.getChecklistFor(target);
+    if (cl == null) {
+      return;
+    }
+    CheckItem ci = cl.elementAt(rowIndex);
+    if (columnIndex == 0) {
+      ChecklistStatus stat = CheckManager.getStatusFor(target);
+      if (val) {
+        stat.addItem(ci);
+      } else {
+        stat.removeItem(ci);
+      }
+    }
+  }
+
+  ////////////////
+  // event handlers
+
+  /**
+   * @see java.beans.VetoableChangeListener#vetoableChange(java.beans.PropertyChangeEvent)
+   */
+  public void vetoableChange(PropertyChangeEvent pce) {
+    SwingUtilities.invokeLater(
+        new Runnable() {
+          public void run() {
+            fireTableStructureChanged();
+            panel.resizeColumns();
+          }
         });
-    }
+  }
 
-    /**
-     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
-     */
-    public void propertyChange(PropertyChangeEvent evt) {
-        fireTableStructureChanged();
-        panel.resizeColumns();
-    }
+  /**
+   * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+   */
+  public void propertyChange(PropertyChangeEvent evt) {
+    fireTableStructureChanged();
+    panel.resizeColumns();
+  }
 } /* end class TableModelChecklist */

@@ -31,50 +31,49 @@ import org.argouml.uml.ui.AbstractUMLModelElementListModel2Test;
  * @since Oct 30, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class TestUMLUseCaseExtendListModel
-    extends AbstractUMLModelElementListModel2Test {
+public class TestUMLUseCaseExtendListModel extends AbstractUMLModelElementListModel2Test {
 
-    /**
-     * Constructor for TestUMLUseCaseExtendListModel.
-     * @param arg0 is the name of the test case.
-     */
-    public TestUMLUseCaseExtendListModel(String arg0) {
-        super(arg0);
+  /**
+   * Constructor for TestUMLUseCaseExtendListModel.
+   *
+   * @param arg0 is the name of the test case.
+   */
+  public TestUMLUseCaseExtendListModel(String arg0) {
+    super(arg0);
+  }
+
+  /**
+   * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#buildElement()
+   */
+  protected void buildElement() {
+    setElem(Model.getUseCasesFactory().createUseCase());
+  }
+
+  /**
+   * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#buildModel()
+   */
+  protected void buildModel() {
+    setModel(new UMLUseCaseExtendListModel());
+  }
+
+  /**
+   * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#fillModel()
+   */
+  protected Object[] fillModel() {
+    Object[] ext = new Object[10];
+    for (int i = 0; i < 10; i++) {
+      ext[i] = Model.getUseCasesFactory().createExtend();
+      Model.getUseCasesHelper().addExtend(getElem(), ext[i]);
     }
+    return ext;
+  }
 
-    /**
-     * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#buildElement()
-     */
-    protected void buildElement() {
-        setElem(Model.getUseCasesFactory().createUseCase());
+  /**
+   * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#removeHalfModel(Object[])
+   */
+  protected void removeHalfModel(Object[] elements) {
+    for (int i = 0; i < 5; i++) {
+      Model.getUseCasesHelper().removeExtend(getElem(), elements[i]);
     }
-
-    /**
-     * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#buildModel()
-     */
-    protected void buildModel() {
-        setModel(new UMLUseCaseExtendListModel());
-    }
-
-    /**
-     * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#fillModel()
-     */
-    protected Object[] fillModel() {
-        Object[] ext = new Object[10];
-        for (int i = 0; i < 10; i++) {
-            ext[i] = Model.getUseCasesFactory().createExtend();
-            Model.getUseCasesHelper().addExtend(getElem(), ext[i]);
-        }
-        return ext;
-    }
-
-    /**
-     * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#removeHalfModel(Object[])
-     */
-    protected void removeHalfModel(Object[] elements) {
-        for (int i = 0; i < 5; i++) {
-            Model.getUseCasesHelper().removeExtend(getElem(), elements[i]);
-        }
-    }
-
+  }
 }

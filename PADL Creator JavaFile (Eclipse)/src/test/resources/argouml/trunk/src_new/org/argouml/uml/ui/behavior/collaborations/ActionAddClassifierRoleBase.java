@@ -25,7 +25,6 @@
 package org.argouml.uml.ui.behavior.collaborations;
 
 import java.util.Vector;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.AbstractActionAddModelElement;
@@ -37,52 +36,44 @@ import org.argouml.uml.ui.AbstractActionAddModelElement;
  */
 public class ActionAddClassifierRoleBase extends AbstractActionAddModelElement {
 
-    /**
-     * The one and only instance of this class.
-     */
-    public static final ActionAddClassifierRoleBase SINGLETON =
-	new ActionAddClassifierRoleBase();
-    /**
-     * Constructor for ActionAddClassifierRoleBase.
-     */
-    protected ActionAddClassifierRoleBase() {
-        super();
-    }
+  /** The one and only instance of this class. */
+  public static final ActionAddClassifierRoleBase SINGLETON = new ActionAddClassifierRoleBase();
 
-    /**
-     * @see org.argouml.uml.ui.AbstractActionAddModelElement#getChoices()
-     */
-    protected Vector getChoices() {
-        Vector vec = new Vector();
-        vec.addAll(Model.getCollaborationsHelper()
-                .getAllPossibleBases(getTarget()));
-        return vec;
-    }
+  /** Constructor for ActionAddClassifierRoleBase. */
+  protected ActionAddClassifierRoleBase() {
+    super();
+  }
 
-    /**
-     * @see org.argouml.uml.ui.AbstractActionAddModelElement#getSelected()
-     */
-    protected Vector getSelected() {
-        Vector vec = new Vector();
-        vec.addAll(Model.getFacade().getBases(getTarget()));
-        return vec;
-    }
+  /**
+   * @see org.argouml.uml.ui.AbstractActionAddModelElement#getChoices()
+   */
+  protected Vector getChoices() {
+    Vector vec = new Vector();
+    vec.addAll(Model.getCollaborationsHelper().getAllPossibleBases(getTarget()));
+    return vec;
+  }
 
-    /**
-     * @see org.argouml.uml.ui.AbstractActionAddModelElement#getDialogTitle()
-     */
-    protected String getDialogTitle() {
-        return Translator.localize("dialog.title.add-bases");
-    }
+  /**
+   * @see org.argouml.uml.ui.AbstractActionAddModelElement#getSelected()
+   */
+  protected Vector getSelected() {
+    Vector vec = new Vector();
+    vec.addAll(Model.getFacade().getBases(getTarget()));
+    return vec;
+  }
 
-    /**
-     * @see
-     * org.argouml.uml.ui.AbstractActionAddModelElement#doIt(java.util.Vector)
-     */
-    protected void doIt(Vector selected) {
-        Object role = /*(MClassifierRole)*/ getTarget();
-        Model.getCollaborationsHelper().setBases(role, selected);
-    }
+  /**
+   * @see org.argouml.uml.ui.AbstractActionAddModelElement#getDialogTitle()
+   */
+  protected String getDialogTitle() {
+    return Translator.localize("dialog.title.add-bases");
+  }
 
-
+  /**
+   * @see org.argouml.uml.ui.AbstractActionAddModelElement#doIt(java.util.Vector)
+   */
+  protected void doIt(Vector selected) {
+    Object role = /*(MClassifierRole)*/ getTarget();
+    Model.getCollaborationsHelper().setBases(role, selected);
+  }
 }

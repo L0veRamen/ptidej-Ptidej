@@ -4,25 +4,24 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
 package padl.micropatterns.examples;
 
 public abstract class Trait {
-	//private int tset;
+  // private int tset;
 
-	Trait() {
-	}
+  Trait() {}
 
-	public int TestMethod() {
-		return 0;
-	}
+  public int TestMethod() {
+    return 0;
+  }
 
-	public int TestMethod2() {
-		return 1;
-	}
+  public int TestMethod2() {
+    return 1;
+  }
 
-	abstract public int read(String str, int off, int len);
+  public abstract int read(String str, int off, int len);
 }

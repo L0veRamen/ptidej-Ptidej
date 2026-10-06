@@ -26,92 +26,79 @@ package org.argouml.model;
 
 import junit.framework.TestCase;
 
-/**
- * Test the StateMachinesFactory class.
- *
- */
+/** Test the StateMachinesFactory class. */
 public class TestStateMachinesFactory extends TestCase {
-    /**
-     * Model elements to test.
-     */
-    private static String[] allModelElements =
-    {
-	"CallEvent",
-	"ChangeEvent",
-	"CompositeState",
-	"Event",
-	"FinalState",
-	"Guard",
-	"Pseudostate",
-	"SignalEvent",
-	"SimpleState",
-	"State",
-	"StateMachine",
-	"StateVertex",
-	"StubState",
-	"SubmachineState",
-	"SynchState",
-	"TimeEvent",
-	"Transition",
+  /** Model elements to test. */
+  private static String[] allModelElements = {
+    "CallEvent",
+    "ChangeEvent",
+    "CompositeState",
+    "Event",
+    "FinalState",
+    "Guard",
+    "Pseudostate",
+    "SignalEvent",
+    "SimpleState",
+    "State",
+    "StateMachine",
+    "StateVertex",
+    "StubState",
+    "SubmachineState",
+    "SynchState",
+    "TimeEvent",
+    "Transition",
+  };
+
+  /**
+   * The constructor.
+   *
+   * @param n the name of the test
+   */
+  public TestStateMachinesFactory(String n) {
+    super(n);
+  }
+
+  /** Test if this class is really a singleton. */
+  public void testSingleton() {
+
+    Object o1 = Model.getStateMachinesFactory();
+
+    Object o2 = Model.getStateMachinesFactory();
+
+    assertTrue("Different singletons", o1 == o2);
+  }
+
+  /** Test creation. */
+  public void testCreates() {
+    // Do not test State, Event or StateVertex. They are abstract.
+    String[] objs = {
+      "CallEvent",
+      "ChangeEvent",
+      "CompositeState",
+      // "Event",
+      "FinalState",
+      "Guard",
+      "Pseudostate",
+      "SignalEvent",
+      "SimpleState",
+      // "State",
+      "StateMachine",
+      // "StateVertex",
+      "StubState",
+      "SubmachineState",
+      "SynchState",
+      "TimeEvent",
+      "Transition",
+      null,
     };
 
-    /**
-     * The constructor.
-     *
-     * @param n the name of the test
-     */
-    public TestStateMachinesFactory(String n) {
-	super(n);
-    }
+    CheckUMLModelHelper.createAndRelease(Model.getStateMachinesFactory(), objs);
+  }
 
-    /**
-     * Test if this class is really a singleton.
-     */
-    public void testSingleton() {
-
-	Object o1 = Model.getStateMachinesFactory();
-
-	Object o2 = Model.getStateMachinesFactory();
-
-	assertTrue("Different singletons", o1 == o2);
-
-    }
-
-    /**
-     * Test creation.
-     */
-    public void testCreates() {
-	// Do not test State, Event or StateVertex. They are abstract.
-	String[] objs = {
-	    "CallEvent", 
-            "ChangeEvent", 
-            "CompositeState",
-	    // "Event",
-	    "FinalState",
-	    "Guard",
-	    "Pseudostate",
-	    "SignalEvent",
-	    "SimpleState",
-	    // "State",
-	    "StateMachine",
-	    // "StateVertex",
-	    "StubState",
-	    "SubmachineState",
-	    "SynchState",
-	    "TimeEvent",
-	    "Transition",
-	    null,
-	};
-
-	CheckUMLModelHelper.createAndRelease(
-					     Model.getStateMachinesFactory(),
-					     objs);
-    }
-
-    /**
-     * @return Returns the allModelElements.
-     */
-    static String[] getAllModelElements() {
-        return allModelElements;
-    }
+  /**
+   * @return Returns the allModelElements.
+   */
+  static String[] getAllModelElements() {
+    return allModelElements;
+  }
 }

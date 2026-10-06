@@ -11,38 +11,28 @@ import java.awt.event.ItemListener;
 import java.util.Vector;
 
 /**
- * A Command enabled choice. Selecting a choice executes the
- * corresponding command.
+ * A Command enabled choice. Selecting a choice executes the corresponding command.
  *
  * @see Command
  */
+public class CommandChoice extends Choice implements ItemListener {
 
+  private Vector fCommands;
 
-public  class CommandChoice
-		extends Choice implements ItemListener {
+  public CommandChoice() {
+    fCommands = new Vector(10);
+    addItemListener(this);
+  }
 
-	private Vector   fCommands;
+  /** Adds a command to the menu. */
+  public synchronized void addItem(Command command) {
+    addItem(command.name());
+    fCommands.addElement(command);
+  }
 
-	public CommandChoice() {
-		fCommands = new Vector(10);
-		addItemListener(this);
-	}
-
-	/**
-	 * Adds a command to the menu.
-	 */
-	public synchronized void addItem(Command command) {
-		addItem(command.name());
-		fCommands.addElement(command);
-	}
-
-	/**
-	 * Executes the command.
-	 */
-	public void itemStateChanged(ItemEvent e) {
-		Command command = (Command)fCommands.elementAt(getSelectedIndex());
-		command.execute();
-	}
+  /** Executes the command. */
+  public void itemStateChanged(ItemEvent e) {
+    Command command = (Command) fCommands.elementAt(getSelectedIndex());
+    command.execute();
+  }
 }
-
-

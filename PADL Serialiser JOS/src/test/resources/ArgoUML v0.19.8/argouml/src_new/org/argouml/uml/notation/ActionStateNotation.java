@@ -27,25 +27,20 @@ package org.argouml.uml.notation;
 import org.argouml.model.Model;
 
 /**
- * This abstract class forms the basis of all Notation providers 
- * for the text shown in the Fig that represents the ActionState. 
- * Subclass this for all languages.
- * 
+ * This abstract class forms the basis of all Notation providers for the text shown in the Fig that
+ * represents the ActionState. Subclass this for all languages.
+ *
  * @author mvw@tigris.org
  */
 public abstract class ActionStateNotation extends ValueHandler {
 
-    protected Object myActionState;
-    
-    /**
-     * The constructor.
-     * 
-     */
-    public ActionStateNotation(Object actionState) {
-        if (!Model.getFacade().isAActionState(actionState)) {
-            throw new IllegalArgumentException();
-        }
-        myActionState = actionState;
-    }
+  protected Object myActionState;
 
+  /** The constructor. */
+  public ActionStateNotation(Object actionState) {
+    if (!Model.getFacade().isAActionState(actionState)) {
+      throw new IllegalArgumentException();
+    }
+    myActionState = actionState;
+  }
 }

@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;
-
 import org.apache.log4j.Logger;
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.Model;
@@ -44,119 +43,108 @@ import org.argouml.uml.util.PathComparator;
  */
 public class UMLModelElementNamespaceComboBoxModel extends UMLComboBoxModel2 {
 
-    /**
-     * Logger.
-     */
-    private static final Logger LOG =
-        Logger.getLogger(UMLModelElementNamespaceComboBoxModel.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(UMLModelElementNamespaceComboBoxModel.class);
 
-    /**
-     * The UID.
+  /** The UID. */
+  private static final long serialVersionUID = -775116993155949065L;
+
+  /** Constructor for UMLModelElementNamespaceComboBoxModel. */
+  public UMLModelElementNamespaceComboBoxModel() {
+    super("namespace", true);
+    Model.getPump()
+        .addClassModelEventListener(this, Model.getMetaTypes().getNamespace(), "ownedElement");
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object o) {
+    return Model.getFacade().isANamespace(o)
+        && Model.getCoreHelper().isValidNamespace(getTarget(), o);
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
+   */
+  @Override
+  protected void buildMinimalModelList() {
+    Object target = getTarget();
+    Collection c = new ArrayList(1);
+
+    if (target != null) {
+      Object namespace = Model.getFacade().getNamespace(target);
+      if (namespace != null && !c.contains(namespace)) {
+        c.add(namespace);
+      }
+    }
+    setElements(c);
+    setModelInvalid();
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    Set<Object> elements = new TreeSet<Object>(new PathComparator());
+
+    Object model = ProjectManager.getManager().getCurrentProject().getRoot();
+    Object target = getTarget();
+    elements.addAll(Model.getCoreHelper().getAllPossibleNamespaces(target, model));
+
+    /* These next lines for the case that the current namespace
+     * is not a valid one... Which of course should not happen,
+     * but it does - see the project attached to issue 3772.
      */
-    private static final long serialVersionUID = -775116993155949065L;
-    
-    /**
-     * Constructor for UMLModelElementNamespaceComboBoxModel.
+    /* TODO: Enhance the isValidNamespace function so
+     * that this never happens.
      */
-    public UMLModelElementNamespaceComboBoxModel() {
-        super("namespace", true);
-        Model.getPump().addClassModelEventListener(this,
-                Model.getMetaTypes().getNamespace(), "ownedElement");
+    if (target != null) {
+      Object namespace = Model.getFacade().getNamespace(target);
+      if (namespace != null && !elements.contains(namespace)) {
+        elements.add(namespace);
+        LOG.warn("The current namespace is not a valid one!");
+      }
     }
 
+    // Our comparator will throw an InvalidElementException if the old
+    // list contains deleted elements (eg after a new project is loaded)
+    // so remove all the old contents first
+    removeAllElements();
+    addAll(elements);
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
+   */
+  protected Object getSelectedModelElement() {
+    if (getTarget() != null) {
+      return Model.getFacade().getNamespace(getTarget());
+    }
+    return null;
+  }
+
+  /*
+   * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+   */
+  @Override
+  public void modelChanged(UmlChangeEvent evt) {
     /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
+     * Rebuild the list from scratch to be sure it's correct.
      */
-    protected boolean isValidElement(Object o) {
-        return Model.getFacade().isANamespace(o)
-                && Model.getCoreHelper().isValidNamespace(getTarget(), o);
+    Object t = getTarget();
+    if (t != null && evt.getSource() == t && evt.getNewValue() != null) {
+      buildMinimalModelList();
+      /* In some cases (see issue 3780) the list remains the same, but
+       * the selected item differs. Without the next step,
+       * the combo would not be refreshed.
+       */
+      setSelectedItem(getSelectedModelElement());
     }
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
-     */
-    @Override
-    protected void buildMinimalModelList() {
-        Object target = getTarget();
-        Collection c = new ArrayList(1);
-
-        if (target != null) {
-            Object namespace = Model.getFacade().getNamespace(target);
-            if (namespace != null && !c.contains(namespace)) {
-                c.add(namespace);
-            }
-        }
-        setElements(c);
-        setModelInvalid();
-    }
-
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        Set<Object> elements = new TreeSet<Object>(new PathComparator());
-        
-        Object model =
-            ProjectManager.getManager().getCurrentProject().getRoot();
-        Object target = getTarget();
-        elements.addAll(
-            Model.getCoreHelper().getAllPossibleNamespaces(target, model));
-
-        /* These next lines for the case that the current namespace
-         * is not a valid one... Which of course should not happen,
-         * but it does - see the project attached to issue 3772.
-         */
-        /* TODO: Enhance the isValidNamespace function so
-         * that this never happens.
-         */
-        if (target != null) {
-            Object namespace = Model.getFacade().getNamespace(target);
-            if (namespace != null && !elements.contains(namespace)) {
-                elements.add(namespace);
-                LOG.warn("The current namespace is not a valid one!");
-            }
-        }
-
-        // Our comparator will throw an InvalidElementException if the old
-        // list contains deleted elements (eg after a new project is loaded)
-        // so remove all the old contents first
-        removeAllElements();
-        addAll(elements);
-    }
-
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
-     */
-    protected Object getSelectedModelElement() {
-        if (getTarget() != null) {
-            return Model.getFacade().getNamespace(getTarget());
-        }
-        return null;
-    }
-
-    /*
-    * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
-    */
-    @Override
-    public void modelChanged(UmlChangeEvent evt) {
-        /*
-         * Rebuild the list from scratch to be sure it's correct.
-         */
-        Object t = getTarget();
-        if (t != null
-                && evt.getSource() == t
-                && evt.getNewValue() != null) {
-            buildMinimalModelList();
-            /* In some cases (see issue 3780) the list remains the same, but
-             * the selected item differs. Without the next step,
-             * the combo would not be refreshed.
-             */
-            setSelectedItem(getSelectedModelElement());
-        }
-    }
-    
-    @Override
-    protected boolean isLazy() {
-        return true;
-    }
+  @Override
+  protected boolean isLazy() {
+    return true;
+  }
 }

@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -15,30 +15,24 @@
 package util.parser.java.v14.nodes;
 
 /**
- * Grammar production:
- * f0 -> <INTEGER_LITERAL>
- *       | <FLOATING_POINT_LITERAL>
- *       | <CHARACTER_LITERAL>
- *       | <STRING_LITERAL>
- *       | BooleanLiteral()
- *       | NullLiteral()
+ * Grammar production: f0 -> <INTEGER_LITERAL> | <FLOATING_POINT_LITERAL> | <CHARACTER_LITERAL> |
+ * <STRING_LITERAL> | BooleanLiteral() | NullLiteral()
  */
 public class Literal implements Node {
-   /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-public NodeChoice f0;
+  /** */
+  private static final long serialVersionUID = 1L;
 
-   public Literal(NodeChoice n0) {
-      this.f0 = n0;
-   }
+  public NodeChoice f0;
 
-   public void accept(util.parser.java.v14.visitors.Visitor v) {
-      v.visit(this);
-   }
-   public Object accept(util.parser.java.v14.visitors.ObjectVisitor v, Object argu) {
-      return v.visit(this,argu);
-   }
+  public Literal(NodeChoice n0) {
+    this.f0 = n0;
+  }
+
+  public void accept(util.parser.java.v14.visitors.Visitor v) {
+    v.visit(this);
+  }
+
+  public Object accept(util.parser.java.v14.visitors.ObjectVisitor v, Object argu) {
+    return v.visit(this, argu);
+  }
 }
-

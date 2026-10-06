@@ -28,12 +28,10 @@ import java.awt.Cursor;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-
 import javax.swing.JList;
 import javax.swing.JPopupMenu;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
-
 import org.apache.log4j.Logger;
 import org.argouml.model.Model;
 import org.argouml.ui.LookAndFeelMgr;
@@ -41,112 +39,111 @@ import org.argouml.ui.targetmanager.TargetListener;
 import org.argouml.ui.targetmanager.TargettableModelView;
 
 /**
- * This class is derived from a Swing JList, and adds:<p>
+ * This class is derived from a Swing JList, and adds:
  *
- * Mouselistener for the implementation of a popup menu.
- * The popup menu itself is to be created by the model.<p>
+ * <p>Mouselistener for the implementation of a popup menu. The popup menu itself is to be created
+ * by the model.
  *
- * TargettableModelView: Which determines that the model of this list
- * listens to target changes, i.e. implements the TargetListener interface.
+ * <p>TargettableModelView: Which determines that the model of this list listens to target changes,
+ * i.e. implements the TargetListener interface.
  *
  * @since Oct 2, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public abstract class UMLList2
-    extends JList
-    implements TargettableModelView, MouseListener {
+public abstract class UMLList2 extends JList implements TargettableModelView, MouseListener {
 
-    private static final Logger LOG = Logger.getLogger(UMLList2.class);
-    /**
-     * Constructor for UMLList2. Used by subclasses that want to add their own
-     * renderer to the list.
-     * @param dataModel the data model
-     * @param renderer the renderer
-     */
-    protected UMLList2(ListModel dataModel, ListCellRenderer renderer) {
-        super(dataModel);
-        setDoubleBuffered(true);
-        if (renderer != null) {
-            setCellRenderer(renderer);
-        }
-        setFont(LookAndFeelMgr.getInstance().getStandardFont());
-        addMouseListener(this);
-    }
+  private static final Logger LOG = Logger.getLogger(UMLList2.class);
 
-    /**
-     * Getter for the target. First approach to get rid of the container.
-     * @return Object
-     */
-    public Object getTarget() {
-        return ((UMLModelElementListModel2) getModel()).getTarget();
+  /**
+   * Constructor for UMLList2. Used by subclasses that want to add their own renderer to the list.
+   *
+   * @param dataModel the data model
+   * @param renderer the renderer
+   */
+  protected UMLList2(ListModel dataModel, ListCellRenderer renderer) {
+    super(dataModel);
+    setDoubleBuffered(true);
+    if (renderer != null) {
+      setCellRenderer(renderer);
     }
+    setFont(LookAndFeelMgr.getInstance().getStandardFont());
+    addMouseListener(this);
+  }
 
-    /*
-     * @see TargettableModelView#getTargettableModel()
-     */
-    public TargetListener getTargettableModel() {
-        return (TargetListener) getModel();
-    }
+  /**
+   * Getter for the target. First approach to get rid of the container.
+   *
+   * @return Object
+   */
+  public Object getTarget() {
+    return ((UMLModelElementListModel2) getModel()).getTarget();
+  }
 
-    /*
-     * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
-     */
-    public void mouseClicked(MouseEvent e) {
-        showPopup(e);
-    }
-    
-    /*
-     * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
-     */
-    public void mouseEntered(MouseEvent e) {
-        if (hasPopup()) {
-            setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
-        }
-    }
-    
-    /*
-     * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
-     */
-    public void mouseExited(MouseEvent e) {
-        if (hasPopup()) {
-            setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        }
-    }
-    
-    /*
-     * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
-     */
-    public void mousePressed(MouseEvent e) {
-        showPopup(e);
-    }
-    
-    /*
-     * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
-     */
-    public void mouseReleased(MouseEvent e) {
-        showPopup(e);
-    }
+  /*
+   * @see TargettableModelView#getTargettableModel()
+   */
+  public TargetListener getTargettableModel() {
+    return (TargetListener) getModel();
+  }
 
-    private final void showPopup(MouseEvent event) {
-        if (event.isPopupTrigger()
-                && !Model.getModelManagementHelper().isReadOnly(getTarget())) {
-            Point point = event.getPoint();
-            int index = locationToIndex(point);
-            JPopupMenu popup = new JPopupMenu();
-            ListModel lm = getModel();
-            if (lm instanceof UMLModelElementListModel2) {
-                if (((UMLModelElementListModel2) lm).buildPopup(popup, index)) {
-                    LOG.debug("Showing popup");
-                    popup.show(this, point.x, point.y);
-                }
-            }
-        }
+  /*
+   * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
+   */
+  public void mouseClicked(MouseEvent e) {
+    showPopup(e);
+  }
+
+  /*
+   * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
+   */
+  public void mouseEntered(MouseEvent e) {
+    if (hasPopup()) {
+      setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
     }
-    
-    protected boolean hasPopup() {
-        if (getModel() instanceof UMLModelElementListModel2) {
-            return ((UMLModelElementListModel2) getModel()).hasPopup();
-        }
-        return false;
+  }
+
+  /*
+   * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
+   */
+  public void mouseExited(MouseEvent e) {
+    if (hasPopup()) {
+      setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
+  }
+
+  /*
+   * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
+   */
+  public void mousePressed(MouseEvent e) {
+    showPopup(e);
+  }
+
+  /*
+   * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
+   */
+  public void mouseReleased(MouseEvent e) {
+    showPopup(e);
+  }
+
+  private final void showPopup(MouseEvent event) {
+    if (event.isPopupTrigger() && !Model.getModelManagementHelper().isReadOnly(getTarget())) {
+      Point point = event.getPoint();
+      int index = locationToIndex(point);
+      JPopupMenu popup = new JPopupMenu();
+      ListModel lm = getModel();
+      if (lm instanceof UMLModelElementListModel2) {
+        if (((UMLModelElementListModel2) lm).buildPopup(popup, index)) {
+          LOG.debug("Showing popup");
+          popup.show(this, point.x, point.y);
+        }
+      }
+    }
+  }
+
+  protected boolean hasPopup() {
+    if (getModel() instanceof UMLModelElementListModel2) {
+      return ((UMLModelElementListModel2) getModel()).hasPopup();
+    }
+    return false;
+  }
 }

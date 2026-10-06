@@ -1,7 +1,7 @@
 // $Id: XmiReaderEUMLImpl.java 16157 2008-11-24 06:14:33Z tfmorris $
 // Copyright (c) 2007,2008 Tom Morris and other contributors
 // All rights reserved.
-// 
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
 //     * Redistributions of source code must retain the above copyright
@@ -12,7 +12,7 @@
 //     * Neither the name of the ArgoUML Project nor the
 //       names of its contributors may be used to endorse or promote products
 //       derived from this software without specific prior written permission.
-// 
+//
 // THIS SOFTWARE IS PROVIDED BY THE ArgoUML PROJECT ``AS IS'' AND ANY
 // EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 // WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -39,152 +39,138 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.argouml.model.UmlException;
 import org.argouml.model.XmiReader;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.edit.domain.EditingDomain;
 import org.xml.sax.InputSource;
 
-/**
- * The implementation of the XmiReader for EUML2.
- */
+/** The implementation of the XmiReader for EUML2. */
 class XmiReaderEUMLImpl implements XmiReader {
 
-    /**
-     * The model implementation.
-     */
-    private EUMLModelImplementation modelImpl;
-    
-    private static Set<String> searchDirs = new HashSet<String>();
-    
-    private Resource resource;
+  /** The model implementation. */
+  private EUMLModelImplementation modelImpl;
 
-    /**
-     * Constructor.
-     * 
-     * @param implementation
-     *            The ModelImplementation.
-     */
-    public XmiReaderEUMLImpl(EUMLModelImplementation implementation) {
-        modelImpl = implementation;
+  private static Set<String> searchDirs = new HashSet<String>();
+
+  private Resource resource;
+
+  /**
+   * Constructor.
+   *
+   * @param implementation The ModelImplementation.
+   */
+  public XmiReaderEUMLImpl(EUMLModelImplementation implementation) {
+    modelImpl = implementation;
+  }
+
+  public int getIgnoredElementCount() {
+    // TODO: Auto-generated method stub
+    return 0;
+  }
+
+  public String[] getIgnoredElements() {
+    // TODO: Auto-generated method stub
+    return new String[0];
+  }
+
+  public Map getXMIUUIDToObjectMap() {
+    if (resource == null) {
+      throw new IllegalStateException();
+    }
+    Map<String, EObject> map = new HashMap<String, EObject>();
+    Iterator<EObject> it = resource.getAllContents();
+    while (it.hasNext()) {
+      EObject o = it.next();
+      map.put(resource.getURIFragment(o), o);
+    }
+    return map;
+  }
+
+  public Collection parse(InputSource inputSource, boolean readOnly) throws UmlException {
+
+    if (inputSource == null) {
+      throw new NullPointerException("The input source must be non-null."); // $NON-NLS-1$
+    }
+    InputStream is = null;
+    boolean needsClosing = false;
+    if (inputSource.getByteStream() != null) {
+      is = inputSource.getByteStream();
+    } else if (inputSource.getSystemId() != null) {
+      try {
+        URL url = new URL(inputSource.getSystemId());
+        if (url != null) {
+          is = url.openStream();
+          if (is != null) {
+            is = new BufferedInputStream(is);
+            needsClosing = true;
+          }
+        }
+      } catch (MalformedURLException e) {
+        // do nothing
+      } catch (IOException e) {
+        // do nothing
+      }
+    }
+    if (is == null) {
+      throw new UnsupportedOperationException();
     }
 
-    public int getIgnoredElementCount() {
-        // TODO: Auto-generated method stub
-        return 0;
-    }
+    // TODO: This won't work if the user loads a profile and then
+    // a user model or multiple user models. - tfm
+    modelImpl.clearEditingDomain();
 
-    public String[] getIgnoredElements() {
-        // TODO: Auto-generated method stub
-        return new String[0];
-    }
-
-    public Map getXMIUUIDToObjectMap() {
-        if (resource == null) {
-            throw new IllegalStateException();
-        }
-        Map<String, EObject> map = new HashMap<String, EObject>();
-        Iterator<EObject> it = resource.getAllContents();
-        while (it.hasNext()) {
-            EObject o  = it.next();
-            map.put(resource.getURIFragment(o), o);
-        }
-        return map;
-    }
-
-
-    public Collection parse(InputSource inputSource, boolean readOnly)
-        throws UmlException {
-        
-        if (inputSource == null) {
-            throw new NullPointerException(
-                    "The input source must be non-null."); //$NON-NLS-1$
-        }
-        InputStream is = null;
-        boolean needsClosing = false;
-        if (inputSource.getByteStream() != null) {
-            is = inputSource.getByteStream();
-        } else if (inputSource.getSystemId() != null) {
-            try {
-                URL url = new URL(inputSource.getSystemId());
-                if (url != null) {
-                    is = url.openStream();
-                    if (is != null) {
-                        is = new BufferedInputStream(is);
-                        needsClosing = true;
-                    }
-                }
-            } catch (MalformedURLException e) {
-                // do nothing
-            } catch (IOException e) {
-                // do nothing
-            }
-
-        }
-        if (is == null) {
-            throw new UnsupportedOperationException();
-        }
-
-
-        // TODO: This won't work if the user loads a profile and then 
-        // a user model or multiple user models. - tfm
-        modelImpl.clearEditingDomain();
-        
-        Resource r = UMLUtil.getResource(modelImpl, UMLUtil.DEFAULT_URI,
-                readOnly);
+    Resource r = UMLUtil.getResource(modelImpl, UMLUtil.DEFAULT_URI, readOnly);
+    try {
+      modelImpl.getModelEventPump().stopPumpingEvents();
+      r.load(is, null);
+    } catch (IOException e) {
+      throw new UmlException(e);
+    } finally {
+      modelImpl.getModelEventPump().startPumpingEvents();
+      if (needsClosing) {
         try {
-            modelImpl.getModelEventPump().stopPumpingEvents();
-            r.load(is, null);
+          is.close();
         } catch (IOException e) {
-            throw new UmlException(e);
-        } finally {
-            modelImpl.getModelEventPump().startPumpingEvents();
-            if (needsClosing) {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+          throw new RuntimeException(e);
         }
-        resource = r;
-        return r.getContents();
+      }
     }
+    resource = r;
+    return r.getContents();
+  }
 
-    public boolean setIgnoredElements(String[] elementNames) {
-        // TODO: Auto-generated method stub
-        return false;
-    }
+  public boolean setIgnoredElements(String[] elementNames) {
+    // TODO: Auto-generated method stub
+    return false;
+  }
 
-    public String getTagName() {
-        if (resource == null) {
-            throw new IllegalStateException();
-        }
-        List l = resource.getContents();
-        if (!l.isEmpty()) {
-            return "uml:" + modelImpl.getMetaTypes().getName(l.get(0)); //$NON-NLS-1$
-        } else {
-            return null;
-        }
+  public String getTagName() {
+    if (resource == null) {
+      throw new IllegalStateException();
     }
+    List l = resource.getContents();
+    if (!l.isEmpty()) {
+      return "uml:" + modelImpl.getMetaTypes().getName(l.get(0)); // $NON-NLS-1$
+    } else {
+      return null;
+    }
+  }
 
-    public void addSearchPath(String path) {
-        searchDirs.add(path);
-    }
+  public void addSearchPath(String path) {
+    searchDirs.add(path);
+  }
 
-    public List<String> getSearchPath() {
-        return new ArrayList<String>(searchDirs);
-    }
+  public List<String> getSearchPath() {
+    return new ArrayList<String>(searchDirs);
+  }
 
-    public void removeSearchPath(String path) {
-        searchDirs.remove(path);
-    }
+  public void removeSearchPath(String path) {
+    searchDirs.remove(path);
+  }
 
-    public String getHeader() {
-        // TODO: Auto-generated method stub
-        throw new NotYetImplementedException();
-    }
-    
+  public String getHeader() {
+    // TODO: Auto-generated method stub
+    throw new NotYetImplementedException();
+  }
 }

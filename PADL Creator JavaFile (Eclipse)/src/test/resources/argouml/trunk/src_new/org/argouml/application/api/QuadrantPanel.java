@@ -25,63 +25,41 @@
 package org.argouml.application.api;
 
 /**
- * An interface which must be implemented as the UI for
- * each primary panel.
+ * An interface which must be implemented as the UI for each primary panel.
  *
  * @author Thierry Lach
  * @since 0.9.5
  */
 public interface QuadrantPanel {
 
-    /**
-     * The bit-number for a side.
-     */
-    int Q_TOP           = 1;
+  /** The bit-number for a side. */
+  int Q_TOP = 1;
 
-    /**
-     * The bit-number for a side.
-     */
-    int Q_BOTTOM        = 2;
+  /** The bit-number for a side. */
+  int Q_BOTTOM = 2;
 
-    /**
-     * The bit-number for a side.
-     */
-    int Q_LEFT          = 4;
+  /** The bit-number for a side. */
+  int Q_LEFT = 4;
 
-    /**
-     * The bit-number for a side.
-     */
-    int Q_RIGHT         = 8;
+  /** The bit-number for a side. */
+  int Q_RIGHT = 8;
 
-    /**
-     * A bit-combination indicating uniquely 2 orthogonal sides,
-     * and hence a corner.
-     */
-    int Q_TOP_LEFT      = Q_TOP + Q_LEFT;
+  /** A bit-combination indicating uniquely 2 orthogonal sides, and hence a corner. */
+  int Q_TOP_LEFT = Q_TOP + Q_LEFT;
 
-    /**
-     * A bit-combination indicating uniquely 2 orthogonal sides,
-     * and hence a corner.
-     */
-    int Q_TOP_RIGHT     = Q_TOP + Q_RIGHT;
+  /** A bit-combination indicating uniquely 2 orthogonal sides, and hence a corner. */
+  int Q_TOP_RIGHT = Q_TOP + Q_RIGHT;
 
-    /**
-     * A bit-combination indicating uniquely 2 orthogonal sides,
-     * and hence a corner.
-     */
-    int Q_BOTTOM_LEFT   = Q_BOTTOM + Q_LEFT;
+  /** A bit-combination indicating uniquely 2 orthogonal sides, and hence a corner. */
+  int Q_BOTTOM_LEFT = Q_BOTTOM + Q_LEFT;
 
-    /**
-     * A bit-combination indicating uniquely 2 orthogonal sides,
-     * and hence a corner.
-     */
-    int Q_BOTTOM_RIGHT  = Q_BOTTOM + Q_RIGHT;
+  /** A bit-combination indicating uniquely 2 orthogonal sides, and hence a corner. */
+  int Q_BOTTOM_RIGHT = Q_BOTTOM + Q_RIGHT;
 
-    /**
-     * This shall return a corner indentification.
-     * @return one of Q_TOP_LEFT, Q_TOP_RIGHT, Q_BOTTOM_LEFT, Q_BOTTOM_RIGHT
-     */
-    int getQuadrant();
-
+  /**
+   * This shall return a corner indentification.
+   *
+   * @return one of Q_TOP_LEFT, Q_TOP_RIGHT, Q_BOTTOM_LEFT, Q_BOTTOM_RIGHT
+   */
+  int getQuadrant();
 } /* End interface QuadrantPanel */
-

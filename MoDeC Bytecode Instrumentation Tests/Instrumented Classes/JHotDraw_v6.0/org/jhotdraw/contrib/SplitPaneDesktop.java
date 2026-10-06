@@ -11,141 +11,143 @@
 
 package org.jhotdraw.contrib;
 
-import javax.swing.*;
 import java.awt.*;
-import org.jhotdraw.framework.DrawingView;
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import javax.swing.*;
+import org.jhotdraw.framework.DrawingView;
 
 /**
  * @todo Gotta fix this !!! the selected view changes based on which split pane is selected!
- *
  * @author C.L.Gilbert <dnoyeb@users.sourceforge.net>
  * @author Wolfram Kaiser <mrfloppy@users.sourceforge.net>
  * @version <$CURRENT_VERSION$>
  */
 public class SplitPaneDesktop extends JSplitPane implements Desktop {
 
-	private DesktopEventService myDesktopEventService;
+  private DesktopEventService myDesktopEventService;
 
-    public SplitPaneDesktop() {
-		setDesktopEventService(createDesktopEventService());
-		setAlignmentX(JSplitPane.LEFT_ALIGNMENT);
-		setOneTouchExpandable(true);
+  public SplitPaneDesktop() {
+    setDesktopEventService(createDesktopEventService());
+    setAlignmentX(JSplitPane.LEFT_ALIGNMENT);
+    setOneTouchExpandable(true);
 
-		addPropertyChangeListener(createPropertyChangeListener());
+    addPropertyChangeListener(createPropertyChangeListener());
+  }
+
+  protected PropertyChangeListener createPropertyChangeListener() {
+    return new PropertyChangeListener() {
+      public void propertyChange(PropertyChangeEvent evt) {
+        if (getRightComponent() != null) {
+          getRightComponent().repaint();
+        }
+        if (getLeftComponent() != null) {
+          getLeftComponent().repaint();
+        }
+      }
+    };
+  }
+
+  protected Component createContents(DrawingView dv, int location) {
+    setRightComponent(createRightComponent(dv));
+    setLeftComponent(createLeftComponent(dv));
+    switch (location) {
+      case Desktop.PRIMARY:
+        {
+          return getLeftComponent();
+        }
+      case Desktop.SECONDARY:
+        {
+          return getRightComponent();
+        }
+      default:
+        {
+          return null;
+        }
     }
+  }
 
-	protected PropertyChangeListener createPropertyChangeListener() {
-		return new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent evt) {
-				if (getRightComponent() != null) {
-					getRightComponent().repaint();
-				}
-				if (getLeftComponent() != null) {
-					getLeftComponent().repaint();
-				}
-			}
-		};
-	}
+  protected Component createRightComponent(DrawingView dv) {
+    JScrollPane sp = new JScrollPane((Component) dv);
+    sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+    sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+    sp.setAlignmentX(LEFT_ALIGNMENT);
+    return sp;
+  }
 
-	protected Component createContents(DrawingView dv, int location) {
-		setRightComponent(createRightComponent(dv));
-		setLeftComponent(createLeftComponent(dv));
-	    switch (location) {
-		    case Desktop.PRIMARY: {
-			    return getLeftComponent();
-			}
-			case Desktop.SECONDARY: {
-				return getRightComponent();
-			}
-			default: {
-			    return null;
-			}
-	    }
-	}
+  protected Component createLeftComponent(DrawingView dv) {
+    return new JScrollPane(new JList());
+  }
 
-	protected Component createRightComponent(DrawingView dv) {
-		JScrollPane sp = new JScrollPane((Component)dv);
-		sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-		sp.setAlignmentX(LEFT_ALIGNMENT);
-		return sp;
-	}
+  public DrawingView getActiveDrawingView() {
+    return getDesktopEventService().getActiveDrawingView();
+  }
 
-	protected Component createLeftComponent(DrawingView dv) {
-		return new JScrollPane(new JList());
-	}
+  public void addToDesktop(DrawingView dv, int location) {
+    createContents(dv, Desktop.PRIMARY);
+    /*	    switch (location) {
+    		    case Desktop.PRIMARY: {
+    			    setLeftComponent(createContents(dv, Desktop.PRIMARY));
+    				break;
+    			}
+    			case Desktop.SECONDARY: {
+    				setRightComponent(createContents(dv, Desktop.SECONDARY));
+    				break;
+    			}
+    	    }
+    */
+    //		validate();
+    setDividerLocation(getInitDividerLocation());
+  }
 
-	public DrawingView getActiveDrawingView() {
-		return getDesktopEventService().getActiveDrawingView();
-	}
+  protected int getInitDividerLocation() {
+    return 150;
+  }
 
-	public void addToDesktop(DrawingView dv, int location) {
-		createContents(dv, Desktop.PRIMARY);
-/*	    switch (location) {
-		    case Desktop.PRIMARY: {
-			    setLeftComponent(createContents(dv, Desktop.PRIMARY));
-				break;
-			}
-			case Desktop.SECONDARY: {
-				setRightComponent(createContents(dv, Desktop.SECONDARY));
-				break;
-			}
-	    }
-*/
-//		validate();
-		setDividerLocation(getInitDividerLocation());
-	}
+  public void removeFromDesktop(DrawingView dv, int location) {
+    Component[] comps = getContainer().getComponents();
+    for (int x = 0; x < comps.length; x++) {
+      if (dv == Helper.getDrawingView(comps[x])) {
+        getContainer().remove(comps[x]);
+        break;
+      }
+    }
+  }
 
-	protected int getInitDividerLocation() {
-		return 150;
-	}
+  public void removeAllFromDesktop(int location) {
+    getContainer().removeAll();
+  }
 
-	public void removeFromDesktop(DrawingView dv, int location) {
-		Component[] comps = getContainer().getComponents();
-		for (int x = 0; x < comps.length; x++) {
-			if (dv == Helper.getDrawingView(comps[x])) {
-				getContainer().remove(comps[x]);
-			    break;
-			}
-		}
-	}
+  public DrawingView[] getAllFromDesktop(int location) {
+    return getDesktopEventService().getDrawingViews(getComponents());
+  }
 
-	public void removeAllFromDesktop(int location) {
-	    getContainer().removeAll();
-	}
+  public void addDesktopListener(DesktopListener dpl) {
+    getDesktopEventService().addDesktopListener(dpl);
+  }
 
-	public DrawingView[] getAllFromDesktop(int location) {
-		return getDesktopEventService().getDrawingViews(getComponents());
-	}
+  public void removeDesktopListener(DesktopListener dpl) {
+    getDesktopEventService().removeDesktopListener(dpl);
+  }
 
-	public void addDesktopListener(DesktopListener dpl) {
-		getDesktopEventService().addDesktopListener(dpl);
-	}
+  private Container getContainer() {
+    return this;
+  }
 
-	public void removeDesktopListener(DesktopListener dpl) {
-		getDesktopEventService().removeDesktopListener(dpl);
-	}
+  protected DesktopEventService getDesktopEventService() {
+    return myDesktopEventService;
+  }
 
-	private Container getContainer() {
-		return this;
-	}
+  private void setDesktopEventService(DesktopEventService newDesktopEventService) {
+    myDesktopEventService = newDesktopEventService;
+  }
 
-	protected DesktopEventService getDesktopEventService() {
-		return myDesktopEventService;
-	}
+  protected DesktopEventService createDesktopEventService() {
+    return new DesktopEventService(this, getContainer());
+  }
 
-	private void setDesktopEventService(DesktopEventService newDesktopEventService) {
-		myDesktopEventService = newDesktopEventService;
-	}
-
-	protected DesktopEventService createDesktopEventService() {
-		return new DesktopEventService(this, getContainer());
-	}
-
-	public void updateTitle(String newDrawingTitle) {
-		// should be setTitle but a JPanelDesktop has no own title bar
-		setName(newDrawingTitle);
-	}
+  public void updateTitle(String newDrawingTitle) {
+    // should be setTitle but a JPanelDesktop has no own title bar
+    setName(newDrawingTitle);
+  }
 }

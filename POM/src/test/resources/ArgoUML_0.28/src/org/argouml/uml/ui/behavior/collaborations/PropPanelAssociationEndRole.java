@@ -27,32 +27,28 @@ package org.argouml.uml.ui.behavior.collaborations;
 import org.argouml.i18n.Translator;
 import org.argouml.uml.ui.foundation.core.PropPanelAssociationEnd;
 
-/**
- * The property panel for an AssociationEnd.
- */
+/** The property panel for an AssociationEnd. */
 public class PropPanelAssociationEndRole extends PropPanelAssociationEnd {
 
-    /**
-     * Construct the proppanel and place all scrollpanes etc. on the canvas.
-     */
-    public PropPanelAssociationEndRole() {
-        super("label.association-end-role", lookupIcon("AssociationEndRole"));
-        setAssociationLabel(Translator.localize("label.association-role"));
-        createControls();
-        positionStandardControls();
-        positionControls();
-    }
+  /** Construct the proppanel and place all scrollpanes etc. on the canvas. */
+  public PropPanelAssociationEndRole() {
+    super("label.association-end-role", lookupIcon("AssociationEndRole"));
+    setAssociationLabel(Translator.localize("label.association-role"));
+    createControls();
+    positionStandardControls();
+    positionControls();
+  }
 
-    /*
-     * @see org.argouml.uml.ui.foundation.core.PropPanelAssociationEnd#positionControls()
-     */
-    @Override
-    protected void positionControls() {
+  /*
+   * @see org.argouml.uml.ui.foundation.core.PropPanelAssociationEnd#positionControls()
+   */
+  @Override
+  protected void positionControls() {
 
-        addField(Translator.localize("label.base"),
-		 getSingleRowScroll(new UMLAssociationEndRoleBaseListModel()));
+    addField(
+        Translator.localize("label.base"),
+        getSingleRowScroll(new UMLAssociationEndRoleBaseListModel()));
 
-        super.positionControls();
-    }
-
+    super.positionControls();
+  }
 }

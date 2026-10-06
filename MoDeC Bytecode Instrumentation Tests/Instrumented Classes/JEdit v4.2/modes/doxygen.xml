@@ -4,16 +4,18 @@
 
 <MODE>
     <PROPS>
-        <PROPERTY NAME="lineComment" VALUE="#" />
+        <PROPERTY NAME="lineComment" VALUE="#"/>
     </PROPS>
     <RULES ESCAPE="\" IGNORE_CASE="FALSE" HIGHLIGHT_DIGITS="TRUE">
         <!-- Comment -->
         <EOL_SPAN TYPE="COMMENT1">#</EOL_SPAN>
 
         <MARK_PREVIOUS TYPE="KEYWORD1"
-            AT_LINE_START="TRUE" EXCLUDE_MATCH="TRUE">=</MARK_PREVIOUS>
+                       AT_LINE_START="TRUE" EXCLUDE_MATCH="TRUE">=
+        </MARK_PREVIOUS>
         <MARK_PREVIOUS TYPE="KEYWORD1"
-            AT_LINE_START="TRUE" EXCLUDE_MATCH="TRUE">+=</MARK_PREVIOUS>
+                       AT_LINE_START="TRUE" EXCLUDE_MATCH="TRUE">+=
+        </MARK_PREVIOUS>
 
         <!-- Literals -->
         <SPAN TYPE="LITERAL1" NO_LINE_BREAK="TRUE">
@@ -47,11 +49,11 @@
         <!-- Doxygen allows this -->
         <SEQ TYPE="COMMENT3">&lt;&lt;</SEQ>
         <SEQ TYPE="COMMENT3">&lt;=</SEQ>
-        <SEQ TYPE="COMMENT3">&lt; </SEQ>
+        <SEQ TYPE="COMMENT3">&lt;</SEQ>
 
         <!-- HTML tags -->
         <SPAN TYPE="MARKUP" DELEGATE="xml::TAGS"
-            NO_LINE_BREAK="TRUE">
+              NO_LINE_BREAK="TRUE">
             <BEGIN>&lt;</BEGIN>
             <END>&gt;</END>
         </SPAN>

@@ -27,41 +27,36 @@ package org.argouml.uml.ui;
 import org.argouml.model.Model;
 
 /**
- * Class to represent a checkbox for the deprecated checkbox in the
- * documentation tab.
+ * Class to represent a checkbox for the deprecated checkbox in the documentation tab.
  *
- * TODO: This needs to be reworked to use UML 1.4 TagDefinitions
- * instead of the UML 1.3 String typed tag type. - tfm
- * 
+ * <p>TODO: This needs to be reworked to use UML 1.4 TagDefinitions instead of the UML 1.3 String
+ * typed tag type. - tfm
+ *
  * @author mkl
- *
  */
 public class UMLDeprecatedCheckBox extends UMLCheckBox2 {
 
-    /**
-     * The constructor.
-     *
-     */
-    public UMLDeprecatedCheckBox() {
-        super(null, new ActionBooleanTaggedValue("deprecated"), "deprecated");
+  /** The constructor. */
+  public UMLDeprecatedCheckBox() {
+    super(null, new ActionBooleanTaggedValue("deprecated"), "deprecated");
+  }
+
+  /**
+   * Set the checkbox according to the tagged values of the target.
+   *
+   * @see org.argouml.uml.ui.UMLCheckBox2#buildModel()
+   */
+  public void buildModel() {
+
+    String tagName = "deprecated";
+    setSelected(false);
+
+    Object tv = Model.getFacade().getTaggedValue(getTarget(), tagName);
+    if (tv != null) {
+      String tag = Model.getFacade().getValueOfTag(tv);
+      if ("true".equals(tag)) {
+        setSelected(true);
+      }
     }
-
-    /**
-     * Set the checkbox according to the tagged values of the target.
-     *
-     * @see org.argouml.uml.ui.UMLCheckBox2#buildModel()
-     */
-    public void buildModel() {
-
-        String tagName = "deprecated";
-        setSelected(false);
-
-        Object tv = Model.getFacade().getTaggedValue(getTarget(), tagName);
-        if (tv != null) {
-            String tag = Model.getFacade().getValueOfTag(tv);
-            if ("true".equals(tag)) {
-                setSelected(true);
-            }
-        }
-    }
+  }
 }

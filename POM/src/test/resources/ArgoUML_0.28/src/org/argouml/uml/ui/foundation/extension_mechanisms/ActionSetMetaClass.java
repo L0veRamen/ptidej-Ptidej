@@ -26,9 +26,7 @@ package org.argouml.uml.ui.foundation.extension_mechanisms;
 
 import java.awt.event.ActionEvent;
 import java.util.Collection;
-
 import javax.swing.Action;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
@@ -37,58 +35,48 @@ import org.tigris.gef.undo.UndoableAction;
 
 /**
  * Action to set the baseclass of a stereotype.
- * 
- * TODO: This needs to be extended to support multiple bases classes for a
- * stereotype as added in UML 1.4.
- * 
+ *
+ * <p>TODO: This needs to be extended to support multiple bases classes for a stereotype as added in
+ * UML 1.4.
+ *
  * @author mkl
  */
 public class ActionSetMetaClass extends UndoableAction {
 
-    /**
-     * The Singleton.
-     */
-    public static final ActionSetMetaClass SINGLETON =
-	new ActionSetMetaClass();
+  /** The Singleton. */
+  public static final ActionSetMetaClass SINGLETON = new ActionSetMetaClass();
 
-    /**
-     * Constructor.
-     */
-    public ActionSetMetaClass() {
-        super(Translator.localize("Set"),
-                ResourceLoaderWrapper.lookupIcon("Set"));
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize("Set"));
-    }
+  /** Constructor. */
+  public ActionSetMetaClass() {
+    super(Translator.localize("Set"), ResourceLoaderWrapper.lookupIcon("Set"));
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize("Set"));
+  }
 
-    /*
-     * @see org.tigris.gef.undo.UndoableAction#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        Object source = e.getSource();
-        Object newBase = null;
-        Object stereo = null;
-        if (source instanceof UMLComboBox2) {
-            UMLComboBox2 combo = (UMLComboBox2) source;
-            stereo = combo.getTarget();
-            if (Model.getFacade().isAStereotype(stereo)) {
-                Collection oldBases = Model.getFacade().getBaseClasses(stereo);
-                newBase = combo.getSelectedItem();
-                if (newBase != null) { // TODO: How come this happens?
-                    if (!oldBases.contains(newBase)) {
-                        Model.getExtensionMechanismsHelper().addBaseClass(
-                                stereo,
-                                newBase);
-                    } else {
-                        if (newBase != null && newBase.equals("")) {
-                            Model.getExtensionMechanismsHelper().addBaseClass(
-                                    stereo, "ModelElement");
-                        }
-                    }
-                }
+  /*
+   * @see org.tigris.gef.undo.UndoableAction#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    Object source = e.getSource();
+    Object newBase = null;
+    Object stereo = null;
+    if (source instanceof UMLComboBox2) {
+      UMLComboBox2 combo = (UMLComboBox2) source;
+      stereo = combo.getTarget();
+      if (Model.getFacade().isAStereotype(stereo)) {
+        Collection oldBases = Model.getFacade().getBaseClasses(stereo);
+        newBase = combo.getSelectedItem();
+        if (newBase != null) { // TODO: How come this happens?
+          if (!oldBases.contains(newBase)) {
+            Model.getExtensionMechanismsHelper().addBaseClass(stereo, newBase);
+          } else {
+            if (newBase != null && newBase.equals("")) {
+              Model.getExtensionMechanismsHelper().addBaseClass(stereo, "ModelElement");
             }
+          }
         }
+      }
     }
+  }
 }

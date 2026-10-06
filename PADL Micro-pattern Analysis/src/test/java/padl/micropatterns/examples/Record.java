@@ -4,43 +4,44 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
 package padl.micropatterns.examples;
 
 public class Record {
-	public int pubAtt1;
-	public long pricAtt;
-	
-	Record () {
-		this.pubAtt1 = 0;
-		this.pricAtt = 0;
-	}
+  public int pubAtt1;
+  public long pricAtt;
 
-	protected Object clone() throws CloneNotSupportedException {
-		// TODO Auto-generated method stub
-		return super.clone();
-	}
+  Record() {
+    this.pubAtt1 = 0;
+    this.pricAtt = 0;
+  }
 
-	public boolean equals(Object arg0) {
-		// TODO Auto-generated method stub
-		return super.equals(arg0);
-	}
+  protected Object clone() throws CloneNotSupportedException {
+    // TODO Auto-generated method stub
+    return super.clone();
+  }
 
-	protected void finalize() throws Throwable {
-		// TODO Auto-generated method stub
-		super.finalize();
-	}
+  public boolean equals(Object arg0) {
+    // TODO Auto-generated method stub
+    return super.equals(arg0);
+  }
 
-	public int hashCode() {
-		// TODO Auto-generated method stub
-		return super.hashCode();
-	}
+  @SuppressWarnings("removal")
+  protected void finalize() throws Throwable {
+    // TODO Auto-generated method stub
+    super.finalize();
+  }
 
-	public String toString() {
-		// TODO Auto-generated method stub
-		return super.toString();
-	}
+  public int hashCode() {
+    // TODO Auto-generated method stub
+    return super.hashCode();
+  }
+
+  public String toString() {
+    // TODO Auto-generated method stub
+    return super.toString();
+  }
 }

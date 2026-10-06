@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Vector;
-
 import org.argouml.model.AssociationChangeEvent;
 import org.argouml.model.AttributeChangeEvent;
 import org.argouml.model.Model;
@@ -49,335 +48,299 @@ import org.tigris.gef.presentation.Fig;
 import org.tigris.gef.presentation.FigText;
 
 /**
- * Class to display graphics for a UML Enumeration in a diagram.
- * It depends on FigDataType for most of its behavior.<p>
- * 
+ * Class to display graphics for a UML Enumeration in a diagram. It depends on FigDataType for most
+ * of its behavior.
+ *
+ * <p>
  */
-public class FigEnumeration extends FigDataType 
-    implements EnumLiteralsCompartmentContainer {
+public class FigEnumeration extends FigDataType implements EnumLiteralsCompartmentContainer {
 
-    /**
-     * Serial version (generated)
-     */
-    private static final long serialVersionUID = 3333154292883077250L;
+  /** Serial version (generated) */
+  private static final long serialVersionUID = 3333154292883077250L;
 
-    /**
-     * The Fig that represents the literals compartment.
-     */
-    private FigEnumLiteralsCompartment literalsCompartment;
+  /** The Fig that represents the literals compartment. */
+  private FigEnumLiteralsCompartment literalsCompartment;
 
-    /**
-     * Main constructor for a {@link FigEnumeration}.
-     */
-    public FigEnumeration() {
-        super();
-        FigStereotypesCompartment fsc =
-            (FigStereotypesCompartment) getStereotypeFig();
-        fsc.setKeyword("enumeration");
+  /** Main constructor for a {@link FigEnumeration}. */
+  public FigEnumeration() {
+    super();
+    FigStereotypesCompartment fsc = (FigStereotypesCompartment) getStereotypeFig();
+    fsc.setKeyword("enumeration");
 
-        enableSizeChecking(true);
-        setSuppressCalcBounds(false);
+    enableSizeChecking(true);
+    setSuppressCalcBounds(false);
 
-        addFig(getLiteralsCompartment()); // This creates the compartment.
-        setBounds(getBounds());
+    addFig(getLiteralsCompartment()); // This creates the compartment.
+    setBounds(getBounds());
+  }
+
+  /**
+   * Constructor for use if this figure is created for an existing interface node in the metamodel.
+   *
+   * @param gm Not actually used in the current implementation
+   * @param node The UML object being placed.
+   */
+  public FigEnumeration(GraphModel gm, Object node) {
+    this();
+    enableSizeChecking(true);
+    setEnumLiteralsVisible(true);
+    setOwner(node);
+    literalsCompartment.populate();
+    setBounds(getBounds());
+  }
+
+  /**
+   * @see org.argouml.uml.diagram.static_structure.ui.FigDataType#makeSelection()
+   */
+  public Selection makeSelection() {
+    return new SelectionEnumeration(this);
+  }
+
+  /**
+   * @see java.lang.Object#clone() TODO: Is this actually needed? - tfm
+   */
+  public Object clone() {
+    FigEnumeration clone = (FigEnumeration) super.clone();
+    clone.literalsCompartment = (FigEnumLiteralsCompartment) literalsCompartment.clone();
+    return clone;
+  }
+
+  /**
+   * Build a collection of menu items relevant for a right-click popup menu on an Interface.
+   *
+   * @param me a mouse event
+   * @return a collection of menu items
+   */
+  public Vector getPopUpActions(MouseEvent me) {
+    Vector popUpActions = super.getPopUpActions(me);
+
+    // Add ...
+    ArgoJMenu addMenu = new ArgoJMenu("menu.popup.add");
+    addMenu.add(TargetManager.getInstance().getAddEnumerationLiteralAction());
+    popUpActions.insertElementAt(addMenu, popUpActions.size() - getPopupAddOffset());
+
+    return popUpActions;
+  }
+
+  /**
+   * @see
+   *     org.argouml.uml.diagram.ui.FigNodeModelElement#modelChanged(java.beans.PropertyChangeEvent)
+   */
+  protected void modelChanged(PropertyChangeEvent mee) {
+    super.modelChanged(mee);
+    if (mee instanceof AssociationChangeEvent || mee instanceof AttributeChangeEvent) {
+      renderingChanged();
+      updateListeners(getOwner(), getOwner());
+    }
+  }
+
+  /**
+   * @see org.argouml.uml.diagram.ui.FigNodeModelElement#renderingChanged()
+   */
+  public void renderingChanged() {
+    if (getOwner() != null) {
+      updateEnumLiterals();
+    }
+    super.renderingChanged();
+  }
+
+  /**
+   * @see org.argouml.uml.diagram.ui.FigNodeModelElement#updateListeners(java.lang.Object)
+   */
+  protected void updateListeners(Object oldOwner, Object newOwner) {
+    if (oldOwner != null) {
+      removeAllElementListeners();
+    }
+    if (newOwner != null) {
+      // add the listeners to the newOwner
+      addElementListener(newOwner);
+      // and its stereotypes
+      Collection c = new ArrayList(Model.getFacade().getStereotypes(newOwner));
+      // and its features
+      Iterator it = Model.getFacade().getFeatures(newOwner).iterator();
+      while (it.hasNext()) {
+        Object feat = it.next();
+        c.add(feat);
+        // and the stereotypes of its features
+        c.addAll(new ArrayList(Model.getFacade().getStereotypes(feat)));
+      }
+      // and its enumerationLiterals
+      c.addAll(Model.getFacade().getEnumerationLiterals(newOwner));
+      // And now add listeners to them all:
+      Iterator it2 = c.iterator();
+      while (it2.hasNext()) {
+        addElementListener(it2.next());
+      }
+    }
+  }
+
+  /** Update (i.e. redraw) the compartment with the literals. */
+  protected void updateEnumLiterals() {
+    if (!literalsCompartment.isVisible()) {
+      return;
+    }
+    literalsCompartment.populate();
+
+    // TODO: make setBounds, calcBounds and updateBounds consistent
+    setBounds(getBounds());
+  }
+
+  /**
+   * @see
+   *     org.argouml.uml.diagram.ui.FigNodeModelElement#textEdited(org.tigris.gef.presentation.FigText)
+   */
+  protected void textEdited(FigText ft) throws PropertyVetoException {
+    super.textEdited(ft);
+    Object cls = /*(Classifier)*/ getOwner();
+    if (cls == null) {
+      return;
+    }
+    int i = literalsCompartment.getFigs().indexOf(ft);
+    if (i != -1) {
+      highlightedFigText = (CompartmentFigText) ft;
+      highlightedFigText.setHighlighted(true);
+      Model.getCoreHelper()
+          .setName(highlightedFigText.getOwner(), highlightedFigText.getText().trim());
+      return;
+    }
+  }
+
+  /**
+   * Gets the minimum size permitted for a enumeration on the diagram.
+   *
+   * <p>
+   *
+   * @return the size of the minimum bounding box.
+   */
+  public Dimension getMinimumSize() {
+    // Start with the minimum for our parent
+    Dimension aSize = super.getMinimumSize();
+
+    if (literalsCompartment.isVisible()) {
+      Dimension literalsMin = literalsCompartment.getMinimumSize();
+      aSize.width = Math.max(aSize.width, literalsMin.width);
+      aSize.height += literalsMin.height;
     }
 
-    /**
-     * Constructor for use if this figure is created for an
-     * existing interface node in the metamodel.
-     *
-     * @param gm   Not actually used in the current implementation
-     *
-     * @param node The UML object being placed.
-     */
-    public FigEnumeration(GraphModel gm, Object node) {
-        this();
-        enableSizeChecking(true);
-        setEnumLiteralsVisible(true);
-        setOwner(node);
-        literalsCompartment.populate();
-        setBounds(getBounds());
+    return aSize;
+  }
+
+  /**
+   * Sets the bounds of all components, but the size will be at least the one returned by {@link
+   * #getMinimumSize()}, unless checking of size is disabled.
+   *
+   * <p>
+   *
+   * @param x Desired X coordinate of upper left corner
+   * @param y Desired Y coordinate of upper left corner
+   * @param w Desired width of the figure
+   * @param h Desired height of the figure
+   * @see org.tigris.gef.presentation.Fig#setBoundsImpl(int, int, int, int)
+   */
+  protected void setBoundsImpl(final int x, final int y, final int w, final int h) {
+
+    // Save our old boundaries so it can be used in property message later
+    Rectangle oldBounds = getBounds();
+
+    // set bounds of big box
+    getBigPort().setBounds(x, y, w, h);
+    borderFig.setBounds(x, y, w, h);
+
+    getNameFig().setLineWidth(0);
+
+    // Vertical whitespace to be distributed
+    // TODO: This continually adds more whitespace.  Figure out the problem.
+    // final int whitespace = Math.max(0, h - getMinimumSize().height);
+    final int whitespace = 0;
+
+    int currentHeight = 0;
+
+    if (getStereotypeFig().isVisible()) {
+      int stereotypeHeight = getStereotypeFig().getMinimumSize().height;
+      getStereotypeFig().setBounds(x, y, w, stereotypeHeight);
+      currentHeight += stereotypeHeight;
     }
 
-    /**
-     * @see org.argouml.uml.diagram.static_structure.ui.FigDataType#makeSelection()
-     */
-    public Selection makeSelection() {
-        return new SelectionEnumeration(this);
+    int nameHeight = getNameFig().getMinimumSize().height;
+    getNameFig().setBounds(x, y + currentHeight, w, nameHeight);
+    currentHeight += nameHeight;
+
+    if (getLiteralsCompartment().isVisible()) {
+      int literalsHeight = getLiteralsCompartment().getMinimumSize().height;
+      literalsHeight += whitespace / 2;
+      getLiteralsCompartment().setBounds(x, y + currentHeight, w, literalsHeight);
+      currentHeight += literalsHeight;
     }
 
-    /**
-     * @see java.lang.Object#clone()
-     * TODO: Is this actually needed? - tfm
-     */
-    public Object clone() {
-        FigEnumeration clone = (FigEnumeration) super.clone();
-        clone.literalsCompartment = 
-            (FigEnumLiteralsCompartment) literalsCompartment.clone();
-        return clone;
-    }
- 
-    /**
-     * Build a collection of menu items relevant for a right-click
-     * popup menu on an Interface.
-     *
-     * @param     me     a mouse event
-     * @return           a collection of menu items
-     */
-    public Vector getPopUpActions(MouseEvent me) {
-        Vector popUpActions = super.getPopUpActions(me);
-
-        // Add ...
-        ArgoJMenu addMenu = new ArgoJMenu("menu.popup.add");
-        addMenu.add(TargetManager.getInstance()
-                .getAddEnumerationLiteralAction());
-        popUpActions.insertElementAt(addMenu,
-                popUpActions.size() - getPopupAddOffset());
-
-        return popUpActions;
+    if (getOperationsFig().isVisible()) {
+      int operationsHeight = getOperationsFig().getMinimumSize().height;
+      operationsHeight += whitespace / 2;
+      getOperationsFig().setBounds(x, y + currentHeight, w, operationsHeight);
+      currentHeight += operationsHeight;
     }
 
-    /**
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement#modelChanged(java.beans.PropertyChangeEvent)
-     */
-    protected void modelChanged(PropertyChangeEvent mee) {
-        super.modelChanged(mee);
-        if (mee instanceof AssociationChangeEvent 
-                || mee instanceof AttributeChangeEvent) {
-            renderingChanged();
-            updateListeners(getOwner(), getOwner());
+    // Now force calculation of the bounds of the figure, update the edges
+    // and trigger anyone who's listening to see if the "bounds" property
+    // has changed.
+
+    calcBounds();
+    updateEdges();
+    firePropChange("bounds", oldBounds, getBounds());
+  }
+
+  /**
+   * @return the Fig for the EnumerationLiterals compartment
+   */
+  public FigEnumLiteralsCompartment getLiteralsCompartment() {
+    // Set bounds will be called from our superclass constructor before
+    // our constructor has run, so make sure this gets set up if needed.
+    if (literalsCompartment == null) {
+      literalsCompartment = new FigEnumLiteralsCompartment(10, 30, 60, ROWHEIGHT + 2);
+    }
+    return literalsCompartment;
+  }
+
+  /**
+   * @return true if the literals compartment is visible
+   */
+  public boolean isEnumLiteralsVisible() {
+    return literalsCompartment.isVisible();
+  }
+
+  /**
+   * @param isVisible true will show the enumeration literal compartment
+   */
+  public void setEnumLiteralsVisible(boolean isVisible) {
+    Rectangle rect = getBounds();
+    if (literalsCompartment.isVisible()) {
+      if (!isVisible) {
+        damage();
+        Iterator it = literalsCompartment.getFigs().iterator();
+        while (it.hasNext()) {
+          ((Fig) (it.next())).setVisible(false);
         }
+        literalsCompartment.setVisible(false);
+        Dimension aSize = this.getMinimumSize();
+        setBounds(rect.x, rect.y, (int) aSize.getWidth(), (int) aSize.getHeight());
+      }
+    } else {
+      if (isVisible) {
+        Iterator it = literalsCompartment.getFigs().iterator();
+        while (it.hasNext()) {
+          ((Fig) (it.next())).setVisible(true);
+        }
+        literalsCompartment.setVisible(true);
+        Dimension aSize = this.getMinimumSize();
+        setBounds(rect.x, rect.y, (int) aSize.getWidth(), (int) aSize.getHeight());
+        damage();
+      }
     }
+  }
 
-    /**
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement#renderingChanged()
-     */
-    public void renderingChanged() {
-        if (getOwner() != null) {
-            updateEnumLiterals();
-        }
-        super.renderingChanged();
-    }
-    
-    /**
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement#updateListeners(java.lang.Object)
-     */
-    protected void updateListeners(Object oldOwner, Object newOwner) {
-        if (oldOwner != null) {
-            removeAllElementListeners();
-        }
-        if (newOwner != null) {
-            // add the listeners to the newOwner
-            addElementListener(newOwner);
-            // and its stereotypes
-            Collection c = new ArrayList(
-                    Model.getFacade().getStereotypes(newOwner));
-            // and its features
-            Iterator it = Model.getFacade().getFeatures(newOwner).iterator();
-            while (it.hasNext()) {
-                Object feat = it.next();
-                c.add(feat);
-                // and the stereotypes of its features
-                c.addAll(new ArrayList(Model.getFacade().getStereotypes(feat)));
-            }
-            // and its enumerationLiterals
-            c.addAll(Model.getFacade().getEnumerationLiterals(newOwner));
-            // And now add listeners to them all:
-            Iterator it2 = c.iterator();
-            while (it2.hasNext()) {
-                addElementListener(it2.next());
-            }
-        }
-    }
-
-    /**
-     * Update (i.e. redraw) the compartment with the literals.
-     */
-    protected void updateEnumLiterals() {
-        if (!literalsCompartment.isVisible()) {
-            return;
-        }
-        literalsCompartment.populate();
-
-        // TODO: make setBounds, calcBounds and updateBounds consistent
-        setBounds(getBounds());
-    }
-    
-    /**
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement#textEdited(org.tigris.gef.presentation.FigText)
-     */
-    protected void textEdited(FigText ft) throws PropertyVetoException {
-        super.textEdited(ft);
-        Object cls = /*(Classifier)*/ getOwner();
-        if (cls == null) {
-            return;
-        }
-        int i = literalsCompartment.getFigs().indexOf(ft);
-        if (i != -1) {
-            highlightedFigText = (CompartmentFigText) ft;
-            highlightedFigText.setHighlighted(true);
-            Model.getCoreHelper().setName(highlightedFigText.getOwner(),
-                    highlightedFigText.getText().trim());
-            return;
-        }
-    }
-
-    /**
-     * Gets the minimum size permitted for a enumeration on the diagram.<p>
-     * 
-     * @return  the size of the minimum bounding box.
-     */
-    public Dimension getMinimumSize() {
-        // Start with the minimum for our parent
-        Dimension aSize = super.getMinimumSize();
-
-        if (literalsCompartment.isVisible()) {
-            Dimension literalsMin = literalsCompartment.getMinimumSize();
-            aSize.width = Math.max(aSize.width, literalsMin.width);
-            aSize.height += literalsMin.height;
-        }
-        
-        return aSize;
-    }
-    
-    /**
-     * Sets the bounds of all components, but the size will be at least the one returned by
-     * {@link #getMinimumSize()}, unless checking of size is disabled.<p>
-     * 
-     * @param x  Desired X coordinate of upper left corner
-     *
-     * @param y  Desired Y coordinate of upper left corner
-     *
-     * @param w  Desired width of the figure
-     *
-     * @param h  Desired height of the figure
-     * @see org.tigris.gef.presentation.Fig#setBoundsImpl(int, int, int, int)
-     */
-    protected void setBoundsImpl(final int x, final int y, final int w,
-            final int h) {
-
-        // Save our old boundaries so it can be used in property message later
-        Rectangle oldBounds = getBounds();
-
-        // set bounds of big box
-        getBigPort().setBounds(x, y, w, h);
-        borderFig.setBounds(x, y, w, h);
-
-        getNameFig().setLineWidth(0);
-        
-        // Vertical whitespace to be distributed
-        // TODO: This continually adds more whitespace.  Figure out the problem.
-        //final int whitespace = Math.max(0, h - getMinimumSize().height);
-        final int whitespace = 0;
-                
-        int currentHeight = 0;
-
-        if (getStereotypeFig().isVisible()) {
-            int stereotypeHeight = getStereotypeFig().getMinimumSize().height;
-            getStereotypeFig().setBounds(
-                    x,
-                    y,
-                    w,
-                    stereotypeHeight);
-            currentHeight += stereotypeHeight;
-        }
-
-        int nameHeight = getNameFig().getMinimumSize().height;
-        getNameFig().setBounds(x, y + currentHeight, w, nameHeight);
-        currentHeight += nameHeight;
-
-        if (getLiteralsCompartment().isVisible()) {
-            int literalsHeight = 
-                getLiteralsCompartment().getMinimumSize().height;
-            literalsHeight += whitespace / 2;
-            getLiteralsCompartment().setBounds(
-                    x,
-                    y + currentHeight,
-                    w,
-                    literalsHeight);
-            currentHeight += literalsHeight;
-        }
-        
-        if (getOperationsFig().isVisible()) {
-            int operationsHeight = getOperationsFig().getMinimumSize().height;
-            operationsHeight += whitespace / 2;
-            getOperationsFig().setBounds(
-                    x,
-                    y + currentHeight,
-                    w,
-                    operationsHeight);
-            currentHeight += operationsHeight;
-        }
-
-        // Now force calculation of the bounds of the figure, update the edges
-        // and trigger anyone who's listening to see if the "bounds" property
-        // has changed.
-
-        calcBounds();
-        updateEdges();
-        firePropChange("bounds", oldBounds, getBounds());
-    }
-
-
-
-    /**
-     * @return the Fig for the EnumerationLiterals compartment
-     */
-    public FigEnumLiteralsCompartment getLiteralsCompartment() {
-        // Set bounds will be called from our superclass constructor before
-        // our constructor has run, so make sure this gets set up if needed.
-        if (literalsCompartment == null) {
-            literalsCompartment = new FigEnumLiteralsCompartment(10, 30, 60,
-                    ROWHEIGHT + 2);
-        }
-        return literalsCompartment;
-    }
-    
-    /**
-     * @return true if the literals compartment is visible
-     */
-    public boolean isEnumLiteralsVisible() {
-        return literalsCompartment.isVisible();
-    }
-
-    /**
-     * @param isVisible true will show the enumeration literal compartment
-     */
-    public void setEnumLiteralsVisible(boolean isVisible) {
-        Rectangle rect = getBounds();
-        if (literalsCompartment.isVisible()) {
-            if (!isVisible) {
-                damage();
-                Iterator it = literalsCompartment.getFigs().iterator();
-                while (it.hasNext()) {
-                    ((Fig) (it.next())).setVisible(false);
-                }
-                literalsCompartment.setVisible(false);
-                Dimension aSize = this.getMinimumSize();
-                setBounds(rect.x, rect.y,
-                          (int) aSize.getWidth(), (int) aSize.getHeight());
-            }
-        } else {
-            if (isVisible) {
-                Iterator it = literalsCompartment.getFigs().iterator();
-                while (it.hasNext()) {
-                    ((Fig) (it.next())).setVisible(true);
-                }
-                literalsCompartment.setVisible(true);
-                Dimension aSize = this.getMinimumSize();
-                setBounds(rect.x, rect.y,
-                          (int) aSize.getWidth(), (int) aSize.getHeight());
-                damage();
-            }
-        }
-    }
-    
-    /**
-     * @return the bounds of the EnumerationLiterals compartment
-     */
-    public Rectangle getEnumLiteralsBounds() {
-        return literalsCompartment.getBounds();
-    }
-    
-
-} 
+  /**
+   * @return the bounds of the EnumerationLiterals compartment
+   */
+  public Rectangle getEnumLiteralsBounds() {
+    return literalsCompartment.getBounds();
+  }
+}

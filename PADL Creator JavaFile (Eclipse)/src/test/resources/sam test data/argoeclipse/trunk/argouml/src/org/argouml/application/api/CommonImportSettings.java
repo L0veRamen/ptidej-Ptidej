@@ -26,66 +26,74 @@ package org.argouml.application.api;
 
 /**
  * These are the settings that are common when importing sources.
+ *
  * @author Bogdan Pistol
  */
 public interface CommonImportSettings {
-    
-    /**
-     * The path to the source where the import is located.
-     * @return the path
-     */
-    String getSourcePath();
-    
-    /**
-     * If we should descend in the whole directory tree.
-     * @return true for descent or false otherwise
-     */
-    boolean isDescendRecursivelyEnabled();
-    
-    /**
-     * If we consider changed files or only new files.  
-     * @return true for changed files and false for new files only
-     */
-    boolean isChangedEnabled();
-    
-    /**
-     * If we should create diagrams.
-     * @return true for create and false for not to create
-     */
-    boolean isCreateDiagramsEnabled();
-    
-    /**
-     * If we should not show all the attributes and methods or we can hide them.
-     * @return if minimise is enabled
-     */
-    boolean isMinimiseEnabled();
-    
-    /**
-     * If we layout the diagrams.
-     * @return if the layout is enabled 
-     */
-    boolean isAutomaticDiagramLayoutEnabled();
-    
-    /**
-     * The encoding for the files to parse.
-     * @return the encoding type
-     */
-    String getEncoding();
-    
-    /**
-     * Returns the current import level that currently is intended for use.
-     * <p>
-     * If the user chose import levels higher than 0 then before using that
-     * level we must use level 0. So the currentImportLevel can be different
-     * from the level chose by the user.
-     * @return the level of import
-     */
-    int getCurrentImportLevel();
-    
-    /**
-     * Changes the level of import.
-     * @param level the new level
-     */
-    void setCurrentImportLevel(int level);
-    
+
+  /**
+   * The path to the source where the import is located.
+   *
+   * @return the path
+   */
+  String getSourcePath();
+
+  /**
+   * If we should descend in the whole directory tree.
+   *
+   * @return true for descent or false otherwise
+   */
+  boolean isDescendRecursivelyEnabled();
+
+  /**
+   * If we consider changed files or only new files.
+   *
+   * @return true for changed files and false for new files only
+   */
+  boolean isChangedEnabled();
+
+  /**
+   * If we should create diagrams.
+   *
+   * @return true for create and false for not to create
+   */
+  boolean isCreateDiagramsEnabled();
+
+  /**
+   * If we should not show all the attributes and methods or we can hide them.
+   *
+   * @return if minimise is enabled
+   */
+  boolean isMinimiseEnabled();
+
+  /**
+   * If we layout the diagrams.
+   *
+   * @return if the layout is enabled
+   */
+  boolean isAutomaticDiagramLayoutEnabled();
+
+  /**
+   * The encoding for the files to parse.
+   *
+   * @return the encoding type
+   */
+  String getEncoding();
+
+  /**
+   * Returns the current import level that currently is intended for use.
+   *
+   * <p>If the user chose import levels higher than 0 then before using that level we must use level
+   * 0. So the currentImportLevel can be different from the level chose by the user.
+   *
+   * @return the level of import
+   */
+  int getCurrentImportLevel();
+
+  /**
+   * Changes the level of import.
+   *
+   * @param level the new level
+   */
+  void setCurrentImportLevel(int level);
 }

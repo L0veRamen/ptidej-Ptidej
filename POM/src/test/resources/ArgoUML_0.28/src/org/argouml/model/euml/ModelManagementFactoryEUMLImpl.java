@@ -39,115 +39,100 @@ import org.eclipse.uml2.uml.Namespace;
 import org.eclipse.uml2.uml.PackageableElement;
 import org.eclipse.uml2.uml.UMLFactory;
 
+/** The implementation of the ModelManagementFactory for EUML2. */
+class ModelManagementFactoryEUMLImpl implements ModelManagementFactory, AbstractModelFactory {
 
-/**
- * The implementation of the ModelManagementFactory for EUML2.
- */
-class ModelManagementFactoryEUMLImpl implements ModelManagementFactory,
-        AbstractModelFactory {
+  /** The model implementation. */
+  private EUMLModelImplementation modelImpl;
 
-    /**
-     * The model implementation.
-     */
-    private EUMLModelImplementation modelImpl;
-    
-    private EditingDomain editingDomain;
-    
-    private org.eclipse.uml2.uml.Package theRootModel;
+  private EditingDomain editingDomain;
 
-    /**
-     * Constructor.
-     * 
-     * @param implementation
-     *            The ModelImplementation.
-     */
-    public ModelManagementFactoryEUMLImpl(
-            EUMLModelImplementation implementation) {
-        modelImpl = implementation;
-        editingDomain = implementation.getEditingDomain();
+  private org.eclipse.uml2.uml.Package theRootModel;
+
+  /**
+   * Constructor.
+   *
+   * @param implementation The ModelImplementation.
+   */
+  public ModelManagementFactoryEUMLImpl(EUMLModelImplementation implementation) {
+    modelImpl = implementation;
+    editingDomain = implementation.getEditingDomain();
+  }
+
+  public ElementImport buildElementImport(final Object pack, final Object me) {
+
+    if (!(pack instanceof Namespace)) {
+      throw new IllegalArgumentException("pack must be instance of Namespace"); // $NON-NLS-1$
     }
-
-    public ElementImport buildElementImport(final Object pack, 
-            final Object me) {
-        
-        if (!(pack instanceof Namespace)) {
-            throw new IllegalArgumentException(
-                    "pack must be instance of Namespace"); //$NON-NLS-1$
-        }
-        if (!(me instanceof PackageableElement)) {
-            throw new IllegalArgumentException(
-                    "me must be instance of PackageableElement"); //$NON-NLS-1$
-        }
-        RunnableClass run = new RunnableClass() {
-            public void run() {
-                ElementImport elementImport = createElementImport();
-                elementImport.setImportingNamespace((Namespace) pack);
-                elementImport.setImportedElement((PackageableElement) me);
-                getParams().add(elementImport);
-            }
+    if (!(me instanceof PackageableElement)) {
+      throw new IllegalArgumentException(
+          "me must be instance of PackageableElement"); //$NON-NLS-1$
+    }
+    RunnableClass run =
+        new RunnableClass() {
+          public void run() {
+            ElementImport elementImport = createElementImport();
+            elementImport.setImportingNamespace((Namespace) pack);
+            elementImport.setImportedElement((PackageableElement) me);
+            getParams().add(elementImport);
+          }
         };
-        editingDomain.getCommandStack().execute(
-                new ChangeCommand(editingDomain, run));
+    editingDomain.getCommandStack().execute(new ChangeCommand(editingDomain, run));
 
-        return (ElementImport) run.getParams().get(0);
+    return (ElementImport) run.getParams().get(0);
+  }
+
+  public org.eclipse.uml2.uml.Package buildPackage(String name) {
+    org.eclipse.uml2.uml.Package pkg = (org.eclipse.uml2.uml.Package) createPackage();
+    if (name != null) {
+      pkg.setName(name);
     }
+    return pkg;
+  }
 
+  public Object copyPackage(Object source, Object ns) {
+    // TODO: Auto-generated method stub
+    return null;
+  }
 
-    public org.eclipse.uml2.uml.Package buildPackage(String name) {
-        org.eclipse.uml2.uml.Package pkg =
-                (org.eclipse.uml2.uml.Package) createPackage();
-        if (name != null) {
-            pkg.setName(name);
-        }
-        return pkg;
+  public ElementImport createElementImport() {
+    return UMLFactory.eINSTANCE.createElementImport();
+  }
+
+  public Model createModel() {
+    return UMLFactory.eINSTANCE.createModel();
+  }
+
+  public org.eclipse.uml2.uml.Package createPackage() {
+    return UMLFactory.eINSTANCE.createPackage();
+  }
+
+  @Deprecated
+  public Object createSubsystem() {
+    // Removed from UML 2
+    throw new NotImplementedException();
+  }
+
+  // TODO: get/setRootModel aren't specific to the Model implementation
+  // they could probably be moved elsewhere - tfm - 20070530
+  public void setRootModel(Object rootModel) {
+    if (rootModel != null && !(rootModel instanceof org.eclipse.uml2.uml.Package)) {
+      throw new IllegalArgumentException(
+          "The rootModel supplied must be a Package. Got a " //$NON-NLS-1$
+              + rootModel.getClass().getName());
     }
-    
-    public Object copyPackage(Object source, Object ns) {
-        // TODO: Auto-generated method stub
-        return null;
+    if (theRootModel != null && theRootModel.eResource() != null) {
+      EcoreUtil.remove(theRootModel);
     }
-
-    public ElementImport createElementImport() {
-        return UMLFactory.eINSTANCE.createElementImport();
+    theRootModel = (org.eclipse.uml2.uml.Package) rootModel;
+    if (rootModel != null) {
+      Resource r = UMLUtil.getResource(modelImpl, UMLUtil.DEFAULT_URI, Boolean.FALSE);
+      r.getContents().add(theRootModel);
     }
+    modelImpl.getModelEventPump().setRootContainer(theRootModel);
+  }
 
-    public Model createModel() {
-        return UMLFactory.eINSTANCE.createModel();
-    }
-
-    public org.eclipse.uml2.uml.Package createPackage() {
-        return UMLFactory.eINSTANCE.createPackage();
-    }
-
-    @Deprecated
-    public Object createSubsystem() {
-        // Removed from UML 2
-        throw new NotImplementedException();
-    }
-
-    // TODO: get/setRootModel aren't specific to the Model implementation
-    // they could probably be moved elsewhere - tfm - 20070530
-    public void setRootModel(Object rootModel) {
-        if (rootModel != null 
-                && !(rootModel instanceof org.eclipse.uml2.uml.Package)) {
-            throw new IllegalArgumentException(
-                    "The rootModel supplied must be a Package. Got a " //$NON-NLS-1$
-                    + rootModel.getClass().getName());
-        }
-	if (theRootModel != null && theRootModel.eResource() != null) {
-	    EcoreUtil.remove(theRootModel);
-	}
-        theRootModel = (org.eclipse.uml2.uml.Package) rootModel;
-	if (rootModel != null) {
-            Resource r = UMLUtil.getResource(modelImpl, UMLUtil.DEFAULT_URI, 
-                    Boolean.FALSE);
-            r.getContents().add(theRootModel);
-	}
-        modelImpl.getModelEventPump().setRootContainer(theRootModel);
-    }
-
-    public org.eclipse.uml2.uml.Package getRootModel() {
-        return theRootModel;
-    }
-
+  public org.eclipse.uml2.uml.Package getRootModel() {
+    return theRootModel;
+  }
 }

@@ -1,9 +1,8 @@
 public class MyDefaultClass {
 
-	public static class MyClass {
+  public static class MyClass {}
 
-	}
-	Object[] oLocal1 = new Object[5];
+  Object[] oLocal1 = new Object[5];
 
-	MyClass c;
+  MyClass c;
 }

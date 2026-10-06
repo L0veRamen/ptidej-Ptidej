@@ -26,69 +26,62 @@ package org.argouml.util.osdep;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-
 import org.apache.log4j.Logger;
-
 
 /**
  * @stereotype utility
  */
 public class StartBrowser {
-    /** logger */
-    private static final Logger LOG = Logger.getLogger(StartBrowser.class);
+  /** logger */
+  private static final Logger LOG = Logger.getLogger(StartBrowser.class);
 
-    /**
-     * Open an Url in the system's default browser.
-     * <P>
-     * This will probably not be perfect for everyone but hopefully it is a
-     * good enough alternative.
-     *
-     * @param url the given URL
-     */
-    public static void openUrl(String url) {
-	try {
-	    if (OsUtil.isWin32()) {
-		Runtime.getRuntime()
-		    .exec("rundll32 url.dll,FileProtocolHandler " + url);
-	    }
-	    else if (OsUtil.isMac()) {
-		try {
-		    ClassLoader cl = ClassLoader.getSystemClassLoader();
-		    Class c = cl.loadClass("com.apple.mrj.MRJFileUtils");
-		    Class[] argtypes = {
-			String.class,
-		    };
-		    Method m = c.getMethod("openURL", argtypes);
-		    Object[] args = {
-			url,
-		    };
-		    m.invoke(c.newInstance(), args);
-		} catch (Exception cnfe) {
-		    LOG.error(cnfe);
-		    LOG.info("Trying a default browser (netscape)");
-		    String[] commline = {
-			"netscape", url,
-		    };
-		    Runtime.getRuntime().exec(commline);
-		}
-		return;
-	    }
-	    else {
-		Process proc =
-		    Runtime.getRuntime().exec("netscape -remote (" + url + ")");
-		try {
-		    if (proc.waitFor() != 0) {
-			Runtime.getRuntime().exec("netscape " + url);
-		    }
-		} catch (InterruptedException ie) {
-		}
-	    }
-	}
-	catch (IOException ioe) {
-	    // Didn't work.
-            LOG.error(ioe);
-	}
-
-	LOG.error("Could not open url: " + url);
+  /**
+   * Open an Url in the system's default browser.
+   *
+   * <p>This will probably not be perfect for everyone but hopefully it is a good enough
+   * alternative.
+   *
+   * @param url the given URL
+   */
+  public static void openUrl(String url) {
+    try {
+      if (OsUtil.isWin32()) {
+        Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + url);
+      } else if (OsUtil.isMac()) {
+        try {
+          ClassLoader cl = ClassLoader.getSystemClassLoader();
+          Class c = cl.loadClass("com.apple.mrj.MRJFileUtils");
+          Class[] argtypes = {
+            String.class,
+          };
+          Method m = c.getMethod("openURL", argtypes);
+          Object[] args = {
+            url,
+          };
+          m.invoke(c.newInstance(), args);
+        } catch (Exception cnfe) {
+          LOG.error(cnfe);
+          LOG.info("Trying a default browser (netscape)");
+          String[] commline = {
+            "netscape", url,
+          };
+          Runtime.getRuntime().exec(commline);
+        }
+        return;
+      } else {
+        Process proc = Runtime.getRuntime().exec("netscape -remote (" + url + ")");
+        try {
+          if (proc.waitFor() != 0) {
+            Runtime.getRuntime().exec("netscape " + url);
+          }
+        } catch (InterruptedException ie) {
+        }
+      }
+    } catch (IOException ioe) {
+      // Didn't work.
+      LOG.error(ioe);
     }
+
+    LOG.error("Could not open url: " + url);
+  }
 }

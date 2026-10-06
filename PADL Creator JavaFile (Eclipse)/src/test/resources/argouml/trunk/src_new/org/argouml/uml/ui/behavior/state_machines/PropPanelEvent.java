@@ -27,7 +27,6 @@ package org.argouml.uml.ui.behavior.state_machines;
 import javax.swing.ImageIcon;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.uml.ui.ActionNavigateContainerElement;
 import org.argouml.uml.ui.UMLLinkedList;
@@ -44,63 +43,52 @@ import org.tigris.swidgets.Orientation;
  */
 public abstract class PropPanelEvent extends PropPanelModelElement {
 
-    private JScrollPane paramScroll;
+  private JScrollPane paramScroll;
 
-    private UMLEventParameterListModel paramListModel;
+  private UMLEventParameterListModel paramListModel;
 
-    /**
-     * Constructor for PropPanelEvent.
-     *
-     * @param name the name string of the properties panel
-     * @param icon the icon to be shown next to the name
-     * @param orientation the orientation
-     */
-    public PropPanelEvent(String name, ImageIcon icon,
-            Orientation orientation) {
-        super(name, icon, orientation);
-        initialize();
+  /**
+   * Constructor for PropPanelEvent.
+   *
+   * @param name the name string of the properties panel
+   * @param icon the icon to be shown next to the name
+   * @param orientation the orientation
+   */
+  public PropPanelEvent(String name, ImageIcon icon, Orientation orientation) {
+    super(name, icon, orientation);
+    initialize();
+  }
+
+  /** Initialize the panel with all fields and stuff. */
+  protected void initialize() {
+
+    paramScroll = getParameterScroll();
+
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.namespace"), getNamespaceScroll());
+
+    addSeparator();
+    addField(Translator.localize("label.parameters"), getParameterScroll());
+    JList transitionList = new UMLLinkedList(new UMLEventTransitionListModel());
+    transitionList.setVisibleRowCount(2);
+    addField(Translator.localize("label.transition"), new JScrollPane(transitionList));
+
+    addSeparator();
+
+    addAction(new ActionNavigateContainerElement());
+    addAction(new ActionNewStereotype());
+  }
+
+  /**
+   * @return the parameter scroll
+   */
+  protected JScrollPane getParameterScroll() {
+    if (paramScroll == null) {
+      paramListModel = new UMLEventParameterListModel();
+      JList paramList = new UMLMutableLinkedList(paramListModel, new ActionNewParameter());
+      paramList.setVisibleRowCount(3);
+      paramScroll = new JScrollPane(paramList);
     }
-
-    /**
-     * Initialize the panel with all fields and stuff.
-     */
-    protected void initialize() {
-
-        paramScroll = getParameterScroll();
-
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.namespace"),
-                getNamespaceScroll());
-
-        addSeparator();
-        addField(Translator.localize("label.parameters"),
-                getParameterScroll());
-        JList transitionList = new UMLLinkedList(
-                new UMLEventTransitionListModel());
-        transitionList.setVisibleRowCount(2);
-        addField(Translator.localize("label.transition"),
-                new JScrollPane(transitionList));
-
-        addSeparator();
-
-        addAction(new ActionNavigateContainerElement());
-        addAction(new ActionNewStereotype());
-    }
-
-
-    /**
-     * @return the parameter scroll
-     */
-    protected JScrollPane getParameterScroll() {
-        if (paramScroll == null) {
-            paramListModel = new UMLEventParameterListModel();
-            JList paramList = new UMLMutableLinkedList(paramListModel,
-                    new ActionNewParameter());
-            paramList.setVisibleRowCount(3);
-            paramScroll = new JScrollPane(paramList);
-        }
-        return paramScroll;
-    }
-
+    return paramScroll;
+  }
 } /* end class PropPanelEvent */

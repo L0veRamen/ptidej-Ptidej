@@ -27,7 +27,6 @@ package org.argouml.notation.providers.java;
 import java.beans.PropertyChangeListener;
 import java.text.ParseException;
 import java.util.Map;
-
 import org.argouml.application.events.ArgoEventPump;
 import org.argouml.application.events.ArgoEventTypes;
 import org.argouml.application.events.ArgoHelpEvent;
@@ -43,93 +42,89 @@ import org.argouml.notation.providers.AssociationNameNotation;
  */
 public class AssociationNameNotationJava extends AssociationNameNotation {
 
-    /**
-     * The constructor.
-     * 
-     * @param modelElement the modelelement
-     */
-    public AssociationNameNotationJava(Object modelElement) {
-        super(modelElement);
-    }
+  /**
+   * The constructor.
+   *
+   * @param modelElement the modelelement
+   */
+  public AssociationNameNotationJava(Object modelElement) {
+    super(modelElement);
+  }
 
-    /*
-     * For Java notation, we also need to listen to "leaf" changes, 
-     * since they are shown as "final" on the diagram.
-     * 
-     * @see org.argouml.notation.providers.AssociationNameNotation#initialiseListener(java.beans.PropertyChangeListener, java.lang.Object)
-     */
-    @Override
-    public void initialiseListener(final PropertyChangeListener listener, 
-            final Object modelElement) {
-        addElementListener(listener, modelElement, 
-                new String[] {"isLeaf"});
-        super.initialiseListener(listener, modelElement);
-    }
+  /*
+   * For Java notation, we also need to listen to "leaf" changes,
+   * since they are shown as "final" on the diagram.
+   *
+   * @see org.argouml.notation.providers.AssociationNameNotation#initialiseListener(java.beans.PropertyChangeListener, java.lang.Object)
+   */
+  @Override
+  public void initialiseListener(final PropertyChangeListener listener, final Object modelElement) {
+    addElementListener(listener, modelElement, new String[] {"isLeaf"});
+    super.initialiseListener(listener, modelElement);
+  }
 
-    /*
-     * @see org.argouml.notation.providers.NotationProvider#getParsingHelp()
-     */
-    public String getParsingHelp() {
-        return "parsing.help.java.fig-nodemodelelement";
-    }
+  /*
+   * @see org.argouml.notation.providers.NotationProvider#getParsingHelp()
+   */
+  public String getParsingHelp() {
+    return "parsing.help.java.fig-nodemodelelement";
+  }
 
-    /*
-     * @see org.argouml.notation.providers.NotationProvider#parse(java.lang.Object, java.lang.String)
-     */
-    public void parse(final Object modelElement, final String text) {
-        try {
-            ModelElementNameNotationJava.parseModelElement(modelElement, text);
-        } catch (ParseException pe) {
-            final String msg = "statusmsg.bar.error.parsing.node-modelelement";
-            final Object[] args = {
-                pe.getLocalizedMessage(),
-                Integer.valueOf(pe.getErrorOffset()),
-            };
-            ArgoEventPump.fireEvent(new ArgoHelpEvent(
-                    ArgoEventTypes.HELP_CHANGED, this,
-                Translator.messageFormat(msg, args)));
-        }
+  /*
+   * @see org.argouml.notation.providers.NotationProvider#parse(java.lang.Object, java.lang.String)
+   */
+  public void parse(final Object modelElement, final String text) {
+    try {
+      ModelElementNameNotationJava.parseModelElement(modelElement, text);
+    } catch (ParseException pe) {
+      final String msg = "statusmsg.bar.error.parsing.node-modelelement";
+      final Object[] args = {
+        pe.getLocalizedMessage(), Integer.valueOf(pe.getErrorOffset()),
+      };
+      ArgoEventPump.fireEvent(
+          new ArgoHelpEvent(
+              ArgoEventTypes.HELP_CHANGED, this, Translator.messageFormat(msg, args)));
     }
+  }
 
-    /*
-     * @see org.argouml.notation.providers.NotationProvider#toString(java.lang.Object, java.util.HashMap)
-     */
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    @Override
-    public String toString(final Object modelElement, final Map args) {
-        String name;
-        name = Model.getFacade().getName(modelElement);
-        if (name == null) {
-            return "";
-        }
-        return NotationUtilityJava.generateLeaf(modelElement, args)
-            + NotationUtilityJava.generateAbstract(modelElement, args)
-            + NotationUtilityJava.generateVisibility(modelElement, args) 
-            + NotationUtilityJava.generatePath(modelElement, args) 
-            + name;
+  /*
+   * @see org.argouml.notation.providers.NotationProvider#toString(java.lang.Object, java.util.HashMap)
+   */
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  @Override
+  public String toString(final Object modelElement, final Map args) {
+    String name;
+    name = Model.getFacade().getName(modelElement);
+    if (name == null) {
+      return "";
     }
+    return NotationUtilityJava.generateLeaf(modelElement, args)
+        + NotationUtilityJava.generateAbstract(modelElement, args)
+        + NotationUtilityJava.generateVisibility(modelElement, args)
+        + NotationUtilityJava.generatePath(modelElement, args)
+        + name;
+  }
 
-    @Override
-    public String toString(final Object modelElement, 
-            final NotationSettings settings) {
-        String name;
-        name = Model.getFacade().getName(modelElement);
-        if (name == null) {
-            return "";
-        }
-        String visibility = "";
-        if (settings.isShowVisibilities()) {
-            visibility = NotationUtilityJava.generateVisibility(modelElement);
-        }
-        String path = "";
-        if (settings.isShowPaths()) {
-            path = NotationUtilityJava.generatePath(modelElement);
-        }
-        return NotationUtilityJava.generateLeaf(modelElement)
-            + NotationUtilityJava.generateAbstract(modelElement)
-            + visibility 
-            + path
-            + name;
+  @Override
+  public String toString(final Object modelElement, final NotationSettings settings) {
+    String name;
+    name = Model.getFacade().getName(modelElement);
+    if (name == null) {
+      return "";
     }
+    String visibility = "";
+    if (settings.isShowVisibilities()) {
+      visibility = NotationUtilityJava.generateVisibility(modelElement);
+    }
+    String path = "";
+    if (settings.isShowPaths()) {
+      path = NotationUtilityJava.generatePath(modelElement);
+    }
+    return NotationUtilityJava.generateLeaf(modelElement)
+        + NotationUtilityJava.generateAbstract(modelElement)
+        + visibility
+        + path
+        + name;
+  }
 }

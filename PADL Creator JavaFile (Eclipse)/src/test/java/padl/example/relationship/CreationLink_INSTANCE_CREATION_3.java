@@ -4,15 +4,15 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
 package padl.example.relationship;
 
 public class CreationLink_INSTANCE_CREATION_3 {
-	public void foo() {
-		final A[] a = new A[10];
-		//System.out.print(a.length);
-	}
+  public void foo() {
+    final A[] a = new A[10];
+    // System.out.print(a.length);
+  }
 }

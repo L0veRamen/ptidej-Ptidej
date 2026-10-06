@@ -25,50 +25,44 @@
 package org.argouml.uml.ui.foundation.core;
 
 import javax.swing.ImageIcon;
-
 import org.argouml.util.ConfigLoader;
 import org.tigris.swidgets.Orientation;
 
 /**
- * Added this class to give as much information to the user as possible
- * if the lookup mechanisme for proppanels fails.
+ * Added this class to give as much information to the user as possible if the lookup mechanisme for
+ * proppanels fails.
  *
  * @since Oct 12, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
 public class PropPanelRelationship extends PropPanelModelElement {
 
-    /**
-     * The constructor.
-     *
-     * @param name The name of the panel to be shown at the top.
-     * @param orientation The orientation of the panel.
-     * @param icon The icon to be shown next to the name.
-     */
-    public PropPanelRelationship(String name, ImageIcon icon,
-            Orientation orientation) {
-        super(name, icon, orientation);
-    }
+  /**
+   * The constructor.
+   *
+   * @param name The name of the panel to be shown at the top.
+   * @param orientation The orientation of the panel.
+   * @param icon The icon to be shown next to the name.
+   */
+  public PropPanelRelationship(String name, ImageIcon icon, Orientation orientation) {
+    super(name, icon, orientation);
+  }
 
-    /**
-     * Constructor for PropPanelRelationship.
-     */
-    public PropPanelRelationship() {
-        super("Relationship", ConfigLoader.getTabPropsOrientation());
-    }
+  /** Constructor for PropPanelRelationship. */
+  public PropPanelRelationship() {
+    super("Relationship", ConfigLoader.getTabPropsOrientation());
+  }
 
-    /**
-     * The constructor.
-     *
-     * @param name the name of the panel to be shown at the top
-     * @param orientation the orientation of the panel
-     */
-    public PropPanelRelationship(String name, Orientation orientation) {
-        super(name, orientation);
-    }
+  /**
+   * The constructor.
+   *
+   * @param name the name of the panel to be shown at the top
+   * @param orientation the orientation of the panel
+   */
+  public PropPanelRelationship(String name, Orientation orientation) {
+    super(name, orientation);
+  }
 
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -1610200799419501588L;
+  /** The UID. */
+  private static final long serialVersionUID = -1610200799419501588L;
 }

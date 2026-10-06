@@ -2,8 +2,8 @@
 <!DOCTYPE Library  SYSTEM "http://www.sdmetrics.com/acceptablefood.dtd">
 <test>
 
-<fishy value="halibut"></fishy>
+    <fishy value="halibut"></fishy>
 
-<unsuspicious value="chicken"></unsuspicious>
+    <unsuspicious value="chicken"></unsuspicious>
 
 </test>

@@ -26,54 +26,62 @@ package org.argouml.uml.diagram.ui;
 
 import java.awt.Color;
 import java.awt.Rectangle;
-
 import org.tigris.gef.presentation.Fig;
 import org.tigris.gef.presentation.FigCircle;
 
 /**
- * The T juntion joining the dashed edge to a solid edge of an association
- * class.
+ * The T juntion joining the dashed edge to a solid edge of an association class.
+ *
  * @author Bob Tarling
  */
-
 public class FigCommentPort extends FigNodeModelElement {
-    private FigCircle bigPort;
-    public FigCommentPort() {
-        bigPort = new FigCircle(0, 0, 10, 10, Color.black, Color.white);
-        addFig(bigPort);
-    }
+  private FigCircle bigPort;
 
-    public boolean hit(Rectangle r) {
-        return false;
-    }
-    
-    public void setOwner(Object own) {
-        bigPort.setOwner(own);
-        super.setOwner(own);
-    }
+  public FigCommentPort() {
+    bigPort = new FigCircle(0, 0, 10, 10, Color.black, Color.white);
+    addFig(bigPort);
+  }
 
-    /**
-     * @deprecated in 0.11.1 use org.tigris.gef.persistence.pgml.PgmlUtility.getClassNameAndBounds(Fig)
-     */
-    // USED BY PGML.tee
-    public String classNameAndBounds() {
-        return getClass().getName() + "[" + getX() + ", " + getY() + ", " + getWidth() + ", " + getHeight() + "]";
-    }
+  public boolean hit(Rectangle r) {
+    return false;
+  }
 
-    public Object hitPort(int x, int y) {
-        return null;
-    }
+  public void setOwner(Object own) {
+    bigPort.setOwner(own);
+    super.setOwner(own);
+  }
 
-    public Fig hitFig(Rectangle r) {
-        return null;
-    }
+  /**
+   * @deprecated in 0.11.1 use
+   *     org.tigris.gef.persistence.pgml.PgmlUtility.getClassNameAndBounds(Fig)
+   */
+  // USED BY PGML.tee
+  public String classNameAndBounds() {
+    return getClass().getName()
+        + "["
+        + getX()
+        + ", "
+        + getY()
+        + ", "
+        + getWidth()
+        + ", "
+        + getHeight()
+        + "]";
+  }
 
-    public boolean isSelectable() {
-        return false;
-    }
+  public Object hitPort(int x, int y) {
+    return null;
+  }
 
-    public Fig getPortFig(Object port) {
-        return bigPort;
-    }
+  public Fig hitFig(Rectangle r) {
+    return null;
+  }
 
+  public boolean isSelectable() {
+    return false;
+  }
+
+  public Fig getPortFig(Object port) {
+    return bigPort;
+  }
 }

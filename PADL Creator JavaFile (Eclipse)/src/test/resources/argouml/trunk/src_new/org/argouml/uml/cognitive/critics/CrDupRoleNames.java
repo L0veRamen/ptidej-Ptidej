@@ -26,124 +26,108 @@ package org.argouml.uml.cognitive.critics;
 
 import java.util.Iterator;
 import java.util.Vector;
-
 import org.argouml.cognitive.Designer;
 import org.argouml.model.Model;
 import org.argouml.uml.cognitive.UMLDecision;
 
-
 // Use Model through Facade
 
 /**
- * A critic to check that the ends of an association all have distinct
- * names.<p>
+ * A critic to check that the ends of an association all have distinct names.
  *
- * This is the first well-formedness rule for associations in the UML 1.3
- * standard (see section 2.5.3 of the standard).<p>
+ * <p>This is the first well-formedness rule for associations in the UML 1.3 standard (see section
+ * 2.5.3 of the standard).
  *
- * See <a href=
- * "http://argouml.tigris.org/documentation/snapshots/manual/argouml.html/
- * #s2.ref.critics_dup_role_names">
- * ArgoUML User Manual: Duplicate end (role) names for &lt;association&gt;</a>
+ * <p>See <a href= "http://argouml.tigris.org/documentation/snapshots/manual/argouml.html/
+ * #s2.ref.critics_dup_role_names"> ArgoUML User Manual: Duplicate end (role) names for
+ * &lt;association&gt;</a>
  *
  * @author Jason Robbins
  */
 public class CrDupRoleNames extends CrUML {
 
-    /**
-     * <p>Constructor for the critic.</p>
-     *
-     * <p>Sets up the resource name, which will allow headline and description
-     * to found for the current locale. Provides a design issue category
-     * (NAMING) and add triggers for "connection" and "end_name".</p>
-     */
+  /**
+   * Constructor for the critic.
+   *
+   * <p>Sets up the resource name, which will allow headline and description to found for the
+   * current locale. Provides a design issue category (NAMING) and add triggers for "connection" and
+   * "end_name".
+   */
+  public CrDupRoleNames() {
+    setupHeadAndDesc();
+    addSupportedDecision(UMLDecision.NAMING);
 
-    public CrDupRoleNames() {
-        setupHeadAndDesc();
-        addSupportedDecision(UMLDecision.NAMING);
+    // These may not actually make any difference at present (the code
+    // behind addTrigger needs more work).
 
-        // These may not actually make any difference at present (the code
-        // behind addTrigger needs more work).
+    addTrigger("connection");
+    addTrigger("end_name");
+  }
 
-        addTrigger("connection");
-        addTrigger("end_name");
+  /**
+   * The trigger for the critic.
+   *
+   * <p>We do not handle association roles, which are a subclass of association. An association role
+   * should be fine, if its parent is OK, since it must have the same or fewer ends than its parent.
+   *
+   * <p><em>Note</em>. ArgoUML does not currently have a constructor to check that an association
+   * role is more tightly constrained than its parent.
+   *
+   * <p>Then loop through the ends, building a vector of end names that we have seen, and looking to
+   * see if the current end is already in that vector. We ignore any ends that are unnamed, or have
+   * the empty string as name.
+   *
+   * <p>Whilst this is an O(n^2) algorithm, most associations have only two ends, so this is
+   * unlikely to cause difficulty.
+   *
+   * @param dm the {@link java.lang.Object Object} to be checked against the critic.
+   * @param dsgr the {@link org.argouml.cognitive.Designer Designer} creating the model. Not used,
+   *     this is for future development of ArgoUML.
+   * @return {@link #PROBLEM_FOUND PROBLEM_FOUND} if the critic is triggered, otherwise {@link
+   *     #NO_PROBLEM NO_PROBLEM}.
+   */
+  public boolean predicate2(Object dm, Designer dsgr) {
+
+    // Only work for associations
+
+    if (!(Model.getFacade().isAAssociation(dm))) {
+      return NO_PROBLEM;
     }
 
-
-    /**
-     * <p>The trigger for the critic.</p>
-     *
-     * <p>We do not handle association roles, which are a subclass of
-     *   association. An association role should be fine, if its parent is OK,
-     *   since it must have the same or fewer ends than its parent.</p>
-     *
-     * <p><em>Note</em>. ArgoUML does not currently have a constructor to check
-     *   that an association role is more tightly constrained than its
-     *   parent.</p>
-     *
-     * <p>Then loop through the ends, building a vector of end names that we
-     *   have seen, and looking to see if the current end is already in that
-     *   vector. We ignore any ends that are unnamed, or have the empty string
-     *   as name.</p>
-     *
-     * <p>Whilst this is an O(n^2) algorithm, most associations have only two
-     *   ends, so this is unlikely to cause difficulty.</p>
-     *
-     * @param  dm    the {@link java.lang.Object Object} to be checked against
-     *               the critic.
-     *
-     * @param  dsgr  the {@link org.argouml.cognitive.Designer Designer}
-     *               creating the model. Not used, this is for future
-     *               development of ArgoUML.
-     *
-     * @return       {@link #PROBLEM_FOUND PROBLEM_FOUND} if the critic is
-     *               triggered, otherwise {@link #NO_PROBLEM NO_PROBLEM}.
-     */
-
-    public boolean predicate2(Object dm, Designer dsgr) {
-
-        // Only work for associations
-
-        if (!(Model.getFacade().isAAssociation(dm))) {
-            return NO_PROBLEM;
-        }
-
-	// No problem if this is an association role.
-	if (Model.getFacade().isAAssociationRole(dm)) {
-	    return NO_PROBLEM;
-	}
-
-        // Loop through all the ends, comparing the name against those already
-        // seen (ignoring any with no name).
-        // No problem if there are no connections defined, we will fall
-	// through immediatly.
-
-        Vector   namesSeen = new Vector();
-
-        Iterator conns = Model.getFacade().getConnections(dm).iterator();
-        while (conns.hasNext()) {
-            String name = Model.getFacade().getName(conns.next());
-
-            // Ignore non-existent and empty names
-
-            if ((name == null) || name.equals("")) {
-                continue;
-            }
-
-            // Is the name already in the vector of those seen, if not add it
-            // and go on round.
-
-            if (namesSeen.contains(name)) {
-                return PROBLEM_FOUND;
-            }
-
-            namesSeen.addElement(name);
-        }
-
-        // If we drop out there were no clashes
-
-        return NO_PROBLEM;
+    // No problem if this is an association role.
+    if (Model.getFacade().isAAssociationRole(dm)) {
+      return NO_PROBLEM;
     }
 
+    // Loop through all the ends, comparing the name against those already
+    // seen (ignoring any with no name).
+    // No problem if there are no connections defined, we will fall
+    // through immediatly.
+
+    Vector namesSeen = new Vector();
+
+    Iterator conns = Model.getFacade().getConnections(dm).iterator();
+    while (conns.hasNext()) {
+      String name = Model.getFacade().getName(conns.next());
+
+      // Ignore non-existent and empty names
+
+      if ((name == null) || name.equals("")) {
+        continue;
+      }
+
+      // Is the name already in the vector of those seen, if not add it
+      // and go on round.
+
+      if (namesSeen.contains(name)) {
+        return PROBLEM_FOUND;
+      }
+
+      namesSeen.addElement(name);
+    }
+
+    // If we drop out there were no clashes
+
+    return NO_PROBLEM;
+  }
 } /* end class CrDupRoleNames */
-

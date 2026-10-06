@@ -14,29 +14,24 @@ package org.jhotdraw.contrib;
 import org.jhotdraw.application.*;
 
 /**
- * A specialised DrawApplication, which offers basic support for a simple
- * splitted pane content.
+ * A specialised DrawApplication, which offers basic support for a simple splitted pane content.
  *
- * @author  Wolfram Kaiser <mrfloppy@sourceforge.net>
+ * @author Wolfram Kaiser <mrfloppy@sourceforge.net>
  * @version <$CURRENT_VERSION$>
  */
-public  class SplitPaneDrawApplication extends DrawApplication {
+public class SplitPaneDrawApplication extends DrawApplication {
 
-	/**
-	 * Constructs a drawing window with a default title.
-	 */
-	public SplitPaneDrawApplication() {
-		this("JHotDraw");
-	}
+  /** Constructs a drawing window with a default title. */
+  public SplitPaneDrawApplication() {
+    this("JHotDraw");
+  }
 
-	/**
-	 * Constructs a drawing window with the given title.
-	 */
-	public SplitPaneDrawApplication(String title) {
-		super(title);
-	}
+  /** Constructs a drawing window with the given title. */
+  public SplitPaneDrawApplication(String title) {
+    super(title);
+  }
 
-	protected Desktop createDesktop() {
-		return new SplitPaneDesktop();
-	}
+  protected Desktop createDesktop() {
+    return new SplitPaneDesktop();
+  }
 }

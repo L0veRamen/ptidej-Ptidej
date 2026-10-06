@@ -25,31 +25,25 @@
 package org.argouml.kernel;
 
 /**
- * Control for enabling undo functionality. Remove once undo has acceptable
- * support through all of GEF and ArgoUML.
+ * Control for enabling undo functionality. Remove once undo has acceptable support through all of
+ * GEF and ArgoUML.
  *
  * @author Bob Tarling
  */
 public final class UndoEnabler {
 
-    /**
-     * Change this value to true to enable undo.
-     * Do not commit in this state.
-     * TODO: Implement!
-     */
-    private static boolean enabled = false;
+  /** Change this value to true to enable undo. Do not commit in this state. TODO: Implement! */
+  private static boolean enabled = false;
 
-    /**
-     * The constructor.
-     */
-    private UndoEnabler() {
-        super();
-    }
+  /** The constructor. */
+  private UndoEnabler() {
+    super();
+  }
 
-    /**
-     * @return <code>true</code> if undo is enabled.
-     */
-    public static boolean isEnabled() {
-        return enabled;
-    }
+  /**
+   * @return <code>true</code> if undo is enabled.
+   */
+  public static boolean isEnabled() {
+    return enabled;
+  }
 }

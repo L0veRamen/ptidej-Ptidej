@@ -27,7 +27,6 @@ package org.argouml.uml.diagram.collaboration.ui;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-
 import org.argouml.model.Model;
 import org.argouml.notation.NotationProviderFactory2;
 import org.argouml.uml.diagram.ui.FigAssociation;
@@ -38,182 +37,160 @@ import org.tigris.gef.presentation.Fig;
 import org.tigris.gef.presentation.FigGroup;
 import org.tigris.gef.presentation.FigText;
 
-
-/**
- * This class represents the Fig of an AssociationRole
- * for a collaboration diagram.
- *
- */
+/** This class represents the Fig of an AssociationRole for a collaboration diagram. */
 public class FigAssociationRole extends FigAssociation {
 
-    /**
-     * Serial version - Eclipse generated for rev. 1.30
-     */
-    private static final long serialVersionUID = -6543020797101620194L;
-    
-    private FigMessageGroup messages = new FigMessageGroup();
+  /** Serial version - Eclipse generated for rev. 1.30 */
+  private static final long serialVersionUID = -6543020797101620194L;
 
-    /**
-     * Main Constructor
-     */
-    public FigAssociationRole() {
-	super(); // this really is questionable
-	addPathItem(messages, new PathConvPercent(this, 50, 10));
+  private FigMessageGroup messages = new FigMessageGroup();
+
+  /** Main Constructor */
+  public FigAssociationRole() {
+    super(); // this really is questionable
+    addPathItem(messages, new PathConvPercent(this, 50, 10));
+  }
+
+  /**
+   * Constructor for FigAssociationRole.
+   *
+   * @param edge the owning UML element
+   * @param lay the layer
+   */
+  public FigAssociationRole(Object edge, Layer lay) {
+    this();
+    setLayer(lay);
+    setOwner(edge);
+  }
+
+  /**
+   * Create the NotationProviders.
+   *
+   * @param own the current owner
+   */
+  protected void initNotationProviders(Object own) {
+    if (Model.getFacade().isAAssociationRole(own)) {
+      notationProviderName =
+          NotationProviderFactory2.getInstance()
+              .getNotationProvider(NotationProviderFactory2.TYPE_ASSOCIATION_ROLE, own);
     }
+  }
 
-    /**
-     * Constructor for FigAssociationRole.
-     * @param edge the owning UML element
-     * @param lay the layer
-     */
-    public FigAssociationRole(Object edge, Layer lay) {
-	this();
-	setLayer(lay);
-    	setOwner(edge);
+  /**
+   * @see org.argouml.uml.diagram.ui.FigAssociation#updateListeners( java.lang.Object)
+   */
+  public void updateListeners(Object oldOwner, Object newOwner) {
+    super.updateListeners(oldOwner, newOwner);
+    if (newOwner != null) {
+      /* Also listen to the base: */
+      Object assoc = Model.getFacade().getBase(newOwner);
+      if (assoc != null) {
+        addElementListener(assoc);
+      }
     }
+  }
 
-    /**
-     * Create the NotationProviders.
-     * 
-     * @param own the current owner
-     */
-    protected void initNotationProviders(Object own) {
-        if (Model.getFacade().isAAssociationRole(own)) {
-            notationProviderName =
-                NotationProviderFactory2.getInstance().getNotationProvider(
-                        NotationProviderFactory2.TYPE_ASSOCIATION_ROLE, 
-                        own);
-        }
+  /**
+   * @param message the message to be added
+   */
+  public void addMessage(FigMessage message) {
+    messages.addFig(message);
+    updatePathItemLocations();
+    messages.damage();
+  }
+
+  /**
+   * @see
+   *     org.argouml.uml.diagram.ui.FigEdgeModelElement#textEditStarted(org.tigris.gef.presentation.FigText)
+   */
+  protected void textEditStarted(FigText ft) {
+    if (ft == getNameFig()) {
+      showHelp(notationProviderName.getParsingHelp());
     }
-
-    /**
-     * @see org.argouml.uml.diagram.ui.FigAssociation#updateListeners(
-     * java.lang.Object)
-     */
-    public void updateListeners(Object oldOwner, Object newOwner) {
-        super.updateListeners(oldOwner, newOwner);
-        if (newOwner != null) {
-            /* Also listen to the base: */
-            Object assoc = Model.getFacade().getBase(newOwner);
-            if (assoc != null) {
-                addElementListener(assoc);
-            }
-        }
-    }
-
-    /**
-     * @param message the message to be added
-     */
-    public void addMessage(FigMessage message) {
-    	messages.addFig(message);
-    	updatePathItemLocations();
-    	messages.damage();
-    }
-
-    /**
-     * @see org.argouml.uml.diagram.ui.FigEdgeModelElement#textEditStarted(org.tigris.gef.presentation.FigText)
-     */
-    protected void textEditStarted(FigText ft) {
-        if (ft == getNameFig()) {
-            showHelp(notationProviderName.getParsingHelp());
-        }
-    }
-
+  }
 } /* end class FigAssociationRole */
 
-/**
- * TODO: Should this be in its own source file?
- *
- */
+/** TODO: Should this be in its own source file? */
 class FigMessageGroup extends FigGroup {
 
-    /**
-     * Serial version - Eclipse generated for rev 1.30
-     */
-    private static final long serialVersionUID = 6899342966031358691L;
+  /** Serial version - Eclipse generated for rev 1.30 */
+  private static final long serialVersionUID = 6899342966031358691L;
 
+  /** Constructor for FigMessageGroup. */
+  public FigMessageGroup() {
+    super();
+  }
 
-    /**
-     * Constructor for FigMessageGroup.
-     */
-    public FigMessageGroup() {
-	super();
+  /**
+   * Constructor for FigMessageGroup.
+   *
+   * @param figs
+   */
+  public FigMessageGroup(List figs) {
+    super(figs);
+  }
+
+  private void updateFigPositions() {
+    Collection figs = getFigs(); // the figs that make up this group
+    Iterator it = figs.iterator();
+    if (!figs.isEmpty()) {
+      FigMessage previousFig = null;
+      for (int i = 0; it.hasNext(); i++) {
+        FigMessage fig = (FigMessage) it.next();
+        int y;
+        if (i != 0) {
+          y = previousFig.getY() + previousFig.getHeight() + 5;
+        } else {
+          y = getY();
+        }
+        fig.setLocation(getX(), y);
+        fig.endTrans();
+        previousFig = fig;
+      }
     }
+  }
 
-    /**
-     * Constructor for FigMessageGroup.
-     * @param figs
-     */
-    public FigMessageGroup(List figs) {
-        super(figs);
+  /**
+   * @see org.tigris.gef.presentation.Fig#calcBounds()
+   */
+  public void calcBounds() {
+    super.calcBounds();
+    Collection figs = getFigs();
+    if (!figs.isEmpty()) {
+      Fig last = null;
+      Fig first = null;
+      // _x = first.getX();
+      // _y = first.getY();
+      _w = 0;
+      Iterator it = figs.iterator();
+      int size = figs.size();
+      for (int i = 0; i < size; i++) {
+        Fig fig = (Fig) it.next();
+
+        if (i == 0) {
+          first = fig;
+        }
+        if (i == size - 1) {
+          last = fig;
+        }
+
+        if (fig.getWidth() > _w) {
+          _w = fig.getWidth();
+        }
+      }
+      _h = last.getY() + last.getHeight() - first.getY();
+    } else {
+      _w = 0;
+      _h = 0;
     }
+  }
 
-    private void updateFigPositions() {
-    	Collection figs = getFigs(); // the figs that make up this group
-        Iterator it = figs.iterator();
-    	if (!figs.isEmpty()) {
-            FigMessage previousFig = null;
-            for (int i = 0; it.hasNext(); i++) {
-                FigMessage fig = (FigMessage) it.next();
-                int y;
-                if (i != 0) {
-                    y = previousFig.getY() + previousFig.getHeight() + 5;
-                } else {
-                    y = getY();
-                }
-                fig.setLocation(getX(), y);
-                fig.endTrans();
-                previousFig = fig;
-            }
-    	}
-    }
-
-
-
-    /**
-     * @see org.tigris.gef.presentation.Fig#calcBounds()
-     */
-    public void calcBounds() {
-	super.calcBounds();
-	Collection figs = getFigs();
-	if (!figs.isEmpty()) {
-	    Fig last = null;
-	    Fig first = null;
-	    // _x = first.getX();
-	    // _y = first.getY();
-	    _w = 0;
-            Iterator it = figs.iterator();
-            int size = figs.size();
-	    for (int i = 0; i < size; i++) {
-                Fig fig = (Fig) it.next();
-
-                if (i == 0) {
-                    first = fig;
-                }
-                if (i == size - 1) {
-                    last = fig;
-                }
-
-		if (fig.getWidth() > _w) {
-		    _w = fig.getWidth();
-		}
-	    }
-            _h = last.getY() + last.getHeight() - first.getY();
-	} else {
-	    _w = 0;
-	    _h = 0;
-	}
-    }
-
-
-
-    /**
-     * @see org.tigris.gef.presentation.FigGroup#addFig(Fig)
-     */
-    public void addFig(Fig f) {
-	super.addFig(f);
-	updateFigPositions();
-	calcBounds();
-    }
+  /**
+   * @see org.tigris.gef.presentation.FigGroup#addFig(Fig)
+   */
+  public void addFig(Fig f) {
+    super.addFig(f);
+    updateFigPositions();
+    calcBounds();
+  }
 }
-

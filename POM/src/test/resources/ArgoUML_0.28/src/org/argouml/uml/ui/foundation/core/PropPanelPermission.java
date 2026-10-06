@@ -29,40 +29,30 @@ import org.argouml.uml.ui.ActionNavigateNamespace;
 
 /**
  * The properties panel for a Permission.
- * <p>
- * TODO: In UML 2.x, the import and access Permissions have become
- * PackageImports with public visibility and non-public visibility respectively.
- * (ArgoUML only supports the <<import>> Permission currently). The friend
- * Permission has been dropped. Also the type hierarchy has been reorganized so
- * that PackageImport is not a subtype of Dependency.
+ *
+ * <p>TODO: In UML 2.x, the import and access Permissions have become PackageImports with public
+ * visibility and non-public visibility respectively. (ArgoUML only supports the <<import>>
+ * Permission currently). The friend Permission has been dropped. Also the type hierarchy has been
+ * reorganized so that PackageImport is not a subtype of Dependency.
  */
 public class PropPanelPermission extends PropPanelDependency {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = 5724713380091275451L;
+  /** The serial version. */
+  private static final long serialVersionUID = 5724713380091275451L;
 
-    /**
-     * Construct a property panel for UML Permission elements.
-     */
-    public PropPanelPermission() {
-        super("label.permission", lookupIcon("Permission"));
+  /** Construct a property panel for UML Permission elements. */
+  public PropPanelPermission() {
+    super("label.permission", lookupIcon("Permission"));
 
-        addField(Translator.localize("label.name"), getNameTextField());
-        addField(Translator.localize("label.namespace"),
-                getNamespaceSelector());
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.namespace"), getNamespaceSelector());
 
-        addSeparator();
+    addSeparator();
 
-        addField(Translator.localize("label.suppliers"),
-                getSupplierScroll());
-        addField(Translator.localize("label.clients"),
-                getClientScroll());
+    addField(Translator.localize("label.suppliers"), getSupplierScroll());
+    addField(Translator.localize("label.clients"), getClientScroll());
 
-        addAction(new ActionNavigateNamespace());
-        addAction(getDeleteAction());
-    }
-
+    addAction(new ActionNavigateNamespace());
+    addAction(getDeleteAction());
+  }
 }
-

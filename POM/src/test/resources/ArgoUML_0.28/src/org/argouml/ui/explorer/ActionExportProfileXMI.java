@@ -30,11 +30,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
-
 import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
-
 import org.apache.log4j.Logger;
 import org.argouml.application.helpers.ApplicationVersion;
 import org.argouml.configuration.Configuration;
@@ -56,106 +54,94 @@ import org.argouml.util.ArgoFrame;
  */
 public class ActionExportProfileXMI extends AbstractAction {
 
-    /**
-     * Logger.
-     */
-    private static final Logger LOG = Logger
-            .getLogger(ActionExportProfileXMI.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(ActionExportProfileXMI.class);
 
-    private Profile selectedProfile;
-    
-    /**
-     * Default Constructor
-     * 
-     * @param profile the selected profile
-     */
-    public ActionExportProfileXMI(Profile profile) {
-        super(Translator.localize("action.export-profile-as-xmi"));
-        this.selectedProfile = profile;
-    }
+  private Profile selectedProfile;
 
-    
-    public void actionPerformed(ActionEvent arg0) {
-        try {
-            final Collection profilePackages = 
-                selectedProfile.getProfilePackages();
-            final Object model = profilePackages.iterator().next();
-            
-            if (model != null) {
-                File destiny = getTargetFile();
-                if (destiny != null) {
-                    saveModel(destiny, model);
-                }
-            }
-        } catch (ProfileException e) {
-            // TODO: We should be giving the user more direct feedback
-            LOG.error("Exception", e);
-        } catch (IOException e) {
-            LOG.error("Exception", e);
-        } catch (UmlException e) {
-            LOG.error("Exception", e);
+  /**
+   * Default Constructor
+   *
+   * @param profile the selected profile
+   */
+  public ActionExportProfileXMI(Profile profile) {
+    super(Translator.localize("action.export-profile-as-xmi"));
+    this.selectedProfile = profile;
+  }
+
+  public void actionPerformed(ActionEvent arg0) {
+    try {
+      final Collection profilePackages = selectedProfile.getProfilePackages();
+      final Object model = profilePackages.iterator().next();
+
+      if (model != null) {
+        File destiny = getTargetFile();
+        if (destiny != null) {
+          saveModel(destiny, model);
         }
+      }
+    } catch (ProfileException e) {
+      // TODO: We should be giving the user more direct feedback
+      LOG.error("Exception", e);
+    } catch (IOException e) {
+      LOG.error("Exception", e);
+    } catch (UmlException e) {
+      LOG.error("Exception", e);
     }
+  }
 
+  private void saveModel(File destiny, Object model) throws IOException, UmlException {
+    OutputStream stream = new FileOutputStream(destiny);
+    XmiWriter xmiWriter =
+        Model.getXmiWriter(
+            model,
+            stream,
+            ApplicationVersion.getVersion() + "(" + UmlFilePersister.PERSISTENCE_VERSION + ")");
+    xmiWriter.write();
+  }
 
-    private void saveModel(File destiny, Object model) throws IOException,
-            UmlException {
-        OutputStream stream = new FileOutputStream(destiny);
-        XmiWriter xmiWriter = 
-            Model.getXmiWriter(model, stream, 
-                    ApplicationVersion.getVersion() + "("
-                        + UmlFilePersister.PERSISTENCE_VERSION + ")");
-        xmiWriter.write();
-    }
+  private File getTargetFile() {
+    // show a chooser dialog for the file name, only xmi is allowed
+    JFileChooser chooser = new JFileChooser();
+    chooser.setDialogTitle(Translator.localize("action.export-profile-as-xmi"));
+    chooser.setFileView(ProjectFileView.getInstance());
+    chooser.setApproveButtonText(Translator.localize("filechooser.export"));
+    chooser.setAcceptAllFileFilterUsed(true);
+    chooser.setFileFilter(
+        new FileFilter() {
 
-    private File getTargetFile() {
-        // show a chooser dialog for the file name, only xmi is allowed
-        JFileChooser chooser = new JFileChooser();
-        chooser.setDialogTitle(Translator.localize(
-                                       "action.export-profile-as-xmi"));
-        chooser.setFileView(ProjectFileView.getInstance());
-        chooser.setApproveButtonText(Translator.localize(
-                                             "filechooser.export"));
-        chooser.setAcceptAllFileFilterUsed(true);
-        chooser.setFileFilter(new FileFilter() {
+          public boolean accept(File file) {
+            return file.isDirectory() || isXmiFile(file);
+          }
 
-            public boolean accept(File file) {
-                return file.isDirectory() || isXmiFile(file);
-            }
-
-
-
-            public String getDescription() {
-                return "*.XMI";
-            }
-
+          public String getDescription() {
+            return "*.XMI";
+          }
         });
 
-        String fn =
-            Configuration.getString(
-                PersistenceManager.KEY_PROJECT_NAME_PATH);
-        if (fn.length() > 0) {
-            fn = PersistenceManager.getInstance().getBaseName(fn);
-            chooser.setSelectedFile(new File(fn));
-        }
+    String fn = Configuration.getString(PersistenceManager.KEY_PROJECT_NAME_PATH);
+    if (fn.length() > 0) {
+      fn = PersistenceManager.getInstance().getBaseName(fn);
+      chooser.setSelectedFile(new File(fn));
+    }
 
-        int result = chooser.showSaveDialog(ArgoFrame.getInstance());
-        if (result == JFileChooser.APPROVE_OPTION) {
-            File theFile = chooser.getSelectedFile();
-            if (theFile != null) {
-                if (!theFile.getName().toUpperCase().endsWith(".XMI")) {
-                    theFile = new File(theFile.getAbsolutePath() + ".XMI");
-                }
-                return theFile;
-            }
+    int result = chooser.showSaveDialog(ArgoFrame.getInstance());
+    if (result == JFileChooser.APPROVE_OPTION) {
+      File theFile = chooser.getSelectedFile();
+      if (theFile != null) {
+        if (!theFile.getName().toUpperCase().endsWith(".XMI")) {
+          theFile = new File(theFile.getAbsolutePath() + ".XMI");
         }
-        
-        return null;
+        return theFile;
+      }
     }
-    
-    private static boolean isXmiFile(File file) {
-        return file.isFile()
-                && (file.getName().toLowerCase().endsWith(".xml") 
-                        || file.getName().toLowerCase().endsWith(".xmi"));
-    }
+
+    return null;
+  }
+
+  private static boolean isXmiFile(File file) {
+    return file.isFile()
+        && (file.getName().toLowerCase().endsWith(".xml")
+            || file.getName().toLowerCase().endsWith(".xmi"));
+  }
 }

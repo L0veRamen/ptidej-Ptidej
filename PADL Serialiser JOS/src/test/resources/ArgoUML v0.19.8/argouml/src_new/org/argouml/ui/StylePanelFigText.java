@@ -26,235 +26,210 @@ package org.argouml.ui;
 
 import java.awt.Color;
 import java.awt.event.ItemEvent;
-
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-
 import org.tigris.gef.presentation.FigText;
 import org.tigris.gef.ui.ColorRenderer;
 
 /**
- * StylePanel class which provides additional parameters for changing Text
- * elements provided by GEF.
- *  TODO: i18n
+ * StylePanel class which provides additional parameters for changing Text elements provided by GEF.
+ * TODO: i18n
  */
 public class StylePanelFigText extends StylePanelFig {
 
-    private static final String[] FONT_NAMES = {
-	"dialog", "serif", "sanserif",
-	"monospaced",
-    };
+  private static final String[] FONT_NAMES = {
+    "dialog", "serif", "sanserif", "monospaced",
+  };
 
-    private static final Integer[] COMMON_SIZES = {
-	new Integer(8), new Integer(9),
-	new Integer(10), new Integer(12), new Integer(16), new Integer(18),
-	new Integer(24), new Integer(36), new Integer(48), new Integer(72),
-	new Integer(96),
-    };
+  private static final Integer[] COMMON_SIZES = {
+    new Integer(8),
+    new Integer(9),
+    new Integer(10),
+    new Integer(12),
+    new Integer(16),
+    new Integer(18),
+    new Integer(24),
+    new Integer(36),
+    new Integer(48),
+    new Integer(72),
+    new Integer(96),
+  };
 
-    private static final String[] STYLES = {
-	"Plain", "Bold", "Italic",
-	"Bold-Italic",
-    };
+  private static final String[] STYLES = {
+    "Plain", "Bold", "Italic", "Bold-Italic",
+  };
 
-    private static final String[] JUSTIFIES = {
-	"Left", "Right", "Center",
-    };
+  private static final String[] JUSTIFIES = {
+    "Left", "Right", "Center",
+  };
 
-    private JLabel fontLabel = new JLabel("Font: ");
+  private JLabel fontLabel = new JLabel("Font: ");
 
-    private JComboBox fontField = new JComboBox(FONT_NAMES);
+  private JComboBox fontField = new JComboBox(FONT_NAMES);
 
-    private JLabel sizeLabel = new JLabel("Size: ");
+  private JLabel sizeLabel = new JLabel("Size: ");
 
-    private JComboBox sizeField = new JComboBox(COMMON_SIZES);
+  private JComboBox sizeField = new JComboBox(COMMON_SIZES);
 
-    private JLabel styleLabel = new JLabel("Style: ");
+  private JLabel styleLabel = new JLabel("Style: ");
 
-    private JComboBox styleField = new JComboBox(STYLES);
+  private JComboBox styleField = new JComboBox(STYLES);
 
-    private JLabel justLabel = new JLabel("Justify: ");
+  private JLabel justLabel = new JLabel("Justify: ");
 
-    private JComboBox justField = new JComboBox(JUSTIFIES);
+  private JComboBox justField = new JComboBox(JUSTIFIES);
 
-    private JLabel textColorLabel = new JLabel("Text Color: ");
+  private JLabel textColorLabel = new JLabel("Text Color: ");
 
-    private JComboBox textColorField = new JComboBox();
+  private JComboBox textColorField = new JComboBox();
 
-    /**
-     * Construct default style panel for text elements.
-     */
-    public StylePanelFigText() {
-        super();
+  /** Construct default style panel for text elements. */
+  public StylePanelFigText() {
+    super();
 
-        fontField.addItemListener(this);
-        sizeField.addItemListener(this);
-        styleField.addItemListener(this);
-        justField.addItemListener(this);
-        textColorField.addItemListener(this);
-      
-        textColorField.setRenderer(new ColorRenderer());
-      
-        textColorLabel.setLabelFor(textColorField);
-        add(textColorLabel);
-        add(textColorField);
-       
-        addSeperator();
-        
-        fontLabel.setLabelFor(fontField);
-        add(fontLabel);
-        add(fontField);
+    fontField.addItemListener(this);
+    sizeField.addItemListener(this);
+    styleField.addItemListener(this);
+    justField.addItemListener(this);
+    textColorField.addItemListener(this);
 
-        sizeLabel.setLabelFor(sizeField);
-        add(sizeLabel);
-        add(sizeField);
+    textColorField.setRenderer(new ColorRenderer());
 
-        styleLabel.setLabelFor(styleField);
-        add(styleLabel);
-        add(styleField);
+    textColorLabel.setLabelFor(textColorField);
+    add(textColorLabel);
+    add(textColorField);
 
-        justLabel.setLabelFor(justField);
-        add(justLabel);
-        add(justField);
+    addSeperator();
 
-        initChoices2();
+    fontLabel.setLabelFor(fontField);
+    add(fontLabel);
+    add(fontField);
+
+    sizeLabel.setLabelFor(sizeField);
+    add(sizeLabel);
+    add(sizeField);
+
+    styleLabel.setLabelFor(styleField);
+    add(styleLabel);
+    add(styleField);
+
+    justLabel.setLabelFor(justField);
+    add(justLabel);
+    add(justField);
+
+    initChoices2();
+  }
+
+  /** Second part of the default style panel construction. */
+  protected void initChoices2() {
+    textColorField.addItem(Color.black);
+    textColorField.addItem(Color.white);
+    textColorField.addItem(Color.gray);
+    textColorField.addItem(Color.lightGray);
+    textColorField.addItem(Color.darkGray);
+    textColorField.addItem(Color.red);
+    textColorField.addItem(Color.blue);
+    textColorField.addItem(Color.green);
+    textColorField.addItem(Color.orange);
+    textColorField.addItem(Color.pink);
+    textColorField.addItem("Custom...");
+  }
+
+  /**
+   * Refresh the text element with all selected values.
+   *
+   * @see org.argouml.ui.TabTarget#refresh()
+   */
+  public void refresh() {
+    super.refresh();
+    FigText ft = (FigText) getPanelTarget();
+    String fontName = ft.getFontFamily();
+    int size = ft.getFontSize();
+    String styleName = STYLES[0];
+
+    fontField.setSelectedItem(fontName);
+    sizeField.setSelectedItem(new Integer(size));
+    if (ft.getBold()) styleName = STYLES[1];
+    if (ft.getItalic()) styleName = STYLES[2];
+    if (ft.getBold() && ft.getItalic()) styleName = STYLES[3];
+    styleField.setSelectedItem(styleName);
+
+    String justName = JUSTIFIES[0];
+    int justCode = ft.getJustification();
+    if (justCode >= 0 && justCode <= JUSTIFIES.length) justName = JUSTIFIES[justCode];
+    justField.setSelectedItem(justName);
+
+    Color c = ft.getTextColor();
+    textColorField.setSelectedItem(c);
+    if (c != null && !textColorField.getSelectedItem().equals(c)) {
+      textColorField.insertItemAt(c, textColorField.getItemCount() - 1);
+      textColorField.setSelectedItem(c);
     }
 
-    /**
-     * Second part of the default style panel construction.
-     */
-    protected void initChoices2() {
-        textColorField.addItem(Color.black);
-        textColorField.addItem(Color.white);
-        textColorField.addItem(Color.gray);
-        textColorField.addItem(Color.lightGray);
-        textColorField.addItem(Color.darkGray);
-        textColorField.addItem(Color.red);
-        textColorField.addItem(Color.blue);
-        textColorField.addItem(Color.green);
-        textColorField.addItem(Color.orange);
-        textColorField.addItem(Color.pink);
-        textColorField.addItem("Custom...");
-
+    c = ft.getFillColor();
+    getFillField().setSelectedItem(c);
+    if (c != null && !getFillField().getSelectedItem().equals(c)) {
+      getFillField().insertItemAt(c, getFillField().getItemCount() - 1);
+      getFillField().setSelectedItem(c);
     }
+  }
 
-    /**
-     * Refresh the text element with all selected values.
-     *
-     * @see org.argouml.ui.TabTarget#refresh()
-     */
-    public void refresh() {
-        super.refresh();
-        FigText ft = (FigText) getPanelTarget();
-        String fontName = ft.getFontFamily();
-        int size = ft.getFontSize();
-        String styleName = STYLES[0];
+  /** Set the font of the text element to the selected value. */
+  protected void setTargetFont() {
+    if (getPanelTarget() == null) return;
+    String fontStr = (String) fontField.getSelectedItem();
+    if (fontStr.length() == 0) return;
+    ((FigText) getPanelTarget()).setFontFamily(fontStr);
+    getPanelTarget().endTrans();
+  }
 
-        fontField.setSelectedItem(fontName);
-        sizeField.setSelectedItem(new Integer(size));
-        if (ft.getBold()) styleName = STYLES[1];
-        if (ft.getItalic()) styleName = STYLES[2];
-        if (ft.getBold() && ft.getItalic()) styleName = STYLES[3];
-        styleField.setSelectedItem(styleName);
+  /** Change font size of the text element according to the selected value. */
+  protected void setTargetSize() {
+    if (getPanelTarget() == null) return;
+    Integer size = (Integer) sizeField.getSelectedItem();
+    ((FigText) getPanelTarget()).setFontSize(size.intValue());
+    getPanelTarget().endTrans();
+  }
 
-        String justName = JUSTIFIES[0];
-        int justCode = ft.getJustification();
-        if (justCode >= 0 && justCode <= JUSTIFIES.length)
-                justName = JUSTIFIES[justCode];
-        justField.setSelectedItem(justName);
+  /** Change style of the text element (bold/italic) according to the selected value. */
+  protected void setTargetStyle() {
+    if (getPanelTarget() == null) return;
+    String styleStr = (String) styleField.getSelectedItem();
+    if (styleStr == null) return;
+    boolean bold = (styleStr.indexOf("Bold") != -1);
+    boolean italic = (styleStr.indexOf("Italic") != -1);
+    ((FigText) getPanelTarget()).setBold(bold);
+    ((FigText) getPanelTarget()).setItalic(italic);
+    getPanelTarget().endTrans();
+  }
 
-        Color c = ft.getTextColor();
-        textColorField.setSelectedItem(c);
-        if (c != null && !textColorField.getSelectedItem().equals(c)) {
-            textColorField.insertItemAt(c, textColorField.getItemCount() - 1);
-            textColorField.setSelectedItem(c);
-        }
+  /** Change the justification of the text according to the selected value. */
+  protected void setTargetJustification() {
+    if (getPanelTarget() == null) return;
+    String justStr = (String) justField.getSelectedItem();
+    if (justStr == null) return;
+    ((FigText) getPanelTarget()).setJustificationByName(justStr);
+    getPanelTarget().endTrans();
+  }
 
-        c = ft.getFillColor();
-        getFillField().setSelectedItem(c);
-        if (c != null && !getFillField().getSelectedItem().equals(c)) {
-            getFillField().insertItemAt(c, getFillField().getItemCount() - 1);
-            getFillField().setSelectedItem(c);
-        }
-    }
+  /** Change the color of the text element according to the selected value. */
+  protected void setTargetTextColor() {
+    if (getPanelTarget() == null) return;
+    Object c = textColorField.getSelectedItem();
+    if (c instanceof Color) ((FigText) getPanelTarget()).setTextColor((Color) c);
+    getPanelTarget().endTrans();
+  }
 
-    /**
-     * Set the font of the text element to the selected value.
-     */
-    protected void setTargetFont() {
-        if (getPanelTarget() == null) return;
-        String fontStr = (String) fontField.getSelectedItem();
-        if (fontStr.length() == 0) return;
-        ((FigText) getPanelTarget()).setFontFamily(fontStr);
-        getPanelTarget().endTrans();
-    }
-
-    /**
-     * Change font size of the text element according to the selected value.
-     */
-    protected void setTargetSize() {
-        if (getPanelTarget() == null) return;
-        Integer size = (Integer) sizeField.getSelectedItem();
-        ((FigText) getPanelTarget()).setFontSize(size.intValue());
-        getPanelTarget().endTrans();
-    }
-
-    /**
-     * Change style of the text element (bold/italic) according to the selected
-     * value.
-     */
-    protected void setTargetStyle() {
-        if (getPanelTarget() == null) return;
-        String styleStr = (String) styleField.getSelectedItem();
-        if (styleStr == null) return;
-        boolean bold = (styleStr.indexOf("Bold") != -1);
-        boolean italic = (styleStr.indexOf("Italic") != -1);
-        ((FigText) getPanelTarget()).setBold(bold);
-        ((FigText) getPanelTarget()).setItalic(italic);
-        getPanelTarget().endTrans();
-    }
-
-    /**
-     * Change the justification of the text according to the selected value.
-     */
-    protected void setTargetJustification() {
-        if (getPanelTarget() == null) return;
-        String justStr = (String) justField.getSelectedItem();
-        if (justStr == null) return;
-        ((FigText) getPanelTarget()).setJustificationByName(justStr);
-        getPanelTarget().endTrans();
-    }
-
-
-
-    /**
-     * Change the color of the text element according to the selected value.
-     */
-    protected void setTargetTextColor() {
-        if (getPanelTarget() == null) return;
-        Object c = textColorField.getSelectedItem();
-        if (c instanceof Color)
-            ((FigText) getPanelTarget()).setTextColor((Color) c);
-        getPanelTarget().endTrans();
-    }
-
-    /**
-     * @see java.awt.event.ItemListener#itemStateChanged(java.awt.event.ItemEvent)
-     */
-    public void itemStateChanged(ItemEvent e) {
-        Object src = e.getSource();
-        if (src == fontField)
-            setTargetFont();
-        else if (src == sizeField)
-            setTargetSize();
-        else if (src == styleField)
-            setTargetStyle();
-        else if (src == justField)
-            setTargetJustification();
-        else if (src == textColorField)
-            setTargetTextColor();
-        else
-            super.itemStateChanged(e);
-    }
-
+  /**
+   * @see java.awt.event.ItemListener#itemStateChanged(java.awt.event.ItemEvent)
+   */
+  public void itemStateChanged(ItemEvent e) {
+    Object src = e.getSource();
+    if (src == fontField) setTargetFont();
+    else if (src == sizeField) setTargetSize();
+    else if (src == styleField) setTargetStyle();
+    else if (src == justField) setTargetJustification();
+    else if (src == textColorField) setTargetTextColor();
+    else super.itemStateChanged(e);
+  }
 } /* end class StylePanelFigText */

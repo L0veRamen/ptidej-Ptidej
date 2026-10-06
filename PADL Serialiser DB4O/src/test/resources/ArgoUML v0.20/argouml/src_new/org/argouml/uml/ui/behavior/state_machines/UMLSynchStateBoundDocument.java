@@ -24,11 +24,10 @@
 
 package org.argouml.uml.ui.behavior.state_machines;
 
-import org.argouml.model.Model;
-import org.argouml.uml.ui.UMLPlainTextDocument;
-
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
+import org.argouml.model.Model;
+import org.argouml.uml.ui.UMLPlainTextDocument;
 
 /**
  * The Document/model for the bound of a synch state.
@@ -37,48 +36,38 @@ import javax.swing.text.BadLocationException;
  */
 public class UMLSynchStateBoundDocument extends UMLPlainTextDocument {
 
-    /**
-     * Constructor for UMLSynchStateBoundDocument.
-     */
-    public UMLSynchStateBoundDocument() {
-        super("bound");
+  /** Constructor for UMLSynchStateBoundDocument. */
+  public UMLSynchStateBoundDocument() {
+    super("bound");
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLPlainTextDocument#setProperty(java.lang.String)
+   */
+  protected void setProperty(String text) {
+    if (text.equals("")) Model.getStateMachinesHelper().setBound(getTarget(), 0);
+    else Model.getStateMachinesHelper().setBound(getTarget(), Integer.valueOf(text).intValue());
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLPlainTextDocument#getProperty()
+   */
+  protected String getProperty() {
+    int bound = Model.getFacade().getBound(getTarget());
+    if (bound <= 0) return "*";
+    else return String.valueOf(bound);
+  }
+
+  /**
+   * @see javax.swing.text.Document#insertString(int, java.lang.String,
+   *     javax.swing.text.AttributeSet)
+   */
+  public void insertString(int offset, String str, AttributeSet a) throws BadLocationException {
+    try {
+      // If it is not entered a digit, an exception must be thrown
+      int aux = Integer.parseInt(str);
+      super.insertString(offset, str, a);
+    } catch (Exception e) {
     }
-
-    /**
-     * @see org.argouml.uml.ui.UMLPlainTextDocument#setProperty(java.lang.String)
-     */
-    protected void setProperty(String text) {
-        if (text.equals(""))
-            Model.getStateMachinesHelper().setBound(getTarget(), 0);
-        else
-            Model.getStateMachinesHelper()
-                    .setBound(getTarget(), Integer.valueOf(text).intValue());
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLPlainTextDocument#getProperty()
-     */
-    protected String getProperty() {
-        int bound = Model.getFacade().getBound(getTarget());
-        if (bound <= 0)
-            return "*";
-        else
-            return String.valueOf(bound);
-    }
-
-    /**
-     * @see javax.swing.text.Document#insertString(int, java.lang.String,
-     * javax.swing.text.AttributeSet)
-     */
-    public void insertString(int offset, String str, AttributeSet a)
-        throws BadLocationException {
-        try {
-            //If it is not entered a digit, an exception must be thrown
-            int aux = Integer.parseInt(str);
-            super.insertString(offset, str, a);
-        } catch (Exception e) {
-        }
-
-    }
-
+  }
 }

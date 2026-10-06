@@ -4,14 +4,13 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
 package padl.creator.javafile.eclipse;
 
 import java.util.Arrays;
-
 import padl.creator.javafile.eclipse.astVisitors.ConditionalModelAnnotator;
 import padl.creator.javafile.eclipse.astVisitors.LOCModelAnnotator;
 import padl.creator.javafile.eclipse.astVisitors.VisitorFirstParsing;
@@ -27,113 +26,107 @@ import util.io.ProxyConsole;
 
 public class LightJavaFileCreator implements ICodeLevelModelCreator {
 
-	private ICodeLevelModel codeLevelModel;
-	private SourceInputsHolder javaProject;
+  private ICodeLevelModel codeLevelModel;
+  private SourceInputsHolder javaProject;
 
-	/**
-	 * Constructor for parsing all the source code
-	 * @param aSourcePathEntry
-	 * @param aClasspathEntry
-	 */
-	public LightJavaFileCreator(final String aSourcePathEntry,
-			final String aClasspathEntry) {
+  /**
+   * Constructor for parsing all the source code
+   *
+   * @param aSourcePathEntry
+   * @param aClasspathEntry
+   */
+  public LightJavaFileCreator(final String aSourcePathEntry, final String aClasspathEntry) {
 
-		//the folder of the source code to analyse well organized like a project
-		//final String sourcePathEntry = "./rsc/src/";
+    // the folder of the source code to analyse well organized like a project
+    // final String sourcePathEntry = "./rsc/src/";
 
-		final String[] sourcePathEntries = new String[] { aSourcePathEntry };
+    final String[] sourcePathEntries = new String[] {aSourcePathEntry};
 
-		//using librairies?
+    // using librairies?
 
-		final String[] classpathEntries = new String[] { aClasspathEntry };
+    final String[] classpathEntries = new String[] {aClasspathEntry};
 
-		try {
-			this.javaProject = new FileSystemJavaProject(
-					Arrays.asList(classpathEntries),
-					Arrays.asList(sourcePathEntries));
+    try {
+      this.javaProject =
+          new FileSystemJavaProject(
+              Arrays.asList(classpathEntries), Arrays.asList(sourcePathEntries));
 
-		}
-		catch (final Exception e) {
-			e.printStackTrace(ProxyConsole.getInstance().errorOutput());
-		}
+    } catch (final Exception e) {
+      e.printStackTrace(ProxyConsole.getInstance().errorOutput());
+    }
 
-		this.codeLevelModel = null;
+    this.codeLevelModel = null;
+  }
 
-	}
+  /**
+   * Constructor for parsing some java file
+   *
+   * @param aSourcePathEntry
+   * @param aClasspathEntry
+   * @param aPathFilesList
+   */
+  public LightJavaFileCreator(
+      final String aSourcePathEntry, final String aClasspathEntry, final String[] aPathFilesList) {
 
-	/**
-	 *  Constructor for parsing some java file
-	 * @param aSourcePathEntry
-	 * @param aClasspathEntry
-	 * @param aPathFilesList
-	 */
-	public LightJavaFileCreator(final String aSourcePathEntry,
-			final String aClasspathEntry, final String[] aPathFilesList) {
+    // the folder of the source code to analyse well organized like a project
 
-		//the folder of the source code to analyse well organized like a project
+    final String[] sourcePathEntries = new String[] {aSourcePathEntry};
 
-		final String[] sourcePathEntries = new String[] { aSourcePathEntry };
+    // using librairies?
 
-		//using librairies?
+    final String[] classpathEntries = new String[] {aClasspathEntry};
 
-		final String[] classpathEntries = new String[] { aClasspathEntry };
+    try {
 
-		try {
+      this.javaProject =
+          new FilesAndDirectoriesJavaProject(
+              Arrays.asList(classpathEntries),
+              Arrays.asList(sourcePathEntries),
+              Arrays.asList(aPathFilesList));
 
-			this.javaProject = new FilesAndDirectoriesJavaProject(
-					Arrays.asList(classpathEntries),
-					Arrays.asList(sourcePathEntries),
-					Arrays.asList(aPathFilesList));
+    } catch (final Exception e) {
+      e.printStackTrace(ProxyConsole.getInstance().errorOutput());
+    }
 
-		}
-		catch (final Exception e) {
-			e.printStackTrace(ProxyConsole.getInstance().errorOutput());
-		}
+    this.codeLevelModel = null;
+  }
 
-		this.codeLevelModel = null;
-	}
+  @Override
+  public void create(final ICodeLevelModel aCodeLevelModel) throws CreationException {
 
-	@Override
-	public void create(final ICodeLevelModel aCodeLevelModel)
-			throws CreationException {
+    this.createModelFormSource(aCodeLevelModel, this.javaProject);
+  }
 
-		this.createModelFormSource(aCodeLevelModel, this.javaProject);
+  /**
+   * Creation of the model from a source code
+   *
+   * @param aCodeLevelModel
+   * @param aSourcePathEntry
+   * @param aClassPathEntry
+   * @return
+   */
+  private void createModelFormSource(
+      final ICodeLevelModel aCodeLevelModel, final SourceInputsHolder javaProject) {
 
-	}
+    final JavaParser eclipseSourceCodeParser = new JavaParser(this.javaProject);
 
-	/**
-	 * Creation of the model from a source code
-	 * @param aCodeLevelModel
-	 * @param aSourcePathEntry
-	 * @param aClassPathEntry
-	 * @return
-	 */
-	private void createModelFormSource(final ICodeLevelModel aCodeLevelModel,
-			final SourceInputsHolder javaProject) {
+    final VisitorFirstParsing firstParseVisitor = new VisitorFirstParsing(aCodeLevelModel);
+    eclipseSourceCodeParser.parse(firstParseVisitor);
 
-		final JavaParser eclipseSourceCodeParser = new JavaParser(
-				this.javaProject);
+    final VisitorSecondParsing secondParseVisitor = new VisitorSecondParsing(aCodeLevelModel);
+    eclipseSourceCodeParser.parse(secondParseVisitor);
 
-		final VisitorFirstParsing firstParseVisitor = new VisitorFirstParsing(
-				aCodeLevelModel);
-		eclipseSourceCodeParser.parse(firstParseVisitor);
+    final LOCModelAnnotator locAnnotator = new LOCModelAnnotator(aCodeLevelModel);
+    eclipseSourceCodeParser.parse(locAnnotator);
 
-		final VisitorSecondParsing secondParseVisitor = new VisitorSecondParsing(
-				aCodeLevelModel);
-		eclipseSourceCodeParser.parse(secondParseVisitor);
+    final ConditionalModelAnnotator conditionalAnnotator =
+        new ConditionalModelAnnotator(aCodeLevelModel);
+    eclipseSourceCodeParser.parse(conditionalAnnotator);
 
-		final LOCModelAnnotator locAnnotator = new LOCModelAnnotator(
-				aCodeLevelModel);
-		eclipseSourceCodeParser.parse(locAnnotator);
+    this.codeLevelModel = aCodeLevelModel;
+  }
 
-		final ConditionalModelAnnotator conditionalAnnotator = new ConditionalModelAnnotator(
-				aCodeLevelModel);
-		eclipseSourceCodeParser.parse(conditionalAnnotator);
-
-		this.codeLevelModel = aCodeLevelModel;
-	}
-
-	public ICodeLevelModel getCodeLevelModel() {
-		return this.codeLevelModel;
-	}
+  public ICodeLevelModel getCodeLevelModel() {
+    return this.codeLevelModel;
+  }
 }

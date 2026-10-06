@@ -27,94 +27,84 @@ package org.argouml.uml.reveng;
 import java.util.List;
 
 /**
- * These are common raw types that a specific import type can use to
- * build complex settings. If additional types are required then this
- * interface should be extended.
+ * These are common raw types that a specific import type can use to build complex settings. If
+ * additional types are required then this interface should be extended.
+ *
  * @author Bogdan Pistol
  */
 public interface SettingsTypes {
 
+  /** Base setting class extended by all others */
+  interface Setting {
     /**
-     * Base setting class extended by all others
+     * Returns the string to use as a label for the associated setting or setting group. The
+     * implementor is responsible for translation into the local language.
+     *
+     * @return the String message
      */
-    interface Setting {
-        /**
-         * Returns the string to use as a label for the associated
-         * setting or setting group.  The implementor is responsible for
-         * translation into the local language.
-         * 
-         * @return the String message
-         */
-        String getLabel();
-    }
+    String getLabel();
+  }
+
+  /**
+   * A generic type that has multiple options, from all these options the user can choose only one
+   * option (the selected option).
+   *
+   * <p>There can be a default pre-selected option.
+   */
+  interface UniqueSelection extends Setting {
+
+    public int UNDEFINED_SELECTION = -1;
 
     /**
-     * A generic type that has multiple options, from all these options
-     * the user can choose only one option (the selected option).
-     * <p>
-     * There can be a default pre-selected option.
+     * Returns the available options from wich the user can pick one.
+     *
+     * @return a list with Strings that identinfies the options
      */
-    interface UniqueSelection extends Setting {
+    List getOptions();
 
-        public int UNDEFINED_SELECTION = -1;
-
-        /**
-         * Returns the available options from wich the user can pick one.
-         * 
-         * @return a list with Strings that identinfies the options
-         */
-        List getOptions();
-
-        /**
-         * This is the default selected option, if the user doesn't choose other
-         * option then this will be the selected option.
-         * 
-         * @return the 0 based index of the default option as is in the list
-         *         returned by
-         *         {@link SettingsTypes.UniqueSelection#getOptions()} or
-         *         UNDEFINED_SELECTION if there is no default option
-         */
-        int getDefaultSelection();
-
-        /**
-         * This is how the user can choose an option.
-         * 
-         * @param selection
-         *            the 0 based index of the default option as is in the list
-         *            returned by
-         *            {@link SettingsTypes.UniqueSelection#getOptions()}
-         * @return true if was successful or false if the selection is out of
-         *         bounds
-         */
-        boolean setSelection(int seletion);
-    }
-    
     /**
-     * Free form string setting to allow user to enter arbitrary string value.
+     * This is the default selected option, if the user doesn't choose other option then this will
+     * be the selected option.
+     *
+     * @return the 0 based index of the default option as is in the list returned by {@link
+     *     SettingsTypes.UniqueSelection#getOptions()} or UNDEFINED_SELECTION if there is no default
+     *     option
      */
-    interface UserString extends Setting {
-        /**
-         * @return the initial string to display, if any.  May be null.
-         */
-        String getDefaultString();
-        /**
-         * @return the user entered string
-         */
-        String getUserString();
-    }
-    
-    /**
-     * Boolean setting which can take values of true/false (on/off).
-     */
-    interface BooleanSelection extends Setting {
-        /**
-         * @return the default setting to use when first displayed.
-         */
-        boolean getDefaultValue();
-        /**
-         * @return the user selected value
-         */
-        boolean isSelected();
-    }
+    int getDefaultSelection();
 
+    /**
+     * This is how the user can choose an option.
+     *
+     * @param selection the 0 based index of the default option as is in the list returned by {@link
+     *     SettingsTypes.UniqueSelection#getOptions()}
+     * @return true if was successful or false if the selection is out of bounds
+     */
+    boolean setSelection(int seletion);
+  }
+
+  /** Free form string setting to allow user to enter arbitrary string value. */
+  interface UserString extends Setting {
+    /**
+     * @return the initial string to display, if any. May be null.
+     */
+    String getDefaultString();
+
+    /**
+     * @return the user entered string
+     */
+    String getUserString();
+  }
+
+  /** Boolean setting which can take values of true/false (on/off). */
+  interface BooleanSelection extends Setting {
+    /**
+     * @return the default setting to use when first displayed.
+     */
+    boolean getDefaultValue();
+
+    /**
+     * @return the user selected value
+     */
+    boolean isSelected();
+  }
 }

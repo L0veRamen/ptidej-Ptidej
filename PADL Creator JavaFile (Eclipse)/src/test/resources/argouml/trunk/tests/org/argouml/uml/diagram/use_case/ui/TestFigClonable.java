@@ -26,37 +26,31 @@ package org.argouml.uml.diagram.use_case.ui;
 
 import junit.framework.TestCase;
 
-/**
- * Test if a Fig is cloneable.
- */
+/** Test if a Fig is cloneable. */
 public class TestFigClonable extends TestCase {
 
-    /**
-     * The constructor.
-     *
-     * @param name the test name
-     */
-    public TestFigClonable(String name) {
-	super(name);
-    }
+  /**
+   * The constructor.
+   *
+   * @param name the test name
+   */
+  public TestFigClonable(String name) {
+    super(name);
+  }
 
-    /**
-     * Try to clone {@link FigUseCase}.
-     */
-    public void testUseCaseClonable() {
-	FigUseCase usecase = new FigUseCase();
-	FigUseCase usecaseclone;
+  /** Try to clone {@link FigUseCase}. */
+  public void testUseCaseClonable() {
+    FigUseCase usecase = new FigUseCase();
+    FigUseCase usecaseclone;
 
-	usecaseclone = (FigUseCase) usecase.clone();
-    }
+    usecaseclone = (FigUseCase) usecase.clone();
+  }
 
-    /**
-     * Try to clone {@link FigActor}.
-     */
-    public void testActorClonable() {
-	FigActor actor = new FigActor();
-	FigActor actorclone;
+  /** Try to clone {@link FigActor}. */
+  public void testActorClonable() {
+    FigActor actor = new FigActor();
+    FigActor actorclone;
 
-	actorclone = (FigActor) actor.clone();
-    }
+    actorclone = (FigActor) actor.clone();
+  }
 }

@@ -25,11 +25,7 @@
 package org.argouml.uml.ui.behavior.state_machines;
 
 import javax.swing.ImageIcon;
-import javax.swing.JList;
-import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
-import org.argouml.uml.ui.UMLMutableLinkedList;
 import org.argouml.util.ConfigLoader;
 import org.tigris.swidgets.Orientation;
 
@@ -40,50 +36,33 @@ import org.tigris.swidgets.Orientation;
  */
 public class PropPanelState extends AbstractPropPanelState {
 
-    /**
-     * Constructor.
-     */
-    public PropPanelState() {
-        this("Simple State", lookupIcon("SimpleState"),
-                ConfigLoader.getTabPropsOrientation());
-    }
+  /** Constructor. */
+  public PropPanelState() {
+    this("Simple State", lookupIcon("SimpleState"), ConfigLoader.getTabPropsOrientation());
+  }
 
-    /**
-     * Constructor.
-     *
-     * @param name the name of the properties panel, shown at the top
-     * @param icon the icon shown at the top
-     * @param orientation the orientation of the panel
-     */
-    public PropPanelState(String name, ImageIcon icon,
-            Orientation orientation) {
-        super(name, icon, ConfigLoader.getTabPropsOrientation());
+  /**
+   * Constructor.
+   *
+   * @param name the name of the properties panel, shown at the top
+   * @param icon the icon shown at the top
+   * @param orientation the orientation of the panel
+   */
+  public PropPanelState(String name, ImageIcon icon, Orientation orientation) {
+    super(name, icon, ConfigLoader.getTabPropsOrientation());
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.stereotype"),
-                getStereotypeSelector());
-        addField(Translator.localize("label.container"),
-                getContainerScroll());
-        addField(Translator.localize("label.entry"),
-                getEntryScroll());
-        addField(Translator.localize("label.exit"),
-                getExitScroll());
-        addField(Translator.localize("label.do-activity"),
-                getDoScroll());
-        addField(Translator.localize("label.deferrable"),
-                getDeferrableEventsScroll());
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.stereotype"), getStereotypeSelector());
+    addField(Translator.localize("label.container"), getContainerScroll());
+    addField(Translator.localize("label.entry"), getEntryScroll());
+    addField(Translator.localize("label.exit"), getExitScroll());
+    addField(Translator.localize("label.do-activity"), getDoScroll());
+    addField(Translator.localize("label.deferrable"), getDeferrableEventsScroll());
 
-        addSeperator();
+    addSeperator();
 
-        addField(Translator.localize("label.incoming"),
-                getIncomingScroll());
-        addField(Translator.localize("label.outgoing"),
-                getOutgoingScroll());
-        addField(Translator.localize("label.internal-transitions"),
-                getInternalTransitionsScroll());
-
-    }
-
+    addField(Translator.localize("label.incoming"), getIncomingScroll());
+    addField(Translator.localize("label.outgoing"), getOutgoingScroll());
+    addField(Translator.localize("label.internal-transitions"), getInternalTransitionsScroll());
+  }
 } /* end class PropPanelState */
-

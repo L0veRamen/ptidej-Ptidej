@@ -28,7 +28,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.uml.ui.UMLLinkedList;
 import org.tigris.swidgets.Orientation;
@@ -41,74 +40,73 @@ import org.tigris.swidgets.Orientation;
  */
 public abstract class PropPanelFeature extends PropPanelModelElement {
 
-    private UMLFeatureOwnerScopeCheckBox ownerScopeCheckbox;
+  private UMLFeatureOwnerScopeCheckBox ownerScopeCheckbox;
 
-    private JScrollPane ownerScroll;
+  private JScrollPane ownerScroll;
 
-    private static UMLFeatureOwnerListModel ownerListModel;
+  private static UMLFeatureOwnerListModel ownerListModel;
 
-    private JPanel visibilityPanel;
+  private JPanel visibilityPanel;
 
-    /**
-     * Constructor.
-     * @param name name
-     * @param icon icon
-     * @param orientation orientation
-     */
-    protected PropPanelFeature(String name, ImageIcon icon,
-            Orientation orientation) {
-        super(name, icon, orientation);
+  /**
+   * Constructor.
+   *
+   * @param name name
+   * @param icon icon
+   * @param orientation orientation
+   */
+  protected PropPanelFeature(String name, ImageIcon icon, Orientation orientation) {
+    super(name, icon, orientation);
+  }
+
+  /**
+   * Constructor for PropPanelFeature.
+   *
+   * @param name the name to be shown at the top of the panel
+   * @param orientation the orientation of the panel
+   */
+  protected PropPanelFeature(String name, Orientation orientation) {
+    super(name, orientation);
+  }
+
+  /**
+   * Returns the ownerScroll.
+   *
+   * @return JScrollPane
+   */
+  public JScrollPane getOwnerScroll() {
+    if (ownerScroll == null) {
+      if (ownerListModel == null) {
+        ownerListModel = new UMLFeatureOwnerListModel();
+      }
+      JList list = new UMLLinkedList(ownerListModel);
+      list.setVisibleRowCount(1);
+      ownerScroll = new JScrollPane(list);
     }
+    return ownerScroll;
+  }
 
-    /**
-     * Constructor for PropPanelFeature.
-     *
-     * @param name the name to be shown at the top of the panel
-     * @param orientation the orientation of the panel
-     */
-    protected PropPanelFeature(String name, Orientation orientation) {
-        super(name, orientation);
+  /**
+   * Returns the ownerScopeCheckbox.
+   *
+   * @return UMLFeatureOwnerScopeCheckBox
+   */
+  public UMLFeatureOwnerScopeCheckBox getOwnerScopeCheckbox() {
+    if (ownerScopeCheckbox == null) {
+      ownerScopeCheckbox = new UMLFeatureOwnerScopeCheckBox();
     }
+    return ownerScopeCheckbox;
+  }
 
-    /**
-     * Returns the ownerScroll.
-     *
-     * @return JScrollPane
-     */
-    public JScrollPane getOwnerScroll() {
-        if (ownerScroll == null) {
-            if (ownerListModel == null) {
-                ownerListModel = new UMLFeatureOwnerListModel();
-            }
-            JList list = new UMLLinkedList(ownerListModel);
-            list.setVisibleRowCount(1);
-            ownerScroll = new JScrollPane(list);
-        }
-        return ownerScroll;
+  /**
+   * @return the panel for the visibility
+   */
+  protected JPanel getVisibilityPanel() {
+    if (visibilityPanel == null) {
+      visibilityPanel =
+          new UMLModelElementVisibilityRadioButtonPanel(
+              Translator.localize("label.visibility"), true);
     }
-
-    /**
-     * Returns the ownerScopeCheckbox.
-     *
-     * @return UMLFeatureOwnerScopeCheckBox
-     */
-    public UMLFeatureOwnerScopeCheckBox getOwnerScopeCheckbox() {
-        if (ownerScopeCheckbox == null) {
-            ownerScopeCheckbox = new UMLFeatureOwnerScopeCheckBox();
-        }
-        return ownerScopeCheckbox;
-    }
-
-    /**
-     * @return the panel for the visibility
-     */
-    protected JPanel getVisibilityPanel() {
-        if (visibilityPanel == null) {
-            visibilityPanel =
-                new UMLModelElementVisibilityRadioButtonPanel(
-                    Translator.localize("label.visibility"), true);
-        }
-        return visibilityPanel;
-    }
-
+    return visibilityPanel;
+  }
 }

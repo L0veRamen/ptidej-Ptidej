@@ -31,31 +31,27 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  * @since Oct 12, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class UMLModelElementSourceFlowListModel
-    extends UMLModelElementListModel2 {
+public class UMLModelElementSourceFlowListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLModelElementSourceFlowListModel.
-     */
-    public UMLModelElementSourceFlowListModel() {
-        super("sourceFlow");
+  /** Constructor for UMLModelElementSourceFlowListModel. */
+  public UMLModelElementSourceFlowListModel() {
+    super("sourceFlow");
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (getTarget() != null) {
+      setAllElements(Model.getFacade().getSourceFlows(getTarget()));
     }
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (getTarget() != null) {
-	    setAllElements(Model.getFacade().getSourceFlows(getTarget()));
-        }
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ o) {
-        return Model.getFacade().isAFlow(o)
-            && Model.getFacade().getSourceFlows(getTarget()).contains(o);
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ o) {
+    return Model.getFacade().isAFlow(o)
+        && Model.getFacade().getSourceFlows(getTarget()).contains(o);
+  }
 }

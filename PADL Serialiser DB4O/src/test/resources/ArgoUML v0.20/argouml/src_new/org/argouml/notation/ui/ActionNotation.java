@@ -27,119 +27,112 @@ package org.argouml.notation.ui;
 import java.awt.event.ActionEvent;
 import java.util.List;
 import java.util.ListIterator;
-
 import javax.swing.ButtonGroup;
 import javax.swing.JMenu;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
-
 import org.argouml.i18n.Translator;
 import org.argouml.notation.Notation;
 import org.argouml.notation.NotationName;
 import org.argouml.uml.ui.UMLAction;
 
-
 /**
  * Allows selection of a default notation.
  *
  * @author Thierry Lach
- * @since  ARGO0.9.4
+ * @since ARGO0.9.4
  */
-public class ActionNotation extends UMLAction
-    implements MenuListener {
+public class ActionNotation extends UMLAction implements MenuListener {
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    /**
-     * The instance of this action.
-     */
-    private static final ActionNotation SINGLETON = new ActionNotation();
+  /** The instance of this action. */
+  private static final ActionNotation SINGLETON = new ActionNotation();
 
-    /**
-     * The popup menu with all notations. It gets filled the first time this
-     * action is performed (see {@link #actionPerformed(ActionEvent ae)}).
-     */
-    private JMenu menu;
+  /**
+   * The popup menu with all notations. It gets filled the first time this action is performed (see
+   * {@link #actionPerformed(ActionEvent ae)}).
+   */
+  private JMenu menu;
 
-    /**
-     * @return The instance.
-     */
-    public static final ActionNotation getInstance() { return SINGLETON; }
+  /**
+   * @return The instance.
+   */
+  public static final ActionNotation getInstance() {
+    return SINGLETON;
+  }
 
-    /**
-     * Constructor - adds the Notation menu.
-     */
-    public ActionNotation() {
-        super("menu.notation", NO_ICON);
-        menu = new JMenu(Translator.localize("menu.notation"));
-        menu.add(this);
-        menu.addMenuListener(this);
-    }
+  /** Constructor - adds the Notation menu. */
+  public ActionNotation() {
+    super("menu.notation", NO_ICON);
+    menu = new JMenu(Translator.localize("menu.notation"));
+    menu.add(this);
+    menu.addMenuListener(this);
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-        String key = ae.getActionCommand();
-        List list = Notation.getAvailableNotations();
-        ListIterator iterator = list.listIterator();
-        while (iterator.hasNext()) {
-            Object o = iterator.next();
-            if (o instanceof NotationName) {
-                NotationName nn = (NotationName) o;
-                if (key.equals(nn.getTitle())) {
-                    Notation.setDefaultNotation(nn);
-                    break;
-                }
-            }
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    String key = ae.getActionCommand();
+    List list = Notation.getAvailableNotations();
+    ListIterator iterator = list.listIterator();
+    while (iterator.hasNext()) {
+      Object o = iterator.next();
+      if (o instanceof NotationName) {
+        NotationName nn = (NotationName) o;
+        if (key.equals(nn.getTitle())) {
+          Notation.setDefaultNotation(nn);
+          break;
         }
+      }
     }
+  }
 
-    /**
-     * @return The menu for the notation.
-     */
-    public JMenu getMenu() { return menu; }
+  /**
+   * @return The menu for the notation.
+   */
+  public JMenu getMenu() {
+    return menu;
+  }
 
-    /**
-     * @see javax.swing.event.MenuListener#menuSelected(javax.swing.event.MenuEvent)
-     */
-    public void menuSelected(MenuEvent me) {
-        NotationName dflt = Notation.getConfigueredNotation();
-        menu.removeAll();
-        List list = Notation.getAvailableNotations();
-        ListIterator iterator = list.listIterator();
-        ButtonGroup b = new ButtonGroup();
-        while (iterator.hasNext()) {
-            Object o = iterator.next();
-            if (o instanceof NotationName) {
-                NotationName nn = (NotationName) o;
-                JRadioButtonMenuItem mi =
-                    new JRadioButtonMenuItem(nn.getTitle());
-                if (nn.getIcon() != null) {
-                    mi.setIcon(nn.getIcon());
-                }
-                mi.addActionListener(this);
-                b.add(mi);
-                mi.setSelected(dflt.sameNotationAs(nn));
-                menu.add(mi);
-            }
+  /**
+   * @see javax.swing.event.MenuListener#menuSelected(javax.swing.event.MenuEvent)
+   */
+  public void menuSelected(MenuEvent me) {
+    NotationName dflt = Notation.getConfigueredNotation();
+    menu.removeAll();
+    List list = Notation.getAvailableNotations();
+    ListIterator iterator = list.listIterator();
+    ButtonGroup b = new ButtonGroup();
+    while (iterator.hasNext()) {
+      Object o = iterator.next();
+      if (o instanceof NotationName) {
+        NotationName nn = (NotationName) o;
+        JRadioButtonMenuItem mi = new JRadioButtonMenuItem(nn.getTitle());
+        if (nn.getIcon() != null) {
+          mi.setIcon(nn.getIcon());
         }
+        mi.addActionListener(this);
+        b.add(mi);
+        mi.setSelected(dflt.sameNotationAs(nn));
+        menu.add(mi);
+      }
     }
+  }
 
-    /**
-     * @see javax.swing.event.MenuListener#menuDeselected(javax.swing.event.MenuEvent)
-     */
-    public void menuDeselected(MenuEvent me) { }
+  /**
+   * @see javax.swing.event.MenuListener#menuDeselected(javax.swing.event.MenuEvent)
+   */
+  public void menuDeselected(MenuEvent me) {}
 
-    /**
-     * @see javax.swing.event.MenuListener#menuCanceled(javax.swing.event.MenuEvent)
-     */
-    public void menuCanceled(MenuEvent me) { }
+  /**
+   * @see javax.swing.event.MenuListener#menuCanceled(javax.swing.event.MenuEvent)
+   */
+  public void menuCanceled(MenuEvent me) {}
 
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = 1364283215100616618L;
+  /** The UID. */
+  private static final long serialVersionUID = 1364283215100616618L;
 }

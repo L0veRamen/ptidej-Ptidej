@@ -28,7 +28,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.util.Iterator;
-
 import org.argouml.uml.diagram.ui.FigNodeModelElement;
 import org.tigris.gef.graph.GraphModel;
 import org.tigris.gef.presentation.FigRect;
@@ -41,104 +40,102 @@ import org.tigris.gef.presentation.FigText;
  */
 public class FigInstance extends FigNodeModelElement {
 
-    /** UML does not really use ports, so just define one big one so
-     *  that users can drag edges to or from any point in the icon. */
+  /**
+   * UML does not really use ports, so just define one big one so that users can drag edges to or
+   * from any point in the icon.
+   */
+  private FigText attr;
 
-    private FigText attr;
+  // add other Figs here aes needed
 
-    // add other Figs here aes needed
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
+  /** Constructor */
+  public FigInstance() {
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+    getNameFig().setUnderline(true);
+    getNameFig().setTextFilled(true);
 
-    /**
-     * Constructor
-     */
-    public FigInstance() {
+    // initialize any other Figs here
+    attr = new FigText(10, 30, 90, 40, Color.black, "Times", 10);
+    attr.setFont(getLabelFont());
+    attr.setExpandOnly(true);
+    attr.setTextColor(Color.black);
+    attr.setTabAction(FigText.END_EDITING);
 
-	getNameFig().setUnderline(true);
-	getNameFig().setTextFilled(true);
+    // _attr.setExpandOnly(true);
+    attr.setJustification(FigText.JUSTIFY_LEFT);
 
-	// initialize any other Figs here
-	attr = new FigText(10, 30, 90, 40, Color.black, "Times", 10);
-	attr.setFont(getLabelFont());
-	attr.setExpandOnly(true);
-	attr.setTextColor(Color.black);
-	attr.setTabAction(FigText.END_EDITING);
+    // add Figs to the FigNode in back-to-front order
+    addFig(getBigPort());
+    addFig(getNameFig());
+    addFig(attr);
 
-	//_attr.setExpandOnly(true);
-	attr.setJustification(FigText.JUSTIFY_LEFT);
+    setBlinkPorts(true); // make port invisble unless mouse enters
+    Rectangle r = getBounds();
+    setBounds(r.x, r.y, r.width, r.height);
+  }
 
-	// add Figs to the FigNode in back-to-front order
-	addFig(getBigPort());
-	addFig(getNameFig());
-	addFig(attr);
+  /**
+   * The constructor that hooks the Fig to the UML modelelement
+   *
+   * @param gm ignored
+   * @param node the UML element
+   */
+  public FigInstance(GraphModel gm, Object node) {
+    this();
+    setOwner(node);
+  }
 
-	setBlinkPorts(true); //make port invisble unless mouse enters
-	Rectangle r = getBounds();
-	setBounds(r.x, r.y, r.width, r.height);
-    }
+  /**
+   * @see org.argouml.uml.diagram.ui.FigNodeModelElement#placeString()
+   */
+  public String placeString() {
+    return "new MInstance";
+  }
 
-    /**
-     * The constructor that hooks the Fig to the UML modelelement
-     * @param gm ignored
-     * @param node the UML element
-     */
-    public FigInstance(GraphModel gm, Object node) {
-	this();
-	setOwner(node);
-    }
+  /**
+   * @see java.lang.Object#clone()
+   */
+  public Object clone() {
+    FigInstance figClone = (FigInstance) super.clone();
+    Iterator iter = figClone.getFigs().iterator();
+    figClone.setBigPort((FigRect) iter.next());
+    figClone.setNameFig((FigText) iter.next());
+    figClone.attr = (FigText) iter.next();
+    return figClone;
+  }
 
-    /**
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement#placeString()
-     */
-    public String placeString() { return "new MInstance"; }
+  /**
+   * @see org.tigris.gef.presentation.Fig#getMinimumSize()
+   */
+  public Dimension getMinimumSize() {
+    Dimension nameMin = getNameFig().getMinimumSize();
+    Dimension attrMin = attr.getMinimumSize();
 
-    /**
-     * @see java.lang.Object#clone()
-     */
-    public Object clone() {
-	FigInstance figClone = (FigInstance) super.clone();
-	Iterator iter = figClone.getFigs().iterator();
-	figClone.setBigPort((FigRect) iter.next());
-	figClone.setNameFig((FigText) iter.next());
-	figClone.attr = (FigText) iter.next();
-	return figClone;
-    }
+    int h = nameMin.height + attrMin.height;
+    int w = Math.max(nameMin.width, attrMin.width);
+    return new Dimension(w, h);
+  }
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#getMinimumSize()
-     */
-    public Dimension getMinimumSize() {
-	Dimension nameMin = getNameFig().getMinimumSize();
-	Dimension attrMin = attr.getMinimumSize();
+  /**
+   * Override setBounds to keep shapes looking right
+   *
+   * @see org.tigris.gef.presentation.Fig#setBounds(int, int, int, int)
+   */
+  protected void setBoundsImpl(int x, int y, int w, int h) {
+    if (getNameFig() == null) return;
+    Rectangle oldBounds = getBounds();
 
-	int h = nameMin.height + attrMin.height;
-	int w = Math.max(nameMin.width, attrMin.width);
-	return new Dimension(w, h);
-    }
+    Dimension nameMinimum = getNameFig().getMinimumSize();
 
+    getNameFig().setBounds(x, y, w, nameMinimum.height);
+    attr.setBounds(x, y + getNameFig().getBounds().height, w, h - getNameFig().getBounds().height);
+    getBigPort().setBounds(x + 1, y + 1, w - 2, h - 2);
 
-    /** Override setBounds to keep shapes looking right
-     *
-     * @see org.tigris.gef.presentation.Fig#setBounds(int, int, int, int)
-     */
-    protected void setBoundsImpl(int x, int y, int w, int h) {
-	if (getNameFig() == null) return;
-	Rectangle oldBounds = getBounds();
-
-	Dimension nameMinimum = getNameFig().getMinimumSize();
-
-	getNameFig().setBounds(x, y, w, nameMinimum.height);
-	attr.setBounds(x, y + getNameFig().getBounds().height,
-			w, h - getNameFig().getBounds().height);
-	getBigPort().setBounds(x + 1, y + 1, w - 2, h - 2);
-
-	calcBounds(); //_x = x; _y = y; _w = w; _h = h;
-	updateEdges();
-	firePropChange("bounds", oldBounds, getBounds());
-    }
-
-
+    calcBounds(); // _x = x; _y = y; _w = w; _h = h;
+    updateEdges();
+    firePropChange("bounds", oldBounds, getBounds());
+  }
 } /* end class FigInstance */

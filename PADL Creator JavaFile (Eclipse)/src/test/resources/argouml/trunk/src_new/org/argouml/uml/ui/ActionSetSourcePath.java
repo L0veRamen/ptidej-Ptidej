@@ -26,117 +26,104 @@ package org.argouml.uml.ui;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
-
 import javax.swing.Action;
 import javax.swing.JFileChooser;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.ui.ArgoFrame;
 import org.argouml.ui.targetmanager.TargetManager;
 import org.tigris.gef.undo.UndoableAction;
 
-
-/**
- * Action to choose and set source path for model elements.
- */
+/** Action to choose and set source path for model elements. */
 public class ActionSetSourcePath extends UndoableAction {
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    /**
-     * The constructor.
-     */
-    public ActionSetSourcePath() {
-        super(Translator.localize("action.set-source-path"), null);
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize("action.set-source-path"));
+  /** The constructor. */
+  public ActionSetSourcePath() {
+    super(Translator.localize("action.set-source-path"), null);
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize("action.set-source-path"));
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // main methods
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    File f = getNewDirectory();
+    if (f != null) {
+      Object obj = TargetManager.getInstance().getTarget();
+      if (Model.getFacade().isAModelElement(obj)) {
+        Model.getCoreHelper().setTaggedValue(obj, "src_path", f.getPath());
+      }
+    }
+  }
+
+  /**
+   * @return the new source path directory
+   */
+  protected File getNewDirectory() {
+    Object obj = TargetManager.getInstance().getTarget();
+    String name = null;
+    String type = null;
+    String path = null;
+    if (Model.getFacade().isAModelElement(obj)) {
+      name = Model.getFacade().getName(obj);
+      Object tv = Model.getFacade().getTaggedValue(obj, "src_path");
+      if (tv != null) {
+        path = Model.getFacade().getValueOfTag(tv);
+      }
+      if (Model.getFacade().isAPackage(obj)) {
+        type = "Package";
+      } else if (Model.getFacade().isAClass(obj)) {
+        type = "Class";
+      }
+      if (Model.getFacade().isAInterface(obj)) {
+        type = "Interface";
+      }
+    } else {
+      return null;
     }
 
-    ////////////////////////////////////////////////////////////////
-    // main methods
-
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-    	super.actionPerformed(e);
-	File f = getNewDirectory();
-	if (f != null) {
-	    Object obj = TargetManager.getInstance().getTarget();
-	    if (Model.getFacade().isAModelElement(obj)) {
-		Model.getCoreHelper().setTaggedValue(obj, "src_path",
-		        f.getPath());
-	    }
-	}
+    JFileChooser chooser = null;
+    File f = null;
+    if (path != null) {
+      f = new File(path);
+    }
+    if ((f != null) && (f.getPath().length() > 0)) {
+      chooser = new JFileChooser(f.getPath());
+    }
+    if (chooser == null) {
+      chooser = new JFileChooser();
+    }
+    if (f != null) {
+      chooser.setSelectedFile(f);
     }
 
-    /**
-     * @return the new source path directory
-     */
-    protected File getNewDirectory() {
-	Object obj = TargetManager.getInstance().getTarget();
-	String name = null;
-	String type = null;
-	String path = null;
-	if (Model.getFacade().isAModelElement(obj)) {
-	    name = Model.getFacade().getName(obj);
-            Object tv = Model.getFacade().getTaggedValue(obj, "src_path");
-            if (tv != null) {
-                path = Model.getFacade().getValueOfTag(tv);
-            }
-	    if (Model.getFacade().isAPackage(obj)) {
-                type = "Package";
-            } else if (Model.getFacade().isAClass(obj)) {
-                type = "Class";
-            }
-	    if (Model.getFacade().isAInterface(obj)) {
-                type = "Interface";
-            }
-	} else {
-	    return null;
-	}
-
-	JFileChooser chooser = null;
-	File f = null;
-	if (path != null) {
-	    f = new File(path);
-	}
-	if ((f != null) && (f.getPath().length() > 0)) {
-	    chooser = new JFileChooser(f.getPath());
-	}
-	if (chooser == null) {
-	    chooser = new JFileChooser();
-	}
-	if (f != null) {
-	    chooser.setSelectedFile(f);
-	}
-
-	String sChooserTitle =
-	    Translator.localize("action.set-source-path");
-	if (type != null) {
-            sChooserTitle += ' ' + type;
-        }
-	if (name != null) {
-            sChooserTitle += ' ' + name;
-        }
-	chooser.setDialogTitle(sChooserTitle);
-	chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-
-	int retval =
-            chooser.showDialog(ArgoFrame.getInstance(),
-                    Translator.localize("dialog.button.ok"));
-	if (retval == JFileChooser.APPROVE_OPTION) {
-	    return chooser.getSelectedFile();
-	} else {
-	    return null;
-	}
+    String sChooserTitle = Translator.localize("action.set-source-path");
+    if (type != null) {
+      sChooserTitle += ' ' + type;
     }
+    if (name != null) {
+      sChooserTitle += ' ' + name;
+    }
+    chooser.setDialogTitle(sChooserTitle);
+    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -6455209886706784094L;
+    int retval =
+        chooser.showDialog(ArgoFrame.getInstance(), Translator.localize("dialog.button.ok"));
+    if (retval == JFileChooser.APPROVE_OPTION) {
+      return chooser.getSelectedFile();
+    } else {
+      return null;
+    }
+  }
+
+  /** The UID. */
+  private static final long serialVersionUID = -6455209886706784094L;
 } /* end class ActionSetSourcePath */

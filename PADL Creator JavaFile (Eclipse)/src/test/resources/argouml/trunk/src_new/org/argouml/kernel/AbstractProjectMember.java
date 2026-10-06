@@ -24,135 +24,123 @@
 
 package org.argouml.kernel;
 
-/**
- * A member of the project.
- *
- */
+/** A member of the project. */
 public abstract class AbstractProjectMember implements ProjectMember {
 
-    ////////////////////////////////////////////////////////////////
-    // instance varables
+  ////////////////////////////////////////////////////////////////
+  // instance varables
 
-    private String uniqueName;
-    private Project project = null;
+  private String uniqueName;
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  private Project project = null;
 
-    /**
-     * The constructor.
-     *
-     * @param theUniqueName the name of the member, this must
-     *                      be different for all members. Note
-     *                      that for diagram members this is
-     *                      not the name of the diagram.
-     * @param theProject the owning project
-     */
-    public AbstractProjectMember(String theUniqueName, Project theProject) {
-        project = theProject;
-        makeUniqueName(theUniqueName);
+  ////////////////////////////////////////////////////////////////
+  // constructors
+
+  /**
+   * The constructor.
+   *
+   * @param theUniqueName the name of the member, this must be different for all members. Note that
+   *     for diagram members this is not the name of the diagram.
+   * @param theProject the owning project
+   */
+  public AbstractProjectMember(String theUniqueName, Project theProject) {
+    project = theProject;
+    makeUniqueName(theUniqueName);
+  }
+
+  /**
+   * In contrast to {@link #getZipName()} returns the member's name without the prepended name of
+   * the project.
+   *
+   * @author Steffen Zschaler
+   * @return the member's name without any prefix or suffix
+   */
+  public String getUniqueDiagramName() {
+    String s = uniqueName;
+
+    if (s != null) {
+      if (!s.endsWith(getZipFileExtension())) {
+        s += getZipFileExtension();
+      }
     }
 
-    /**
-     * In contrast to {@link #getZipName()} returns the member's
-     * name without the prepended name of the project.
-     *
-     * @author Steffen Zschaler
-     *
-     * @return the member's name without any prefix or suffix
-     */
-    public String getUniqueDiagramName() {
-        String s = uniqueName;
+    return s;
+  }
 
-        if (s != null) {
-            if (!s.endsWith (getZipFileExtension())) {
-                s += getZipFileExtension();
-            }
+  /**
+   * Returns a unique member's name for storage in a zipfile. The project's base name is prepended
+   * followed by an underscore '_'.
+   *
+   * @return the name for zip file storage
+   */
+  public String getZipName() {
+    if (uniqueName == null) {
+      return null;
+    }
+
+    String s = project.getBaseName();
+
+    if (uniqueName.length() > 0) {
+      s += "_" + uniqueName;
+    }
+
+    if (!s.endsWith(getZipFileExtension())) {
+      s += getZipFileExtension();
+    }
+
+    return s;
+  }
+
+  /**
+   * Makes a unique name for this member. Note this is not the diagram name and this appears to be
+   * flawed.
+   *
+   * @param s a string which will make up part of this unique name.
+   */
+  protected void makeUniqueName(String s) {
+    uniqueName = s;
+
+    if (uniqueName == null) {
+      return;
+    }
+
+    if (uniqueName.startsWith(project.getBaseName())) {
+      uniqueName = uniqueName.substring(project.getBaseName().length());
+      int i = 0;
+      for (; i < uniqueName.length(); i++) {
+        if (uniqueName.charAt(i) != '_') {
+          break;
         }
-
-        return s;
+      }
+      if (i > 0) {
+        uniqueName = uniqueName.substring(i);
+      }
     }
 
-    /**
-     * Returns a unique member's name for storage in a zipfile.
-     * The project's base name is prepended followed by an
-     * underscore '_'.
-     *
-     * @return the name for zip file storage
-     */
-    public String getZipName() {
-        if (uniqueName == null) {
-	    return null;
-	}
-
-        String s = project.getBaseName();
-
-        if (uniqueName.length() > 0) {
-            s += "_" + uniqueName;
-	}
-
-        if (!s.endsWith(getZipFileExtension())) {
-            s += getZipFileExtension();
-        }
-
-        return s;
+    if (uniqueName.endsWith(getZipFileExtension())) {
+      uniqueName = uniqueName.substring(0, uniqueName.length() - getZipFileExtension().length());
     }
+  }
 
-    /**
-     * Makes a unique name for this member.
-     * Note this is not the diagram name and this appears
-     * to be flawed.
-     * @param s a string which will make up part of this
-     *          unique name.
-     */
-    protected void makeUniqueName(String s) {
-        uniqueName = s;
+  /**
+   * @return a short string defining the member type. Usually equals the file extension.
+   */
+  public abstract String getType();
 
-        if (uniqueName == null) {
-            return;
-        }
+  /**
+   * @return the file extension string
+   */
+  public String getZipFileExtension() {
+    return "." + getType();
+  }
 
-        if (uniqueName.startsWith (project.getBaseName())) {
-            uniqueName = uniqueName.substring (project.getBaseName().length());
-            int i = 0;
-            for (; i < uniqueName.length(); i++) {
-            	if (uniqueName.charAt(i) != '_') {
-            	    break;
-                }
-            }
-            if (i > 0) {
-                uniqueName = uniqueName.substring(i);
-            }
-        }
+  ////////////////////////////////////////////////////////////////
+  // actions
 
-        if (uniqueName.endsWith(getZipFileExtension())) {
-            uniqueName =
-                uniqueName.substring(0,
-                        uniqueName.length() - getZipFileExtension().length());
-        }
-    }
-
-    /**
-     * @return a short string defining the member type.
-     * Usually equals the file extension.
-     */
-    public abstract String getType();
-
-    /**
-     * @return the file extension string
-     */
-    public String getZipFileExtension() {
-        return "." + getType();
-    }
-
-    ////////////////////////////////////////////////////////////////
-    // actions
-
-    /**
-     * Remove this member from its project.
-     */
-    protected void remove() {
-        uniqueName = null;
-        project = null;
-    }
+  /** Remove this member from its project. */
+  protected void remove() {
+    uniqueName = null;
+    project = null;
+  }
 } /* end class ProjectMember */

@@ -31,33 +31,32 @@
 package org.argouml.persistence;
 
 /**
- * An exception to be thrown during failure of a save
- * to some medium.
+ * An exception to be thrown during failure of a save to some medium.
+ *
  * @author Bob Tarling
  */
 class SaveException extends PersistenceException {
-    /**
-     * The constructor.
-     *
-     * @param message the message to be shown
-     * @param cause the cause of the exception
-     */
-    public SaveException(String message, Throwable cause) {
-        super(message, cause);
-    }
+  /**
+   * The constructor.
+   *
+   * @param message the message to be shown
+   * @param cause the cause of the exception
+   */
+  public SaveException(String message, Throwable cause) {
+    super(message, cause);
+  }
 
-    /**
-     * @param message the message to be shown
-     */
-    public SaveException(String message) {
-        super(message);
-    }
+  /**
+   * @param message the message to be shown
+   */
+  public SaveException(String message) {
+    super(message);
+  }
 
-    /**
-     * @param cause the cause of the exception
-     */
-    public SaveException(Throwable cause) {
-        super(cause);
-    }
+  /**
+   * @param cause the cause of the exception
+   */
+  public SaveException(Throwable cause) {
+    super(cause);
+  }
 }
-

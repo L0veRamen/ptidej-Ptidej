@@ -25,109 +25,93 @@
 package org.argouml.ui.test;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.JMenuItem;
-
 import org.apache.log4j.Logger;
-
-import org.argouml.uml.ui.UMLAction;
+import org.argouml.moduleloader.ModuleInterface;
 import org.argouml.ui.ProjectBrowser;
 import org.argouml.ui.cmd.GenericArgoMenuBar;
-import org.argouml.moduleloader.ModuleInterface;
+import org.argouml.uml.ui.UMLAction;
 
 /**
- * Module that registers itself to the Tools menu.<p>
+ * Module that registers itself to the Tools menu.
  *
- * This is primarily designed to be able to test ModuleLoader2.<p>
+ * <p>This is primarily designed to be able to test ModuleLoader2.
+ *
+ * <p>
  *
  * @author Linus Tolke
- * @since  0.17.1
+ * @since 0.17.1
  */
-public final class ActionTestLoadableModule extends UMLAction
-    implements ModuleInterface {
-    /**
-     * Logger.
-     */
-    private static final Logger LOG =
-        Logger.getLogger(ActionTestLoadableModule.class);
+public final class ActionTestLoadableModule extends UMLAction implements ModuleInterface {
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(ActionTestLoadableModule.class);
 
-    /**
-     * The menu item.
-     */
-    private JMenuItem menuItem;
+  /** The menu item. */
+  private JMenuItem menuItem;
 
-    /**
-     * This is creatable from the module loader.
-     */
-    public ActionTestLoadableModule() {
-	super("Test entry", false);
+  /** This is creatable from the module loader. */
+  public ActionTestLoadableModule() {
+    super("Test entry", false);
 
-	menuItem = new JMenuItem("Test");
-	menuItem.addActionListener(this);
+    menuItem = new JMenuItem("Test");
+    menuItem.addActionListener(this);
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // Main methods.
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   *     <p>Just let the tester know that we got executed.
+   */
+  public void actionPerformed(ActionEvent event) {
+    LOG.info("User clicked on '" + event.getActionCommand() + "'");
+  }
+
+  // Methods from the ModuleLoader interface
+  /**
+   * @see ModuleInterface#enable()
+   */
+  public boolean enable() {
+    // Register into the Tools menu.
+    GenericArgoMenuBar menubar = (GenericArgoMenuBar) ProjectBrowser.getInstance().getJMenuBar();
+    menubar.getTools().add(menuItem);
+    return true;
+  }
+
+  /**
+   * @see ModuleInterface#disable()
+   *     <p>This removes us from the Tools menu. If we were not registered there we don't care.
+   */
+  public boolean disable() {
+    GenericArgoMenuBar menubar = (GenericArgoMenuBar) ProjectBrowser.getInstance().getJMenuBar();
+    menubar.getTools().remove(menuItem);
+    return true;
+  }
+
+  /**
+   * @see ModuleInterface#getName()
+   */
+  public String getName() {
+    return "ActionTestLoadableModule";
+  }
+
+  /**
+   * @see ModuleInterface#getInfo(int)
+   */
+  public String getInfo(int type) {
+    switch (type) {
+      case DESCRIPTION:
+        return "This is a test module for the new module loader.";
+      case AUTHOR:
+        return "Linus Tolke";
+      case VERSION:
+        return "1.0";
+      default:
+        return null;
     }
+  }
 
-    ////////////////////////////////////////////////////////////////
-    // Main methods.
-
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     *
-     * Just let the tester know that we got executed.
-     */
-    public void actionPerformed(ActionEvent event) {
-        LOG.info("User clicked on '" + event.getActionCommand() + "'");
-    }
-
-    // Methods from the ModuleLoader interface
-    /**
-     * @see ModuleInterface#enable()
-     */
-    public boolean enable() {
-        // Register into the Tools menu.
-        GenericArgoMenuBar menubar =
-            (GenericArgoMenuBar) ProjectBrowser.getInstance().getJMenuBar();
-        menubar.getTools().add(menuItem);
-	return true;
-    }
-
-    /**
-     * @see ModuleInterface#disable()
-     *
-     * This removes us from the Tools menu. If we were not registered there
-     * we don't care.
-     */
-    public boolean disable() {
-	GenericArgoMenuBar menubar =
-	    (GenericArgoMenuBar) ProjectBrowser.getInstance().getJMenuBar();
-	menubar.getTools().remove(menuItem);
-	return true;
-    }
-
-    /**
-     * @see ModuleInterface#getName()
-     */
-    public String getName() {
-	return "ActionTestLoadableModule";
-    }
-
-    /**
-     * @see ModuleInterface#getInfo(int)
-     */
-    public String getInfo(int type) {
-        switch (type) {
-        case DESCRIPTION:
-            return "This is a test module for the new module loader.";
-        case AUTHOR:
-            return "Linus Tolke";
-        case VERSION:
-            return "1.0";
-        default:
-            return null;
-        }
-    }
-
-    /**
-     * The version uid.
-     */
-    private static final long serialVersionUID = -2570516012301142091L;
+  /** The version uid. */
+  private static final long serialVersionUID = -2570516012301142091L;
 }

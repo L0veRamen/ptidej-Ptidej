@@ -25,7 +25,6 @@
 package org.argouml.uml.ui.behavior.collaborations;
 
 import junit.framework.TestCase;
-
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.Model;
@@ -36,71 +35,65 @@ import org.argouml.ui.targetmanager.TargetManager;
  * @since Oct 28, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class TestUMLCollaborationRepresentedClassifierComboBoxModel
-    extends TestCase {
+public class TestUMLCollaborationRepresentedClassifierComboBoxModel extends TestCase {
 
-    private Object elem;
-//    private Object oper;
-    private Object clazz;
-    private UMLCollaborationRepresentedClassifierComboBoxModel model;
+  private Object elem;
+  //    private Object oper;
+  private Object clazz;
+  private UMLCollaborationRepresentedClassifierComboBoxModel model;
 
-    /**
-     * Constructor for TestUMLCollaborationRepresentedClassifierComboBoxModel.
-     *
-     * @param arg0 is the name of the test case.
-     */
-    public TestUMLCollaborationRepresentedClassifierComboBoxModel(String arg0) {
-        super(arg0);
-    }
+  /**
+   * Constructor for TestUMLCollaborationRepresentedClassifierComboBoxModel.
+   *
+   * @param arg0 is the name of the test case.
+   */
+  public TestUMLCollaborationRepresentedClassifierComboBoxModel(String arg0) {
+    super(arg0);
+  }
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        elem = Model.getCollaborationsFactory().createCollaboration();
-        model = new UMLCollaborationRepresentedClassifierComboBoxModel();
-        TargetManager.getInstance().setTarget(elem);
-        Model.getPump().flushModelEvents();
-        
-        Project p = ProjectManager.getManager().getCurrentProject();
-        Object m = p.getRoot();
-        clazz = Model.getCoreFactory().buildClass(m);
-        Model.getCollaborationsHelper().setRepresentedClassifier(elem, clazz);
-        Model.getPump().flushModelEvents();
-        /* Simulate a target change. */
-        model.targetSet(new TargetEvent(this, null, null, new Object[] {elem}));
-    }
+  /**
+   * @see junit.framework.TestCase#setUp()
+   */
+  protected void setUp() throws Exception {
+    super.setUp();
+    elem = Model.getCollaborationsFactory().createCollaboration();
+    model = new UMLCollaborationRepresentedClassifierComboBoxModel();
+    TargetManager.getInstance().setTarget(elem);
+    Model.getPump().flushModelEvents();
 
-    /**
-     * @see junit.framework.TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        Model.getUmlFactory().delete(elem);
-        model = null;
-    }
+    Project p = ProjectManager.getManager().getCurrentProject();
+    Object m = p.getRoot();
+    clazz = Model.getCoreFactory().buildClass(m);
+    Model.getCollaborationsHelper().setRepresentedClassifier(elem, clazz);
+    Model.getPump().flushModelEvents();
+    /* Simulate a target change. */
+    model.targetSet(new TargetEvent(this, null, null, new Object[] {elem}));
+  }
 
-    /**
-     * Test setRepresentedClassifier().
-     */
-    public void testSetRepresentedOperation() {
-        /* Now the model should contain 
-         * the one operation + the "" for clearing. */
-        assertEquals(2, model.getSize());
-        assertEquals(clazz, model.getElementAt(0));
-    }
+  /**
+   * @see junit.framework.TestCase#tearDown()
+   */
+  protected void tearDown() throws Exception {
+    super.tearDown();
+    Model.getUmlFactory().delete(elem);
+    model = null;
+  }
 
-    /**
-     * Test removing the represented operation.
-     */
-    public void testExtraRepresentedOperation() {
-	Object cl2 = Model.getCoreFactory().createClass();
-        Model.getCollaborationsHelper().setRepresentedClassifier(elem, cl2); 
-        /* Simulate a target change. */
-        model.targetSet(new TargetEvent(this, null, null, new Object[] {elem}));
-        Model.getPump().flushModelEvents();
-        assertEquals(3, model.getSize());
-    }
+  /** Test setRepresentedClassifier(). */
+  public void testSetRepresentedOperation() {
+    /* Now the model should contain
+     * the one operation + the "" for clearing. */
+    assertEquals(2, model.getSize());
+    assertEquals(clazz, model.getElementAt(0));
+  }
 
+  /** Test removing the represented operation. */
+  public void testExtraRepresentedOperation() {
+    Object cl2 = Model.getCoreFactory().createClass();
+    Model.getCollaborationsHelper().setRepresentedClassifier(elem, cl2);
+    /* Simulate a target change. */
+    model.targetSet(new TargetEvent(this, null, null, new Object[] {elem}));
+    Model.getPump().flushModelEvents();
+    assertEquals(3, model.getSize());
+  }
 }

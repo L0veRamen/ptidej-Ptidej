@@ -25,7 +25,6 @@
 package org.argouml.model.uml;
 
 import org.argouml.model.CopyHelper;
-
 import ru.novosoft.uml.foundation.core.MClass;
 import ru.novosoft.uml.foundation.core.MDataType;
 import ru.novosoft.uml.foundation.core.MInterface;
@@ -42,61 +41,56 @@ import ru.novosoft.uml.model_management.MPackage;
  */
 final class CopyHelperImpl implements CopyHelper {
 
-    /**
-     * The model implementation.
-     */
-    private NSUMLModelImplementation nsmodel;
+  /** The model implementation. */
+  private NSUMLModelImplementation nsmodel;
 
-    /**
-     * Constructor to forbid creation of this object.
-     *
-     * @param implementation To get other helpers and factories.
-     */
-    CopyHelperImpl(NSUMLModelImplementation implementation) {
-        nsmodel = implementation;
+  /**
+   * Constructor to forbid creation of this object.
+   *
+   * @param implementation To get other helpers and factories.
+   */
+  CopyHelperImpl(NSUMLModelImplementation implementation) {
+    nsmodel = implementation;
+  }
+
+  /**
+   * Make a copy of element in the given namespace.
+   *
+   * <p>This function is a dispatcher that calls the copyElement(Element,Namespace) function from
+   * XXXFactory.
+   *
+   * <p>This function may fail and return null for any of the following reasons:
+   *
+   * <ol>
+   *   <li>No copy function is known for element's type.
+   *   <li>The copy function fails or throws.
+   * </ol>
+   *
+   * @param anelement is the element to copy.
+   * @param ans the namespace
+   * @return a copy of element, or null.
+   * @throws IllegalArgumentException if element is null.
+   */
+  public Object copy(Object anelement, Object ans) {
+    // Don't explicitly check if element is null
+    MModelElement element = (MModelElement) anelement;
+    MNamespace ns = (MNamespace) ans;
+
+    if (element instanceof MPackage) {
+      return nsmodel.getModelManagementFactory().copyPackage(element, ns);
     }
-
-    /**
-     * Make a copy of element in the given namespace.<p>
-     *
-     * This function is a dispatcher that calls the
-     * copyElement(Element,Namespace) function from
-     * XXXFactory.<p>
-     *
-     * This function may fail and return null for any of the following
-     * reasons:<ol>
-     * <li>No copy function is known for element's type.
-     * <li>The copy function fails or throws.
-     * </ol>
-     *
-     * @param anelement is the element to copy.
-     * @param ans the namespace
-     * @return a copy of element, or null.
-     *
-     * @throws IllegalArgumentException if element is null.
-     */
-    public Object copy(Object anelement, Object ans) {
-	// Don't explicitly check if element is null
-        MModelElement element = (MModelElement) anelement;
-        MNamespace ns = (MNamespace) ans;
-
-        if (element instanceof MPackage) {
-            return nsmodel.getModelManagementFactory().copyPackage(element, ns);
-        }
-        if (element instanceof MClass) {
-            return nsmodel.getCoreFactory().copyClass(element, ns);
-        }
-        if (element instanceof MDataType) {
-            return nsmodel.getCoreFactory().copyDataType(element, ns);
-        }
-        if (element instanceof MInterface) {
-            return nsmodel.getCoreFactory().copyInterface(element, ns);
-        }
-        if (element instanceof MStereotype) {
-            return
-            	nsmodel.getExtensionMechanismsFactory()
-            		.copyStereotype(element, ns);
-        }
-        throw new IllegalArgumentException();
+    if (element instanceof MClass) {
+      return nsmodel.getCoreFactory().copyClass(element, ns);
     }
+    if (element instanceof MDataType) {
+      return nsmodel.getCoreFactory().copyDataType(element, ns);
+    }
+    if (element instanceof MInterface) {
+      return nsmodel.getCoreFactory().copyInterface(element, ns);
+    }
+    if (element instanceof MStereotype) {
+      return nsmodel.getExtensionMechanismsFactory().copyStereotype(element, ns);
+    }
+    throw new IllegalArgumentException();
+  }
 }

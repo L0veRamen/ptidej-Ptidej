@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xerces" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -55,134 +55,101 @@
  * <http://www.apache.org/>.
  */
 
-
 package org.apache.xml.serialize;
 
-
 import java.io.OutputStream;
-import java.io.Writer;
 import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
 
-
 /**
- *
- *
  * @version
  * @author <a href="mailto:Scott_Boag/CAM/Lotus@lotus.com">Scott Boag</a>
  * @author <a href="mailto:arkin@exoffice.com">Assaf Arkin</a>
  */
-public abstract class SerializerFactory
-{
+public abstract class SerializerFactory {
 
+  public static final String FactoriesProperty = "org.apache.xml.serialize.factories";
 
-    public static final String FactoriesProperty = "org.apache.xml.serialize.factories";
+  private static Hashtable _factories = new Hashtable();
 
+  static {
+    SerializerFactory factory;
+    String list;
+    StringTokenizer token;
+    String className;
 
-    private static Hashtable  _factories = new Hashtable();
+    // The default factories are always registered first,
+    // any factory specified in the properties file and supporting
+    // the same method will override the default factory.
+    factory = new SerializerFactoryImpl(Method.XML);
+    registerSerializerFactory(factory);
+    factory = new SerializerFactoryImpl(Method.HTML);
+    registerSerializerFactory(factory);
+    factory = new SerializerFactoryImpl(Method.XHTML);
+    registerSerializerFactory(factory);
+    factory = new SerializerFactoryImpl(Method.TEXT);
+    registerSerializerFactory(factory);
 
-
-    static
-    {
-	SerializerFactory factory;
-	String            list;
-	StringTokenizer   token;
-	String            className;
-
-	// The default factories are always registered first,
-	// any factory specified in the properties file and supporting
-	// the same method will override the default factory.
-	factory =  new SerializerFactoryImpl( Method.XML );
-	registerSerializerFactory( factory );
-	factory =  new SerializerFactoryImpl( Method.HTML );
-	registerSerializerFactory( factory );
-	factory =  new SerializerFactoryImpl( Method.XHTML );
-	registerSerializerFactory( factory );
-	factory =  new SerializerFactoryImpl( Method.TEXT );
-	registerSerializerFactory( factory );
-
-	list = System.getProperty( FactoriesProperty );
-	if ( list != null ) {
-	    token = new StringTokenizer( list, " ;,:" );
-	    while ( token.hasMoreTokens() ) {
-		className = token.nextToken();
-		try {
-		    factory = (SerializerFactory) Class.forName( className ).getDeclaredConstructor().newInstance();
-		    if ( _factories.contains( factory.getSupportedMethod() ) )
-			_factories.put( factory.getSupportedMethod(), factory );
-		} catch ( Exception except ) { }
-	    }
-	}
+    list = System.getProperty(FactoriesProperty);
+    if (list != null) {
+      token = new StringTokenizer(list, " ;,:");
+      while (token.hasMoreTokens()) {
+        className = token.nextToken();
+        try {
+          factory =
+              (SerializerFactory) Class.forName(className).getDeclaredConstructor().newInstance();
+          if (_factories.contains(factory.getSupportedMethod()))
+            _factories.put(factory.getSupportedMethod(), factory);
+        } catch (Exception except) {
+        }
+      }
     }
+  }
 
+  /** Register a serializer factory, keyed by the given method string. */
+  public static void registerSerializerFactory(SerializerFactory factory) {
+    String method;
 
-    /**
-     * Register a serializer factory, keyed by the given
-     * method string.
-     */
-    public static void registerSerializerFactory( SerializerFactory factory )
-    {
-	String method;
-
-	synchronized ( _factories ) {
-	    method = factory.getSupportedMethod();
-	    _factories.put( method, factory );
-	}
+    synchronized (_factories) {
+      method = factory.getSupportedMethod();
+      _factories.put(method, factory);
     }
+  }
 
+  /** Register a serializer factory, keyed by the given method string. */
+  public static SerializerFactory getSerializerFactory(String method) {
+    return (SerializerFactory) _factories.get(method);
+  }
 
-    /**
-     * Register a serializer factory, keyed by the given
-     * method string.
-     */
-    public static SerializerFactory getSerializerFactory( String method )
-    {
-	return (SerializerFactory) _factories.get( method );
-    }
+  /**
+   * Returns the method supported by this factory and used to register the factory. This call is
+   * required so factories can be added from a properties file by knowing only the class name. This
+   * method is protected, it is only required by this class but must be implemented in derived
+   * classes.
+   */
+  protected abstract String getSupportedMethod();
 
+  /**
+   * Create a new serializer based on the {@link OutputFormat}. If this method is used to create the
+   * serializer, the {@link Serializer#setOutputByteStream} or {@link
+   * Serializer#setOutputCharStream} methods must be called before serializing a document.
+   */
+  public abstract Serializer makeSerializer(OutputFormat format);
 
-    /**
-     * Returns the method supported by this factory and used to register
-     * the factory. This call is required so factories can be added from
-     * a properties file by knowing only the class name. This method is
-     * protected, it is only required by this class but must be implemented
-     * in derived classes.
-     */
-    protected abstract String getSupportedMethod();
-    
+  /**
+   * Create a new serializer, based on the {@link OutputFormat} and using the writer as the output
+   * character stream. If this method is used, the encoding property will be ignored.
+   */
+  public abstract Serializer makeSerializer(Writer writer, OutputFormat format);
 
-    /**
-     * Create a new serializer based on the {@link OutputFormat}.
-     * If this method is used to create the serializer, the {@link
-     * Serializer#setOutputByteStream} or {@link Serializer#setOutputCharStream}
-     * methods must be called before serializing a document.
-     */
-    public abstract Serializer makeSerializer(OutputFormat format);
-
-
-    /**
-     * Create a new serializer, based on the {@link OutputFormat} and
-     * using the writer as the output character stream.  If this
-     * method is used, the encoding property will be ignored.
-     */
-    public abstract Serializer makeSerializer( Writer writer,
-					       OutputFormat format );
-
-
-    /**
-     * Create a new serializer, based on the {@link OutputFormat} and
-     * using the output byte stream and the encoding specified in the
-     * output format.
-     *
-     * @throws UnsupportedEncodingException The specified encoding is
-     *   not supported
-     */
-    public abstract Serializer makeSerializer( OutputStream output,
-					       OutputFormat format )
-	throws UnsupportedEncodingException;
-
-
+  /**
+   * Create a new serializer, based on the {@link OutputFormat} and using the output byte stream and
+   * the encoding specified in the output format.
+   *
+   * @throws UnsupportedEncodingException The specified encoding is not supported
+   */
+  public abstract Serializer makeSerializer(OutputStream output, OutputFormat format)
+      throws UnsupportedEncodingException;
 }
-
-

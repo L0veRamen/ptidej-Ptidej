@@ -24,54 +24,55 @@
 
 package org.argouml.uml.generator;
 
-/** 
- * Stores generation preference information entered by the user
- * per project. <p>
- *  
- * TODO: The header comment is curently not used - this function
- * is not completely implemented yet. How do we store this in the project?
- * Where should the user enter his header comment?
+/**
+ * Stores generation preference information entered by the user per project.
+ *
+ * <p>TODO: The header comment is curently not used - this function is not completely implemented
+ * yet. How do we store this in the project? Where should the user enter his header comment?
  */
 public class GenerationPreferences implements java.io.Serializable {
-    ////////////////////////////////////////////////////////////////
-    // instance variables
-    private String headerComment =
-	"Your copyright and other header comments";
-    private String outputDir;
+  ////////////////////////////////////////////////////////////////
+  // instance variables
+  private String headerComment = "Your copyright and other header comments";
 
-    /**
-     *  Constructor
-     */
-    public GenerationPreferences() {
-	if (System.getProperty("file.separator").equals("/"))
-	    outputDir = "/tmp";
-	else
-	    //This does not even exist on many systems:
-	    //_outputDir = "c:\\temp";
-            outputDir = System.getProperty("java.io.tmpdir");
-    }
+  private String outputDir;
 
-    ////////////////////////////////////////////////////////////////
-    // accessors
-    /**
-     * @return the output directory name
-     */
-    public String getOutputDir() { return outputDir; }
+  /** Constructor */
+  public GenerationPreferences() {
+    if (System.getProperty("file.separator").equals("/")) outputDir = "/tmp";
+    else
+      // This does not even exist on many systems:
+      // _outputDir = "c:\\temp";
+      outputDir = System.getProperty("java.io.tmpdir");
+  }
 
-    /**
-     * @param od the output directory name
-     */
-    public void setOutputDir(String od) { outputDir = od; }
+  ////////////////////////////////////////////////////////////////
+  // accessors
+  /**
+   * @return the output directory name
+   */
+  public String getOutputDir() {
+    return outputDir;
+  }
 
-    /**
-     * @return the header comment string
-     */
-    public String getHeaderComment() { return headerComment; }
+  /**
+   * @param od the output directory name
+   */
+  public void setOutputDir(String od) {
+    outputDir = od;
+  }
 
-    /**
-     * @param c the header comment string
-     */
-    public void setHeaderComment(String c) { headerComment = c; }
+  /**
+   * @return the header comment string
+   */
+  public String getHeaderComment() {
+    return headerComment;
+  }
 
+  /**
+   * @param c the header comment string
+   */
+  public void setHeaderComment(String c) {
+    headerComment = c;
+  }
 } /* end class GenerationPreferences */
-

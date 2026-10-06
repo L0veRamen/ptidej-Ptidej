@@ -29,55 +29,48 @@ import org.argouml.cognitive.critics.Critic;
 import org.argouml.model.Model;
 import org.argouml.uml.cognitive.UMLDecision;
 
-
 /**
  * Critic that fires when there is no guard.
- *
  *
  * @author jrobbins
  */
 public class CrNoGuard extends CrUML {
 
-    /**
-     * The constructor.
-     */
-    public CrNoGuard() {
-        setupHeadAndDesc();
-	addSupportedDecision(UMLDecision.STATE_MACHINES);
-	setKnowledgeTypes(Critic.KT_COMPLETENESS);
-	addTrigger("guard");
-    }
+  /** The constructor. */
+  public CrNoGuard() {
+    setupHeadAndDesc();
+    addSupportedDecision(UMLDecision.STATE_MACHINES);
+    setKnowledgeTypes(Critic.KT_COMPLETENESS);
+    addTrigger("guard");
+  }
 
-    /**
-     * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
-     * java.lang.Object, org.argouml.cognitive.Designer)
-     */
-    public boolean predicate2(Object dm, Designer dsgr) {
-	if (!(Model.getFacade().isATransition(dm))) {
-	    return NO_PROBLEM;
-	}
-	Object sv = Model.getFacade().getSource(dm);
-	if (!(Model.getFacade().isAPseudostate(sv))) {
-	    return NO_PROBLEM;
-	}
-	if (!Model.getFacade().equalsPseudostateKind(
-	        Model.getFacade().getPseudostateKind(sv),
-	        Model.getPseudostateKind().getBranch())) {
-	    return NO_PROBLEM;
-	}
-	Object g = /*(MGuard)*/ Model.getFacade().getGuard(dm);
-	boolean noGuard =
-	    (g == null
+  /**
+   * @see org.argouml.uml.cognitive.critics.CrUML#predicate2( java.lang.Object,
+   *     org.argouml.cognitive.Designer)
+   */
+  public boolean predicate2(Object dm, Designer dsgr) {
+    if (!(Model.getFacade().isATransition(dm))) {
+      return NO_PROBLEM;
+    }
+    Object sv = Model.getFacade().getSource(dm);
+    if (!(Model.getFacade().isAPseudostate(sv))) {
+      return NO_PROBLEM;
+    }
+    if (!Model.getFacade()
+        .equalsPseudostateKind(
+            Model.getFacade().getPseudostateKind(sv), Model.getPseudostateKind().getBranch())) {
+      return NO_PROBLEM;
+    }
+    Object g = /*(MGuard)*/ Model.getFacade().getGuard(dm);
+    boolean noGuard =
+        (g == null
             || Model.getFacade().getExpression(g) == null
-            || Model.getFacade().getBody(
-                    Model.getFacade().getExpression(g)) == null
-            || ((String) Model.getFacade().getBody(
-                    Model.getFacade().getExpression(g)))
-                    	.length() == 0);
-	if (noGuard) {
-	    return PROBLEM_FOUND;
-	}
-	return NO_PROBLEM;
+            || Model.getFacade().getBody(Model.getFacade().getExpression(g)) == null
+            || ((String) Model.getFacade().getBody(Model.getFacade().getExpression(g))).length()
+                == 0);
+    if (noGuard) {
+      return PROBLEM_FOUND;
     }
-
+    return NO_PROBLEM;
+  }
 } /* end class CrNoGuard */

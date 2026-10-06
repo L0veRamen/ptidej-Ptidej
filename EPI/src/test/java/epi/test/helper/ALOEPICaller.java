@@ -4,12 +4,17 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
 package epi.test.helper;
 
+import epi.solver.Approximation;
+import epi.solver.EPISolver;
+import epi.solver.OptimisedBitVectorSolver;
+import epi.solver.Solution;
+import epi.solver.StringBuilder;
 import java.io.File;
 import padl.analysis.UnsupportedSourceModelException;
 import padl.analysis.repository.AACRelationshipsAnalysis;
@@ -21,209 +26,162 @@ import padl.kernel.exception.CreationException;
 import padl.kernel.impl.Factory;
 import util.io.ProxyConsole;
 import util.io.ProxyDisk;
-import epi.solver.Approximation;
-import epi.solver.EPISolver;
-import epi.solver.OptimisedBitVectorSolver;
-import epi.solver.Solution;
-import epi.solver.StringBuilder;
-
 
 /**
  * @author Yann-Gaël Guéhéneuc
- * @since  2006/11/28
+ * @since 2006/11/28
  */
 public class ALOEPICaller {
-	private static final String[] MOTIFS = new String[] { "Adapter",
-			"Composite", "Abstract Factory", "Observer" };
-	//	private static final String[] SODALIA_PATHS =
-	//		new String[] {
-	//			"E:/Temp/Sodalia/Method Invocations/IMS/Admin_2.3.2/Admin_2.3.2-concat_des_2007-01-28113522.aol",
-	//			"E:/Temp/Sodalia/Method Invocations/IMS/Admin_2.3.3/Admin_2.3.3-concat_des_2007-01-28113620.aol",
-	//			"E:/Temp/Sodalia/Method Invocations/IMS/Common_2.5.1/Common_2.5.1-concat_des_2007-01-28113715.aol",
-	//			"E:/Temp/Sodalia/Method Invocations/IMS/DB_2.1.2/DB_2.1.2-concat_des_2007-01-28113731.aol",
-	//			"E:/Temp/Sodalia/Method Invocations/IMS/ED_2.1.0/ED_2.1.0-concat_des_2007-01-28113750.aol",
-	//			"E:/Temp/Sodalia/Method Invocations/IMS/HDOgui_2.4.4/HDOgui_2.4.4-concat_des_2007-01-28113806.aol",
-	//			"E:/Temp/Sodalia/Method Invocations/IMS/HDOgui_2.4.5/HDOgui_2.4.5-concat_des_2007-01-28113922.aol",
-	//			"E:/Temp/Sodalia/Method Invocations/IMS/HDOgui_2.4.6/HDOgui_2.4.6-concat_des_2007-01-28114038.aol",
-	//			"E:/Temp/Sodalia/Method Invocations/IMS/Meta_2.1.0/Meta_2.1.0-concat_des_2007-01-28114140.aol",
-	//			"E:/Temp/Sodalia/Method Invocations/IMS/NMI_2.2.0/NMI_2.2.0-concat_des_2007-01-28114144.aol",
-	//			"E:/Temp/Sodalia/Method Invocations/IMS/OSSI_2.0.2/OSSI_2.0.2-concat_des_2007-01-28114206.aol",
-	//			"E:/Temp/Sodalia/Method Invocations/IMS/PM_2.0.3/PM_2.0.3-concat_des_2007-01-28114213.aol",
-	//			"E:/Temp/Sodalia/Method Invocations/IMS/TM_2.2.0/TM_2.2.0-concat_des_2007-01-28114245.aol" };
-	//	private static final String[] SODALIA_NAMES =
-	//		new String[] {
-	//			"Admin_2.3.2.solutions.txt",
-	//			"Admin_2.3.3.solutions.txt",
-	//			"DB_2.1.2.solutions.txt",
-	//			"Common_2.5.1.solutions.txt",
-	//			"ED_2.1.0.solutions.txt",
-	//			"HDOgui_2.4.4.solutions.txt",
-	//			"HDOgui_2.4.5.solutions.txt",
-	//			"HDOgui_2.4.6.solutions.txt",
-	//			"Meta_2.1.0.solutions.txt",
-	//			"NMI_2.2.0.solutions.txt",
-	//			"OSSI_2.0.2.solutions.txt",
-	//			"PM_2.0.3.solutions.txt",
-	//			"TM_2.2.0.solutions.txt" };
+  private static final String[] MOTIFS =
+      new String[] {"Adapter", "Composite", "Abstract Factory", "Observer"};
 
-	public static void main(final String[] args) {
-		final ALOEPICaller epi = new ALOEPICaller();
-		epi.analyseCodeLevelModels("E:/Temp/Sodalia/Method Invocations/");
-		epi.analyseIdiomLevelModel(
-			"E:/Temp/Sodalia/Design and Code/IMS/design/TM/TM.aol",
-			"TM");
-	}
-	private void analyseIdiomLevelModel(
-		final String anAOLIdiomLevelFilePath,
-		final String aName) {
+  //	private static final String[] SODALIA_PATHS =
+  //		new String[] {
+  //			"E:/Temp/Sodalia/Method
+  // Invocations/IMS/Admin_2.3.2/Admin_2.3.2-concat_des_2007-01-28113522.aol",
+  //			"E:/Temp/Sodalia/Method
+  // Invocations/IMS/Admin_2.3.3/Admin_2.3.3-concat_des_2007-01-28113620.aol",
+  //			"E:/Temp/Sodalia/Method
+  // Invocations/IMS/Common_2.5.1/Common_2.5.1-concat_des_2007-01-28113715.aol",
+  //			"E:/Temp/Sodalia/Method Invocations/IMS/DB_2.1.2/DB_2.1.2-concat_des_2007-01-28113731.aol",
+  //			"E:/Temp/Sodalia/Method Invocations/IMS/ED_2.1.0/ED_2.1.0-concat_des_2007-01-28113750.aol",
+  //			"E:/Temp/Sodalia/Method
+  // Invocations/IMS/HDOgui_2.4.4/HDOgui_2.4.4-concat_des_2007-01-28113806.aol",
+  //			"E:/Temp/Sodalia/Method
+  // Invocations/IMS/HDOgui_2.4.5/HDOgui_2.4.5-concat_des_2007-01-28113922.aol",
+  //			"E:/Temp/Sodalia/Method
+  // Invocations/IMS/HDOgui_2.4.6/HDOgui_2.4.6-concat_des_2007-01-28114038.aol",
+  //			"E:/Temp/Sodalia/Method
+  // Invocations/IMS/Meta_2.1.0/Meta_2.1.0-concat_des_2007-01-28114140.aol",
+  //			"E:/Temp/Sodalia/Method Invocations/IMS/NMI_2.2.0/NMI_2.2.0-concat_des_2007-01-28114144.aol",
+  //			"E:/Temp/Sodalia/Method
+  // Invocations/IMS/OSSI_2.0.2/OSSI_2.0.2-concat_des_2007-01-28114206.aol",
+  //			"E:/Temp/Sodalia/Method Invocations/IMS/PM_2.0.3/PM_2.0.3-concat_des_2007-01-28114213.aol",
+  //			"E:/Temp/Sodalia/Method Invocations/IMS/TM_2.2.0/TM_2.2.0-concat_des_2007-01-28114245.aol" };
+  //	private static final String[] SODALIA_NAMES =
+  //		new String[] {
+  //			"Admin_2.3.2.solutions.txt",
+  //			"Admin_2.3.3.solutions.txt",
+  //			"DB_2.1.2.solutions.txt",
+  //			"Common_2.5.1.solutions.txt",
+  //			"ED_2.1.0.solutions.txt",
+  //			"HDOgui_2.4.4.solutions.txt",
+  //			"HDOgui_2.4.5.solutions.txt",
+  //			"HDOgui_2.4.6.solutions.txt",
+  //			"Meta_2.1.0.solutions.txt",
+  //			"NMI_2.2.0.solutions.txt",
+  //			"OSSI_2.0.2.solutions.txt",
+  //			"PM_2.0.3.solutions.txt",
+  //			"TM_2.2.0.solutions.txt" };
 
-		final long startTime = System.currentTimeMillis();
-		ProxyConsole.getInstance().debugOutput().print("Analysing ");
-		ProxyConsole.getInstance().debugOutput().print(aName);
-		ProxyConsole.getInstance().debugOutput().println("...");
+  public static void main(final String[] args) {
+    final ALOEPICaller epi = new ALOEPICaller();
+    epi.analyseCodeLevelModels("E:/Temp/Sodalia/Method Invocations/");
+    epi.analyseIdiomLevelModel("E:/Temp/Sodalia/Design and Code/IMS/design/TM/TM.aol", "TM");
+  }
 
-		final IIdiomLevelModel idiomLevelModel =
-			Factory.getInstance().createIdiomLevelModel(aName.toCharArray());
-		final AOLCreator aolCreator =
-			new AOLCreator(new String[] { anAOLIdiomLevelFilePath });
-		aolCreator.create(idiomLevelModel, true, true);
+  private void analyseIdiomLevelModel(final String anAOLIdiomLevelFilePath, final String aName) {
 
-		final String programString =
-			StringBuilder.buildModelString(idiomLevelModel);
+    final long startTime = System.currentTimeMillis();
+    ProxyConsole.getInstance().debugOutput().print("Analysing ");
+    ProxyConsole.getInstance().debugOutput().print(aName);
+    ProxyConsole.getInstance().debugOutput().println("...");
 
-		for (int j = 0; j < ALOEPICaller.MOTIFS.length; j++) {
-			final String motif = ALOEPICaller.MOTIFS[j];
-			final String motifString = StringBuilder.buildPatternString(motif);
-			final EPISolver solver =
-				new OptimisedBitVectorSolver(
-					programString,
-					motifString,
-					motif,
-					new Approximation(),
-					null);
-			final Solution[] solutions = solver.computeSolutions();
+    final IIdiomLevelModel idiomLevelModel =
+        Factory.getInstance().createIdiomLevelModel(aName.toCharArray());
+    final AOLCreator aolCreator = new AOLCreator(new String[] {anAOLIdiomLevelFilePath});
+    aolCreator.create(idiomLevelModel, true, true);
 
-			ProxyConsole.getInstance().debugOutput().print(solutions.length);
-			ProxyConsole.getInstance().debugOutput().print(" solutions for ");
-			ProxyConsole.getInstance().debugOutput().print(motif);
-			ProxyConsole.getInstance().debugOutput().print(" in ");
-			ProxyConsole
-				.getInstance()
-				.debugOutput()
-				.print(System.currentTimeMillis() - startTime);
-			ProxyConsole.getInstance().debugOutput().println(" ms.\n");
+    final String programString = StringBuilder.buildModelString(idiomLevelModel);
 
-			Solution.print(
-				solutions,
-				ProxyDisk.getInstance().fileTempOutput(
-					"rsc/Sodalia/" + aName + '.' + motif.toLowerCase()
-							+ ".solutions.ini"));
-		}
-	}
-	private void analyseCodeLevelModels(final String aPath) {
-		final File pathFile = new File(aPath);
-		final String[] subPaths = pathFile.list();
+    for (int j = 0; j < ALOEPICaller.MOTIFS.length; j++) {
+      final String motif = ALOEPICaller.MOTIFS[j];
+      final String motifString = StringBuilder.buildPatternString(motif);
+      final EPISolver solver =
+          new OptimisedBitVectorSolver(
+              programString, motifString, motif, new Approximation(), null);
+      final Solution[] solutions = solver.computeSolutions();
 
-		for (int i = 0; i < subPaths.length; i++) {
-			final String fileName = aPath + subPaths[i];
-			final File file = new File(fileName);
+      ProxyConsole.getInstance().debugOutput().print(solutions.length);
+      ProxyConsole.getInstance().debugOutput().print(" solutions for ");
+      ProxyConsole.getInstance().debugOutput().print(motif);
+      ProxyConsole.getInstance().debugOutput().print(" in ");
+      ProxyConsole.getInstance().debugOutput().print(System.currentTimeMillis() - startTime);
+      ProxyConsole.getInstance().debugOutput().println(" ms.\n");
 
-			if (file.isDirectory()) {
-				this.analyseCodeLevelModels(fileName + '/');
-			}
-			else if (fileName.indexOf("-concat_des_") > 0
-					&& !fileName.endsWith(".filtered.aol")) {
+      Solution.print(
+          solutions,
+          ProxyDisk.getInstance()
+              .fileTempOutput(
+                  "rsc/Sodalia/" + aName + '.' + motif.toLowerCase() + ".solutions.ini"));
+    }
+  }
 
-				final String name =
-					fileName.substring(
-						fileName.lastIndexOf('/') + 1,
-						fileName.indexOf('-'));
-				final String cldFileName =
-					fileName.replaceAll("concat_", "").replaceAll(
-						".aol",
-						".cld");
+  private void analyseCodeLevelModels(final String aPath) {
+    final File pathFile = new File(aPath);
+    final String[] subPaths = pathFile.list();
 
-				try {
-					final long startTime = System.currentTimeMillis();
-					ProxyConsole
-						.getInstance()
-						.debugOutput()
-						.print("Analysing ");
-					ProxyConsole.getInstance().debugOutput().print(name);
-					ProxyConsole.getInstance().debugOutput().println("...");
+    for (int i = 0; i < subPaths.length; i++) {
+      final String fileName = aPath + subPaths[i];
+      final File file = new File(fileName);
 
-					ICodeLevelModel codeLevelModel =
-						Factory.getInstance().createCodeLevelModel(name);
-					codeLevelModel.create(new AOLCreator(
-						new String[] { fileName }));
+      if (file.isDirectory()) {
+        this.analyseCodeLevelModels(fileName + '/');
+      } else if (fileName.indexOf("-concat_des_") > 0 && !fileName.endsWith(".filtered.aol")) {
 
-					IIdiomLevelModel idiomLevelModel = null;
-					try {
-						final MethodInvocationAnalyser methodInvocationAdder =
-							new MethodInvocationAnalyser();
-						methodInvocationAdder.setCLDFile(cldFileName);
-						codeLevelModel =
-							(ICodeLevelModel) methodInvocationAdder
-								.invoke(codeLevelModel);
+        final String name =
+            fileName.substring(fileName.lastIndexOf('/') + 1, fileName.indexOf('-'));
+        final String cldFileName = fileName.replaceAll("concat_", "").replaceAll(".aol", ".cld");
 
-						idiomLevelModel =
-							(IIdiomLevelModel) new AACRelationshipsAnalysis(
-								false).invoke(codeLevelModel);
-					}
-					catch (final UnsupportedSourceModelException e) {
-						e.printStackTrace(ProxyConsole
-							.getInstance()
-							.errorOutput());
-					}
+        try {
+          final long startTime = System.currentTimeMillis();
+          ProxyConsole.getInstance().debugOutput().print("Analysing ");
+          ProxyConsole.getInstance().debugOutput().print(name);
+          ProxyConsole.getInstance().debugOutput().println("...");
 
-					final String programString =
-						StringBuilder.buildModelString(idiomLevelModel);
+          ICodeLevelModel codeLevelModel = Factory.getInstance().createCodeLevelModel(name);
+          codeLevelModel.create(new AOLCreator(new String[] {fileName}));
 
-					for (int j = 0; j < ALOEPICaller.MOTIFS.length; j++) {
-						final String motif = ALOEPICaller.MOTIFS[j];
-						final String motifString =
-							StringBuilder.buildPatternString(motif);
-						final EPISolver solver =
-							new OptimisedBitVectorSolver(
-								programString,
-								motifString,
-								motif,
-								new Approximation(),
-								null);
-						final Solution[] solutions = solver.computeSolutions();
+          IIdiomLevelModel idiomLevelModel = null;
+          try {
+            final MethodInvocationAnalyser methodInvocationAdder = new MethodInvocationAnalyser();
+            methodInvocationAdder.setCLDFile(cldFileName);
+            codeLevelModel = (ICodeLevelModel) methodInvocationAdder.invoke(codeLevelModel);
 
-						ProxyConsole
-							.getInstance()
-							.debugOutput()
-							.print(solutions.length);
-						ProxyConsole
-							.getInstance()
-							.debugOutput()
-							.print(" solutions for ");
-						ProxyConsole.getInstance().debugOutput().print(motif);
-						ProxyConsole.getInstance().debugOutput().print(" in ");
-						ProxyConsole
-							.getInstance()
-							.debugOutput()
-							.print(System.currentTimeMillis() - startTime);
-						ProxyConsole
-							.getInstance()
-							.debugOutput()
-							.println(" ms.\n");
-						Solution.print(
-							solutions,
-							ProxyDisk.getInstance().fileTempOutput(
-								"rsc/Sodalia/" + name + '.'
-										+ motif.toLowerCase()
-										+ ".solutions.ini"));
-					}
-				}
-				catch (final CreationException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	}
+            idiomLevelModel =
+                (IIdiomLevelModel) new AACRelationshipsAnalysis(false).invoke(codeLevelModel);
+          } catch (final UnsupportedSourceModelException e) {
+            e.printStackTrace(ProxyConsole.getInstance().errorOutput());
+          }
+
+          final String programString = StringBuilder.buildModelString(idiomLevelModel);
+
+          for (int j = 0; j < ALOEPICaller.MOTIFS.length; j++) {
+            final String motif = ALOEPICaller.MOTIFS[j];
+            final String motifString = StringBuilder.buildPatternString(motif);
+            final EPISolver solver =
+                new OptimisedBitVectorSolver(
+                    programString, motifString, motif, new Approximation(), null);
+            final Solution[] solutions = solver.computeSolutions();
+
+            ProxyConsole.getInstance().debugOutput().print(solutions.length);
+            ProxyConsole.getInstance().debugOutput().print(" solutions for ");
+            ProxyConsole.getInstance().debugOutput().print(motif);
+            ProxyConsole.getInstance().debugOutput().print(" in ");
+            ProxyConsole.getInstance().debugOutput().print(System.currentTimeMillis() - startTime);
+            ProxyConsole.getInstance().debugOutput().println(" ms.\n");
+            Solution.print(
+                solutions,
+                ProxyDisk.getInstance()
+                    .fileTempOutput(
+                        "rsc/Sodalia/" + name + '.' + motif.toLowerCase() + ".solutions.ini"));
+          }
+        } catch (final CreationException e) {
+          e.printStackTrace();
+        }
+      }
+    }
+  }
 }
 
 //	final AOLCreator aolCreator =

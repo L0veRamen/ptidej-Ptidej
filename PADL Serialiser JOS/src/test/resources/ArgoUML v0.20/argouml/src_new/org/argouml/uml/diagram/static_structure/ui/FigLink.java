@@ -25,66 +25,58 @@
 package org.argouml.uml.diagram.static_structure.ui;
 
 import java.awt.Color;
-
 import org.argouml.model.Model;
 import org.argouml.uml.diagram.ui.FigEdgeModelElement;
 import org.tigris.gef.presentation.Fig;
 
-/**
- * Class to display graphics for a UML Link in a diagram.
- *
- */
+/** Class to display graphics for a UML Link in a diagram. */
 public class FigLink extends FigEdgeModelElement {
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    /**
-     * Constructor.
-     */
-    public FigLink() {
-	getFig().setLineColor(Color.black);
-	setBetweenNearestPoints(true);
+  /** Constructor. */
+  public FigLink() {
+    getFig().setLineColor(Color.black);
+    setBetweenNearestPoints(true);
+  }
+
+  /**
+   * Constructor that hooks the Fig to a UML element.
+   *
+   * @param edge the UML element
+   */
+  public FigLink(Object edge) {
+    this();
+    setOwner(edge);
+  }
+
+  /**
+   * TODO: should edit something...
+   *
+   * @see org.argouml.uml.diagram.ui.FigEdgeModelElement#canEdit(org.tigris.gef.presentation.Fig)
+   */
+  protected boolean canEdit(Fig f) {
+    return false;
+  }
+
+  /**
+   * @see org.argouml.uml.diagram.ui.FigEdgeModelElement#getDestination()
+   */
+  protected Object getDestination() {
+    if (getOwner() != null) {
+      return Model.getCommonBehaviorHelper().getDestination(/*(MLink)*/ getOwner());
     }
+    return null;
+  }
 
-    /**
-     * Constructor that hooks the Fig to a UML element.
-     *
-     * @param edge the UML element
-     */
-    public FigLink(Object edge) {
-	this();
-	setOwner(edge);
+  /**
+   * @see org.argouml.uml.diagram.ui.FigEdgeModelElement#getSource()
+   */
+  protected Object getSource() {
+    if (getOwner() != null) {
+      return Model.getCommonBehaviorHelper().getSource(/*(MLink)*/ getOwner());
     }
-
-    /**
-     * TODO: should edit something...
-     *
-     * @see org.argouml.uml.diagram.ui.FigEdgeModelElement#canEdit(org.tigris.gef.presentation.Fig)
-     */
-    protected boolean canEdit(Fig f) { return false; }
-
-
-    /**
-     * @see org.argouml.uml.diagram.ui.FigEdgeModelElement#getDestination()
-     */
-    protected Object getDestination() {
-        if (getOwner() != null) {
-            return Model.getCommonBehaviorHelper()
-		.getDestination(/*(MLink)*/ getOwner());
-        }
-        return null;
-    }
-
-    /**
-     * @see org.argouml.uml.diagram.ui.FigEdgeModelElement#getSource()
-     */
-    protected Object getSource() {
-        if (getOwner() != null) {
-            return Model.getCommonBehaviorHelper()
-		.getSource(/*(MLink)*/ getOwner());
-        }
-        return null;
-    }
-
+    return null;
+  }
 } /* end class FigLink */

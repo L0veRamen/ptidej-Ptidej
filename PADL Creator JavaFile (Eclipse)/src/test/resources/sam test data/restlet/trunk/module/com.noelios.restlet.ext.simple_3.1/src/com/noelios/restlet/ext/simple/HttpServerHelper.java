@@ -23,42 +23,39 @@
 package com.noelios.restlet.ext.simple;
 
 import java.net.ServerSocket;
-
 import org.restlet.Server;
 import org.restlet.data.Protocol;
-
 import simple.http.BufferedPipelineFactory;
 import simple.http.PipelineHandlerFactory;
 import simple.http.connect.ConnectionFactory;
 
 /**
  * Simple HTTPS server connector.
+ *
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://semagia.com/">Semagia</a>
- * @author Jerome Louvel (contact@noelios.com) <a href="http://www.noelios.com">Noelios Consulting</a>
+ * @author Jerome Louvel (contact@noelios.com) <a href="http://www.noelios.com">Noelios
+ *     Consulting</a>
  */
-public class HttpServerHelper extends SimpleServerHelper
-{
-	/**
-	 * Constructor.
-	 * @param server The server to help.
-	 */
-	public HttpServerHelper(Server server)
-	{
-		super(server);
-		getSupportedProtocols().add(Protocol.HTTP);
-	}
+public class HttpServerHelper extends SimpleServerHelper {
+  /**
+   * Constructor.
+   *
+   * @param server The server to help.
+   */
+  public HttpServerHelper(Server server) {
+    super(server);
+    getSupportedProtocols().add(Protocol.HTTP);
+  }
 
-	/** Starts the Restlet. */
-	public void start() throws Exception
-	{
-		setSocket(new ServerSocket(getServer().getPort()));
-		setConfidential(false);
-		setHandler(PipelineHandlerFactory.getInstance(new SimpleProtocolHandler(this),
-				getDefaultThreads(), getMaxWaitTimeMs()));
-		setConnection(ConnectionFactory.getConnection(getHandler(),
-				new BufferedPipelineFactory()));
-		getConnection().connect(getSocket());
-		super.start();
-	}
-
+  /** Starts the Restlet. */
+  public void start() throws Exception {
+    setSocket(new ServerSocket(getServer().getPort()));
+    setConfidential(false);
+    setHandler(
+        PipelineHandlerFactory.getInstance(
+            new SimpleProtocolHandler(this), getDefaultThreads(), getMaxWaitTimeMs()));
+    setConnection(ConnectionFactory.getConnection(getHandler(), new BufferedPipelineFactory()));
+    getConnection().connect(getSocket());
+    super.start();
+  }
 }

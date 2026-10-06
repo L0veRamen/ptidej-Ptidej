@@ -28,40 +28,36 @@ import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
 /**
- * The list of operations represented by some collaboration as shown on the
- * collaboration proppanel
+ * The list of operations represented by some collaboration as shown on the collaboration proppanel
+ *
  * @since Oct 2, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class UMLCollaborationRepresentedOperationListModel
-    extends UMLModelElementListModel2 {
+public class UMLCollaborationRepresentedOperationListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLCollaborationRepresentedOperationListModel.
-     */
-    public UMLCollaborationRepresentedOperationListModel() {
-        super("representedOperation");
+  /** Constructor for UMLCollaborationRepresentedOperationListModel. */
+  public UMLCollaborationRepresentedOperationListModel() {
+    super("representedOperation");
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    Object target = getTarget();
+    if (Model.getFacade().isACollaboration(target)) {
+      Object col = /*(MCollaboration)*/ target;
+      removeAllElements();
+      if (Model.getFacade().getRepresentedOperation(col) != null)
+        addElement(Model.getFacade().getRepresentedOperation(col));
     }
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        Object target = getTarget();
-        if (Model.getFacade().isACollaboration(target)) {
-            Object col = /*(MCollaboration)*/ target;
-            removeAllElements();
-            if (Model.getFacade().getRepresentedOperation(col) != null)
-                addElement(Model.getFacade().getRepresentedOperation(col));
-        }
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ elem) {
-        return Model.getFacade().isAOperation(elem)
-            && Model.getFacade().getRepresentedOperation(getTarget()) == elem;
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ elem) {
+    return Model.getFacade().isAOperation(elem)
+        && Model.getFacade().getRepresentedOperation(getTarget()) == elem;
+  }
 }

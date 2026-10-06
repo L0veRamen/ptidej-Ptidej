@@ -27,45 +27,37 @@ package org.argouml.ui;
 import javax.swing.JFileChooser;
 
 /**
- * Factory class to return a JFileChooser configured
- * according to JRE requirements.
+ * Factory class to return a JFileChooser configured according to JRE requirements.
  *
  * @deprecated this class is no longer required now we no loner support UML 1.3
- *
  * @author Bob Tarling
  */
 public class FileChooserFactory {
 
-    /**
-     * Return a proper FileChooser. This replaces the normal FileChooser with a
-     * system-dependent one, but solely in case of Sun Java 1.3.1 on Windows.
-     * @deprecated 
-     *
-     * @return <code>JFileChooser</code>
-     * @deprecated now we are JRE1.4+ we can just call new JFileChooser()
-     * directly.
-     */
-    public static JFileChooser getFileChooser() {
-        return new JFileChooser();
-    }
+  /**
+   * Return a proper FileChooser. This replaces the normal FileChooser with a system-dependent one,
+   * but solely in case of Sun Java 1.3.1 on Windows.
+   *
+   * @deprecated
+   * @return <code>JFileChooser</code>
+   * @deprecated now we are JRE1.4+ we can just call new JFileChooser() directly.
+   */
+  public static JFileChooser getFileChooser() {
+    return new JFileChooser();
+  }
 
-    /**
-     * Return a proper FileChooser. This replaces the normal FileChooser with a
-     * system-dependent one, but solely in case of Sun Java 1.3.1 on Windows.
-     *
-     * @param directory a <code>String</code> giving the path to a file
-     * or directory. Passing in a <code>null</code>
-     * string causes the file chooser to point to the user's default directory.
-     * This default depends on the operating system. It is
-     * typically the "My Documents" folder on Windows, and the user's
-     * home directory on Unix.
-     *
-     * @return <code>JFileChooser</code>
-     * @deprecated now we are JRE1.4+ we can just call new JFileChooser(String)
-     * directly.
-     */
-    public static JFileChooser getFileChooser(String directory) {
-        return new JFileChooser(directory);
-    }
+  /**
+   * Return a proper FileChooser. This replaces the normal FileChooser with a system-dependent one,
+   * but solely in case of Sun Java 1.3.1 on Windows.
+   *
+   * @param directory a <code>String</code> giving the path to a file or directory. Passing in a
+   *     <code>null</code> string causes the file chooser to point to the user's default directory.
+   *     This default depends on the operating system. It is typically the "My Documents" folder on
+   *     Windows, and the user's home directory on Unix.
+   * @return <code>JFileChooser</code>
+   * @deprecated now we are JRE1.4+ we can just call new JFileChooser(String) directly.
+   */
+  public static JFileChooser getFileChooser(String directory) {
+    return new JFileChooser(directory);
+  }
 }
-

@@ -26,102 +26,90 @@ package org.argouml.cognitive.ui;
 
 import java.util.Enumeration;
 import java.util.Vector;
-
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreePath;
-
 import org.argouml.cognitive.Designer;
+import org.argouml.cognitive.ListSet;
 import org.argouml.cognitive.Poster;
 import org.argouml.cognitive.ToDoItem;
 import org.argouml.cognitive.ToDoList;
-import org.argouml.cognitive.ListSet;
 
-
-
-/**
- * Rule for sorting the ToDo list: Poster -> Item.
- *
- */
+/** Rule for sorting the ToDo list: Poster -> Item. */
 public class GoListToPosterToItem extends AbstractGoList {
 
-    ////////////////////////////////////////////////////////////////
-    // TreeModel implementation
+  ////////////////////////////////////////////////////////////////
+  // TreeModel implementation
 
-    /**
-     * @see javax.swing.tree.TreeModel#getChild(java.lang.Object, int)
-     */
-    public Object getChild(Object parent, int index) {
-	Vector children = getChildren(parent);
-	return (children == null) ? null : children.elementAt(index);
+  /**
+   * @see javax.swing.tree.TreeModel#getChild(java.lang.Object, int)
+   */
+  public Object getChild(Object parent, int index) {
+    Vector children = getChildren(parent);
+    return (children == null) ? null : children.elementAt(index);
+  }
+
+  /**
+   * @see javax.swing.tree.TreeModel#getChildCount(java.lang.Object)
+   */
+  public int getChildCount(Object parent) {
+    Vector children = getChildren(parent);
+    return (children == null) ? 0 : children.size();
+  }
+
+  /**
+   * @see javax.swing.tree.TreeModel#getIndexOfChild( java.lang.Object, java.lang.Object)
+   */
+  public int getIndexOfChild(Object parent, Object child) {
+    Vector children = getChildren(parent);
+    return (children == null) ? -1 : children.indexOf(child);
+  }
+
+  /**
+   * @see javax.swing.tree.TreeModel#isLeaf(java.lang.Object)
+   */
+  public boolean isLeaf(Object node) {
+    if (node instanceof ToDoList) return false;
+    if (getChildCount(node) > 0) return false;
+    return true;
+  }
+
+  /**
+   * @param parent the parent object to check for offspring
+   * @return the children
+   */
+  public Vector getChildren(Object parent) {
+    ListSet allPosters = Designer.theDesigner().getToDoList().getPosters();
+    if (parent instanceof ToDoList) {
+      return allPosters.asVector();
     }
-
-    /**
-     * @see javax.swing.tree.TreeModel#getChildCount(java.lang.Object)
-     */
-    public int getChildCount(Object parent) {
-	Vector children = getChildren(parent);
-	return (children == null) ? 0 : children.size();
+    // otherwise parent must be an offending design material
+    if (allPosters.contains(parent)) {
+      Vector res = new Vector();
+      ToDoList list = Designer.theDesigner().getToDoList();
+      Enumeration elems = list.elements();
+      while (elems.hasMoreElements()) {
+        ToDoItem item = (ToDoItem) elems.nextElement();
+        Poster post = item.getPoster();
+        if (post == parent) res.addElement(item);
+      }
+      return res;
     }
+    return null;
+  }
 
-    /**
-     * @see javax.swing.tree.TreeModel#getIndexOfChild(
-     * java.lang.Object, java.lang.Object)
-     */
-    public int getIndexOfChild(Object parent, Object child) {
-	Vector children = getChildren(parent);
-	return (children == null) ? -1 : children.indexOf(child);
-    }
+  /**
+   * @see javax.swing.tree.TreeModel#valueForPathChanged( javax.swing.tree.TreePath,
+   *     java.lang.Object)
+   */
+  public void valueForPathChanged(TreePath path, Object newValue) {}
 
-    /**
-     * @see javax.swing.tree.TreeModel#isLeaf(java.lang.Object)
-     */
-    public boolean isLeaf(Object node) {
-	if (node instanceof ToDoList) return false;
-	if (getChildCount(node) > 0) return false;
-	return true;
-    }
+  /**
+   * @see javax.swing.tree.TreeModel#addTreeModelListener(javax.swing.event.TreeModelListener)
+   */
+  public void addTreeModelListener(TreeModelListener l) {}
 
-
-    /**
-     * @param parent the parent object to check for offspring
-     * @return the children
-     */
-    public Vector getChildren(Object parent) {
-	ListSet allPosters =
-	    Designer.theDesigner().getToDoList().getPosters();
-	if (parent instanceof ToDoList) {
-	    return allPosters.asVector();
-	}
-	//otherwise parent must be an offending design material
-	if (allPosters.contains(parent)) {
-	    Vector res = new Vector();
-	    ToDoList list = Designer.theDesigner().getToDoList();
-	    Enumeration elems = list.elements();
-	    while (elems.hasMoreElements()) {
-		ToDoItem item = (ToDoItem) elems.nextElement();
-		Poster post = item.getPoster();
-		if (post == parent) res.addElement(item);
-	    }
-	    return res;
-	}
-	return null;
-    }
-
-    /**
-     * @see javax.swing.tree.TreeModel#valueForPathChanged(
-     * javax.swing.tree.TreePath, java.lang.Object)
-     */
-    public void valueForPathChanged(TreePath path, Object newValue) { }
-
-    /**
-     * @see javax.swing.tree.TreeModel#addTreeModelListener(javax.swing.event.TreeModelListener)
-     */
-    public void addTreeModelListener(TreeModelListener l) { }
-
-    /**
-     * @see javax.swing.tree.TreeModel#removeTreeModelListener(javax.swing.event.TreeModelListener)
-     */
-    public void removeTreeModelListener(TreeModelListener l) { }
-
-
+  /**
+   * @see javax.swing.tree.TreeModel#removeTreeModelListener(javax.swing.event.TreeModelListener)
+   */
+  public void removeTreeModelListener(TreeModelListener l) {}
 } /* end class GoListToPosterToItem */

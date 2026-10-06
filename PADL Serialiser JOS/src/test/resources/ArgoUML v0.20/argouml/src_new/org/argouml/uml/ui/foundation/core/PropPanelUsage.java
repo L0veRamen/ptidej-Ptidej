@@ -29,37 +29,24 @@ import org.argouml.uml.ui.ActionDeleteSingleModelElement;
 import org.argouml.uml.ui.ActionNavigateNamespace;
 import org.argouml.util.ConfigLoader;
 
-/**
- * The properties panel for a Usage.
- *
- */
+/** The properties panel for a Usage. */
 public class PropPanelUsage extends PropPanelDependency {
 
-    /**
-     * The constructor.
-     *
-     */
-    public PropPanelUsage() {
-        super("Usage", ConfigLoader.getTabPropsOrientation());
+  /** The constructor. */
+  public PropPanelUsage() {
+    super("Usage", ConfigLoader.getTabPropsOrientation());
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.stereotype"),
-                getStereotypeSelector());
-        addField(Translator.localize("label.namespace"),
-                getNamespaceSelector());
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.stereotype"), getStereotypeSelector());
+    addField(Translator.localize("label.namespace"), getNamespaceSelector());
 
-        addSeperator();
+    addSeperator();
 
-        addField(Translator.localize("label.suppliers"),
-                getSupplierScroll());
-        addField(Translator.localize("label.clients"),
-                getClientScroll());
+    addField(Translator.localize("label.suppliers"), getSupplierScroll());
+    addField(Translator.localize("label.clients"), getClientScroll());
 
-        // TODO: add Mapping
-        addAction(new ActionNavigateNamespace());
-        addAction(new ActionDeleteSingleModelElement());
-    }
-
+    // TODO: add Mapping
+    addAction(new ActionNavigateNamespace());
+    addAction(new ActionDeleteSingleModelElement());
+  }
 } /* end class PropPanelUsage */
-

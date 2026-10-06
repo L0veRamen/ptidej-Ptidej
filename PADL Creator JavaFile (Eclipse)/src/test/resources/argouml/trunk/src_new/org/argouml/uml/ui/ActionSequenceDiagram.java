@@ -28,26 +28,20 @@ import org.argouml.uml.diagram.DiagramFactory;
 import org.argouml.uml.diagram.sequence.ui.UMLSequenceDiagram;
 import org.argouml.uml.diagram.ui.UMLDiagram;
 
-/**
- * Action to add a new sequence diagram.
- */
+/** Action to add a new sequence diagram. */
 public final class ActionSequenceDiagram extends ActionNewDiagram {
 
-    /**
-     * Constructor.
-     */
-    public ActionSequenceDiagram() {
-        super("action.sequence-diagram");
-    }
+  /** Constructor. */
+  public ActionSequenceDiagram() {
+    super("action.sequence-diagram");
+  }
 
-    /**
-     * @see org.argouml.uml.ui.ActionNewDiagram#createDiagram()
-     */
-    public UMLDiagram createDiagram() {
-        return (UMLDiagram) DiagramFactory.getInstance().createDiagram(
-                UMLSequenceDiagram.class,
-                createCollaboration(),
-                null);
-    }
-
+  /**
+   * @see org.argouml.uml.ui.ActionNewDiagram#createDiagram()
+   */
+  public UMLDiagram createDiagram() {
+    return (UMLDiagram)
+        DiagramFactory.getInstance()
+            .createDiagram(UMLSequenceDiagram.class, createCollaboration(), null);
+  }
 } /* end class ActionSequenceDiagram */

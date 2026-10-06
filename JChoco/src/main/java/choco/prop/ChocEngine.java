@@ -13,7 +13,6 @@
 
 package choco.prop;
 
-import java.util.logging.Logger;
 import choco.Constraint;
 import choco.ContradictionException;
 import choco.Entity;
@@ -22,335 +21,283 @@ import choco.Var;
 import choco.integer.var.IntVarEvent;
 import choco.real.RealVar;
 import choco.real.var.RealVarEvent;
+import java.util.logging.Logger;
 
-/**
- * Implementation of an {@link choco.prop.AbstractPropagationEngine} for Choco.
- */
+/** Implementation of an {@link choco.prop.AbstractPropagationEngine} for Choco. */
 public class ChocEngine extends AbstractPropagationEngine {
 
-	/**
-	  * Reference to object for logging trace statements related to propagation events (using the java.util.logging package)
-	  */
+  /**
+   * Reference to object for logging trace statements related to propagation events (using the
+   * java.util.logging package)
+   */
+  private static Logger logger = Logger.getLogger("choco.prop");
 
-	private static Logger logger = Logger.getLogger("choco.prop");
+  /** the number of queues for storing constraint events */
+  protected static int NB_CONST_QUEUES = 4;
 
-	/**
-	 * the number of queues for storing constraint events
-	 */
-	protected static int NB_CONST_QUEUES = 4;
+  /** The different queues for the constraint awake events. */
+  private final ConstraintEventQueue[] constEventQueues;
 
-	/**
-	 * The different queues for the constraint awake events.
-	 */
+  /** Number of pending init constraint awake events. */
+  protected int nbPendingInitConstAwakeEvent;
 
-	private final ConstraintEventQueue[] constEventQueues;
+  /** The queue with all the variable events. */
+  protected VarEventQueue varEventQueue;
 
-	/**
-	 * Number of pending init constraint awake events.
-	 */
+  /** Constructs a new engine by initializing the var queues. */
+  public ChocEngine(final Problem pb) {
+    super(pb);
+    this.constEventQueues = new ConstraintEventQueue[ChocEngine.NB_CONST_QUEUES];
+    for (int i = 0; i < ChocEngine.NB_CONST_QUEUES; i++) {
+      this.constEventQueues[i] = new ConstraintEventQueue(this);
+    }
+    this.nbPendingInitConstAwakeEvent = 0;
+    this.varEventQueue = new VarEventQueue();
+  }
 
-	protected int nbPendingInitConstAwakeEvent;
+  /**
+   * Private method for completing the bound var posting.
+   *
+   * @param basicEvt The basic event posted.
+   * @param idx The index of the constraint which is responsible of the var.
+   */
+  // idee: - si on est "frozen", devenir en plus "redondant" (ie: double).
+  //       - par ailleurs, noter le changement (garder la vieille valeur de la borne ou
+  //       - devenir enqueued
+  protected void _postEvent(final Var v, final int idx, final int basicEvt) {
+    final VarEvent event = v.getEvent();
+    ChocEngine.logger.finest("post Event " + event.toString() + " for basicEvt:" + basicEvt);
+    /*event.setEventType(basicEvt);
+    event.setCause(idx);*/
+    final boolean alreadyEnqueued = event.isEnqueued();
+    event.recordEventTypeAndCause(basicEvt, idx);
+    if (!alreadyEnqueued) {
+      this.varEventQueue.pushEvent(event);
+    } else {
+      this.varEventQueue.updatePriority(event);
+    }
+    ChocEngine.logger.finest("posted Event " + event.toString());
+  }
 
-	/**
-	 * The queue with all the variable events.
-	 */
+  public boolean checkCleanState() {
+    boolean ok = true;
+    final Problem pb = this.getProblem();
+    final int nbiv = pb.getNbIntVars();
+    for (int i = 0; i < nbiv; i++) {
+      final IntVarEvent evt = (IntVarEvent) pb.getIntVar(i).getEvent();
+      if (!evt.getReleased()) {
+        System.out.println("var event non released " + evt.toString());
+        ok = false;
+      }
+    }
+    return ok;
+  }
 
-	protected VarEventQueue varEventQueue;
+  /** Decrements the number of init constraint awake events. */
+  public void decPendingInitConstAwakeEvent() {
+    this.nbPendingInitConstAwakeEvent--;
+  }
 
-	/**
-	 * Constructs a new engine by initializing the var queues.
-	 */
+  /**
+   * Removes all pending events (used when interrupting a propagation because a contradiction has
+   * been raised)
+   */
+  public void flushEvents() {
+    for (int i = 0; i < ChocEngine.NB_CONST_QUEUES; i++) {
+      this.constEventQueues[i].flushEventQueue();
+    }
+    this.varEventQueue.flushEventQueue();
+  }
 
-	public ChocEngine(final Problem pb) {
-		super(pb);
-		this.constEventQueues =
-			new ConstraintEventQueue[ChocEngine.NB_CONST_QUEUES];
-		for (int i = 0; i < ChocEngine.NB_CONST_QUEUES; i++) {
-			this.constEventQueues[i] = new ConstraintEventQueue(this);
-		}
-		this.nbPendingInitConstAwakeEvent = 0;
-		this.varEventQueue = new VarEventQueue();
-	}
+  public int getNbPendingEvents() {
+    int nbEvts = this.varEventQueue.size();
+    for (int i = 0; i < ChocEngine.NB_CONST_QUEUES; i++) {
+      nbEvts += this.constEventQueues[i].size();
+    }
+    return nbEvts;
+  }
 
-	/**
-	 * Private method for completing the bound var posting.
-	 * @param basicEvt The basic event posted.
-	 * @param idx      The index of the constraint which is responsible of the var.
-	 */
-	// idee: - si on est "frozen", devenir en plus "redondant" (ie: double).
-	//       - par ailleurs, noter le changement (garder la vieille valeur de la borne ou
-	//       - devenir enqueued
-	protected void _postEvent(final Var v, final int idx, final int basicEvt) {
-		final VarEvent event = v.getEvent();
-		ChocEngine.logger.finest("post Event " + event.toString()
-				+ " for basicEvt:" + basicEvt);
-		/*event.setEventType(basicEvt);
-		event.setCause(idx);*/
-		final boolean alreadyEnqueued = event.isEnqueued();
-		event.recordEventTypeAndCause(basicEvt, idx);
-		if (!alreadyEnqueued) {
-			this.varEventQueue.pushEvent(event);
-		}
-		else {
-			this.varEventQueue.updatePriority(event);
-		}
-		ChocEngine.logger.finest("posted Event " + event.toString());
-	}
+  /** Returns the next constraint var queue from which an event should be propagated. */
+  public EventQueue getNextActiveConstraintEventQueue() {
+    for (int i = 0; i < ChocEngine.NB_CONST_QUEUES; i++) {
+      if (!this.constEventQueues[i].isEmpty()) {
+        return this.constEventQueues[i];
+      }
+    }
+    return null;
+  }
 
-	public boolean checkCleanState() {
-		boolean ok = true;
-		final Problem pb = this.getProblem();
-		final int nbiv = pb.getNbIntVars();
-		for (int i = 0; i < nbiv; i++) {
-			final IntVarEvent evt = (IntVarEvent) pb.getIntVar(i).getEvent();
-			if (!evt.getReleased()) {
-				System.out.println("var event non released " + evt.toString());
-				ok = false;
-			}
-		}
-		return ok;
-	}
+  /** Returns the next queue from which an event should be propagated. */
+  public EventQueue getNextActiveEventQueue() {
+    if (this.nbPendingInitConstAwakeEvent > 0) {
+      return this.getNextActiveConstraintEventQueue();
+    } else if (!this.varEventQueue.isEmpty()) {
+      return this.varEventQueue;
+    } else {
+      return this.getNextActiveConstraintEventQueue();
+    }
+  }
 
-	/**
-	 * Decrements the number of init constraint awake events.
-	 */
+  /**
+   * getter without side effect: returns the i-ht pending event (without popping any event from the
+   * queues)
+   */
+  public PropagationEvent getPendingEvent(int idx) {
+    if (this.nbPendingInitConstAwakeEvent > 0) {
+      idx += this.varEventQueue.size();
+    }
+    if (idx < this.varEventQueue.size()) {
+      return this.varEventQueue.get(idx);
+    } else {
+      EventQueue q = this.varEventQueue;
+      int qidx = 0;
+      do {
+        idx = idx - q.size();
+        q = this.constEventQueues[qidx];
+        qidx++;
+      } while (idx > q.size() && qidx < ChocEngine.NB_CONST_QUEUES);
+      if (idx <= q.size()) {
+        return q.get(idx); // return an event from one of the constraint event queues
+      } else if (this.nbPendingInitConstAwakeEvent > 0 && idx < this.varEventQueue.size()) {
+        return this.varEventQueue.get(idx); // return an event from the variable event queues
+      } else {
+        return null; // return no event, as the index is greater than the total number of pending
+                     // events
+      }
+    }
+  }
 
-	public void decPendingInitConstAwakeEvent() {
-		this.nbPendingInitConstAwakeEvent--;
-	}
+  /**
+   * Gets the queue for a given priority of var.
+   *
+   * @param event The var for which the queue is searched.
+   */
+  public ConstraintEventQueue getQueue(final ConstraintEvent event) {
+    final int prio = event.getPriority();
+    if (prio < ChocEngine.NB_CONST_QUEUES) {
+      return this.constEventQueues[prio];
+    } else {
+      ChocEngine.logger.warning("wrong constraint priority. It should be between 0 and 3.");
+      return this.constEventQueues[3];
+    }
+  }
 
-	/**
-	 * Removes all pending events (used when interrupting a propagation because
-	 * a contradiction has been raised)
-	 */
-	public void flushEvents() {
-		for (int i = 0; i < ChocEngine.NB_CONST_QUEUES; i++) {
-			this.constEventQueues[i].flushEventQueue();
-		}
-		this.varEventQueue.flushEventQueue();
-	}
+  /** Returns the variable var queue. */
+  public VarEventQueue getVarEventQueue() {
+    return this.varEventQueue;
+  }
 
-	public int getNbPendingEvents() {
-		int nbEvts = this.varEventQueue.size();
-		for (int i = 0; i < ChocEngine.NB_CONST_QUEUES; i++) {
-			nbEvts += this.constEventQueues[i].size();
-		}
-		return nbEvts;
-	}
+  /** Increments the number of init constraint awake events. */
+  public void incPendingInitConstAwakeEvent() {
+    this.nbPendingInitConstAwakeEvent++;
+  }
 
-	/**
-	 * Returns the next constraint var queue from which an event should be propagated.
-	 */
+  /**
+   * Posts a constraint awake var.
+   *
+   * @param constraint The constraint that must be awaken.
+   * @param init Specifies if the constraint must be initialized (awake instead of propagate).
+   */
+  public boolean postConstAwake(final Constraint constraint, final boolean init) {
+    final ConstraintEvent event = (ConstraintEvent) constraint.getEvent();
+    final ConstraintEventQueue queue = this.getQueue(event);
+    if (queue.pushEvent(event)) {
+      event.setInitialized(!init);
+      if (init) {
+        this.incPendingInitConstAwakeEvent();
+      }
+      return true;
+    } else {
+      return false;
+    }
+  }
 
-	public EventQueue getNextActiveConstraintEventQueue() {
-		for (int i = 0; i < ChocEngine.NB_CONST_QUEUES; i++) {
-			if (!this.constEventQueues[i].isEmpty()) {
-				return this.constEventQueues[i];
-			}
-		}
-		return null;
-	}
+  /**
+   * Posts an Inst var.
+   *
+   * @param v The variable that is instantiated.
+   * @param idx The index of the constraint which is responsible of the var.
+   */
+  public void postInstInt(final choco.integer.var.IntDomainVar v, final int idx) {
+    this._postEvent(v, idx, IntVarEvent.INSTINT);
+  }
 
-	/**
-	 * Returns the next queue from which an event should be propagated.
-	 */
+  /**
+   * Posts an Remove var.
+   *
+   * @param v The variable the value is removed from.
+   * @param idx The index of the constraint which is responsible of the var.
+   */
+  public void postRemoveVal(final choco.integer.var.IntDomainVar v, final int x, final int idx) {
+    this._postEvent(v, idx, IntVarEvent.REMVAL);
+  }
 
-	public EventQueue getNextActiveEventQueue() {
-		if (this.nbPendingInitConstAwakeEvent > 0) {
-			return this.getNextActiveConstraintEventQueue();
-		}
-		else if (!this.varEventQueue.isEmpty()) {
-			return this.varEventQueue;
-		}
-		else {
-			return this.getNextActiveConstraintEventQueue();
-		}
-	}
+  /**
+   * Posts an IncInf event
+   *
+   * @param v The variable the bound is modified.
+   * @param idx The index of the constraint which is responsible of the var.
+   */
+  public void postUpdateInf(final choco.integer.var.IntDomainVar v, final int idx) {
+    this._postEvent(v, idx, IntVarEvent.INCINF);
+  }
 
-	/** getter without side effect:
-	 *  returns the i-ht pending event (without popping any event from the queues)
-	 */
-	public PropagationEvent getPendingEvent(int idx) {
-		if (this.nbPendingInitConstAwakeEvent > 0) {
-			idx += this.varEventQueue.size();
-		}
-		if (idx < this.varEventQueue.size()) {
-			return this.varEventQueue.get(idx);
-		}
-		else {
-			EventQueue q = this.varEventQueue;
-			int qidx = 0;
-			do {
-				idx = idx - q.size();
-				q = this.constEventQueues[qidx];
-				qidx++;
-			}
-			while (idx > q.size() && qidx < ChocEngine.NB_CONST_QUEUES);
-			if (idx <= q.size()) {
-				return q.get(idx); // return an event from one of the constraint event queues
-			}
-			else if (this.nbPendingInitConstAwakeEvent > 0
-					&& idx < this.varEventQueue.size()) {
-				return this.varEventQueue.get(idx); // return an event from the variable event queues
-			}
-			else {
-				return null; // return no event, as the index is greater than the total number of pending events
-			}
-		}
-	}
+  /**
+   * Posts an lower bound event for a real variable.
+   *
+   * @param v
+   * @param idx
+   */
+  public void postUpdateInf(final RealVar v, final int idx) {
+    this._postEvent(v, idx, RealVarEvent.INCINF);
+  }
 
-	/**
-	 * Gets the queue for a given priority of var.
-	 * @param event The var for which the queue is searched.
-	 */
+  /**
+   * Posts a DecSup event
+   *
+   * @param v The variable the bound is modified.
+   * @param idx The index of the constraint which is responsible of the var.
+   */
+  public void postUpdateSup(final choco.integer.var.IntDomainVar v, final int idx) {
+    this._postEvent(v, idx, IntVarEvent.DECSUP);
+  }
 
-	public ConstraintEventQueue getQueue(final ConstraintEvent event) {
-		final int prio = event.getPriority();
-		if (prio < ChocEngine.NB_CONST_QUEUES) {
-			return this.constEventQueues[prio];
-		}
-		else {
-			ChocEngine.logger
-				.warning("wrong constraint priority. It should be between 0 and 3.");
-			return this.constEventQueues[3];
-		}
-	}
+  /**
+   * Posts an upper bound event for a real variable
+   *
+   * @param v
+   * @param idx
+   */
+  public void postUpdateSup(final RealVar v, final int idx) {
+    this._postEvent(v, idx, RealVarEvent.DECSUP);
+  }
 
-	/**
-	 * Returns the variable var queue.
-	 */
+  /**
+   * Throws a contradiction without cause.
+   *
+   * @throws choco.ContradictionException
+   */
+  public void raiseContradiction() throws ContradictionException {
+    throw new ContradictionException(this.getProblem());
+  }
 
-	public VarEventQueue getVarEventQueue() {
-		return this.varEventQueue;
-	}
+  /**
+   * Throws a contradiction with the specified cause.
+   *
+   * @throws choco.ContradictionException
+   */
+  public void raiseContradiction(final Entity cause) throws ContradictionException {
+    throw new ContradictionException(cause);
+  }
 
-	/**
-	 * Increments the number of init constraint awake events.
-	 */
-
-	public void incPendingInitConstAwakeEvent() {
-		this.nbPendingInitConstAwakeEvent++;
-	}
-
-	/**
-	 * Posts a constraint awake var.
-	 * @param constraint The constraint that must be awaken.
-	 * @param init       Specifies if the constraint must be initialized
-	 *                   (awake instead of propagate).
-	 */
-
-	public boolean postConstAwake(
-		final Constraint constraint,
-		final boolean init) {
-		final ConstraintEvent event = (ConstraintEvent) constraint.getEvent();
-		final ConstraintEventQueue queue = this.getQueue(event);
-		if (queue.pushEvent(event)) {
-			event.setInitialized(!init);
-			if (init) {
-				this.incPendingInitConstAwakeEvent();
-			}
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-
-	/**
-	 * Posts an Inst var.
-	 * @param v    The variable that is instantiated.
-	 * @param idx  The index of the constraint which is responsible of the var.
-	 */
-
-	public void postInstInt(
-		final choco.integer.var.IntDomainVar v,
-		final int idx) {
-		this._postEvent(v, idx, IntVarEvent.INSTINT);
-	}
-
-	/**
-	 * Posts an Remove var.
-	 * @param v    The variable the value is removed from.
-	 * @param idx  The index of the constraint which is responsible of the var.
-	 */
-
-	public void postRemoveVal(
-		final choco.integer.var.IntDomainVar v,
-		final int x,
-		final int idx) {
-		this._postEvent(v, idx, IntVarEvent.REMVAL);
-	}
-
-	/**
-	 * Posts an IncInf event
-	 * @param v    The variable the bound is modified.
-	 * @param idx  The index of the constraint which is responsible of the var.
-	 */
-
-	public void postUpdateInf(
-		final choco.integer.var.IntDomainVar v,
-		final int idx) {
-		this._postEvent(v, idx, IntVarEvent.INCINF);
-	}
-
-	/**
-	 * Posts an lower bound event for a real variable.
-	 * @param v
-	 * @param idx
-	 */
-	public void postUpdateInf(final RealVar v, final int idx) {
-		this._postEvent(v, idx, RealVarEvent.INCINF);
-	}
-
-	/**
-	 * Posts a DecSup event
-	 * @param v    The variable the bound is modified.
-	 * @param idx  The index of the constraint which is responsible of the var.
-	 */
-
-	public void postUpdateSup(
-		final choco.integer.var.IntDomainVar v,
-		final int idx) {
-		this._postEvent(v, idx, IntVarEvent.DECSUP);
-	}
-
-	/**
-	 * Posts an upper bound event for a real variable
-	 * @param v
-	 * @param idx
-	 */
-	public void postUpdateSup(final RealVar v, final int idx) {
-		this._postEvent(v, idx, RealVarEvent.DECSUP);
-	}
-
-	/**
-	 * Throws a contradiction without cause.
-	 * @throws choco.ContradictionException
-	 */
-
-	public void raiseContradiction() throws ContradictionException {
-		throw new ContradictionException(this.getProblem());
-	}
-
-	/**
-	 * Throws a contradiction with the specified cause.
-	 * @throws choco.ContradictionException
-	 */
-
-	public void raiseContradiction(final Entity cause)
-			throws ContradictionException {
-		throw new ContradictionException(cause);
-	}
-
-	/**
-	 * Registers an event in the queue. It should be called before using the queue to add
-	 * the var in the available events of the queue.
-	 * @param event
-	 */
-
-	public void registerEvent(final ConstraintEvent event) {
-		final ConstraintEventQueue queue = this.getQueue(event);
-		queue.add(event);
-	}
-
+  /**
+   * Registers an event in the queue. It should be called before using the queue to add the var in
+   * the available events of the queue.
+   *
+   * @param event
+   */
+  public void registerEvent(final ConstraintEvent event) {
+    final ConstraintEventQueue queue = this.getQueue(event);
+    queue.add(event);
+  }
 }

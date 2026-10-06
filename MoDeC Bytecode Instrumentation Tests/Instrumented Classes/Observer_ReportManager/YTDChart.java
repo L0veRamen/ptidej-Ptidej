@@ -1,21 +1,20 @@
-//package src.OBSERVER;
+// package src.OBSERVER;
 // CONCRETE OBSERVER
-import java.awt.*;
-import javax.swing.*;
 import com.sun.java.swing.plaf.windows.*;
+import java.awt.*;
 import java.util.*;
+import javax.swing.*;
 
 public class YTDChart extends JFrame implements Observer {
   public static final String newline = "\n";
 
-//  private JPanel pSearchCriteria;
-//  private JLabel lblSalesFigure;
+  //  private JPanel pSearchCriteria;
+  //  private JLabel lblSalesFigure;
   private ReportManager objReportManager;
   private String department = "";
   private boolean fromRefresh;
 
-  public YTDChart(ReportManager inp_objReportManager)
-  throws Exception {
+  public YTDChart(ReportManager inp_objReportManager) throws Exception {
     super("Observer Pattern - Example");
     objReportManager = inp_objReportManager;
 
@@ -33,7 +32,7 @@ public class YTDChart extends JFrame implements Observer {
 
   public void refreshData(Observable subject) {
     if (subject == objReportManager) {
-      //get subject's state
+      // get subject's state
       department = objReportManager.getDepartment().trim();
 
       clear();
@@ -41,6 +40,7 @@ public class YTDChart extends JFrame implements Observer {
       repaint();
     }
   }
+
   public void clear() {
     Graphics g = getGraphics();
     Dimension d = getSize();
@@ -51,7 +51,7 @@ public class YTDChart extends JFrame implements Observer {
   }
 
   public void paint(Graphics g) {
-//    Insets insets = insets();
+    //    Insets insets = insets();
 
     plotMonths(g);
 
@@ -61,7 +61,7 @@ public class YTDChart extends JFrame implements Observer {
       int h = 20;
 
       int[] totals = getYTDTotals(department);
-      //current month
+      // current month
       Calendar cal = Calendar.getInstance();
       cal.setTime(new Date());
       int month = cal.get(Calendar.MONTH) + 1;
@@ -69,10 +69,9 @@ public class YTDChart extends JFrame implements Observer {
       for (int i = 0; i < month; i++) {
         g.setColor(Color.blue);
         if (totals[i] > 0) {
-          w = (int)(totals[i] / 50);
+          w = (int) (totals[i] / 50);
           g.fillRect(x, y, w, h);
-          g.drawString ("$" + totals[i], x + w + 5,
-                        y + 15);
+          g.drawString("$" + totals[i], x + w + 5, y + 15);
         }
         y = y + 30;
       }
@@ -81,15 +80,16 @@ public class YTDChart extends JFrame implements Observer {
   }
 
   private void plotMonths(Graphics g) {
-    if ((department != null) &&
-        (department.trim().length() > 0)) {
-      g.drawString(department + " YTD Report",150, 50);
+    if ((department != null) && (department.trim().length() > 0)) {
+      g.drawString(department + " YTD Report", 150, 50);
     } else {
-      g.drawString(department + "YTD Report",150, 50);
+      g.drawString(department + "YTD Report", 150, 50);
     }
-    String[] months = {"Jan","Feb","Mar","Apr",
-                       "May","Jun","Jul","Aug",
-                       "Sep","Oct","Nov","Dec"};
+    String[] months = {
+      "Jan", "Feb", "Mar", "Apr",
+      "May", "Jun", "Jul", "Aug",
+      "Sep", "Oct", "Nov", "Dec"
+    };
 
     int x = 50, y = 115;
     for (int j = 0; j < months.length; j++) {
@@ -97,16 +97,16 @@ public class YTDChart extends JFrame implements Observer {
       g.drawString(months[j], x, y);
       y = y + 30;
     }
-
   }
+
   private int[] getYTDTotals(String department) {
-    int[] totals = {1000, 0, 2000, 0, 0, 0, 0, 0, 0, 0, 0,
-                    0};
+    int[] totals = {1000, 0, 2000, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     for (int i = 0; i < 12; i++) {
       totals[i] = getMonthlyTotal(i + 1, department);
     }
     return totals;
   }
+
   private int getMonthlyTotal(int month, String department) {
     FileUtil futil = new FileUtil();
     Vector allRows = futil.fileToVector("Data/Transactions.dat");
@@ -117,12 +117,11 @@ public class YTDChart extends JFrame implements Observer {
     for (int i = 0; i < allRows.size(); i++) {
       String str = (String) allRows.elementAt(i);
       if (str.indexOf(searchStr) > -1) {
-        StringTokenizer st =
-          new StringTokenizer(str, ",");
-        st.nextToken();//bypass the department
-        st.nextToken();//bypass the month
-        st.nextToken();//bypass the date
-        st.nextToken();//bypass items
+        StringTokenizer st = new StringTokenizer(str, ",");
+        st.nextToken(); // bypass the department
+        st.nextToken(); // bypass the month
+        st.nextToken(); // bypass the date
+        st.nextToken(); // bypass items
         String amount = st.nextToken();
 
         total = total + Integer.valueOf(amount).intValue();
@@ -130,6 +129,4 @@ public class YTDChart extends JFrame implements Observer {
     }
     return total;
   }
-
-}// end of class YTDChart
-
+} // end of class YTDChart

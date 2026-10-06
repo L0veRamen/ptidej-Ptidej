@@ -26,56 +26,55 @@ package org.argouml.uml.ui;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.argouml.model.Model;
 
 /**
  * Test for {@link ActionUseCaseDiagram}.
+ *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 9, 2003
  */
-public class TestActionUseCaseDiagram
-    extends AbstractTestActionAddDiagram {
+public class TestActionUseCaseDiagram extends AbstractTestActionAddDiagram {
 
-    /**
-     * Constructor
-     * @param arg0 test case name.
+  /**
+   * Constructor
+   *
+   * @param arg0 test case name.
+   */
+  public TestActionUseCaseDiagram(String arg0) {
+    super(arg0);
+  }
+
+  /**
+   * @see org.argouml.uml.ui.AbstractTestActionAddDiagram#getAction()
+   */
+  protected ActionAddDiagram getAction() {
+    return new ActionUseCaseDiagram();
+  }
+
+  /**
+   * @see org.argouml.uml.ui.AbstractTestActionAddDiagram#getNamespace()
+   */
+  protected Object getNamespace() {
+    return Model.getModelManagementFactory().createPackage();
+  }
+
+  /**
+   * @see AbstractTestActionAddDiagram#getValidNamespaceClasses()
+   */
+  protected List getValidNamespaceClasses() {
+    List rl = new ArrayList();
+    rl.add(Model.getMetaTypes().getPackage());
+    /*
+     * This needs to be a concrete metatype, so we can't use
+     * the general, but abstract, Classifier.  Replace with its
+     * concrete subtypes.
      */
-    public TestActionUseCaseDiagram(String arg0) {
-        super(arg0);
-    }
-
-    /**
-     * @see org.argouml.uml.ui.AbstractTestActionAddDiagram#getAction()
-     */
-    protected ActionAddDiagram getAction() {
-        return new ActionUseCaseDiagram();
-    }
-
-    /**
-     * @see org.argouml.uml.ui.AbstractTestActionAddDiagram#getNamespace()
-     */
-    protected Object getNamespace() {
-        return Model.getModelManagementFactory().createPackage();
-    }
-
-    /**
-     * @see AbstractTestActionAddDiagram#getValidNamespaceClasses()
-     */
-    protected List getValidNamespaceClasses() {
-        List rl = new ArrayList();
-        rl.add(Model.getMetaTypes().getPackage());
-        /*
-         * This needs to be a concrete metatype, so we can't use
-         * the general, but abstract, Classifier.  Replace with its
-         * concrete subtypes.
-         */
-        rl.add(Model.getMetaTypes().getUMLClass());
-        rl.add(Model.getMetaTypes().getInterface());
-        rl.add(Model.getMetaTypes().getDataType());
-        rl.add(Model.getMetaTypes().getNode());
-        rl.add(Model.getMetaTypes().getComponent());
-        return rl;
-    }
-
+    rl.add(Model.getMetaTypes().getUMLClass());
+    rl.add(Model.getMetaTypes().getInterface());
+    rl.add(Model.getMetaTypes().getDataType());
+    rl.add(Model.getMetaTypes().getNode());
+    rl.add(Model.getMetaTypes().getComponent());
+    return rl;
+  }
 }

@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -23,54 +23,55 @@ import util.multilingual.MultilingualManager;
 // since some methods were already here.
 // Yann 2013/09/26
 // It is better to distinguish typing from implementation... this class
-// is for reuse of implementation code, while Interface is actually the 
+// is for reuse of implementation code, while Interface is actually the
 // implementing type.
 class AbstractInterface extends AbstractClass {
-	private static final long serialVersionUID = -8012857785737513296L;
-	// Yann 2010/10/10: DB4O
-	// Used to be:
-	//	private final List listOfImplementingClasses = new ArrayList();
-	// I removed the final to make DB4O works...
-	// TODO: Understand how to keep it final with DB4O!
-	private List listOfImplementingClasses = new ArrayList();
+  private static final long serialVersionUID = -8012857785737513296L;
+  // Yann 2010/10/10: DB4O
+  // Used to be:
+  //	private final List listOfImplementingClasses = new ArrayList();
+  // I removed the final to make DB4O works...
+  // TODO: Understand how to keep it final with DB4O!
+  private List<IFirstClassEntity> listOfImplementingClasses = new ArrayList<>();
 
-	public AbstractInterface(final char[] anID, final char[] aName) {
-		super(anID, aName);
-	}
-	/**
-	* This method add a new entity to the list of entities
-	* inheriting from this entity.
-	* 
-	* @param anEntity
-	*/
-	// David 2013/09/06
-	// Made method public
-	protected void addImplementingClass(final IInterfaceImplementer aClass) {
-		if (this.listOfImplementingClasses.contains(aClass)) {
-			// Yann 2010/06/27: MemberClasses!
-			// Now that I deal with MemberClasses, it is possible
-			// that the "same" MemberClass is defined in two
-			// classes, hence it would already be implementing the
-			// current interface...
-			throw new ModelDeclarationException(MultilingualManager.getString(
-				"ALREADY_INHERITED",
-				IFirstClassEntity.class,
-				new Object[] { aClass.getDisplayID(), this.getDisplayID() }));
-		}
-		this.listOfImplementingClasses.add(aClass);
-	}
+  public AbstractInterface(final char[] anID, final char[] aName) {
+    super(anID, aName);
+  }
 
-	// David 2013/09/06
-	// Added method removeImplementingClass
-	protected void removeImplementingClass(final IInterfaceImplementer aClass) {
-		this.listOfImplementingClasses.remove(aClass);
-	}
+  /**
+   * This method add a new entity to the list of entities inheriting from this entity.
+   *
+   * @param anEntity
+   */
+  // David 2013/09/06
+  // Made method public
+  protected void addImplementingClass(final IInterfaceImplementer aClass) {
+    if (this.listOfImplementingClasses.contains(aClass)) {
+      // Yann 2010/06/27: MemberClasses!
+      // Now that I deal with MemberClasses, it is possible
+      // that the "same" MemberClass is defined in two
+      // classes, hence it would already be implementing the
+      // current interface...
+      throw new ModelDeclarationException(
+          MultilingualManager.getString(
+              "ALREADY_INHERITED",
+              IFirstClassEntity.class,
+              new Object[] {aClass.getDisplayID(), this.getDisplayID()}));
+    }
+    this.listOfImplementingClasses.add(aClass);
+  }
 
-	public Iterator getIteratorOnImplementingClasses() {
-		return this.listOfImplementingClasses.iterator();
-	}
-	public int getNumberOfInheritingEntities() {
-		return this.listOfImplementingClasses.size()
-				+ super.getNumberOfInheritingEntities();
-	}
+  // David 2013/09/06
+  // Added method removeImplementingClass
+  protected void removeImplementingClass(final IInterfaceImplementer aClass) {
+    this.listOfImplementingClasses.remove(aClass);
+  }
+
+  public Iterator getIteratorOnImplementingClasses() {
+    return this.listOfImplementingClasses.iterator();
+  }
+
+  public int getNumberOfInheritingEntities() {
+    return this.listOfImplementingClasses.size() + super.getNumberOfInheritingEntities();
+  }
 }

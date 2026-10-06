@@ -31,36 +31,35 @@ import org.argouml.uml.notation.AttributeNotation;
  */
 public class AttributeNotationUml extends AttributeNotation {
 
-    /**
-     * The constructor.
-     *
-     * @param attribute the attribute that is represented
-     */
-    public AttributeNotationUml(Object attribute) {
-        super(attribute);
-    }
+  /**
+   * The constructor.
+   *
+   * @param attribute the attribute that is represented
+   */
+  public AttributeNotationUml(Object attribute) {
+    super(attribute);
+  }
 
-    /**
-     * @see org.argouml.notation.NotationProvider4#parse(java.lang.String)
-     */
-    public String parse(String text) {
-        // TODO: Auto-generated method stub
-        return null;
-    }
+  /**
+   * @see org.argouml.notation.NotationProvider4#parse(java.lang.String)
+   */
+  public String parse(String text) {
+    // TODO: Auto-generated method stub
+    return null;
+  }
 
-    /**
-     * @see org.argouml.notation.NotationProvider4#getParsingHelp()
-     */
-    public String getParsingHelp() {
-        return "parsing.help.attribute";
-    }
+  /**
+   * @see org.argouml.notation.NotationProvider4#getParsingHelp()
+   */
+  public String getParsingHelp() {
+    return "parsing.help.attribute";
+  }
 
-    /**
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-        // TODO: Auto-generated method stub
-        return super.toString();
-    }
-
+  /**
+   * @see java.lang.Object#toString()
+   */
+  public String toString() {
+    // TODO: Auto-generated method stub
+    return super.toString();
+  }
 }

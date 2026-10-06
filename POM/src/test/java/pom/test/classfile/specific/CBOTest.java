@@ -4,14 +4,14 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
 package pom.test.classfile.specific;
 
-import org.junit.Assert;
 import junit.framework.TestCase;
+import org.junit.Assert;
 import padl.creator.classfile.CompleteClassFileCreator;
 import padl.kernel.ICodeLevelModel;
 import padl.kernel.IFirstClassEntity;
@@ -21,136 +21,155 @@ import pom.metrics.IUnaryMetric;
 import pom.metrics.MetricsRepository;
 
 public class CBOTest extends TestCase {
-	private static ICodeLevelModel Model;
-	private static MetricsRepository MetricsRepository;
+  private static ICodeLevelModel Model;
+  private static MetricsRepository MetricsRepository;
 
-	public CBOTest(String name) {
-		super(name);
-	}
-	protected void setUp() throws Exception {
-		super.setUp();
+  public CBOTest(String name) {
+    super(name);
+  }
 
-		if (Model == null) {
-			Model =
-				Factory.getInstance().createCodeLevelModel("Test.TestMetrics");
-			Model
-				.create(new CompleteClassFileCreator(
-					new String[] { "../POM/target/test-classes/Metric Specific for Java/bin/pom/test/rsc/specific/testCBO/" }));
-			MetricsRepository = pom.metrics.MetricsRepository.getInstance();
-		}
-	}
-	public void testRefClass() {
-		final IFirstClassEntity firstClassEntity =
-			(IFirstClassEntity) CBOTest.Model
-				.getTopLevelEntityFromID("pom.test.rsc.specific.testCBO.TestSingleClass");
+  protected void setUp() throws Exception {
+    super.setUp();
 
-		Assert.assertEquals("", 0d, ((IUnaryMetric) MetricsRepository
-			.getMetric("CBO")).compute(CBOTest.Model, firstClassEntity), 0d);
-	}
-	public void testRefInterface() {
-		final IFirstClassEntity firstClassEntity =
-			(IFirstClassEntity) Model
-				.getTopLevelEntityFromID("pom.test.rsc.specific.testCBO.TestSingleInterface");
+    if (Model == null) {
+      Model = Factory.getInstance().createCodeLevelModel("Test.TestMetrics");
+      Model.create(
+          new CompleteClassFileCreator(
+              new String[] {
+                "../POM/target/test-classes/Metric Specific for Java/bin/pom/test/rsc/specific/testCBO/"
+              }));
+      MetricsRepository = pom.metrics.MetricsRepository.getInstance();
+    }
+  }
 
-		Assert.assertEquals("", 0d, ((IUnaryMetric) MetricsRepository
-			.getMetric("CBO")).compute(CBOTest.Model, firstClassEntity), 0d);
-	}
-	public void testAboutGetVar() {
-		final IFirstClassEntity firstClassEntity =
-			(IFirstClassEntity) Model
-				.getTopLevelEntityFromID("pom.test.rsc.specific.testCBO.TestAPlaneteLeft");
-		final IFirstClassEntity firstClassEntity2 =
-			(IFirstClassEntity) Model
-				.getTopLevelEntityFromID("pom.test.rsc.specific.testCBO.TestAPlaneteRight");
+  public void testRefClass() {
+    final IFirstClassEntity firstClassEntity =
+        (IFirstClassEntity)
+            CBOTest.Model.getTopLevelEntityFromID("pom.test.rsc.specific.testCBO.TestSingleClass");
 
-		Assert.assertEquals(0d, ((IBinaryMetric) MetricsRepository
-			.getMetric("CBO")).compute(
-			CBOTest.Model,
-			firstClassEntity,
-			firstClassEntity2), 0d);
-	}
-	public void testAboutSetVar() {
-		final IFirstClassEntity firstClassEntity =
-			(IFirstClassEntity) Model
-				.getTopLevelEntityFromID("pom.test.rsc.specific.testCBO.TestBPlaneteLeft");
-		final IFirstClassEntity firstClassEntity2 =
-			(IFirstClassEntity) Model
-				.getTopLevelEntityFromID("pom.test.rsc.specific.testCBO.TestBPlaneteRight");
+    Assert.assertEquals(
+        "",
+        0d,
+        ((IUnaryMetric) MetricsRepository.getMetric("CBO"))
+            .compute(CBOTest.Model, firstClassEntity),
+        0d);
+  }
 
-		Assert.assertEquals(7d, ((IBinaryMetric) MetricsRepository
-			.getMetric("CBO")).compute(
-			CBOTest.Model,
-			firstClassEntity,
-			firstClassEntity2), 0d);
-	}
-	public void testAboutSetVarIn() {
-		final IFirstClassEntity firstClassEntity =
-			(IFirstClassEntity) Model
-				.getTopLevelEntityFromID("pom.test.rsc.specific.testCBO.TestBPlaneteLeft");
-		final IFirstClassEntity firstClassEntity2 =
-			(IFirstClassEntity) Model
-				.getTopLevelEntityFromID("pom.test.rsc.specific.testCBO.TestBPlaneteRight");
+  public void testRefInterface() {
+    final IFirstClassEntity firstClassEntity =
+        (IFirstClassEntity)
+            Model.getTopLevelEntityFromID("pom.test.rsc.specific.testCBO.TestSingleInterface");
 
-		Assert.assertEquals(3d, ((IBinaryMetric) MetricsRepository
-			.getMetric("CBOin")).compute(
-			CBOTest.Model,
-			firstClassEntity,
-			firstClassEntity2), 0d);
-	}
-	public void testAboutSetVarOut() {
-		final IFirstClassEntity firstClassEntity =
-			(IFirstClassEntity) Model
-				.getTopLevelEntityFromID("pom.test.rsc.specific.testCBO.TestBPlaneteLeft");
-		final IFirstClassEntity firstClassEntity2 =
-			(IFirstClassEntity) Model
-				.getTopLevelEntityFromID("pom.test.rsc.specific.testCBO.TestBPlaneteRight");
+    Assert.assertEquals(
+        "",
+        0d,
+        ((IUnaryMetric) MetricsRepository.getMetric("CBO"))
+            .compute(CBOTest.Model, firstClassEntity),
+        0d);
+  }
 
-		Assert.assertEquals(4d, ((IBinaryMetric) MetricsRepository
-			.getMetric("CBOout")).compute(
-			CBOTest.Model,
-			firstClassEntity,
-			firstClassEntity2), 0d);
-	}
-	public void testAboutFunct() {
-		final IFirstClassEntity firstClassEntity =
-			(IFirstClassEntity) Model
-				.getTopLevelEntityFromID("pom.test.rsc.specific.testCBO.TestCPlaneteLeft");
-		final IFirstClassEntity firstClassEntity2 =
-			(IFirstClassEntity) Model
-				.getTopLevelEntityFromID("pom.test.rsc.specific.testCBO.TestCPlaneteRight");
+  public void testAboutGetVar() {
+    final IFirstClassEntity firstClassEntity =
+        (IFirstClassEntity)
+            Model.getTopLevelEntityFromID("pom.test.rsc.specific.testCBO.TestAPlaneteLeft");
+    final IFirstClassEntity firstClassEntity2 =
+        (IFirstClassEntity)
+            Model.getTopLevelEntityFromID("pom.test.rsc.specific.testCBO.TestAPlaneteRight");
 
-		Assert.assertEquals(7d, ((IBinaryMetric) MetricsRepository
-			.getMetric("CBO")).compute(
-			CBOTest.Model,
-			firstClassEntity,
-			firstClassEntity2), 0d);
-	}
-	public void testAboutFunctIn() {
-		final IFirstClassEntity firstClassEntity =
-			(IFirstClassEntity) Model
-				.getTopLevelEntityFromID("pom.test.rsc.specific.testCBO.TestCPlaneteLeft");
-		final IFirstClassEntity firstClassEntity2 =
-			(IFirstClassEntity) Model
-				.getTopLevelEntityFromID("pom.test.rsc.specific.testCBO.TestCPlaneteRight");
+    Assert.assertEquals(
+        0d,
+        ((IBinaryMetric) MetricsRepository.getMetric("CBO"))
+            .compute(CBOTest.Model, firstClassEntity, firstClassEntity2),
+        0d);
+  }
 
-		Assert.assertEquals(3d, ((IBinaryMetric) MetricsRepository
-			.getMetric("CBOin")).compute(
-			CBOTest.Model,
-			firstClassEntity,
-			firstClassEntity2), 0d);
-	}
-	public void testAboutFunctOut() {
-		final IFirstClassEntity firstClassEntity =
-			(IFirstClassEntity) Model
-				.getTopLevelEntityFromID("pom.test.rsc.specific.testCBO.TestCPlaneteLeft");
-		final IFirstClassEntity firstClassEntity2 =
-			(IFirstClassEntity) Model
-				.getTopLevelEntityFromID("pom.test.rsc.specific.testCBO.TestCPlaneteRight");
+  public void testAboutSetVar() {
+    final IFirstClassEntity firstClassEntity =
+        (IFirstClassEntity)
+            Model.getTopLevelEntityFromID("pom.test.rsc.specific.testCBO.TestBPlaneteLeft");
+    final IFirstClassEntity firstClassEntity2 =
+        (IFirstClassEntity)
+            Model.getTopLevelEntityFromID("pom.test.rsc.specific.testCBO.TestBPlaneteRight");
 
-		Assert.assertEquals(4d, ((IBinaryMetric) MetricsRepository
-			.getMetric("CBOout")).compute(
-			CBOTest.Model,
-			firstClassEntity,
-			firstClassEntity2), 0d);
-	}
+    Assert.assertEquals(
+        7d,
+        ((IBinaryMetric) MetricsRepository.getMetric("CBO"))
+            .compute(CBOTest.Model, firstClassEntity, firstClassEntity2),
+        0d);
+  }
+
+  public void testAboutSetVarIn() {
+    final IFirstClassEntity firstClassEntity =
+        (IFirstClassEntity)
+            Model.getTopLevelEntityFromID("pom.test.rsc.specific.testCBO.TestBPlaneteLeft");
+    final IFirstClassEntity firstClassEntity2 =
+        (IFirstClassEntity)
+            Model.getTopLevelEntityFromID("pom.test.rsc.specific.testCBO.TestBPlaneteRight");
+
+    Assert.assertEquals(
+        3d,
+        ((IBinaryMetric) MetricsRepository.getMetric("CBOin"))
+            .compute(CBOTest.Model, firstClassEntity, firstClassEntity2),
+        0d);
+  }
+
+  public void testAboutSetVarOut() {
+    final IFirstClassEntity firstClassEntity =
+        (IFirstClassEntity)
+            Model.getTopLevelEntityFromID("pom.test.rsc.specific.testCBO.TestBPlaneteLeft");
+    final IFirstClassEntity firstClassEntity2 =
+        (IFirstClassEntity)
+            Model.getTopLevelEntityFromID("pom.test.rsc.specific.testCBO.TestBPlaneteRight");
+
+    Assert.assertEquals(
+        4d,
+        ((IBinaryMetric) MetricsRepository.getMetric("CBOout"))
+            .compute(CBOTest.Model, firstClassEntity, firstClassEntity2),
+        0d);
+  }
+
+  public void testAboutFunct() {
+    final IFirstClassEntity firstClassEntity =
+        (IFirstClassEntity)
+            Model.getTopLevelEntityFromID("pom.test.rsc.specific.testCBO.TestCPlaneteLeft");
+    final IFirstClassEntity firstClassEntity2 =
+        (IFirstClassEntity)
+            Model.getTopLevelEntityFromID("pom.test.rsc.specific.testCBO.TestCPlaneteRight");
+
+    Assert.assertEquals(
+        7d,
+        ((IBinaryMetric) MetricsRepository.getMetric("CBO"))
+            .compute(CBOTest.Model, firstClassEntity, firstClassEntity2),
+        0d);
+  }
+
+  public void testAboutFunctIn() {
+    final IFirstClassEntity firstClassEntity =
+        (IFirstClassEntity)
+            Model.getTopLevelEntityFromID("pom.test.rsc.specific.testCBO.TestCPlaneteLeft");
+    final IFirstClassEntity firstClassEntity2 =
+        (IFirstClassEntity)
+            Model.getTopLevelEntityFromID("pom.test.rsc.specific.testCBO.TestCPlaneteRight");
+
+    Assert.assertEquals(
+        3d,
+        ((IBinaryMetric) MetricsRepository.getMetric("CBOin"))
+            .compute(CBOTest.Model, firstClassEntity, firstClassEntity2),
+        0d);
+  }
+
+  public void testAboutFunctOut() {
+    final IFirstClassEntity firstClassEntity =
+        (IFirstClassEntity)
+            Model.getTopLevelEntityFromID("pom.test.rsc.specific.testCBO.TestCPlaneteLeft");
+    final IFirstClassEntity firstClassEntity2 =
+        (IFirstClassEntity)
+            Model.getTopLevelEntityFromID("pom.test.rsc.specific.testCBO.TestCPlaneteRight");
+
+    Assert.assertEquals(
+        4d,
+        ((IBinaryMetric) MetricsRepository.getMetric("CBOout"))
+            .compute(CBOTest.Model, firstClassEntity, firstClassEntity2),
+        0d);
+  }
 }

@@ -26,112 +26,105 @@ package org.argouml.persistence;
 
 import java.io.File;
 import java.net.URL;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
 import org.argouml.kernel.Project;
 
-/**
- * Testcase to load projects without exception.
- */
+/** Testcase to load projects without exception. */
 public class TestZargoFilePersister extends TestCase {
-    /**
-     * The constructor.
-     *
-     * @param name the name
-     */
-    public TestZargoFilePersister(String name) {
-        super(name);
-    }
+  /**
+   * The constructor.
+   *
+   * @param name the name
+   */
+  public TestZargoFilePersister(String name) {
+    super(name);
+  }
 
-    /**
-     * @param args the arguments given on the commandline
-     */
-    public static void main(java.lang.String[] args) {
-        junit.textui.TestRunner.run(suite());
-    }
+  /**
+   * @param args the arguments given on the commandline
+   */
+  public static void main(java.lang.String[] args) {
+    junit.textui.TestRunner.run(suite());
+  }
 
-    /**
-     * @return the test suite
-     */
-    public static Test suite() {
-        TestSuite suite = new TestSuite(TestZargoFilePersister.class);
+  /**
+   * @return the test suite
+   */
+  public static Test suite() {
+    TestSuite suite = new TestSuite(TestZargoFilePersister.class);
 
-        return suite;
-    }
+    return suite;
+  }
 
-    /**
-     * Tests that a project is loadable.
-     *
-     * @param filename of the project file to load
-     * @throws OpenException if something goes wrong.
-     */
-    private Project doLoad(String filename) 
-        throws OpenException, InterruptedException {
-        URL url = TestZargoFilePersister.class.getResource(filename);
-        assertTrue("Unintended failure: resource to be tested is not found: "
-                + filename + ", converted to URL: " + url, url != null);
-        ZargoFilePersister persister = new ZargoFilePersister();
-        String name = url.getFile();
-        Project p = persister.doLoad(new File(name));
-        assertTrue("Load Status for " + filename + ".",
-               PersistenceManager.getInstance().getLastLoadStatus());
-        return p;
-    }
+  /**
+   * Tests that a project is loadable.
+   *
+   * @param filename of the project file to load
+   * @throws OpenException if something goes wrong.
+   */
+  private Project doLoad(String filename) throws OpenException, InterruptedException {
+    URL url = TestZargoFilePersister.class.getResource(filename);
+    assertTrue(
+        "Unintended failure: resource to be tested is not found: "
+            + filename
+            + ", converted to URL: "
+            + url,
+        url != null);
+    ZargoFilePersister persister = new ZargoFilePersister();
+    String name = url.getFile();
+    Project p = persister.doLoad(new File(name));
+    assertTrue(
+        "Load Status for " + filename + ".", PersistenceManager.getInstance().getLastLoadStatus());
+    return p;
+  }
 
-    /**
-     * Test loading a zargo.
-     *
-     * @throws Exception when e.g. the filke is not found
-     */
-    public void testDoLoad1() throws Exception {
-        doLoad("/testmodels/Empty.zargo");
-    }
+  /**
+   * Test loading a zargo.
+   *
+   * @throws Exception when e.g. the filke is not found
+   */
+  public void testDoLoad1() throws Exception {
+    doLoad("/testmodels/Empty.zargo");
+  }
 
-    /**
-     * Test loading a zargo.
-     *
-     * @throws Exception when e.g. the filke is not found
-     */
-    public void testDoLoad2() throws Exception {
-        doLoad("/testmodels/Alittlebitofeverything.zargo");
-    }
+  /**
+   * Test loading a zargo.
+   *
+   * @throws Exception when e.g. the filke is not found
+   */
+  public void testDoLoad2() throws Exception {
+    doLoad("/testmodels/Alittlebitofeverything.zargo");
+  }
 
-    /**
-     * Test saving a zargo.
-     *
-     * @throws Exception when e.g. the filke is not found
-     */
-    public void testSave() throws Exception {
-        Project p = doLoad("/testmodels/Alittlebitofeverything.zargo");
-        ZargoFilePersister persister = new ZargoFilePersister();
-        persister.save(p, new File("Alittlebitofeverything2.zargo"));
-    }
+  /**
+   * Test saving a zargo.
+   *
+   * @throws Exception when e.g. the filke is not found
+   */
+  public void testSave() throws Exception {
+    Project p = doLoad("/testmodels/Alittlebitofeverything.zargo");
+    ZargoFilePersister persister = new ZargoFilePersister();
+    persister.save(p, new File("Alittlebitofeverything2.zargo"));
+  }
 
-    /**
-     * Test loading some garbage in a zargo.
-     */
-    public void testLoadGarbage() {
-        File file = null;
-        boolean loaded = true;
-        try {
-            file = new File("/testmodels/Garbage.zargo");
-            ZargoFilePersister persister = new ZargoFilePersister();
-            persister.doLoad(file);
-            assertTrue("Load Status",
-                    !PersistenceManager.getInstance().getLastLoadStatus());
-        } catch (OpenException io) {
-            // This is the normal case.
-            loaded = false;
-        } catch (InterruptedException iExc) {
-            // This should not happen!
-            loaded = false;
-        }
-        assertTrue("No exception was thrown.", !loaded);
+  /** Test loading some garbage in a zargo. */
+  public void testLoadGarbage() {
+    File file = null;
+    boolean loaded = true;
+    try {
+      file = new File("/testmodels/Garbage.zargo");
+      ZargoFilePersister persister = new ZargoFilePersister();
+      persister.doLoad(file);
+      assertTrue("Load Status", !PersistenceManager.getInstance().getLastLoadStatus());
+    } catch (OpenException io) {
+      // This is the normal case.
+      loaded = false;
+    } catch (InterruptedException iExc) {
+      // This should not happen!
+      loaded = false;
     }
+    assertTrue("No exception was thrown.", !loaded);
+  }
 }
-
-
-

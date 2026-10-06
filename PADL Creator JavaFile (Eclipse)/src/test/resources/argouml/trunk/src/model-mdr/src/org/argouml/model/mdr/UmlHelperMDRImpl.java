@@ -26,7 +26,6 @@ package org.argouml.model.mdr;
 
 import java.util.Collection;
 import java.util.Iterator;
-
 import org.argouml.model.UmlHelper;
 import org.omg.uml.behavioralelements.statemachines.Transition;
 import org.omg.uml.foundation.core.AssociationEnd;
@@ -34,86 +33,79 @@ import org.omg.uml.foundation.core.Relationship;
 
 /**
  * Helper class for UML metamodel.
- * 
+ *
  * @since ARGO0.11.2
  * @author Thierry Lach
  */
 class UmlHelperMDRImpl implements UmlHelper {
 
-    /**
-     * The model implementation.
-     */
-    private MDRModelImplementation nsmodel;
+  /** The model implementation. */
+  private MDRModelImplementation nsmodel;
 
-    /**
-     * Don't allow instantiation.
-     * 
-     * @param implementation
-     *            To get other helpers and factories.
-     */
-    UmlHelperMDRImpl(MDRModelImplementation implementation) {
-        nsmodel = implementation;
+  /**
+   * Don't allow instantiation.
+   *
+   * @param implementation To get other helpers and factories.
+   */
+  UmlHelperMDRImpl(MDRModelImplementation implementation) {
+    nsmodel = implementation;
+  }
+
+  /**
+   * Ensures that all of the elements in a model are registered to the UmlModelListener.
+   *
+   * <p>This does nothing for the MDR implementation since we get events for all model elements by
+   * default.
+   *
+   * @param model the UML model
+   */
+  public void addListenersToModel(Object model) {
+    // Nothing to do - we get all events automatically
+  }
+
+  /**
+   * @see org.argouml.model.UmlHelper#deleteCollection(java.util.Collection)
+   */
+  public void deleteCollection(Collection col) {
+    Iterator it = col.iterator();
+    while (it.hasNext()) {
+      nsmodel.getUmlFactory().delete(it.next());
     }
+  }
 
-    /**
-     * Ensures that all of the elements in a model are registered to the
-     * UmlModelListener. 
-     * 
-     * This does nothing for the MDR implementation since we get events
-     * for all model elements by default.
-     * 
-     * @param model
-     *            the UML model
-     */
-    public void addListenersToModel(Object model) {
-        // Nothing to do - we get all events automatically
+  /**
+   * @see org.argouml.model.UmlHelper#getSource(java.lang.Object)
+   */
+  public Object getSource(Object relationship) {
+    if (relationship instanceof Relationship) {
+      // handles all children of relationship including extend and
+      // include which are not members of core
+      return nsmodel.getCoreHelper().getSource(relationship);
     }
-
-    /**
-     * @see org.argouml.model.UmlHelper#deleteCollection(java.util.Collection)
-     */
-    public void deleteCollection(Collection col) {
-        Iterator it = col.iterator();
-        while (it.hasNext()) {
-            nsmodel.getUmlFactory().delete(it.next());
-        }
+    if (relationship instanceof Transition) {
+      return nsmodel.getStateMachinesHelper().getSource(relationship);
     }
-
-    /**
-     * @see org.argouml.model.UmlHelper#getSource(java.lang.Object)
-     */
-    public Object getSource(Object relationship) {
-        if (relationship instanceof Relationship) {
-            // handles all children of relationship including extend and
-            // include which are not members of core
-            return nsmodel.getCoreHelper().getSource(relationship);
-        }
-        if (relationship instanceof Transition) {
-            return nsmodel.getStateMachinesHelper().getSource(relationship);
-        }
-        if (relationship instanceof AssociationEnd) {
-            return nsmodel.getCoreHelper().getSource(relationship);
-        }
-        throw new IllegalArgumentException();
+    if (relationship instanceof AssociationEnd) {
+      return nsmodel.getCoreHelper().getSource(relationship);
     }
+    throw new IllegalArgumentException();
+  }
 
-    /**
-     * @see org.argouml.model.UmlHelper#getDestination(java.lang.Object)
-     */
-    public Object getDestination(Object relationShip) {
-        if (relationShip instanceof Relationship) {
-            // handles all children of relationship including extend and
-            // include which are not members of core
-            return nsmodel.getCoreHelper().getDestination(relationShip);
-        }
-        if (relationShip instanceof Transition) {
-            return nsmodel.getStateMachinesHelper().
-                    getDestination(relationShip);
-        }
-        if (relationShip instanceof AssociationEnd) {
-            return nsmodel.getCoreHelper().getDestination(relationShip);
-        }
-        throw new IllegalArgumentException();
+  /**
+   * @see org.argouml.model.UmlHelper#getDestination(java.lang.Object)
+   */
+  public Object getDestination(Object relationShip) {
+    if (relationShip instanceof Relationship) {
+      // handles all children of relationship including extend and
+      // include which are not members of core
+      return nsmodel.getCoreHelper().getDestination(relationShip);
     }
-
+    if (relationShip instanceof Transition) {
+      return nsmodel.getStateMachinesHelper().getDestination(relationShip);
+    }
+    if (relationShip instanceof AssociationEnd) {
+      return nsmodel.getCoreHelper().getDestination(relationShip);
+    }
+    throw new IllegalArgumentException();
+  }
 }

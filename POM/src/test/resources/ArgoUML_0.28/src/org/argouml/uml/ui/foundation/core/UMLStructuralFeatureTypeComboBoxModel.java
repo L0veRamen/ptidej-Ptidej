@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;
-
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.Model;
@@ -44,137 +43,127 @@ import org.argouml.uml.util.PathComparator;
  */
 public class UMLStructuralFeatureTypeComboBoxModel extends UMLComboBoxModel2 {
 
+  /** Constructor for UMLStructuralFeatureTypeComboBoxModel. */
+  public UMLStructuralFeatureTypeComboBoxModel() {
+    super("type", true); // Allow null
+  }
 
-    /**
-     * Constructor for UMLStructuralFeatureTypeComboBoxModel.
-     */
-    public UMLStructuralFeatureTypeComboBoxModel() {
-        super("type", true); // Allow null
+  /*
+   * This is explained by WFR 2 of a StructuralFeature:
+   * The type of a StructuralFeature must be a Class, DataType, or Interface.
+   *
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().isAClass(element)
+        || Model.getFacade().isAInterface(element)
+        || Model.getFacade().isADataType(element);
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
+   */
+  @SuppressWarnings("unchecked")
+  protected void buildModelList() {
+    Set<Object> elements = new TreeSet<Object>(new PathComparator());
+
+    Project p = ProjectManager.getManager().getCurrentProject();
+    if (p == null) {
+      return;
     }
 
+    for (Object model : p.getUserDefinedModelList()) {
+      elements.addAll(
+          Model.getModelManagementHelper()
+              .getAllModelElementsOfKind(model, Model.getMetaTypes().getUMLClass()));
+      elements.addAll(
+          Model.getModelManagementHelper()
+              .getAllModelElementsOfKind(model, Model.getMetaTypes().getInterface()));
+      elements.addAll(
+          Model.getModelManagementHelper()
+              .getAllModelElementsOfKind(model, Model.getMetaTypes().getDataType()));
+    }
+
+    elements.addAll(
+        p.getProfileConfiguration().findByMetaType(Model.getMetaTypes().getClassifier()));
+
+    setElements(elements);
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  protected void buildMinimalModelList() {
+    Collection list = new ArrayList(1);
+    Object element = getSelectedModelElement();
+    if (element != null) {
+      list.add(element);
+    }
+    setElements(list);
+    setModelInvalid();
+  }
+
+  @Override
+  protected boolean isLazy() {
+    return true;
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
+   */
+  protected Object getSelectedModelElement() {
+    Object o = null;
+    if (getTarget() != null) {
+      o = Model.getFacade().getType(getTarget());
+    }
+    return o;
+  }
+
+  @Override
+  protected void addOtherModelEventListeners(Object newTarget) {
+    super.addOtherModelEventListeners(newTarget);
+
+    Model.getPump()
+        .addClassModelEventListener(this, Model.getMetaTypes().getNamespace(), "ownedElement");
+    Model.getPump().addClassModelEventListener(this, Model.getMetaTypes().getUMLClass(), "name");
+    Model.getPump().addClassModelEventListener(this, Model.getMetaTypes().getInterface(), "name");
+    Model.getPump().addClassModelEventListener(this, Model.getMetaTypes().getDataType(), "name");
+  }
+
+  @Override
+  protected void removeOtherModelEventListeners(Object oldTarget) {
+    super.removeOtherModelEventListeners(oldTarget);
+
+    Model.getPump()
+        .removeClassModelEventListener(this, Model.getMetaTypes().getNamespace(), "ownedElement");
+    Model.getPump().removeClassModelEventListener(this, Model.getMetaTypes().getUMLClass(), "name");
+    Model.getPump()
+        .removeClassModelEventListener(this, Model.getMetaTypes().getInterface(), "name");
+    Model.getPump().removeClassModelEventListener(this, Model.getMetaTypes().getDataType(), "name");
+  }
+
+  @Override
+  public void modelChanged(UmlChangeEvent evt) {
     /*
-     * This is explained by WFR 2 of a StructuralFeature: 
-     * The type of a StructuralFeature must be a Class, DataType, or Interface.
-     * 
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
+     * The default behavior for super implementation is
+     * to add/remove elements from the list, but it isn't
+     * that complex here, because there is no need to
+     * change the list on a simple type change.
      */
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().isAClass(element)
-                || Model.getFacade().isAInterface(element)
-                || Model.getFacade().isADataType(element);
+    Object newSelection = getSelectedModelElement();
+    if (getSelectedItem() != newSelection) {
+      /* The combo is not showing the correct UML element
+       * as the selected item.
+       * So, let's empty the combo model,
+       * and set the right selected UML element: */
+      buildMinimalModelList();
+      setSelectedItem(newSelection);
     }
-
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
-     */
-    @SuppressWarnings("unchecked")
-    protected void buildModelList() {
-        Set<Object> elements = new TreeSet<Object>(new PathComparator());
-
-        Project p = ProjectManager.getManager().getCurrentProject();
-        if (p == null) {
-            return;
-        }
-        
-        for (Object model : p.getUserDefinedModelList()) {
-            elements.addAll(Model.getModelManagementHelper()
-                    .getAllModelElementsOfKind(
-                            model, Model.getMetaTypes().getUMLClass()));
-            elements.addAll(Model.getModelManagementHelper()
-                    .getAllModelElementsOfKind(
-                            model, Model.getMetaTypes().getInterface()));
-            elements.addAll(Model.getModelManagementHelper()
-                    .getAllModelElementsOfKind(
-                            model, Model.getMetaTypes().getDataType()));
-        }
-
-        elements.addAll(p.getProfileConfiguration().findByMetaType(
-                        Model.getMetaTypes().getClassifier()));
-
-        setElements(elements);
+    if (evt.getSource() != getTarget()) {
+      /* The target model element is not changed,
+       * but something else that may be shown in the list.
+       * Since this is a "lazy" model, we can simply reset the flag to
+       * indicate that the model has to be built again: */
+      setModelInvalid();
     }
-    
-    @SuppressWarnings("unchecked")
-    @Override
-    protected void buildMinimalModelList() {
-        Collection list = new ArrayList(1);
-        Object element = getSelectedModelElement();
-        if (element != null) {
-            list.add(element);
-        }
-        setElements(list);
-        setModelInvalid();
-    }
-    
-    @Override
-    protected boolean isLazy() {
-        return true;
-    }
-    
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
-     */
-    protected Object getSelectedModelElement() {
-        Object o = null;
-        if (getTarget() != null) {
-            o = Model.getFacade().getType(getTarget());
-        }
-        return o;
-    }
-
-    @Override
-    protected void addOtherModelEventListeners(Object newTarget) {
-        super.addOtherModelEventListeners(newTarget);
-        
-        Model.getPump().addClassModelEventListener(this,
-              Model.getMetaTypes().getNamespace(), "ownedElement");
-        Model.getPump().addClassModelEventListener(this,
-                Model.getMetaTypes().getUMLClass(), "name");
-        Model.getPump().addClassModelEventListener(this,
-                Model.getMetaTypes().getInterface(), "name");
-        Model.getPump().addClassModelEventListener(this,
-                Model.getMetaTypes().getDataType(), "name");
-    }
-
-    @Override
-    protected void removeOtherModelEventListeners(Object oldTarget) {
-        super.removeOtherModelEventListeners(oldTarget);
-
-        Model.getPump().removeClassModelEventListener(this,
-                Model.getMetaTypes().getNamespace(), "ownedElement");
-        Model.getPump().removeClassModelEventListener(this,
-                Model.getMetaTypes().getUMLClass(), "name");
-        Model.getPump().removeClassModelEventListener(this,
-                Model.getMetaTypes().getInterface(), "name");
-        Model.getPump().removeClassModelEventListener(this,
-                Model.getMetaTypes().getDataType(), "name");
-    }
-
-    @Override
-    public void modelChanged(UmlChangeEvent evt) {
-        /*
-         * The default behavior for super implementation is
-         * to add/remove elements from the list, but it isn't
-         * that complex here, because there is no need to
-         * change the list on a simple type change.
-         */
-        Object newSelection = getSelectedModelElement();
-        if (getSelectedItem() != newSelection) {
-            /* The combo is not showing the correct UML element
-             * as the selected item. 
-             * So, let's empty the combo model, 
-             * and set the right selected UML element: */
-            buildMinimalModelList();
-            setSelectedItem(newSelection);
-        }
-        if (evt.getSource() != getTarget()) {
-            /* The target model element is not changed, 
-             * but something else that may be shown in the list.
-             * Since this is a "lazy" model, we can simply reset the flag to
-             * indicate that the model has to be built again: */
-            setModelInvalid();
-        }
-    }
-
+  }
 }
-

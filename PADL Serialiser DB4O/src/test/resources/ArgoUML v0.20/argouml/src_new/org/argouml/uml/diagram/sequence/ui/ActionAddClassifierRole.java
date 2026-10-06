@@ -39,37 +39,29 @@ import org.tigris.gef.graph.GraphModel;
  */
 public class ActionAddClassifierRole extends CmdCreateNode {
 
-    /**
-     * The constructor.
-     */
-    public ActionAddClassifierRole() {
-        super(Model.getMetaTypes().getClassifierRole(),
-                false, "button.new-classifierrole");
-    }
+  /** The constructor. */
+  public ActionAddClassifierRole() {
+    super(Model.getMetaTypes().getClassifierRole(), false, "button.new-classifierrole");
+  }
 
-    /**
-     * @see org.tigris.gef.graph.GraphFactory#makeNode()
-     */
-    public Object makeNode() {
-        Object node = null;
-        Editor ce = Globals.curEditor();
-        GraphModel gm = ce.getGraphModel();
-        if (gm instanceof SequenceDiagramGraphModel) {
-            Object collaboration =
-                ((SequenceDiagramGraphModel) gm).getCollaboration();
-            node =
-                Model.getCollaborationsFactory().buildClassifierRole(
-                        collaboration);
-            /*
-            Model.getCoreHelper().setNamespace(
-            	node,
-            	Model.getFacade().getNamespace( collaboration));
-            */
-        } else {
-            throw new IllegalStateException("Graphmodel is not a "
-					    + "sequence diagram graph model");
-        }
-        return node;
+  /**
+   * @see org.tigris.gef.graph.GraphFactory#makeNode()
+   */
+  public Object makeNode() {
+    Object node = null;
+    Editor ce = Globals.curEditor();
+    GraphModel gm = ce.getGraphModel();
+    if (gm instanceof SequenceDiagramGraphModel) {
+      Object collaboration = ((SequenceDiagramGraphModel) gm).getCollaboration();
+      node = Model.getCollaborationsFactory().buildClassifierRole(collaboration);
+      /*
+      Model.getCoreHelper().setNamespace(
+      	node,
+      	Model.getFacade().getNamespace( collaboration));
+      */
+    } else {
+      throw new IllegalStateException("Graphmodel is not a " + "sequence diagram graph model");
     }
-
+    return node;
+  }
 }

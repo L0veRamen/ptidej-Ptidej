@@ -24,70 +24,75 @@
 
 package org.argouml.persistence;
 
-
-/** this needs work,AFAIK none of these strings are
- * saved in the final output in a zargo.
+/**
+ * this needs work,AFAIK none of these strings are saved in the final output in a zargo.
+ *
  * @author Jim Holt
  */
-
 public class ArgoTokenTable extends XMLTokenTableBase {
 
-    /**
-     * The constructor.
-     *
-     */
-    public ArgoTokenTable() {
-	super(32);
-    }
+  /** The constructor. */
+  public ArgoTokenTable() {
+    super(32);
+  }
 
-    ////////////////////////////////////////////////////////////////
-    // constants
-    private static final String STRING_ARGO                   = "argo";
-    /** doesn't work
-     */
-    private static final String STRING_AUTHORNAME            = "authorname";
-    private static final String STRING_VERSION               = "version";
-    private static final String STRING_DESCRIPTION           = "description";
-    private static final String STRING_SEARCHPATH            = "searchpath";
-    private static final String STRING_MEMBER                = "member";
-    private static final String STRING_HISTORYFILE           = "historyfile";
-    private static final String STRING_DOCUMENTATION         = "documentation";
+  ////////////////////////////////////////////////////////////////
+  // constants
+  private static final String STRING_ARGO = "argo";
 
-    /** The token for argo. */
-    public static final int    TOKEN_ARGO                    = 1;
-    /** The token for authroname. */
-    public static final int    TOKEN_AUTHORNAME              = 2;
-    /** The token for version. */
-    public static final int    TOKEN_VERSION                 = 3;
-    /** The token for description. */
-    public static final int    TOKEN_DESCRIPTION             = 4;
-    /** The token for search path. */
-    public static final int    TOKEN_SEARCHPATH              = 5;
-    /** The token for member. */
-    public static final int    TOKEN_MEMBER                  = 6;
-    /** The token for history file. */
-    public static final int    TOKEN_HISTORYFILE             = 7;
-    /** This can be saved successfully however there is no
-     * way to output this information.
-     * The token for argo. */
-    public static final int    TOKEN_DOCUMENTATION           = 8;
-    /** The token for undefined. */
-    public static final int    TOKEN_UNDEFINED               = 9;
+  /** doesn't work */
+  private static final String STRING_AUTHORNAME = "authorname";
 
-    ////////////////////////////////////////////////////////////////
-    // protected methods
+  private static final String STRING_VERSION = "version";
+  private static final String STRING_DESCRIPTION = "description";
+  private static final String STRING_SEARCHPATH = "searchpath";
+  private static final String STRING_MEMBER = "member";
+  private static final String STRING_HISTORYFILE = "historyfile";
+  private static final String STRING_DOCUMENTATION = "documentation";
 
-    /**
-     * @see org.argouml.persistence.XMLTokenTableBase#setupTokens()
-     */
-    protected void setupTokens() {
-	addToken(STRING_ARGO, new Integer(TOKEN_ARGO));
-	addToken(STRING_AUTHORNAME, new Integer(TOKEN_AUTHORNAME));
-	addToken(STRING_VERSION, new Integer(TOKEN_VERSION));
-	addToken(STRING_DESCRIPTION, new Integer(TOKEN_DESCRIPTION));
-	addToken(STRING_SEARCHPATH, new Integer(TOKEN_SEARCHPATH));
-	addToken(STRING_MEMBER, new Integer(TOKEN_MEMBER));
-	addToken(STRING_HISTORYFILE, new Integer(TOKEN_HISTORYFILE));
-    }
+  /** The token for argo. */
+  public static final int TOKEN_ARGO = 1;
 
+  /** The token for authroname. */
+  public static final int TOKEN_AUTHORNAME = 2;
+
+  /** The token for version. */
+  public static final int TOKEN_VERSION = 3;
+
+  /** The token for description. */
+  public static final int TOKEN_DESCRIPTION = 4;
+
+  /** The token for search path. */
+  public static final int TOKEN_SEARCHPATH = 5;
+
+  /** The token for member. */
+  public static final int TOKEN_MEMBER = 6;
+
+  /** The token for history file. */
+  public static final int TOKEN_HISTORYFILE = 7;
+
+  /**
+   * This can be saved successfully however there is no way to output this information. The token
+   * for argo.
+   */
+  public static final int TOKEN_DOCUMENTATION = 8;
+
+  /** The token for undefined. */
+  public static final int TOKEN_UNDEFINED = 9;
+
+  ////////////////////////////////////////////////////////////////
+  // protected methods
+
+  /**
+   * @see org.argouml.persistence.XMLTokenTableBase#setupTokens()
+   */
+  protected void setupTokens() {
+    addToken(STRING_ARGO, new Integer(TOKEN_ARGO));
+    addToken(STRING_AUTHORNAME, new Integer(TOKEN_AUTHORNAME));
+    addToken(STRING_VERSION, new Integer(TOKEN_VERSION));
+    addToken(STRING_DESCRIPTION, new Integer(TOKEN_DESCRIPTION));
+    addToken(STRING_SEARCHPATH, new Integer(TOKEN_SEARCHPATH));
+    addToken(STRING_MEMBER, new Integer(TOKEN_MEMBER));
+    addToken(STRING_HISTORYFILE, new Integer(TOKEN_HISTORYFILE));
+  }
 } /* end class ArgoTokenTable */

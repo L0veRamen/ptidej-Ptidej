@@ -25,15 +25,11 @@
 package org.argouml.uml.diagram.sequence.ui;
 
 import java.awt.Point;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import org.argouml.uml.diagram.sequence.MessageNode;
-
 import org.tigris.gef.presentation.Fig;
 import org.tigris.gef.presentation.FigGroup;
 import org.tigris.gef.presentation.FigLine;
@@ -45,108 +41,104 @@ import org.tigris.gef.presentation.FigLine;
  */
 public class FigMessagePort extends FigGroup {
 
-    private MessageNode node;
+  private MessageNode node;
 
-    /**
-     * Creates a new horizontal FigMessagePort that's not displayed.
-     *
-     * @param x first x coordinate.
-     * @param y y coordinate.
-     * @param x2 second x coordinate.
-     */
-    public FigMessagePort(int x, int y, int x2) {
-        super();
-        FigLine myLine = new FigLine(x, y, x2, y);
-        addFig(myLine);
-        setVisible(false);
-    }
+  /**
+   * Creates a new horizontal FigMessagePort that's not displayed.
+   *
+   * @param x first x coordinate.
+   * @param y y coordinate.
+   * @param x2 second x coordinate.
+   */
+  public FigMessagePort(int x, int y, int x2) {
+    super();
+    FigLine myLine = new FigLine(x, y, x2, y);
+    addFig(myLine);
+    setVisible(false);
+  }
 
-    /**
-     * @see org.tigris.gef.presentation.FigGroup#addFig(org.tigris.gef.presentation.Fig)
-     */
-    public void addFig(Fig toAdd) {
-        if (toAdd instanceof FigLine && getFigs().size() == 0) {
-            toAdd.setVisible(false);
-            toAdd.addPropertyChangeListener(new PropertyChangeListener() {
-                public void propertyChange(PropertyChangeEvent pce) {
-                    calcBounds();
-                }
-            });
-            super.addFig(toAdd);
-        }
+  /**
+   * @see org.tigris.gef.presentation.FigGroup#addFig(org.tigris.gef.presentation.Fig)
+   */
+  public void addFig(Fig toAdd) {
+    if (toAdd instanceof FigLine && getFigs().size() == 0) {
+      toAdd.setVisible(false);
+      toAdd.addPropertyChangeListener(
+          new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent pce) {
+              calcBounds();
+            }
+          });
+      super.addFig(toAdd);
     }
+  }
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#setBoundsImpl(int, int, int, int)
-     */
-    protected void setBoundsImpl(int x, int y, int w, int h) {
-        if (getFigs().size() > 0) {
-            getMyLine().setShape(x, y, x + w, y + h);
-            calcBounds();
-        }
+  /**
+   * @see org.tigris.gef.presentation.Fig#setBoundsImpl(int, int, int, int)
+   */
+  protected void setBoundsImpl(int x, int y, int w, int h) {
+    if (getFigs().size() > 0) {
+      getMyLine().setShape(x, y, x + w, y + h);
+      calcBounds();
     }
+  }
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#calcBounds()
-     */
-    public void calcBounds() {
-        if (getFigs().size() > 0) {
-            FigLine line = getMyLine();
-            _x = line.getX();
-            _y = line.getY();
-            _w = line.getWidth();
-            _h = line.getHeight();
-            firePropChange("bounds", null, null);
-        }
+  /**
+   * @see org.tigris.gef.presentation.Fig#calcBounds()
+   */
+  public void calcBounds() {
+    if (getFigs().size() > 0) {
+      FigLine line = getMyLine();
+      _x = line.getX();
+      _y = line.getY();
+      _w = line.getWidth();
+      _h = line.getHeight();
+      firePropChange("bounds", null, null);
     }
+  }
 
-    /**
-     * Creates a new FigMessagePort that's not displayed; used when loading
-     * PGML.
-     */
-    public FigMessagePort() {
-        setVisible(false);
-    }
+  /** Creates a new FigMessagePort that's not displayed; used when loading PGML. */
+  public FigMessagePort() {
+    setVisible(false);
+  }
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#getGravityPoints()
-     */
-    public List getGravityPoints() {
-        ArrayList ret = new ArrayList();
-        FigLine myLine = getMyLine();
-        Point p1 = new Point(myLine.getX(), myLine.getY());
-        Point p2 =
-	    new Point(myLine.getX() + myLine.getWidth(),
-		      myLine.getY() + myLine.getHeight());
-        ret.add(p1);
-        ret.add(p2);
-        return ret;
-    }
+  /**
+   * @see org.tigris.gef.presentation.Fig#getGravityPoints()
+   */
+  public List getGravityPoints() {
+    ArrayList ret = new ArrayList();
+    FigLine myLine = getMyLine();
+    Point p1 = new Point(myLine.getX(), myLine.getY());
+    Point p2 = new Point(myLine.getX() + myLine.getWidth(), myLine.getY() + myLine.getHeight());
+    ret.add(p1);
+    ret.add(p2);
+    return ret;
+  }
 
-    MessageNode getNode() {
-        if (node == null) {
-            ((FigClassifierRole) this.getGroup()).setMatchingNode(this);
-        }
-        return node;
+  MessageNode getNode() {
+    if (node == null) {
+      ((FigClassifierRole) this.getGroup()).setMatchingNode(this);
     }
+    return node;
+  }
 
-    void clearNode() {
-        Fig owner = getGroup();
-        if (owner instanceof FigClassifierRole) {
-            ((FigClassifierRole) owner).removeFigMessagePort(this);
-	}
+  void clearNode() {
+    Fig owner = getGroup();
+    if (owner instanceof FigClassifierRole) {
+      ((FigClassifierRole) owner).removeFigMessagePort(this);
     }
+  }
 
-    void setNode(MessageNode n) {
-        node = n;
-    }
+  void setNode(MessageNode n) {
+    node = n;
+  }
 
-    // TODO: Question - how does this differ to getY?
-    public int getY1() {
-	return getMyLine().getY1();
-    }
+  // TODO: Question - how does this differ to getY?
+  public int getY1() {
+    return getMyLine().getY1();
+  }
 
-    private FigLine getMyLine() {
-        return (FigLine) getFigs().get(0);
-    }
+  private FigLine getMyLine() {
+    return (FigLine) getFigs().get(0);
+  }
 }

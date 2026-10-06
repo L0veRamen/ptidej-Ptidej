@@ -1,8 +1,12 @@
-public JCTPathPartBuilder(final JCTKind aKind)
-{ this.kind = aKind; }
+public JCTPathPartBuilder(final JCTKind aKind) {
+  this.kind = aKind;
+}
 
-public JCTPathPart createPathPart()
-{ return this.kind == null ? null : new JCTPathPart(this.kind, this.index, this.data, this.informativeData); }
+public JCTPathPart createPathPart() {
+  return this.kind == null
+      ? null
+      : new JCTPathPart(this.kind, this.index, this.data, this.informativeData);
+}
 
 /**
  * Modifies the kind of this path part builder
@@ -10,18 +14,14 @@ public JCTPathPart createPathPart()
  * @param kind the new kind
  * @return {@code this}
  */
-public JCTPathPartBuilder setKind(final JCTKind kind)
-{
-    this.kind = kind;
-    return this;
+public JCTPathPartBuilder setKind(final JCTKind kind) {
+  this.kind = kind;
+  return this;
 }
 
-/**
- * Returns the kind of this path part builder
- */
-public JCTKind getKind()
-{
-    return this.kind;
+/** Returns the kind of this path part builder */
+public JCTKind getKind() {
+  return this.kind;
 }
 
 /**
@@ -30,18 +30,14 @@ public JCTKind getKind()
  * @param index the new index
  * @return {@code this}
  */
-public JCTPathPartBuilder setIndex(final Integer index)
-{
-    this.index = index;
-    return this;
+public JCTPathPartBuilder setIndex(final Integer index) {
+  this.index = index;
+  return this;
 }
 
-/**
- * Returns the index of this path part builder
- */
-public Integer getIndex()
-{
-    return this.index;
+/** Returns the index of this path part builder */
+public Integer getIndex() {
+  return this.index;
 }
 
 /**
@@ -50,18 +46,14 @@ public Integer getIndex()
  * @param data the new data
  * @return {@code this}
  */
-public JCTPathPartBuilder setData(final String data)
-{
-    this.data = data;
-    return this;
+public JCTPathPartBuilder setData(final String data) {
+  this.data = data;
+  return this;
 }
 
-/**
- * Returns the data of this path part builder
- */
-public String getData()
-{
-    return this.data;
+/** Returns the data of this path part builder */
+public String getData() {
+  return this.data;
 }
 
 /**
@@ -70,16 +62,12 @@ public String getData()
  * @param informativeData the new informative data
  * @return {@code this}
  */
-public JCTPathPartBuilder setInformativeData(final byte[] informativeData)
-{
-    this.informativeData = informativeData;
-    return this;
+public JCTPathPartBuilder setInformativeData(final byte[] informativeData) {
+  this.informativeData = informativeData;
+  return this;
 }
 
-/**
- * Returns the informative data of this path part builder
- */
-public byte[] getInformativeData()
-{
-    return this.informativeData;
+/** Returns the informative data of this path part builder */
+public byte[] getInformativeData() {
+  return this.informativeData;
 }

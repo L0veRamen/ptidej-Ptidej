@@ -17,23 +17,22 @@ import ptidej.solver.java.domain.Entity;
 
 /**
  * @author Yann-Gaël Guéhéneuc
- * @since  2007/02/27
+ * @since 2007/02/27
  */
 public class NoAbstractEntityConstraint extends UnaryConstraint {
 
-	public NoAbstractEntityConstraint(
-			final String name,
-			final String command,
-			final Variable v0,
-			final int weight,
-			final IApproximations approximations) {
+  public NoAbstractEntityConstraint(
+      final String name,
+      final String command,
+      final Variable v0,
+      final int weight,
+      final IApproximations approximations) {
 
-		super(name, command, v0, weight, approximations);
-	}
+    super(name, command, v0, weight, approximations);
+  }
 
-	@Override
-	protected boolean getPropagateCondition(Entity entity) {
-		return entity.isAbstract();
-	}
-
+  @Override
+  protected boolean getPropagateCondition(Entity entity) {
+    return entity.isAbstract();
+  }
 }

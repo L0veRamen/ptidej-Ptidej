@@ -4,262 +4,241 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
 package padl.kernel.impl;
 
+import com.ibm.toad.cfparse.utils.Access;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import org.junit.Assert;
 import junit.framework.TestCase;
+import org.junit.Assert;
 import padl.kernel.Cardinality;
 import padl.kernel.IConstituent;
 import padl.kernel.IMethodInvocation;
 import padl.kernel.exception.ModelDeclarationException;
 import padl.test.helper.Reflector;
-import padl.util.ModelStatistics;
-
-import com.ibm.toad.cfparse.utils.Access;
 
 /**
  * Basic unit test for padl.kernel.impl.AbstractContainer abstract base class.
- * 
+ *
  * @author Stephane Vaucher
- * @since  2005/11/25
+ * @since 2005/11/25
  */
 public class AbstractContainerTest extends TestCase {
-	private Class clazz;
-	private java.lang.reflect.Field containerField;
-	public AbstractContainerTest(final String aName) {
-		super(aName);
-	}
+  private Class clazz;
+  private java.lang.reflect.Field containerField;
 
-	public void setUp() throws Exception {
-		super.setUp();
-		this.clazz = new Class("Dummy".toCharArray(), "Dummy".toCharArray());
-		this.containerField =
-			FirstClassEntity.class.getDeclaredField("container");
-		this.containerField.setAccessible(true);
-	}
-	public void testAddEntity() {
-		String m1 = "foo()";
-		String m2 = "bar()";
+  public AbstractContainerTest(final String aName) {
+    super(aName);
+  }
 
-		this.clazz.addConstituent(new Method(m1));
-		this.clazz.addConstituent(new Method(m2));
+  public void setUp() throws Exception {
+    super.setUp();
+    this.clazz = new Class("Dummy".toCharArray(), "Dummy".toCharArray());
+    this.containerField = FirstClassEntity.class.getDeclaredField("container");
+    this.containerField.setAccessible(true);
+  }
 
-		Assert.assertNotNull(this.clazz.getConstituentFromID(m1));
-		Assert.assertNotNull(this.clazz.getConstituentFromID(m2));
-	}
-	public void testAddEntitySameType() {
-		try {
-			this.clazz.addConstituent(new Method("foo()"));
-			this.clazz.addConstituent(new Method("foo()"));
-		}
-		catch (ModelDeclarationException e) {
-			Assert.assertTrue("Two methods with the same id should cause a "
-					+ ModelDeclarationException.class.getName(), true);
-			return;
-		}
-		Assert.fail("Two methods with the same id should cause a "
-				+ ModelDeclarationException.class.getName());
-	}
-	public void testAddEqualEntity() throws NoSuchFieldException,
-			SecurityException, IllegalArgumentException,
-			IllegalAccessException, NoSuchMethodException,
-			InvocationTargetException {
+  public void testAddEntity() {
+    String m1 = "foo()";
+    String m2 = "bar()";
 
-		final Method method = new Method("a");
-		final FirstClassEntity firstClassEntity =
-			new FirstClassEntity("calledEntity".toCharArray()) {
-				private static final long serialVersionUID =
-					3509108360306890991L;
-			};
+    this.clazz.addConstituent(new Method(m1));
+    this.clazz.addConstituent(new Method(m2));
 
-		MethodInvocation minvocation =
-			new MethodInvocation(
-				IMethodInvocation.CLASS_CLASS,
-				Cardinality.One,
-				Access.ACC_PUBLIC,
-				firstClassEntity);
-		method.addConstituent(minvocation);
+    Assert.assertNotNull(this.clazz.getConstituentFromID(m1));
+    Assert.assertNotNull(this.clazz.getConstituentFromID(m2));
+  }
 
-		minvocation =
-			new MethodInvocation(
-				IMethodInvocation.CLASS_CLASS,
-				Cardinality.One,
-				Access.ACC_PUBLIC,
-				firstClassEntity);
-		method.addConstituent(minvocation);
+  public void testAddEntitySameType() {
+    try {
+      this.clazz.addConstituent(new Method("foo()"));
+      this.clazz.addConstituent(new Method("foo()"));
+    } catch (ModelDeclarationException e) {
+      Assert.assertTrue(
+          "Two methods with the same id should cause a "
+              + ModelDeclarationException.class.getName(),
+          true);
+      return;
+    }
+    Assert.fail(
+        "Two methods with the same id should cause a " + ModelDeclarationException.class.getName());
+  }
 
-		Reflector.callMethodOnReflectedField(
-			FirstClassEntity.class,
-			"container",
-			this.clazz,
-			"addConstituent",
-			IConstituent.class,
-			method);
-	}
-	public void testAddEqualEntity2() throws NoSuchFieldException,
-			SecurityException, IllegalArgumentException,
-			IllegalAccessException, NoSuchMethodException {
+  public void testAddEqualEntity()
+      throws NoSuchFieldException,
+          SecurityException,
+          IllegalArgumentException,
+          IllegalAccessException,
+          NoSuchMethodException,
+          InvocationTargetException {
 
-		try {
-			final padl.kernel.impl.Field field =
-				new padl.kernel.impl.Field("a");
-			Reflector.callMethodOnReflectedField(
-				FirstClassEntity.class,
-				"container",
-				this.clazz,
-				"addConstituent",
-				IConstituent.class,
-				field);
+    final Method method = new Method("a");
+    final FirstClassEntity firstClassEntity =
+        new FirstClassEntity("calledEntity".toCharArray()) {
+          private static final long serialVersionUID = 3509108360306890991L;
+        };
 
-			final Method method = new Method("a");
-			Reflector.callMethodOnReflectedField(
-				FirstClassEntity.class,
-				"container",
-				this.clazz,
-				"addConstituent",
-				IConstituent.class,
-				method);
-		}
-		catch (final ModelDeclarationException e) {
-			Assert
-				.assertTrue(
-					"Class should support a method and field with different IDs only.",
-					true);
-			return;
-		}
-		catch (final InvocationTargetException e) {
-			Assert
-				.assertTrue(
-					"Class should support a method and field with different IDs only.",
-					true);
-			return;
-		}
-		Assert.assertTrue(
-			"Class should support a method and field with different IDs only.",
-			false);
-	}
-	public void testAddEqualEntity3() throws NoSuchFieldException,
-			SecurityException, IllegalArgumentException,
-			IllegalAccessException, NoSuchMethodException,
-			InvocationTargetException {
+    MethodInvocation minvocation =
+        new MethodInvocation(
+            IMethodInvocation.CLASS_CLASS, Cardinality.One, Access.ACC_PUBLIC, firstClassEntity);
+    method.addConstituent(minvocation);
 
-		final padl.kernel.impl.Field field = new padl.kernel.impl.Field("a");
-		Reflector.callMethodOnReflectedField(
-			FirstClassEntity.class,
-			"container",
-			this.clazz,
-			"addConstituent",
-			IConstituent.class,
-			field);
+    minvocation =
+        new MethodInvocation(
+            IMethodInvocation.CLASS_CLASS, Cardinality.One, Access.ACC_PUBLIC, firstClassEntity);
+    method.addConstituent(minvocation);
 
-		final Method method = new Method("a()");
-		Reflector.callMethodOnReflectedField(
-			FirstClassEntity.class,
-			"container",
-			this.clazz,
-			"addConstituent",
-			IConstituent.class,
-			method);
-	}
-	public void testGetIteratorOnEntities() throws Exception {
-		final Method m1 = new Method("m1");
-		final Method m2 = new Method("m2");
-		final padl.kernel.impl.Field f = new padl.kernel.impl.Field("f");
+    Reflector.callMethodOnReflectedField(
+        FirstClassEntity.class,
+        "container",
+        this.clazz,
+        "addConstituent",
+        IConstituent.class,
+        method);
+  }
 
-		this.clazz.addConstituent(m1);
-		this.clazz.addConstituent(m2);
-		this.clazz.addConstituent(f);
+  public void testAddEqualEntity2()
+      throws NoSuchFieldException,
+          SecurityException,
+          IllegalArgumentException,
+          IllegalAccessException,
+          NoSuchMethodException {
 
-		final Iterator it = this.clazz.getIteratorOnConstituents();
-		final ArrayList l = new ArrayList();
-		while (it.hasNext()) {
-			l.add(it.next());
-		}
+    try {
+      final padl.kernel.impl.Field field = new padl.kernel.impl.Field("a");
+      Reflector.callMethodOnReflectedField(
+          FirstClassEntity.class,
+          "container",
+          this.clazz,
+          "addConstituent",
+          IConstituent.class,
+          field);
 
-		Assert.assertEquals(
-			"Iterator should return all of the elements contained",
-			3,
-			l.size());
-	}
-	public void testGetIteratorOnEntitiesClass() throws Exception {
-		final Method m1 = new Method("m1");
-		final Method m2 = new Method("m2");
-		final padl.kernel.impl.Field f = new padl.kernel.impl.Field("f");
+      final Method method = new Method("a");
+      Reflector.callMethodOnReflectedField(
+          FirstClassEntity.class,
+          "container",
+          this.clazz,
+          "addConstituent",
+          IConstituent.class,
+          method);
+    } catch (final ModelDeclarationException e) {
+      Assert.assertTrue("Class should support a method and field with different IDs only.", true);
+      return;
+    } catch (final InvocationTargetException e) {
+      Assert.assertTrue("Class should support a method and field with different IDs only.", true);
+      return;
+    }
+    Assert.assertTrue("Class should support a method and field with different IDs only.", false);
+  }
 
-		this.clazz.addConstituent(m1);
-		this.clazz.addConstituent(m2);
-		this.clazz.addConstituent(f);
+  public void testAddEqualEntity3()
+      throws NoSuchFieldException,
+          SecurityException,
+          IllegalArgumentException,
+          IllegalAccessException,
+          NoSuchMethodException,
+          InvocationTargetException {
 
-		final Iterator it =
-			this.clazz.getConcurrentIteratorOnConstituents(Method.class);
-		final ArrayList l = new ArrayList();
-		while (it.hasNext()) {
-			l.add(it.next());
-		}
+    final padl.kernel.impl.Field field = new padl.kernel.impl.Field("a");
+    Reflector.callMethodOnReflectedField(
+        FirstClassEntity.class,
+        "container",
+        this.clazz,
+        "addConstituent",
+        IConstituent.class,
+        field);
 
-		Assert.assertEquals(
-			"Iterator should only return the elements of type Method",
-			2,
-			l.size());
-	}
-	public void testRemoveEntityFromID() throws Exception {
-		final Method m = new Method("m1");
-		Assert.assertNull(
-			"Should not already hold this element",
-			this.clazz.getConstituentFromID("m1"));
-		this.clazz.addConstituent(m);
+    final Method method = new Method("a()");
+    Reflector.callMethodOnReflectedField(
+        FirstClassEntity.class,
+        "container",
+        this.clazz,
+        "addConstituent",
+        IConstituent.class,
+        method);
+  }
 
-		Assert.assertEquals(
-			"Method returned is not the same as was inserted.",
-			m,
-			this.clazz.getConstituentFromID("m1"));
+  public void testGetIteratorOnEntities() throws Exception {
+    final Method m1 = new Method("m1");
+    final Method m2 = new Method("m2");
+    final padl.kernel.impl.Field f = new padl.kernel.impl.Field("f");
 
-		this.clazz.removeConstituentFromID(m.getID());
-		Assert.assertNull(
-			"Should not already hold this element",
-			this.clazz.getConstituentFromID("m1"));
+    this.clazz.addConstituent(m1);
+    this.clazz.addConstituent(m2);
+    this.clazz.addConstituent(f);
 
-	}
-	public void testRemoveEntityFromID2() throws Exception {
-		final Method m = new Method("m1");
-		final char[] mName = "foo".toCharArray();
-		m.setName(mName);
-		Assert.assertNull(
-			"Should not already hold this element",
-			this.clazz.getConstituentFromID("m1"));
-		this.clazz.addConstituent(m);
+    final Iterator it = this.clazz.getIteratorOnConstituents();
+    final ArrayList<Object> l = new ArrayList<>();
+    while (it.hasNext()) {
+      l.add(it.next());
+    }
 
-		Assert.assertEquals(
-			"Method returned is not the same as was inserted.",
-			m,
-			this.clazz.getConstituentFromName(mName));
+    Assert.assertEquals("Iterator should return all of the elements contained", 3, l.size());
+  }
 
-		this.clazz.removeConstituentFromID(m.getID());
-		Assert.assertNull(
-			"Should not already hold this element",
-			this.clazz.getConstituentFromName(mName));
+  public void testGetIteratorOnEntitiesClass() throws Exception {
+    final Method m1 = new Method("m1");
+    final Method m2 = new Method("m2");
+    final padl.kernel.impl.Field f = new padl.kernel.impl.Field("f");
 
-	}
-	public void testResetListOfEntities() throws Exception {
-		this.clazz.addConstituent(new Method("m1"));
-		Reflector.callMethodOnReflectedField(
-			FirstClassEntity.class,
-			"container",
-			this.clazz,
-			"resetListOfConstituents");
+    this.clazz.addConstituent(m1);
+    this.clazz.addConstituent(m2);
+    this.clazz.addConstituent(f);
 
-		Assert.assertEquals(
-			"List of actors should be reset",
-			0,
-			this.clazz.getNumberOfConstituents());
-	}
-	
-	
+    final Iterator it = this.clazz.getConcurrentIteratorOnConstituents(Method.class);
+    final ArrayList<Object> l = new ArrayList<>();
+    while (it.hasNext()) {
+      l.add(it.next());
+    }
+
+    Assert.assertEquals("Iterator should only return the elements of type Method", 2, l.size());
+  }
+
+  public void testRemoveEntityFromID() throws Exception {
+    final Method m = new Method("m1");
+    Assert.assertNull(
+        "Should not already hold this element", this.clazz.getConstituentFromID("m1"));
+    this.clazz.addConstituent(m);
+
+    Assert.assertEquals(
+        "Method returned is not the same as was inserted.",
+        m,
+        this.clazz.getConstituentFromID("m1"));
+
+    this.clazz.removeConstituentFromID(m.getID());
+    Assert.assertNull(
+        "Should not already hold this element", this.clazz.getConstituentFromID("m1"));
+  }
+
+  public void testRemoveEntityFromID2() throws Exception {
+    final Method m = new Method("m1");
+    final char[] mName = "foo".toCharArray();
+    m.setName(mName);
+    Assert.assertNull(
+        "Should not already hold this element", this.clazz.getConstituentFromID("m1"));
+    this.clazz.addConstituent(m);
+
+    Assert.assertEquals(
+        "Method returned is not the same as was inserted.",
+        m,
+        this.clazz.getConstituentFromName(mName));
+
+    this.clazz.removeConstituentFromID(m.getID());
+    Assert.assertNull(
+        "Should not already hold this element", this.clazz.getConstituentFromName(mName));
+  }
+
+  public void testResetListOfEntities() throws Exception {
+    this.clazz.addConstituent(new Method("m1"));
+    Reflector.callMethodOnReflectedField(
+        FirstClassEntity.class, "container", this.clazz, "resetListOfConstituents");
+
+    Assert.assertEquals("List of actors should be reset", 0, this.clazz.getNumberOfConstituents());
+  }
 }

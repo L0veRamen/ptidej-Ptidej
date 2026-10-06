@@ -34,20 +34,17 @@ import org.tigris.gef.base.SelectInvertAction;
  */
 public class ActionSelectInvert extends SelectInvertAction {
 
-    /**
-     * The constructor.
-     */
-    public ActionSelectInvert() {
-        this(Translator.localize("menu.item.invert-selection"));
-    }
+  /** The constructor. */
+  public ActionSelectInvert() {
+    this(Translator.localize("menu.item.invert-selection"));
+  }
 
-    /**
-     * The constructor.
-     * 
-     * @param name the name of the action
-     */
-    ActionSelectInvert(String name) {
-        super(name);
-    }
-
+  /**
+   * The constructor.
+   *
+   * @param name the name of the action
+   */
+  ActionSelectInvert(String name) {
+    super(name);
+  }
 }

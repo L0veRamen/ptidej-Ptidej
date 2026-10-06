@@ -25,44 +25,40 @@
 package org.argouml.core.propertypanels.ui;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLComboBox2;
 import org.argouml.uml.ui.UMLComboBoxModel2;
 import org.argouml.uml.ui.UMLSearchableComboBox;
 
-
 /**
  * @author oliver.heyden@gentleware.de
  */
 class UMLCallEventOperationComboBox2 extends UMLSearchableComboBox {
-    /**
-     * The constructor.
-     *
-     * @param arg0 the model
-     */
-    public UMLCallEventOperationComboBox2(UMLComboBoxModel2 arg0) {
-        super(arg0, null); // no external action; we do it ourselves
-        setEditable(false);
-    }
+  /**
+   * The constructor.
+   *
+   * @param arg0 the model
+   */
+  public UMLCallEventOperationComboBox2(UMLComboBoxModel2 arg0) {
+    super(arg0, null); // no external action; we do it ourselves
+    setEditable(false);
+  }
 
-    /*
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        Object source = e.getSource();
-        if (source instanceof UMLComboBox2) {
-            Object selected = ((UMLComboBox2) source).getSelectedItem();
-            Object target = ((UMLComboBox2) source).getTarget();
-            if (Model.getFacade().isACallEvent(target) 
-                && Model.getFacade().isAOperation(selected)) {
-                if (Model.getFacade().getOperation(target) != selected) {
-                    Model.getCommonBehaviorHelper()
-                        .setOperation(target, selected);
-                }
-            }
+  /*
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    Object source = e.getSource();
+    if (source instanceof UMLComboBox2) {
+      Object selected = ((UMLComboBox2) source).getSelectedItem();
+      Object target = ((UMLComboBox2) source).getTarget();
+      if (Model.getFacade().isACallEvent(target) && Model.getFacade().isAOperation(selected)) {
+        if (Model.getFacade().getOperation(target) != selected) {
+          Model.getCommonBehaviorHelper().setOperation(target, selected);
         }
+      }
     }
+  }
 }

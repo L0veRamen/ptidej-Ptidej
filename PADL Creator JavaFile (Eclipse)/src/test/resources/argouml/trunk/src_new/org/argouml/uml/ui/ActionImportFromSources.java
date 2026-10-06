@@ -22,56 +22,48 @@
 // CALIFORNIA HAS NO OBLIGATIONS TO PROVIDE MAINTENANCE, SUPPORT,
 // UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
-
 package org.argouml.uml.ui;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.Action;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.i18n.Translator;
 import org.argouml.uml.reveng.Import;
 import org.tigris.gef.undo.UndoableAction;
 
-
-/** Action to trigger importing from sources.
+/**
+ * Action to trigger importing from sources.
+ *
  * @stereotype singleton
  */
 public class ActionImportFromSources extends UndoableAction {
 
-    /**
-     * The singleton.
-     */
-    private static final ActionImportFromSources SINGLETON =
-        new ActionImportFromSources();
+  /** The singleton. */
+  private static final ActionImportFromSources SINGLETON = new ActionImportFromSources();
 
-    /**
-     *  The constructor.
-     */
-    protected ActionImportFromSources() {
-        // this is never downlighted...
-        super(Translator.localize("action.import-sources"),
-                ResourceLoaderWrapper.lookupIcon("action.import-sources"));
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize("action.import-sources"));
-    }
+  /** The constructor. */
+  protected ActionImportFromSources() {
+    // this is never downlighted...
+    super(
+        Translator.localize("action.import-sources"),
+        ResourceLoaderWrapper.lookupIcon("action.import-sources"));
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize("action.import-sources"));
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent event) {
-    	super.actionPerformed(event);
-    	new Import();
-    }
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent event) {
+    super.actionPerformed(event);
+    new Import();
+  }
 
-
-    /**
-     * @return Returns the SINGLETON.
-     */
-    public static ActionImportFromSources getInstance() {
-        return SINGLETON;
-    }
+  /**
+   * @return Returns the SINGLETON.
+   */
+  public static ActionImportFromSources getInstance() {
+    return SINGLETON;
+  }
 }
 /* end class ActionImportFromSources */

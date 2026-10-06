@@ -27,20 +27,19 @@ package org.argouml.uml.ui;
 import org.argouml.ui.targetmanager.TargetManager;
 
 /**
- * This action is to delete a single model element.
- * TODO: The recent refactoring to produce this class has made a possible
- * bug apparent to me. Presumably this deletes the first item in the target
- * manager and that may not be the item shown in the prop panel. Must test.
+ * This action is to delete a single model element. TODO: The recent refactoring to produce this
+ * class has made a possible bug apparent to me. Presumably this deletes the first item in the
+ * target manager and that may not be the item shown in the prop panel. Must test.
  *
  * @author original author not known.
  * @author jaap.branderhorst@xs4all.nl extensions
  */
 public class ActionDeleteSingleModelElement extends ActionBaseDelete {
 
-    /**
-     * @return the complete array of targets
-     */
-    protected Object[] getTargets() {
-        return new Object[] {TargetManager.getInstance().getModelTarget()};
-    }
+  /**
+   * @return the complete array of targets
+   */
+  protected Object[] getTargets() {
+    return new Object[] {TargetManager.getInstance().getModelTarget()};
+  }
 } /* end class ActionRemoveFromModel */

@@ -27,26 +27,27 @@ package org.argouml.uml.diagram;
 import java.awt.Rectangle;
 
 /**
- * An interface to be implemented by any Fig that contains
- * a FigAttributesCompartment.
+ * An interface to be implemented by any Fig that contains a FigAttributesCompartment.
+ *
  * @author Bob Tarling
  */
 public interface AttributesCompartmentContainer {
-    /**
-     * Determine if the attributes compartment is visible.
-     * @return true if the attributes compartment is visible.
-     */
-    boolean isAttributesVisible();
+  /**
+   * Determine if the attributes compartment is visible.
+   *
+   * @return true if the attributes compartment is visible.
+   */
+  boolean isAttributesVisible();
 
-    /**
-     * Set the visibility of the attributes compartment.
-     * @param visible the new visibility status.
-     */
-    void setAttributesVisible(boolean visible);
+  /**
+   * Set the visibility of the attributes compartment.
+   *
+   * @param visible the new visibility status.
+   */
+  void setAttributesVisible(boolean visible);
 
-
-    /**
-     * @return The bounds of the operations compartment
-     */
-    Rectangle getAttributesBounds();
+  /**
+   * @return The bounds of the operations compartment
+   */
+  Rectangle getAttributesBounds();
 }

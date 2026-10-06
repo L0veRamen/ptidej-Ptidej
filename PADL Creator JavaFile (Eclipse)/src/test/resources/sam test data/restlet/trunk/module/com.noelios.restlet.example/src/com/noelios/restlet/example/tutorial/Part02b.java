@@ -31,23 +31,21 @@ import org.restlet.resource.Representation;
 
 /**
  * Retrieving the content of a Web page (detailled).
+ *
  * @author Jerome Louvel (contact@noelios.com)
  */
-public class Part02b
-{
-	public static void main(String[] args) throws Exception
-	{
-		// Prepare the request
-		Request request = new Request(Method.GET, "http://www.restlet.org");
-		request.setReferrerRef("http://www.mysite.org");
+public class Part02b {
+  public static void main(String[] args) throws Exception {
+    // Prepare the request
+    Request request = new Request(Method.GET, "http://www.restlet.org");
+    request.setReferrerRef("http://www.mysite.org");
 
-		// Handle it using an HTTP client connector
-		Client client = new Client(Protocol.HTTP);
-		Response response = client.handle(request);
+    // Handle it using an HTTP client connector
+    Client client = new Client(Protocol.HTTP);
+    Response response = client.handle(request);
 
-		// Write the response entity on the console
-		Representation output = response.getEntity();
-		output.write(System.out);
-	}
-
+    // Write the response entity on the console
+    Representation output = response.getEntity();
+    output.write(System.out);
+  }
 }

@@ -39,13 +39,10 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Vector;
-
 import javax.swing.JPanel;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
 import org.argouml.i18n.Translator;
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
@@ -63,335 +60,310 @@ import org.tigris.gef.util.EnumerationSingle;
 import org.tigris.swidgets.Horizontal;
 
 /**
- * TestPropertyPanels attempts to load a project file and iterates through
- * all known modelelements of this project. For each modelelement it creates
- * a test case, which tries to invoke the according property panel.
- * This test implements a simple verification that creation of property panels
- * is at least exception free. It does not provide a test for the functionality
- * of the respective modelelements.
+ * TestPropertyPanels attempts to load a project file and iterates through all known modelelements
+ * of this project. For each modelelement it creates a test case, which tries to invoke the
+ * according property panel. This test implements a simple verification that creation of property
+ * panels is at least exception free. It does not provide a test for the functionality of the
+ * respective modelelements.
  *
  * @author mkl
  */
 public class TestPropertyPanels extends TestCase {
 
-    /**
-     * Name of the zargo file to read.
-     */
-    private static final String TEST_PROPERTY_PANELS_ZARGO =
-        "/testmodels/GUITestPropertyPanels.zargo";
+  /** Name of the zargo file to read. */
+  private static final String TEST_PROPERTY_PANELS_ZARGO =
+      "/testmodels/GUITestPropertyPanels.zargo";
 
-    private static Project p = null;
-    private Object modelElement;
+  private static Project p = null;
+  private Object modelElement;
 
-    /**
-     * For an explanation on why this is static.
-     *
-     * @see #setUp
-     */
-    private static DetailsPane theDetailsPane = null;
-    private JPanel propertyPane;
+  /**
+   * For an explanation on why this is static.
+   *
+   * @see #setUp
+   */
+  private static DetailsPane theDetailsPane = null;
 
-    // we need the translator to work in order to access
-    // the property panels. It is also a common source for
-    // problems.
-    static {
-        Translator.init();
+  private JPanel propertyPane;
+
+  // we need the translator to work in order to access
+  // the property panels. It is also a common source for
+  // problems.
+  static {
+    Translator.init();
+  }
+
+  /**
+   * @param me is the type of object to test
+   * @param arg0 is the name of the test case
+   */
+  public TestPropertyPanels(Object me, String arg0) {
+    super(arg0);
+    modelElement = me;
+  }
+
+  /**
+   * Here we are actually violating the test independance since we keep the DetailsPane from test to
+   * test. The reason to do this is to make it possible to run the tests with less memory
+   * requirements.
+   *
+   * <p>Hopefully someone might eventually fix the DetailsPane so that it is garbage collected
+   * properly and this is no longer needed.
+   *
+   * @see junit.framework.TestCase#setUp()
+   */
+  protected void setUp() throws Exception {
+    super.setUp();
+    if (theDetailsPane == null) {
+      theDetailsPane = new DetailsPane("detail", Horizontal.getInstance());
+    }
+  }
+
+  /**
+   * @param args the arguments given on the commandline
+   */
+  public static void main(java.lang.String[] args) {
+    try {
+      junit.textui.TestRunner.run(suite());
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * @return the test suite
+   * @throws Exception any exception
+   */
+  public static Test suite() throws Exception {
+
+    // constains instances of each modelelement
+    // used for testing so that we only use each modelelement
+    // once
+    HashMap meMap = new HashMap();
+    ChildGenerator cg = new ChildGenModelElements();
+
+    TestSuite suite = new TestSuite("Tests to access proppanels " + "for all known model elements");
+
+    p = ProjectManager.getManager().makeEmptyProject();
+    URL url = TestPropertyPanels.class.getResource(TEST_PROPERTY_PANELS_ZARGO);
+
+    if (url == null) {
+      System.out.println(TestPropertyPanels.class.getName() + ": WARNING: Inconclusive tests.");
+      System.out.println(
+          "This test must be able to"
+              + " find the resource "
+              + TEST_PROPERTY_PANELS_ZARGO
+              + " on the classpath.");
+      System.out.println("Examine your set up and try again!");
+      return suite;
     }
 
+    File testfile = new File(url.getFile());
 
-    /**
-     * @param me is the type of object to test
-     * @param arg0 is the name of the test case
-     */
-    public TestPropertyPanels(Object me, String arg0) {
-        super(arg0);
-        modelElement = me;
-    }
+    AbstractFilePersister persister =
+        PersistenceManager.getInstance().getPersisterFromFileName(TEST_PROPERTY_PANELS_ZARGO);
+    p = persister.doLoad(testfile);
+    ProjectManager.getManager().setCurrentProject(p);
+    Object model = p.getRoot();
+    Collection me =
+        Model.getModelManagementHelper()
+            .getAllModelElementsOfKind(model, Model.getMetaTypes().getModelElement());
 
-    /**
-     * Here we are actually violating the test independance since we keep
-     * the DetailsPane from test to test. The reason to do this is to make
-     * it possible to run the tests with less memory requirements.
-     *
-     * Hopefully someone might eventually fix the DetailsPane so that it is
-     * garbage collected properly and this is no longer needed.
-     *
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        if (theDetailsPane == null) {
-            theDetailsPane =
-        	new DetailsPane("detail", Horizontal.getInstance());
+    Enumeration meEnum = getAllModelElements(p);
+
+    while (meEnum.hasMoreElements()) {
+      Object obj = meEnum.nextElement();
+      if (Model.getFacade().isAModelElement(obj)) {
+        if (!meMap.containsKey(obj.getClass())) {
+          suite.addTest(
+              new TestPropertyPanels(obj, "PropPanel" + Model.getFacade().getUMLClassName(obj)));
+          meMap.put(obj.getClass(), obj);
         }
+      }
     }
 
-    /**
-     * @param args the arguments given on the commandline
-     */
-    public static void main(java.lang.String[] args) {
-        try {
-            junit.textui.TestRunner.run(suite());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    return suite;
+  }
+
+  private static Enumeration getAllModelElements(Object me) {
+    Enumeration elem = new EnumerationComposite();
+    return getAllModelElements(me, elem);
+  }
+
+  private static Enumeration getAllModelElements(Object me, Enumeration elem) {
+    ChildGenUML cg = new ChildGenUML();
+
+    elem = new EnumerationComposite(elem, new EnumerationSingle(me));
+    Enumeration elem2 = cg.gen(me);
+    if (elem2 == EnumerationEmpty.theInstance()) {
+      return elem;
     }
-
-
-    /**
-     * @return the test suite
-     * @throws Exception any exception
-     */
-    public static Test suite() throws Exception {
-
-        // constains instances of each modelelement
-        // used for testing so that we only use each modelelement
-        // once
-        HashMap meMap = new HashMap();
-        ChildGenerator cg = new ChildGenModelElements();
-
-        TestSuite suite =
-	    new TestSuite("Tests to access proppanels "
-			  + "for all known model elements");
-
-        p = ProjectManager.getManager().makeEmptyProject();
-        URL url =
-            TestPropertyPanels.class.getResource(
-                        TEST_PROPERTY_PANELS_ZARGO);
-
-        if (url == null) {
-            System.out.println(TestPropertyPanels.class.getName()
-                    + ": WARNING: Inconclusive tests.");
-            System.out.println("This test must be able to"
-                    + " find the resource " + TEST_PROPERTY_PANELS_ZARGO
-                    + " on the classpath.");
-            System.out.println("Examine your set up and try again!");
-            return suite;
-        }
-
-        File testfile = new File(url.getFile());
-
-        AbstractFilePersister persister =
-            PersistenceManager.getInstance().getPersisterFromFileName(
-                TEST_PROPERTY_PANELS_ZARGO);
-        p = persister.doLoad(testfile);
-        ProjectManager.getManager().setCurrentProject(p);
-        Object model = p.getRoot();
-        Collection me =
-            Model.getModelManagementHelper()
-            	.getAllModelElementsOfKind(
-            	        model,
-            	        Model.getMetaTypes().getModelElement());
-
-        Enumeration meEnum = getAllModelElements(p);
-
-        while (meEnum.hasMoreElements()) {
-            Object obj = meEnum.nextElement();
-            if (Model.getFacade().isAModelElement(obj)) {
-                if (!meMap.containsKey(obj.getClass())) {
-                    suite.addTest(new TestPropertyPanels(
-			    obj,
-			    "PropPanel"
-			    + Model.getFacade().getUMLClassName(obj)));
-                    meMap.put(obj.getClass(), obj);
-                }
-            }
-        }
-
-        return suite;
+    while (elem2.hasMoreElements()) {
+      Object newMe = elem2.nextElement();
+      elem = getAllModelElements(newMe, elem);
     }
+    return elem;
+  }
 
-    private static Enumeration getAllModelElements(Object me) {
-        Enumeration elem = new EnumerationComposite();
-        return getAllModelElements(me, elem);
-    }
+  /**
+   * @see junit.framework.TestCase#runTest()
+   */
+  protected void runTest() throws Throwable {
+    testPropertyTab();
+  }
 
-    private static Enumeration getAllModelElements(Object me,
-						   Enumeration elem) {
-        ChildGenUML cg = new ChildGenUML();
+  /**
+   * @throws Throwable any error or exception
+   */
+  public void testPropertyTab() throws Throwable {
+    TargetEvent e =
+        new TargetEvent(
+            this,
+            TargetEvent.TARGET_SET,
+            new Object[] {
+              null,
+            },
+            new Object[] {
+              modelElement,
+            });
+    theDetailsPane.targetSet(e);
 
-        elem = new EnumerationComposite(elem, new EnumerationSingle(me));
-        Enumeration elem2 = cg.gen(me);
-        if (elem2 == EnumerationEmpty.theInstance()) {
-            return elem;
-        }
-        while (elem2.hasMoreElements()) {
-            Object newMe = elem2.nextElement();
-            elem = getAllModelElements(newMe, elem);
-        }
-        return elem;
-    }
+    propertyPane = /*TabProps */ theDetailsPane.getTab(TabProps.class);
+    //            theDetailsPane.getNamedTab(Translator.localize("tab.properties"));
 
-
-    /**
-     * @see junit.framework.TestCase#runTest()
-     */
-    protected void runTest() throws Throwable {
-        testPropertyTab();
-    }
-
-    /**
-     * @throws Throwable any error or exception
-     */
-    public void testPropertyTab() throws Throwable {
-        TargetEvent e =
-	    new TargetEvent(this,
-			    TargetEvent.TARGET_SET,
-			    new Object[] {
-				null,
-			    },
-			    new Object[] {
-				modelElement,
-			    });
-        theDetailsPane.targetSet(e);
-
-        propertyPane = /*TabProps */
-            theDetailsPane.getTab(TabProps.class);
-//            theDetailsPane.getNamedTab(Translator.localize("tab.properties"));
-
-        // currently this is in this try block as it does not work
-        // _propertyPanel always has size 0,0
+    // currently this is in this try block as it does not work
+    // _propertyPanel always has size 0,0
     /*
-          try {
-            saveImageAsJPEG((BufferedImage)createImageFromComponent(
-                _propertyPane),
-                1000000, "/Users/mkl/argoimg/"+this.getName() + ".jpg");
-        }
-        catch (Exception ex) {
-           // System.out.println(ex);
-        }
-         */
+      try {
+        saveImageAsJPEG((BufferedImage)createImageFromComponent(
+            _propertyPane),
+            1000000, "/Users/mkl/argoimg/"+this.getName() + ".jpg");
     }
-    /*
-    public static Image createImageFromComponent(Component comp) {
-        BufferedImage image = new BufferedImage(comp.getWidth(),
-        comp.getHeight(), BufferedImage.TYPE_INT_BGR);
-        Graphics2D g = image.createGraphics();
-        comp.paint(g);
-        return image;
+    catch (Exception ex) {
+       // System.out.println(ex);
     }
+     */
+  }
+  /*
+  public static Image createImageFromComponent(Component comp) {
+      BufferedImage image = new BufferedImage(comp.getWidth(),
+      comp.getHeight(), BufferedImage.TYPE_INT_BGR);
+      Graphics2D g = image.createGraphics();
+      comp.paint(g);
+      return image;
+  }
 
 
-    public static void saveImageAsJPEG(BufferedImage bi, float quality,
-            String filename) {
-        try {
-            ByteArrayOutputStream boutstream = new ByteArrayOutputStream();
-            JPEGImageEncoder enc = JPEGCodec.createJPEGEncoder(boutstream);
-            JPEGEncodeParam enparam = JPEGCodec.getDefaultJPEGEncodeParam(bi);
-            enparam.setQuality(quality, true );
-            enc.encode(bi, enparam);
-            FileOutputStream fimage = new FileOutputStream( new File(filename));
-            boutstream.writeTo(fimage);
-            fimage.close();
-        }
-        catch (Exception e) {
-            System.out.println(e); }
-    }
-    */
+  public static void saveImageAsJPEG(BufferedImage bi, float quality,
+          String filename) {
+      try {
+          ByteArrayOutputStream boutstream = new ByteArrayOutputStream();
+          JPEGImageEncoder enc = JPEGCodec.createJPEGEncoder(boutstream);
+          JPEGEncodeParam enparam = JPEGCodec.getDefaultJPEGEncodeParam(bi);
+          enparam.setQuality(quality, true );
+          enc.encode(bi, enparam);
+          FileOutputStream fimage = new FileOutputStream( new File(filename));
+          boutstream.writeTo(fimage);
+          fimage.close();
+      }
+      catch (Exception e) {
+          System.out.println(e); }
+  }
+  */
 }
 
 class ChildGenModelElements implements ChildGenerator {
 
+  public Enumeration gen(Object o) {
 
-    public Enumeration gen(Object o) {
-
-        if (o instanceof Project) {
-            Project p = (Project) o;
-            return new EnumerationComposite(p.getUserDefinedModels().elements(),
-                    p.getDiagrams().elements());
-        }
-
-        if (o instanceof Diagram) {
-            Collection figs = ((Diagram) o).getLayer().getContents();
-            if (figs != null) {
-                return new Vector(figs).elements();
-            }
-        }
-
-        if (!Model.getFacade().isAModelElement(o)) {
-            return EnumerationEmpty.theInstance();
-        }
-
-        EnumerationComposite res =
-	    new EnumerationComposite(new EnumerationSingle(o));
-
-
-        // now we deal only with modelelements
-        if (Model.getFacade().getBehaviors(o) != null) {
-            Vector beh = new Vector(Model.getFacade().getBehaviors(o));
-            res.addSub(beh.elements());
-        }
-
-        if (Model.getFacade().isANamespace(o)) {
-            if (Model.getFacade().getOwnedElements(o) != null) {
-                Vector own = new Vector(Model.getFacade().getOwnedElements(o));
-                res.addSub(own.elements());
-            }
-        }
-
-        if (Model.getFacade().isAClassifier(o)) {
-            if (Model.getFacade().getFeatures(o) != null) {
-                Vector own = new Vector(Model.getFacade().getFeatures(o));
-                res.addSub(own.elements());
-            }
-        }
-
-        if (Model.getFacade().isABehavioralFeature(o)) {
-            if (Model.getFacade().getParameters(o) != null) {
-                Vector params = new Vector(Model.getFacade().getParameters(o));
-                res.addSub(params.elements());
-            }
-        }
-
-        if (Model.getFacade().isAAssociation(o)) {
-            if (Model.getFacade().getConnections(o) != null) {
-                Vector assocEnds =
-                    new Vector(Model.getFacade().getConnections(o));
-                res.addSub(assocEnds.elements());
-            }
-            //TODO: MAssociationRole
-        }
-
-        if (Model.getFacade().isAElementImport(o)) {
-            Object me = Model.getFacade().getModelElement(o);
-            res.addSub(new EnumerationSingle(me));
-        }
-
-        if (Model.getFacade().isACompositeState(o)) {
-            Vector substates = new Vector(Model.getFacade().getSubvertices(o));
-            if (substates != null) {
-                res.addSub(substates.elements());
-            }
-        }
-
-        if (Model.getFacade().isAStateMachine(o)) {
-            EnumerationComposite res2 = new EnumerationComposite();
-            Object top = Model.getStateMachinesHelper().getTop(o);
-            if (top != null) {
-                res2.addSub(new EnumerationSingle(top));
-            }
-            res2.addSub(new Vector(Model.getFacade().getTransitions(o)));
-            res.addSub(res2);
-        }
-
-        // if (Model.getFacade().isATransition(o)) {
-        ///   Vector action = new Vector(Model.getFacade().getAction(o));
-        //if (action != null) res.addSub(action.elements());
-        //}
-
-        if (Model.getFacade().isANode(o)) {
-            Vector substates = new Vector(Model.getFacade().getResidents(o));
-            if (substates != null) {
-                res.addSub(substates.elements());
-            }
-        }
-
-
-
-
-        return res;
-
+    if (o instanceof Project) {
+      Project p = (Project) o;
+      return new EnumerationComposite(
+          p.getUserDefinedModels().elements(), p.getDiagrams().elements());
     }
 
+    if (o instanceof Diagram) {
+      Collection figs = ((Diagram) o).getLayer().getContents();
+      if (figs != null) {
+        return new Vector(figs).elements();
+      }
+    }
 
+    if (!Model.getFacade().isAModelElement(o)) {
+      return EnumerationEmpty.theInstance();
+    }
+
+    EnumerationComposite res = new EnumerationComposite(new EnumerationSingle(o));
+
+    // now we deal only with modelelements
+    if (Model.getFacade().getBehaviors(o) != null) {
+      Vector beh = new Vector(Model.getFacade().getBehaviors(o));
+      res.addSub(beh.elements());
+    }
+
+    if (Model.getFacade().isANamespace(o)) {
+      if (Model.getFacade().getOwnedElements(o) != null) {
+        Vector own = new Vector(Model.getFacade().getOwnedElements(o));
+        res.addSub(own.elements());
+      }
+    }
+
+    if (Model.getFacade().isAClassifier(o)) {
+      if (Model.getFacade().getFeatures(o) != null) {
+        Vector own = new Vector(Model.getFacade().getFeatures(o));
+        res.addSub(own.elements());
+      }
+    }
+
+    if (Model.getFacade().isABehavioralFeature(o)) {
+      if (Model.getFacade().getParameters(o) != null) {
+        Vector params = new Vector(Model.getFacade().getParameters(o));
+        res.addSub(params.elements());
+      }
+    }
+
+    if (Model.getFacade().isAAssociation(o)) {
+      if (Model.getFacade().getConnections(o) != null) {
+        Vector assocEnds = new Vector(Model.getFacade().getConnections(o));
+        res.addSub(assocEnds.elements());
+      }
+      // TODO: MAssociationRole
+    }
+
+    if (Model.getFacade().isAElementImport(o)) {
+      Object me = Model.getFacade().getModelElement(o);
+      res.addSub(new EnumerationSingle(me));
+    }
+
+    if (Model.getFacade().isACompositeState(o)) {
+      Vector substates = new Vector(Model.getFacade().getSubvertices(o));
+      if (substates != null) {
+        res.addSub(substates.elements());
+      }
+    }
+
+    if (Model.getFacade().isAStateMachine(o)) {
+      EnumerationComposite res2 = new EnumerationComposite();
+      Object top = Model.getStateMachinesHelper().getTop(o);
+      if (top != null) {
+        res2.addSub(new EnumerationSingle(top));
+      }
+      res2.addSub(new Vector(Model.getFacade().getTransitions(o)));
+      res.addSub(res2);
+    }
+
+    // if (Model.getFacade().isATransition(o)) {
+    ///   Vector action = new Vector(Model.getFacade().getAction(o));
+    // if (action != null) res.addSub(action.elements());
+    // }
+
+    if (Model.getFacade().isANode(o)) {
+      Vector substates = new Vector(Model.getFacade().getResidents(o));
+      if (substates != null) {
+        res.addSub(substates.elements());
+      }
+    }
+
+    return res;
+  }
 }

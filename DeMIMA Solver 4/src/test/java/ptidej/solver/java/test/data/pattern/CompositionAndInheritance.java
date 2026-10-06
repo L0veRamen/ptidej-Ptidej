@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -19,36 +19,34 @@ import padl.motif.models.TestMotifModel;
 
 /**
  * @author Yann-Gaël Guéhéneuc
- * @since  2004/09/20
+ * @since 2004/09/20
  */
 public final class CompositionAndInheritance extends TestMotifModel {
-	private static final long serialVersionUID = 1272372464314373630L;
+  private static final long serialVersionUID = 1272372464314373630L;
 
-	public CompositionAndInheritance() {
-		// java.lang.Object -<|- A -<|- B
-		// B <#>-> java.lang.Object
+  public CompositionAndInheritance() {
+    // java.lang.Object -<|- A -<|- B
+    // B <#>-> java.lang.Object
 
-		final IFirstClassEntity object = this.getFactory()
-				.createHierarchyRoot();
-		final IClass A = this.getFactory().createClass("A".toCharArray(),
-				"A".toCharArray());
-		final IClass B = this.getFactory().createClass("B".toCharArray(),
-				"B".toCharArray());
+    final IFirstClassEntity object = this.getFactory().createHierarchyRoot();
+    final IClass A = this.getFactory().createClass("A".toCharArray(), "A".toCharArray());
+    final IClass B = this.getFactory().createClass("B".toCharArray(), "B".toCharArray());
 
-		A.addInheritedEntity(object);
-		B.addInheritedEntity(A);
+    A.addInheritedEntity(object);
+    B.addInheritedEntity(A);
 
-		final IContainerComposition containerComposition = this.getFactory()
-				.createContainerCompositionRelationship(
-						"containerComposition".toCharArray(), object, Cardinality.Many);
-		B.addConstituent(containerComposition);
+    final IContainerComposition containerComposition =
+        this.getFactory()
+            .createContainerCompositionRelationship(
+                "containerComposition".toCharArray(), object, Cardinality.Many);
+    B.addConstituent(containerComposition);
 
-		final IPackage enclosingPackage = this.getFactory()
-				.createPackage("CompositionAndInheritanceTest".toCharArray());
-		enclosingPackage.addConstituent(object);
-		enclosingPackage.addConstituent(A);
-		enclosingPackage.addConstituent(B);
+    final IPackage enclosingPackage =
+        this.getFactory().createPackage("CompositionAndInheritanceTest".toCharArray());
+    enclosingPackage.addConstituent(object);
+    enclosingPackage.addConstituent(A);
+    enclosingPackage.addConstituent(B);
 
-		this.addConstituent(enclosingPackage);
-	}
+    this.addConstituent(enclosingPackage);
+  }
 }

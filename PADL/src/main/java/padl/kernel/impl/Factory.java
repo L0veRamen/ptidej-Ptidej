@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -13,7 +13,6 @@ package padl.kernel.impl;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-
 import padl.event.EventGenerator;
 import padl.kernel.Cardinality;
 import padl.kernel.Constants;
@@ -54,274 +53,260 @@ import padl.visitor.IWalker;
  * @author Yann-Gaël Guéhéneuc
  */
 public class Factory implements IFactory, Serializable {
-	private static final IFirstClassEntity HIERARCHY_ROOT_ENTITY = new Ghost(
-			Constants.DEFAULT_HIERARCHY_ROOT_ID,
-			Constants.DEFAULT_HIERARCHY_ROOT_NAME);
-	private static final Map PrimitiveEntities = new HashMap();
-	private static final long serialVersionUID = -4969943969597847522L;
+  private static final IFirstClassEntity HIERARCHY_ROOT_ENTITY =
+      new Ghost(Constants.DEFAULT_HIERARCHY_ROOT_ID, Constants.DEFAULT_HIERARCHY_ROOT_NAME);
+  private static final Map<char[], IPrimitiveEntity> PrimitiveEntities = new HashMap<>();
+  private static final long serialVersionUID = -4969943969597847522L;
 
-	// Sebastien Colladon 19/04/2012 : Change with the abstract type for more flexibility in the legacy
-	private static IFactory UniqueInstance;
+  // Sebastien Colladon 19/04/2012 : Change with the abstract type for more flexibility in the
+  // legacy
+  private static IFactory UniqueInstance;
 
-	public static IFactory getInstance() {
-		if (Factory.UniqueInstance == null) {
-			Factory.UniqueInstance = new Factory();
-		}
-		return Factory.UniqueInstance;
-	}
+  public static IFactory getInstance() {
+    if (Factory.UniqueInstance == null) {
+      Factory.UniqueInstance = new Factory();
+    }
+    return Factory.UniqueInstance;
+  }
 
-	protected Factory() {
-	}
+  protected Factory() {}
 
-	public IAggregation createAggregationRelationship(final char[] aName,
-			final IFirstClassEntity aTargetEntity, final Cardinality aCardinality) {
+  public IAggregation createAggregationRelationship(
+      final char[] aName, final IFirstClassEntity aTargetEntity, final Cardinality aCardinality) {
 
-		return new Aggregation(aName, aTargetEntity, aCardinality);
-	}
+    return new Aggregation(aName, aTargetEntity, aCardinality);
+  }
 
-	public IAssociation createAssociationRelationship(final char[] anID,
-			final IFirstClassEntity aTargetEntity, final Cardinality aCardinality) {
+  public IAssociation createAssociationRelationship(
+      final char[] anID, final IFirstClassEntity aTargetEntity, final Cardinality aCardinality) {
 
-		return new Association(anID, aTargetEntity, aCardinality);
-	}
+    return new Association(anID, aTargetEntity, aCardinality);
+  }
 
-	public IClass createClass(final char[] anID, final char[] aName) {
-		return new Class(anID, aName);
-	}
+  public IClass createClass(final char[] anID, final char[] aName) {
+    return new Class(anID, aName);
+  }
 
-	public ICodeLevelModel createCodeLevelModel(final char[] aName) {
-		final ICodeLevelModel codeLevelModel = new CodeLevelModel(aName);
-		((CodeLevelModel) codeLevelModel).setFactory(this);
-		((CodeLevelModel) codeLevelModel)
-				.setEventGenerator(this.getEventGenerator());
-		return codeLevelModel;
-	}
+  public ICodeLevelModel createCodeLevelModel(final char[] aName) {
+    final ICodeLevelModel codeLevelModel = new CodeLevelModel(aName);
+    ((CodeLevelModel) codeLevelModel).setFactory(this);
+    ((CodeLevelModel) codeLevelModel).setEventGenerator(this.getEventGenerator());
+    return codeLevelModel;
+  }
 
-	public ICodeLevelModel createCodeLevelModel(final String aName) {
-		return this.createCodeLevelModel(aName.toCharArray());
-	}
+  public ICodeLevelModel createCodeLevelModel(final String aName) {
+    return this.createCodeLevelModel(aName.toCharArray());
+  }
 
-	public IComposition createCompositionRelationship(final char[] anID,
-			final IFirstClassEntity aTargetEntity, final Cardinality aCardinality) {
+  public IComposition createCompositionRelationship(
+      final char[] anID, final IFirstClassEntity aTargetEntity, final Cardinality aCardinality) {
 
-		return new Composition(anID, aTargetEntity, aCardinality);
-	}
+    return new Composition(anID, aTargetEntity, aCardinality);
+  }
 
-	public IComposition createCompositionRelationship(
-			final IAssociation anAssociation) {
+  public IComposition createCompositionRelationship(final IAssociation anAssociation) {
 
-		return new Composition(anAssociation);
-	}
+    return new Composition(anAssociation);
+  }
 
-	public IConstructor createConstructor(final char[] anID,
-			final char[] aName) {
-		final IConstructor constructor = new Constructor(anID);
-		constructor.setName(aName);
+  public IConstructor createConstructor(final char[] anID, final char[] aName) {
+    final IConstructor constructor = new Constructor(anID);
+    constructor.setName(aName);
 
-		return constructor;
-	}
+    return constructor;
+  }
 
-	public IContainerAggregation createContainerAggregationRelationship(
-			final char[] anID, final IFirstClassEntity aTargetEntity,
-			final Cardinality aCardinality) {
+  public IContainerAggregation createContainerAggregationRelationship(
+      final char[] anID, final IFirstClassEntity aTargetEntity, final Cardinality aCardinality) {
 
-		return new ContainerAggregation(anID, aTargetEntity, aCardinality);
-	}
+    return new ContainerAggregation(anID, aTargetEntity, aCardinality);
+  }
 
-	public IContainerComposition createContainerCompositionRelationship(
-			final char[] anID, final IFirstClassEntity aTargetEntity,
-			final Cardinality aCardinality) {
+  public IContainerComposition createContainerCompositionRelationship(
+      final char[] anID, final IFirstClassEntity aTargetEntity, final Cardinality aCardinality) {
 
-		return new ContainerComposition(anID, aTargetEntity, aCardinality);
-	}
+    return new ContainerComposition(anID, aTargetEntity, aCardinality);
+  }
 
-	public IContainerComposition createContainerCompositionRelationship(
-			final IAssociation anAssociation) {
+  public IContainerComposition createContainerCompositionRelationship(
+      final IAssociation anAssociation) {
 
-		return new ContainerComposition(anAssociation);
-	}
+    return new ContainerComposition(anAssociation);
+  }
 
-	public ICreation createCreationRelationship(final char[] anID,
-			final IFirstClassEntity aTargetEntity, final Cardinality aCardinality) {
+  public ICreation createCreationRelationship(
+      final char[] anID, final IFirstClassEntity aTargetEntity, final Cardinality aCardinality) {
 
-		return new Creation(anID, aTargetEntity, aCardinality);
-	}
+    return new Creation(anID, aTargetEntity, aCardinality);
+  }
 
-	//	public IDelegatingMethod createDelegatingMethod(
-	//		final char[] aName,
-	//		final IAssociation aTargetAssociation)  {
-	//
-	//		return new DelegatingMethod(aName, aTargetAssociation);
-	//	}
-	public IDelegatingMethod createDelegatingMethod(final char[] aName,
-			final IAssociation aTargetAssociation,
-			final IMethod aSupportMethod) {
+  //	public IDelegatingMethod createDelegatingMethod(
+  //		final char[] aName,
+  //		final IAssociation aTargetAssociation)  {
+  //
+  //		return new DelegatingMethod(aName, aTargetAssociation);
+  //	}
+  public IDelegatingMethod createDelegatingMethod(
+      final char[] aName, final IAssociation aTargetAssociation, final IMethod aSupportMethod) {
 
-		return new DelegatingMethod(aName, aTargetAssociation, aSupportMethod);
-	}
+    return new DelegatingMethod(aName, aTargetAssociation, aSupportMethod);
+  }
 
-	public IField createField(final char[] anID, final char[] aName,
-			final char[] aType, final int dimension) {
+  public IField createField(
+      final char[] anID, final char[] aName, final char[] aType, final int dimension) {
 
-		return new Field(anID, aName, aType, dimension);
-	}
+    return new Field(anID, aName, aType, dimension);
+  }
 
-	public IFieldAccess createFieldAccess(int dimension, int visibility,
-			IField field, IFirstClassEntity entityDeclaringField) {
+  public IFieldAccess createFieldAccess(
+      int dimension, int visibility, IField field, IFirstClassEntity entityDeclaringField) {
 
-		return new FieldAccess(dimension, visibility, field,
-				entityDeclaringField);
-	}
+    return new FieldAccess(dimension, visibility, field, entityDeclaringField);
+  }
 
-	public IGetter createGetter(final char[] anID, final char[] aName) {
-		final IGetter getter = new Getter(anID);
-		getter.setName(aName);
+  public IGetter createGetter(final char[] anID, final char[] aName) {
+    final IGetter getter = new Getter(anID);
+    getter.setName(aName);
 
-		return getter;
-	}
+    return getter;
+  }
 
-	public IGetter createGetter(final IMethod aMethod) {
-		return new Getter(aMethod);
-	}
+  public IGetter createGetter(final IMethod aMethod) {
+    return new Getter(aMethod);
+  }
 
-	public IGhost createGhost(final char[] anID, final char[] aName) {
-		String id = String.valueOf(anID);
-		// Yann 2004/01/23: Ghost, arrays, and primitive types.
-		// I make sure before creating a ghost that it is not
-		// an array or a primitive type.
-		final int bracketIndex = id.indexOf('[');
-		if (bracketIndex > -1) {
-			id = id.substring(0, bracketIndex);
-		}
+  public IGhost createGhost(final char[] anID, final char[] aName) {
+    String id = String.valueOf(anID);
+    // Yann 2004/01/23: Ghost, arrays, and primitive types.
+    // I make sure before creating a ghost that it is not
+    // an array or a primitive type.
+    final int bracketIndex = id.indexOf('[');
+    if (bracketIndex > -1) {
+      id = id.substring(0, bracketIndex);
+    }
 
-		return new Ghost(id.toCharArray(), aName);
-	}
+    return new Ghost(id.toCharArray(), aName);
+  }
 
-	public IFirstClassEntity createHierarchyRoot() {
-		return Factory.HIERARCHY_ROOT_ENTITY;
-	}
+  public IFirstClassEntity createHierarchyRoot() {
+    return Factory.HIERARCHY_ROOT_ENTITY;
+  }
 
-	public IIdiomLevelModel createIdiomLevelModel(final char[] aName) {
-		final IIdiomLevelModel idiomLevelModel = new IdiomLevelModel(aName);
-		((IdiomLevelModel) idiomLevelModel).setFactory(this);
-		((IdiomLevelModel) idiomLevelModel)
-				.setEventGenerator(this.getEventGenerator());
-		return idiomLevelModel;
-	}
+  public IIdiomLevelModel createIdiomLevelModel(final char[] aName) {
+    final IIdiomLevelModel idiomLevelModel = new IdiomLevelModel(aName);
+    ((IdiomLevelModel) idiomLevelModel).setFactory(this);
+    ((IdiomLevelModel) idiomLevelModel).setEventGenerator(this.getEventGenerator());
+    return idiomLevelModel;
+  }
 
-	public IInterface createInterface(final char[] anID, final char[] aName) {
-		return new Interface(anID, aName);
-	}
+  public IInterface createInterface(final char[] anID, final char[] aName) {
+    return new Interface(anID, aName);
+  }
 
-	public IMemberClass createMemberClass(final char[] anID,
-			final char[] aName) {
-		return new MemberClass(anID, aName);
-	}
+  public IMemberClass createMemberClass(final char[] anID, final char[] aName) {
+    return new MemberClass(anID, aName);
+  }
 
-	public IMemberGhost createMemberGhost(final char[] anID,
-			final char[] aName) {
-		return new MemberGhost(anID, aName);
-	}
+  public IMemberGhost createMemberGhost(final char[] anID, final char[] aName) {
+    return new MemberGhost(anID, aName);
+  }
 
-	public IMemberInterface createMemberInterface(final char[] anID,
-			final char[] aName) {
+  public IMemberInterface createMemberInterface(final char[] anID, final char[] aName) {
 
-		return new MemberInterface(anID, aName);
-	}
+    return new MemberInterface(anID, aName);
+  }
 
-	public IMethod createMethod(final char[] anID, final char[] aName) {
-		final IMethod method = new Method(anID);
-		method.setName(aName);
+  public IMethod createMethod(final char[] anID, final char[] aName) {
+    final IMethod method = new Method(anID);
+    method.setName(aName);
 
-		return method;
-	}
+    return method;
+  }
 
-	public IMethodInvocation createMethodInvocation(final int type,
-			final Cardinality cardinality, final int visibility,
-			final IFirstClassEntity targetEntity) {
+  public IMethodInvocation createMethodInvocation(
+      final int type,
+      final Cardinality cardinality,
+      final int visibility,
+      final IFirstClassEntity targetEntity) {
 
-		return new MethodInvocation(type, cardinality, visibility,
-				targetEntity);
-	}
+    return new MethodInvocation(type, cardinality, visibility, targetEntity);
+  }
 
-	public IMethodInvocation createMethodInvocation(final int type,
-			final Cardinality cardinality, final int visibility,
-			final IFirstClassEntity targetEntity,
-			final IFirstClassEntity entityDeclaringField) {
+  public IMethodInvocation createMethodInvocation(
+      final int type,
+      final Cardinality cardinality,
+      final int visibility,
+      final IFirstClassEntity targetEntity,
+      final IFirstClassEntity entityDeclaringField) {
 
-		return new MethodInvocation(type, cardinality, visibility, targetEntity,
-				entityDeclaringField);
-	}
+    return new MethodInvocation(type, cardinality, visibility, targetEntity, entityDeclaringField);
+  }
 
-	public IPackage createPackage(final char[] aName) {
-		return new Package(aName);
-	}
+  public IPackage createPackage(final char[] aName) {
+    return new Package(aName);
+  }
 
-	public IPackageDefault createPackageDefault() {
-		return new PackageDefault();
-	}
+  public IPackageDefault createPackageDefault() {
+    return new PackageDefault();
+  }
 
-	public IPackageGhost createPackageGhost(final char[] aName) {
-		return new PackageGhost(aName);
-	}
+  public IPackageGhost createPackageGhost(final char[] aName) {
+    return new PackageGhost(aName);
+  }
 
-	public IParameter createParameter(final IEntity aType, final char[] aName,
-			final int dimension) {
+  public IParameter createParameter(final IEntity aType, final char[] aName, final int dimension) {
 
-		return new Parameter(aType, aName, dimension);
-	}
+    return new Parameter(aType, aName, dimension);
+  }
 
-	public IParameter createParameter(final IEntity aType,
-			final int dimension) {
+  public IParameter createParameter(final IEntity aType, final int dimension) {
 
-		return new Parameter(aType, dimension);
-	}
+    return new Parameter(aType, dimension);
+  }
 
-	public IPrimitiveEntity createPrimitiveEntity(
-			final char[] aPrimitiveEntityName) {
+  public IPrimitiveEntity createPrimitiveEntity(final char[] aPrimitiveEntityName) {
 
-		//if (Util.isPrimtiveType(aPrimitiveEntityName)) {
-		IPrimitiveEntity primitiveEntity = (IPrimitiveEntity) Factory.PrimitiveEntities
-				.get(aPrimitiveEntityName);
-		if (primitiveEntity == null) {
-			primitiveEntity = new PrimitiveEntity(aPrimitiveEntityName);
-			Factory.PrimitiveEntities.put(aPrimitiveEntityName,
-					primitiveEntity);
-		}
-		return primitiveEntity;
-		/*}
-		else {
-			throw new ModelDeclarationException(
-				"Cannot create a primitive entity from a non-primtive name!");
-		}*/
-	}
+    // if (Util.isPrimtiveType(aPrimitiveEntityName)) {
+    IPrimitiveEntity primitiveEntity =
+        (IPrimitiveEntity) Factory.PrimitiveEntities.get(aPrimitiveEntityName);
+    if (primitiveEntity == null) {
+      primitiveEntity = new PrimitiveEntity(aPrimitiveEntityName);
+      Factory.PrimitiveEntities.put(aPrimitiveEntityName, primitiveEntity);
+    }
+    return primitiveEntity;
+    /*}
+    else {
+    	throw new ModelDeclarationException(
+    		"Cannot create a primitive entity from a non-primtive name!");
+    }*/
+  }
 
-	public ISetter createSetter(final char[] anID, final char[] aName) {
-		final ISetter setter = new Setter(anID);
-		setter.setName(aName);
+  public ISetter createSetter(final char[] anID, final char[] aName) {
+    final ISetter setter = new Setter(anID);
+    setter.setName(aName);
 
-		return setter;
-	}
+    return setter;
+  }
 
-	public ISetter createSetter(final IMethod aMethod) {
-		return new Setter(aMethod);
-	}
+  public ISetter createSetter(final IMethod aMethod) {
+    return new Setter(aMethod);
+  }
 
-	//	public IParameter createParameter(
-	//		final int aPosition,
-	//		final char[] aName,
-	//		final char[] aType)
-	//		 {
-	//
-	//		return new Parameter(aPosition, aName, aType);
-	//	}
-	public IUseRelationship createUseRelationship(final char[] anID,
-			final IFirstClassEntity aTargetEntity, final Cardinality aCardinality) {
+  //	public IParameter createParameter(
+  //		final int aPosition,
+  //		final char[] aName,
+  //		final char[] aType)
+  //		 {
+  //
+  //		return new Parameter(aPosition, aName, aType);
+  //	}
+  public IUseRelationship createUseRelationship(
+      final char[] anID, final IFirstClassEntity aTargetEntity, final Cardinality aCardinality) {
 
-		return new UseRelationship(anID, aTargetEntity, aCardinality);
-	}
+    return new UseRelationship(anID, aTargetEntity, aCardinality);
+  }
 
-	protected IWalker getEventGenerator() {
-		return EventGenerator.getInstance();
-	}
+  protected IWalker getEventGenerator() {
+    return EventGenerator.getInstance();
+  }
 }

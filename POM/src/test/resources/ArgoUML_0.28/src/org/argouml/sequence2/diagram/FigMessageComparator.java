@@ -27,29 +27,25 @@ package org.argouml.sequence2.diagram;
 import java.util.Comparator;
 
 /**
- * Compares two figmessages. 
- * The bigger one is that which Y start is lowest.
+ * Compares two figmessages. The bigger one is that which Y start is lowest.
+ *
  * @author penyaskito
  */
 class FigMessageComparator implements Comparator<FigMessage> {
 
-    /**
-     * @param m1 The first FigMessage
-     * @param m2 The second one
-     * @return x > 0, if m1.y < m2.y
-     *         x < 0, if m1.y > m2.y
-     *         x = 0, if m1.y = m2.y
-     * @see java.util.Comparator#compare
-     */
-    public int compare(FigMessage m1, FigMessage m2) {
-        int result = 0;
-        if (m1.getFinalY() < m2.getFinalY()) {
-            result = -1;
-        }
-        else if (m1.getFinalY() > m2.getFinalY()) {
-            result = 1;
-        }
-        return result;
+  /**
+   * @param m1 The first FigMessage
+   * @param m2 The second one
+   * @return x > 0, if m1.y < m2.y x < 0, if m1.y > m2.y x = 0, if m1.y = m2.y
+   * @see java.util.Comparator#compare
+   */
+  public int compare(FigMessage m1, FigMessage m2) {
+    int result = 0;
+    if (m1.getFinalY() < m2.getFinalY()) {
+      result = -1;
+    } else if (m1.getFinalY() > m2.getFinalY()) {
+      result = 1;
     }
-
+    return result;
+  }
 }

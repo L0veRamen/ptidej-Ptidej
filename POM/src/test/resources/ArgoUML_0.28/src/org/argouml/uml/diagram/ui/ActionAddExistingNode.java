@@ -22,11 +22,9 @@
 // CALIFORNIA HAS NO OBLIGATIONS TO PROVIDE MAINTENANCE, SUPPORT,
 // UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
-
 package org.argouml.uml.diagram.ui;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.ui.targetmanager.TargetManager;
@@ -39,75 +37,70 @@ import org.tigris.gef.graph.MutableGraphModel;
 import org.tigris.gef.undo.UndoableAction;
 
 /**
-* ActionAddExistingNode enables pasting of an existing node into a Diagram.
-*
-* @author Eugenio Alvarez
-* Data Access Technologies.
-* TODO: Why do we have this class as well as ActionAddExistingNodes?
-*/
+ * ActionAddExistingNode enables pasting of an existing node into a Diagram.
+ *
+ * @author Eugenio Alvarez Data Access Technologies. TODO: Why do we have this class as well as
+ *     ActionAddExistingNodes?
+ */
 public class ActionAddExistingNode extends UndoableAction {
 
-    /**
-     * The UML object to be added to the diagram.
-     */
-    private Object object;
+  /** The UML object to be added to the diagram. */
+  private Object object;
 
-    /**
-     * The Constructor.
-     *
-     * @param name the localized name of the action
-     * @param o the node UML object to be added
-     */
-    public ActionAddExistingNode(String name, Object o) {
-        super(name);
-        object = o;
+  /**
+   * The Constructor.
+   *
+   * @param name the localized name of the action
+   * @param o the node UML object to be added
+   */
+  public ActionAddExistingNode(String name, Object o) {
+    super(name);
+    object = o;
+  }
+
+  /*
+   * @see javax.swing.Action#isEnabled()
+   */
+  public boolean isEnabled() {
+    Object target = TargetManager.getInstance().getTarget();
+    ArgoDiagram dia = DiagramUtils.getActiveDiagram();
+    if (dia == null) {
+      return false;
     }
 
-    /*
-     * @see javax.swing.Action#isEnabled()
-     */
-    public boolean isEnabled() {
-        Object target = TargetManager.getInstance().getTarget();
-        ArgoDiagram dia = DiagramUtils.getActiveDiagram();
-        if (dia == null) {
-            return false;
-        }
-        
-        if (dia instanceof UMLDiagram 
-                && ((UMLDiagram) dia).doesAccept(object)) {
-            return true;
-        }
-        
-        MutableGraphModel gm = (MutableGraphModel) dia.getGraphModel();
-        return gm.canAddNode(target);
+    if (dia instanceof UMLDiagram && ((UMLDiagram) dia).doesAccept(object)) {
+      return true;
     }
 
-    /*
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-        super.actionPerformed(ae);
-        Editor ce = Globals.curEditor();
-        GraphModel gm = ce.getGraphModel();
-        if (!(gm instanceof MutableGraphModel)) {
-            return;
-        }
+    MutableGraphModel gm = (MutableGraphModel) dia.getGraphModel();
+    return gm.canAddNode(target);
+  }
 
-        String instructions = null;
-        if (object != null) {
-            instructions =
-                Translator.localize(
-                    "misc.message.click-on-diagram-to-add",
-                    new Object[] {
-                            Model.getFacade().toString(object),
-                    });
-            Globals.showStatus(instructions);
-        }
-        
-        final ModeAddToDiagram placeMode = new ModeAddToDiagram(
-                TargetManager.getInstance().getTargets(),
-                instructions);
-
-        Globals.mode(placeMode, false);
+  /*
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    super.actionPerformed(ae);
+    Editor ce = Globals.curEditor();
+    GraphModel gm = ce.getGraphModel();
+    if (!(gm instanceof MutableGraphModel)) {
+      return;
     }
+
+    String instructions = null;
+    if (object != null) {
+      instructions =
+          Translator.localize(
+              "misc.message.click-on-diagram-to-add",
+              new Object[] {
+                Model.getFacade().toString(object),
+              });
+      Globals.showStatus(instructions);
+    }
+
+    final ModeAddToDiagram placeMode =
+        new ModeAddToDiagram(TargetManager.getInstance().getTargets(), instructions);
+
+    Globals.mode(placeMode, false);
+  }
 }

@@ -29,30 +29,28 @@ import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLCheckBox2;
 
 /**
- *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 4, 2003
  */
 public class UMLAssociationEndTargetScopeCheckbox extends UMLCheckBox2 {
 
-    /**
-     * Constructor for UMLAssociationEndTargetScopeCheckbox.
-     */
-    public UMLAssociationEndTargetScopeCheckbox() {
-        // TODO: property name will need to be updated for UML 2.x
-        // Unfortunately we can specify two property names here
-        super(Translator.localize("label.static"),
-                ActionSetAssociationEndTargetScope.getInstance(), 
-                "targetScope");
-    }
+  /** Constructor for UMLAssociationEndTargetScopeCheckbox. */
+  public UMLAssociationEndTargetScopeCheckbox() {
+    // TODO: property name will need to be updated for UML 2.x
+    // Unfortunately we can specify two property names here
+    super(
+        Translator.localize("label.static"),
+        ActionSetAssociationEndTargetScope.getInstance(),
+        "targetScope");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLCheckBox2#buildModel()
-     */
-    public void buildModel() {
-        if (getTarget() != null) {
-            Object associationEnd = getTarget();
-            setSelected(Model.getFacade().isStatic(associationEnd));
-        }
+  /*
+   * @see org.argouml.uml.ui.UMLCheckBox2#buildModel()
+   */
+  public void buildModel() {
+    if (getTarget() != null) {
+      Object associationEnd = getTarget();
+      setSelected(Model.getFacade().isStatic(associationEnd));
     }
+  }
 }

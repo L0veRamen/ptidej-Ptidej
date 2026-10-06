@@ -27,51 +27,48 @@ package org.argouml.ui.explorer.rules;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 
 /**
- * Rule for Operation->Collaboration.<p>
- * Go rule for navigation in the navpane from an operation to the collaboration
- * representing it.
+ * Rule for Operation->Collaboration.
+ *
+ * <p>Go rule for navigation in the navpane from an operation to the collaboration representing it.
  *
  * @since Oct 1, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
 public class GoOperationToCollaboration extends AbstractPerspectiveRule {
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
-     */
-    public String getRuleName() {
-        return Translator.localize ("misc.operation.collaboration");
-    }
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
+   */
+  public String getRuleName() {
+    return Translator.localize("misc.operation.collaboration");
+  }
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(
-     *         java.lang.Object)
-     */
-    public Collection getChildren(Object parent) {
-        if (Model.getFacade().isAOperation(parent)) {
-            return Model.getFacade().getCollaborations(parent);
-        }
-        return null;
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren( java.lang.Object)
+   */
+  public Collection getChildren(Object parent) {
+    if (Model.getFacade().isAOperation(parent)) {
+      return Model.getFacade().getCollaborations(parent);
     }
+    return null;
+  }
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(
-     *         java.lang.Object)
-     */
-    public Set getDependencies(Object parent) {
-        if (Model.getFacade().isAOperation(parent)) {
-	    Set set = new HashSet();
-	    set.add(parent);
-	    if (Model.getFacade().getOwner(parent) != null) {
-                set.add(Model.getFacade().getOwner(parent));
-            }
-	    return set;
-	}
-	return null;
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies( java.lang.Object)
+   */
+  public Set getDependencies(Object parent) {
+    if (Model.getFacade().isAOperation(parent)) {
+      Set set = new HashSet();
+      set.add(parent);
+      if (Model.getFacade().getOwner(parent) != null) {
+        set.add(Model.getFacade().getOwner(parent));
+      }
+      return set;
     }
+    return null;
+  }
 }

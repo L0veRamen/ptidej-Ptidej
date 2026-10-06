@@ -24,30 +24,25 @@
 
 package org.argouml.argoeclipse.internal.ui.preferences;
 
+import org.argouml.application.api.Argo;
+import org.argouml.argoeclipse.internal.ui.Activator;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 
-import org.argouml.application.api.Argo;
-import org.argouml.argoeclipse.internal.ui.Activator;
-
-/**
- * Class used to initialize default preference values.
- */
+/** Class used to initialize default preference values. */
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
-    /**
-     * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
-     */
-    public void initializeDefaultPreferences() {
-        IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-        store.setDefault(PreferenceConstants.P_DEFER_INIT, true);
-        store.setDefault(Argo.KEY_SPLASH.getKey(), true);
-        store.setDefault(PreferenceConstants.P_NOTATION_LANGUAGE, 
-                "UML"); //$NON-NLS-1$
-        store.setDefault(PreferenceConstants.P_COLOR_FILL, 
-                "255,0,0");  //$NON-NLS-1$
-//        store.setDefault(PreferenceConstants.P_FONT, "Courier-regular-10");
-        store.setDefault(PreferenceConstants.P_SEARCH_PATH, ""); //$NON-NLS-1$
-    }
-
+  /**
+   * @see
+   *     org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
+   */
+  public void initializeDefaultPreferences() {
+    IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+    store.setDefault(PreferenceConstants.P_DEFER_INIT, true);
+    store.setDefault(Argo.KEY_SPLASH.getKey(), true);
+    store.setDefault(PreferenceConstants.P_NOTATION_LANGUAGE, "UML"); // $NON-NLS-1$
+    store.setDefault(PreferenceConstants.P_COLOR_FILL, "255,0,0"); // $NON-NLS-1$
+    //        store.setDefault(PreferenceConstants.P_FONT, "Courier-regular-10");
+    store.setDefault(PreferenceConstants.P_SEARCH_PATH, ""); // $NON-NLS-1$
+  }
 }

@@ -29,7 +29,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
 import org.argouml.i18n.Translator;
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
@@ -38,53 +37,52 @@ import org.argouml.ui.ArgoDiagram;
 import org.argouml.uml.diagram.ui.UMLDiagram;
 
 /**
- * Rule for ModelElement -> Contained diagrams. <p>
+ * Rule for ModelElement -> Contained diagrams.
  *
- * The Contained diagrams are all the diagrams which, if the owner is deleted,
- * will be deleted, too.
+ * <p>The Contained diagrams are all the diagrams which, if the owner is deleted, will be deleted,
+ * too.
  *
  * @author michiel
  */
 public class GoModelElementToContainedDiagrams extends AbstractPerspectiveRule {
 
-    /**
-     * @see org.argouml.ui.explorer.rules.AbstractPerspectiveRule#getRuleName()
-     */
-    public String getRuleName() {
-        return Translator.localize("misc.model-element.contained-diagrams");
-    }
+  /**
+   * @see org.argouml.ui.explorer.rules.AbstractPerspectiveRule#getRuleName()
+   */
+  public String getRuleName() {
+    return Translator.localize("misc.model-element.contained-diagrams");
+  }
 
-    /**
-     * @see org.argouml.ui.explorer.rules.AbstractPerspectiveRule#getChildren(java.lang.Object)
-     */
-    public Collection getChildren(Object parent) {
-        if (Model.getFacade().isAModelElement(parent)) {
-            Project p = ProjectManager.getManager().getCurrentProject();
-            Collection ret = new ArrayList();
-            Collection diagrams = p.getDiagrams();
-            Iterator it = diagrams.iterator();
-            while (it.hasNext()) {
-                ArgoDiagram diagram = (ArgoDiagram) it.next();
-                if (diagram instanceof UMLDiagram) {
-                    if (((UMLDiagram) diagram).getNamespace() == parent) {
-                        ret.add(diagram);
-                    }
-                }
-            }
-            return ret;
+  /**
+   * @see org.argouml.ui.explorer.rules.AbstractPerspectiveRule#getChildren(java.lang.Object)
+   */
+  public Collection getChildren(Object parent) {
+    if (Model.getFacade().isAModelElement(parent)) {
+      Project p = ProjectManager.getManager().getCurrentProject();
+      Collection ret = new ArrayList();
+      Collection diagrams = p.getDiagrams();
+      Iterator it = diagrams.iterator();
+      while (it.hasNext()) {
+        ArgoDiagram diagram = (ArgoDiagram) it.next();
+        if (diagram instanceof UMLDiagram) {
+          if (((UMLDiagram) diagram).getNamespace() == parent) {
+            ret.add(diagram);
+          }
         }
-        return null;
+      }
+      return ret;
     }
+    return null;
+  }
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
-     */
-    public Set getDependencies(Object parent) {
-        Set set = new HashSet();
-        if (Model.getFacade().isAModelElement(parent)) {
-            set.add(parent);
-        }
-        return set;
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
+   */
+  public Set getDependencies(Object parent) {
+    Set set = new HashSet();
+    if (Model.getFacade().isAModelElement(parent)) {
+      set.add(parent);
     }
-
+    return set;
+  }
 }

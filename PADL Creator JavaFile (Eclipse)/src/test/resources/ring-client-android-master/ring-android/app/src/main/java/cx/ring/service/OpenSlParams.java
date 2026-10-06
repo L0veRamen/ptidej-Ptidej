@@ -82,5 +82,6 @@ public abstract class OpenSlParams {
     public int getBufferSize() {
       return 64;
     }
-  };
+  }
+  ;
 }

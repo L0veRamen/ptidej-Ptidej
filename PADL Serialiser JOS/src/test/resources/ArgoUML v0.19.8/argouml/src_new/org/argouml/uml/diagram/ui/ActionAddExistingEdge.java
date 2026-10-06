@@ -22,69 +22,62 @@
 // CALIFORNIA HAS NO OBLIGATIONS TO PROVIDE MAINTENANCE, SUPPORT,
 // UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
-
 package org.argouml.uml.diagram.ui;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.kernel.ProjectManager;
-import org.argouml.ui.targetmanager.TargetManager;
 import org.argouml.ui.ArgoDiagram;
+import org.argouml.ui.targetmanager.TargetManager;
 import org.argouml.uml.ui.UMLAction;
 import org.tigris.gef.graph.MutableGraphModel;
 
-/**
-* ActionAddExistingEdge enables pasting of an existing edge into a Diagram.
-*/
+/** ActionAddExistingEdge enables pasting of an existing edge into a Diagram. */
 public class ActionAddExistingEdge extends UMLAction {
 
-    private Object edge = null;
+  private Object edge = null;
 
-    /**
-     * Constructor for ActionAddExistingEdge.
-     *
-     * @param name       the name of the action
-     * @param edgeObject    the edge (the UML ModelElement!)
-     */
-    public ActionAddExistingEdge(String name, Object edgeObject) {
-        super(name, true, NO_ICON);
-        edge = edgeObject;
+  /**
+   * Constructor for ActionAddExistingEdge.
+   *
+   * @param name the name of the action
+   * @param edgeObject the edge (the UML ModelElement!)
+   */
+  public ActionAddExistingEdge(String name, Object edgeObject) {
+    super(name, true, NO_ICON);
+    edge = edgeObject;
+  }
 
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
+   */
+  public void actionPerformed(ActionEvent arg0) {
+    super.actionPerformed(arg0);
+    // we have an edge (the UML modelelement!)
+    if (edge == null) return;
+    // let's test which situation we have. 3 Possibilities:
+    // 1. The nodes are allready on the diagram, we can use
+    //    canAddEdge for this.
+    // 2. One of the nodes is already on the diagram. The other
+    //    has to be added.
+    // 3. Both of the nodes are not yet on the diagram.
+    // For the time being we will only implement situation 1.
+    // TODO: implement situation 2 and 3.
+    MutableGraphModel gm =
+        (MutableGraphModel)
+            ProjectManager.getManager().getCurrentProject().getActiveDiagram().getGraphModel();
+    if (gm.canAddEdge(edge)) { // situation 1
+      gm.addEdge(edge);
     }
+  }
 
-
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
-     */
-    public void actionPerformed(ActionEvent arg0) {
-        super.actionPerformed(arg0);
-        // we have an edge (the UML modelelement!)
-        if (edge == null) return;
-        // let's test which situation we have. 3 Possibilities:
-        // 1. The nodes are allready on the diagram, we can use
-        //    canAddEdge for this.
-        // 2. One of the nodes is already on the diagram. The other
-        //    has to be added.
-        // 3. Both of the nodes are not yet on the diagram.
-        // For the time being we will only implement situation 1.
-        // TODO: implement situation 2 and 3.
-        MutableGraphModel gm = (MutableGraphModel) ProjectManager.getManager().
-            getCurrentProject().getActiveDiagram().getGraphModel();
-        if (gm.canAddEdge(edge)) { // situation 1
-            gm.addEdge(edge);
-        }
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLAction#shouldBeEnabled()
-     */
-    public boolean shouldBeEnabled() {
-        Object target = TargetManager.getInstance().getModelTarget();
-        ArgoDiagram dia = ProjectManager.getManager().getCurrentProject().
-            getActiveDiagram();
-        if (dia == null) return false;
-        MutableGraphModel gm = (MutableGraphModel) dia.getGraphModel();
-        return gm.canAddEdge(target);
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLAction#shouldBeEnabled()
+   */
+  public boolean shouldBeEnabled() {
+    Object target = TargetManager.getInstance().getModelTarget();
+    ArgoDiagram dia = ProjectManager.getManager().getCurrentProject().getActiveDiagram();
+    if (dia == null) return false;
+    MutableGraphModel gm = (MutableGraphModel) dia.getGraphModel();
+    return gm.canAddEdge(target);
+  }
 }

@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -23,68 +23,56 @@ import pom.metrics.IUnaryMetric;
 import util.io.ProxyConsole;
 
 /**
- * 
  * @author Yann
  * @date 2012/03/27
- * 
- * See Foutse's TSE paper.
- * (This metric is a copy of McCabe.java.) 
- *
+ *     <p>See Foutse's TSE paper. (This metric is a copy of McCabe.java.)
  */
 public class VGsum extends AbstractMetric implements IMetric, IUnaryMetric {
-	// Must be public because of reflection use to traverse the entity below...
-	public class McCabeComputer extends StatementWalkerAdapter {
-		private int mcCabe;
+  // Must be public because of reflection use to traverse the entity below...
+  public class McCabeComputer extends StatementWalkerAdapter {
+    private int mcCabe;
 
-		public String getName() {
-			return "McCabe Computer";
-		}
+    public String getName() {
+      return "McCabe Computer";
+    }
 
-		public Object getResult() {
-			return Integer.valueOf(this.mcCabe);
-		}
+    public Object getResult() {
+      return Integer.valueOf(this.mcCabe);
+    }
 
-		public final void unknownConstituentHandler(
-			final String aCalledMethodName,
-			final IConstituent aConstituent) {
+    public final void unknownConstituentHandler(
+        final String aCalledMethodName, final IConstituent aConstituent) {
 
-			ProxyConsole
-				.getInstance()
-				.debugOutput()
-				.print(this.getClass().getName());
-			ProxyConsole
-				.getInstance()
-				.debugOutput()
-				.print(" does not know what to do for \"");
-			ProxyConsole.getInstance().debugOutput().print(aCalledMethodName);
-			ProxyConsole.getInstance().debugOutput().print("\" (");
-			ProxyConsole
-				.getInstance()
-				.debugOutput()
-				.print(aConstituent.getDisplayID());
-			ProxyConsole.getInstance().debugOutput().println(')');
-		}
+      ProxyConsole.getInstance().debugOutput().print(this.getClass().getName());
+      ProxyConsole.getInstance().debugOutput().print(" does not know what to do for \"");
+      ProxyConsole.getInstance().debugOutput().print(aCalledMethodName);
+      ProxyConsole.getInstance().debugOutput().print("\" (");
+      ProxyConsole.getInstance().debugOutput().print(aConstituent.getDisplayID());
+      ProxyConsole.getInstance().debugOutput().println(')');
+    }
 
-		public void visit(final IIfInstruction anIfInstruction) {
-			this.mcCabe++;
-		}
+    public void visit(final IIfInstruction anIfInstruction) {
+      this.mcCabe++;
+    }
 
-		public void visit(final IPrimitiveEntity aPrimitiveEntity) {
-			// Do nothing for uninteresting primitive types.
-		}
-		public void visit(final ISwitchInstruction switchInstruction) {
-			this.mcCabe += switchInstruction.getNumberOfCases();
-		}
-	}
-	protected double concretelyCompute(
-		final IAbstractModel anAbstractModel,
-		final IFirstClassEntity firstClassEntity) {
+    public void visit(final IPrimitiveEntity aPrimitiveEntity) {
+      // Do nothing for uninteresting primitive types.
+    }
 
-		final IStatementWalker walker = new McCabeComputer();
-		firstClassEntity.accept(walker);
-		return ((Integer) walker.getResult()).doubleValue();
-	}
-	public String getDefinition() {
-		return "McCabe complexity: number of points of decision + 1";
-	}
+    public void visit(final ISwitchInstruction switchInstruction) {
+      this.mcCabe += switchInstruction.getNumberOfCases();
+    }
+  }
+
+  protected double concretelyCompute(
+      final IAbstractModel anAbstractModel, final IFirstClassEntity firstClassEntity) {
+
+    final IStatementWalker walker = new McCabeComputer();
+    firstClassEntity.accept(walker);
+    return ((Integer) walker.getResult()).doubleValue();
+  }
+
+  public String getDefinition() {
+    return "McCabe complexity: number of points of decision + 1";
+  }
 }

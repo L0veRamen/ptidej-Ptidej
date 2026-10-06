@@ -32,7 +32,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
 import org.apache.log4j.Logger;
 import org.argouml.application.events.ArgoEventPump;
 import org.argouml.application.events.ArgoEventTypes;
@@ -48,372 +47,356 @@ import org.argouml.profile.ProfileException;
 import org.argouml.profile.ProfileFacade;
 
 /**
- *   This class captures represents the unique access point for the 
- *   configurability allowed by the use of profiles. 
+ * This class captures represents the unique access point for the configurability allowed by the use
+ * of profiles.
  *
- *   @author maurelio1234
+ * @author maurelio1234
  */
 public class ProfileConfiguration extends AbstractProjectMember {
-    /**
-     * Logger.
-     */
-    private static final Logger LOG = Logger
-            .getLogger(ProfileConfiguration.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(ProfileConfiguration.class);
 
-    private FormatingStrategy formatingStrategy;
+  private FormatingStrategy formatingStrategy;
 
-    private DefaultTypeStrategy defaultTypeStrategy;
+  private DefaultTypeStrategy defaultTypeStrategy;
 
-    private List figNodeStrategies = new ArrayList();
+  private List figNodeStrategies = new ArrayList();
 
-    private List<Profile> profiles = new ArrayList<Profile>();
+  private List<Profile> profiles = new ArrayList<Profile>();
 
-    private List<Object> profileModels = new ArrayList<Object>();
-    
-    /**
-     * The extension used in serialization and returned by {@link #getType()}
-     */
-    public static final String EXTENSION = "profile";
-    
+  private List<Object> profileModels = new ArrayList<Object>();
 
-    /**
-     * The configuration key for the default stereotype view.
-     */
-    public static final ConfigurationKey KEY_DEFAULT_STEREOTYPE_VIEW = 
-        Configuration.makeKey("profiles", "stereotypeView");
-    
-    /**
-     * The default constructor for this class. Sets the default profiles as 
-     * given by {@link org.argouml.profile.ProfileManager} as the profiles of 
-     * the project.
-     * 
-     * @param project the project that contains this configuration
-     */
-    public ProfileConfiguration(Project project) {
-        super(EXTENSION, project);
-        for (Profile p : ProfileFacade.getManager().getDefaultProfiles()) {
-            addProfile(p);
-        }
+  /** The extension used in serialization and returned by {@link #getType()} */
+  public static final String EXTENSION = "profile";
 
-        updateStrategies();
-    }
-    
-    /**
-     * The constructor for pre-defined profile configurations, such as when a 
-     * project is read from a saved file.
-     * @param project the project that contains this configuration
-     * @param configuredProfiles the {@link Profile}s that will be the project 
-     *        profiles
-     */
-    public ProfileConfiguration(Project project, 
-            Collection<Profile> configuredProfiles) {
-        super(EXTENSION, project);
-        for (Profile profile : configuredProfiles) {
-            addProfile(profile);
-        }
-        updateStrategies();
-    }
-    
-    private void updateStrategies() {
-        for (Profile profile : profiles) {
-            activateFormatingStrategy(profile);                
-            activateDefaultTypeStrategy(profile);                
-        }
+  /** The configuration key for the default stereotype view. */
+  public static final ConfigurationKey KEY_DEFAULT_STEREOTYPE_VIEW =
+      Configuration.makeKey("profiles", "stereotypeView");
+
+  /**
+   * The default constructor for this class. Sets the default profiles as given by {@link
+   * org.argouml.profile.ProfileManager} as the profiles of the project.
+   *
+   * @param project the project that contains this configuration
+   */
+  public ProfileConfiguration(Project project) {
+    super(EXTENSION, project);
+    for (Profile p : ProfileFacade.getManager().getDefaultProfiles()) {
+      addProfile(p);
     }
 
-    /**
-     * @return the current formating strategy
-     */
-    public FormatingStrategy getFormatingStrategy() {
-        return formatingStrategy;
+    updateStrategies();
+  }
+
+  /**
+   * The constructor for pre-defined profile configurations, such as when a project is read from a
+   * saved file.
+   *
+   * @param project the project that contains this configuration
+   * @param configuredProfiles the {@link Profile}s that will be the project profiles
+   */
+  public ProfileConfiguration(Project project, Collection<Profile> configuredProfiles) {
+    super(EXTENSION, project);
+    for (Profile profile : configuredProfiles) {
+      addProfile(profile);
+    }
+    updateStrategies();
+  }
+
+  private void updateStrategies() {
+    for (Profile profile : profiles) {
+      activateFormatingStrategy(profile);
+      activateDefaultTypeStrategy(profile);
+    }
+  }
+
+  /**
+   * @return the current formating strategy
+   */
+  public FormatingStrategy getFormatingStrategy() {
+    return formatingStrategy;
+  }
+
+  /**
+   * @return the current default type strategy
+   */
+  public DefaultTypeStrategy getDefaultTypeStrategy() {
+    return defaultTypeStrategy;
+  }
+
+  /**
+   * Updates the current strategy to the strategy provided by the passed profile. The profile should
+   * have been previously registered.
+   *
+   * @param profile the profile providing the current default type strategy
+   */
+  public void activateDefaultTypeStrategy(Profile profile) {
+    if (profile != null
+        && profile.getDefaultTypeStrategy() != null
+        && getProfiles().contains(profile)) {
+      this.defaultTypeStrategy = profile.getDefaultTypeStrategy();
+    }
+  }
+
+  /**
+   * Updates the current strategy to the strategy provided by the passed profile. The profile should
+   * have been previously registered.
+   *
+   * @param profile the profile providing the current formating strategy
+   */
+  public void activateFormatingStrategy(Profile profile) {
+    if (profile != null
+        && profile.getFormatingStrategy() != null
+        && getProfiles().contains(profile)) {
+      this.formatingStrategy = profile.getFormatingStrategy();
+    }
+  }
+
+  /**
+   * @return the list of applied profiles
+   */
+  public List<Profile> getProfiles() {
+    return profiles;
+  }
+
+  /**
+   * Applies a new profile to this configuration
+   *
+   * @param p the profile to be applied
+   */
+  @SuppressWarnings("unchecked")
+  public void addProfile(Profile p) {
+    if (!profiles.contains(p)) {
+      profiles.add(p);
+      try {
+        profileModels.addAll(p.getProfilePackages());
+      } catch (ProfileException e) {
+        LOG.warn("Error retrieving profile's " + p + " packages.", e);
+      }
+
+      FigNodeStrategy fns = p.getFigureStrategy();
+      if (fns != null) {
+        figNodeStrategies.add(fns);
+      }
+
+      for (Profile dependency : p.getDependencies()) {
+        addProfile(dependency);
+      }
+
+      updateStrategies();
+      ArgoEventPump.fireEvent(
+          new ArgoProfileEvent(
+              ArgoEventTypes.PROFILE_ADDED, new PropertyChangeEvent(this, "profile", null, p)));
+    }
+  }
+
+  /**
+   * @return the list of models of the currently applied profile.
+   */
+  private List getProfileModels() {
+    return profileModels;
+  }
+
+  /**
+   * Removes the passed profile from the configuration.
+   *
+   * @param p the profile to be removed
+   */
+  public void removeProfile(Profile p) {
+    profiles.remove(p);
+    try {
+      profileModels.removeAll(p.getProfilePackages());
+    } catch (ProfileException e) {
+      LOG.error("Exception", e);
     }
 
-    /**
-     * @return the current default type strategy
-     */
-    public DefaultTypeStrategy getDefaultTypeStrategy() {
-        return defaultTypeStrategy;
-    }
-    
-    /**
-     * Updates the current strategy to the strategy provided by the 
-     * passed profile. The profile should have been previously registered.
-     * 
-     * @param profile the profile providing the current default type strategy
-     */
-    public void activateDefaultTypeStrategy(Profile profile) {
-        if (profile != null && profile.getDefaultTypeStrategy() != null
-                && getProfiles().contains(profile)) {
-            this.defaultTypeStrategy = profile.getDefaultTypeStrategy();
-        }
-    }
-    
-    /**
-     * Updates the current strategy to the strategy provided by the 
-     * passed profile. The profile should have been previously registered.
-     * 
-     * @param profile the profile providing the current formating strategy
-     */
-    public void activateFormatingStrategy(Profile profile) {
-	if (profile != null && profile.getFormatingStrategy() != null
-		&& getProfiles().contains(profile)) {
-	    this.formatingStrategy = profile.getFormatingStrategy();
-	}
+    FigNodeStrategy fns = p.getFigureStrategy();
+    if (fns != null) {
+      figNodeStrategies.remove(fns);
     }
 
-    /**
-     * @return the list of applied profiles
-     */
-    public List<Profile> getProfiles() {
-        return profiles;
+    if (formatingStrategy == p.getFormatingStrategy()) {
+      formatingStrategy = null;
     }
-    
-    /**
-     * Applies a new profile to this configuration
-     * 
-     * @param p the profile to be applied
-     */
-    @SuppressWarnings("unchecked")
-    public void addProfile(Profile p) {
-        if (!profiles.contains(p)) {
-            profiles.add(p);
-            try {
-                profileModels.addAll(p.getProfilePackages());
-            } catch (ProfileException e) {
-                LOG.warn("Error retrieving profile's " + p + " packages.", e);
+
+    List<Profile> markForRemoval = new ArrayList<Profile>();
+    for (Profile profile : profiles) {
+      if (profile.getDependencies().contains(p)) {
+        markForRemoval.add(profile);
+      }
+    }
+
+    for (Profile profile : markForRemoval) {
+      removeProfile(profile);
+    }
+
+    updateStrategies();
+    ArgoEventPump.fireEvent(
+        new ArgoProfileEvent(
+            ArgoEventTypes.PROFILE_REMOVED, new PropertyChangeEvent(this, "profile", p, null)));
+  }
+
+  private FigNodeStrategy compositeFigNodeStrategy =
+      new FigNodeStrategy() {
+
+        public Image getIconForStereotype(Object element) {
+          Iterator it = figNodeStrategies.iterator();
+
+          while (it.hasNext()) {
+            FigNodeStrategy strat = (FigNodeStrategy) it.next();
+            Image extra = strat.getIconForStereotype(element);
+
+            if (extra != null) {
+              return extra;
             }
-            
-            FigNodeStrategy fns = p.getFigureStrategy();
-            if (fns != null) {
-                figNodeStrategies.add(fns);
-            }
-
-            for (Profile dependency : p.getDependencies()) {
-                addProfile(dependency);
-            }
-
-            updateStrategies();
-            ArgoEventPump.fireEvent(new ArgoProfileEvent(
-                    ArgoEventTypes.PROFILE_ADDED, new PropertyChangeEvent(this,
-                            "profile", null, p)));
+          }
+          return null;
         }
-    }
-        
-    /**
-     * @return the list of models of the currently applied profile.
-     */
-    private List getProfileModels() {
-        return profileModels;
-    }
+      };
 
-    /**
-     * Removes the passed profile from the configuration. 
-     * 
-     * @param p the profile to be removed
-     */
-    public void removeProfile(Profile p) {
-        profiles.remove(p);
-        try {
-            profileModels.removeAll(p.getProfilePackages());
-        } catch (ProfileException e) {
-            LOG.error("Exception", e);
-        }
+  /**
+   * @return the current FigNodeStrategy
+   */
+  public FigNodeStrategy getFigNodeStrategy() {
+    return compositeFigNodeStrategy;
+  }
 
-        FigNodeStrategy fns = p.getFigureStrategy();
-        if (fns != null) {
-            figNodeStrategies.remove(fns);
-        }
+  /**
+   * @return the extension for this project member
+   * @see org.argouml.kernel.AbstractProjectMember#getType()
+   */
+  public String getType() {
+    return EXTENSION;
+  }
 
-        if (formatingStrategy == p.getFormatingStrategy()) {
-            formatingStrategy = null;
-        }
+  /**
+   * Objects of this class are always consistent, there's no need to repair them.
+   *
+   * @return the empty string.
+   * @see org.argouml.kernel.ProjectMember#repair()
+   */
+  public String repair() {
+    return "";
+  }
 
-        List<Profile> markForRemoval = new ArrayList<Profile>();
-        for (Profile profile : profiles) {
-            if (profile.getDependencies().contains(p)) {
-                markForRemoval.add(profile);
-            }
-        }
+  /**
+   * @return the "Profile Configuration" string
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    return "Profile Configuration";
+  }
 
-        for (Profile profile : markForRemoval) {
-            removeProfile(profile);
-        }
+  /**
+   * Find a stereotype with the given name which is applicable to the given element.
+   *
+   * @param name name of stereotype to look for
+   * @param element model element to which the stereotype must be applicable
+   * @return the stereotype or null if none found
+   */
+  public Object findStereotypeForObject(String name, Object element) {
+    Iterator iter = null;
 
-        updateStrategies();
-        ArgoEventPump.fireEvent(new ArgoProfileEvent(
-                ArgoEventTypes.PROFILE_REMOVED, new PropertyChangeEvent(this,
-                        "profile", p, null)));
-    }
-    
-    private FigNodeStrategy compositeFigNodeStrategy = new FigNodeStrategy() {
+    for (Object model : profileModels) {
+      iter = Model.getFacade().getOwnedElements(model).iterator();
 
-	public Image getIconForStereotype(Object element) {
-	    Iterator it = figNodeStrategies.iterator();
-
-	    while (it.hasNext()) {
-		FigNodeStrategy strat = (FigNodeStrategy) it.next();
-		Image extra = strat.getIconForStereotype(element);
-
-		if (extra != null) {
-		    return extra;
-		}
-	    }
-	    return null;
-	}
-	
-    };
-    
-    /**
-     * @return the current FigNodeStrategy
-     */
-    public FigNodeStrategy getFigNodeStrategy() {
-	return compositeFigNodeStrategy; 
-    }
-
-    /**
-     * @return the extension for this project member
-     * @see org.argouml.kernel.AbstractProjectMember#getType()
-     */
-    public String getType() {
-	return EXTENSION;
-    }
-
-    /**
-     * Objects of this class are always consistent, there's no need 
-     * to repair them.
-     * 
-     * @return the empty string.
-     * @see org.argouml.kernel.ProjectMember#repair()
-     */
-    public String repair() {
-	return "";
-    }
-
-    /**
-     * @return the "Profile Configuration" string
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-        return "Profile Configuration";
-    }
-
-
-    /**
-     * Find a stereotype with the given name which is applicable to the given 
-     * element.
-     * 
-     * @param name name of stereotype to look for
-     * @param element model element to which the stereotype must be applicable
-     * @return the stereotype or null if none found
-     */
-    public Object findStereotypeForObject(String name, Object element) {
-        Iterator iter = null;
-        
-        for (Object model : profileModels) {
-            iter = Model.getFacade().getOwnedElements(model).iterator();
-
-            while (iter.hasNext()) {
-                Object stereo = iter.next();
-                if (!Model.getFacade().isAStereotype(stereo)
-                        || !name.equals(Model.getFacade().getName(stereo))) {
-                    continue;
-                }
-
-                if (Model.getExtensionMechanismsHelper().isValidStereotype(
-                        element, stereo)) {
-                    return stereo;
-                }
-            }
+      while (iter.hasNext()) {
+        Object stereo = iter.next();
+        if (!Model.getFacade().isAStereotype(stereo)
+            || !name.equals(Model.getFacade().getName(stereo))) {
+          continue;
         }
 
-        return null;
-    }
-
-    /**
-     * Search for the given type in all of the profile models.
-     * 
-     * @param name name of type to be found
-     * @return the type or null
-     */
-    public Object findType(String name) {
-        for (Object model : getProfileModels()) {
-            Object result = findTypeInModel(name, model);
-            if (result != null) {
-                return result;
-            }
+        if (Model.getExtensionMechanismsHelper().isValidStereotype(element, stereo)) {
+          return stereo;
         }
-        return null;
+      }
     }
 
-    /**
-     * Finds a type in a model by name
-     * 
-     * FIXME: duplicated from the method with the same name in 
-     * org.argouml.profile.internal.ModelUtils.
-     * 
-     * @param s the type name
-     * @param model the model
-     * @return the type or <code>null</code> if the type has not been found.
-     */
-    public static Object findTypeInModel(String s, Object model) {
+    return null;
+  }
 
-        if (!Model.getFacade().isANamespace(model)) {
-            throw new IllegalArgumentException(
-                    "Looking for the classifier " + s
-                    + " in a non-namespace object of " + model
-                    + ". A namespace was expected.");
-        }
+  /**
+   * Search for the given type in all of the profile models.
+   *
+   * @param name name of type to be found
+   * @return the type or null
+   */
+  public Object findType(String name) {
+    for (Object model : getProfileModels()) {
+      Object result = findTypeInModel(name, model);
+      if (result != null) {
+        return result;
+      }
+    }
+    return null;
+  }
 
-        Collection allClassifiers =
-            Model.getModelManagementHelper()
-                .getAllModelElementsOfKind(model,
-                        Model.getMetaTypes().getClassifier());
+  /**
+   * Finds a type in a model by name
+   *
+   * <p>FIXME: duplicated from the method with the same name in
+   * org.argouml.profile.internal.ModelUtils.
+   *
+   * @param s the type name
+   * @param model the model
+   * @return the type or <code>null</code> if the type has not been found.
+   */
+  public static Object findTypeInModel(String s, Object model) {
 
-        Object[] classifiers = allClassifiers.toArray();
-        Object classifier = null;
-
-        for (int i = 0; i < classifiers.length; i++) {
-
-            classifier = classifiers[i];
-            if (Model.getFacade().getName(classifier) != null
-                        && Model.getFacade().getName(classifier).equals(s)) {
-                return classifier;
-            }
-        }
-
-        return null;
+    if (!Model.getFacade().isANamespace(model)) {
+      throw new IllegalArgumentException(
+          "Looking for the classifier "
+              + s
+              + " in a non-namespace object of "
+              + model
+              + ". A namespace was expected.");
     }
 
-    /**
-     * Find all the model elements in the configured {@link Profile}s 
-     * of the given meta type.
-     * 
-     * @param metaType the meta type of the model elements to find
-     * @return a {@link Collection} containing the model elements that 
-     *         are of the given meta type
-     */
-    @SuppressWarnings("unchecked")
-    public Collection findByMetaType(Object metaType) {
-        Set elements = new HashSet();
+    Collection allClassifiers =
+        Model.getModelManagementHelper()
+            .getAllModelElementsOfKind(model, Model.getMetaTypes().getClassifier());
 
-        Iterator it = getProfileModels().iterator();
-        while (it.hasNext()) {
-            Object model = it.next();
-            elements.addAll(Model.getModelManagementHelper()
-                    .getAllModelElementsOfKind(model, metaType));
-        }
-        return elements;
+    Object[] classifiers = allClassifiers.toArray();
+    Object classifier = null;
+
+    for (int i = 0; i < classifiers.length; i++) {
+
+      classifier = classifiers[i];
+      if (Model.getFacade().getName(classifier) != null
+          && Model.getFacade().getName(classifier).equals(s)) {
+        return classifier;
+      }
     }
 
-    /**
-     * @param modelElement
-     *                ModelElement for which find possible stereotypes
-     * @return collection of stereotypes which are valid for the given model
-     *         element.
-     */
-    public Collection findAllStereotypesForModelElement(Object modelElement) {
-        return Model.getExtensionMechanismsHelper().getAllPossibleStereotypes(
-                getProfileModels(), modelElement);
+    return null;
+  }
+
+  /**
+   * Find all the model elements in the configured {@link Profile}s of the given meta type.
+   *
+   * @param metaType the meta type of the model elements to find
+   * @return a {@link Collection} containing the model elements that are of the given meta type
+   */
+  @SuppressWarnings("unchecked")
+  public Collection findByMetaType(Object metaType) {
+    Set elements = new HashSet();
+
+    Iterator it = getProfileModels().iterator();
+    while (it.hasNext()) {
+      Object model = it.next();
+      elements.addAll(Model.getModelManagementHelper().getAllModelElementsOfKind(model, metaType));
     }
+    return elements;
+  }
+
+  /**
+   * @param modelElement ModelElement for which find possible stereotypes
+   * @return collection of stereotypes which are valid for the given model element.
+   */
+  public Collection findAllStereotypesForModelElement(Object modelElement) {
+    return Model.getExtensionMechanismsHelper()
+        .getAllPossibleStereotypes(getProfileModels(), modelElement);
+  }
 }

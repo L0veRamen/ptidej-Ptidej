@@ -13,42 +13,30 @@ package choco.palm.explain;
 import choco.Constraint;
 
 public class PalmControlConstraint {
-	/**
-	 * The controlling constraint.
-	 */
+  /** The controlling constraint. */
+  Constraint constraint;
 
-	Constraint constraint;
+  /** The index of the controlled contraint in the controlling one. */
+  int index;
 
-	/**
-	 * The index of the controlled contraint in the controlling one.
-	 */
+  /**
+   * Creates a control constraint whit the specified constraint as controlling one.
+   *
+   * @param constraint The controlling constraint.
+   * @param index The index of the controlled one.
+   */
+  public PalmControlConstraint(final Constraint constraint, final int index) {
+    this.constraint = constraint;
+    this.index = index;
+  }
 
-	int index;
+  /** Gets the controlling constraint. */
+  public Constraint getConstraint() {
+    return this.constraint;
+  }
 
-	/**
-	 * Creates a control constraint whit the specified constraint as controlling one.
-	 * @param constraint The controlling constraint.
-	 * @param index The index of the controlled one.
-	 */
-
-	public PalmControlConstraint(final Constraint constraint, final int index) {
-		this.constraint = constraint;
-		this.index = index;
-	}
-
-	/**
-	 * Gets the controlling constraint.
-	 */
-
-	public Constraint getConstraint() {
-		return this.constraint;
-	}
-
-	/**
-	 * Gets the index of the controlled constraint in the controlling one.
-	 */
-
-	public int getIndex() {
-		return this.index;
-	}
+  /** Gets the index of the controlled constraint in the controlling one. */
+  public int getIndex() {
+    return this.index;
+  }
 }

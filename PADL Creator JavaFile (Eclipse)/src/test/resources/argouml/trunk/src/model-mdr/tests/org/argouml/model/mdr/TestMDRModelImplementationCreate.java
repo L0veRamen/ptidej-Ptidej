@@ -27,9 +27,7 @@ package org.argouml.model.mdr;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-
 import junit.framework.TestCase;
-
 import org.argouml.model.UmlException;
 import org.argouml.model.XmiReader;
 import org.omg.uml.foundation.core.UmlClass;
@@ -37,54 +35,46 @@ import org.omg.uml.modelmanagement.Model;
 import org.omg.uml.modelmanagement.UmlPackage;
 import org.xml.sax.InputSource;
 
-/**
- * Testing the set up of the MDR.
- */
+/** Testing the set up of the MDR. */
 public class TestMDRModelImplementationCreate extends TestCase {
 
-    /**
-     * Constructor for TestMDRModelImplementation.
-     * 
-     * @param arg0
-     *            Test case name.
-     */
-    public TestMDRModelImplementationCreate(String arg0) {
-        super(arg0);
-    }
+  /**
+   * Constructor for TestMDRModelImplementation.
+   *
+   * @param arg0 Test case name.
+   */
+  public TestMDRModelImplementationCreate(String arg0) {
+    super(arg0);
+  }
 
-    /**
-     * Tests the constructor.
-     * 
-     * @throws UmlException
-     *             if model subsystem initialization fails.
-     * @throws FileNotFoundException
-     *             If the test XMI file can't be found.
-     */
-    public void testMDRModelImplementation() throws UmlException,
-            FileNotFoundException {
-        System.setProperty("argouml.model.implementation",
-                "org.argouml.model.mdr.MDRModelImplementation");
-        MDRModelImplementation mi = new MDRModelImplementation();
-        assertNotNull(mi.getFacade());
-        Model m = (Model) mi.getModelManagementFactory().createModel();
-        assertNotNull(m);
-        UmlPackage p = (UmlPackage) mi.getModelManagementFactory().
-                createPackage();
-        mi.getCoreHelper().setNamespace(p, m);
-        UmlClass c = (UmlClass) mi.getCoreFactory().buildClass(m);
-        Model m1 = (Model) mi.getFacade().getModel(c);
-        assertNotNull(m1);
-        Model m2 = (Model) mi.getFacade().getModel(p);
-        assertNotNull(m2);
-        assertEquals(m1, m);
-        assertEquals(m2, m);
-        XmiReader xmiReader = mi.getXmiReader();
-        String model = "ALittleBit.xmi";
-        File fileModel = new File(model);
-        assertTrue(fileModel.exists());
-        InputSource source = new InputSource(new FileInputStream(fileModel));
-        Model aLittleBit = (Model) xmiReader.parse(source);
-        assertNotNull(aLittleBit);
-    }
-
+  /**
+   * Tests the constructor.
+   *
+   * @throws UmlException if model subsystem initialization fails.
+   * @throws FileNotFoundException If the test XMI file can't be found.
+   */
+  public void testMDRModelImplementation() throws UmlException, FileNotFoundException {
+    System.setProperty(
+        "argouml.model.implementation", "org.argouml.model.mdr.MDRModelImplementation");
+    MDRModelImplementation mi = new MDRModelImplementation();
+    assertNotNull(mi.getFacade());
+    Model m = (Model) mi.getModelManagementFactory().createModel();
+    assertNotNull(m);
+    UmlPackage p = (UmlPackage) mi.getModelManagementFactory().createPackage();
+    mi.getCoreHelper().setNamespace(p, m);
+    UmlClass c = (UmlClass) mi.getCoreFactory().buildClass(m);
+    Model m1 = (Model) mi.getFacade().getModel(c);
+    assertNotNull(m1);
+    Model m2 = (Model) mi.getFacade().getModel(p);
+    assertNotNull(m2);
+    assertEquals(m1, m);
+    assertEquals(m2, m);
+    XmiReader xmiReader = mi.getXmiReader();
+    String model = "ALittleBit.xmi";
+    File fileModel = new File(model);
+    assertTrue(fileModel.exists());
+    InputSource source = new InputSource(new FileInputStream(fileModel));
+    Model aLittleBit = (Model) xmiReader.parse(source);
+    assertNotNull(aLittleBit);
+  }
 }

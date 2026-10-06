@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -16,7 +16,7 @@ import ptidej.ui.primitive.IPrimitiveFactory;
 
 /**
  * @author Yann
- * @since  2013/05/23
+ * @since 2013/05/23
  */
 
 // Ward 2004/08/19: Hierarchy level
@@ -24,14 +24,15 @@ import ptidej.ui.primitive.IPrimitiveFactory;
 // So, it has all the inheritance properties.
 // Implementation to be checked ...
 public final class GlobalFunction extends Entity {
-	public GlobalFunction(
-		final IPrimitiveFactory aPrimitiveFactory,
-		final Builder aBuilder,
-		final IGlobalFunction aGlobalFunction) {
+  public GlobalFunction(
+      final IPrimitiveFactory aPrimitiveFactory,
+      final Builder aBuilder,
+      final IGlobalFunction aGlobalFunction) {
 
-		super(aPrimitiveFactory, aBuilder, aGlobalFunction);
-	}
-	protected String getStereotype() {
-		return "<<global function>>\n";
-	}
+    super(aPrimitiveFactory, aBuilder, aGlobalFunction);
+  }
+
+  protected String getStereotype() {
+    return "<<global function>>\n";
+  }
 }

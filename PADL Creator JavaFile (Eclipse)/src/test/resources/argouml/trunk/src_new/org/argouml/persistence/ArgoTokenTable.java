@@ -24,121 +24,132 @@
 
 package org.argouml.persistence;
 
-
-/** 
+/**
  * These strings are saved in the final output in a zargo.
- * 
+ *
  * @author Jim Holt
  */
-
 class ArgoTokenTable extends XMLTokenTableBase {
 
-    /**
-     * The constructor.
-     */
-    public ArgoTokenTable() {
-	super(32);
-    }
+  /** The constructor. */
+  public ArgoTokenTable() {
+    super(32);
+  }
 
-    ////////////////////////////////////////////////////////////////
-    // constants
-    private static final String STRING_ARGO                   = "argo";
-    private static final String STRING_AUTHORNAME            = "authorname";
-    private static final String STRING_AUTHOREMAIL            = "authoremail";
-    private static final String STRING_VERSION               = "version";
-    private static final String STRING_DESCRIPTION           = "description";
-    private static final String STRING_SEARCHPATH            = "searchpath";
-    private static final String STRING_MEMBER                = "member";
-    private static final String STRING_HISTORYFILE           = "historyfile";
-    private static final String STRING_DOCUMENTATION         = "documentation";
+  ////////////////////////////////////////////////////////////////
+  // constants
+  private static final String STRING_ARGO = "argo";
 
-    private static final String STRING_SETTINGS = "settings";
-    private static final String STRING_NOTATIONLANGUAGE = "notationlanguage";
-    private static final String STRING_SHOWBOLDNAMES = "showboldnames";
-    private static final String STRING_USEGUILLEMOTS = "useguillemots";
-    private static final String STRING_SHOWVISIBILITY = "showvisibility";
-    private static final String STRING_SHOWMULTIPLICITY = "showmultiplicity";
-    private static final String STRING_SHOWINITIALVALUE = "showinitialvalue";
-    private static final String STRING_SHOWPROPERTIES = "showproperties";
-    private static final String STRING_SHOWTYPES = "showtypes";
-    private static final String STRING_SHOWSTEREOTYPES = "showstereotypes";
-    private static final String STRING_DEFAULTSHADOWWIDTH 
-        = "defaultshadowwidth";
+  private static final String STRING_AUTHORNAME = "authorname";
+  private static final String STRING_AUTHOREMAIL = "authoremail";
+  private static final String STRING_VERSION = "version";
+  private static final String STRING_DESCRIPTION = "description";
+  private static final String STRING_SEARCHPATH = "searchpath";
+  private static final String STRING_MEMBER = "member";
+  private static final String STRING_HISTORYFILE = "historyfile";
+  private static final String STRING_DOCUMENTATION = "documentation";
 
-    /** The token for argo. */
-    public static final int    TOKEN_ARGO                    = 1;
-    /** The token for author name. */
-    public static final int    TOKEN_AUTHORNAME              = 2;
-    /** The token for author email. */
-    public static final int    TOKEN_AUTHOREMAIL              = 3;
-    /** The token for version. */
-    public static final int    TOKEN_VERSION                 = 4;
-    /** The token for description. */
-    public static final int    TOKEN_DESCRIPTION             = 5;
-    /** The token for search path. */
-    public static final int    TOKEN_SEARCHPATH              = 6;
-    /** The token for member. */
-    public static final int    TOKEN_MEMBER                  = 7;
-    /** The token for history file. */
-    public static final int    TOKEN_HISTORYFILE             = 8;
-    /** The token for documentation. */
-    public static final int    TOKEN_DOCUMENTATION           = 9;
+  private static final String STRING_SETTINGS = "settings";
+  private static final String STRING_NOTATIONLANGUAGE = "notationlanguage";
+  private static final String STRING_SHOWBOLDNAMES = "showboldnames";
+  private static final String STRING_USEGUILLEMOTS = "useguillemots";
+  private static final String STRING_SHOWVISIBILITY = "showvisibility";
+  private static final String STRING_SHOWMULTIPLICITY = "showmultiplicity";
+  private static final String STRING_SHOWINITIALVALUE = "showinitialvalue";
+  private static final String STRING_SHOWPROPERTIES = "showproperties";
+  private static final String STRING_SHOWTYPES = "showtypes";
+  private static final String STRING_SHOWSTEREOTYPES = "showstereotypes";
+  private static final String STRING_DEFAULTSHADOWWIDTH = "defaultshadowwidth";
 
-    /** The token for settings. */
-    public static final int    TOKEN_SETTINGS           = 10;
-    /** The token for the notation language setting. */
-    public static final int    TOKEN_NOTATIONLANGUAGE           = 11;
-    /** A token for Notation Settings. */
-    public static final int    TOKEN_USEGUILLEMOTS           = 12;
-    /** A token for Notation Settings. */
-    public static final int    TOKEN_SHOWVISIBILITY           = 13;
-    /** A token for Notation Settings. */
-    public static final int    TOKEN_SHOWMULTIPLICITY           = 14;
-    /** A token for Notation Settings. */
-    public static final int    TOKEN_SHOWINITIALVALUE           = 15;
-    /** The token for the notation setting to show properties. */
-    public static final int    TOKEN_SHOWPROPERTIES           = 16;
-    /** A token for Notation Settings. */
-    public static final int    TOKEN_SHOWTYPES           = 17;
-    /** A token for Notation Settings. */
-    public static final int    TOKEN_SHOWSTEREOTYPES           = 18;
-    /** A token for Notation Settings. */
-    public static final int    TOKEN_DEFAULTSHADOWWIDTH           = 19;
-    /** A token for Notation Settings. */
-    public static final int    TOKEN_SHOWBOLDNAMES           = 20;
+  /** The token for argo. */
+  public static final int TOKEN_ARGO = 1;
 
+  /** The token for author name. */
+  public static final int TOKEN_AUTHORNAME = 2;
 
-    /** The token for undefined. */
-    public static final int    TOKEN_UNDEFINED               = 99;
+  /** The token for author email. */
+  public static final int TOKEN_AUTHOREMAIL = 3;
 
-    ////////////////////////////////////////////////////////////////
-    // protected methods
+  /** The token for version. */
+  public static final int TOKEN_VERSION = 4;
 
-    /**
-     * @see org.argouml.persistence.XMLTokenTableBase#setupTokens()
-     */
-    protected void setupTokens() {
-	addToken(STRING_ARGO, Integer.valueOf(TOKEN_ARGO));
-        addToken(STRING_AUTHORNAME, Integer.valueOf(TOKEN_AUTHORNAME));
-        addToken(STRING_AUTHOREMAIL, Integer.valueOf(TOKEN_AUTHOREMAIL));
-	addToken(STRING_VERSION, Integer.valueOf(TOKEN_VERSION));
-	addToken(STRING_DESCRIPTION, Integer.valueOf(TOKEN_DESCRIPTION));
-	addToken(STRING_SEARCHPATH, Integer.valueOf(TOKEN_SEARCHPATH));
-	addToken(STRING_MEMBER, Integer.valueOf(TOKEN_MEMBER));
-	addToken(STRING_HISTORYFILE, Integer.valueOf(TOKEN_HISTORYFILE));
-        addToken(STRING_DOCUMENTATION, Integer.valueOf(TOKEN_DOCUMENTATION));
-        addToken(STRING_SETTINGS, Integer.valueOf(TOKEN_SETTINGS));
-        addToken(STRING_NOTATIONLANGUAGE, Integer.valueOf(TOKEN_NOTATIONLANGUAGE));
-        addToken(STRING_SHOWBOLDNAMES, Integer.valueOf(TOKEN_SHOWBOLDNAMES));
-        addToken(STRING_USEGUILLEMOTS, Integer.valueOf(TOKEN_USEGUILLEMOTS));
-        addToken(STRING_SHOWVISIBILITY, Integer.valueOf(TOKEN_SHOWVISIBILITY));
-        addToken(STRING_SHOWMULTIPLICITY, Integer.valueOf(TOKEN_SHOWMULTIPLICITY));
-        addToken(STRING_SHOWINITIALVALUE, Integer.valueOf(TOKEN_SHOWINITIALVALUE));
-        addToken(STRING_SHOWPROPERTIES, Integer.valueOf(TOKEN_SHOWPROPERTIES));
-        addToken(STRING_SHOWTYPES, Integer.valueOf(TOKEN_SHOWTYPES));
-        addToken(STRING_SHOWSTEREOTYPES, Integer.valueOf(TOKEN_SHOWSTEREOTYPES));
-        addToken(STRING_DEFAULTSHADOWWIDTH, 
-                Integer.valueOf(TOKEN_DEFAULTSHADOWWIDTH));
-    }
+  /** The token for description. */
+  public static final int TOKEN_DESCRIPTION = 5;
 
+  /** The token for search path. */
+  public static final int TOKEN_SEARCHPATH = 6;
+
+  /** The token for member. */
+  public static final int TOKEN_MEMBER = 7;
+
+  /** The token for history file. */
+  public static final int TOKEN_HISTORYFILE = 8;
+
+  /** The token for documentation. */
+  public static final int TOKEN_DOCUMENTATION = 9;
+
+  /** The token for settings. */
+  public static final int TOKEN_SETTINGS = 10;
+
+  /** The token for the notation language setting. */
+  public static final int TOKEN_NOTATIONLANGUAGE = 11;
+
+  /** A token for Notation Settings. */
+  public static final int TOKEN_USEGUILLEMOTS = 12;
+
+  /** A token for Notation Settings. */
+  public static final int TOKEN_SHOWVISIBILITY = 13;
+
+  /** A token for Notation Settings. */
+  public static final int TOKEN_SHOWMULTIPLICITY = 14;
+
+  /** A token for Notation Settings. */
+  public static final int TOKEN_SHOWINITIALVALUE = 15;
+
+  /** The token for the notation setting to show properties. */
+  public static final int TOKEN_SHOWPROPERTIES = 16;
+
+  /** A token for Notation Settings. */
+  public static final int TOKEN_SHOWTYPES = 17;
+
+  /** A token for Notation Settings. */
+  public static final int TOKEN_SHOWSTEREOTYPES = 18;
+
+  /** A token for Notation Settings. */
+  public static final int TOKEN_DEFAULTSHADOWWIDTH = 19;
+
+  /** A token for Notation Settings. */
+  public static final int TOKEN_SHOWBOLDNAMES = 20;
+
+  /** The token for undefined. */
+  public static final int TOKEN_UNDEFINED = 99;
+
+  ////////////////////////////////////////////////////////////////
+  // protected methods
+
+  /**
+   * @see org.argouml.persistence.XMLTokenTableBase#setupTokens()
+   */
+  protected void setupTokens() {
+    addToken(STRING_ARGO, Integer.valueOf(TOKEN_ARGO));
+    addToken(STRING_AUTHORNAME, Integer.valueOf(TOKEN_AUTHORNAME));
+    addToken(STRING_AUTHOREMAIL, Integer.valueOf(TOKEN_AUTHOREMAIL));
+    addToken(STRING_VERSION, Integer.valueOf(TOKEN_VERSION));
+    addToken(STRING_DESCRIPTION, Integer.valueOf(TOKEN_DESCRIPTION));
+    addToken(STRING_SEARCHPATH, Integer.valueOf(TOKEN_SEARCHPATH));
+    addToken(STRING_MEMBER, Integer.valueOf(TOKEN_MEMBER));
+    addToken(STRING_HISTORYFILE, Integer.valueOf(TOKEN_HISTORYFILE));
+    addToken(STRING_DOCUMENTATION, Integer.valueOf(TOKEN_DOCUMENTATION));
+    addToken(STRING_SETTINGS, Integer.valueOf(TOKEN_SETTINGS));
+    addToken(STRING_NOTATIONLANGUAGE, Integer.valueOf(TOKEN_NOTATIONLANGUAGE));
+    addToken(STRING_SHOWBOLDNAMES, Integer.valueOf(TOKEN_SHOWBOLDNAMES));
+    addToken(STRING_USEGUILLEMOTS, Integer.valueOf(TOKEN_USEGUILLEMOTS));
+    addToken(STRING_SHOWVISIBILITY, Integer.valueOf(TOKEN_SHOWVISIBILITY));
+    addToken(STRING_SHOWMULTIPLICITY, Integer.valueOf(TOKEN_SHOWMULTIPLICITY));
+    addToken(STRING_SHOWINITIALVALUE, Integer.valueOf(TOKEN_SHOWINITIALVALUE));
+    addToken(STRING_SHOWPROPERTIES, Integer.valueOf(TOKEN_SHOWPROPERTIES));
+    addToken(STRING_SHOWTYPES, Integer.valueOf(TOKEN_SHOWTYPES));
+    addToken(STRING_SHOWSTEREOTYPES, Integer.valueOf(TOKEN_SHOWSTEREOTYPES));
+    addToken(STRING_DEFAULTSHADOWWIDTH, Integer.valueOf(TOKEN_DEFAULTSHADOWWIDTH));
+  }
 } /* end class ArgoTokenTable */

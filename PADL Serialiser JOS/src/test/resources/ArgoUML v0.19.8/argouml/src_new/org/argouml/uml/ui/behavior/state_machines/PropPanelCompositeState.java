@@ -27,7 +27,6 @@ package org.argouml.uml.ui.behavior.state_machines;
 import javax.swing.ImageIcon;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.ui.targetmanager.TargetEvent;
@@ -43,100 +42,75 @@ import org.tigris.swidgets.Orientation;
  */
 public class PropPanelCompositeState extends AbstractPropPanelState {
 
-    private JList subverticesList = null;
+  private JList subverticesList = null;
 
-    /**
-     * Constructor for PropPanelCompositeState.
-     * @param name the name of the properties panel
-     * @param icon the icon to be shown next to the name
-     * @param orientation the orientation of the panel
-     */
-    public PropPanelCompositeState(String name, ImageIcon icon,
-            Orientation orientation) {
-        super(name, icon, orientation);
-        initialize();
-    }
+  /**
+   * Constructor for PropPanelCompositeState.
+   *
+   * @param name the name of the properties panel
+   * @param icon the icon to be shown next to the name
+   * @param orientation the orientation of the panel
+   */
+  public PropPanelCompositeState(String name, ImageIcon icon, Orientation orientation) {
+    super(name, icon, orientation);
+    initialize();
+  }
 
-    /**
-     * The constructor.
-     *
-     */
-    public PropPanelCompositeState() {
-        super("Composite State", lookupIcon("CompositeState"),
-                ConfigLoader.getTabPropsOrientation());
-        initialize();
+  /** The constructor. */
+  public PropPanelCompositeState() {
+    super("Composite State", lookupIcon("CompositeState"), ConfigLoader.getTabPropsOrientation());
+    initialize();
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.stereotype"),
-                getStereotypeSelector());
-        addField(Translator.localize("label.container"),
-                getContainerScroll());
-        /*addField(Translator.localize("label.modifiers"),
-                new UMLCompositeStateConcurrentCheckBox());*/
-        addField(Translator.localize("label.entry"),
-                getEntryScroll());
-        addField(Translator.localize("label.exit"),
-                getExitScroll());
-        addField(Translator.localize("label.do-activity"),
-                getDoScroll());
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.stereotype"), getStereotypeSelector());
+    addField(Translator.localize("label.container"), getContainerScroll());
+    /*addField(Translator.localize("label.modifiers"),
+    new UMLCompositeStateConcurrentCheckBox());*/
+    addField(Translator.localize("label.entry"), getEntryScroll());
+    addField(Translator.localize("label.exit"), getExitScroll());
+    addField(Translator.localize("label.do-activity"), getDoScroll());
 
-        addSeperator();
+    addSeperator();
 
-        addField(Translator.localize("label.incoming"),
-                getIncomingScroll());
-        addField(Translator.localize("label.outgoing"),
-                getOutgoingScroll());
-        addField(Translator.localize("label.internal-transitions"),
-                getInternalTransitionsScroll());
+    addField(Translator.localize("label.incoming"), getIncomingScroll());
+    addField(Translator.localize("label.outgoing"), getOutgoingScroll());
+    addField(Translator.localize("label.internal-transitions"), getInternalTransitionsScroll());
 
-        addSeperator();
+    addSeperator();
 
-        addField(Translator.localize("label.subvertex"),
-                new JScrollPane(subverticesList));
-    }
-    
-    /**
-     * @see org.argouml.uml.ui.behavior.state_machines.PropPanelStateVertex#addExtraButtons()
-     */
-    protected void addExtraButtons() {
-        addAction(
-                ActionAddConcurrentRegion.getSingleton());
-    }
+    addField(Translator.localize("label.subvertex"), new JScrollPane(subverticesList));
+  }
 
-    /**
-     * Initialize the panel with its specific fields, in casu
-     * the substate vertex list.
-     */
-    protected void initialize() {
-	subverticesList =
-	    new UMLCompositeStateSubvertexList(
-	            new UMLCompositeStateSubvertexListModel());
-    }
+  /**
+   * @see org.argouml.uml.ui.behavior.state_machines.PropPanelStateVertex#addExtraButtons()
+   */
+  protected void addExtraButtons() {
+    addAction(ActionAddConcurrentRegion.getSingleton());
+  }
 
-    /**
-     * @see org.argouml.ui.targetmanager.TargetListener#targetSet(org.argouml.ui.targetmanager.TargetEvent)
-     */
-    public void targetSet(TargetEvent e) {
-        if (e != null) {
-            Object source = e.getSource();
-            if (source != null
-                    && source instanceof TargetManager) {
-                Object target =
-                    ((TargetManager) e.getSource()).getModelTarget();
-                if (Model.getFacade().isAConcurrentRegion(target)) {
-                    getTitleLabel().setText("Concurrent Region");
-                } else if (Model.getFacade().isConcurrent(target)) {
-                    getTitleLabel().setText("Concurrent Composite State");
-                } else {
-                    getTitleLabel().setText("Composite State");
-                }
-            }
+  /** Initialize the panel with its specific fields, in casu the substate vertex list. */
+  protected void initialize() {
+    subverticesList = new UMLCompositeStateSubvertexList(new UMLCompositeStateSubvertexListModel());
+  }
+
+  /**
+   * @see
+   *     org.argouml.ui.targetmanager.TargetListener#targetSet(org.argouml.ui.targetmanager.TargetEvent)
+   */
+  public void targetSet(TargetEvent e) {
+    if (e != null) {
+      Object source = e.getSource();
+      if (source != null && source instanceof TargetManager) {
+        Object target = ((TargetManager) e.getSource()).getModelTarget();
+        if (Model.getFacade().isAConcurrentRegion(target)) {
+          getTitleLabel().setText("Concurrent Region");
+        } else if (Model.getFacade().isConcurrent(target)) {
+          getTitleLabel().setText("Concurrent Composite State");
+        } else {
+          getTitleLabel().setText("Composite State");
         }
-        super.targetSet(e);
+      }
     }
-
+    super.targetSet(e);
+  }
 } /* end class PropPanelCompositeState */
-
-
-

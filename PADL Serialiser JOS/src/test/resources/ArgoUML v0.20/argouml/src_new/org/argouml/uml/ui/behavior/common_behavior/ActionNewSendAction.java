@@ -26,7 +26,6 @@
 package org.argouml.uml.ui.behavior.common_behavior;
 
 import javax.swing.Action;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 
@@ -36,32 +35,25 @@ import org.argouml.model.Model;
  */
 public class ActionNewSendAction extends ActionNewAction {
 
-    private static final ActionNewSendAction SINGLETON =
-        new ActionNewSendAction();
+  private static final ActionNewSendAction SINGLETON = new ActionNewSendAction();
 
-    /**
-     * Constructor for ActionNewSendAction.
-     */
-    protected ActionNewSendAction() {
-        super();
-        putValue(Action.NAME, Translator.localize(
-                "button.new-sendaction"));
-    }
+  /** Constructor for ActionNewSendAction. */
+  protected ActionNewSendAction() {
+    super();
+    putValue(Action.NAME, Translator.localize("button.new-sendaction"));
+  }
 
+  /**
+   * @see org.argouml.uml.ui.behavior.common_behavior.ActionNewAction#createAction()
+   */
+  protected Object createAction() {
+    return Model.getCommonBehaviorFactory().createSendAction();
+  }
 
-    /**
-     * @see org.argouml.uml.ui.behavior.common_behavior.ActionNewAction#createAction()
-     */
-    protected Object createAction() {
-        return Model.getCommonBehaviorFactory().createSendAction();
-    }
-
-
-    /**
-     * @return Returns the SINGLETON.
-     */
-    public static ActionNewSendAction getInstance() {
-        return SINGLETON;
-    }
-
+  /**
+   * @return Returns the SINGLETON.
+   */
+  public static ActionNewSendAction getInstance() {
+    return SINGLETON;
+  }
 }

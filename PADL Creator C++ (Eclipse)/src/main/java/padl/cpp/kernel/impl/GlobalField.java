@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -31,180 +31,161 @@ import util.io.ProxyConsole;
 // GlobalField has all the properties of Class.
 // Implementation to be checked...
 
-class GlobalField extends FirstClassEntity implements IElementMarker,
-		IGlobalField {
+class GlobalField extends FirstClassEntity implements IElementMarker, IGlobalField {
 
-	private static final long serialVersionUID = 739874953581348926L;
+  private static final long serialVersionUID = 739874953581348926L;
 
-	// Yann 2009/05/01: Duplicate of Element!
-	private IElement attachedElement;
-	private Cardinality cardinality;
-	private int dimension;
-	private char[] globalFieldType;
+  // Yann 2009/05/01: Duplicate of Element!
+  private IElement attachedElement;
+  private Cardinality cardinality;
+  private int dimension;
+  private char[] globalFieldType;
 
-	public GlobalField(final char[] anID) {
-		this(anID, null, Cardinality.One);
-	}
+  public GlobalField(final char[] anID) {
+    this(anID, null, Cardinality.One);
+  }
 
-	public GlobalField(
-		final char[] aID,
-		final char[] aName,
-		final char[] aType,
-		final int dimension) {
+  public GlobalField(
+      final char[] aID, final char[] aName, final char[] aType, final int dimension) {
 
-		super(aID);
-		this.setName(aName);
-		this.setType(aType);
-		this.setCardinality(dimension > 0 ? Cardinality.Many : Cardinality.One);
-		this.setDimension(dimension);
-	}
+    super(aID);
+    this.setName(aName);
+    this.setType(aType);
+    this.setCardinality(dimension > 0 ? Cardinality.Many : Cardinality.One);
+    this.setDimension(dimension);
+  }
 
-	public GlobalField(
-		final char[] aName,
-		final char[] aType,
-		final Cardinality aCardinality) {
+  public GlobalField(final char[] aName, final char[] aType, final Cardinality aCardinality) {
 
-		super((String.valueOf(aType) + " " + String.valueOf(aName))
-			.toCharArray());
-		this.setName(aName);
-		this.setType(aType);
-		this.setCardinality(aCardinality);
-	}
+    super((String.valueOf(aType) + " " + String.valueOf(aName)).toCharArray());
+    this.setName(aName);
+    this.setType(aType);
+    this.setCardinality(aCardinality);
+  }
 
-	public void addConstituent(final IElement anElement) {
-	}
+  public void addConstituent(final IElement anElement) {}
 
-	public void addInheritedEntity(final IFirstClassEntity anEntity) {
-	}
+  public void addInheritedEntity(final IFirstClassEntity anEntity) {}
 
-	// Yann 2009/05/01: Duplicate of Element!
-	public void attachTo(final IElement anElement) {
-		if (anElement != null) {
-			if (anElement == this) {
-				throw new ModelDeclarationException("Cannot attach to itself");
-			}
-			if (!anElement.getClass().isInstance(this)) {
-				throw new ModelDeclarationException(
-					"Cannot attach to a different type of element");
-			}
+  // Yann 2009/05/01: Duplicate of Element!
+  public void attachTo(final IElement anElement) {
+    if (anElement != null) {
+      if (anElement == this) {
+        throw new ModelDeclarationException("Cannot attach to itself");
+      }
+      if (!anElement.getClass().isInstance(this)) {
+        throw new ModelDeclarationException("Cannot attach to a different type of element");
+      }
 
-			this.detach();
-			this.attachedElement = anElement;
-		}
-	}
+      this.detach();
+      this.attachedElement = anElement;
+    }
+  }
 
-	// Yann 2009/05/01: Duplicate of Element!
-	public void detach() {
-		final IElement oldAttachedElement = this.getAttachedElement();
+  // Yann 2009/05/01: Duplicate of Element!
+  public void detach() {
+    final IElement oldAttachedElement = this.getAttachedElement();
 
-		if (oldAttachedElement == null) {
-			return;
-		}
+    if (oldAttachedElement == null) {
+      return;
+    }
 
-		this.attachedElement = null;
-	}
+    this.attachedElement = null;
+  }
 
-	// Yann 2009/05/01: Duplicate of Element!
-	public IElement getAttachedElement() {
-		return this.attachedElement;
-	}
+  // Yann 2009/05/01: Duplicate of Element!
+  public IElement getAttachedElement() {
+    return this.attachedElement;
+  }
 
-	public Cardinality getCardinality() {
-		return this.cardinality;
-	}
+  public Cardinality getCardinality() {
+    return this.cardinality;
+  }
 
-	public String getDisplayTypeName() {
-		return String.valueOf(this.getType());
-	}
+  public String getDisplayTypeName() {
+    return String.valueOf(this.getType());
+  }
 
-	public IFirstClassEntity getInheritedEntity(final String anEntityName) {
-		return null;
-	}
+  public IFirstClassEntity getInheritedEntity(final String anEntityName) {
+    return null;
+  }
 
-	public String getPurpose() {
-		return null;
-	}
+  public String getPurpose() {
+    return null;
+  }
 
-	public char[] getType() {
-		return this.globalFieldType;
-	}
+  public char[] getType() {
+    return this.globalFieldType;
+  }
 
-	public boolean isAboveInHierarchy(final IFirstClassEntity anEntity) {
-		return false;
-	}
+  public boolean isAboveInHierarchy(final IFirstClassEntity anEntity) {
+    return false;
+  }
 
-	public boolean isForceAbstract() {
-		return false;
-	}
+  public boolean isForceAbstract() {
+    return false;
+  }
 
-	public List<?> listOfInheritedEntities() {
-		return null;
-	}
+  public List<?> listOfInheritedEntities() {
+    return null;
+  }
 
-	public List<?> listOfInheritingEntities() {
-		return null;
-	}
+  public List<?> listOfInheritingEntities() {
+    return null;
+  }
 
-	public void removeInheritedEntity(final IFirstClassEntity anEntity) {
-	}
+  public void removeInheritedEntity(final IFirstClassEntity anEntity) {}
 
-	public void setCardinality(final Cardinality cardinality) {		
-		this.cardinality = cardinality;
-	}
+  public void setCardinality(final Cardinality cardinality) {
+    this.cardinality = cardinality;
+  }
 
-	public void setPurpose(final String purpose) {
-	}
+  public void setPurpose(final String purpose) {}
 
-	public void setType(final char[] globalFieldType) {
-		this.globalFieldType = globalFieldType;
-	}
+  public void setType(final char[] globalFieldType) {
+    this.globalFieldType = globalFieldType;
+  }
 
-	public void setVisibility(final int visibility) {
-		super.setVisibility(visibility & ~Modifier.ABSTRACT);
-	}
+  public void setVisibility(final int visibility) {
+    super.setVisibility(visibility & ~Modifier.ABSTRACT);
+  }
 
-	public String toString() {
-		if (Constants.DEBUG) {
-			ProxyConsole
-				.getInstance()
-				.debugOutput()
-				.println("// GlobalField.toString()");
-		}
-		return this.toString(0);
-	}
+  public String toString() {
+    if (Constants.DEBUG) {
+      ProxyConsole.getInstance().debugOutput().println("// GlobalField.toString()");
+    }
+    return this.toString(0);
+  }
 
-	public String toString(final int tab) {
-		if (Constants.DEBUG) {
-			ProxyConsole
-				.getInstance()
-				.debugOutput()
-				.println("// GlobalField.toString(int)");
-		}
-		final StringBuffer codeEq = new StringBuffer();
-		codeEq.append(super.toString(tab));
-		codeEq.append(' ');
-		codeEq.append(this.getType());
-		codeEq.append(' ');
-		codeEq.append(this.getName());
-		final String[] codeLines = this.getCodeLines();
-		// Yann: Can be null. The case "empty array" is dealt with in the loop. 
-		if (codeLines != null) {
-			codeEq.append(" = ");
-			for (int i = 0; i < codeLines.length; i++) {
-				codeEq.append('\n');
-				Util.addTabs(tab + 1, codeEq);
-				codeEq.append(codeLines[i]);
-			}
-		}
-		codeEq.append(';');
-		return codeEq.toString();
-	}
+  public String toString(final int tab) {
+    if (Constants.DEBUG) {
+      ProxyConsole.getInstance().debugOutput().println("// GlobalField.toString(int)");
+    }
+    final StringBuffer codeEq = new StringBuffer();
+    codeEq.append(super.toString(tab));
+    codeEq.append(' ');
+    codeEq.append(this.getType());
+    codeEq.append(' ');
+    codeEq.append(this.getName());
+    final String[] codeLines = this.getCodeLines();
+    // Yann: Can be null. The case "empty array" is dealt with in the loop.
+    if (codeLines != null) {
+      codeEq.append(" = ");
+      for (int i = 0; i < codeLines.length; i++) {
+        codeEq.append('\n');
+        Util.addTabs(tab + 1, codeEq);
+        codeEq.append(codeLines[i]);
+      }
+    }
+    codeEq.append(';');
+    return codeEq.toString();
+  }
 
-	public int getDimension() {
-		return this.dimension;
-	}
+  public int getDimension() {
+    return this.dimension;
+  }
 
-	public void setDimension(int dimension) {
-		this.dimension = dimension;
-	}
+  public void setDimension(int dimension) {
+    this.dimension = dimension;
+  }
 }

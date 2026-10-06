@@ -27,84 +27,80 @@ package org.argouml.uml.ui.behavior.use_cases;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementOrderedListModel2;
 
 /**
- * Model for the ExtensionPoints of a UseCase. <p>
+ * Model for the ExtensionPoints of a UseCase.
  *
- * TODO: This should NOT be an ordered list, according the UML standard!
- * Shall we stop supporting the move up/down features?
+ * <p>TODO: This should NOT be an ordered list, according the UML standard! Shall we stop supporting
+ * the move up/down features?
  *
  * @since Oct 7, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class UMLUseCaseExtensionPointListModel
-    extends UMLModelElementOrderedListModel2 {
+public class UMLUseCaseExtensionPointListModel extends UMLModelElementOrderedListModel2 {
 
-    /**
-     * Constructor for UMLUseCaseExtensionPointListModel.
-     */
-    public UMLUseCaseExtensionPointListModel() {
-        super("extensionPoint");
+  /** Constructor for UMLUseCaseExtensionPointListModel. */
+  public UMLUseCaseExtensionPointListModel() {
+    super("extensionPoint");
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    setAllElements(Model.getFacade().getExtensionPoints(getTarget()));
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object o) {
+    return Model.getFacade().getExtensionPoints(getTarget()).contains(o);
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementOrderedListModel2#moveDown(int)
+   */
+  protected void moveDown(int index) {
+    Object usecase = getTarget();
+    List c = new ArrayList(Model.getFacade().getExtensionPoints(usecase));
+    if (index < c.size() - 1) {
+      Collections.swap(c, index, index + 1);
+      Model.getUseCasesHelper().setExtensionPoints(usecase, c);
     }
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        setAllElements(Model.getFacade().getExtensionPoints(getTarget()));
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementOrderedListModel2#moveToBottom(int)
+   */
+  @Override
+  protected void moveToBottom(int index) {
+    Object usecase = getTarget();
+    List c = new ArrayList(Model.getFacade().getExtensionPoints(usecase));
+    if (index < c.size() - 1) {
+      Object mem1 = c.get(index);
+
+      c.remove(mem1);
+      c.add(c.size(), mem1);
+      Model.getUseCasesHelper().setExtensionPoints(usecase, c);
     }
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object o) {
-        return Model.getFacade().getExtensionPoints(getTarget()).contains(o);
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementOrderedListModel2#moveToTop(int)
+   */
+  @Override
+  protected void moveToTop(int index) {
+    Object usecase = getTarget();
+    List c = new ArrayList(Model.getFacade().getExtensionPoints(usecase));
+    if (index > 0) {
+      Object mem1 = c.get(index);
+
+      c.remove(mem1);
+      c.add(0, mem1);
+      Model.getUseCasesHelper().setExtensionPoints(usecase, c);
     }
-
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementOrderedListModel2#moveDown(int)
-     */
-    protected void moveDown(int index) {
-        Object usecase = getTarget();
-        List c = new ArrayList(Model.getFacade().getExtensionPoints(usecase));
-        if (index < c.size() - 1) {
-            Collections.swap(c, index, index + 1);
-            Model.getUseCasesHelper().setExtensionPoints(usecase, c);
-        }
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementOrderedListModel2#moveToBottom(int)
-     */
-    @Override
-    protected void moveToBottom(int index) {
-        Object usecase = getTarget();
-        List c = new ArrayList(Model.getFacade().getExtensionPoints(usecase));
-        if (index < c.size() - 1) {
-            Object mem1 = c.get(index);
-
-            c.remove(mem1);
-            c.add(c.size(), mem1);
-            Model.getUseCasesHelper().setExtensionPoints(usecase, c);
-        }
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementOrderedListModel2#moveToTop(int)
-     */
-    @Override
-    protected void moveToTop(int index) {
-        Object usecase = getTarget();
-        List c = new ArrayList(Model.getFacade().getExtensionPoints(usecase));
-        if (index > 0) {
-            Object mem1 = c.get(index);
-
-            c.remove(mem1);
-            c.add(0, mem1);
-            Model.getUseCasesHelper().setExtensionPoints(usecase, c);
-        }
-    }
+  }
 }

@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xerces" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -60,116 +60,101 @@ package org.apache.xerces.utils;
 import org.apache.xerces.readers.XMLEntityHandler;
 
 /**
- *
  * @version
  */
 public final class ChunkyCharArray implements XMLEntityHandler.CharBuffer {
 
-    /**
-     * Constructor
-     */
-    public ChunkyCharArray(StringPool stringPool) {
-        fStringPool = stringPool;
-        fCurrentChunk = CharDataChunk.createChunk(stringPool, null);
+  /** Constructor */
+  public ChunkyCharArray(StringPool stringPool) {
+    fStringPool = stringPool;
+    fCurrentChunk = CharDataChunk.createChunk(stringPool, null);
+  }
+
+  /** */
+  public int length() {
+    return fLength;
+  }
+
+  /** */
+  public void append(char ch) {
+    try {
+      fCurrentData[fCurrentIndex] = ch;
+    } catch (ArrayIndexOutOfBoundsException ex) {
+      if (fCurrentIndex == CharDataChunk.CHUNK_SIZE) {
+        fCurrentChunk = CharDataChunk.createChunk(fStringPool, fCurrentChunk);
+        fCurrentData = new char[INITIAL_CHUNK_SIZE];
+        fCurrentIndex = 0;
+      } else {
+        char[] newData = new char[fCurrentIndex * 2];
+        System.arraycopy(fCurrentData, 0, newData, 0, fCurrentIndex);
+        fCurrentData = newData;
+      }
+      fCurrentChunk.setCharArray(fCurrentData);
+      fCurrentData[fCurrentIndex] = ch;
+    } catch (NullPointerException ex) {
+      fCurrentData = new char[INITIAL_CHUNK_SIZE];
+      fCurrentChunk.setCharArray(fCurrentData);
+      fCurrentData[fCurrentIndex] = ch;
     }
+    fCurrentIndex++;
+    fLength++;
+  }
 
-    /**
-     *
-     */
-    public int length() {
-        return fLength;
-    }
+  /**
+   * Append a <code>String</code> to this buffer
+   *
+   * @param s the string to append.
+   */
+  public void append(String s) {
+    int slen = s.length();
+    for (int i = 0; i < slen; i++) append(s.charAt(i));
+  }
 
-    /**
-     *
-     */
-    public void append(char ch) {
-        try {
-            fCurrentData[fCurrentIndex] = ch;
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            if (fCurrentIndex == CharDataChunk.CHUNK_SIZE) {
-                fCurrentChunk = CharDataChunk.createChunk(fStringPool, fCurrentChunk);
-                fCurrentData = new char[INITIAL_CHUNK_SIZE];
-                fCurrentIndex = 0;
-            } else {
-                char[] newData = new char[fCurrentIndex * 2];
-                System.arraycopy(fCurrentData, 0, newData, 0, fCurrentIndex);
-                fCurrentData = newData;
-            }
-            fCurrentChunk.setCharArray(fCurrentData);
-            fCurrentData[fCurrentIndex] = ch;
-        } catch (NullPointerException ex) {
-            fCurrentData = new char[INITIAL_CHUNK_SIZE];
-            fCurrentChunk.setCharArray(fCurrentData);
-            fCurrentData[fCurrentIndex] = ch;
-        }
-        fCurrentIndex++;
-        fLength++;
-    }
+  /** */
+  public void append(char[] ch, int offset, int length) {
+    while (length-- > 0) append(ch[offset++]);
+  }
 
-    /**
-     * Append a <code>String</code> to this buffer
-     *
-     * @param s the string to append.
-     */
-    public void append(String s) {
-        int slen = s.length();
-        for (int i = 0; i < slen; i++)
-            append(s.charAt(i));
-    }
+  /**
+   * Append a <code>ChunkyCharArray</code> to this buffer.
+   *
+   * @param charArray buffer to be appended.
+   * @param offset The offset within charArray of the first character.
+   * @param length The number of characters to append.
+   */
+  public void append(ChunkyCharArray charArray, int offset, int length) {
+    fCurrentChunk.append(charArray, offset, length);
+  }
 
-    /**
-     *
-     */
-    public void append(char[] ch, int offset, int length) {
-        while (length-- > 0)
-            append(ch[offset++]);
-    }
+  /** */
+  public int addString(int offset, int length) {
+    if (length == 0) return 0;
+    return fCurrentChunk.addString(offset, length);
+  }
 
-    /**
-     * Append a <code>ChunkyCharArray</code> to this buffer.
-     *
-     * @param charArray buffer to be appended.
-     * @param offset The offset within charArray of the first character.
-     * @param length The number of characters to append.
-     */
-    public void append(ChunkyCharArray charArray, int offset, int length) {
-        fCurrentChunk.append(charArray, offset, length);
-    }
+  /**
+   * Add a region of this buffer to the <code>StringPool</code> as a symbol
+   *
+   * @param offset The offset within this buffer of the first character of the string
+   * @param length The number of characters in the symbol
+   */
+  public int addSymbol(int offset, int length) {
+    if (length == 0) return 0;
+    return fCurrentChunk.addSymbol(offset, length, 0);
+  }
 
-    /**
-     *
-     */
-    public int addString(int offset, int length) {
-        if (length == 0)
-            return 0;
-        return fCurrentChunk.addString(offset, length);
-    }
+  //
+  // Chunk size constants
+  //
+  private static final int INITIAL_CHUNK_SHIFT = 7; // 2^7 = 128
+  private static final int INITIAL_CHUNK_SIZE = (1 << INITIAL_CHUNK_SHIFT);
 
-    /**
-     * Add a region of this buffer to the <code>StringPool</code> as a symbol
-     * 
-     * @param offset The offset within this buffer of the first character of the string
-     * @param length The number of characters in the symbol
-     */
-    public int addSymbol(int offset, int length) {
-        if (length == 0)
-            return 0;
-        return fCurrentChunk.addSymbol(offset, length, 0);
-    }
-
-    //
-    // Chunk size constants
-    //
-    private static final int INITIAL_CHUNK_SHIFT = 7;        // 2^7 = 128
-    private static final int INITIAL_CHUNK_SIZE = (1 << INITIAL_CHUNK_SHIFT);
-
-    //
-    // Instance variables
-    //
-    private StringPool fStringPool = null;
-    private CharDataChunk fCurrentChunk = null;
-    private char[] fCurrentData = null;
-    private int fCurrentIndex = 0;
-    private int fLength = 0;
+  //
+  // Instance variables
+  //
+  private StringPool fStringPool = null;
+  private CharDataChunk fCurrentChunk = null;
+  private char[] fCurrentData = null;
+  private int fCurrentIndex = 0;
+  private int fLength = 0;
 }

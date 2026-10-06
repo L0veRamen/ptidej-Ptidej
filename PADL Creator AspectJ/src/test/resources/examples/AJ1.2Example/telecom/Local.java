@@ -6,7 +6,7 @@ Use and copying of this software and preparation of derivative works based
 upon this software are permitted.  Any distribution of this software or
 derivative works must comply with all applicable United States export control
 laws.
- 
+
 This software is made available AS IS, and Xerox Corporation makes no warranty
 about the software, its performance or its conformity to any specification.
 
@@ -18,9 +18,8 @@ about the software, its performance or its conformity to any specification.
 package telecom;
 
 public class Local extends Connection {
-    Local(Customer a, Customer b) {
-	super(a, b);
-	System.out.println("[new local connection from " + 
-	   a + " to " + b + "]");
-    }
+  Local(Customer a, Customer b) {
+    super(a, b);
+    System.out.println("[new local connection from " + a + " to " + b + "]");
+  }
 }

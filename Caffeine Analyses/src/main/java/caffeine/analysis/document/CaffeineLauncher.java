@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -14,23 +14,24 @@ import caffeine.Caffeine;
 
 /**
  * @version 0.1
- * @author	Yann-Gaël Guéhéneuc
+ * @author Yann-Gaël Guéhéneuc
  */
 public class CaffeineLauncher {
-	public static void main(String[] args) {
-		Caffeine
-			.getUniqueInstance()
-			.start(
-				"../Caffeine/Rules/Composition.pl",
-				"../Caffeine/cfparse.jar;../Caffeine/javassist.jar;../Caffeine/bin;../Ptidej Examples and Configurations/bin",
-				"ptidej.example.composite2.Main",
-				new String[] {
-					"ptidej.example.composite2.Document",
-					"ptidej.example.composite2.Element" },
-				new String[][] { new String[] {
-					"ptidej.example.composite2.Document",
-					"ptidej.example.composite2.Element",
-					"elements" }
-		});
-	}
+  public static void main(String[] args) {
+    Caffeine.getUniqueInstance()
+        .start(
+            "../Caffeine/Rules/Composition.pl",
+            "../Caffeine/cfparse.jar;../Caffeine/javassist.jar;../Caffeine/bin;../Ptidej Examples and Configurations/bin",
+            "ptidej.example.composite2.Main",
+            new String[] {
+              "ptidej.example.composite2.Document", "ptidej.example.composite2.Element"
+            },
+            new String[][] {
+              new String[] {
+                "ptidej.example.composite2.Document",
+                "ptidej.example.composite2.Element",
+                "elements"
+              }
+            });
+  }
 }

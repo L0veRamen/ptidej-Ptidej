@@ -32,31 +32,29 @@ import org.tigris.gef.presentation.Fig;
  */
 public class FigReturnActionMessage extends FigMessage {
 
-    private static final long serialVersionUID = -6620833059472736152L;
+  private static final long serialVersionUID = -6620833059472736152L;
 
-    /**
-     * @param owner The owner of the link.
-     */
-    public FigReturnActionMessage(Object owner) {
-        super(owner);
-        setDestArrowHead(new ArrowHeadGreater());
-        setDashed(true);
-    }
+  /**
+   * @param owner The owner of the link.
+   */
+  public FigReturnActionMessage(Object owner) {
+    super(owner);
+    setDestArrowHead(new ArrowHeadGreater());
+    setDashed(true);
+  }
 
-    /**
-     * Override to make sure dashed is preserved across saves.
-     *
-     * @see org.tigris.gef.presentation.FigEdge#setFig(org.tigris.gef.presentation.Fig)
-     */
-    public void setFig(Fig f) {
-        super.setFig(f);
-        setDashed(true);
-    }
+  /**
+   * Override to make sure dashed is preserved across saves.
+   *
+   * @see org.tigris.gef.presentation.FigEdge#setFig(org.tigris.gef.presentation.Fig)
+   */
+  public void setFig(Fig f) {
+    super.setFig(f);
+    setDashed(true);
+  }
 
-    /**
-     *
-     */
-    public FigReturnActionMessage() {
-        this(null);
-    }
+  /** */
+  public FigReturnActionMessage() {
+    this(null);
+  }
 }

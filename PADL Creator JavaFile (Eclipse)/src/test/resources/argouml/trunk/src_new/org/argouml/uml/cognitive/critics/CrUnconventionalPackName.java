@@ -25,7 +25,6 @@
 package org.argouml.uml.cognitive.critics;
 
 import javax.swing.Icon;
-
 import org.argouml.cognitive.Designer;
 import org.argouml.cognitive.ToDoItem;
 import org.argouml.cognitive.critics.Critic;
@@ -33,97 +32,94 @@ import org.argouml.cognitive.ui.Wizard;
 import org.argouml.model.Model;
 import org.argouml.uml.cognitive.UMLDecision;
 
-/**
- * Critic to detect whether a package name obeys to certain rules.
- */
+/** Critic to detect whether a package name obeys to certain rules. */
 public class CrUnconventionalPackName extends AbstractCrUnconventionalName {
 
-    /**
-     * The constructor.
-     */
-    public CrUnconventionalPackName() {
-        setupHeadAndDesc();
-	addSupportedDecision(UMLDecision.NAMING);
-	setKnowledgeTypes(Critic.KT_SYNTAX);
-	addTrigger("name");
+  /** The constructor. */
+  public CrUnconventionalPackName() {
+    setupHeadAndDesc();
+    addSupportedDecision(UMLDecision.NAMING);
+    setKnowledgeTypes(Critic.KT_SYNTAX);
+    addTrigger("name");
+  }
+
+  /**
+   * @see org.argouml.uml.cognitive.critics.CrUML#predicate2( java.lang.Object,
+   *     org.argouml.cognitive.Designer)
+   */
+  public boolean predicate2(Object dm, Designer dsgr) {
+    if (!(Model.getFacade().isAPackage(dm))) {
+      return NO_PROBLEM;
     }
 
-    /**
-     * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
-     * java.lang.Object, org.argouml.cognitive.Designer)
-     */
-    public boolean predicate2(Object dm, Designer dsgr) {
-	if (!(Model.getFacade().isAPackage(dm))) {
-	    return NO_PROBLEM;
-	}
-
-	String myName = Model.getFacade().getName(dm);
-	if (myName == null || myName.equals("")) {
-	    return NO_PROBLEM;
-	}
-	String nameStr = myName;
-	if (nameStr == null || nameStr.length() == 0) {
-	    return NO_PROBLEM;
-	}
-	int size = nameStr.length();
-	for (int i = 0; i < size; i++) {
-	    char c = nameStr.charAt(i);
-	    if (!Character.isLowerCase(c) && c != '.') {
-	        return PROBLEM_FOUND;
-	    }
-	}
-	return NO_PROBLEM;
+    String myName = Model.getFacade().getName(dm);
+    if (myName == null || myName.equals("")) {
+      return NO_PROBLEM;
     }
-
-    /**
-     * @see org.argouml.cognitive.Poster#getClarifier()
-     */
-    public Icon getClarifier() {
-	return ClClassName.getTheInstance();
+    String nameStr = myName;
+    if (nameStr == null || nameStr.length() == 0) {
+      return NO_PROBLEM;
     }
-
-    /**
-     * @see org.argouml.cognitive.critics.Critic#initWizard(
-     *         org.argouml.cognitive.ui.Wizard)
-     */
-    public void initWizard(Wizard w) {
-	if (w instanceof WizMEName) {
-	    ToDoItem item = (ToDoItem) w.getToDoItem();
-	    Object me = /*(MModelElement)*/ item.getOffenders().elementAt(0);
-	    String ins = super.getInstructions();
-	    String nameStr = Model.getFacade().getName(me);
-	    String sug = computeSuggestion(nameStr);
-	    ((WizMEName) w).setInstructions(ins);
-	    ((WizMEName) w).setSuggestion(sug);
-	}
+    int size = nameStr.length();
+    for (int i = 0; i < size; i++) {
+      char c = nameStr.charAt(i);
+      if (!Character.isLowerCase(c) && c != '.') {
+        return PROBLEM_FOUND;
+      }
     }
+    return NO_PROBLEM;
+  }
 
-    /**
-     * @see org.argouml.uml.cognitive.critics.AbstractCrUnconventionalName#computeSuggestion(java.lang.String)
-     */
-    public String computeSuggestion(String nameStr) {
+  /**
+   * @see org.argouml.cognitive.Poster#getClarifier()
+   */
+  public Icon getClarifier() {
+    return ClClassName.getTheInstance();
+  }
 
-        String sug = "";
-        if (nameStr != null) {
-            int size = nameStr.length();
-            for (int i = 0; i < size; i++) {
-                char c = nameStr.charAt(i);
-                if (Character.isLowerCase(c) || c == '.') {
-                    sug += c;
-                } else if (Character.isUpperCase(c)) {
-                    sug += Character.toLowerCase(c);
-                }
-            }
+  /**
+   * @see org.argouml.cognitive.critics.Critic#initWizard( org.argouml.cognitive.ui.Wizard)
+   */
+  public void initWizard(Wizard w) {
+    if (w instanceof WizMEName) {
+      ToDoItem item = (ToDoItem) w.getToDoItem();
+      Object me = /*(MModelElement)*/ item.getOffenders().elementAt(0);
+      String ins = super.getInstructions();
+      String nameStr = Model.getFacade().getName(me);
+      String sug = computeSuggestion(nameStr);
+      ((WizMEName) w).setInstructions(ins);
+      ((WizMEName) w).setSuggestion(sug);
+    }
+  }
+
+  /**
+   * @see
+   *     org.argouml.uml.cognitive.critics.AbstractCrUnconventionalName#computeSuggestion(java.lang.String)
+   */
+  public String computeSuggestion(String nameStr) {
+
+    String sug = "";
+    if (nameStr != null) {
+      int size = nameStr.length();
+      for (int i = 0; i < size; i++) {
+        char c = nameStr.charAt(i);
+        if (Character.isLowerCase(c) || c == '.') {
+          sug += c;
+        } else if (Character.isUpperCase(c)) {
+          sug += Character.toLowerCase(c);
         }
-        if (sug.equals("")) {
-            sug = "packageName";
-        }
-        return sug;
+      }
     }
+    if (sug.equals("")) {
+      sug = "packageName";
+    }
+    return sug;
+  }
 
-    /**
-     * @see org.argouml.cognitive.critics.Critic#getWizardClass(org.argouml.cognitive.ToDoItem)
-     */
-    public Class getWizardClass(ToDoItem item) { return WizMEName.class; }
-
+  /**
+   * @see org.argouml.cognitive.critics.Critic#getWizardClass(org.argouml.cognitive.ToDoItem)
+   */
+  public Class getWizardClass(ToDoItem item) {
+    return WizMEName.class;
+  }
 } /* end class CrUnconventionalPackName */

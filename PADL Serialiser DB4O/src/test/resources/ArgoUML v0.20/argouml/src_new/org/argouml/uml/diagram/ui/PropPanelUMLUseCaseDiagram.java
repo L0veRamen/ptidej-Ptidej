@@ -32,12 +32,8 @@ import org.argouml.i18n.Translator;
  */
 public class PropPanelUMLUseCaseDiagram extends PropPanelDiagram {
 
-    /**
-     * Constructor for PropPanelUMLUseCaseDiagram.
-     */
-    public PropPanelUMLUseCaseDiagram() {
-        super(Translator.localize("label.usecase-diagram"),
-                lookupIcon("UseCaseDiagram"));
-    }
-
+  /** Constructor for PropPanelUMLUseCaseDiagram. */
+  public PropPanelUMLUseCaseDiagram() {
+    super(Translator.localize("label.usecase-diagram"), lookupIcon("UseCaseDiagram"));
+  }
 }

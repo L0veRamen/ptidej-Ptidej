@@ -24,46 +24,39 @@
 
 package org.argouml.argoeclipse.internal.ui.actions;
 
-import org.eclipse.jface.resource.ImageDescriptor;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.cognitive.ui.DesignIssuesDialog;
 import org.argouml.i18n.Translator;
+import org.eclipse.jface.resource.ImageDescriptor;
 
-/**
- * Action to bring up search/find dialog.
- */
-public class ActionOpenDecisions extends
-        org.eclipse.jface.action.Action {
+/** Action to bring up search/find dialog. */
+public class ActionOpenDecisions extends org.eclipse.jface.action.Action {
 
-    private final static String ACTION_NAME = "design-issues"; //$NON-NLS-1$
+  private static final String ACTION_NAME = "design-issues"; // $NON-NLS-1$
 
-    /**
-     * Constructor. The default style of the item will be AS_PUSH_BUTTON.
-     */
-    public ActionOpenDecisions() {
-        this( org.eclipse.jface.action.Action.AS_PUSH_BUTTON);
-    }
-    
-    /**
-     * Constructor.
-     * @param style the style as in org.eclipse.jface.action.Action 
-     */
-    public ActionOpenDecisions(int style) {
-        super(ACTION_NAME, style);
-        setImageDescriptor(ImageDescriptor.createFromFile(
-                ResourceLoaderWrapper.class, ResourceLoaderWrapper
-                        .getImageBinding("action." + ACTION_NAME))); //$NON-NLS-1$
-        setToolTipText(Translator.localize("action." + ACTION_NAME)); //$NON-NLS-1$
-    }
-       
-    /**
-     * Runs the command.
-     */
-    public void run() {         
-        super.run();
-        DesignIssuesDialog d = new DesignIssuesDialog();
-        d.setVisible(true);
-    }
+  /** Constructor. The default style of the item will be AS_PUSH_BUTTON. */
+  public ActionOpenDecisions() {
+    this(org.eclipse.jface.action.Action.AS_PUSH_BUTTON);
+  }
 
+  /**
+   * Constructor.
+   *
+   * @param style the style as in org.eclipse.jface.action.Action
+   */
+  public ActionOpenDecisions(int style) {
+    super(ACTION_NAME, style);
+    setImageDescriptor(
+        ImageDescriptor.createFromFile(
+            ResourceLoaderWrapper.class,
+            ResourceLoaderWrapper.getImageBinding("action." + ACTION_NAME))); // $NON-NLS-1$
+    setToolTipText(Translator.localize("action." + ACTION_NAME)); // $NON-NLS-1$
+  }
+
+  /** Runs the command. */
+  public void run() {
+    super.run();
+    DesignIssuesDialog d = new DesignIssuesDialog();
+    d.setVisible(true);
+  }
 }

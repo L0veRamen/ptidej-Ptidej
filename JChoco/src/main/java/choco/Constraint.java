@@ -18,186 +18,144 @@ import choco.model.IConstraintPlugin;
 import choco.model.IVarListener;
 import choco.prop.PropagationEvent;
 
-/**
- * An interface for all implementations of listeners.
- */
+/** An interface for all implementations of listeners. */
 public interface Constraint extends Entity, IVarListener {
 
-	/**
-	 * <i>Network management:</i>
-	 *  Adding back a constraint that was some time before in the network.
-	 * (a.k.a. reconnect in Claire version).
-	 */
+  /**
+   * <i>Network management:</i> Adding back a constraint that was some time before in the network.
+   * (a.k.a. reconnect in Claire version).
+   */
+  public void activateListener();
 
-	public void activateListener();
+  /**
+   * <i>Network management:</i> Adding the constraint to the network. (a.k.a. connect in Claire
+   * version).
+   */
+  public void addListener();
 
-	/**
-	 * <i>Network management:</i>
-	 *   Adding the constraint to the network. (a.k.a. connect in Claire version).
-	 */
+  /**
+   * performs the global numbering (wrt root) of the variables contained in the subtree this,
+   * starting from i
+   *
+   * @param root the overall root constraint, for which the variables are numbered
+   * @param i the index that will assigned to the first variable in the subtree this (originally 0)
+   * @return the index of the last variable in the subtree
+   */
+  public int assignIndices(AbstractCompositeConstraint root, int i);
 
-	public void addListener();
+  /**
+   * <i>Propagation:</i> Propagating the constraint for the very first time until local consistency
+   * is reached.
+   */
+  public void awake() throws ContradictionException;
 
-	/**
-	 * performs the global numbering (wrt root) of the variables contained in the subtree this, starting from i
-	 * @param root the overall root constraint, for which the variables are numbered
-	 * @param i the index that will assigned to the first variable in the subtree this (originally 0)
-	 * @return the index of the last variable in the subtree
-	 */
-	public int assignIndices(AbstractCompositeConstraint root, int i);
+  /**
+   * <i>Propagation:</i> Propagating the constraint when the domain of a variable has been modified
+   * (shrunk) since the last consistent state.
+   */
+  public void awakeOnVar(int idx) throws ContradictionException;
 
-	/**
-	 * <i>Propagation:</i>
-	 *     Propagating the constraint for the very first time until local
-	 * consistency is reached.
-	 */
+  /**
+   * <i>Network management :</i> Removing the constraint from the network. (a.k.a. disconnect in
+   * Claire version).
+   */
+  public void deactivateListener();
 
-	public void awake() throws ContradictionException;
+  /**
+   * <i>Network management:</i> Among all listeners linked to the idx-th variable of c, find the
+   * index of constraint c.
+   *
+   * @param idx index of the variable in the constraint
+   */
+  public int getConstraintIdx(int idx);
 
-	/**
-	 * <i>Propagation:</i>
-	 *     Propagating the constraint when the domain of a variable has been
-	 * modified (shrunk) since the last consistent state.
-	 */
+  /** Returns the constraint awake var associated with this constraint. */
+  public PropagationEvent getEvent();
 
-	public void awakeOnVar(int idx) throws ContradictionException;
+  /** <i>Network management:</i> Get the number of variables involved in the constraint. */
+  public int getNbVars();
 
-	/**
-	 * <i>Network management :</i>
-	 * Removing the constraint from the network.
-	 * (a.k.a. disconnect in Claire version).
-	 */
+  /** Returns the constraint plugin. Useful for extending the solver. */
+  public IConstraintPlugin getPlugIn();
 
-	public void deactivateListener();
+  /**
+   * <i>Propagation:</i> Accessing the priority level of the queue handling the propagation of the
+   * constraint. Results range from 1 (most reactive, for listeners with fast propagation
+   * algorithms) to 4 (most delayed, for listeners with lengthy propagation algorithms).
+   */
+  public int getPriority();
 
-	/**
-	 * <i>Network management:</i>
-	 *    Among all listeners linked to the idx-th variable of c,
-	 *    find the index of constraint c.
-	 *    @param idx index of the variable in the constraint
-	 */
+  /**
+   * <i>Network management:</i> Accessing the ith variable of a constraint.
+   *
+   * @param i index of the variable in the constraint
+   */
+  public Var getVar(int i);
 
-	public int getConstraintIdx(int idx);
+  /**
+   * computes the index of the i-th variable in the counter-opposite of the constraint
+   *
+   * @param i the index of the variable in the current constraint (this)
+   * @return the index of the variable in the opposite constraint (this.opposite())
+   */
+  public int getVarIdxInOpposite(int i);
 
-	/**
-	 * Returns the constraint awake var associated with this constraint.
-	 */
+  /**
+   * <i>Propagation:</i> A constraint is active if it is connected to the network and if it does
+   * propagate.
+   */
+  public boolean isActive();
 
-	public PropagationEvent getEvent();
+  /** <i>Utility:</i> Testing if all variables involved in the constraint are instantiated. */
+  public boolean isCompletelyInstantiated();
 
-	/**
-	 * <i>Network management:</i>
-	 *     Get the number of variables involved in the constraint.
-	 */
+  /**
+   * tests if the constraint is consistent with respect to the current state of domains
+   *
+   * @return
+   */
+  public boolean isConsistent();
 
-	public int getNbVars();
+  /**
+   * Checks whether the constraint is definitely satisfied, no matter what further restrictions
+   * occur to the domain of its variables.
+   */
+  public Boolean isEntailed();
 
-	/**
-	 * Returns the constraint plugin. Useful for extending the solver.
-	 */
+  /**
+   * <i>Semantic:</i> Testing if the constraint is satisfied. Note that all variables involved in
+   * the constraint must be instantiated when this method is called.
+   */
+  public boolean isSatisfied();
 
-	public IConstraintPlugin getPlugIn();
+  /**
+   * computes the constraint modelling the counter-opposite condition of this
+   *
+   * @return
+   */
+  public AbstractConstraint opposite();
 
-	/**
-	 * <i>Propagation:</i>
-	 *    Accessing the priority level of the queue handling the propagation
-	 * of the constraint. Results range from 1 (most reactive, for listeners
-	 * with fast propagation algorithms) to 4 (most delayed, for listeners
-	 * with lengthy propagation algorithms).
-	 */
+  /** <i>Propagation:</i> Propagating the constraint until local consistency is reached. */
+  public void propagate() throws ContradictionException;
 
-	public int getPriority();
+  /**
+   * <i>Propagation:</i> un-freezes a constraint [a constraint is active if it is connected to the
+   * network and if it does propagate]
+   */
+  public void setActive();
 
-	/**
-	 * <i>Network management:</i>
-	 *     Accessing the ith variable of a constraint.
-	 *    @param i index of the variable in the constraint
-	 */
+  /**
+   * <i>Network management:</i> Storing that among all listeners linked to the i-th variable of c,
+   * this (the current constraint) is found at index idx.
+   *
+   * @param i index of the variable in the constraint
+   * @param idx index of the constraint in the among all listeners linked to that variable
+   */
+  public void setConstraintIndex(int i, int idx);
 
-	public Var getVar(int i);
-
-	/**
-	 * computes the index of the i-th variable in the counter-opposite of the constraint
-	 * @param i the index of the variable in the current constraint (this)
-	 * @return the index of the variable in the opposite constraint (this.opposite())
-	 */
-	public int getVarIdxInOpposite(int i);
-
-	/**
-	 * <i>Propagation:</i>
-	 *   A constraint is active if it is connected to the network and if it
-	 * does propagate.
-	 */
-
-	public boolean isActive();
-
-	/**
-	 * <i>Utility:</i>
-	 *    Testing if all variables involved in the constraint are instantiated.
-	 */
-
-	public boolean isCompletelyInstantiated();
-
-	/**
-	 * tests if the constraint is consistent with respect to the current state of domains
-	 * @return
-	 */
-	public boolean isConsistent();
-
-	/**
-	 * Checks whether the constraint is definitely satisfied, no matter what further restrictions
-	 * occur to the domain of its variables.
-	 */
-	public Boolean isEntailed();
-
-	/**
-	 * <i>Semantic:</i>
-	 *    Testing if the constraint is satisfied.
-	 *    Note that all variables involved in the constraint must be
-	 *  instantiated when this method is called.
-	 */
-
-	public boolean isSatisfied();
-
-	/**
-	  * computes the constraint modelling the counter-opposite condition of this
-	  * @return
-	  */
-	public AbstractConstraint opposite();
-
-	/**
-	 * <i>Propagation:</i>
-	 *     Propagating the constraint until local consistency is reached.
-	 */
-
-	public void propagate() throws ContradictionException;
-
-	/**
-	 * <i>Propagation:</i>
-	 *   un-freezes a constraint
-	 *   [a constraint is active if it is connected to the network and if it
-	 *   does propagate]
-	 */
-
-	public void setActive();
-
-	/**
-	 * <i>Network management:</i>
-	 *    Storing that among all listeners linked to the i-th variable of c,
-	 *    this (the current constraint) is found at index idx.
-	 *    @param i   index of the variable in the constraint
-	 *    @param idx index of the constraint in the among all listeners linked to that variable
-	 */
-
-	public void setConstraintIndex(int i, int idx);
-
-	/**
-	 * <i>Propagation:</i>
-	 *   freezes a constraint
-	 *   [a constraint is active if it is connected to the network and if it
-	 *   does propagate]
-	 */
-
-	public void setPassive();
-
+  /**
+   * <i>Propagation:</i> freezes a constraint [a constraint is active if it is connected to the
+   * network and if it does propagate]
+   */
+  public void setPassive();
 }

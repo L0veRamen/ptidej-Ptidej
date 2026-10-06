@@ -28,34 +28,29 @@ import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
 /**
- * Shows the constrainingelements for some collaboration. See section 2.10.2.4
- * from the UML 1.3 spec
+ * Shows the constrainingelements for some collaboration. See section 2.10.2.4 from the UML 1.3 spec
+ *
  * @since Oct 3, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class UMLCollaborationConstrainingElementListModel
-    extends UMLModelElementListModel2 {
+public class UMLCollaborationConstrainingElementListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLCollaborationConstrainingElementListModel.
-     */
-    public UMLCollaborationConstrainingElementListModel() {
-        super("constrainingElement");
-    }
+  /** Constructor for UMLCollaborationConstrainingElementListModel. */
+  public UMLCollaborationConstrainingElementListModel() {
+    super("constrainingElement");
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        setAllElements(Model.getFacade().getConstrainingElements(getTarget()));
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    setAllElements(Model.getFacade().getConstrainingElements(getTarget()));
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ elem) {
-        return (Model.getFacade().getConstrainingElements(getTarget())
-                .contains(elem));
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ elem) {
+    return (Model.getFacade().getConstrainingElements(getTarget()).contains(elem));
+  }
 }

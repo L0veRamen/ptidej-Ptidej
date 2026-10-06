@@ -17,24 +17,18 @@ about the software, its performance or its conformity to any specification.
 */
 package telecom;
 
-/**
- * This simulation subclass implements AbstractSimulation.report(..)
- * 
- */
+/** This simulation subclass implements AbstractSimulation.report(..) */
 public class TimingSimulation extends AbstractSimulation {
 
-    public static void main(String[] args){
-	System.out.println("\n... Timing simulation 2 ...\n");
-	simulation = new TimingSimulation();
-	simulation.run();
-    }
+  public static void main(String[] args) {
+    System.out.println("\n... Timing simulation 2 ...\n");
+    simulation = new TimingSimulation();
+    simulation.run();
+  }
 
-    /**
-     * Print a report of the connection time for customer
-     */
-    protected void report(Customer c){
-        Timing t = Timing.aspectOf();
-        System.out.println(c + " spent " + t.getTotalConnectTime(c));
-    }
-
+  /** Print a report of the connection time for customer */
+  protected void report(Customer c) {
+    Timing t = Timing.aspectOf();
+    System.out.println(c + " spent " + t.getTotalConnectTime(c));
+  }
 }

@@ -23,66 +23,63 @@
 package com.noelios.restlet;
 
 import java.util.logging.Logger;
-
 import org.restlet.Client;
 import org.restlet.Context;
 import org.restlet.data.ParameterList;
 
 /**
- * Client connector helper.  
+ * Client connector helper.
+ *
  * @author Jerome Louvel (contact@noelios.com)
  */
-public class ClientHelper extends ConnectorHelper
-{
-	/** The client to help. */
-	private Client client;
+public class ClientHelper extends ConnectorHelper {
+  /** The client to help. */
+  private Client client;
 
-	/**
-	 * Constructor.
-	 * @param client The client to help.
-	 */
-	public ClientHelper(Client client)
-	{
-		this.client = client;
-	}
+  /**
+   * Constructor.
+   *
+   * @param client The client to help.
+   */
+  public ClientHelper(Client client) {
+    this.client = client;
+  }
 
-	/**
-	 * Returns the client to help.
-	 * @return The client to help.
-	 */
-	public Client getClient()
-	{
-		return this.client;
-	}
+  /**
+   * Returns the client to help.
+   *
+   * @return The client to help.
+   */
+  public Client getClient() {
+    return this.client;
+  }
 
-	/**
-	 * Returns the server parameters.
-	 * @return The server parameters.
-	 */
-	public ParameterList getParameters()
-	{
-		ParameterList result = (getClient() != null) ? getClient().getContext()
-				.getParameters() : null;
-		if (result == null) result = new ParameterList();
-		return result;
-	}
+  /**
+   * Returns the server parameters.
+   *
+   * @return The server parameters.
+   */
+  public ParameterList getParameters() {
+    ParameterList result = (getClient() != null) ? getClient().getContext().getParameters() : null;
+    if (result == null) result = new ParameterList();
+    return result;
+  }
 
-	/**
-	 * Returns the server logger.
-	 * @return The server logger.
-	 */
-	public Logger getLogger()
-	{
-		return getClient().getLogger();
-	}
+  /**
+   * Returns the server logger.
+   *
+   * @return The server logger.
+   */
+  public Logger getLogger() {
+    return getClient().getLogger();
+  }
 
-	/**
-	 * Returns the server context.
-	 * @return The server context.
-	 */
-	public Context getContext()
-	{
-		return getClient().getContext();
-	}
-
+  /**
+   * Returns the server context.
+   *
+   * @return The server context.
+   */
+  public Context getContext() {
+    return getClient().getContext();
+  }
 }

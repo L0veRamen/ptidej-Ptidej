@@ -2,39 +2,36 @@ package padl.kernel;
 
 import java.io.Serializable;
 
-public final class Cardinality implements Serializable
-{
+public final class Cardinality implements Serializable {
 
-	public static final Cardinality One = new Cardinality(1);
-	public static final Cardinality Many = new Cardinality(2);
+  public static final Cardinality One = new Cardinality(1);
+  public static final Cardinality Many = new Cardinality(2);
 
-	private final int value;
+  private final int value;
 
-	private Cardinality(final int value) {
-		this.value = value;
-	}
+  private Cardinality(final int value) {
+    this.value = value;
+  }
 
-	public int getValue() {
-		return this.value;
-	}
+  public int getValue() {
+    return this.value;
+  }
 
-	public String toString() {
-		return Integer.toString(this.value);
-	}
-	
-	public static Cardinality valueOf(final String name) {
-		if (name == null) {
-			throw new NullPointerException("Name cannot be null");
-		}
+  public String toString() {
+    return Integer.toString(this.value);
+  }
 
-		if (name.equals("One")) {
-			return One;
-		}
-		else if (name.equals("Many")) {
-			return Many;
-		}
+  public static Cardinality valueOf(final String name) {
+    if (name == null) {
+      throw new NullPointerException("Name cannot be null");
+    }
 
-		throw new IllegalArgumentException(
-			"No enum constant padl.kernel.Cardinality." + name);
-	}
+    if (name.equals("One")) {
+      return One;
+    } else if (name.equals("Many")) {
+      return Many;
+    }
+
+    throw new IllegalArgumentException("No enum constant padl.kernel.Cardinality." + name);
+  }
 }

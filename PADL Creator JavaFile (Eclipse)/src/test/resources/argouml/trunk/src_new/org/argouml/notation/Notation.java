@@ -27,9 +27,7 @@ package org.argouml.notation;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-
 import javax.swing.Icon;
-
 import org.apache.log4j.Logger;
 import org.argouml.application.api.Configuration;
 import org.argouml.application.api.ConfigurationKey;
@@ -47,220 +45,180 @@ import org.argouml.application.helpers.ResourceLoaderWrapper;
  */
 public final class Notation implements PropertyChangeListener {
 
-    /**
-     * Define a static log4j category variable for ArgoUML notation.
-     */
-    private static final Logger LOG =
-        Logger.getLogger(Notation.class);
+  /** Define a static log4j category variable for ArgoUML notation. */
+  private static final Logger LOG = Logger.getLogger(Notation.class);
 
-    /**
-     * The name of the default ArgoUML notation.  This notation is
-     * part of ArgoUML core distribution.
-     */
-    private static NotationName notationArgo =
-        makeNotation(
-            "UML",
-            "1.4",
-            ResourceLoaderWrapper.lookupIconResource("UmlNotation"));
+  /**
+   * The name of the default ArgoUML notation. This notation is part of ArgoUML core distribution.
+   */
+  private static NotationName notationArgo =
+      makeNotation("UML", "1.4", ResourceLoaderWrapper.lookupIconResource("UmlNotation"));
 
-    /*
-     * Remark:
-     * There is also a java-like notation, which is also
-     * part of ArgoUML core distribution.
-     */
+  /*
+   * Remark:
+   * There is also a java-like notation, which is also
+   * part of ArgoUML core distribution.
+   */
 
-    /**
-     * The configuration key for the preferred notation.
-     */
-    public static final ConfigurationKey KEY_DEFAULT_NOTATION =
-        Configuration.makeKey("notation", "default");
+  /** The configuration key for the preferred notation. */
+  public static final ConfigurationKey KEY_DEFAULT_NOTATION =
+      Configuration.makeKey("notation", "default");
 
-    /**
-     * The configuration key that indicates whether to show stereotypes
-     * in the navigation panel.
-     */
-    public static final ConfigurationKey KEY_SHOW_STEREOTYPES =
-        Configuration.makeKey("notation", "navigation", "show", "stereotypes");
+  /** The configuration key that indicates whether to show stereotypes in the navigation panel. */
+  public static final ConfigurationKey KEY_SHOW_STEREOTYPES =
+      Configuration.makeKey("notation", "navigation", "show", "stereotypes");
 
-    /**
-     * The configuration key that indicates whether to show bold names.
-     */
-    public static final ConfigurationKey KEY_SHOW_BOLD_NAMES =
-        Configuration.makeKey("notation", "show", "bold", "names");
+  /** The configuration key that indicates whether to show bold names. */
+  public static final ConfigurationKey KEY_SHOW_BOLD_NAMES =
+      Configuration.makeKey("notation", "show", "bold", "names");
 
-    /**
-     * The configuration key that indicates whether to use guillemots
-     * or greater/lessthan characters in stereotypes.
-     */
-    public static final ConfigurationKey KEY_USE_GUILLEMOTS =
-        Configuration.makeKey("notation", "guillemots");
+  /**
+   * The configuration key that indicates whether to use guillemots or greater/lessthan characters
+   * in stereotypes.
+   */
+  public static final ConfigurationKey KEY_USE_GUILLEMOTS =
+      Configuration.makeKey("notation", "guillemots");
 
-    /**
-     * Indicates if the user wants to see visibility signs (public,
-     * private, protected or # + -).
-     */
-    public static final ConfigurationKey KEY_SHOW_VISIBILITY =
-        Configuration.makeKey("notation", "show", "visibility");
+  /** Indicates if the user wants to see visibility signs (public, private, protected or # + -). */
+  public static final ConfigurationKey KEY_SHOW_VISIBILITY =
+      Configuration.makeKey("notation", "show", "visibility");
 
-    /**
-     * Indicates if the user wants to see multiplicity in attributes
-     * and classes.
-     */
-    public static final ConfigurationKey KEY_SHOW_MULTIPLICITY =
-        Configuration.makeKey("notation", "show", "multiplicity");
+  /** Indicates if the user wants to see multiplicity in attributes and classes. */
+  public static final ConfigurationKey KEY_SHOW_MULTIPLICITY =
+      Configuration.makeKey("notation", "show", "multiplicity");
 
-    /**
-     * Indicates if the user wants to see the initial value.
-     */
-    public static final ConfigurationKey KEY_SHOW_INITIAL_VALUE =
-        Configuration.makeKey("notation", "show", "initialvalue");
+  /** Indicates if the user wants to see the initial value. */
+  public static final ConfigurationKey KEY_SHOW_INITIAL_VALUE =
+      Configuration.makeKey("notation", "show", "initialvalue");
 
-    /**
-     * Indicates if the user wants to see the properties (everything
-     * between braces), that is for example the concurrency.
-     */
-    public static final ConfigurationKey KEY_SHOW_PROPERTIES =
-        Configuration.makeKey("notation", "show", "properties");
+  /**
+   * Indicates if the user wants to see the properties (everything between braces), that is for
+   * example the concurrency.
+   */
+  public static final ConfigurationKey KEY_SHOW_PROPERTIES =
+      Configuration.makeKey("notation", "show", "properties");
 
-    /**
-     * Indicates if the user wants to see the types and parameters
-     * of attributes and operations.
-     */
-    public static final ConfigurationKey KEY_SHOW_TYPES =
-        Configuration.makeKey("notation", "show", "types");
+  /** Indicates if the user wants to see the types and parameters of attributes and operations. */
+  public static final ConfigurationKey KEY_SHOW_TYPES =
+      Configuration.makeKey("notation", "show", "types");
 
-    /**
-     * Default value for the shadow size of classes, interfaces etc.
-     */
-    public static final ConfigurationKey KEY_DEFAULT_SHADOW_WIDTH =
-        Configuration.makeKey("notation", "default", "shadow-width");
+  /** Default value for the shadow size of classes, interfaces etc. */
+  public static final ConfigurationKey KEY_DEFAULT_SHADOW_WIDTH =
+      Configuration.makeKey("notation", "default", "shadow-width");
 
-    /**
-     * The instance.
-     */
-    private static final Notation SINGLETON = new Notation();
+  /** The instance. */
+  private static final Notation SINGLETON = new Notation();
 
+  /** The constructor. */
+  private Notation() {
+    Configuration.addListener(KEY_SHOW_BOLD_NAMES, this);
+    Configuration.addListener(KEY_USE_GUILLEMOTS, this);
+    Configuration.addListener(KEY_DEFAULT_NOTATION, this);
+    Configuration.addListener(KEY_SHOW_TYPES, this);
+    Configuration.addListener(KEY_SHOW_MULTIPLICITY, this);
+    Configuration.addListener(KEY_SHOW_PROPERTIES, this);
+    Configuration.addListener(KEY_SHOW_VISIBILITY, this);
+    Configuration.addListener(KEY_SHOW_INITIAL_VALUE, this);
+  }
 
-    /**
-     * The constructor.
-     */
-    private Notation() {
-        Configuration.addListener(KEY_SHOW_BOLD_NAMES, this);
-        Configuration.addListener(KEY_USE_GUILLEMOTS, this);
-        Configuration.addListener(KEY_DEFAULT_NOTATION, this);
-        Configuration.addListener(KEY_SHOW_TYPES, this);
-        Configuration.addListener(KEY_SHOW_MULTIPLICITY, this);
-        Configuration.addListener(KEY_SHOW_PROPERTIES, this);
-        Configuration.addListener(KEY_SHOW_VISIBILITY, this);
-        Configuration.addListener(KEY_SHOW_INITIAL_VALUE, this);
+  /**
+   * Remove the notation change listener. <code>finalize</code> should never happen, but play it
+   * safe.
+   *
+   * <p>TODO: Explain why we don't call super.finalize()!
+   */
+  protected void finalize() {
+    Configuration.removeListener(KEY_DEFAULT_NOTATION, this);
+    Configuration.removeListener(KEY_SHOW_BOLD_NAMES, this);
+    Configuration.removeListener(KEY_USE_GUILLEMOTS, this);
+    Configuration.removeListener(KEY_SHOW_TYPES, this);
+    Configuration.removeListener(KEY_SHOW_MULTIPLICITY, this);
+    Configuration.removeListener(KEY_SHOW_PROPERTIES, this);
+    Configuration.removeListener(KEY_SHOW_VISIBILITY, this);
+    Configuration.removeListener(KEY_SHOW_INITIAL_VALUE, this);
+  }
+
+  /**
+   * @param n the NotationName that will become default
+   */
+  public static void setDefaultNotation(NotationName n) {
+    LOG.info("default notation set to " + n.getConfigurationValue());
+    Configuration.setString(KEY_DEFAULT_NOTATION, n.getConfigurationValue());
+  }
+
+  /**
+   * Convert a String into a NotationName.
+   *
+   * @param s the String
+   * @return the matching Notationname
+   */
+  public static NotationName findNotation(String s) {
+    return NotationNameImpl.findNotation(s);
+  }
+
+  /**
+   * Returns the Notation as set in the menu.
+   *
+   * @return the default NotationName
+   */
+  public static NotationName getConfigueredNotation() {
+    NotationName n =
+        NotationNameImpl.findNotation(
+            Configuration.getString(KEY_DEFAULT_NOTATION, notationArgo.getConfigurationValue()));
+    // This is needed for the case when the default notation is
+    // not loaded at this point.
+    if (n == null) {
+      n = NotationNameImpl.findNotation("UML 1.4");
     }
+    LOG.debug("default notation is " + n.getConfigurationValue());
+    return n;
+  }
 
-    /**
-     * Remove the notation change listener.
-     * <code>finalize</code> should never happen, but play it safe.
-     *
-     * TODO: Explain why we don't call super.finalize()!
-     */
-    protected void finalize() {
-        Configuration.removeListener(KEY_DEFAULT_NOTATION, this);
-        Configuration.removeListener(KEY_SHOW_BOLD_NAMES, this);
-        Configuration.removeListener(KEY_USE_GUILLEMOTS, this);
-        Configuration.removeListener(KEY_SHOW_TYPES, this);
-        Configuration.removeListener(KEY_SHOW_MULTIPLICITY, this);
-        Configuration.removeListener(KEY_SHOW_PROPERTIES, this);
-        Configuration.removeListener(KEY_SHOW_VISIBILITY, this);
-        Configuration.removeListener(KEY_SHOW_INITIAL_VALUE, this);
-    }
+  ////////////////////////////////////////////////////////////////
+  // class accessors
 
-    /**
-     * @param n the NotationName that will become default
-     */
-    public static void setDefaultNotation(NotationName n) {
-        LOG.info("default notation set to " + n.getConfigurationValue());
-        Configuration.setString(
-            KEY_DEFAULT_NOTATION,
-            n.getConfigurationValue());
-    }
+  ////////////////////////////////////////////////////////////////
+  // static accessors
 
-    /**
-     * Convert a String into a NotationName.
-     * @param s the String
-     * @return the matching Notationname
-     */
-    public static NotationName findNotation(String s) {
-        return NotationNameImpl.findNotation(s);
-    }
+  /**
+   * @return the singleton
+   */
+  public static Notation getInstance() {
+    return SINGLETON;
+  }
 
-    /**
-     * Returns the Notation as set in the menu.
-     *
-     * @return the default NotationName
-     */
-    public static NotationName getConfigueredNotation() {
-        NotationName n =
-            NotationNameImpl.findNotation(
-                Configuration.getString(
-                    KEY_DEFAULT_NOTATION,
-                    notationArgo.getConfigurationValue()));
-        // This is needed for the case when the default notation is
-        // not loaded at this point.
-        if (n == null) {
-            n = NotationNameImpl.findNotation("UML 1.4");
-	}
-        LOG.debug("default notation is " + n.getConfigurationValue());
-        return n;
-    }
+  /**
+   * Called after the notation default property gets changed.
+   *
+   * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+   */
+  public void propertyChange(PropertyChangeEvent pce) {
+    LOG.info("Notation change:" + pce.getOldValue() + " to " + pce.getNewValue());
+    ArgoEventPump.fireEvent(new ArgoNotationEvent(ArgoEventTypes.NOTATION_CHANGED, pce));
+  }
 
-    ////////////////////////////////////////////////////////////////
-    // class accessors
+  ////////////////////////////////////////////////////////////////
+  // Static workers for dealing with notation names.
 
-    ////////////////////////////////////////////////////////////////
-    // static accessors
+  /**
+   * Get list of available notations, of type NotationName.
+   *
+   * @return list of available notations
+   */
+  public static ArrayList getAvailableNotations() {
+    return NotationNameImpl.getAvailableNotations();
+  }
 
-    /**
-     * @return the singleton
-     */
-    public static Notation getInstance() {
-        return SINGLETON;
-    }
-
-    /**
-     * Called after the notation default property gets changed.
-     *
-     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
-     */
-    public void propertyChange(PropertyChangeEvent pce) {
-        LOG.info(
-            "Notation change:"
-                + pce.getOldValue()
-                + " to "
-                + pce.getNewValue());
-        ArgoEventPump.fireEvent(
-            new ArgoNotationEvent(ArgoEventTypes.NOTATION_CHANGED, pce));
-    }
-
-    ////////////////////////////////////////////////////////////////
-    // Static workers for dealing with notation names.
-
-    /**
-     * Get list of available notations, of type NotationName.
-     *
-     * @return list of available notations
-     */
-    public static ArrayList getAvailableNotations() {
-        return NotationNameImpl.getAvailableNotations();
-    }
-
-    /**
-     * Create a versioned notation name with an icon.
-     *
-     * @param k1 the name (e.g. UML)
-     * @param k2 the version (e.g. 1.3)
-     * @param icon the icon
-     * @return the notation name
-     */
-    public static NotationName makeNotation(String k1, String k2, Icon icon) {
-        NotationName nn = NotationNameImpl.makeNotation(k1, k2, icon);
-        return nn;
-    }
+  /**
+   * Create a versioned notation name with an icon.
+   *
+   * @param k1 the name (e.g. UML)
+   * @param k2 the version (e.g. 1.3)
+   * @param icon the icon
+   * @return the notation name
+   */
+  public static NotationName makeNotation(String k1, String k2, Icon icon) {
+    NotationName nn = NotationNameImpl.makeNotation(k1, k2, icon);
+    return nn;
+  }
 } // END NOTATION

@@ -35,25 +35,22 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  */
 public class UMLUseCaseExtendListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLUseCaseExtendListModel.
-     */
-    public UMLUseCaseExtendListModel() {
-        super("extend");
-    }
+  /** Constructor for UMLUseCaseExtendListModel. */
+  public UMLUseCaseExtendListModel() {
+    super("extend");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        setAllElements(Model.getFacade().getExtends(getTarget()));
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    setAllElements(Model.getFacade().getExtends(getTarget()));
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object o) {
-        return Model.getFacade().getExtends(getTarget()).contains(o);
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object o) {
+    return Model.getFacade().getExtends(getTarget()).contains(o);
+  }
 }

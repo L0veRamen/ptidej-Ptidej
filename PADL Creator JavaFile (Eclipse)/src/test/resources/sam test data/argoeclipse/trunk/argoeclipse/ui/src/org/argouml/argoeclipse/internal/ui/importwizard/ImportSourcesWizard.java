@@ -25,7 +25,9 @@
 package org.argouml.argoeclipse.internal.ui.importwizard;
 
 import java.io.File;
-
+import org.argouml.argoeclipse.internal.core.model.LRU;
+import org.argouml.argoeclipse.internal.core.model.Register;
+import org.argouml.argoeclipse.internal.core.util.ResourcePathTranslator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -33,115 +35,106 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 
-import org.argouml.argoeclipse.internal.core.model.LRU;
-import org.argouml.argoeclipse.internal.core.model.Register;
-import org.argouml.argoeclipse.internal.core.util.ResourcePathTranslator;
-
 /**
  * Responsible for the Import Sources Wizard.
+ *
  * @author Bogdan Pistol
  */
 public class ImportSourcesWizard extends Wizard implements IImportWizard {
-    
-    private ImportSourcesFirstPage firstPage;
-    
-    private ImportSourcesPageWorkspace workspacePage;
-    
-    private ImportSourcesPageFilesystem filesystemPage;
-    
-    
-    
-    /*
-     * @see org.eclipse.jface.wizard.Wizard#addPage(org.eclipse.jface.wizard.IWizardPage)
-     */
-    public void addPages() {
-        if (!Register.getInstance().isRegistered(Register.EDITOR)) {
-            MessageDialog.openError(getShell(),
-                    ImportWizardMessages.editorWarningTitle,
-                    ImportWizardMessages.editorWarningMsg);
-            return;
-        }
-        firstPage = new ImportSourcesFirstPage();
-        addPage(firstPage);
-        workspacePage = new ImportSourcesPageWorkspace();
-        addPage(workspacePage);
-        filesystemPage = new ImportSourcesPageFilesystem();
-        addPage(filesystemPage);
-    }    
 
-    /*
-     * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench,
-     *      org.eclipse.jface.viewers.IStructuredSelection)
-     */
-    public void init(IWorkbench workbench, IStructuredSelection selection) {
-        setWindowTitle(ImportWizardMessages.genericImport);
+  private ImportSourcesFirstPage firstPage;
+
+  private ImportSourcesPageWorkspace workspacePage;
+
+  private ImportSourcesPageFilesystem filesystemPage;
+
+  /*
+   * @see org.eclipse.jface.wizard.Wizard#addPage(org.eclipse.jface.wizard.IWizardPage)
+   */
+  public void addPages() {
+    if (!Register.getInstance().isRegistered(Register.EDITOR)) {
+      MessageDialog.openError(
+          getShell(),
+          ImportWizardMessages.editorWarningTitle,
+          ImportWizardMessages.editorWarningMsg);
+      return;
+    }
+    firstPage = new ImportSourcesFirstPage();
+    addPage(firstPage);
+    workspacePage = new ImportSourcesPageWorkspace();
+    addPage(workspacePage);
+    filesystemPage = new ImportSourcesPageFilesystem();
+    addPage(filesystemPage);
+  }
+
+  /*
+   * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench,
+   *      org.eclipse.jface.viewers.IStructuredSelection)
+   */
+  public void init(IWorkbench workbench, IStructuredSelection selection) {
+    setWindowTitle(ImportWizardMessages.genericImport);
+  }
+
+  /*
+   * @see org.eclipse.jface.wizard.Wizard#getNextPage(org.eclipse.jface.wizard.IWizardPage)
+   */
+  public IWizardPage getNextPage(IWizardPage page) {
+    if (page.equals(workspacePage) || page.equals(filesystemPage)) {
+      return null;
+    }
+    if (firstPage.getSelection() == ImportSourcesFirstPage.WORKSPACE) {
+      return workspacePage;
+    } else {
+      return filesystemPage;
+    }
+  }
+
+  /*
+   * @see org.eclipse.jface.wizard.Wizard#getPreviousPage(org.eclipse.jface.wizard.IWizardPage)
+   */
+  public IWizardPage getPreviousPage(IWizardPage page) {
+    return page.equals(firstPage) ? null : firstPage;
+  }
+
+  /*
+   * @see org.eclipse.jface.wizard.Wizard#canFinish()
+   */
+  public boolean canFinish() {
+    if (firstPage.isCurrentPage()) {
+      return false;
+    }
+    if (workspacePage.isCurrentPage()) {
+      return workspacePage.isPageComplete();
+    }
+    return filesystemPage.isPageComplete();
+  }
+
+  /*
+   * @see org.eclipse.jface.wizard.Wizard#performFinish()
+   */
+  public boolean performFinish() {
+    String source = null;
+    ImportSourcesPage page;
+    if (filesystemPage.isCurrentPage()) {
+      File file = new File(filesystemPage.getPath());
+      if (file.isAbsolute() && file.exists()) {
+        source = file.getPath();
+      }
+      page = filesystemPage;
+    } else {
+      source = ResourcePathTranslator.getFilesystemPath(workspacePage.getPath());
+      page = workspacePage;
     }
 
-    /*
-     * @see org.eclipse.jface.wizard.Wizard#getNextPage(org.eclipse.jface.wizard.IWizardPage)
-     */
-    public IWizardPage getNextPage(IWizardPage page) {
-        if (page.equals(workspacePage) || page.equals(filesystemPage)) {
-            return null;
-        }
-        if (firstPage.getSelection() 
-                == ImportSourcesFirstPage.WORKSPACE) {
-            return workspacePage;
-        } else {
-            return filesystemPage;
-        }        
+    if (source == null) {
+      page.setErrorMessage(ImportWizardMessages.pathError);
+      return false;
     }
+    if (filesystemPage.isCurrentPage()) {
+      LRU.put(LRU.IMPORT_SOURCES_FILESYSTEM_PATH, source);
+    }
+    LRU.put(LRU.IMPORT_SOURCES_CHOOSER, Integer.toString(firstPage.getSelection()));
 
-    /*
-     * @see org.eclipse.jface.wizard.Wizard#getPreviousPage(org.eclipse.jface.wizard.IWizardPage)
-     */
-    public IWizardPage getPreviousPage(IWizardPage page) {
-        return page.equals(firstPage) ? null : firstPage;
-    }
-
-    /*
-     * @see org.eclipse.jface.wizard.Wizard#canFinish()
-     */
-    public boolean canFinish() {
-        if (firstPage.isCurrentPage()) {
-            return false;
-        }
-        if (workspacePage.isCurrentPage()) {
-            return workspacePage.isPageComplete();
-        }
-        return filesystemPage.isPageComplete();
-    }
-    
-    /*
-     * @see org.eclipse.jface.wizard.Wizard#performFinish()
-     */
-    public boolean performFinish() {
-        String source = null;
-        ImportSourcesPage page;
-        if (filesystemPage.isCurrentPage()) {
-            File file = new File(filesystemPage.getPath());            
-            if (file.isAbsolute() && file.exists()) {
-                source = file.getPath();
-            }
-            page = filesystemPage;
-        } else {
-            source = ResourcePathTranslator.getFilesystemPath(
-                    workspacePage.getPath());
-            page = workspacePage;
-        }
-        
-        if (source == null) {
-            page.setErrorMessage(ImportWizardMessages.pathError);
-            return false;
-        }
-        if (filesystemPage.isCurrentPage()) {
-            LRU.put(LRU.IMPORT_SOURCES_FILESYSTEM_PATH, source);
-        }
-        LRU.put(LRU.IMPORT_SOURCES_CHOOSER, Integer.toString(firstPage
-                .getSelection()));
-        
-        return page.performFinish(source);        
-                
-    }
-    
+    return page.performFinish(source);
+  }
 }

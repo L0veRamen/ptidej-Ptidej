@@ -28,73 +28,66 @@ import java.awt.event.ActionEvent;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Vector;
-
 import org.argouml.model.Model;
 import org.argouml.ui.targetmanager.TargetManager;
 import org.argouml.uml.generator.ui.ClassGenerationDialog;
 import org.tigris.gef.presentation.Fig;
 
 /**
- * Action to trigger generation of source
- * for all selected classes and interfaces.
+ * Action to trigger generation of source for all selected classes and interfaces.
  *
  * @stereotype singleton
  */
 public class ActionGenerateOne extends UMLAction {
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    /**
-     * The constructor.
-     */
-    public ActionGenerateOne() {
-        super("action.generate-selected-classes", true, NO_ICON);
+  /** The constructor. */
+  public ActionGenerateOne() {
+    super("action.generate-selected-classes", true, NO_ICON);
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // main methods
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    Vector classes = getCandidates();
+    // There is no need to test if classes is empty because
+    // the shouldBeEnabled mechanism blanks out the possibility to
+    // choose this alternative in this case.
+    ClassGenerationDialog cgd = new ClassGenerationDialog(classes);
+    cgd.setVisible(true);
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLAction#shouldBeEnabled()
+   */
+  public boolean shouldBeEnabled() {
+    if (!super.shouldBeEnabled()) return false;
+    Vector classes = getCandidates();
+    return classes.size() > 0;
+  }
+
+  /**
+   * @param classes
+   */
+  private Vector getCandidates() {
+    Vector classes = new Vector();
+    Collection targets = TargetManager.getInstance().getTargets();
+    Iterator it = targets.iterator();
+    while (it.hasNext()) {
+      Object target = it.next();
+      if (target instanceof Fig) {
+        target = ((Fig) target).getOwner();
+      }
+      if (Model.getFacade().isAClass(target) || Model.getFacade().isAInterface(target)) {
+        classes.add(target);
+      }
     }
-
-    ////////////////////////////////////////////////////////////////
-    // main methods
-
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-        Vector classes = getCandidates();
-        // There is no need to test if classes is empty because
-        // the shouldBeEnabled mechanism blanks out the possibility to
-        // choose this alternative in this case.
-        ClassGenerationDialog cgd = new ClassGenerationDialog(classes);
-        cgd.setVisible(true);
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLAction#shouldBeEnabled()
-     */
-    public boolean shouldBeEnabled() {
-        if (!super.shouldBeEnabled())
-            return false;
-        Vector classes = getCandidates();
-        return classes.size() > 0;
-    }
-
-    /**
-     * @param classes
-     */
-    private Vector getCandidates() {
-        Vector classes = new Vector();
-        Collection targets = TargetManager.getInstance().getTargets();
-        Iterator it = targets.iterator();
-        while (it.hasNext()) {
-            Object target = it.next();
-            if (target instanceof Fig) {
-                target = ((Fig) target).getOwner();
-            }
-            if (Model.getFacade().isAClass(target)
-                || Model.getFacade().isAInterface(target)) {
-                classes.add(target);
-            }
-        }
-        return classes;
-    }
-
+    return classes;
+  }
 } /* end class ActionGenerateOne */

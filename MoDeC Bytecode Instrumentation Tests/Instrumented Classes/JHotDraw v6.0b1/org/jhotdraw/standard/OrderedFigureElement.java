@@ -19,41 +19,41 @@ import org.jhotdraw.framework.Figure;
  */
 class OrderedFigureElement implements Comparable {
 
-	//_________________________________________________________VARIABLES
+  // _________________________________________________________VARIABLES
 
-	private Figure  _theFigure;
-	private int     _nZ;
+  private Figure _theFigure;
+  private int _nZ;
 
-	//______________________________________________________CONSTRUCTORS
+  // ______________________________________________________CONSTRUCTORS
 
-	public OrderedFigureElement(Figure aFigure, int nZ) {
-		_theFigure = aFigure;
-		_nZ = nZ;
-	}
+  public OrderedFigureElement(Figure aFigure, int nZ) {
+    _theFigure = aFigure;
+    _nZ = nZ;
+  }
 
-	//____________________________________________________PUBLIC METHODS
+  // ____________________________________________________PUBLIC METHODS
 
-	public Figure getFigure() {
-		return _theFigure;
-	}
+  public Figure getFigure() {
+    return _theFigure;
+  }
 
-	public int getZValue() {
-		return _nZ;
-	}
+  public int getZValue() {
+    return _nZ;
+  }
 
-	public int compareTo(Object o) {
-		OrderedFigureElement ofe = (OrderedFigureElement) o;
-		if (_nZ == ofe.getZValue()) {
-			return 0;
-		}
+  public int compareTo(Object o) {
+    OrderedFigureElement ofe = (OrderedFigureElement) o;
+    if (_nZ == ofe.getZValue()) {
+      return 0;
+    }
 
-		if (_nZ > ofe.getZValue()) {
-			return 1;
-		}
+    if (_nZ > ofe.getZValue()) {
+      return 1;
+    }
 
-		return -1;
-	}
+    return -1;
+  }
 
-	//_______________________________________________________________END
+  // _______________________________________________________________END
 
-} //end of class OrderedFigureElement
+} // end of class OrderedFigureElement

@@ -30,10 +30,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
 import javax.swing.JComboBox;
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.AttributeChangeEvent;
@@ -53,319 +51,272 @@ import org.tigris.gef.undo.UndoableAction;
 
 /**
  * The properties panel for a ClassifierInState.
- * 
+ *
  * @author Michiel
  */
 public class PropPanelClassifierInState extends PropPanelClassifier {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = 609338855898756817L;
-    
-    private JComboBox typeComboBox;
-    private JScrollPane statesScroll;
+  /** The serial version. */
+  private static final long serialVersionUID = 609338855898756817L;
 
-    private UMLClassifierInStateTypeComboBoxModel typeComboBoxModel =
-        new UMLClassifierInStateTypeComboBoxModel();
-    
-    /**
-     * Construct a property panel for a ClassifierInState.
-     */
-    public PropPanelClassifierInState() {
-        super("label.classifier-in-state", lookupIcon("ClassifierInState"));
+  private JComboBox typeComboBox;
+  private JScrollPane statesScroll;
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.namespace"),
-                getNamespaceSelector());
-        
-        addSeparator();
-        
-        addField(Translator.localize("label.type"),
-                new UMLComboBoxNavigator(
-                        Translator.localize("label.class.navigate.tooltip"),
-                getClassifierInStateTypeSelector()));
-        
-        // field for States
-        AbstractActionAddModelElement2 actionAdd = 
-            new ActionAddCISState();
-        AbstractActionRemoveElement actionRemove = 
-            new ActionRemoveCISState();
-        UMLMutableLinkedList list =
-                new UMLMutableLinkedList(
-                        new UMLCISStateListModel(), actionAdd, null,
-                        actionRemove, true);
-        statesScroll = new JScrollPane(list);
-        addField(Translator.localize("label.instate"),
-                statesScroll);
+  private UMLClassifierInStateTypeComboBoxModel typeComboBoxModel =
+      new UMLClassifierInStateTypeComboBoxModel();
 
-        addAction(new ActionNavigateNamespace());
-        addAction(getDeleteAction());
+  /** Construct a property panel for a ClassifierInState. */
+  public PropPanelClassifierInState() {
+    super("label.classifier-in-state", lookupIcon("ClassifierInState"));
+
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.namespace"), getNamespaceSelector());
+
+    addSeparator();
+
+    addField(
+        Translator.localize("label.type"),
+        new UMLComboBoxNavigator(
+            Translator.localize("label.class.navigate.tooltip"),
+            getClassifierInStateTypeSelector()));
+
+    // field for States
+    AbstractActionAddModelElement2 actionAdd = new ActionAddCISState();
+    AbstractActionRemoveElement actionRemove = new ActionRemoveCISState();
+    UMLMutableLinkedList list =
+        new UMLMutableLinkedList(new UMLCISStateListModel(), actionAdd, null, actionRemove, true);
+    statesScroll = new JScrollPane(list);
+    addField(Translator.localize("label.instate"), statesScroll);
+
+    addAction(new ActionNavigateNamespace());
+    addAction(getDeleteAction());
+  }
+
+  protected JComboBox getClassifierInStateTypeSelector() {
+    if (typeComboBox == null) {
+      typeComboBox =
+          new UMLSearchableComboBox(typeComboBoxModel, new ActionSetClassifierInStateType(), true);
     }
-    
-    protected JComboBox getClassifierInStateTypeSelector() {
-        if (typeComboBox == null) {
-            typeComboBox = new UMLSearchableComboBox(
-                    typeComboBoxModel,
-                    new ActionSetClassifierInStateType(), true);
-        }
-        return typeComboBox;
-
-    }
-
+    return typeComboBox;
+  }
 }
 
 class ActionSetClassifierInStateType extends UndoableAction {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = -7537482435346517599L;
+  /** The serial version. */
+  private static final long serialVersionUID = -7537482435346517599L;
 
-    /**
-     * Construct an action to set the type of a ClassifierInState.
-     */
-    ActionSetClassifierInStateType() {
-        super();
-    }
+  /** Construct an action to set the type of a ClassifierInState. */
+  ActionSetClassifierInStateType() {
+    super();
+  }
 
-    /*
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        Object source = e.getSource(); // the source UI element of the event
-        Object oldClassifier = null;
-        Object newClassifier = null;
-        Object cis = null;
-        if (source instanceof UMLComboBox2) {
-            UMLComboBox2 box = (UMLComboBox2) source;
-            Object obj = box.getTarget();
-            if (Model.getFacade().isAClassifierInState(obj)) {
-                try {
-                    oldClassifier = Model.getFacade().getType(obj);
-                } catch (InvalidElementException e1) {
-                    /* No problem - this ClassifierInState was just erased. */
-                    return;
-                }
-                cis = obj;
-            }
-            Object cl = box.getSelectedItem();
-            if (Model.getFacade().isAClassifier(cl)) {
-                newClassifier = cl;
-            }
+  /*
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    Object source = e.getSource(); // the source UI element of the event
+    Object oldClassifier = null;
+    Object newClassifier = null;
+    Object cis = null;
+    if (source instanceof UMLComboBox2) {
+      UMLComboBox2 box = (UMLComboBox2) source;
+      Object obj = box.getTarget();
+      if (Model.getFacade().isAClassifierInState(obj)) {
+        try {
+          oldClassifier = Model.getFacade().getType(obj);
+        } catch (InvalidElementException e1) {
+          /* No problem - this ClassifierInState was just erased. */
+          return;
         }
-        if (newClassifier != oldClassifier
-                && cis != null
-                && newClassifier != null) {
-            Model.getCoreHelper().setType(cis, newClassifier);
-            super.actionPerformed(e);
-        }
+        cis = obj;
+      }
+      Object cl = box.getSelectedItem();
+      if (Model.getFacade().isAClassifier(cl)) {
+        newClassifier = cl;
+      }
     }
-
+    if (newClassifier != oldClassifier && cis != null && newClassifier != null) {
+      Model.getCoreHelper().setType(cis, newClassifier);
+      super.actionPerformed(e);
+    }
+  }
 }
 
 class UMLClassifierInStateTypeComboBoxModel extends UMLComboBoxModel2 {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = 1705685511742198305L;
+  /** The serial version. */
+  private static final long serialVersionUID = 1705685511742198305L;
 
-    /**
-     * Construct a combobox model for a ClassifierInState's type.
-     */
-    public UMLClassifierInStateTypeComboBoxModel() {
-        super("type", false);
+  /** Construct a combobox model for a ClassifierInState's type. */
+  public UMLClassifierInStateTypeComboBoxModel() {
+    super("type", false);
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object o) {
+    return Model.getFacade().isAClassifier(o) && !Model.getFacade().isAClassifierInState(o);
+  }
+
+  /**
+   * Get all Classifiers that are not ClassifierInState.
+   *
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    Object model = ProjectManager.getManager().getCurrentProject().getModel();
+    Collection classifiers = new ArrayList(Model.getCoreHelper().getAllClassifiers(model));
+    Collection newList = new ArrayList();
+    for (Object classifier : classifiers) {
+      if (!Model.getFacade().isAClassifierInState(classifier)) {
+        newList.add(classifier);
+      }
     }
-    
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object o) {
-        return Model.getFacade().isAClassifier(o)
-                && !Model.getFacade().isAClassifierInState(o);
+    // get the current type - normally we won't need this, but who knows?
+    if (getTarget() != null) {
+      Object type = Model.getFacade().getType(getTarget());
+      if (Model.getFacade().isAClassifierInState(type)) {
+        // get the Classifier
+        type = Model.getFacade().getType(type);
+      }
+      if (type != null) if (!newList.contains(type)) newList.add(type);
     }
-    
-    /**
-     * Get all Classifiers that are not ClassifierInState.
-     * 
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        Object model =
-            ProjectManager.getManager().getCurrentProject().getModel();
-        Collection classifiers = 
-            new ArrayList(Model.getCoreHelper().getAllClassifiers(model));
-        Collection newList = new ArrayList();
-        for (Object classifier : classifiers) {
-            if (!Model.getFacade().isAClassifierInState(classifier)) {
-                newList.add(classifier);
-            }
+    setElements(newList);
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
+   */
+  protected Object getSelectedModelElement() {
+    if (getTarget() != null) {
+      Object type = Model.getFacade().getType(getTarget());
+      return type; // a Classifier that is not a ClassifierInState
+    }
+    return null;
+  }
+
+  /**
+   * The function in the parent removes items from the list when deselected. We do not need that
+   * here.
+   *
+   * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+   */
+  public void modelChanged(PropertyChangeEvent evt) {
+    if (evt instanceof AttributeChangeEvent) {
+      if (evt.getPropertyName().equals("type")) {
+        if (evt.getSource() == getTarget() && (getChangedElement(evt) != null)) {
+          Object elem = getChangedElement(evt);
+          setSelectedItem(elem);
         }
-        // get the current type - normally we won't need this, but who knows?
-        if (getTarget() != null) {
-            Object type = Model.getFacade().getType(getTarget());
-            if (Model.getFacade().isAClassifierInState(type)) {
-                // get the Classifier
-                type = Model.getFacade().getType(type);
-            }
-            if (type != null)
-                if (!newList.contains(type)) newList.add(type);
-        }
-        setElements(newList);
+      }
     }
-    
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
-     */
-    protected Object getSelectedModelElement() {
-        if (getTarget() != null) {
-            Object type = Model.getFacade().getType(getTarget());
-            return type; // a Classifier that is not a ClassifierInState
-        }
-        return null;
-    }
-    
-    /**
-     * The function in the parent removes items from the list 
-     * when deselected. We do not need that here. 
-     * 
-     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
-     */
-    public void modelChanged(PropertyChangeEvent evt) {
-        if (evt instanceof AttributeChangeEvent) {
-            if (evt.getPropertyName().equals("type")) {
-                if (evt.getSource() == getTarget()
-                        && (getChangedElement(evt) != null)) {
-                    Object elem = getChangedElement(evt);
-                    setSelectedItem(elem);
-                }
-            }
-        }
-    }
+  }
 }
 
 class ActionAddCISState extends AbstractActionAddModelElement2 {
-    
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = -3892619042821099432L;
-    private Object choiceClass = Model.getMetaTypes().getState();
-    
-    
-    /**
-     * Construct an action to add a new ClassifierInState.
-     */
-    public ActionAddCISState() {
-        super();
-        setMultiSelect(true);
-    }
 
-    protected void doIt(Collection selected) {
-        Object cis = getTarget();
-        if (Model.getFacade().isAClassifierInState(cis)) {
-            Model.getActivityGraphsHelper().setInStates(cis, selected);
-        }
-    }
-    
+  /** The serial version. */
+  private static final long serialVersionUID = -3892619042821099432L;
 
-    protected List getChoices() {
-        List ret = new ArrayList();
-        Object cis = getTarget();
-        Object classifier = Model.getFacade().getType(cis);
-        if (Model.getFacade().isAClassifier(classifier)) {
-            ret.addAll(Model.getModelManagementHelper()
-                    .getAllModelElementsOfKindWithModel(classifier,
-                            choiceClass));
-        }
-        return ret;
-    }
-    
+  private Object choiceClass = Model.getMetaTypes().getState();
 
-    protected String getDialogTitle() {
-        return Translator.localize("dialog.title.add-state");
+  /** Construct an action to add a new ClassifierInState. */
+  public ActionAddCISState() {
+    super();
+    setMultiSelect(true);
+  }
+
+  protected void doIt(Collection selected) {
+    Object cis = getTarget();
+    if (Model.getFacade().isAClassifierInState(cis)) {
+      Model.getActivityGraphsHelper().setInStates(cis, selected);
     }
-    
-    
-    protected List getSelected() {
-        Object cis = getTarget();
-        if (Model.getFacade().isAClassifierInState(cis)) {
-            return new ArrayList(Model.getFacade().getInStates(cis));
-        }
-        return Collections.EMPTY_LIST;
+  }
+
+  protected List getChoices() {
+    List ret = new ArrayList();
+    Object cis = getTarget();
+    Object classifier = Model.getFacade().getType(cis);
+    if (Model.getFacade().isAClassifier(classifier)) {
+      ret.addAll(
+          Model.getModelManagementHelper()
+              .getAllModelElementsOfKindWithModel(classifier, choiceClass));
     }
+    return ret;
+  }
+
+  protected String getDialogTitle() {
+    return Translator.localize("dialog.title.add-state");
+  }
+
+  protected List getSelected() {
+    Object cis = getTarget();
+    if (Model.getFacade().isAClassifierInState(cis)) {
+      return new ArrayList(Model.getFacade().getInStates(cis));
+    }
+    return Collections.EMPTY_LIST;
+  }
 }
 
 class ActionRemoveCISState extends AbstractActionRemoveElement {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = -1431919084967610562L;
+  /** The serial version. */
+  private static final long serialVersionUID = -1431919084967610562L;
 
-    /**
-     * Construct an action to remove a ClassifierInState.
-     */
-    public ActionRemoveCISState() {
-        super(Translator.localize("menu.popup.remove"));
-    }
+  /** Construct an action to remove a ClassifierInState. */
+  public ActionRemoveCISState() {
+    super(Translator.localize("menu.popup.remove"));
+  }
 
-    /*
-     * @see org.tigris.gef.undo.UndoableAction#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        Object state = getObjectToRemove(); 
-        if (state != null) {
-            Object cis = getTarget();
-            if (Model.getFacade().isAClassifierInState(cis)) {
-                Collection states = new ArrayList(
-                        Model.getFacade().getInStates(cis));
-                states.remove(state);
-                Model.getActivityGraphsHelper().setInStates(cis, states);
-            }
-            
-        }
+  /*
+   * @see org.tigris.gef.undo.UndoableAction#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    Object state = getObjectToRemove();
+    if (state != null) {
+      Object cis = getTarget();
+      if (Model.getFacade().isAClassifierInState(cis)) {
+        Collection states = new ArrayList(Model.getFacade().getInStates(cis));
+        states.remove(state);
+        Model.getActivityGraphsHelper().setInStates(cis, states);
+      }
     }
-    
+  }
 }
 
 class UMLCISStateListModel extends UMLModelElementListModel2 {
-    
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = -8786823179344335113L;
 
-    /**
-     * Construct a list model for ClassifierInState elements.
-     */
-    public UMLCISStateListModel() {
-        super("inState");
+  /** The serial version. */
+  private static final long serialVersionUID = -8786823179344335113L;
+
+  /** Construct a list model for ClassifierInState elements. */
+  public UMLCISStateListModel() {
+    super("inState");
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    Object cis = getTarget();
+    if (Model.getFacade().isAClassifierInState(cis)) {
+      Collection c = Model.getFacade().getInStates(cis);
+      setAllElements(c);
     }
-    
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        Object cis = getTarget();
-        if (Model.getFacade().isAClassifierInState(cis)) {
-            Collection c = Model.getFacade().getInStates(cis);
-            setAllElements(c);
-        }
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(java.lang.Object)
+   */
+  protected boolean isValidElement(Object elem) {
+    Object cis = getTarget();
+    if (Model.getFacade().isAClassifierInState(cis)) {
+      Collection c = Model.getFacade().getInStates(cis);
+      if (c.contains(elem)) return true;
     }
-    
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(java.lang.Object)
-     */
-    protected boolean isValidElement(Object elem) {
-        Object cis = getTarget();
-        if (Model.getFacade().isAClassifierInState(cis)) {
-            Collection c = Model.getFacade().getInStates(cis);
-            if (c.contains(elem)) return true;
-        }
-        return false;
-    }
+    return false;
+  }
 }

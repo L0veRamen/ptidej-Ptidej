@@ -25,7 +25,6 @@
 package org.argouml.uml.ui.behavior.state_machines;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLAction;
@@ -37,38 +36,34 @@ import org.argouml.uml.ui.UMLCheckBox2;
  */
 public class ActionSetCompositeStateConcurrent extends UMLAction {
 
-    private static final ActionSetCompositeStateConcurrent SINGLETON =
-	new ActionSetCompositeStateConcurrent();
+  private static final ActionSetCompositeStateConcurrent SINGLETON =
+      new ActionSetCompositeStateConcurrent();
 
-    /**
-     * Constructor for ActionSetCompositeStateConcurrent.
-     */
-    protected ActionSetCompositeStateConcurrent() {
-        super(Translator.localize("action.set"), false, NO_ICON);
+  /** Constructor for ActionSetCompositeStateConcurrent. */
+  protected ActionSetCompositeStateConcurrent() {
+    super(Translator.localize("action.set"), false, NO_ICON);
+  }
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    if (e.getSource() instanceof UMLCheckBox2) {
+      UMLCheckBox2 source = (UMLCheckBox2) e.getSource();
+      Object target = source.getTarget();
+      if (Model.getFacade().isACompositeState(target)) {
+        Object compositeState = target;
+        Model.getStateMachinesHelper()
+            .setConcurrent(compositeState, !Model.getFacade().isConcurrent(compositeState));
+      }
     }
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        if (e.getSource() instanceof UMLCheckBox2) {
-            UMLCheckBox2 source = (UMLCheckBox2) e.getSource();
-            Object target = source.getTarget();
-            if (Model.getFacade().isACompositeState(target)) {
-                Object compositeState = target;
-                Model.getStateMachinesHelper().setConcurrent(
-                        compositeState,
-                        !Model.getFacade().isConcurrent(compositeState));
-            }
-        }
-    }
-
-    /**
-     * @return Returns the sINGLETON.
-     */
-    public static ActionSetCompositeStateConcurrent getInstance() {
-        return SINGLETON;
-    }
-
+  /**
+   * @return Returns the sINGLETON.
+   */
+  public static ActionSetCompositeStateConcurrent getInstance() {
+    return SINGLETON;
+  }
 }

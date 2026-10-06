@@ -29,61 +29,60 @@ import java.sql.Statement;
 
 /**
  * JDBC result wrapper. Used by the JDBC client connector as a response entity of JDBC calls.
+ *
  * @author Jerome Louvel (contact@noelios.com)
  */
-public class JdbcResult implements Serializable
-{
-	private static final long serialVersionUID = 1L;
+public class JdbcResult implements Serializable {
+  private static final long serialVersionUID = 1L;
 
-	/** The JDBC statement. */
-	private transient Statement statement;
+  /** The JDBC statement. */
+  private transient Statement statement;
 
-	/**
-	 * Constructor.
-	 * @param statement The JDBC statement.
-	 */
-	public JdbcResult(Statement statement)
-	{
-		this.statement = statement;
-	}
+  /**
+   * Constructor.
+   *
+   * @param statement The JDBC statement.
+   */
+  public JdbcResult(Statement statement) {
+    this.statement = statement;
+  }
 
-	/**
-	 * Release the statement connection. To call when result navigation is done.
-	 * @throws SQLException 
-	 */
-	public void release() throws SQLException
-	{
-		statement.getConnection().close();
-	}
+  /**
+   * Release the statement connection. To call when result navigation is done.
+   *
+   * @throws SQLException
+   */
+  public void release() throws SQLException {
+    statement.getConnection().close();
+  }
 
-	/**
-	 * Returns the result set.
-	 * @return The result set.
-	 * @throws SQLException 
-	 */
-	public ResultSet getResultSet() throws SQLException
-	{
-		return statement.getResultSet();
-	}
+  /**
+   * Returns the result set.
+   *
+   * @return The result set.
+   * @throws SQLException
+   */
+  public ResultSet getResultSet() throws SQLException {
+    return statement.getResultSet();
+  }
 
-	/**
-	 * Returns the generated keys.
-	 * @return The generated keys.
-	 * @throws SQLException 
-	 */
-	public ResultSet getGeneratedKeys() throws SQLException
-	{
-		return statement.getGeneratedKeys();
-	}
+  /**
+   * Returns the generated keys.
+   *
+   * @return The generated keys.
+   * @throws SQLException
+   */
+  public ResultSet getGeneratedKeys() throws SQLException {
+    return statement.getGeneratedKeys();
+  }
 
-	/**
-	 * Returns the update count.
-	 * @return The update count.
-	 * @throws SQLException 
-	 */
-	public int getUpdateCount() throws SQLException
-	{
-		return statement.getUpdateCount();
-	}
-
+  /**
+   * Returns the update count.
+   *
+   * @return The update count.
+   * @throws SQLException
+   */
+  public int getUpdateCount() throws SQLException {
+    return statement.getUpdateCount();
+  }
 }

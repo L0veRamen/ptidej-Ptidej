@@ -14,15 +14,15 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 public class PalmTestSuite extends TestSuite {
-	public static Test suite() {
-		final TestSuite test = new TestSuite();
+  public static Test suite() {
+    final TestSuite test = new TestSuite();
 
-		test.addTestSuite(LatinSquare.class);
-		test.addTestSuite(MagicSquare.class);
-		test.addTestSuite(NQueens.class);
-		test.addTestSuite(PalmSolveTest.class);
-		test.addTestSuite(SendMoney.class);
+    test.addTestSuite(LatinSquare.class);
+    test.addTestSuite(MagicSquare.class);
+    test.addTestSuite(NQueens.class);
+    test.addTestSuite(PalmSolveTest.class);
+    test.addTestSuite(SendMoney.class);
 
-		return test;
-	}
+    return test;
+  }
 }

@@ -28,30 +28,30 @@ import org.eclipse.osgi.util.NLS;
 
 /**
  * Export Wizards message bundle.
+ *
  * @author Bogdan Pistol
  */
 public class ExportWizardMessages extends NLS {
 
-    private static final String BUNDLE_NAME = 
-        "org.argouml.argoeclipse.internal.ui." //$NON-NLS-1$
-        + "exportwizard.ExportWizardMessages"; //$NON-NLS-1$
-    
-    public static String exportGraphicsTitle;
-    public static String exportGraphicsDescription;
-    
-    public static String exportAllGraphicsTitle;
-    public static String exportAllGraphicsDescription;
-    
-    public static String diagramWarningTitle;
-    public static String diagramWarningDescription;
-    
-    public static String exportWizardTitle;
-    
-    public static String exportXMITitle;
-    public static String exportXMIDescription;
-    
-    static {
-        NLS.initializeMessages(BUNDLE_NAME, ExportWizardMessages.class);
-    }
-    
+  private static final String BUNDLE_NAME =
+      "org.argouml.argoeclipse.internal.ui." //$NON-NLS-1$
+          + "exportwizard.ExportWizardMessages"; //$NON-NLS-1$
+
+  public static String exportGraphicsTitle;
+  public static String exportGraphicsDescription;
+
+  public static String exportAllGraphicsTitle;
+  public static String exportAllGraphicsDescription;
+
+  public static String diagramWarningTitle;
+  public static String diagramWarningDescription;
+
+  public static String exportWizardTitle;
+
+  public static String exportXMITitle;
+  public static String exportXMIDescription;
+
+  static {
+    NLS.initializeMessages(BUNDLE_NAME, ExportWizardMessages.class);
+  }
 }

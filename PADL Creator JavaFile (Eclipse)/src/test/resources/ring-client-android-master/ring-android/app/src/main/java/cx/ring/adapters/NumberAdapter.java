@@ -28,73 +28,73 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import java.util.ArrayList;
-
 import cx.ring.R;
 import cx.ring.model.CallContact;
+import java.util.ArrayList;
 
 public class NumberAdapter extends BaseAdapter {
-    final private Context mContext;
-    final private ArrayList<CallContact.Phone> mNumbers;
-    private boolean mUseFullCellForGetView = false;
+  private final Context mContext;
+  private final ArrayList<CallContact.Phone> mNumbers;
+  private boolean mUseFullCellForGetView = false;
 
-    public NumberAdapter(Context context, CallContact c, boolean useFullCellForGetView) {
-        mContext = context;
-        mNumbers = (c != null && c.getPhones() != null) ?
-                c.getPhones() : new ArrayList<CallContact.Phone>();
-        mUseFullCellForGetView = useFullCellForGetView;
+  public NumberAdapter(Context context, CallContact c, boolean useFullCellForGetView) {
+    mContext = context;
+    mNumbers =
+        (c != null && c.getPhones() != null) ? c.getPhones() : new ArrayList<CallContact.Phone>();
+    mUseFullCellForGetView = useFullCellForGetView;
+  }
+
+  @Override
+  public int getCount() {
+    return mNumbers.size();
+  }
+
+  @Override
+  public Object getItem(int position) {
+    return mNumbers.get(position);
+  }
+
+  @Override
+  public long getItemId(int position) {
+    return 0;
+  }
+
+  @Override
+  public View getView(int position, View convertView, ViewGroup parent) {
+    return this.getViewWithLongNumber(this.mUseFullCellForGetView, position, convertView, parent);
+  }
+
+  @Override
+  public View getDropDownView(int position, View convertView, ViewGroup parent) {
+    return this.getViewWithLongNumber(true, position, convertView, parent);
+  }
+
+  private View getViewWithLongNumber(
+      boolean longView, int position, View convertView, ViewGroup parent) {
+    if (convertView == null) {
+      if (longView) {
+        convertView = LayoutInflater.from(mContext).inflate(R.layout.item_number, parent, false);
+      } else {
+        convertView =
+            LayoutInflater.from(mContext).inflate(R.layout.item_number_selected, parent, false);
+      }
     }
 
-    @Override
-    public int getCount() {
-        return mNumbers.size();
+    CallContact.Phone number = mNumbers.get(position);
+    ImageView numberIcon = (ImageView) convertView.findViewById(R.id.number_icon);
+    numberIcon.setImageResource(
+        number.getNumber().isRingId()
+            ? R.drawable.ring_logo_24dp
+            : R.drawable.ic_dialer_sip_black_24dp);
+
+    if (longView) {
+      TextView numberTxt = (TextView) convertView.findViewById(R.id.number_txt);
+      TextView numberLabelTxt = (TextView) convertView.findViewById(R.id.number_label_txt);
+
+      numberTxt.setText(number.getNumber().getRawUriString());
+      numberLabelTxt.setText(number.getTypeString(mContext.getResources()));
     }
 
-    @Override
-    public Object getItem(int position) {
-        return mNumbers.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return 0;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        return this.getViewWithLongNumber(this.mUseFullCellForGetView, position, convertView, parent);
-    }
-
-    @Override
-    public View getDropDownView(int position, View convertView, ViewGroup parent) {
-        return this.getViewWithLongNumber(true, position, convertView, parent);
-    }
-
-    private View getViewWithLongNumber(boolean longView, int position, View convertView, ViewGroup parent) {
-        if (convertView == null) {
-            if (longView) {
-                convertView = LayoutInflater.from(mContext).inflate(R.layout.item_number, parent,
-                        false);
-            } else {
-                convertView = LayoutInflater.from(mContext).inflate(R.layout.item_number_selected,
-                        parent, false);
-            }
-        }
-
-        CallContact.Phone number = mNumbers.get(position);
-        ImageView numberIcon = (ImageView) convertView.findViewById(R.id.number_icon);
-        numberIcon.setImageResource(number.getNumber().isRingId() ?
-                R.drawable.ring_logo_24dp : R.drawable.ic_dialer_sip_black_24dp);
-
-        if (longView) {
-            TextView numberTxt = (TextView) convertView.findViewById(R.id.number_txt);
-            TextView numberLabelTxt = (TextView) convertView.findViewById(R.id.number_label_txt);
-
-            numberTxt.setText(number.getNumber().getRawUriString());
-            numberLabelTxt.setText(number.getTypeString(mContext.getResources()));
-        }
-
-        return convertView;
-    }
+    return convertView;
+  }
 }

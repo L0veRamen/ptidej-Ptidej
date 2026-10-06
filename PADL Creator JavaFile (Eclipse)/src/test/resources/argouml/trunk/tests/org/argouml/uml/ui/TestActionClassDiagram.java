@@ -26,47 +26,46 @@ package org.argouml.uml.ui;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.argouml.model.Model;
 
 /**
  * Test for {@link ActionClassDiagram}.
+ *
  * @author JBranderhorst
  */
 public class TestActionClassDiagram extends AbstractTestActionAddDiagram {
 
-    /**
-     * Constructor for GUITestActionClassDiagram.
-     * @param arg0 the name of the test case.
-     */
-    public TestActionClassDiagram(String arg0) {
-	super(arg0);
-    }
+  /**
+   * Constructor for GUITestActionClassDiagram.
+   *
+   * @param arg0 the name of the test case.
+   */
+  public TestActionClassDiagram(String arg0) {
+    super(arg0);
+  }
 
-    /**
-     * @see org.argouml.uml.ui.AbstractTestActionAddDiagram#getAction()
-     */
-    protected ActionAddDiagram getAction() {
-	return new ActionClassDiagram();
-    }
+  /**
+   * @see org.argouml.uml.ui.AbstractTestActionAddDiagram#getAction()
+   */
+  protected ActionAddDiagram getAction() {
+    return new ActionClassDiagram();
+  }
 
-    /**
-     * @see org.argouml.uml.ui.AbstractTestActionAddDiagram#getNamespace()
-     */
-    protected Object getNamespace() {
-    	// Return a package to use as the Namespace.
-	return Model.getModelManagementFactory().createPackage();
-    }
+  /**
+   * @see org.argouml.uml.ui.AbstractTestActionAddDiagram#getNamespace()
+   */
+  protected Object getNamespace() {
+    // Return a package to use as the Namespace.
+    return Model.getModelManagementFactory().createPackage();
+  }
 
-    /**
-     * @see org.argouml.uml.ui.
-     * AbstractTestActionAddDiagram#getValidNamespaceClasses()
-     */
-    protected List getValidNamespaceClasses() {
-	List returnList = new ArrayList();
-	returnList.add(Model.getMetaTypes().getPackage());
-	returnList.add(Model.getMetaTypes().getModel());
-	return returnList;
-    }
-
+  /**
+   * @see org.argouml.uml.ui. AbstractTestActionAddDiagram#getValidNamespaceClasses()
+   */
+  protected List getValidNamespaceClasses() {
+    List returnList = new ArrayList();
+    returnList.add(Model.getMetaTypes().getPackage());
+    returnList.add(Model.getMetaTypes().getModel());
+    return returnList;
+  }
 }

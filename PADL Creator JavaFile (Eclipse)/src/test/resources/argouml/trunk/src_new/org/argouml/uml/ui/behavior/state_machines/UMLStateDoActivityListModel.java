@@ -33,27 +33,23 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  */
 public class UMLStateDoActivityListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLStateDoActivityListModel.
-     */
-    public UMLStateDoActivityListModel() {
-        super("doActivity");
-    }
+  /** Constructor for UMLStateDoActivityListModel. */
+  public UMLStateDoActivityListModel() {
+    super("doActivity");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        removeAllElements();
-        addElement(Model.getFacade().getDoActivity(getTarget()));
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    removeAllElements();
+    addElement(Model.getFacade().getDoActivity(getTarget()));
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return element == Model.getFacade().getDoActivity(getTarget());
-    }
-
-
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return element == Model.getFacade().getDoActivity(getTarget());
+  }
 }

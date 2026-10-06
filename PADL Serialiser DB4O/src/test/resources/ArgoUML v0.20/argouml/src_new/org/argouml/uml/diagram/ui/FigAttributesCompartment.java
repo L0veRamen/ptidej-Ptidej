@@ -27,7 +27,6 @@ package org.argouml.uml.diagram.ui;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.Model;
@@ -41,98 +40,91 @@ import org.tigris.gef.presentation.Fig;
  * @author Bob Tarling
  */
 public class FigAttributesCompartment extends FigFeaturesCompartment {
-    /**
-     * The constructor.
-     *
-     * @param x x
-     * @param y y
-     * @param w width
-     * @param h height
-     */
-    public FigAttributesCompartment(int x, int y, int w, int h) {
-        super(x, y, w, h);
-    }
+  /**
+   * The constructor.
+   *
+   * @param x x
+   * @param y y
+   * @param w width
+   * @param h height
+   */
+  public FigAttributesCompartment(int x, int y, int w, int h) {
+    super(x, y, w, h);
+  }
 
-    /**
-     * @see org.argouml.uml.diagram.ui.FigFeaturesCompartment#populate()
-     */
-    public void populate() {
-        if (!isVisible()) {
-            return;
+  /**
+   * @see org.argouml.uml.diagram.ui.FigFeaturesCompartment#populate()
+   */
+  public void populate() {
+    if (!isVisible()) {
+      return;
+    }
+    Object cls = /*(MClassifier)*/ getGroup().getOwner();
+    Fig attrPort = this.getBigPort();
+    int xpos = attrPort.getX();
+    int ypos = attrPort.getY();
+    int acounter = 2; // Skip background port and seperator
+
+    Collection strs = Model.getFacade().getStructuralFeatures(cls);
+    if (strs != null) {
+      Iterator iter = strs.iterator();
+      List figs = getFigs();
+      CompartmentFigText attr = null;
+      while (iter.hasNext()) {
+        Object structuralFeature = iter.next();
+        if (figs.size() <= acounter) {
+          attr =
+              new FigFeature(
+                  xpos + 1,
+                  ypos + 1 + (acounter - 1) * FigNodeModelElement.ROWHEIGHT,
+                  0,
+                  FigNodeModelElement.ROWHEIGHT - 2,
+                  attrPort);
+          // bounds not relevant here
+          addFig(attr);
+        } else {
+          attr = (CompartmentFigText) figs.get(acounter);
         }
-        Object cls = /*(MClassifier)*/ getGroup().getOwner();
-        Fig attrPort = this.getBigPort();
-        int xpos = attrPort.getX();
-        int ypos = attrPort.getY();
-        int acounter = 2; // Skip background port and seperator
+        attr.setText(Notation.generate((NotationContext) getGroup(), structuralFeature));
+        attr.setOwner(structuralFeature); // TODO: update the model again here?
+        /* This causes another event, and modelChanged() called,
+         * and updateAttributes() called again...
+         */
 
-        Collection strs = Model.getFacade().getStructuralFeatures(cls);
-        if (strs != null) {
-            Iterator iter = strs.iterator();
-            List figs = getFigs();
-            CompartmentFigText attr = null;
-            while (iter.hasNext()) {
-                Object structuralFeature = iter.next();
-                if (figs.size() <= acounter) {
-                    attr =
-                        new FigFeature(
-                                xpos + 1,
-                                ypos + 1
-                                + (acounter - 1)
-                                	* FigNodeModelElement.ROWHEIGHT,
-                                0,
-                                FigNodeModelElement.ROWHEIGHT - 2,
-                                attrPort);
-                    // bounds not relevant here
-                    addFig(attr);
-                } else {
-                    attr = (CompartmentFigText) figs.get(acounter);
-                }
-                attr.setText(Notation.generate((NotationContext) getGroup(),
-                        structuralFeature));
-                attr.setOwner(structuralFeature); //TODO: update the model again here?
-                /* This causes another event, and modelChanged() called,
-                 * and updateAttributes() called again...
-                 */
-
-                // underline, if static
-                attr.setUnderline(
-                        Model.getScopeKind().
-                        getClassifier().equals(Model.getFacade().
-                                getOwnerScope(structuralFeature)));
-                attr.setBotMargin(0);
-                acounter++;
-            }
-            if (attr != null) {
-                attr.setBotMargin(6);
-            }
-            if (figs.size() > acounter) {
-                //cleanup of unused attribute FigText's
-                for (int i = figs.size() - 1; i >= acounter; i--) {
-                    removeFig((Fig) figs.get(i));
-                }
-            }
+        // underline, if static
+        attr.setUnderline(
+            Model.getScopeKind()
+                .getClassifier()
+                .equals(Model.getFacade().getOwnerScope(structuralFeature)));
+        attr.setBotMargin(0);
+        acounter++;
+      }
+      if (attr != null) {
+        attr.setBotMargin(6);
+      }
+      if (figs.size() > acounter) {
+        // cleanup of unused attribute FigText's
+        for (int i = figs.size() - 1; i >= acounter; i--) {
+          removeFig((Fig) figs.get(i));
         }
+      }
     }
+  }
 
-    /**
-     * @see org.argouml.uml.diagram.ui.FigFeaturesCompartment#createFeature()
-     */
-    public void createFeature() {
-        Object classifier = getGroup().getOwner();
+  /**
+   * @see org.argouml.uml.diagram.ui.FigFeaturesCompartment#createFeature()
+   */
+  public void createFeature() {
+    Object classifier = getGroup().getOwner();
 
-        Project project = ProjectManager.getManager().getCurrentProject();
+    Project project = ProjectManager.getManager().getCurrentProject();
 
-        Collection propertyChangeListeners =
-            project.findFigsForMember(classifier);
-        Object intType = project.findType("int");
-        Object model = project.getModel();
-        Object attr = Model.getCoreFactory().buildAttribute(
-                classifier,
-                model,
-                intType,
-                propertyChangeListeners);
-        populate();
-        TargetManager.getInstance().setTarget(attr);
-    }
+    Collection propertyChangeListeners = project.findFigsForMember(classifier);
+    Object intType = project.findType("int");
+    Object model = project.getModel();
+    Object attr =
+        Model.getCoreFactory().buildAttribute(classifier, model, intType, propertyChangeListeners);
+    populate();
+    TargetManager.getInstance().setTarget(attr);
+  }
 }

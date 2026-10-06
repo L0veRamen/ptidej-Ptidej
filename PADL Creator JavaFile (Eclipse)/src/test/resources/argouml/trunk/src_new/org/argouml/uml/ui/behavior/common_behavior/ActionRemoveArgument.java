@@ -25,7 +25,6 @@
 package org.argouml.uml.ui.behavior.common_behavior;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.i18n.Translator;
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
@@ -33,32 +32,27 @@ import org.argouml.uml.ui.AbstractActionRemoveElement;
 
 /**
  * Action to delete an actualArgument from a Action.
- * 
+ *
  * @since aug 10, 2003
- * @author Decki, Endi, Yayan. Polytechnic of Bandung Indonesia, Computer
- *         Engineering Departement
+ * @author Decki, Endi, Yayan. Polytechnic of Bandung Indonesia, Computer Engineering Departement
  */
 public class ActionRemoveArgument extends AbstractActionRemoveElement {
 
+  /** Constructor for ActionRemoveArgument. */
+  protected ActionRemoveArgument() {
+    super(Translator.localize("menu.popup.delete"));
+  }
 
-    /**
-     * Constructor for ActionRemoveArgument.
-     */
-    protected ActionRemoveArgument() {
-        super(Translator.localize("menu.popup.delete"));
+  /*
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    if (getObjectToRemove() != null) {
+      Project p = ProjectManager.getManager().getCurrentProject();
+      Object o = getObjectToRemove();
+      setObjectToRemove(null);
+      p.moveToTrash(o);
     }
-
-    /*
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        if (getObjectToRemove() != null) {
-            Project p = ProjectManager.getManager().getCurrentProject();
-            Object o = getObjectToRemove();
-            setObjectToRemove(null);
-            p.moveToTrash(o);
-        }
-    }
-
+  }
 }

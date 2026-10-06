@@ -25,7 +25,6 @@
 package org.argouml.sequence2.diagram;
 
 import java.beans.PropertyVetoException;
-
 import org.apache.log4j.Logger;
 import org.argouml.uml.diagram.ArgoDiagram;
 import org.argouml.uml.diagram.DiagramFactoryInterface;
@@ -34,58 +33,51 @@ import org.argouml.uml.diagram.DiagramSettings;
 
 /**
  * This factory creates a sequence2 Sequence Diagram.
+ *
  * @see org.argouml.uml.diagram.DiagramFactory
  * @author penyaskito
  */
-public class SequenceDiagramFactory
-        implements DiagramFactoryInterface, DiagramFactoryInterface2{
+public class SequenceDiagramFactory implements DiagramFactoryInterface, DiagramFactoryInterface2 {
 
-    /**
-     * Logger.
-     */
-    private static final Logger LOG =
-        Logger.getLogger(SequenceDiagramFactory.class);
-    
-    /**
-     * Factory method to create a new instance of an ArgoDiagram,
-     * including the sequence2 Sequence Diagram
-     * 
-     * @param namespace The namespace that (in)directly 
-     *                        owns the elements on the diagram
-     * @param machine The StateMachine for the diagram
-     *                         (only: statemachine - activitygraph)
-     * @return the newly instantiated class diagram
-     */
-    public ArgoDiagram createDiagram(
-            final Object namespace,
-            final Object machine) {
-        
-        final ArgoDiagram diagram = new UMLSequenceDiagram(namespace);
-        return diagram;            
-    }
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(SequenceDiagramFactory.class);
 
-    /**
-     * Factory method to create a new instance of an ArgoDiagram.
-     * 
-     * @param owner the owning element. This can be the owning namespace for a
-     *            Class diagram or an owning Statemachine for a State Diagram or
-     *            any other interpretation that the diagram type wants to apply.
-     * @param name the name of the diagram. This may be null if the caller would
-     *            like the factory to provide a default name.
-     * @param settings default rendering settings for the diagram
-     * @return the newly instantiated diagram
-     */
-    public ArgoDiagram createDiagram(Object owner, String name,
-            DiagramSettings settings) {
-        final ArgoDiagram diagram = new UMLSequenceDiagram(owner);
-        if (name != null) {
-            try {
-                diagram.setName(name);
-            } catch (PropertyVetoException e) {            
-                LOG.error("Cannot set the name " + name + 
-                        " to the diagram just created: "+ diagram.getName(), e);
-            }
-        }
-        return diagram;  
+  /**
+   * Factory method to create a new instance of an ArgoDiagram, including the sequence2 Sequence
+   * Diagram
+   *
+   * @param namespace The namespace that (in)directly owns the elements on the diagram
+   * @param machine The StateMachine for the diagram (only: statemachine - activitygraph)
+   * @return the newly instantiated class diagram
+   */
+  public ArgoDiagram createDiagram(final Object namespace, final Object machine) {
+
+    final ArgoDiagram diagram = new UMLSequenceDiagram(namespace);
+    return diagram;
+  }
+
+  /**
+   * Factory method to create a new instance of an ArgoDiagram.
+   *
+   * @param owner the owning element. This can be the owning namespace for a Class diagram or an
+   *     owning Statemachine for a State Diagram or any other interpretation that the diagram type
+   *     wants to apply.
+   * @param name the name of the diagram. This may be null if the caller would like the factory to
+   *     provide a default name.
+   * @param settings default rendering settings for the diagram
+   * @return the newly instantiated diagram
+   */
+  public ArgoDiagram createDiagram(Object owner, String name, DiagramSettings settings) {
+    final ArgoDiagram diagram = new UMLSequenceDiagram(owner);
+    if (name != null) {
+      try {
+        diagram.setName(name);
+      } catch (PropertyVetoException e) {
+        LOG.error(
+            "Cannot set the name " + name + " to the diagram just created: " + diagram.getName(),
+            e);
+      }
     }
+    return diagram;
+  }
 }

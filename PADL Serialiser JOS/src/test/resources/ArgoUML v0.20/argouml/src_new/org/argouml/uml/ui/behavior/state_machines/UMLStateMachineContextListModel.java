@@ -33,30 +33,25 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  * @since Dec 6, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class UMLStateMachineContextListModel
-    extends UMLModelElementListModel2 {
+public class UMLStateMachineContextListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLStateMachineContextListModel.
-     */
-    public UMLStateMachineContextListModel() {
-        super("context");
-    }
+  /** Constructor for UMLStateMachineContextListModel. */
+  public UMLStateMachineContextListModel() {
+    super("context");
+  }
 
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    removeAllElements();
+    addElement(Model.getFacade().getContext(getTarget()));
+  }
 
-
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        removeAllElements();
-        addElement(Model.getFacade().getContext(getTarget()));
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ element) {
-        return element == Model.getFacade().getContext(getTarget());
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ element) {
+    return element == Model.getFacade().getContext(getTarget());
+  }
 }

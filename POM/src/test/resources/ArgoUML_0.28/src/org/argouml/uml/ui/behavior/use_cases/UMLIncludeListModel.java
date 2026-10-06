@@ -29,39 +29,36 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
 
 /**
  * Abstract class for list model to hold use cases of an include.
- * 
+ *
  * @author MarkusK
  */
 public abstract class UMLIncludeListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLIncludeListModel.
-     * 
-     * @param eventName the name of the event to listen to, which triggers us
-     *             to update the list model from the UML data
-     */
-    public UMLIncludeListModel(String eventName) {
-        super(eventName);
-        Model.getPump().addClassModelEventListener(this,
-                Model.getMetaTypes().getNamespace(), "ownedElement");
+  /**
+   * Constructor for UMLIncludeListModel.
+   *
+   * @param eventName the name of the event to listen to, which triggers us to update the list model
+   *     from the UML data
+   */
+  public UMLIncludeListModel(String eventName) {
+    super(eventName);
+    Model.getPump()
+        .addClassModelEventListener(this, Model.getMetaTypes().getNamespace(), "ownedElement");
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (!isEmpty()) {
+      removeAllElements();
     }
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (!isEmpty()) {
-            removeAllElements();
-        }
-    }
-
-
-
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(java.lang.Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().isAUseCase(element);
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(java.lang.Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().isAUseCase(element);
+  }
 }

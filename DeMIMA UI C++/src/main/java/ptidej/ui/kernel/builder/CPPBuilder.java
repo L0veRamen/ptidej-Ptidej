@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -37,131 +37,98 @@ import ptidej.ui.primitive.IPrimitiveFactory;
 
 /**
  * @author Yann-Gaël Guéhéneuc
- * @since  2004/12/16
+ * @since 2004/12/16
  */
 public class CPPBuilder extends Builder {
-	private static Map UniqueInstances;
-	public static Builder getCurrentBuilder(
-		final IPrimitiveFactory aPrimitiveFactory) {
-		if (CPPBuilder.UniqueInstances == null) {
-			CPPBuilder.UniqueInstances = new HashMap();
-		}
-		if (CPPBuilder.UniqueInstances.get(aPrimitiveFactory) == null) {
-			CPPBuilder.UniqueInstances.put(aPrimitiveFactory, new CPPBuilder(
-				aPrimitiveFactory));
-		}
-		return (CPPBuilder) CPPBuilder.UniqueInstances.get(aPrimitiveFactory);
-	}
+  private static Map<IPrimitiveFactory, Builder> UniqueInstances;
 
-	private CPPBuilder(final IPrimitiveFactory aPrimitiveFactory) {
-		super(aPrimitiveFactory);
-	}
-	protected Element createElement(
-		final IConstituentOfModel anEntity,
-		final IConstituentOfEntity anElement) {
+  public static Builder getCurrentBuilder(final IPrimitiveFactory aPrimitiveFactory) {
+    if (CPPBuilder.UniqueInstances == null) {
+      CPPBuilder.UniqueInstances = new HashMap<>();
+    }
+    if (CPPBuilder.UniqueInstances.get(aPrimitiveFactory) == null) {
+      CPPBuilder.UniqueInstances.put(aPrimitiveFactory, new CPPBuilder(aPrimitiveFactory));
+    }
+    return (CPPBuilder) CPPBuilder.UniqueInstances.get(aPrimitiveFactory);
+  }
 
-		final Element aGraphicalElement;
+  private CPPBuilder(final IPrimitiveFactory aPrimitiveFactory) {
+    super(aPrimitiveFactory);
+  }
 
-		if (anElement instanceof IDestructor) {
-			aGraphicalElement =
-				new Destructor(
-					this.getPrimitiveFactory(),
-					(IDestructor) anElement);
-		}
-		else {
-			aGraphicalElement = null;
-		}
+  protected Element createElement(
+      final IConstituentOfModel anEntity, final IConstituentOfEntity anElement) {
 
-		return aGraphicalElement;
-	}
-	protected Entity createEntity(final IConstituentOfModel anEntity) {
-		final Entity aGraphicalEntity;
+    final Element aGraphicalElement;
 
-		if (anEntity instanceof ICPPClass) {
-			aGraphicalEntity =
-				new Class(
-					this.getPrimitiveFactory(),
-					this,
-					(ICPPClass) anEntity);
-		}
-		else if (anEntity instanceof IEnum) {
-			aGraphicalEntity =
-				new Enum(this.getPrimitiveFactory(), this, (IEnum) anEntity);
-		}
-		else if (anEntity instanceof IGlobalField) {
-			aGraphicalEntity =
-				new GlobalField(
-					this.getPrimitiveFactory(),
-					this,
-					(IGlobalField) anEntity);
-		}
-		else if (anEntity instanceof IGlobalFunction) {
-			aGraphicalEntity =
-				new GlobalFunction(
-					this.getPrimitiveFactory(),
-					this,
-					(IGlobalFunction) anEntity);
-		}
-		else if (anEntity instanceof IStructure) {
-			aGraphicalEntity =
-				new Structure(
-					this.getPrimitiveFactory(),
-					this,
-					(IStructure) anEntity);
-		}
-		else if (anEntity instanceof IUnion) {
-			aGraphicalEntity =
-				new Union(this.getPrimitiveFactory(), this, (IUnion) anEntity);
-		}
-		else {
-			aGraphicalEntity = null;
-		}
+    if (anElement instanceof IDestructor) {
+      aGraphicalElement = new Destructor(this.getPrimitiveFactory(), (IDestructor) anElement);
+    } else {
+      aGraphicalElement = null;
+    }
 
-		return aGraphicalEntity;
-	}
-	protected Icon createLabelIcon(final IConstituent aConstituent) {
-		String iconImageName = null;
+    return aGraphicalElement;
+  }
 
-		if (aConstituent instanceof IGlobalField) {
-			if (aConstituent.isPrivate()) {
-				iconImageName = "Global_Field_Private.gif";
-			}
-			else if (aConstituent.isProtected()) {
-				iconImageName = "Global_Field_Protected.gif";
-			}
-			else if (aConstituent.isPublic()) {
-				iconImageName = "Global_Field_Public.gif";
-			}
-			else {
-				iconImageName = "Global_Field_Default.gif";
-			}
-		}
-		else if (aConstituent instanceof IGlobalFunction) {
-			if (aConstituent.isPrivate()) {
-				iconImageName = "Global_Function_Private.gif";
-			}
-			else if (aConstituent.isProtected()) {
-				iconImageName = "Global_Function_Protected.gif";
-			}
-			else if (aConstituent.isPublic()) {
-				iconImageName = "Global_Function_Public.gif";
-			}
-			else {
-				iconImageName = "Global_Function_Default.gif";
-			}
-		}
+  protected Entity createEntity(final IConstituentOfModel anEntity) {
+    final Entity aGraphicalEntity;
 
-		if (iconImageName == null) {
-			return null;
-		}
-		else {
-			return Utils.getIcon(iconImageName);
-		}
-	}
-	protected String createLabelText(final IConstituent aConstituent) {
-		if (aConstituent instanceof IGlobalFunction) {
-			return aConstituent.getDisplayName() + "(...)";
-		}
-		return "";
-	}
+    if (anEntity instanceof ICPPClass) {
+      aGraphicalEntity = new Class(this.getPrimitiveFactory(), this, (ICPPClass) anEntity);
+    } else if (anEntity instanceof IEnum) {
+      aGraphicalEntity = new Enum(this.getPrimitiveFactory(), this, (IEnum) anEntity);
+    } else if (anEntity instanceof IGlobalField) {
+      aGraphicalEntity = new GlobalField(this.getPrimitiveFactory(), this, (IGlobalField) anEntity);
+    } else if (anEntity instanceof IGlobalFunction) {
+      aGraphicalEntity =
+          new GlobalFunction(this.getPrimitiveFactory(), this, (IGlobalFunction) anEntity);
+    } else if (anEntity instanceof IStructure) {
+      aGraphicalEntity = new Structure(this.getPrimitiveFactory(), this, (IStructure) anEntity);
+    } else if (anEntity instanceof IUnion) {
+      aGraphicalEntity = new Union(this.getPrimitiveFactory(), this, (IUnion) anEntity);
+    } else {
+      aGraphicalEntity = null;
+    }
+
+    return aGraphicalEntity;
+  }
+
+  protected Icon createLabelIcon(final IConstituent aConstituent) {
+    String iconImageName = null;
+
+    if (aConstituent instanceof IGlobalField) {
+      if (aConstituent.isPrivate()) {
+        iconImageName = "Global_Field_Private.gif";
+      } else if (aConstituent.isProtected()) {
+        iconImageName = "Global_Field_Protected.gif";
+      } else if (aConstituent.isPublic()) {
+        iconImageName = "Global_Field_Public.gif";
+      } else {
+        iconImageName = "Global_Field_Default.gif";
+      }
+    } else if (aConstituent instanceof IGlobalFunction) {
+      if (aConstituent.isPrivate()) {
+        iconImageName = "Global_Function_Private.gif";
+      } else if (aConstituent.isProtected()) {
+        iconImageName = "Global_Function_Protected.gif";
+      } else if (aConstituent.isPublic()) {
+        iconImageName = "Global_Function_Public.gif";
+      } else {
+        iconImageName = "Global_Function_Default.gif";
+      }
+    }
+
+    if (iconImageName == null) {
+      return null;
+    } else {
+      return Utils.getIcon(iconImageName);
+    }
+  }
+
+  protected String createLabelText(final IConstituent aConstituent) {
+    if (aConstituent instanceof IGlobalFunction) {
+      return aConstituent.getDisplayName() + "(...)";
+    }
+    return "";
+  }
 }

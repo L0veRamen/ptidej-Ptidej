@@ -28,7 +28,6 @@ import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.Model;
@@ -36,67 +35,63 @@ import org.argouml.uml.ui.UMLComboBoxModel2;
 
 /**
  * Listmodel for the Context of an ActivityGraph.
- * 
+ *
  * @author Michiel
  */
-class UMLActivityGraphContextComboBoxModel
-    extends  UMLComboBoxModel2  {
-    
-    /**
-     * Constructor for UMLStateMachineContextListModel.
-     */
-    public UMLActivityGraphContextComboBoxModel() {
-        super("context", false);
+class UMLActivityGraphContextComboBoxModel extends UMLComboBoxModel2 {
+
+  /** Constructor for UMLStateMachineContextListModel. */
+  public UMLActivityGraphContextComboBoxModel() {
+    super("context", false);
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    Collection elements = new ArrayList();
+    Project p = ProjectManager.getManager().getCurrentProject();
+    Iterator it = p.getUserDefinedModels().iterator();
+
+    while (it.hasNext()) {
+      Object model = it.next();
+
+      elements.addAll(
+          Model.getModelManagementHelper()
+              .getAllModelElementsOfKind(model, Model.getMetaTypes().getClassifier()));
+      elements.addAll(
+          Model.getModelManagementHelper()
+              .getAllModelElementsOfKind(model, Model.getMetaTypes().getBehavioralFeature()));
+      elements.addAll(
+          Model.getModelManagementHelper()
+              .getAllModelElementsOfKind(model, Model.getMetaTypes().getPackage()));
     }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        Collection elements = new ArrayList();
-        Project p = ProjectManager.getManager().getCurrentProject();
-        Iterator it = p.getUserDefinedModels().iterator();
+    setElements(elements);
+  }
 
-        while (it.hasNext()) {
-            Object model = it.next();
+  /**
+   * Not used.
+   *
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().isAClassifier(element)
+        || Model.getFacade().isABehavioralFeature(element)
+        || Model.getFacade().isAPackage(element);
+  }
 
-            elements.addAll(Model
-                    .getModelManagementHelper().getAllModelElementsOfKind(
-                            model, Model.getMetaTypes().getClassifier()));
-            elements.addAll(Model
-                    .getModelManagementHelper().getAllModelElementsOfKind(
-                            model, Model.getMetaTypes().getBehavioralFeature()));
-            elements.addAll(Model
-                    .getModelManagementHelper().getAllModelElementsOfKind(
-                            model, Model.getMetaTypes().getPackage()));
-        }
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
+   */
+  protected Object getSelectedModelElement() {
+    return Model.getFacade().getContext(getTarget());
+  }
 
-        setElements(elements);
-    }
-
-    /**
-     * Not used.
-     * 
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().isAClassifier(element)
-            || Model.getFacade().isABehavioralFeature(element)
-            || Model.getFacade().isAPackage(element);
-    }
-    
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
-     */
-    protected Object getSelectedModelElement() {
-        return Model.getFacade().getContext(getTarget());
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#propertyChange(java.beans.PropertyChangeEvent)
-     */
-    public void propertyChange(PropertyChangeEvent evt) {
-        /* Do nothing by design. */
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#propertyChange(java.beans.PropertyChangeEvent)
+   */
+  public void propertyChange(PropertyChangeEvent evt) {
+    /* Do nothing by design. */
+  }
 }

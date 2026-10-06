@@ -24,17 +24,11 @@
 
 package org.argouml.uml.ui.behavior.common_behavior;
 
-/**
- * The properties panel for a CallAction.
- */
+/** The properties panel for a CallAction. */
 public class PropPanelCallAction extends PropPanelAction {
 
-    /**
-     * The constructor.
-     *
-     */
-    public PropPanelCallAction() {
-        super("CallAction", lookupIcon("CallAction"));
-    }
-
+  /** The constructor. */
+  public PropPanelCallAction() {
+    super("CallAction", lookupIcon("CallAction"));
+  }
 } /* end class PropPanelCallAction */

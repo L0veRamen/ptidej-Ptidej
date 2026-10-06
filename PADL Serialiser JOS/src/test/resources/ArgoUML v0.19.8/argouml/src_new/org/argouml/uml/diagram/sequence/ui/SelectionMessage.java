@@ -29,24 +29,22 @@ import org.tigris.gef.presentation.Fig;
 import org.tigris.gef.presentation.Handle;
 
 /**
- * A custom select object to handle the special requirements of reshaping a and
- * dragging a message.
+ * A custom select object to handle the special requirements of reshaping a and dragging a message.
  *
  * @author Bob Tarling
  */
 public class SelectionMessage extends SelectionReshape {
 
-    public SelectionMessage(Fig f) {
-        super(f);
-    }
+  public SelectionMessage(Fig f) {
+    super(f);
+  }
 
-    /**
-     * Override drag handle so that it no longer allows dragging of handles.
-     * TODO: Need to figure out how I can get this to drag the fig up and down.
-     *
-     * @see org.tigris.gef.base.Selection#dragHandle(int, int, int, int, 
-     * org.tigris.gef.presentation.Handle)
-     */
-    public void dragHandle(int mX, int mY, int anX, int anY, Handle h) {
-    }
+  /**
+   * Override drag handle so that it no longer allows dragging of handles. TODO: Need to figure out
+   * how I can get this to drag the fig up and down.
+   *
+   * @see org.tigris.gef.base.Selection#dragHandle(int, int, int, int,
+   *     org.tigris.gef.presentation.Handle)
+   */
+  public void dragHandle(int mX, int mY, int anX, int anY, Handle h) {}
 }

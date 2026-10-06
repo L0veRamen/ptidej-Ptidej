@@ -25,72 +25,67 @@
 package org.argouml.argoeclipse.internal.ui.views;
 
 import javax.swing.JPanel;
-
+import org.argouml.argoeclipse.internal.core.model.Register;
+import org.argouml.argoeclipse.internal.ui.util.SwingWrapper;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.part.ViewPart;
 
-import org.argouml.argoeclipse.internal.core.model.Register;
-import org.argouml.argoeclipse.internal.ui.util.SwingWrapper;
-
 /**
  * Generic view.
+ *
  * @author Bogdan Pistol
  */
 class View extends ViewPart {
-    
-    private Integer type;
-    
-    /**
-     * Constructor
-     * @param i the type of registered view
-     */
-    protected View(Integer i) {
-        type = i;
-    }
 
-    /*
-     * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
-     */
-    public void createPartControl(Composite parent) {
-        if (Register.getInstance().isRegistered(type)) {
-            new Label(parent, SWT.NONE).setText(
-                    ViewsMessages.warningMultipleViews);
-        } else {
-            Register.getInstance().register(type, this);
-            JPanel jp = getPanel();
-            if (jp != null) {
-                SwingWrapper.wrap(jp, parent);
-            } else {
-                new Label(parent, SWT.NONE).setText(
-                        ViewsMessages.warningNullPanel);
-            }
-        }
-    }
-    
-    /**
-     * The specific view panel. 
-     * @return a JPanel
-     */
-    protected JPanel getPanel() {
-        return null;
-    }
+  private Integer type;
 
-    /*
-     * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
-     */
-    public void setFocus() {
-    }
+  /**
+   * Constructor
+   *
+   * @param i the type of registered view
+   */
+  protected View(Integer i) {
+    type = i;
+  }
 
-    /**
-     * Frees the resources.
-     */
-    public void dispose() {
-        super.dispose();
-        if (Register.getInstance().isRegistered(type, this)) {
-            Register.getInstance().unregister(this);
-        }
+  /*
+   * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
+   */
+  public void createPartControl(Composite parent) {
+    if (Register.getInstance().isRegistered(type)) {
+      new Label(parent, SWT.NONE).setText(ViewsMessages.warningMultipleViews);
+    } else {
+      Register.getInstance().register(type, this);
+      JPanel jp = getPanel();
+      if (jp != null) {
+        SwingWrapper.wrap(jp, parent);
+      } else {
+        new Label(parent, SWT.NONE).setText(ViewsMessages.warningNullPanel);
+      }
     }
-    
+  }
+
+  /**
+   * The specific view panel.
+   *
+   * @return a JPanel
+   */
+  protected JPanel getPanel() {
+    return null;
+  }
+
+  /*
+   * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
+   */
+  public void setFocus() {}
+
+  /** Frees the resources. */
+  public void dispose() {
+    super.dispose();
+    if (Register.getInstance().isRegistered(type, this)) {
+      Register.getInstance().unregister(this);
+    }
+  }
 }

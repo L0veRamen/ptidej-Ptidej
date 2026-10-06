@@ -23,163 +23,149 @@
 package org.restlet.data;
 
 import java.io.IOException;
-
 import org.restlet.util.Factory;
 
 /**
  * Multi-usage parameter.
+ *
  * @author Jerome Louvel (contact@noelios.com)
  */
-public class Parameter implements Comparable<Parameter>
-{
-	/** The name. */
-	private String name;
+public class Parameter implements Comparable<Parameter> {
+  /** The name. */
+  private String name;
 
-	/** The value. */
-	private String value;
+  /** The value. */
+  private String value;
 
-	/**
-	 * Default constructor.
-	 */
-	public Parameter()
-	{
-		this(null, null);
-	}
+  /** Default constructor. */
+  public Parameter() {
+    this(null, null);
+  }
 
-	/**
-	 * Preferred constructor.
-	 * @param name The name.
-	 * @param value The value.
-	 */
-	public Parameter(String name, String value)
-	{
-		this.name = name;
-		this.value = value;
-	}
+  /**
+   * Preferred constructor.
+   *
+   * @param name The name.
+   * @param value The value.
+   */
+  public Parameter(String name, String value) {
+    this.name = name;
+    this.value = value;
+  }
 
-	/**
-	 * Compares this object with the specified object for order.
-	 * @param o The object to be compared.
-	 * @return A negative integer, zero, or a positive integer as this object is less than, equal to, or
-	 * greater than the specified object.
-	 */
-	public int compareTo(Parameter o)
-	{
-		return getName().compareTo(o.getName());
-	}
+  /**
+   * Compares this object with the specified object for order.
+   *
+   * @param o The object to be compared.
+   * @return A negative integer, zero, or a positive integer as this object is less than, equal to,
+   *     or greater than the specified object.
+   */
+  public int compareTo(Parameter o) {
+    return getName().compareTo(o.getName());
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public boolean equals(Object obj)
-	{
-		boolean result = (obj == this);
+  /** {@inheritDoc} */
+  @Override
+  public boolean equals(Object obj) {
+    boolean result = (obj == this);
 
-		//if obj == this no need to go further
-		if (!result)
-		{
-			// if obj isn't a parameter or is null don't evaluate further
-			if ((obj instanceof Parameter) && obj != null)
-			{
-				Parameter that = (Parameter) obj;
+    // if obj == this no need to go further
+    if (!result) {
+      // if obj isn't a parameter or is null don't evaluate further
+      if ((obj instanceof Parameter) && obj != null) {
+        Parameter that = (Parameter) obj;
 
-				if (!(this.name == null)) // compare names taking care of nulls
-				{
-					result = (this.name.equals(that.name));
-				}
-				else
-				{
-					result = (that.name == null);
-				}
+        if (!(this.name == null)) // compare names taking care of nulls
+        {
+          result = (this.name.equals(that.name));
+        } else {
+          result = (that.name == null);
+        }
 
-				if (result) //if names are equal test the values
-				{
-					if (!(this.value == null)) // compare values taking care of nulls
-					{
-						result = (this.value.equals(that.value));
-					}
-					else
-					{
-						result = (that.value == null);
-					}
-				}
-			}
-		}
-		
-		return result;
-	}
+        if (result) // if names are equal test the values
+        {
+          if (!(this.value == null)) // compare values taking care of nulls
+          {
+            result = (this.value.equals(that.value));
+          } else {
+            result = (that.value == null);
+          }
+        }
+      }
+    }
 
-	/**
-	 * Returns the name of this parameter.
-	 * @return The name of this parameter.
-	 */
-	public String getName()
-	{
-		return this.name;
-	}
+    return result;
+  }
 
-	/**
-	 * Returns the value.
-	 * @return The value.
-	 */
-	public String getValue()
-	{
-		return this.value;
-	}
+  /**
+   * Returns the name of this parameter.
+   *
+   * @return The name of this parameter.
+   */
+  public String getName() {
+    return this.name;
+  }
 
-	/** {@inheritDoc} */
-	@Override
-	public int hashCode()
-	{
-		return Factory.hashCode(getName(), getValue());
-	}
+  /**
+   * Returns the value.
+   *
+   * @return The value.
+   */
+  public String getValue() {
+    return this.value;
+  }
 
-	/**
-	 * Sets the value.
-	 * @param value The value.
-	 */
-	public void setValue(String value)
-	{
-		this.value = value;
-	}
+  /** {@inheritDoc} */
+  @Override
+  public int hashCode() {
+    return Factory.hashCode(getName(), getValue());
+  }
 
-	/**
-	 * Returns a string with the name and value of the parameter.
-	 * @return A string with the name and value of the parameter.
-	 */
-	@Override
-	public String toString()
-	{
-		return getName() + ": " + getValue();
-	}
+  /**
+   * Sets the value.
+   *
+   * @param value The value.
+   */
+  public void setValue(String value) {
+    this.value = value;
+  }
 
-	/**
-	 * Encodes the parameter.
-	 * @return The encoded string.
-	 * @throws IOException
-	 */
-	public String urlEncode() throws IOException
-	{
-		StringBuilder sb = new StringBuilder();
-		urlEncode(sb);
-		return sb.toString();
-	}
+  /**
+   * Returns a string with the name and value of the parameter.
+   *
+   * @return A string with the name and value of the parameter.
+   */
+  @Override
+  public String toString() {
+    return getName() + ": " + getValue();
+  }
 
-	/**
-	 * Encodes the parameter and append the result to the given buffer.
-	 * @param buffer The buffer to append.
-	 * @throws IOException
-	 */
-	public void urlEncode(Appendable buffer) throws IOException
-	{
-		if (getName() != null)
-		{
-			buffer.append(Reference.encode(getName()));
+  /**
+   * Encodes the parameter.
+   *
+   * @return The encoded string.
+   * @throws IOException
+   */
+  public String urlEncode() throws IOException {
+    StringBuilder sb = new StringBuilder();
+    urlEncode(sb);
+    return sb.toString();
+  }
 
-			if (getValue() != null)
-			{
-				buffer.append('=');
-				buffer.append(Reference.encode(getValue()));
-			}
-		}
-	}
+  /**
+   * Encodes the parameter and append the result to the given buffer.
+   *
+   * @param buffer The buffer to append.
+   * @throws IOException
+   */
+  public void urlEncode(Appendable buffer) throws IOException {
+    if (getName() != null) {
+      buffer.append(Reference.encode(getName()));
+
+      if (getValue() != null) {
+        buffer.append('=');
+        buffer.append(Reference.encode(getValue()));
+      }
+    }
+  }
 }

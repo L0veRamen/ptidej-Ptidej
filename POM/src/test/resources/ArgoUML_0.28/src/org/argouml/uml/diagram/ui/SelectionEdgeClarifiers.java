@@ -25,7 +25,6 @@
 package org.argouml.uml.diagram.ui;
 
 import java.awt.Graphics;
-
 import org.tigris.gef.base.Globals;
 import org.tigris.gef.base.PathItemPlacementStrategy;
 import org.tigris.gef.base.SelectionReshape;
@@ -33,44 +32,38 @@ import org.tigris.gef.presentation.Fig;
 import org.tigris.gef.presentation.FigEdge;
 
 /**
- *
- *
- *
  * @author jrobbins
  */
 public class SelectionEdgeClarifiers extends SelectionReshape {
 
+  /**
+   * Construct a new SelectionEdgeClarifiers for the given Fig
+   *
+   * @param f the given fig
+   */
+  public SelectionEdgeClarifiers(Fig f) {
+    super(f);
+  }
 
-    /**
-     * Construct a new SelectionEdgeClarifiers for the given Fig
-     * 
-     * @param f the given fig
-     */
-    public SelectionEdgeClarifiers(Fig f) { super(f); }
-
-    /**
-     * This extends the standard selection painting to also highlight
-     * the editable text labels and their placement strategies should
-     * there be only one selected item.
-     *
-     * @see org.tigris.gef.base.Selection#paint(java.awt.Graphics)
-     * @param g the graphics object
-     */
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g);
-        int selectionCount =
-            Globals.curEditor().getSelectionManager().getSelections().size();
-        if (selectionCount == 1) {
-            FigEdge edge = (FigEdge) getContent();
-            if (edge instanceof Clarifiable) {
-                ((Clarifiable) edge).paintClarifiers(g);
-            }
-	    for (PathItemPlacementStrategy strategy
-	            : edge.getPathItemStrategies()) {
-	        strategy.paint(g);
-	    }
-	}
+  /**
+   * This extends the standard selection painting to also highlight the editable text labels and
+   * their placement strategies should there be only one selected item.
+   *
+   * @see org.tigris.gef.base.Selection#paint(java.awt.Graphics)
+   * @param g the graphics object
+   */
+  @Override
+  public void paint(Graphics g) {
+    super.paint(g);
+    int selectionCount = Globals.curEditor().getSelectionManager().getSelections().size();
+    if (selectionCount == 1) {
+      FigEdge edge = (FigEdge) getContent();
+      if (edge instanceof Clarifiable) {
+        ((Clarifiable) edge).paintClarifiers(g);
+      }
+      for (PathItemPlacementStrategy strategy : edge.getPathItemStrategies()) {
+        strategy.paint(g);
+      }
     }
-
+  }
 }

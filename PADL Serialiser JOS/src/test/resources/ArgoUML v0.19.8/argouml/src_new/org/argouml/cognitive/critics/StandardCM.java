@@ -29,50 +29,44 @@ import java.util.Vector;
 import org.argouml.cognitive.Designer;
 
 /**
- * The standard Control Mech. It extends an ANDControlMech with the individual
- * cm's
+ * The standard Control Mech. It extends an ANDControlMech with the individual cm's
+ *
  * <ul>
- * <li>EnabledCM
- * <li>NotSnoozedCM
- * <li>DesignGoalsCM
- * <li>CurDecisionCM
- * <ul>
- * 
- * implying that a critic is relevant if and if only it is enabled, not snoozed,
- * applicable to the current goals and relevant decisions to be supported.
- *  
+ *   <li>EnabledCM
+ *   <li>NotSnoozedCM
+ *   <li>DesignGoalsCM
+ *   <li>CurDecisionCM
+ *       <ul>
+ *         implying that a critic is relevant if and if only it is enabled, not snoozed, applicable
+ *         to the current goals and relevant decisions to be supported.
  */
 public class StandardCM extends AndCM {
 
-    /**
-     * The constructor.
-     *  
-     */
-    public StandardCM() {
-        addMech(new EnabledCM());
-        addMech(new NotSnoozedCM());
-        addMech(new DesignGoalsCM());
-        addMech(new CurDecisionCM());
-    }
+  /** The constructor. */
+  public StandardCM() {
+    addMech(new EnabledCM());
+    addMech(new NotSnoozedCM());
+    addMech(new DesignGoalsCM());
+    addMech(new CurDecisionCM());
+  }
 } /* end class StandardCM */
 
-
 class EnabledCM implements ControlMech {
-    public boolean isRelevant(Critic c, Designer d) {
+  public boolean isRelevant(Critic c, Designer d) {
     return c.isEnabled();
-    }
+  }
 } // end class EnabledCM
 
 class NotSnoozedCM implements ControlMech {
-    public boolean isRelevant(Critic c, Designer d) {
-        return !c.snoozeOrder().getSnoozed();
-    }
+  public boolean isRelevant(Critic c, Designer d) {
+    return !c.snoozeOrder().getSnoozed();
+  }
 } // end class NotSnoozedCM
 
 class DesignGoalsCM implements ControlMech {
-    public boolean isRelevant(Critic c, Designer d) {
-        return c.isRelevantToGoals(d);
-    }
+  public boolean isRelevant(Critic c, Designer d) {
+    return c.isRelevantToGoals(d);
+  }
 } // end class DesignGoalsCM
 
 // How much control should critics have over when they are relavant?
@@ -81,50 +75,47 @@ class DesignGoalsCM implements ControlMech {
 // componentization?
 
 class CurDecisionCM implements ControlMech {
-    public boolean isRelevant(Critic c, Designer d) {
-        return c.isRelevantToDecisions(d);
-    }
+  public boolean isRelevant(Critic c, Designer d) {
+    return c.isRelevantToDecisions(d);
+  }
 } // end class CurDecisionCM
 
 abstract class CompositeCM implements ControlMech {
-    private Vector mechs = new Vector();
+  private Vector mechs = new Vector();
 
-    /**
-     * @return Returns the _mechs.
-     */
-    protected Vector getMechs() {
-        return mechs;
-    }
+  /**
+   * @return Returns the _mechs.
+   */
+  protected Vector getMechs() {
+    return mechs;
+  }
 
-    /**
-     * @param cm
-     *            the ControlMech
-     */
-    public void addMech(ControlMech cm) {
-        mechs.addElement(cm);
-    }
+  /**
+   * @param cm the ControlMech
+   */
+  public void addMech(ControlMech cm) {
+    mechs.addElement(cm);
+  }
 } // end class CompositeCM
 
 class AndCM extends CompositeCM {
-    public boolean isRelevant(Critic c, Designer d) {
-        Enumeration cur = getMechs().elements();
-        while (cur.hasMoreElements()) {
-            ControlMech cm = (ControlMech) cur.nextElement();
-            if (!cm.isRelevant(c, d))
-                return false;
-        }
-        return true;
+  public boolean isRelevant(Critic c, Designer d) {
+    Enumeration cur = getMechs().elements();
+    while (cur.hasMoreElements()) {
+      ControlMech cm = (ControlMech) cur.nextElement();
+      if (!cm.isRelevant(c, d)) return false;
     }
+    return true;
+  }
 } // end class AndCM
 
 class OrCM extends CompositeCM {
-    public boolean isRelevant(Critic c, Designer d) {
-        Enumeration cur = getMechs().elements();
-        while (cur.hasMoreElements()) {
-            ControlMech cm = (ControlMech) cur.nextElement();
-            if (cm.isRelevant(c, d))
-                return true;
-        }
-        return false;
+  public boolean isRelevant(Critic c, Designer d) {
+    Enumeration cur = getMechs().elements();
+    while (cur.hasMoreElements()) {
+      ControlMech cm = (ControlMech) cur.nextElement();
+      if (cm.isRelevant(c, d)) return true;
     }
+    return false;
+  }
 } // end class OrCM

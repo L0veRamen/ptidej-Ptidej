@@ -12,37 +12,37 @@
 package org.jhotdraw.samples.net;
 
 import javax.swing.JToolBar;
+import org.jhotdraw.application.DrawApplication;
+import org.jhotdraw.figures.*;
 import org.jhotdraw.framework.*;
 import org.jhotdraw.standard.*;
-import org.jhotdraw.figures.*;
-import org.jhotdraw.application.DrawApplication;
 
 /**
  * @version <$CURRENT_VERSION$>
  */
-public  class NetApp extends DrawApplication {
+public class NetApp extends DrawApplication {
 
-	public NetApp() {
-		super("Net");
-	}
+  public NetApp() {
+    super("Net");
+  }
 
-	protected void createTools(JToolBar palette) {
-		super.createTools(palette);
+  protected void createTools(JToolBar palette) {
+    super.createTools(palette);
 
-		Tool tool = new TextTool(this, new NodeFigure());
-		palette.add(createToolButton(IMAGES + "TEXT", "Text Tool", tool));
+    Tool tool = new TextTool(this, new NodeFigure());
+    palette.add(createToolButton(IMAGES + "TEXT", "Text Tool", tool));
 
-		tool = new CreationTool(this, new NodeFigure());
-		palette.add(createToolButton(IMAGES + "RECT", "Create Org Unit", tool));
+    tool = new CreationTool(this, new NodeFigure());
+    palette.add(createToolButton(IMAGES + "RECT", "Create Org Unit", tool));
 
-		tool = new ConnectionTool(this, new LineConnection());
-		palette.add(createToolButton(IMAGES + "CONN", "Connection Tool", tool));
-	}
+    tool = new ConnectionTool(this, new LineConnection());
+    palette.add(createToolButton(IMAGES + "CONN", "Connection Tool", tool));
+  }
 
-	//-- main -----------------------------------------------------------
+  // -- main -----------------------------------------------------------
 
-	public static void main(String[] args) {
-		DrawApplication window = new NetApp();
-		window.open();
-	}
+  public static void main(String[] args) {
+    DrawApplication window = new NetApp();
+    window.open();
+  }
 }

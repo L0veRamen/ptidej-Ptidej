@@ -25,142 +25,123 @@
 package org.argouml.uml.diagram.ui;
 
 import java.awt.Color;
-
 import org.argouml.kernel.Project;
 import org.argouml.uml.diagram.DiagramSettings;
 
 /**
- * An interface that all ArgoUML Figs are required to interface. It provides a
- * single place to specify behaviors that we want all Figs to have since we
- * don't have access to the GEF class hierarchy (and it is made up of concrete
- * classes instead of interfaces.
- * 
+ * An interface that all ArgoUML Figs are required to interface. It provides a single place to
+ * specify behaviors that we want all Figs to have since we don't have access to the GEF class
+ * hierarchy (and it is made up of concrete classes instead of interfaces.
+ *
  * @author Tom Morris <tfmorris@gmail.com>
  * @since 0.25.4
  */
 public interface ArgoFig {
 
-    // TODO: These have been used for most instances of new FigFoo(X0, Y0, ...
-    // but additional work is required to extract the constant from
-    // calculations, etc.
-    
-    /** Default X offset of origin used when building figs */
-    static final int X0 = 10;
+  // TODO: These have been used for most instances of new FigFoo(X0, Y0, ...
+  // but additional work is required to extract the constant from
+  // calculations, etc.
 
-    /** Default Y offset of origin used when building figs */
-    static final int Y0 = 10;
+  /** Default X offset of origin used when building figs */
+  static final int X0 = 10;
 
-    /**
-     * min. 17, used to calculate y pos of FigText items in a compartment
-     */
-    public static final int ROWHEIGHT = 17;
-    /**
-     * min. 18, used to calculate y pos of stereotype FigText items
-     * in a compartment
-     */
-    public static final int STEREOHEIGHT = 18;
+  /** Default Y offset of origin used when building figs */
+  static final int Y0 = 10;
 
-    /**
-     * Default line width in pixels.
-     */
-    static final int LINE_WIDTH = 1;
+  /** min. 17, used to calculate y pos of FigText items in a compartment */
+  public static final int ROWHEIGHT = 17;
 
-    /**
-     * Default color for lines. This constant is an interim measure before
-     * moving to settable defaults.
-     */
-    static final Color LINE_COLOR = Color.black;
-    
-    /**
-     * Color for a solid fill.  It's probably always going to be the same as
-     * the line color, but we'll identify it separately for flexibility in the
-     * future.
-     */
-    static final Color SOLID_FILL_COLOR = LINE_COLOR;
-    
-    /**
-     * Default color for filled figures. This is an interim measure before
-     * moving to settable defaults.
-     */
-    static final Color FILL_COLOR = Color.white;
+  /** min. 18, used to calculate y pos of stereotype FigText items in a compartment */
+  public static final int STEREOHEIGHT = 18;
 
-    /**
-     * Color for a line which is supposed to blend into the fill.  It's the same
-     * color for right now, but we'll keep it separate so we can identify it
-     * easily in the future.
-     */
-    static final Color INVISIBLE_LINE_COLOR = FILL_COLOR;
+  /** Default line width in pixels. */
+  static final int LINE_WIDTH = 1;
 
-    
-    /**
-     * Default color for text. This is an interim measure before moving to
-     * settable defaults.
-     */
-    static final Color TEXT_COLOR = Color.black;
-    
-    /**
-     * The color used for things which shouldn't normally be visible, so we can
-     * spot them easily when they are.
-     */
-    static final Color DEBUG_COLOR = Color.cyan;
+  /**
+   * Default color for lines. This constant is an interim measure before moving to settable
+   * defaults.
+   */
+  static final Color LINE_COLOR = Color.black;
 
+  /**
+   * Color for a solid fill. It's probably always going to be the same as the line color, but we'll
+   * identify it separately for flexibility in the future.
+   */
+  static final Color SOLID_FILL_COLOR = LINE_COLOR;
 
-    /**
-     * Set the owning project for this Fig. This is an optional operation which
-     * may throw an {@link UnsupportedOperationException} if not implemented.
-     * 
-     * @param project the project
-     * @deprecated for 0.27.2 by tfmorris. This optional method has never been
-     *             implemented by any concrete class that implements this
-     *             interface and should not be used. Project ownership is
-     *             maintained at a coarser granularity level.
-     */
-    @Deprecated
-    public void setProject(Project project);
+  /**
+   * Default color for filled figures. This is an interim measure before moving to settable
+   * defaults.
+   */
+  static final Color FILL_COLOR = Color.white;
 
-    /**
-     * Get the owning project for this fig.
-     * 
-     * @return the owning project
-     * @deprecated for 0.27.2 by tfmorris. Implementations should have all the
-     *             information that they require in the DiagramSettings object.
-     */
-    @Deprecated
-    public Project getProject();
-    
-    /**
-     * Rerender the entire fig.
-     * <p>
-     * This may be an expensive operation for subclasses which are complex,
-     * so should be used sparingly.  It is only intended to be used when 
-     * some global change to the rendering defaults is made at the ArgoDiagram
-     * level.
-     */
-    public void renderingChanged();
+  /**
+   * Color for a line which is supposed to blend into the fill. It's the same color for right now,
+   * but we'll keep it separate so we can identify it easily in the future.
+   */
+  static final Color INVISIBLE_LINE_COLOR = FILL_COLOR;
 
-    /**
-     * @return the rendering settings for the Fig
-     */
-    public DiagramSettings getSettings();
-    
-    /**
-     * Set the rendering settings to be used for this fig. Currently this
-     * normally will be a diagram-wide or project-wide settings object that is
-     * shared by all Figs.
-     * 
-     * @param settings the rendering settings to use
-     */
-    public void setSettings(DiagramSettings settings);
-    
-    /**
-     * Setting the owner of the Fig must be done in the constructor and
-     * not changed aftewards for all ArgoUML figs.
-     * 
-     * @param owner owning UML element
-     * @see org.tigris.gef.presentation.Fig#setOwner(java.lang.Object)
-     * @deprecated for 0.27.3 by tfmorris.  Set owner in constructor.
-     */
-    @Deprecated
-    public void setOwner(Object owner);
-    
+  /** Default color for text. This is an interim measure before moving to settable defaults. */
+  static final Color TEXT_COLOR = Color.black;
+
+  /**
+   * The color used for things which shouldn't normally be visible, so we can spot them easily when
+   * they are.
+   */
+  static final Color DEBUG_COLOR = Color.cyan;
+
+  /**
+   * Set the owning project for this Fig. This is an optional operation which may throw an {@link
+   * UnsupportedOperationException} if not implemented.
+   *
+   * @param project the project
+   * @deprecated for 0.27.2 by tfmorris. This optional method has never been implemented by any
+   *     concrete class that implements this interface and should not be used. Project ownership is
+   *     maintained at a coarser granularity level.
+   */
+  @Deprecated
+  public void setProject(Project project);
+
+  /**
+   * Get the owning project for this fig.
+   *
+   * @return the owning project
+   * @deprecated for 0.27.2 by tfmorris. Implementations should have all the information that they
+   *     require in the DiagramSettings object.
+   */
+  @Deprecated
+  public Project getProject();
+
+  /**
+   * Rerender the entire fig.
+   *
+   * <p>This may be an expensive operation for subclasses which are complex, so should be used
+   * sparingly. It is only intended to be used when some global change to the rendering defaults is
+   * made at the ArgoDiagram level.
+   */
+  public void renderingChanged();
+
+  /**
+   * @return the rendering settings for the Fig
+   */
+  public DiagramSettings getSettings();
+
+  /**
+   * Set the rendering settings to be used for this fig. Currently this normally will be a
+   * diagram-wide or project-wide settings object that is shared by all Figs.
+   *
+   * @param settings the rendering settings to use
+   */
+  public void setSettings(DiagramSettings settings);
+
+  /**
+   * Setting the owner of the Fig must be done in the constructor and not changed aftewards for all
+   * ArgoUML figs.
+   *
+   * @param owner owning UML element
+   * @see org.tigris.gef.presentation.Fig#setOwner(java.lang.Object)
+   * @deprecated for 0.27.3 by tfmorris. Set owner in constructor.
+   */
+  @Deprecated
+  public void setOwner(Object owner);
 }

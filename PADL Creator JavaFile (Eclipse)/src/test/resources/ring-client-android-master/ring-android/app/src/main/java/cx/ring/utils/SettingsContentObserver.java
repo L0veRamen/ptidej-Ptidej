@@ -28,35 +28,35 @@ import android.os.Handler;
 import android.util.Log;
 
 public class SettingsContentObserver extends ContentObserver {
-    private static final String TAG = "Settings";
+  private static final String TAG = "Settings";
 
-    private final AudioManager audioManager;
-    private double previousVolume;
+  private final AudioManager audioManager;
+  private double previousVolume;
 
-    public SettingsContentObserver(Context c, Handler handler) {
-        super(handler);
-        audioManager = (AudioManager) c.getSystemService(Context.AUDIO_SERVICE);
-        previousVolume = audioManager.getStreamVolume(AudioManager.STREAM_VOICE_CALL);
+  public SettingsContentObserver(Context c, Handler handler) {
+    super(handler);
+    audioManager = (AudioManager) c.getSystemService(Context.AUDIO_SERVICE);
+    previousVolume = audioManager.getStreamVolume(AudioManager.STREAM_VOICE_CALL);
+  }
+
+  @Override
+  public boolean deliverSelfNotifications() {
+    return super.deliverSelfNotifications();
+  }
+
+  @Override
+  public void onChange(boolean selfChange) {
+    super.onChange(selfChange);
+    double currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_VOICE_CALL);
+    double delta = previousVolume - currentVolume;
+    if (delta > 0) {
+      Log.d(TAG, "Decreased");
+      previousVolume = currentVolume;
+      //            context.changeVolume(currentVolume);
+    } else if (delta < 0) {
+      Log.d(TAG, "Increased");
+      previousVolume = currentVolume;
+      //            context.changeVolume(currentVolume);
     }
-
-    @Override
-    public boolean deliverSelfNotifications() {
-        return super.deliverSelfNotifications();
-    }
-
-    @Override
-    public void onChange(boolean selfChange) {
-        super.onChange(selfChange);
-        double currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_VOICE_CALL);
-        double delta = previousVolume - currentVolume;
-        if(delta>0)  {
-            Log.d(TAG,"Decreased");
-            previousVolume=currentVolume;
-//            context.changeVolume(currentVolume);
-        } else if(delta<0) {
-            Log.d(TAG,"Increased");
-            previousVolume=currentVolume;
-//            context.changeVolume(currentVolume);
-        }
-    }
+  }
 }

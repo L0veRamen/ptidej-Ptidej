@@ -24,111 +24,105 @@ package org.restlet.service;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.restlet.data.Protocol;
 import org.restlet.resource.Representation;
 
 /**
  * Service providing client and server connectors.
+ *
  * @author Jerome Louvel (contact@noelios.com)
  */
-public class ConnectorService
-{
-	/** The list of required client protocols. */
-	private List<Protocol> clientProtocols;
+public class ConnectorService {
+  /** The list of required client protocols. */
+  private List<Protocol> clientProtocols;
 
-	/** The list of required server protocols. */
-	private List<Protocol> serverProtocols;
+  /** The list of required server protocols. */
+  private List<Protocol> serverProtocols;
 
-	/**
-	 * Constructor.
-	 */
-	public ConnectorService()
-	{
-	}
+  /** Constructor. */
+  public ConnectorService() {}
 
-	/**
-	 * Call-back method invoked by the client or server connectors just after sending the entity to 
-	 * the target component. The default implementation does nothing.
-	 * @param entity The entity about to be committed.
-	 */
-	public void afterSend(Representation entity)
-	{
-		// Do nothing by default. 
-	}
+  /**
+   * Call-back method invoked by the client or server connectors just after sending the entity to
+   * the target component. The default implementation does nothing.
+   *
+   * @param entity The entity about to be committed.
+   */
+  public void afterSend(Representation entity) {
+    // Do nothing by default.
+  }
 
-	/**
-	 * Call-back method invoked by the client or server connectors just before sending the entity to 
-	 * the target component. The default implementation does nothing.
-	 * @param entity The entity about to be committed.
-	 */
-	public void beforeSend(Representation entity)
-	{
-		// Do nothing by default. 
-	}
+  /**
+   * Call-back method invoked by the client or server connectors just before sending the entity to
+   * the target component. The default implementation does nothing.
+   *
+   * @param entity The entity about to be committed.
+   */
+  public void beforeSend(Representation entity) {
+    // Do nothing by default.
+  }
 
-	/**
-	 * Returns the list of required client protocols. 
-	 * @return The list of required client protocols.
-	 */
-	public List<Protocol> getClientProtocols()
-	{
-		if (this.clientProtocols == null) this.clientProtocols = new ArrayList<Protocol>();
-		return this.clientProtocols;
-	}
+  /**
+   * Returns the list of required client protocols.
+   *
+   * @return The list of required client protocols.
+   */
+  public List<Protocol> getClientProtocols() {
+    if (this.clientProtocols == null) this.clientProtocols = new ArrayList<Protocol>();
+    return this.clientProtocols;
+  }
 
-	/**
-	 * Returns the list of optional client protocols. 
-	 * @return The list of optional client protocols.
-	 * @deprecated Use getClientProtocols instead
-	 */
-	@Deprecated
-	public List<Protocol> getOptionalClientProtocols()
-	{
-		return getClientProtocols();
-	}
+  /**
+   * Returns the list of optional client protocols.
+   *
+   * @return The list of optional client protocols.
+   * @deprecated Use getClientProtocols instead
+   */
+  @Deprecated
+  public List<Protocol> getOptionalClientProtocols() {
+    return getClientProtocols();
+  }
 
-	/**
-	 * Returns the list of optional server protocols. 
-	 * @return The list of optional server protocols.
-	 * @deprecated Use getServerProtocols instead
-	 */
-	@Deprecated
-	public List<Protocol> getOptionalServerProtocols()
-	{
-		return getServerProtocols();
-	}
+  /**
+   * Returns the list of optional server protocols.
+   *
+   * @return The list of optional server protocols.
+   * @deprecated Use getServerProtocols instead
+   */
+  @Deprecated
+  public List<Protocol> getOptionalServerProtocols() {
+    return getServerProtocols();
+  }
 
-	/**
-	 * Returns the list of required client protocols. 
-	 * @return The list of required client protocols.
-	 * @deprecated Use getClientProtocols instead
-	 */
-	@Deprecated
-	public List<Protocol> getRequiredClientProtocols()
-	{
-		return getClientProtocols();
-	}
+  /**
+   * Returns the list of required client protocols.
+   *
+   * @return The list of required client protocols.
+   * @deprecated Use getClientProtocols instead
+   */
+  @Deprecated
+  public List<Protocol> getRequiredClientProtocols() {
+    return getClientProtocols();
+  }
 
-	/**
-	 * Returns the list of required server protocols. 
-	 * @return The list of required server protocols.
-	 * @deprecated Use getServerProtocols instead
-	 */
-	@Deprecated
-	public List<Protocol> getRequiredServerProtocols()
-	{
-		return getServerProtocols();
-	}
+  /**
+   * Returns the list of required server protocols.
+   *
+   * @return The list of required server protocols.
+   * @deprecated Use getServerProtocols instead
+   */
+  @Deprecated
+  public List<Protocol> getRequiredServerProtocols() {
+    return getServerProtocols();
+  }
 
-	/**
-	 * Returns the list of required server protocols. 
-	 * @return The list of required server protocols.
-	 */
-	public List<Protocol> getServerProtocols()
-	{
-		if (this.serverProtocols == null) this.serverProtocols = new ArrayList<Protocol>();
-		return this.serverProtocols;
-	}
-
+  /**
+   * Returns the list of required server protocols.
+   *
+   * @return The list of required server protocols.
+   */
+  public List<Protocol> getServerProtocols() {
+    if (this.serverProtocols == null) this.serverProtocols = new ArrayList<Protocol>();
+    return this.serverProtocols;
+  }
 }

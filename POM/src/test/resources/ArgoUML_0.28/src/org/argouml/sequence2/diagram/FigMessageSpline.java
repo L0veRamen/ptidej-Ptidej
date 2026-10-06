@@ -25,61 +25,59 @@
 package org.argouml.sequence2.diagram;
 
 import java.awt.Point;
-
 import org.tigris.gef.presentation.FigSpline;
 
 /**
- * FigMessageSpline refines the behaviour of a Spline for a self-message
- * in the sequence diagram.
+ * FigMessageSpline refines the behaviour of a Spline for a self-message in the sequence diagram.
+ *
  * @author penyaskito
  */
 public class FigMessageSpline extends FigSpline {
-    
-    public FigMessageSpline () {
-        // this constructor is needed for PGMLStackParser to load
-        // saved diagrams. It does nothing, because 
-        // PGMLStackParser will call setPoints later.
-    }
-    
-    FigMessageSpline (Point start) {
-	assert (start != null) : "Point can't be null";
-	
-	Point end = new Point(start.x, start.y + 20);
 
-	Point middle = new Point();
-	middle.x = start.x + 100;
-	middle.y = (start.y + end.y) / 2;
+  public FigMessageSpline() {
+    // this constructor is needed for PGMLStackParser to load
+    // saved diagrams. It does nothing, because
+    // PGMLStackParser will call setPoints later.
+  }
 
-	super.setFilled(false);
-	super.setComplete(false);
-	super.addPoint(start);
-	super.addPoint(new Point(start.x + 20, start.y));
-	super.addPoint(middle);
-	super.addPoint(new Point(end.x + 20, end.y));
-	super.addPoint(end);
-    }
-    
-    /**
-     * This method is overridden in order to ignore change of the y coordinate
-     * during draging. Use translateFig(int dx, int dy) to force change of the
-     * y coordinate.
-     * @param dx the x offset
-     * @param dy the y offset - IGNORED
-     * @see org.tigris.gef.presentation.Fig#translate(int, int)
-     */
-    public void translate(int dx, int dy) {
-    	super.translate(dx, 0);
-    }
-    
-    /**
-     * Used in order to force translation of both X and Y coordiante.
-     * 
-     * @param dx the x offset
-     * @param dy the y offset
-     * @see org.tigris.gef.presentation.Fig#translate(int, int)
-     */
-    public void translateFig(int dx, int dy) {
-    	super.translate(dx, dy);
-    }
-    
+  FigMessageSpline(Point start) {
+    assert (start != null) : "Point can't be null";
+
+    Point end = new Point(start.x, start.y + 20);
+
+    Point middle = new Point();
+    middle.x = start.x + 100;
+    middle.y = (start.y + end.y) / 2;
+
+    super.setFilled(false);
+    super.setComplete(false);
+    super.addPoint(start);
+    super.addPoint(new Point(start.x + 20, start.y));
+    super.addPoint(middle);
+    super.addPoint(new Point(end.x + 20, end.y));
+    super.addPoint(end);
+  }
+
+  /**
+   * This method is overridden in order to ignore change of the y coordinate during draging. Use
+   * translateFig(int dx, int dy) to force change of the y coordinate.
+   *
+   * @param dx the x offset
+   * @param dy the y offset - IGNORED
+   * @see org.tigris.gef.presentation.Fig#translate(int, int)
+   */
+  public void translate(int dx, int dy) {
+    super.translate(dx, 0);
+  }
+
+  /**
+   * Used in order to force translation of both X and Y coordiante.
+   *
+   * @param dx the x offset
+   * @param dy the y offset
+   * @see org.tigris.gef.presentation.Fig#translate(int, int)
+   */
+  public void translateFig(int dx, int dy) {
+    super.translate(dx, dy);
+  }
 }

@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -45,39 +45,39 @@ import padl.micropatterns.test.cases.TraitTest;
  * @author Yann
  */
 public class TestMicroPatterns extends TestSuite {
-	public static TestSuite suite() {
-		final TestMicroPatterns suite = new TestMicroPatterns();
-		suite.setName(TestMicroPatterns.class.getName());
+  public static TestSuite suite() {
+    final TestMicroPatterns suite = new TestMicroPatterns();
+    suite.setName(TestMicroPatterns.class.getName());
 
-		suite.addTestSuite(RepositoryTest.class);
-		suite.addTestSuite(DesignatorTest.class);
-		suite.addTestSuite(TaxonormyTest.class);
-		suite.addTestSuite(JoinerTest.class);
-		suite.addTestSuite(PoolTest.class);
-		suite.addTestSuite(FunctionPointerTest.class);
-		suite.addTestSuite(FunctionObjectTest.class);
-		suite.addTestSuite(CobolLikeTest.class);
-		suite.addTestSuite(StatelessTest.class);
-		suite.addTestSuite(CommonStateTest.class);
-		suite.addTestSuite(ImmutableTest.class);
-		suite.addTestSuite(RestrictedCreationTest.class);
-		suite.addTestSuite(SamplerTest.class);
-		suite.addTestSuite(BoxTest.class);
-		suite.addTestSuite(CanopyTest.class);
-		suite.addTestSuite(CompoundBoxTest.class);
-		suite.addTestSuite(RecordTest.class);
-		suite.addTestSuite(DataManagerTest.class);
-		suite.addTestSuite(SinkTest.class);
-		suite.addTestSuite(OutlineTest.class);
-		suite.addTestSuite(TraitTest.class);
-		suite.addTestSuite(StateMachineTest.class);
-		suite.addTestSuite(PureTypeTest.class);
-		suite.addTestSuite(AugmentedTypeTest.class);
-		suite.addTestSuite(PseudoClassTest.class);
-		suite.addTestSuite(ImplementorTest.class);
-		suite.addTestSuite(OverriderTest.class);
-		suite.addTestSuite(ExtenderTest.class);
+    suite.addTestSuite(RepositoryTest.class);
+    suite.addTestSuite(DesignatorTest.class);
+    suite.addTestSuite(TaxonormyTest.class);
+    suite.addTestSuite(JoinerTest.class);
+    suite.addTestSuite(PoolTest.class);
+    suite.addTestSuite(FunctionPointerTest.class);
+    suite.addTestSuite(FunctionObjectTest.class);
+    suite.addTestSuite(CobolLikeTest.class);
+    suite.addTestSuite(StatelessTest.class);
+    suite.addTestSuite(CommonStateTest.class);
+    suite.addTestSuite(ImmutableTest.class);
+    suite.addTestSuite(RestrictedCreationTest.class);
+    suite.addTestSuite(SamplerTest.class);
+    suite.addTestSuite(BoxTest.class);
+    suite.addTestSuite(CanopyTest.class);
+    suite.addTestSuite(CompoundBoxTest.class);
+    suite.addTestSuite(RecordTest.class);
+    suite.addTestSuite(DataManagerTest.class);
+    suite.addTestSuite(SinkTest.class);
+    suite.addTestSuite(OutlineTest.class);
+    suite.addTestSuite(TraitTest.class);
+    suite.addTestSuite(StateMachineTest.class);
+    suite.addTestSuite(PureTypeTest.class);
+    suite.addTestSuite(AugmentedTypeTest.class);
+    suite.addTestSuite(PseudoClassTest.class);
+    suite.addTestSuite(ImplementorTest.class);
+    suite.addTestSuite(OverriderTest.class);
+    suite.addTestSuite(ExtenderTest.class);
 
-		return suite;
-	}
+    return suite;
+  }
 }

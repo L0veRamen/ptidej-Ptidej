@@ -27,11 +27,9 @@ package org.argouml.uml.ui;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
-
 import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
-
 import org.apache.log4j.Logger;
 import org.argouml.application.api.CommandLineInterface;
 import org.argouml.application.api.Configuration;
@@ -45,135 +43,118 @@ import org.argouml.ui.ProjectBrowser;
 import org.argouml.ui.cmd.GenericArgoMenuBar;
 
 /**
- * Action that loads the project.
- * This will throw away the project that we were working with up to this
- * point so some extra caution.
+ * Action that loads the project. This will throw away the project that we were working with up to
+ * this point so some extra caution.
  *
  * @see ActionSaveProject
  */
-public class ActionOpenProject extends AbstractAction
-    implements CommandLineInterface {
-    /**
-     * Logger.
-     */
-    private static final Logger LOG =
-        Logger.getLogger(ActionOpenProject.class);
+public class ActionOpenProject extends AbstractAction implements CommandLineInterface {
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(ActionOpenProject.class);
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    /**
-     * Constructor for this action.
-     */
-    public ActionOpenProject() {
-        super(Translator.localize("action.open-project"),
-                ResourceLoaderWrapper.lookupIcon("action.open-project"));
+  /** Constructor for this action. */
+  public ActionOpenProject() {
+    super(
+        Translator.localize("action.open-project"),
+        ResourceLoaderWrapper.lookupIcon("action.open-project"));
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // main methods
+
+  /**
+   * Performs the action of opening a project.
+   *
+   * @param e an event
+   */
+  public void actionPerformed(ActionEvent e) {
+    ProjectBrowser pb = ProjectBrowser.getInstance();
+    Project p = ProjectManager.getManager().getCurrentProject();
+    PersistenceManager pm = PersistenceManager.getInstance();
+
+    if (!ProjectBrowser.getInstance().askConfirmationAndSave()) {
+      return;
     }
 
-    ////////////////////////////////////////////////////////////////
-    // main methods
-
-
-    /**
-     * Performs the action of opening a project.
-     *
-     * @param e an event
-     */
-    public void actionPerformed(ActionEvent e) {
-        ProjectBrowser pb = ProjectBrowser.getInstance();
-        Project p = ProjectManager.getManager().getCurrentProject();
-        PersistenceManager pm = PersistenceManager.getInstance();
-
-        if (!ProjectBrowser.getInstance().askConfirmationAndSave()) {
-            return;
+    try {
+      // next line does give user.home back but this is not
+      // compliant with how the project.url works and therefore
+      // open and save project as give different starting
+      // directories.  String directory =
+      // Globals.getLastDirectory();
+      JFileChooser chooser = null;
+      if (p != null && p.getURL() != null) {
+        File file = new File(p.getURL().getFile());
+        if (file.getParentFile() != null) {
+          chooser = new JFileChooser(file.getParent());
         }
+      } else {
+        chooser = new JFileChooser();
+      }
 
-        try {
-            // next line does give user.home back but this is not
-            // compliant with how the project.url works and therefore
-            // open and save project as give different starting
-            // directories.  String directory =
-            // Globals.getLastDirectory();
-            JFileChooser chooser = null;
-            if (p != null && p.getURL() != null) {
-                File file = new File(p.getURL().getFile());
-                if (file.getParentFile() != null) {
-                    chooser = new JFileChooser(file.getParent());
-                }
-            } else {
-                chooser = new JFileChooser();
+      if (chooser == null) {
+        chooser = new JFileChooser();
+      }
+
+      chooser.setDialogTitle(Translator.localize("filechooser.open-project"));
+
+      chooser.setAcceptAllFileFilterUsed(false);
+
+      pm.setOpenFileChooserFilter(chooser);
+
+      String fn = Configuration.getString(PersistenceManager.KEY_OPEN_PROJECT_PATH);
+      if (fn.length() > 0) {
+        chooser.setSelectedFile(new File(fn));
+      }
+
+      int retval = chooser.showOpenDialog(pb);
+      if (retval == JFileChooser.APPROVE_OPTION) {
+        File theFile = chooser.getSelectedFile();
+
+        if (!theFile.canRead()) {
+          /* Try adding the extension from the chosen filter. */
+          FileFilter ffilter = chooser.getFileFilter();
+          if (ffilter instanceof AbstractFilePersister) {
+            AbstractFilePersister afp = (AbstractFilePersister) ffilter;
+            File m = new File(theFile.getPath() + "." + afp.getExtension());
+            if (m.canRead()) {
+              theFile = m;
             }
-
-            if (chooser == null) {
-                chooser = new JFileChooser();
+          }
+          if (!theFile.canRead()) {
+            /* Try adding the default extension. */
+            File n = new File(theFile.getPath() + "." + pm.getDefaultExtension());
+            if (n.canRead()) {
+              theFile = n;
             }
-
-            chooser.setDialogTitle(
-                    Translator.localize("filechooser.open-project"));
-
-            chooser.setAcceptAllFileFilterUsed(false);
-
-            pm.setOpenFileChooserFilter(chooser);
-
-            String fn = Configuration.getString(
-                    PersistenceManager.KEY_OPEN_PROJECT_PATH);
-            if (fn.length() > 0) {
-                chooser.setSelectedFile(new File(fn));
-            }
-
-            int retval = chooser.showOpenDialog(pb);
-            if (retval == JFileChooser.APPROVE_OPTION) {
-                File theFile = chooser.getSelectedFile();
-
-                if (!theFile.canRead()) {
-                    /* Try adding the extension from the chosen filter. */
-                    FileFilter ffilter = chooser.getFileFilter();
-                    if (ffilter instanceof AbstractFilePersister) {
-                        AbstractFilePersister afp = (AbstractFilePersister) ffilter;
-                        File m =
-                            new File(theFile.getPath() + "."
-                                    + afp.getExtension());
-                        if (m.canRead()) {
-                            theFile = m;
-                        }
-                    }
-                    if (!theFile.canRead()) {
-                        /* Try adding the default extension. */
-                        File n =
-                            new File(theFile.getPath() + "."
-                                    + pm.getDefaultExtension());
-                        if (n.canRead()) {
-                            theFile = n;
-                        }
-                    }
-                }
-                if (theFile != null) {
-                    Configuration.setString(
-                            PersistenceManager.KEY_OPEN_PROJECT_PATH,
-                            theFile.getPath());
-
-                    if (ProjectBrowser.getInstance().loadProject(theFile, true)) {
-                        // notification of menu bar
-                        GenericArgoMenuBar menuBar =
-                            (GenericArgoMenuBar) pb.getJMenuBar();
-                        menuBar.addFileSaved(theFile.getCanonicalPath());
-                    }
-                }
-            }
-        } catch (IOException ignore) {
-            LOG.error("got an IOException in ActionOpenProject", ignore);
+          }
         }
-    }
+        if (theFile != null) {
+          Configuration.setString(PersistenceManager.KEY_OPEN_PROJECT_PATH, theFile.getPath());
 
-    /**
-     * Execute this action from the command line.
-     *
-     * @see org.argouml.application.api.CommandLineInterface#doCommand(String)
-     * @param argument is the url of the project we load.
-     * @return true if it is OK.
-     */
-    public boolean doCommand(String argument) {
-        return ProjectBrowser.getInstance().loadProject(new File(argument), false);
+          if (ProjectBrowser.getInstance().loadProject(theFile, true)) {
+            // notification of menu bar
+            GenericArgoMenuBar menuBar = (GenericArgoMenuBar) pb.getJMenuBar();
+            menuBar.addFileSaved(theFile.getCanonicalPath());
+          }
+        }
+      }
+    } catch (IOException ignore) {
+      LOG.error("got an IOException in ActionOpenProject", ignore);
     }
+  }
 
+  /**
+   * Execute this action from the command line.
+   *
+   * @see org.argouml.application.api.CommandLineInterface#doCommand(String)
+   * @param argument is the url of the project we load.
+   * @return true if it is OK.
+   */
+  public boolean doCommand(String argument) {
+    return ProjectBrowser.getInstance().loadProject(new File(argument), false);
+  }
 } /* end class ActionOpenProject */

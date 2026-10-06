@@ -25,72 +25,65 @@
 package org.argouml.uml.diagram.ui;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.Action;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.i18n.Translator;
 import org.argouml.ui.ProjectBrowser;
 import org.tigris.gef.undo.UndoableAction;
 
-/** Action to select the properties tab.
+/**
+ * Action to select the properties tab.
+ *
  * @stereotype singleton
  */
 public class ActionProperties extends UndoableAction {
 
-    ////////////////////////////////////////////////////////////////
-    // static variables
+  ////////////////////////////////////////////////////////////////
+  // static variables
 
-    private static ActionProperties singleton = new ActionProperties();
+  private static ActionProperties singleton = new ActionProperties();
 
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
-
-    /**
-     * The constructor.
-     */
-    protected ActionProperties() {
-        super(Translator.localize("action.properties"),
-                ResourceLoaderWrapper.lookupIcon("action.properties"));
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize("action.properties"));
-        String localMnemonic =
-            Translator.localize("action.properties.mnemonic");
-        if (localMnemonic != null && localMnemonic.length() == 1) {
-            putValue(Action.MNEMONIC_KEY, Integer.valueOf(localMnemonic.charAt(0)));
-        }
+  /** The constructor. */
+  protected ActionProperties() {
+    super(
+        Translator.localize("action.properties"),
+        ResourceLoaderWrapper.lookupIcon("action.properties"));
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize("action.properties"));
+    String localMnemonic = Translator.localize("action.properties.mnemonic");
+    if (localMnemonic != null && localMnemonic.length() == 1) {
+      putValue(Action.MNEMONIC_KEY, Integer.valueOf(localMnemonic.charAt(0)));
     }
+  }
 
+  ////////////////////////////////////////////////////////////////
+  // main methods
 
-    ////////////////////////////////////////////////////////////////
-    // main methods
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    super.actionPerformed(ae);
+    ProjectBrowser pb = ProjectBrowser.getInstance();
+    if (pb == null) return;
+    pb.selectTabNamed("action.properties");
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-    	super.actionPerformed(ae);
-	ProjectBrowser pb = ProjectBrowser.getInstance();
-	if (pb == null) return;
-	pb.selectTabNamed("action.properties");
-    }
+  /**
+   * @return always true (the action is always enabled)
+   * @see org.tigris.gef.undo.UndoableAction#isEnabled()
+   */
+  public boolean isEnabled() {
+    return true;
+  }
 
-    /**
-     * @return always true (the action is always enabled)
-     * @see org.tigris.gef.undo.UndoableAction#isEnabled()
-     */
-    public boolean isEnabled() {
-	return true;
-    }
-
-
-    /**
-     * @return Returns the singleton.
-     */
-    public static ActionProperties getSingleton() {
-        return singleton;
-    }
+  /**
+   * @return Returns the singleton.
+   */
+  public static ActionProperties getSingleton() {
+    return singleton;
+  }
 } /* end class ActionProperties */
-

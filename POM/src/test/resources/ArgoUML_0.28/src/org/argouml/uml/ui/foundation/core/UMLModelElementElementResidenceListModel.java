@@ -31,29 +31,25 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  * @since Oct 12, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class UMLModelElementElementResidenceListModel
-    extends UMLModelElementListModel2 {
+public class UMLModelElementElementResidenceListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLModelElementElementResidenceListModel.
-     */
-    public UMLModelElementElementResidenceListModel() {
-        super("elementResidence");
-    }
+  /** Constructor for UMLModelElementElementResidenceListModel. */
+  public UMLModelElementElementResidenceListModel() {
+    super("elementResidence");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        setAllElements(Model.getFacade().getElementResidences(getTarget()));
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    setAllElements(Model.getFacade().getElementResidences(getTarget()));
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object o) {
-        return Model.getFacade().isAElementResidence(o)
-            && Model.getFacade().getElementResidences(getTarget()).contains(o);
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object o) {
+    return Model.getFacade().isAElementResidence(o)
+        && Model.getFacade().getElementResidences(getTarget()).contains(o);
+  }
 }

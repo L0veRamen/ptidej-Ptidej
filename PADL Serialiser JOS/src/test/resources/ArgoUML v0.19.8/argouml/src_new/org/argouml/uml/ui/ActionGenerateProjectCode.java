@@ -28,7 +28,6 @@ import java.awt.event.ActionEvent;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Vector;
-
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.Model;
 import org.argouml.ui.ArgoDiagram;
@@ -37,105 +36,93 @@ import org.argouml.uml.generator.GeneratorManager;
 import org.argouml.uml.generator.ui.ClassGenerationDialog;
 
 /**
- * Action to trigger code generation for all classes/interfaces in the
- * project, which have a source code path set in tagged value 'src_path'.
+ * Action to trigger code generation for all classes/interfaces in the project, which have a source
+ * code path set in tagged value 'src_path'.
  *
  * @stereotype singleton
  */
 public class ActionGenerateProjectCode extends UMLAction {
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    /**
-     *  The constructor.
-     */
-    public ActionGenerateProjectCode() {
-	super("action.generate-code-for-project", true, NO_ICON);
+  /** The constructor. */
+  public ActionGenerateProjectCode() {
+    super("action.generate-code-for-project", true, NO_ICON);
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // main methods
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    Vector classes = new Vector();
+    ArgoDiagram activeDiagram = ProjectManager.getManager().getCurrentProject().getActiveDiagram();
+    if (!(activeDiagram instanceof UMLDiagram)) {
+      return;
     }
-
-
-    ////////////////////////////////////////////////////////////////
-    // main methods
-
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-	Vector classes = new Vector();
-	ArgoDiagram activeDiagram =
-	    ProjectManager.getManager().getCurrentProject().getActiveDiagram();
-	if (!(activeDiagram instanceof UMLDiagram)) {
-	    return;
-	}
-	Object/*MNamespace*/ ns = ((UMLDiagram) activeDiagram).getNamespace();
-	if (ns == null) {
-	    return;
-	}
-	while (Model.getFacade().getNamespace(ns) != null) {
-	    ns = Model.getFacade().getNamespace(ns);
-	}
-	Collection elems =
-	    Model.getModelManagementHelper()
-	    	.getAllModelElementsOfKind(
-	    	        ns,
-	    	        Model.getMetaTypes().getClassifier());
-	//Project p = ProjectManager.getManager().getCurrentProject();
-	//Collection elems =
-	//ModelManagementHelper.getHelper()
-        //    .getAllModelElementsOfKind(MClassifier.class);
-	Iterator iter = elems.iterator();
-	while (iter.hasNext()) {
-	    Object/*MClassifier*/ cls = iter.next();
-	    if (isCodeRelevantClassifier(cls)) {
-		classes.addElement(cls);
-	    }
-	}
-	ClassGenerationDialog cgd = new ClassGenerationDialog(classes, true);
-	cgd.setVisible(true);
+    Object /*MNamespace*/ ns = ((UMLDiagram) activeDiagram).getNamespace();
+    if (ns == null) {
+      return;
     }
-
-    /**
-     * @see org.argouml.uml.ui.UMLAction#shouldBeEnabled()
-     */
-    public boolean shouldBeEnabled() {
-	ArgoDiagram activeDiagram =
-	    ProjectManager.getManager().getCurrentProject().getActiveDiagram();
-	return super.shouldBeEnabled() && (activeDiagram instanceof UMLDiagram);
+    while (Model.getFacade().getNamespace(ns) != null) {
+      ns = Model.getFacade().getNamespace(ns);
     }
-
-    /**
-     * @param cls the classifier that is candidate for generation
-     * @return true if the candidate is sound
-     */
-    private boolean isCodeRelevantClassifier(Object cls) {
-        if (cls == null) {
-            return false;
-        }
-        if (!Model.getFacade().isAClass(cls) 
-                && !Model.getFacade().isAInterface(cls)) {
-            return false;
-        }
-        String path = GeneratorManager.getCodePath(cls);
-        String name = Model.getFacade().getName(cls);
-        if (name == null
-            || name.length() == 0
-            || Character.isDigit(name.charAt(0))) {
-            return false;
-        }
-        if (path != null) {
-            return (path.length() > 0);
-        }
-        Object parent = Model.getFacade().getNamespace(cls);
-        while (parent != null) {
-            path = GeneratorManager.getCodePath(parent);
-            if (path != null) {
-        	    return (path.length() > 0);
-            }
-            parent = Model.getFacade().getNamespace(parent);
-        }
-        return false;
+    Collection elems =
+        Model.getModelManagementHelper()
+            .getAllModelElementsOfKind(ns, Model.getMetaTypes().getClassifier());
+    // Project p = ProjectManager.getManager().getCurrentProject();
+    // Collection elems =
+    // ModelManagementHelper.getHelper()
+    //    .getAllModelElementsOfKind(MClassifier.class);
+    Iterator iter = elems.iterator();
+    while (iter.hasNext()) {
+      Object /*MClassifier*/ cls = iter.next();
+      if (isCodeRelevantClassifier(cls)) {
+        classes.addElement(cls);
+      }
     }
+    ClassGenerationDialog cgd = new ClassGenerationDialog(classes, true);
+    cgd.setVisible(true);
+  }
 
+  /**
+   * @see org.argouml.uml.ui.UMLAction#shouldBeEnabled()
+   */
+  public boolean shouldBeEnabled() {
+    ArgoDiagram activeDiagram = ProjectManager.getManager().getCurrentProject().getActiveDiagram();
+    return super.shouldBeEnabled() && (activeDiagram instanceof UMLDiagram);
+  }
 
+  /**
+   * @param cls the classifier that is candidate for generation
+   * @return true if the candidate is sound
+   */
+  private boolean isCodeRelevantClassifier(Object cls) {
+    if (cls == null) {
+      return false;
+    }
+    if (!Model.getFacade().isAClass(cls) && !Model.getFacade().isAInterface(cls)) {
+      return false;
+    }
+    String path = GeneratorManager.getCodePath(cls);
+    String name = Model.getFacade().getName(cls);
+    if (name == null || name.length() == 0 || Character.isDigit(name.charAt(0))) {
+      return false;
+    }
+    if (path != null) {
+      return (path.length() > 0);
+    }
+    Object parent = Model.getFacade().getNamespace(cls);
+    while (parent != null) {
+      path = GeneratorManager.getCodePath(parent);
+      if (path != null) {
+        return (path.length() > 0);
+      }
+      parent = Model.getFacade().getNamespace(parent);
+    }
+    return false;
+  }
 } /* end class ActionGenerateProjectCode */

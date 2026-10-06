@@ -28,7 +28,6 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-
 import org.argouml.i18n.Translator;
 import org.argouml.ui.LookAndFeelMgr;
 import org.argouml.uml.ui.ActionNavigateTransition;
@@ -42,49 +41,39 @@ import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
 import org.argouml.util.ConfigLoader;
 
 /**
- * A property panel for Guards. 
- * 
+ * A property panel for Guards.
+ *
  * @since Dec 14, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
 public class PropPanelGuard extends PropPanelModelElement {
-    
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = 3698249606426850936L;
 
-    /**
-     * Construct a new property panel for a Guard.
-     * 
-     */
-    public PropPanelGuard() {
-        super("Guard", ConfigLoader.getTabPropsOrientation());
-        
-        addField(Translator.localize("label.name"), getNameTextField());
-        
-        JList transitionList = new UMLLinkedList(
-                new UMLGuardTransitionListModel());
-        transitionList.setVisibleRowCount(1);
-        addField(Translator.localize("label.transition"), new JScrollPane(
-                transitionList));
-        
-        addSeparator();
+  /** The serial version. */
+  private static final long serialVersionUID = 3698249606426850936L;
 
-        JPanel exprPanel = createBorderPanel(Translator
-                .localize("label.expression"));
-        UMLExpressionModel2 expressionModel = new UMLExpressionExpressionModel(
-                this, "expression");
-        JTextArea ebf = new UMLExpressionBodyField(expressionModel, true);
-        ebf.setFont(LookAndFeelMgr.getInstance().getStandardFont());
-        ebf.setRows(1);
-        exprPanel.add(new JScrollPane(ebf));
-        exprPanel.add(new UMLExpressionLanguageField(expressionModel, true));
-        
-        add(exprPanel);
-        addAction(new ActionNavigateTransition());
-        addAction(new ActionNewStereotype());
-        addAction(getDeleteAction());
-    }
-    
+  /** Construct a new property panel for a Guard. */
+  public PropPanelGuard() {
+    super("Guard", ConfigLoader.getTabPropsOrientation());
+
+    addField(Translator.localize("label.name"), getNameTextField());
+
+    JList transitionList = new UMLLinkedList(new UMLGuardTransitionListModel());
+    transitionList.setVisibleRowCount(1);
+    addField(Translator.localize("label.transition"), new JScrollPane(transitionList));
+
+    addSeparator();
+
+    JPanel exprPanel = createBorderPanel(Translator.localize("label.expression"));
+    UMLExpressionModel2 expressionModel = new UMLExpressionExpressionModel(this, "expression");
+    JTextArea ebf = new UMLExpressionBodyField(expressionModel, true);
+    ebf.setFont(LookAndFeelMgr.getInstance().getStandardFont());
+    ebf.setRows(1);
+    exprPanel.add(new JScrollPane(ebf));
+    exprPanel.add(new UMLExpressionLanguageField(expressionModel, true));
+
+    add(exprPanel);
+    addAction(new ActionNavigateTransition());
+    addAction(new ActionNewStereotype());
+    addAction(getDeleteAction());
+  }
 } /* end class PropPanelGuard */

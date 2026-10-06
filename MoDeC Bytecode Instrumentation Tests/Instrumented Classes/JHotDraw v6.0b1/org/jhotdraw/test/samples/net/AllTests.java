@@ -19,16 +19,16 @@ import junit.framework.TestSuite;
  */
 public class AllTests {
 
-	public static void main(String[] args) {
-		junit.textui.TestRunner.run(AllTests.class);
-	}
+  public static void main(String[] args) {
+    junit.textui.TestRunner.run(AllTests.class);
+  }
 
-	public static Test suite() {
-		TestSuite suite = new TestSuite("Test for org.jhotdraw.test.samples.net");
-		//$JUnit-BEGIN$
-		suite.addTest(new TestSuite(NetAppTest.class));
-		suite.addTest(new TestSuite(NodeFigureTest.class));
-		//$JUnit-END$
-		return suite;
-	}
+  public static Test suite() {
+    TestSuite suite = new TestSuite("Test for org.jhotdraw.test.samples.net");
+    // $JUnit-BEGIN$
+    suite.addTest(new TestSuite(NetAppTest.class));
+    suite.addTest(new TestSuite(NodeFigureTest.class));
+    // $JUnit-END$
+    return suite;
+  }
 }

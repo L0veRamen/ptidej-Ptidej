@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -14,21 +14,24 @@ import ptidej.ui.IVisibility;
 import ptidej.ui.primitive.IPrimitiveFactory;
 
 public final class Creation extends Use {
-	public Creation(
-		final IPrimitiveFactory primitiveFactory,
-		final Entity origin,
-		final String methodName,
-		final Entity target) {
+  public Creation(
+      final IPrimitiveFactory primitiveFactory,
+      final Entity origin,
+      final String methodName,
+      final Entity target) {
 
-		super(primitiveFactory, origin, methodName, target);
-	}
-	protected String getSymbol() {
-		return "-*-->";
-	}
-	public int getVisibilityDisplay() {
-		return IVisibility.CREATION_DISPLAY_ELEMENTS;
-	}
-	public int getVisibilityName() {
-		return IVisibility.CREATION_NAMES;
-	}
+    super(primitiveFactory, origin, methodName, target);
+  }
+
+  protected String getSymbol() {
+    return "-*-->";
+  }
+
+  public int getVisibilityDisplay() {
+    return IVisibility.CREATION_DISPLAY_ELEMENTS;
+  }
+
+  public int getVisibilityName() {
+    return IVisibility.CREATION_NAMES;
+  }
 }

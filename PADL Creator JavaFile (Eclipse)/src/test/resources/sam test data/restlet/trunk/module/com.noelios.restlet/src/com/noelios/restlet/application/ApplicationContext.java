@@ -23,7 +23,6 @@
 package com.noelios.restlet.application;
 
 import java.util.logging.Logger;
-
 import org.restlet.Application;
 import org.restlet.Client;
 import org.restlet.Context;
@@ -31,83 +30,81 @@ import org.restlet.Dispatcher;
 import org.restlet.data.Protocol;
 
 /**
- * Context based on a parent container's context but dedicated to an application. This is important to allow
- * contextual access to application's resources.
+ * Context based on a parent container's context but dedicated to an application. This is important
+ * to allow contextual access to application's resources.
+ *
  * @author Jerome Louvel (contact@noelios.com)
  */
-public class ApplicationContext extends Context
-{
-	/** The WAR client. */
-	private Client warClient;
+public class ApplicationContext extends Context {
+  /** The WAR client. */
+  private Client warClient;
 
-	/** The application delegate. */
-	private Application application;
+  /** The application delegate. */
+  private Application application;
 
-	/** The parent context. */
-	private Context parentContext;
+  /** The parent context. */
+  private Context parentContext;
 
-	/**
-	 * Constructor.
-	 * @param application The application.
-	 * @param parentContext The parent context.
-	 * @param logger The logger instance of use.
-	 */
-	public ApplicationContext(Application application, Context parentContext, Logger logger)
-	{
-		super(Application.class.getCanonicalName());
-		this.application = application;
-		this.parentContext = parentContext;
-		this.warClient = null;
-	}
+  /**
+   * Constructor.
+   *
+   * @param application The application.
+   * @param parentContext The parent context.
+   * @param logger The logger instance of use.
+   */
+  public ApplicationContext(Application application, Context parentContext, Logger logger) {
+    super(Application.class.getCanonicalName());
+    this.application = application;
+    this.parentContext = parentContext;
+    this.warClient = null;
+  }
 
-	/**
-	 * Returns a call dispatcher.
-	 * @return A call dispatcher.
-	 */
-	public Dispatcher getDispatcher()
-	{
-		return new ApplicationDispatcher(this);
-	}
+  /**
+   * Returns a call dispatcher.
+   *
+   * @return A call dispatcher.
+   */
+  public Dispatcher getDispatcher() {
+    return new ApplicationDispatcher(this);
+  }
 
-	/**
-	 * Returns the application.
-	 * @return the application.
-	 */
-	public Application getApplication()
-	{
-		return this.application;
-	}
+  /**
+   * Returns the application.
+   *
+   * @return the application.
+   */
+  public Application getApplication() {
+    return this.application;
+  }
 
-	/**
-	 * Returns the WAR client.
-	 * @return the WAR client.
-	 */
-	protected Client getWarClient()
-	{
-		if (this.warClient == null)
-		{
-			this.warClient = new Client(Protocol.WAR);
-		}
+  /**
+   * Returns the WAR client.
+   *
+   * @return the WAR client.
+   */
+  protected Client getWarClient() {
+    if (this.warClient == null) {
+      this.warClient = new Client(Protocol.WAR);
+    }
 
-		return this.warClient;
-	}
+    return this.warClient;
+  }
 
-	/**
-	 * Sets the WAR client.
-	 * @param warClient the WAR client.
-	 */
-	protected void setWarClient(Client warClient)
-	{
-		this.warClient = warClient;
-	}
+  /**
+   * Sets the WAR client.
+   *
+   * @param warClient the WAR client.
+   */
+  protected void setWarClient(Client warClient) {
+    this.warClient = warClient;
+  }
 
-	/**
-	 * Returns the parent context.
-	 * @return The parent context.
-	 */
-	public Context getParentContext()
-	{
-		return this.parentContext;
-	}
-
+  /**
+   * Returns the parent context.
+   *
+   * @return The parent context.
+   */
+  public Context getParentContext() {
+    return this.parentContext;
+  }
 }

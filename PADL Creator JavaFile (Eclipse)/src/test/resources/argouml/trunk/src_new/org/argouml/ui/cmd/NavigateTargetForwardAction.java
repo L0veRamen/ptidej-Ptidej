@@ -25,10 +25,8 @@
 package org.argouml.ui.cmd;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.i18n.Translator;
 import org.argouml.ui.targetmanager.TargetManager;
@@ -40,37 +38,31 @@ import org.argouml.ui.targetmanager.TargetManager;
  */
 class NavigateTargetForwardAction extends AbstractAction {
 
-    /**
-     * Constructor.
-     */
-    public NavigateTargetForwardAction() {
-        super(Translator.localize("action.navigate-forward"),
-                ResourceLoaderWrapper.lookupIcon("action.navigate-forward"));
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION,
-                Translator.localize("action.navigate-forward"));
-    }
+  /** Constructor. */
+  public NavigateTargetForwardAction() {
+    super(
+        Translator.localize("action.navigate-forward"),
+        ResourceLoaderWrapper.lookupIcon("action.navigate-forward"));
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize("action.navigate-forward"));
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(
-     *         java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        TargetManager.getInstance().navigateForward();
-    }
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed( java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    TargetManager.getInstance().navigateForward();
+  }
 
-    /**
-     * Action is possible only if navigateForwardPossible on targetManager
-     * returns true.
-     *
-     * @see javax.swing.Action#isEnabled()
-     */
-    public boolean isEnabled() {
-        return TargetManager.getInstance().navigateForwardPossible();
-    }
+  /**
+   * Action is possible only if navigateForwardPossible on targetManager returns true.
+   *
+   * @see javax.swing.Action#isEnabled()
+   */
+  public boolean isEnabled() {
+    return TargetManager.getInstance().navigateForwardPossible();
+  }
 
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -3426889296160732468L;
+  /** The UID. */
+  private static final long serialVersionUID = -3426889296160732468L;
 }

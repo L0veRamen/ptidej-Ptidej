@@ -26,18 +26,15 @@ package org.argouml.language.php.generator;
 
 /**
  * Module manager for PHP5 generator.
- * 
- * This has a somewhat unusual style. Rather than overriding methods in the base
- * PHP5 code generator, we just pass it a parameter at construction time to tell
- * it to properly condition its behavior.
+ *
+ * <p>This has a somewhat unusual style. Rather than overriding methods in the base PHP5 code
+ * generator, we just pass it a parameter at construction time to tell it to properly condition its
+ * behavior.
  */
 public class ModulePHP5 extends ModulePHP4 {
 
-    /**
-     * Construct a new PHP 5 module.
-     */
-    public ModulePHP5() {
-        super(5);
-    }
-
+  /** Construct a new PHP 5 module. */
+  public ModulePHP5() {
+    super(5);
+  }
 }

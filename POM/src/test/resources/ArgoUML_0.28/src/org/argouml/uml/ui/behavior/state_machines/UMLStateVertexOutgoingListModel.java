@@ -25,7 +25,6 @@
 package org.argouml.uml.ui.behavior.state_machines;
 
 import java.util.ArrayList;
-
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
@@ -37,41 +36,32 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  */
 public class UMLStateVertexOutgoingListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLStateVertexOutgoingListModel.
-     */
-    public UMLStateVertexOutgoingListModel() {
-        super("outgoing");
-    }
+  /** Constructor for UMLStateVertexOutgoingListModel. */
+  public UMLStateVertexOutgoingListModel() {
+    super("outgoing");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        ArrayList c =
-            new ArrayList(Model.getFacade().getOutgoings(getTarget()));
-        if (Model.getFacade().isAState(getTarget())) {
-            ArrayList i =
-                new ArrayList(
-                        Model.getFacade().getInternalTransitions(getTarget()));
-            c.removeAll(i);
-        }
-        setAllElements(c);
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    ArrayList c = new ArrayList(Model.getFacade().getOutgoings(getTarget()));
+    if (Model.getFacade().isAState(getTarget())) {
+      ArrayList i = new ArrayList(Model.getFacade().getInternalTransitions(getTarget()));
+      c.removeAll(i);
     }
+    setAllElements(c);
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        ArrayList c =
-            new ArrayList(Model.getFacade().getOutgoings(getTarget()));
-        if (Model.getFacade().isAState(getTarget())) {
-            ArrayList i =
-                new ArrayList(
-                        Model.getFacade().getInternalTransitions(getTarget()));
-            c.removeAll(i);
-        }
-        return c.contains(element);
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    ArrayList c = new ArrayList(Model.getFacade().getOutgoings(getTarget()));
+    if (Model.getFacade().isAState(getTarget())) {
+      ArrayList i = new ArrayList(Model.getFacade().getInternalTransitions(getTarget()));
+      c.removeAll(i);
     }
-
+    return c.contains(element);
+  }
 }

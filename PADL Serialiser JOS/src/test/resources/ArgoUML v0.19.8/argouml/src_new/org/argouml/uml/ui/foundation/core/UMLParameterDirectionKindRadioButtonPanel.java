@@ -26,7 +26,6 @@ package org.argouml.uml.ui.foundation.core;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLRadioButtonPanel;
 
@@ -35,56 +34,50 @@ import org.argouml.uml.ui.UMLRadioButtonPanel;
  *
  * @author mkl
  */
-public class UMLParameterDirectionKindRadioButtonPanel extends
-        UMLRadioButtonPanel {
+public class UMLParameterDirectionKindRadioButtonPanel extends UMLRadioButtonPanel {
 
-    private static Map labelTextsAndActionCommands = new HashMap();
+  private static Map labelTextsAndActionCommands = new HashMap();
 
-    static {
-        // TODO: i18n, use Translator
-        labelTextsAndActionCommands.put("in",
-                ActionSetParameterDirectionKind.IN_COMMAND);
-        labelTextsAndActionCommands.put("out",
-                ActionSetParameterDirectionKind.OUT_COMMAND);
-        labelTextsAndActionCommands.put("inout",
-                ActionSetParameterDirectionKind.INOUT_COMMAND);
-        labelTextsAndActionCommands.put("return",
-                ActionSetParameterDirectionKind.RETURN_COMMAND);
+  static {
+    // TODO: i18n, use Translator
+    labelTextsAndActionCommands.put("in", ActionSetParameterDirectionKind.IN_COMMAND);
+    labelTextsAndActionCommands.put("out", ActionSetParameterDirectionKind.OUT_COMMAND);
+    labelTextsAndActionCommands.put("inout", ActionSetParameterDirectionKind.INOUT_COMMAND);
+    labelTextsAndActionCommands.put("return", ActionSetParameterDirectionKind.RETURN_COMMAND);
+  }
+
+  /**
+   * Constructor.
+   *
+   * @param title the title of the panel
+   * @param horizontal determines the orientation
+   */
+  public UMLParameterDirectionKindRadioButtonPanel(String title, boolean horizontal) {
+    // TODO: i18n
+    super(
+        title,
+        labelTextsAndActionCommands,
+        "ParameterKind:",
+        ActionSetParameterDirectionKind.getInstance(),
+        horizontal);
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLRadioButtonPanel#buildModel()
+   */
+  public void buildModel() {
+    if (getTarget() != null) {
+      Object target = /* (MModelElement) */ getTarget();
+      Object kind = Model.getFacade().getKind(target);
+      if (kind == null || kind.equals(Model.getDirectionKind().getInParameter())) {
+        setSelected(ActionSetParameterDirectionKind.IN_COMMAND);
+      } else if (kind.equals(Model.getDirectionKind().getInOutParameter())) {
+        setSelected(ActionSetParameterDirectionKind.INOUT_COMMAND);
+      } else if (kind.equals(Model.getDirectionKind().getOutParameter())) {
+        setSelected(ActionSetParameterDirectionKind.OUT_COMMAND);
+      } else {
+        setSelected(ActionSetParameterDirectionKind.RETURN_COMMAND);
+      }
     }
-
-    /**
-     * Constructor.
-     *
-     * @param title the title of the panel
-     * @param horizontal determines the orientation
-     */
-    public UMLParameterDirectionKindRadioButtonPanel(String title,
-            boolean horizontal) {
-        // TODO: i18n
-        super(title, labelTextsAndActionCommands, "ParameterKind:",
-                ActionSetParameterDirectionKind.getInstance(), horizontal);
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLRadioButtonPanel#buildModel()
-     */
-    public void buildModel() {
-        if (getTarget() != null) {
-            Object target = /* (MModelElement) */getTarget();
-            Object kind = Model.getFacade().getKind(target);
-            if (kind == null
-                    || kind.equals(
-                            Model.getDirectionKind().getInParameter())) {
-                setSelected(ActionSetParameterDirectionKind.IN_COMMAND);
-            } else if (kind.equals(
-                    Model.getDirectionKind().getInOutParameter())) {
-                setSelected(ActionSetParameterDirectionKind.INOUT_COMMAND);
-            } else if (kind.equals(
-                    Model.getDirectionKind().getOutParameter())) {
-                setSelected(ActionSetParameterDirectionKind.OUT_COMMAND);
-            } else {
-                setSelected(ActionSetParameterDirectionKind.RETURN_COMMAND);
-            }
-        }
-    }
+  }
 }

@@ -28,35 +28,29 @@ import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
 /**
- *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 26, 2003
  */
-public class UMLClassifierCreateActionListModel
-    extends UMLModelElementListModel2 {
+public class UMLClassifierCreateActionListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLClassifierCreateActionListModel.
-     */
-    public UMLClassifierCreateActionListModel() {
-        super("createAction");
+  /** Constructor for UMLClassifierCreateActionListModel. */
+  public UMLClassifierCreateActionListModel() {
+    super("createAction");
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (getTarget() != null) {
+      setAllElements(Model.getFacade().getCreateActions(getTarget()));
     }
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (getTarget() != null) {
-            setAllElements(Model.getFacade().getCreateActions(getTarget()));
-        }
-    }
-
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().getCreateActions(getTarget())
-        	.contains(element);
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().getCreateActions(getTarget()).contains(element);
+  }
 }

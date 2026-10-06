@@ -27,98 +27,93 @@ package org.argouml.ui;
 import javax.swing.table.AbstractTableModel;
 
 /**
- * Table model for a table two visible columns and one invisible column. The
- * first column contains a noneditable Object value. The second column contains
- * a Boolean value for the checkbox. The third column is invisible and contains
- * an Object value for arbitrary data. This table model is useful for the code
- * generation dialog, the sequence diagram reverse enginneering dialog and
- * others.
+ * Table model for a table two visible columns and one invisible column. The first column contains a
+ * noneditable Object value. The second column contains a Boolean value for the checkbox. The third
+ * column is invisible and contains an Object value for arbitrary data. This table model is useful
+ * for the code generation dialog, the sequence diagram reverse enginneering dialog and others.
  */
 public class CheckboxTableModel extends AbstractTableModel {
-    /**
-     * Constructor.
-     */
-    public CheckboxTableModel(Object[] labels, Object[] data, String colName1, String colName2) {
-        elements = new Object[labels.length][3];
-        for (int i = 0; i < elements.length; i++) {
-            elements[i][0] = labels[i];
-            elements[i][1] = new Boolean(true);
-            if (data != null && i < data.length) {
-                elements[i][2] = data[i];
-            } else {
-                elements[i][2] = null;
-            }
-        }
-        columnName1 = colName1;
-        columnName2 = colName2;
+  /** Constructor. */
+  public CheckboxTableModel(Object[] labels, Object[] data, String colName1, String colName2) {
+    elements = new Object[labels.length][3];
+    for (int i = 0; i < elements.length; i++) {
+      elements[i][0] = labels[i];
+      elements[i][1] = new Boolean(true);
+      if (data != null && i < data.length) {
+        elements[i][2] = data[i];
+      } else {
+        elements[i][2] = null;
+      }
     }
+    columnName1 = colName1;
+    columnName2 = colName2;
+  }
 
-    /**
-     * @see javax.swing.table.TableModel#getColumnCount()
-     */
-    public int getColumnCount() {
-        return 2;
+  /**
+   * @see javax.swing.table.TableModel#getColumnCount()
+   */
+  public int getColumnCount() {
+    return 2;
+  }
+
+  /**
+   * @see javax.swing.table.TableModel#getColumnName(int)
+   */
+  public String getColumnName(int col) {
+    if (col == 0) {
+      return columnName1;
+    } else if (col == 1) {
+      return columnName2;
     }
+    return null;
+  }
 
-    /**
-     * @see javax.swing.table.TableModel#getColumnName(int)
-     */
-    public String getColumnName(int col) {
-        if (col == 0) {
-            return columnName1;
-        } else if (col == 1) {
-            return columnName2;
-        }
-        return null;
+  /**
+   * @see javax.swing.table.TableModel#getRowCount()
+   */
+  public int getRowCount() {
+    return elements.length;
+  }
+
+  /**
+   * @see javax.swing.table.TableModel#getValueAt(int, int)
+   */
+  public Object getValueAt(int row, int col) {
+    if (row < elements.length && col < 3) {
+      return elements[row][col];
+    } else {
+      throw new IllegalArgumentException("Index out of bounds");
     }
+  }
 
-    /**
-     * @see javax.swing.table.TableModel#getRowCount()
-     */
-    public int getRowCount() {
-        return elements.length;
+  /**
+   * @see javax.swing.table.TableModel#setValueAt( java.lang.Object, int, int)
+   */
+  public void setValueAt(Object ob, int row, int col) {
+    elements[row][col] = ob;
+  }
+
+  /**
+   * @see javax.swing.table.TableModel#getColumnClass(int)
+   */
+  public Class getColumnClass(int col) {
+    if (col == 0) {
+      return String.class;
+    } else if (col == 1) {
+      return Boolean.class;
+    } else if (col == 2) {
+      return Object.class;
     }
+    return null;
+  }
 
-    /**
-     * @see javax.swing.table.TableModel#getValueAt(int, int)
-     */
-    public Object getValueAt(int row, int col) {
-        if (row < elements.length && col < 3) {
-            return elements[row][col];
-        } else {
-            throw new IllegalArgumentException("Index out of bounds");
-        }
-    }
+  /**
+   * @see javax.swing.table.TableModel#isCellEditable(int, int)
+   */
+  public boolean isCellEditable(int row, int col) {
+    return col == 1 && row < elements.length;
+  }
 
-    /**
-     * @see javax.swing.table.TableModel#setValueAt(
-     *         java.lang.Object, int, int)
-     */
-    public void setValueAt(Object ob, int row, int col) {
-        elements[row][col] = ob;
-    }
-
-    /**
-     * @see javax.swing.table.TableModel#getColumnClass(int)
-     */
-    public Class getColumnClass(int col) {
-        if (col == 0) {
-            return String.class;
-        } else if (col == 1) {
-            return Boolean.class;
-        } else if (col == 2) {
-            return Object.class;
-        }
-        return null;
-    }
-
-    /**
-     * @see javax.swing.table.TableModel#isCellEditable(int, int)
-     */
-    public boolean isCellEditable(int row, int col) {
-        return col == 1 && row < elements.length;
-    }
-
-    private Object[][] elements;
-    private String columnName1, columnName2;
+  private Object[][] elements;
+  private String columnName1, columnName2;
 }

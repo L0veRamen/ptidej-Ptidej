@@ -13,16 +13,16 @@ package test;
 import junit.framework.TestSuite;
 
 public class TestCreatorJavaFileUsingEclipseParser extends TestSuite {
-	public static TestSuite suite() {
-		final TestCreatorJavaFileUsingEclipseParser suite = new TestCreatorJavaFileUsingEclipseParser();
-		suite.setName(TestCreatorJavaFileUsingEclipseParser.class.getName());
+  public static TestSuite suite() {
+    final TestCreatorJavaFileUsingEclipseParser suite = new TestCreatorJavaFileUsingEclipseParser();
+    suite.setName(TestCreatorJavaFileUsingEclipseParser.class.getName());
 
-		suite.addTestSuite(ConciseParsingTest.class);
-		suite.addTestSuite(FileListJavaProjectTest.class);
-		suite.addTestSuite(JavaParserLineAndBlockCommentTest.class);
-		suite.addTestSuite(SimpleJavaParserTest.class);
-		suite.addTestSuite(VerboseParsingTest.class);
+    suite.addTestSuite(ConciseParsingTest.class);
+    suite.addTestSuite(FileListJavaProjectTest.class);
+    suite.addTestSuite(JavaParserLineAndBlockCommentTest.class);
+    suite.addTestSuite(SimpleJavaParserTest.class);
+    suite.addTestSuite(VerboseParsingTest.class);
 
-		return suite;
-	}
+    return suite;
+  }
 }

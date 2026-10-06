@@ -25,7 +25,6 @@
 package org.argouml.uml.diagram.ui;
 
 import java.awt.event.ActionEvent;
-
 import org.apache.log4j.Logger;
 import org.argouml.model.Model;
 import org.argouml.notation.NotationHelper;
@@ -33,46 +32,43 @@ import org.argouml.uml.ui.UMLAction;
 
 /**
  * Action to add a sterotype to a model element.
+ *
  * @author Bob Tarling
  */
 class ActionAddStereotype extends UMLAction {
-    
-    /**
-     * Logger.
-     */
-    private static final Logger LOG =
-        Logger.getLogger(ActionAddStereotype.class);
-    
-    private Object modelElement;
-    private Object stereotype;
-    
-    public ActionAddStereotype(Object modelElement, Object stereotype) {
-        super(NotationHelper.getLeftGuillemot()
-                + Model.getFacade().getName(stereotype)
-                + NotationHelper.getRightGuillemot(), NO_ICON);
-        this.modelElement = modelElement;
-        this.stereotype = stereotype;
+
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(ActionAddStereotype.class);
+
+  private Object modelElement;
+  private Object stereotype;
+
+  public ActionAddStereotype(Object modelElement, Object stereotype) {
+    super(
+        NotationHelper.getLeftGuillemot()
+            + Model.getFacade().getName(stereotype)
+            + NotationHelper.getRightGuillemot(),
+        NO_ICON);
+    this.modelElement = modelElement;
+    this.stereotype = stereotype;
+  }
+
+  public void actionPerformed(ActionEvent ae) {
+    if (Model.getFacade().getStereotypes(modelElement).contains(stereotype)) {
+      Model.getCoreHelper().removeStereotype(modelElement, stereotype);
+    } else {
+      Object stereo =
+          Model.getModelManagementHelper()
+              .getCorrespondingElement(stereotype, Model.getFacade().getModel(modelElement), true);
+      Model.getCoreHelper().addStereotype(modelElement, stereo);
     }
-    
-    public void actionPerformed(ActionEvent ae) {
-        if (Model.getFacade().getStereotypes(modelElement).contains(stereotype)) {
-            Model.getCoreHelper().removeStereotype(modelElement, stereotype);
-        } else {
-            Object stereo = Model.getModelManagementHelper().
-                getCorrespondingElement(stereotype, 
-                        Model.getFacade().getModel(modelElement), true);
-            Model.getCoreHelper().addStereotype(modelElement, stereo);
-        }
+  }
+
+  public Object getValue(String key) {
+    if ("SELECTED".equals(key)) {
+      if (Model.getFacade().getStereotypes(modelElement).contains(stereotype)) return Boolean.TRUE;
+      else return Boolean.FALSE;
     }
-    
-    public Object getValue(String key) {
-        if ("SELECTED".equals(key)) {
-            if (Model.getFacade().getStereotypes(modelElement).contains(
-                    stereotype))
-                return Boolean.TRUE;
-            else
-                return Boolean.FALSE;
-        }
-        return super.getValue(key);
-    }
+    return super.getValue(key);
+  }
 }

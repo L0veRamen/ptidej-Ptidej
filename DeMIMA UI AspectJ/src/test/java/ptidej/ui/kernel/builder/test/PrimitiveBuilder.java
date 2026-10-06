@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc  and others, see in file; API and its implementation
  ******************************************************************************/
@@ -22,21 +22,20 @@ import ptidej.ui.primitive.IPrimitiveFactory;
  * @since 2005-08-16
  */
 public abstract class PrimitiveBuilder extends AspectJPrimitive {
-	private Builder ajBuilder;
+  private Builder ajBuilder;
 
-	public PrimitiveBuilder(final String aName) {
-		super(aName);
-	}
+  public PrimitiveBuilder(final String aName) {
+    super(aName);
+  }
 
-	protected void setUp() throws CreationException {
-		super.setUp();
+  protected void setUp() throws CreationException {
+    super.setUp();
 
-		final IPrimitiveFactory primitiveFactory = PrimitiveFactory
-				.getInstance();
-		this.ajBuilder = AspectJBuilder.getCurrentBuilder(primitiveFactory);
-	}
+    final IPrimitiveFactory primitiveFactory = PrimitiveFactory.getInstance();
+    this.ajBuilder = AspectJBuilder.getCurrentBuilder(primitiveFactory);
+  }
 
-	public Builder getBuilder() {
-		return this.ajBuilder;
-	}
+  public Builder getBuilder() {
+    return this.ajBuilder;
+  }
 }

@@ -26,16 +26,16 @@ package org.argouml.application.configuration;
 
 /**
  * Creates a configuration.
+ *
  * @author Tom Morris
  */
 public interface IConfigurationFactory {
 
-    /**
-     * Returns the customized configuration for the user.
-     *
-     * @return a concrete class which extends ConfigurationHandler and
-     *         can be used to access and manipulate the configuration.
-     */
-    public abstract ConfigurationHandler getConfigurationHandler();
-
+  /**
+   * Returns the customized configuration for the user.
+   *
+   * @return a concrete class which extends ConfigurationHandler and can be used to access and
+   *     manipulate the configuration.
+   */
+  public abstract ConfigurationHandler getConfigurationHandler();
 }

@@ -24,21 +24,15 @@
 
 package org.argouml.uml.ui.behavior.common_behavior;
 
-
 /**
  * The properties panel for a TerminateAction.
- * <p>
- * TODO: this property panel needs refactoring to remove dependency on
- *       old gui components.
+ *
+ * <p>TODO: this property panel needs refactoring to remove dependency on old gui components.
  */
 public class PropPanelTerminateAction extends PropPanelAction {
 
-    /**
-     * The constructor.
-     *
-     */
-    public PropPanelTerminateAction() {
-        super("label.terminate-action", lookupIcon("TerminateAction"));
-    }
-
+  /** The constructor. */
+  public PropPanelTerminateAction() {
+    super("label.terminate-action", lookupIcon("TerminateAction"));
+  }
 }

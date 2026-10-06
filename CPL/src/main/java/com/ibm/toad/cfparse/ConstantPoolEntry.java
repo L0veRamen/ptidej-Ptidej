@@ -5,18 +5,17 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 public abstract class ConstantPoolEntry {
-   abstract void write(DataOutputStream var1) throws IOException;
+  abstract void write(DataOutputStream var1) throws IOException;
 
-   void setIndices(int[] var1) {
-   }
+  void setIndices(int[] var1) {}
 
-   public int[] getIndices() {
-      return null;
-   }
+  public int[] getIndices() {
+    return null;
+  }
 
-   public abstract String getAsString();
+  public abstract String getAsString();
 
-   public String getAsJava() {
-      return this.getAsString();
-   }
+  public String getAsJava() {
+    return this.getAsString();
+  }
 }

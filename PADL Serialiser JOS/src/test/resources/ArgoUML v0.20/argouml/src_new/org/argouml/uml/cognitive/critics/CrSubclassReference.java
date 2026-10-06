@@ -29,7 +29,6 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
-
 import org.argouml.cognitive.Designer;
 import org.argouml.cognitive.ListSet;
 import org.argouml.cognitive.ToDoItem;
@@ -40,99 +39,92 @@ import org.argouml.uml.cognitive.UMLDecision;
 import org.argouml.uml.cognitive.UMLToDoItem;
 
 /**
- * A critic to detect when a class can never have instances (of
- * itself of any subclasses).
+ * A critic to detect when a class can never have instances (of itself of any subclasses).
  *
  * @author jrobbins
  */
 public class CrSubclassReference extends CrUML {
 
-    /**
-     * The constructor.
-     */
-    public CrSubclassReference() {
-        setupHeadAndDesc();
-	addSupportedDecision(UMLDecision.RELATIONSHIPS);
-	addSupportedDecision(UMLDecision.PLANNED_EXTENSIONS);
-	setKnowledgeTypes(Critic.KT_SEMANTICS);
-	addTrigger("specialization");
-	addTrigger("associationEnd");
+  /** The constructor. */
+  public CrSubclassReference() {
+    setupHeadAndDesc();
+    addSupportedDecision(UMLDecision.RELATIONSHIPS);
+    addSupportedDecision(UMLDecision.PLANNED_EXTENSIONS);
+    setKnowledgeTypes(Critic.KT_SEMANTICS);
+    addTrigger("specialization");
+    addTrigger("associationEnd");
+  }
+
+  /**
+   * @see org.argouml.uml.cognitive.critics.CrUML#predicate2( java.lang.Object,
+   *     org.argouml.cognitive.Designer)
+   */
+  public boolean predicate2(Object dm, Designer dsgr) {
+    if (!(Model.getFacade().isAClass(dm))) return NO_PROBLEM;
+    Object cls = /*(MClass)*/ dm;
+    ListSet offs = computeOffenders(cls);
+    if (offs != null) return PROBLEM_FOUND;
+    return NO_PROBLEM;
+  }
+
+  /**
+   * @see org.argouml.cognitive.critics.Critic#toDoItem(java.lang.Object,
+   *     org.argouml.cognitive.Designer)
+   */
+  public ToDoItem toDoItem(Object dm, Designer dsgr) {
+    Object cls = /*(MClassifier)*/ dm;
+    ListSet offs = computeOffenders(cls);
+    return new UMLToDoItem(this, offs, dsgr);
+  }
+
+  /**
+   * @see org.argouml.cognitive.Poster#stillValid( org.argouml.cognitive.ToDoItem,
+   *     org.argouml.cognitive.Designer)
+   */
+  public boolean stillValid(ToDoItem i, Designer dsgr) {
+    if (!isActive()) return false;
+    ListSet offs = i.getOffenders();
+    Object dm = /*(MClassifier)*/ offs.firstElement();
+    // if (!predicate(dm, dsgr)) return false;
+    ListSet newOffs = computeOffenders(dm);
+    boolean res = offs.equals(newOffs);
+    return res;
+  }
+
+  /**
+   * @param cls is the UML entity that is being checked.
+   * @return the list of offenders
+   */
+  public ListSet computeOffenders(Object /*MClassifier*/ cls) {
+    Collection asc = Model.getFacade().getAssociationEnds(cls);
+    if (asc == null || asc.size() == 0) return null;
+
+    Enumeration descendEnum = GenDescendantClasses.getSINGLETON().gen(cls);
+    if (!descendEnum.hasMoreElements()) return null;
+    ListSet descendants = new ListSet();
+    while (descendEnum.hasMoreElements()) descendants.addElement(descendEnum.nextElement());
+
+    // TODO: GenNavigableClasses?
+    int nAsc = asc.size();
+    ListSet offs = null;
+    for (Iterator iter = asc.iterator(); iter.hasNext(); ) {
+      Object ae = /*(MAssociationEnd)*/ iter.next();
+      Object a = Model.getFacade().getAssociation(ae);
+      List conn = new ArrayList(Model.getFacade().getConnections(a));
+      if (conn.size() != 2) continue;
+      Object otherEnd = /*(MAssociationEnd)*/ conn.get(0);
+      if (ae == conn.get(0)) otherEnd = /*(MAssociationEnd)*/ conn.get(1);
+      if (!Model.getFacade().isNavigable(otherEnd)) continue;
+      Object otherCls = Model.getFacade().getType(otherEnd);
+      if (descendants.contains(otherCls)) {
+        if (offs == null) {
+          offs = new ListSet();
+          offs.addElement(cls);
+        }
+        offs.addElement(a);
+        offs.addElement(otherCls);
+      }
     }
-
-    /**
-     * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
-     * java.lang.Object, org.argouml.cognitive.Designer)
-     */
-    public boolean predicate2(Object dm, Designer dsgr) {
-	if (!(Model.getFacade().isAClass(dm))) return NO_PROBLEM;
-	Object cls = /*(MClass)*/ dm;
-	ListSet offs = computeOffenders(cls);
-	if (offs != null) return PROBLEM_FOUND;
-	return NO_PROBLEM;
-    }
-
-    /**
-     * @see org.argouml.cognitive.critics.Critic#toDoItem(java.lang.Object,
-     * org.argouml.cognitive.Designer)
-     */
-    public ToDoItem toDoItem(Object dm, Designer dsgr) {
-	Object cls = /*(MClassifier)*/ dm;
-	ListSet offs = computeOffenders(cls);
-	return new UMLToDoItem(this, offs, dsgr);
-    }
-
-    /**
-     * @see org.argouml.cognitive.Poster#stillValid(
-     * org.argouml.cognitive.ToDoItem, org.argouml.cognitive.Designer)
-     */
-    public boolean stillValid(ToDoItem i, Designer dsgr) {
-	if (!isActive()) return false;
-	ListSet offs = i.getOffenders();
-	Object dm = /*(MClassifier)*/ offs.firstElement();
-	//if (!predicate(dm, dsgr)) return false;
-	ListSet newOffs = computeOffenders(dm);
-	boolean res = offs.equals(newOffs);
-	return res;
-    }
-
-    /**
-     * @param cls is the UML entity that is being checked.
-     * @return the list of offenders
-     */
-    public ListSet computeOffenders(Object/*MClassifier*/ cls) {
-	Collection asc = Model.getFacade().getAssociationEnds(cls);
-	if (asc == null || asc.size() == 0) return null;
-
-	Enumeration descendEnum =
-	    GenDescendantClasses.getSINGLETON().gen(cls);
-	if (!descendEnum.hasMoreElements()) return null;
-	ListSet descendants = new ListSet();
-	while (descendEnum.hasMoreElements())
-	    descendants.addElement(descendEnum.nextElement());
-
-	//TODO: GenNavigableClasses?
-	int nAsc = asc.size();
-	ListSet offs = null;
-	for (Iterator iter = asc.iterator(); iter.hasNext();) {
-	    Object ae = /*(MAssociationEnd)*/ iter.next();
-	    Object a = Model.getFacade().getAssociation(ae);
-	    List conn = new ArrayList(Model.getFacade().getConnections(a));
-	    if (conn.size() != 2) continue;
-	    Object otherEnd = /*(MAssociationEnd)*/ conn.get(0);
-	    if (ae == conn.get(0))
-		otherEnd = /*(MAssociationEnd)*/ conn.get(1);
-	    if (!Model.getFacade().isNavigable(otherEnd)) continue;
-	    Object otherCls = Model.getFacade().getType(otherEnd);
-	    if (descendants.contains(otherCls)) {
-		if (offs == null) {
-		    offs = new ListSet();
-		    offs.addElement(cls);
-		}
-		offs.addElement(a);
-		offs.addElement(otherCls);
-	    }
-	}
-	return offs;
-    }
-
+    return offs;
+  }
 } /* end class CrSubclassReference */

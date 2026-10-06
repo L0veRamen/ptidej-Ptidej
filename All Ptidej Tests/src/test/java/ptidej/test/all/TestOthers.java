@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -35,31 +35,31 @@ import test.TestCreatorJavaFileUsingEclipseParser;
  * @since 2008/12/04
  */
 public final class TestOthers extends TestSuite {
-	public static TestSuite suite() {
-		final TestOthers suite = new TestOthers();
-		suite.setName(TestOthers.class.getName());
+  public static TestSuite suite() {
+    final TestOthers suite = new TestOthers();
+    suite.setName(TestOthers.class.getName());
 
-		suite.addTest(TestCPL.suite());
-		suite.addTest(TestCaffeine.suite());
-		suite.addTest(TestPADL.suite());
-		suite.addTest(TestPADLAnalyses.suite());
-		suite.addTest(TestPADLGenerator.suite());
-		suite.addTest(TestPADLGeneratorPageRank.suite());
-		suite.addTest(TestPADLJNI.suite());
-		suite.addTest(TestMicroPatterns.suite());
-		suite.addTest(TestRefactorings.suite());
-		suite.addTest(TestDB4OSerialiser.suite());
-		suite.addTest(TestJOSSerialiser.suite());
-		suite.addTest(TestStatements.suite());
-		suite.addTest(TestPOM.suite());
-		suite.addTest(TestSAD.suite());
-		suite.addTest(TestSQUAD.suite());
+    suite.addTest(TestCPL.suite());
+    suite.addTest(TestCaffeine.suite());
+    suite.addTest(TestPADL.suite());
+    suite.addTest(TestPADLAnalyses.suite());
+    suite.addTest(TestPADLGenerator.suite());
+    suite.addTest(TestPADLGeneratorPageRank.suite());
+    suite.addTest(TestPADLJNI.suite());
+    suite.addTest(TestMicroPatterns.suite());
+    suite.addTest(TestRefactorings.suite());
+    suite.addTest(TestDB4OSerialiser.suite());
+    suite.addTest(TestJOSSerialiser.suite());
+    suite.addTest(TestStatements.suite());
+    suite.addTest(TestPOM.suite());
+    suite.addTest(TestSAD.suite());
+    suite.addTest(TestSQUAD.suite());
 
-		suite.addTest(TestAspectJBuilder.suite());
+    suite.addTest(TestAspectJBuilder.suite());
 
-		suite.addTest(TestCreatorJavaFileUsingEclipseParser.suite());
-		suite.addTest(TestCreatorJavaFileUsingJavaCParser.suite());
+    suite.addTest(TestCreatorJavaFileUsingEclipseParser.suite());
+    suite.addTest(TestCreatorJavaFileUsingJavaCParser.suite());
 
-		return suite;
-	}
+    return suite;
+  }
 }

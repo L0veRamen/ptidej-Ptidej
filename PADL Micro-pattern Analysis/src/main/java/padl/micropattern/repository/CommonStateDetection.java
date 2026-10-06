@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -17,54 +17,51 @@ import padl.kernel.IFirstClassEntity;
 import padl.micropattern.IMicroPatternDetection;
 
 public final class CommonStateDetection extends AbstractMicroPatternDetection
-		implements IMicroPatternDetection {
+    implements IMicroPatternDetection {
 
-	public String getName() {
-		return "CommonStateDetection";
-	}
+  public String getName() {
+    return "CommonStateDetection";
+  }
 
-	/*
-	 *  9. Common State. At the next level of complexity, stand classes
-	 *	that maintain state, but this state is shared by all of their instances.
-	 *	Specifically, a class that has no instance fields, but at least one static
-	 *	field is a Common State.
-	 *	For example, the class System manages (among other things) the
-	 *	global input, output, and error streams.
-	 *	A Common State with no instance methods is in fact an incarnation
-	 *	of the modular programming paradigm in the JAVA world.
-	 */
+  /*
+   *  9. Common State. At the next level of complexity, stand classes
+   *	that maintain state, but this state is shared by all of their instances.
+   *	Specifically, a class that has no instance fields, but at least one static
+   *	field is a Common State.
+   *	For example, the class System manages (among other things) the
+   *	global input, output, and error streams.
+   *	A Common State with no instance methods is in fact an incarnation
+   *	of the modular programming paradigm in the JAVA world.
+   */
 
-	public boolean detect(final IFirstClassEntity anEntity) {
-		int nbStaticField = 0;
+  public boolean detect(final IFirstClassEntity anEntity) {
+    int nbStaticField = 0;
 
-		// Only Class can be Commen State
-		if (anEntity instanceof IClass) {
-			final Iterator iterator =
-				anEntity.getIteratorOnConstituents(IField.class);
+    // Only Class can be Commen State
+    if (anEntity instanceof IClass) {
+      final Iterator iterator = anEntity.getIteratorOnConstituents(IField.class);
 
-			while (iterator.hasNext()) {
-				final Object anOtherEntity = iterator.next();
+      while (iterator.hasNext()) {
+        final Object anOtherEntity = iterator.next();
 
-				// All field must be static
-				if (anOtherEntity instanceof IField) {
-					if (!((IField) anOtherEntity).isStatic()) {
-						return false;
-					}
-					else {
-						nbStaticField++;
-					}
-				}
-			}
+        // All field must be static
+        if (anOtherEntity instanceof IField) {
+          if (!((IField) anOtherEntity).isStatic()) {
+            return false;
+          } else {
+            nbStaticField++;
+          }
+        }
+      }
 
-			// Must have at least one static field
-			if (nbStaticField >= 1) {
-				this.addEntities(anEntity);
-				return true;
-			}
-			else {
-				return false;
-			}
-		}
-		return false;
-	}
+      // Must have at least one static field
+      if (nbStaticField >= 1) {
+        this.addEntities(anEntity);
+        return true;
+      } else {
+        return false;
+      }
+    }
+    return false;
+  }
 }

@@ -25,9 +25,7 @@
 package org.argouml.ui;
 
 import javax.swing.JPanel;
-
 import junit.framework.TestCase;
-
 import org.argouml.cognitive.ui.TabToDo;
 import org.argouml.model.Model;
 import org.argouml.ui.targetmanager.TargetEvent;
@@ -38,82 +36,80 @@ import org.argouml.uml.ui.TabProps;
 import org.tigris.swidgets.Horizontal;
 
 /**
- * @author jaap.branderhorst@xs4all.nl
- * Jul 21, 2003
+ * @author jaap.branderhorst@xs4all.nl Jul 21, 2003
  */
 public class TestDetailsPane extends TestCase {
 
-    /**
-     * @param arg0 is the name of the test case.
-     */
-    public TestDetailsPane(String arg0) {
-        super(arg0);
-    }
+  /**
+   * @param arg0 is the name of the test case.
+   */
+  public TestDetailsPane(String arg0) {
+    super(arg0);
+  }
 
-    /**
-     * Test setting a target.
-     */
-    public void testTargetSet() {
-        DetailsPane pane = new DetailsPane("detail", Horizontal.getInstance());
-        JPanel todoPane = pane.getTab(TabToDo.class);
-        JPanel propertyPane = pane.getTab(TabProps.class);
+  /** Test setting a target. */
+  public void testTargetSet() {
+    DetailsPane pane = new DetailsPane("detail", Horizontal.getInstance());
+    JPanel todoPane = pane.getTab(TabToDo.class);
+    JPanel propertyPane = pane.getTab(TabProps.class);
 
-        assertNotNull(todoPane);
-        assertNotNull(propertyPane);
+    assertNotNull(todoPane);
+    assertNotNull(propertyPane);
 
-        Object o = new Object();
-        TargetEvent e =
-            new TargetEvent(
-                this,
-                TargetEvent.TARGET_SET,
-                new Object[] {
-		    null,
-		},
-                new Object[] {
-		    o,
-		});
-        pane.targetSet(e);
-        assertEquals("1:", todoPane, pane.getTabs().getSelectedComponent());
-        UMLDiagram diagram = new UMLClassDiagram();
-        e =
-            new TargetEvent(
-			    this,
-			    TargetEvent.TARGET_SET,
-			    new Object[] {
-				o,
-			    },
-			    new Object[] {
-				diagram,
-			    });
-        pane.getTabs().setSelectedComponent(todoPane);
-        TargetManager.getInstance().setTarget(diagram);
-        pane.targetSet(e);
-        assertEquals("2:", propertyPane, pane.getTabs().getSelectedComponent());
-        Object clazz = Model.getCoreFactory().createClass();
-        e =
-            new TargetEvent(this,
-			    TargetEvent.TARGET_SET,
-			    new Object[] {
-				diagram,
-			    },
-			    new Object[] {
-				clazz,
-			    });
-        pane.targetSet(e);
-        assertEquals("3:", propertyPane, pane.getTabs().getSelectedComponent());
-        pane.getTabs().setSelectedComponent(todoPane);
-        pane.targetSet(e);
-        assertEquals("4:", propertyPane, pane.getTabs().getSelectedComponent());
-        // TODO: at the moment setSelectedComponent doesn't take into account
-        // the rather complex tab selection mechanism of DetailsPane. The tab
-        // selection mechanism must be refactored.
-        /*
-         * commented out next piece to remove failure of testcase. The testcase
-         * is probably correct but the implementation of DetailsPane is not
+    Object o = new Object();
+    TargetEvent e =
+        new TargetEvent(
+            this,
+            TargetEvent.TARGET_SET,
+            new Object[] {
+              null,
+            },
+            new Object[] {
+              o,
+            });
+    pane.targetSet(e);
+    assertEquals("1:", todoPane, pane.getTabs().getSelectedComponent());
+    UMLDiagram diagram = new UMLClassDiagram();
+    e =
+        new TargetEvent(
+            this,
+            TargetEvent.TARGET_SET,
+            new Object[] {
+              o,
+            },
+            new Object[] {
+              diagram,
+            });
+    pane.getTabs().setSelectedComponent(todoPane);
+    TargetManager.getInstance().setTarget(diagram);
+    pane.targetSet(e);
+    assertEquals("2:", propertyPane, pane.getTabs().getSelectedComponent());
+    Object clazz = Model.getCoreFactory().createClass();
+    e =
+        new TargetEvent(
+            this,
+            TargetEvent.TARGET_SET,
+            new Object[] {
+              diagram,
+            },
+            new Object[] {
+              clazz,
+            });
+    pane.targetSet(e);
+    assertEquals("3:", propertyPane, pane.getTabs().getSelectedComponent());
+    pane.getTabs().setSelectedComponent(todoPane);
+    pane.targetSet(e);
+    assertEquals("4:", propertyPane, pane.getTabs().getSelectedComponent());
+    // TODO: at the moment setSelectedComponent doesn't take into account
+    // the rather complex tab selection mechanism of DetailsPane. The tab
+    // selection mechanism must be refactored.
+    /*
+     * commented out next piece to remove failure of testcase. The testcase
+     * is probably correct but the implementation of DetailsPane is not
 
-        _pane.getTabs().setSelectedComponent(_docPane);
-        _pane.targetSet(e);
-        assertEquals(_docPane, _pane.getTabs().getSelectedComponent());
-        */
-    }
+    _pane.getTabs().setSelectedComponent(_docPane);
+    _pane.targetSet(e);
+    assertEquals(_docPane, _pane.getTabs().getSelectedComponent());
+    */
+  }
 }

@@ -28,19 +28,19 @@ import org.eclipse.osgi.util.NLS;
 
 /**
  * Views message bundle.
+ *
  * @author Bogdan Pistol
  */
 public class ViewsMessages extends NLS {
 
-    private static final String BUNDLE_NAME = 
-        "org.argouml.argoeclipse.internal.ui." //$NON-NLS-1$
-        + "views.ViewsMessages"; //$NON-NLS-1$
-    
-    public static String warningMultipleViews;
-    public static String warningNullPanel;
-    
-    static {
-        NLS.initializeMessages(BUNDLE_NAME, ViewsMessages.class);
-    }
-    
+  private static final String BUNDLE_NAME =
+      "org.argouml.argoeclipse.internal.ui." //$NON-NLS-1$
+          + "views.ViewsMessages"; //$NON-NLS-1$
+
+  public static String warningMultipleViews;
+  public static String warningNullPanel;
+
+  static {
+    NLS.initializeMessages(BUNDLE_NAME, ViewsMessages.class);
+  }
 }

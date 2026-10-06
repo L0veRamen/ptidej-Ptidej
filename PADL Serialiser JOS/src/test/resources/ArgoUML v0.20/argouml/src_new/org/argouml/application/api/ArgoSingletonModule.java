@@ -25,59 +25,52 @@
 package org.argouml.application.api;
 
 /**
- * An interface which identifies an ArgoUML plug-in which behaves
- * as a singleton, but may be swapped with another plugin singleton
- * of the same type.  Only one singleton module can be considered
+ * An interface which identifies an ArgoUML plug-in which behaves as a singleton, but may be swapped
+ * with another plugin singleton of the same type. Only one singleton module can be considered
  * active at the same time.
  *
  * @author Will Howery
  * @author Thierry Lach
- * @since  0.9.4
+ * @since 0.9.4
  */
 public interface ArgoSingletonModule extends ArgoModule {
 
-    /**
-     * Allows verification that the current singleton can be
-     * activated.  This is useful for determining menu entry
-     * availability, among other things.
-     * @return <code>true</code> if the singleton can be activated
-     *         <code>false</code> otherwise.
-     */
-    boolean canActivateSingleton();
+  /**
+   * Allows verification that the current singleton can be activated. This is useful for determining
+   * menu entry availability, among other things.
+   *
+   * @return <code>true</code> if the singleton can be activated <code>false</code> otherwise.
+   */
+  boolean canActivateSingleton();
 
-    /**
-     * Allows verification that the current singleton can be
-     * deactivated.  This is useful for determining menu entry
-     * availability, among other things.
-     * @return <code>true</code> if the singleton can be deactivated
-     *         <code>false</code> otherwise.
-     */
-    boolean canDeactivateSingleton();
+  /**
+   * Allows verification that the current singleton can be deactivated. This is useful for
+   * determining menu entry availability, among other things.
+   *
+   * @return <code>true</code> if the singleton can be deactivated <code>false</code> otherwise.
+   */
+  boolean canDeactivateSingleton();
 
-    /**
-     * Callback by which the active singleton is notified that it
-     * is being deactivated.  This is called prior to calling
-     * activateSingleton() on the new singleton.
-     *
-     * After the call to deactivateSingleton() and
-     * before the call to activateSingleton(), the previously
-     * active singleton is considered to be the active singleton
-     * even though it is not marked as active.
-     */
-    void deactivateSingleton();
+  /**
+   * Callback by which the active singleton is notified that it is being deactivated. This is called
+   * prior to calling activateSingleton() on the new singleton.
+   *
+   * <p>After the call to deactivateSingleton() and before the call to activateSingleton(), the
+   * previously active singleton is considered to be the active singleton even though it is not
+   * marked as active.
+   */
+  void deactivateSingleton();
 
-    /**
-     * Callback by which the singleton being activated is notified that it
-     * is being activated.  This is called after calling
-     * deactivateSingleton() on the previous singleton.
-     */
-    void activateSingleton();
+  /**
+   * Callback by which the singleton being activated is notified that it is being activated. This is
+   * called after calling deactivateSingleton() on the previous singleton.
+   */
+  void activateSingleton();
 
-    /**
-     * TODO: Document this.
-     * @return class which identifies the singleton
-     */
-    Class getSingletonType();
-
+  /**
+   * TODO: Document this.
+   *
+   * @return class which identifies the singleton
+   */
+  Class getSingletonType();
 } /* end interface ArgoSingletonModule */
-

@@ -24,55 +24,47 @@
 
 package org.argouml.core.propertypanels.ui;
 
-import java.beans.PropertyChangeEvent;
 
 import org.apache.log4j.Logger;
 import org.argouml.model.Model;
-import org.argouml.ui.targetmanager.TargetEvent;
 import org.argouml.ui.targetmanager.TargetManager;
 
 /**
- *
  * @author mkl, penyaskito
- *
  */
 public class UMLConditionExpressionModel extends UMLExpressionModel {
 
-    private static final Logger LOG =
-        Logger.getLogger(UMLConditionExpressionModel.class);
+  private static final Logger LOG = Logger.getLogger(UMLConditionExpressionModel.class);
 
-    /**
-     * The constructor.    
-     */
-    public UMLConditionExpressionModel(Object target) {
-        super(target, "condition");
+  /** The constructor. */
+  public UMLConditionExpressionModel(Object target) {
+    super(target, "condition");
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLExpressionModel2#getExpression()
+   */
+  public Object getExpression() {
+    return Model.getFacade().getCondition(TargetManager.getInstance().getTarget());
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLExpressionModel2#setExpression(java.lang.Object)
+   */
+  public void setExpression(Object expression) {
+    Object target = TargetManager.getInstance().getTarget();
+
+    if (target == null) {
+      throw new IllegalStateException("There is no target");
     }
+    Model.getUseCasesHelper().setCondition(target, expression);
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLExpressionModel2#getExpression()
-     */
-    public Object getExpression() {
-        return Model.getFacade().getCondition(
-                TargetManager.getInstance().getTarget());
-    }
-
-    /*
-     * @see org.argouml.uml.ui.UMLExpressionModel2#setExpression(java.lang.Object)
-     */
-    public void setExpression(Object expression) {
-        Object target = TargetManager.getInstance().getTarget();
-
-        if (target == null) {
-            throw new IllegalStateException("There is no target");
-        }
-        Model.getUseCasesHelper().setCondition(target, expression);
-    }
-
-    /*
-     * @see org.argouml.uml.ui.UMLExpressionModel2#newExpression()
-     */
-    public Object newExpression() {
-        LOG.debug("new boolean expression");
-        return Model.getDataTypesFactory().createBooleanExpression("", "");
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLExpressionModel2#newExpression()
+   */
+  public Object newExpression() {
+    LOG.debug("new boolean expression");
+    return Model.getDataTypesFactory().createBooleanExpression("", "");
+  }
 }

@@ -30,34 +30,33 @@ import org.argouml.uml.ui.ActionNavigateContainerElement;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
 /**
- * The properties panel for a ElementResidence. <p>
- * 
- * The ElementResidence is not a ModelElement according MDR, 
- * hence this properties panel does not show a name field.
- * 
+ * The properties panel for a ElementResidence.
+ *
+ * <p>The ElementResidence is not a ModelElement according MDR, hence this properties panel does not
+ * show a name field.
+ *
  * @author michiel
  */
 public class PropPanelElementResidence extends PropPanelModelElement {
 
-    /**
-     * Construct a property panel for a ElementResidence.
-     */
-    public PropPanelElementResidence() {
-        super("label.element-residence", lookupIcon("ElementResidence"));
+  /** Construct a property panel for a ElementResidence. */
+  public PropPanelElementResidence() {
+    super("label.element-residence", lookupIcon("ElementResidence"));
 
-        add(getVisibilityPanel());
-        addSeparator();
+    add(getVisibilityPanel());
+    addSeparator();
 
-        addField(Translator.localize("label.container"),
-                getSingleRowScroll(new ElementResidenceContainerListModel()));
+    addField(
+        Translator.localize("label.container"),
+        getSingleRowScroll(new ElementResidenceContainerListModel()));
 
-        addField(Translator.localize("label.resident"),
-                getSingleRowScroll(new ElementResidenceResidentListModel()));
+    addField(
+        Translator.localize("label.resident"),
+        getSingleRowScroll(new ElementResidenceResidentListModel()));
 
-        addAction(new ActionNavigateContainerElement());
-        addAction(getDeleteAction());
-    }
-
+    addAction(new ActionNavigateContainerElement());
+    addAction(getDeleteAction());
+  }
 }
 
 /**
@@ -67,23 +66,21 @@ public class PropPanelElementResidence extends PropPanelModelElement {
  */
 class ElementResidenceContainerListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for ElementResidenceContainerListModel.
-     */
-    public ElementResidenceContainerListModel() {
-        super("container");
-    }
+  /** Constructor for ElementResidenceContainerListModel. */
+  public ElementResidenceContainerListModel() {
+    super("container");
+  }
 
-    protected void buildModelList() {
-        if (getTarget() != null) {
-            removeAllElements();
-            addElement(Model.getFacade().getContainer(getTarget()));
-        }
+  protected void buildModelList() {
+    if (getTarget() != null) {
+      removeAllElements();
+      addElement(Model.getFacade().getContainer(getTarget()));
     }
+  }
 
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().isAElementResidence(getTarget());
-    }
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().isAElementResidence(getTarget());
+  }
 }
 
 /**
@@ -93,21 +90,19 @@ class ElementResidenceContainerListModel extends UMLModelElementListModel2 {
  */
 class ElementResidenceResidentListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for ElementResidenceResidentListModel.
-     */
-    public ElementResidenceResidentListModel() {
-        super("resident");
-    }
+  /** Constructor for ElementResidenceResidentListModel. */
+  public ElementResidenceResidentListModel() {
+    super("resident");
+  }
 
-    protected void buildModelList() {
-        if (getTarget() != null) {
-            removeAllElements();
-            addElement(Model.getFacade().getResident(getTarget()));
-        }
+  protected void buildModelList() {
+    if (getTarget() != null) {
+      removeAllElements();
+      addElement(Model.getFacade().getResident(getTarget()));
     }
+  }
 
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().isAElementResidence(getTarget());
-    }
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().isAElementResidence(getTarget());
+  }
 }

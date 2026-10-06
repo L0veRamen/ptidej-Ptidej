@@ -27,35 +27,29 @@ package org.argouml.uml.ui.foundation.core;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
-/**
- */
-public class UMLGeneralizationParentListModel
-    extends UMLModelElementListModel2 {
+/** */
+public class UMLGeneralizationParentListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor.
-     */
-    public UMLGeneralizationParentListModel() {
-        super("parent");
+  /** Constructor. */
+  public UMLGeneralizationParentListModel() {
+    super("parent");
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (getTarget() == null) {
+      return;
     }
+    removeAllElements();
+    addElement(Model.getFacade().getParent(getTarget()));
+  }
 
-     /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (getTarget() == null) {
-            return;
-        }
-        removeAllElements();
-        addElement(Model.getFacade().getParent(getTarget()));
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ o) {
-        return (Model.getFacade().getParent(getTarget()) == o);
-    }
-
-
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ o) {
+    return (Model.getFacade().getParent(getTarget()) == o);
+  }
 }

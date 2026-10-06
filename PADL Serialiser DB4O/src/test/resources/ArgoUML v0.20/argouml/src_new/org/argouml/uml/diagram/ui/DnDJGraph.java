@@ -35,7 +35,6 @@ import java.awt.dnd.DropTargetListener;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
-
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.Model;
 import org.argouml.ui.TransferableModelElements;
@@ -52,138 +51,124 @@ import org.tigris.gef.graph.presentation.JGraph;
  *
  * @author mvw@tigris.org
  */
-class DnDJGraph
-    extends JGraph
-    implements DropTargetListener
-    {
+class DnDJGraph extends JGraph implements DropTargetListener {
 
-    /**
-     * The constructor.
-     *
-     */
-    public DnDJGraph() {
-        super();
-        makeDropTarget();
+  /** The constructor. */
+  public DnDJGraph() {
+    super();
+    makeDropTarget();
+  }
+
+  /**
+   * The constructor.
+   *
+   * @param cc
+   */
+  public DnDJGraph(ConnectionConstrainer cc) {
+    super(cc);
+    makeDropTarget();
+  }
+
+  /**
+   * The constructor.
+   *
+   * @param d
+   */
+  public DnDJGraph(Diagram d) {
+    super(d);
+    makeDropTarget();
+  }
+
+  /**
+   * The constructor.
+   *
+   * @param gm
+   */
+  public DnDJGraph(GraphModel gm) {
+    super(gm);
+    makeDropTarget();
+  }
+
+  /**
+   * The constructor.
+   *
+   * @param ed
+   */
+  public DnDJGraph(Editor ed) {
+    super(ed);
+    makeDropTarget();
+  }
+
+  private void makeDropTarget() {
+    new DropTarget(this, DnDConstants.ACTION_COPY_OR_MOVE, this);
+  }
+
+  public void dragEnter(DropTargetDragEvent dtde) {
+    try {
+      if (dtde.isDataFlavorSupported(TransferableModelElements.UML_COLLECTION_FLAVOR)) {
+        dtde.acceptDrag(dtde.getDropAction());
+        return;
+      }
+    } catch (NullPointerException e) {
+      //			System.err.println("NullPointerException ignored.");
+    }
+    dtde.rejectDrag();
+  }
+
+  public void dragOver(DropTargetDragEvent dtde) {
+    try {
+      if (dtde.isDataFlavorSupported(TransferableModelElements.UML_COLLECTION_FLAVOR)) {
+        dtde.acceptDrag(dtde.getDropAction());
+        return;
+      }
+    } catch (NullPointerException e) {
+      //    		System.err.println("NullPointerException ignored.");
+    }
+    dtde.rejectDrag();
+  }
+
+  public void dropActionChanged(DropTargetDragEvent dtde) {}
+
+  public void dragExit(DropTargetEvent dte) {}
+
+  public void drop(DropTargetDropEvent dropTargetDropEvent) {
+    Transferable tr = dropTargetDropEvent.getTransferable();
+    // if the flavor is not supported, then reject the drop:
+    if (!tr.isDataFlavorSupported(TransferableModelElements.UML_COLLECTION_FLAVOR)) {
+      dropTargetDropEvent.rejectDrop();
+      return;
     }
 
-    /**
-     * The constructor.
-     *
-     * @param cc
-     */
-    public DnDJGraph(ConnectionConstrainer cc) {
-        super(cc);
-        makeDropTarget();
-    }
-
-    /**
-     * The constructor.
-     *
-     * @param d
-     */
-    public DnDJGraph(Diagram d) {
-        super(d);
-        makeDropTarget();
-    }
-
-    /**
-     * The constructor.
-     *
-     * @param gm
-     */
-    public DnDJGraph(GraphModel gm) {
-        super(gm);
-        makeDropTarget();
-    }
-
-    /**
-     * The constructor.
-     *
-     * @param ed
-     */
-    public DnDJGraph(Editor ed) {
-        super(ed);
-        makeDropTarget();
-    }
-
-    private void makeDropTarget(){
-        new DropTarget(this,
-                DnDConstants.ACTION_COPY_OR_MOVE,
-                this);
-    }
-
-    public void dragEnter(DropTargetDragEvent dtde) {
-    	try {
-			if (dtde.isDataFlavorSupported(
-					TransferableModelElements.UML_COLLECTION_FLAVOR)) {
-				dtde.acceptDrag(dtde.getDropAction());
-				return;
-			}
-		} catch (NullPointerException e) {
-//			System.err.println("NullPointerException ignored.");
-		}
-    	dtde.rejectDrag();
-    }
-
-    public void dragOver(DropTargetDragEvent dtde) {
-    	try {
-    		if (dtde.isDataFlavorSupported(
-    				TransferableModelElements.UML_COLLECTION_FLAVOR)) {
-    			dtde.acceptDrag(dtde.getDropAction());
-    			return;
-    		}
-    	} catch (NullPointerException e) {
-//    		System.err.println("NullPointerException ignored.");
-    	}
-    	dtde.rejectDrag();
-    }
-
-    public void dropActionChanged(DropTargetDragEvent dtde) {
-    }
-
-    public void dragExit(DropTargetEvent dte) {
-    }
-
-    public void drop(DropTargetDropEvent dropTargetDropEvent) {
-        Transferable tr = dropTargetDropEvent.getTransferable();
-        //if the flavor is not supported, then reject the drop:
-        if (!tr.isDataFlavorSupported(
-                     TransferableModelElements.UML_COLLECTION_FLAVOR)) {
-            dropTargetDropEvent.rejectDrop();
-            return;
+    dropTargetDropEvent.acceptDrop(dropTargetDropEvent.getDropAction());
+    // get the model elements that are being transfered.
+    Collection modelElements;
+    MutableGraphModel gm =
+        (MutableGraphModel)
+            ProjectManager.getManager().getCurrentProject().getActiveDiagram().getGraphModel();
+    try {
+      Collection oldTargets = TargetManager.getInstance().getTargets();
+      modelElements =
+          (Collection) tr.getTransferData(TransferableModelElements.UML_COLLECTION_FLAVOR);
+      int count = 0;
+      Iterator i = modelElements.iterator();
+      while (i.hasNext()) {
+        Object me = i.next();
+        if (Model.getFacade().isAModelElement(me)) {
+          if (gm.canAddEdge(me)) {
+            gm.addEdge(me);
+          } else if (gm.canAddNode(me)) {
+            AddExistingNodeCommand cmd =
+                new AddExistingNodeCommand(me, dropTargetDropEvent, count++);
+            cmd.execute();
+          }
         }
-
-        dropTargetDropEvent.acceptDrop(dropTargetDropEvent.getDropAction());
-        //get the model elements that are being transfered.
-        Collection modelElements;
-        MutableGraphModel gm = (MutableGraphModel) ProjectManager.getManager().
-            getCurrentProject().getActiveDiagram().getGraphModel();
-        try {
-            Collection oldTargets = TargetManager.getInstance().getTargets();
-            modelElements = (Collection) tr.getTransferData(
-                    TransferableModelElements.UML_COLLECTION_FLAVOR);
-            int count = 0;
-            Iterator i = modelElements.iterator();
-            while (i.hasNext()) {
-                Object me = i.next();
-                if (Model.getFacade().isAModelElement(me)) {
-                    if (gm.canAddEdge(me)) {
-                        gm.addEdge(me);
-                    } else if (gm.canAddNode(me)) {
-                        AddExistingNodeCommand cmd =
-                            new AddExistingNodeCommand(me, dropTargetDropEvent,
-                                    count++);
-                        cmd.execute();
-                    }
-                }
-            }
-            TargetManager.getInstance().setTargets(oldTargets);
-            dropTargetDropEvent.getDropTargetContext().dropComplete(true);
-        } catch (UnsupportedFlavorException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+      }
+      TargetManager.getInstance().setTargets(oldTargets);
+      dropTargetDropEvent.getDropTargetContext().dropComplete(true);
+    } catch (UnsupportedFlavorException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
     }
-
+  }
 }

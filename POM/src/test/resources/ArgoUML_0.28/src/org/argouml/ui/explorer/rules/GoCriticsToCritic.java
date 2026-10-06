@@ -28,75 +28,72 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 import java.util.Vector;
-
 import org.argouml.cognitive.CompoundCritic;
 import org.argouml.cognitive.Critic;
 import org.argouml.i18n.Translator;
-import org.argouml.profile.Profile;
 
 /**
  * Show the critics exported by a Profile
- * 
+ *
  * @author maurelio1234
  */
 public class GoCriticsToCritic implements PerspectiveRule {
 
-    /*
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
-     */
-    public String getRuleName() {
-        return Translator.localize("misc.profile.critic");
-    }
+  /*
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
+   */
+  public String getRuleName() {
+    return Translator.localize("misc.profile.critic");
+  }
 
-    /*
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
-     */
-    public Collection getChildren(final Object parent) {
-        if (parent instanceof Collection) {
-            Collection v = (Collection) parent;
-            if (!v.isEmpty()) {
-                if (v.iterator().next() instanceof Critic) {
-                    Vector<Object> ret = new Vector<Object>();
-                    for (Object critic : v) {
-                        final Critic fc = (Critic) critic;
-                        if (critic instanceof CompoundCritic) {
+  /*
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
+   */
+  public Collection getChildren(final Object parent) {
+    if (parent instanceof Collection) {
+      Collection v = (Collection) parent;
+      if (!v.isEmpty()) {
+        if (v.iterator().next() instanceof Critic) {
+          Vector<Object> ret = new Vector<Object>();
+          for (Object critic : v) {
+            final Critic fc = (Critic) critic;
+            if (critic instanceof CompoundCritic) {
 
-                            Object compound = new Vector<Critic>() {
-                                {
-                                    addAll(((CompoundCritic) fc)
-                                            .getCriticList());
-                                }
-
-                                /*
-                                 * @see java.util.Vector#toString()
-                                 */
-                                public String toString() {
-                                    return Translator
-                                            .localize("misc.profile.explorer.compound");
-                                }
-                            };
-
-                            ret.add(compound);
-                        } else {
-                            ret.add(critic);
-                        }
+              Object compound =
+                  new Vector<Critic>() {
+                    {
+                      addAll(((CompoundCritic) fc).getCriticList());
                     }
-                    return ret;
-                } else {
-                    return (Collection) parent;
-                }
-            } else {
-                return Collections.EMPTY_SET;
-            }
-        }
-        return Collections.EMPTY_SET;
-    }
 
-    /*
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
-     */
-    public Set getDependencies(Object parent) {
-        // TODO: What?
+                    /*
+                     * @see java.util.Vector#toString()
+                     */
+                    public String toString() {
+                      return Translator.localize("misc.profile.explorer.compound");
+                    }
+                  };
+
+              ret.add(compound);
+            } else {
+              ret.add(critic);
+            }
+          }
+          return ret;
+        } else {
+          return (Collection) parent;
+        }
+      } else {
         return Collections.EMPTY_SET;
+      }
     }
+    return Collections.EMPTY_SET;
+  }
+
+  /*
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
+   */
+  public Set getDependencies(Object parent) {
+    // TODO: What?
+    return Collections.EMPTY_SET;
+  }
 }

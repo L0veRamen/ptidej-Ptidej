@@ -27,7 +27,6 @@ package org.argouml.uml.ui.foundation.core;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.uml.ui.ActionNavigateContainerElement;
 import org.argouml.uml.ui.UMLLinkedList;
@@ -35,98 +34,71 @@ import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
 import org.argouml.util.ConfigLoader;
 import org.tigris.swidgets.Orientation;
 
-/**
- * Theproperties panel for a Association.
- *
- */
+/** Theproperties panel for a Association. */
 public class PropPanelAssociation extends PropPanelRelationship {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = 4272135235664638209L;
+  /** The serial version. */
+  private static final long serialVersionUID = 4272135235664638209L;
 
-    /**
-     * The scrollpane with the associationends.
-     */
-    private JScrollPane assocEndScroll;
+  /** The scrollpane with the associationends. */
+  private JScrollPane assocEndScroll;
 
-    /**
-     * The scrollpane with the associationroles this association plays a role
-     * in.
-     */
-    private JScrollPane associationRoleScroll;
+  /** The scrollpane with the associationroles this association plays a role in. */
+  private JScrollPane associationRoleScroll;
 
-    /**
-     * Ths scrollpane with the links that implement this association.
-     */
-    private JScrollPane linksScroll;
+  /** Ths scrollpane with the links that implement this association. */
+  private JScrollPane linksScroll;
 
-    /**
-     * Panel for abstract/leaf/root
-     */
-    private JPanel modifiersPanel;
+  /** Panel for abstract/leaf/root */
+  private JPanel modifiersPanel;
 
-    /**
-     * Construct a property panel for UML Association elements.
-     */
-    public PropPanelAssociation() {
-        this("Association", ConfigLoader.getTabPropsOrientation());
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.namespace"),
-                getNamespaceSelector());
-        add(modifiersPanel);
+  /** Construct a property panel for UML Association elements. */
+  public PropPanelAssociation() {
+    this("Association", ConfigLoader.getTabPropsOrientation());
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.namespace"), getNamespaceSelector());
+    add(modifiersPanel);
 
-        addSeparator();
+    addSeparator();
 
-        addField(Translator.localize("label.connections"),
-                assocEndScroll);
+    addField(Translator.localize("label.connections"), assocEndScroll);
 
-        addSeparator();
+    addSeparator();
 
-        addField(Translator.localize("label.association-roles"),
-                associationRoleScroll);
-        addField(Translator.localize("label.association-links"),
-                linksScroll);
+    addField(Translator.localize("label.association-roles"), associationRoleScroll);
+    addField(Translator.localize("label.association-links"), linksScroll);
 
-        addAction(new ActionNavigateContainerElement());
-        addAction(new ActionNewStereotype());
-        addAction(getDeleteAction());
+    addAction(new ActionNavigateContainerElement());
+    addAction(new ActionNewStereotype());
+    addAction(getDeleteAction());
+  }
 
-    }
+  /**
+   * Construct a property panel for an Association.
+   *
+   * @param title the title of the panel
+   * @param orientation the orientation of the panel
+   */
+  protected PropPanelAssociation(String title, Orientation orientation) {
+    super(title, lookupIcon("Association"), orientation);
+    initialize();
+    JList assocEndList = new UMLLinkedList(new UMLAssociationConnectionListModel());
+    assocEndScroll = new JScrollPane(assocEndList);
+    JList baseList = new UMLLinkedList(new UMLAssociationAssociationRoleListModel());
+    associationRoleScroll = new JScrollPane(baseList);
+    JList linkList = new UMLLinkedList(new UMLAssociationLinkListModel());
+    linksScroll = new JScrollPane(linkList);
 
-    /**
-     * Construct a property panel for an Association.
-     *
-     * @param title the title of the panel
-     * @param orientation the orientation of the panel
-     */
-    protected PropPanelAssociation(String title, Orientation orientation) {
-        super(title, lookupIcon("Association"), orientation);
-        initialize();
-        JList assocEndList = new UMLLinkedList(
-                new UMLAssociationConnectionListModel());
-        assocEndScroll = new JScrollPane(assocEndList);
-        JList baseList = new UMLLinkedList(
-                new UMLAssociationAssociationRoleListModel());
-        associationRoleScroll = new JScrollPane(baseList);
-        JList linkList = new UMLLinkedList(new UMLAssociationLinkListModel());
-        linksScroll = new JScrollPane(linkList);
+    // TODO: implement the multiple inheritance of an Association
+    // (Generalizable element)
 
-        // TODO: implement the multiple inheritance of an Association
-        // (Generalizable element)
+  }
 
-    }
+  private void initialize() {
 
-    private void initialize() {
-
-        modifiersPanel = createBorderPanel(
-                Translator.localize("label.modifiers"));
-        modifiersPanel.add(new UMLGeneralizableElementAbstractCheckBox());
-        modifiersPanel.add(new UMLGeneralizableElementLeafCheckBox());
-        modifiersPanel.add(new UMLGeneralizableElementRootCheckBox());
-
-    }
-
+    modifiersPanel = createBorderPanel(Translator.localize("label.modifiers"));
+    modifiersPanel.add(new UMLGeneralizableElementAbstractCheckBox());
+    modifiersPanel.add(new UMLGeneralizableElementLeafCheckBox());
+    modifiersPanel.add(new UMLGeneralizableElementRootCheckBox());
+  }
 } /* end class PropPanelAssociation */

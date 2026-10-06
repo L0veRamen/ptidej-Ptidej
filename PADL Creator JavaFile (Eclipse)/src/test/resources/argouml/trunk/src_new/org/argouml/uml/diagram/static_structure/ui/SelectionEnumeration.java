@@ -25,49 +25,48 @@
 package org.argouml.uml.diagram.static_structure.ui;
 
 import java.awt.Rectangle;
-
 import org.argouml.model.Model;
 import org.tigris.gef.presentation.Fig;
 import org.tigris.gef.presentation.Handle;
 
 /**
  * The buttons on selection for an Enumeration.
- * 
+ *
  * @author Michiel
  */
 class SelectionEnumeration extends SelectionDataType {
 
-    /**
-     * @param f the given fi
-     */
-    public SelectionEnumeration(Fig f) {
-        super(f);
-    }
+  /**
+   * @param f the given fi
+   */
+  public SelectionEnumeration(Fig f) {
+    super(f);
+  }
 
-    /**
-     * @see org.argouml.uml.diagram.static_structure.ui.SelectionDataType#hitHandle(java.awt.Rectangle, org.tigris.gef.presentation.Handle)
-     */
-    public void hitHandle(Rectangle r, Handle h) {
-        super.hitHandle(r, h);
-        
-        if (h.index == 10) h.instructions = "Add a super-enumeration";
-        if (h.index == 11) h.instructions = "Add a sub-enumeration";
-    }
+  /**
+   * @see
+   *     org.argouml.uml.diagram.static_structure.ui.SelectionDataType#hitHandle(java.awt.Rectangle,
+   *     org.tigris.gef.presentation.Handle)
+   */
+  public void hitHandle(Rectangle r, Handle h) {
+    super.hitHandle(r, h);
 
-    /**
-     * @see org.argouml.uml.diagram.static_structure.ui.SelectionDataType#getNewNode(int)
-     */
-    protected Object getNewNode(int buttonCode) {
-        Object ns = Model.getFacade().getNamespace(getContent().getOwner());
-        return Model.getCoreFactory().buildEnumeration("", ns);
-    }
+    if (h.index == 10) h.instructions = "Add a super-enumeration";
+    if (h.index == 11) h.instructions = "Add a sub-enumeration";
+  }
 
-    /**
-     * @see org.argouml.uml.diagram.static_structure.ui.SelectionDataType#getNewNodeType(int)
-     */
-    protected Object getNewNodeType(int buttonCode) {
-        return Model.getMetaTypes().getEnumeration();
-    }
+  /**
+   * @see org.argouml.uml.diagram.static_structure.ui.SelectionDataType#getNewNode(int)
+   */
+  protected Object getNewNode(int buttonCode) {
+    Object ns = Model.getFacade().getNamespace(getContent().getOwner());
+    return Model.getCoreFactory().buildEnumeration("", ns);
+  }
 
-
+  /**
+   * @see org.argouml.uml.diagram.static_structure.ui.SelectionDataType#getNewNodeType(int)
+   */
+  protected Object getNewNodeType(int buttonCode) {
+    return Model.getMetaTypes().getEnumeration();
+  }
 }

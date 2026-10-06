@@ -32,13 +32,11 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
 import javax.swing.KeyStroke;
-
 import org.argouml.application.api.Argo;
 import org.argouml.application.api.Configuration;
 import org.argouml.i18n.Translator;
@@ -47,165 +45,152 @@ import org.tigris.gef.base.Globals;
 import org.tigris.gef.base.Layer;
 import org.tigris.gef.base.LayerGrid;
 
-
 /**
  * This action changes the grid shown on the diagram.
- * 
+ *
  * @author Michiel
  */
 public class ActionAdjustGrid extends AbstractAction {
 
-    private HashMap myMap;
-    private static final String DEFAULT_ID = "03";
-    private static ButtonGroup myGroup;
+  private HashMap myMap;
+  private static final String DEFAULT_ID = "03";
+  private static ButtonGroup myGroup;
 
-    private static final int DEFAULT_MASK = 
-        Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+  private static final int DEFAULT_MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 
-    /**
-     * @param map this map contains the values for 
-     *          the spacing, paintLines and paintDots. 
-     * @param name the name for this action
-     */
-    private ActionAdjustGrid(HashMap map, String name) {
-        super();
-        myMap = map;
-        putValue(Action.NAME, name);
+  /**
+   * @param map this map contains the values for the spacing, paintLines and paintDots.
+   * @param name the name for this action
+   */
+  private ActionAdjustGrid(HashMap map, String name) {
+    super();
+    myMap = map;
+    putValue(Action.NAME, name);
+  }
+
+  public void actionPerformed(ActionEvent e) {
+    Editor ce = Globals.curEditor();
+    Layer grid = ce.getLayerManager().findLayerNamed("Grid");
+    if (grid instanceof LayerGrid) {
+      if (myMap != null) {
+        grid.adjust(myMap);
+        Configuration.setString(Argo.KEY_GRID, (String) getValue("ID"));
+      }
     }
+  }
 
-    public void actionPerformed(ActionEvent e) {
-        Editor ce = Globals.curEditor();
-        Layer grid = ce.getLayerManager().findLayerNamed("Grid");
-        if (grid instanceof LayerGrid) {
-            if (myMap != null) {
-                grid.adjust(myMap);
-                Configuration.setString(Argo.KEY_GRID, (String) getValue("ID"));
-            }
-        }
-    }
-    
-    static void setGroup(ButtonGroup group) {
-        myGroup = group;
-    }
-    
-    /**
-     * This executes one of the actions, 
-     * based on the stored ArgoUML configuration. 
-     * This function is intended for the initial setting 
-     * of the grid when ArgoUML is started. <p>
-     * 
-     * Additionally, the ButtonGroup is searched for the right Action, 
-     * and when found, the button's model initialised.
-     */
-    public static void init() {
-        String id = Configuration.getString(Argo.KEY_GRID, DEFAULT_ID);
-        List actions = createAdjustGridActions(false);
-        Iterator i = actions.iterator();
-        Action a;
-        while (i.hasNext()) {
-            a = (Action) i.next();
-            if (a.getValue("ID").equals(id)) {
-                a.actionPerformed(null);
+  static void setGroup(ButtonGroup group) {
+    myGroup = group;
+  }
 
-                if (myGroup != null) {
-                    for (Enumeration e = myGroup.getElements(); 
-                        e.hasMoreElements();) {
-                        AbstractButton ab = (AbstractButton) e.nextElement();
-                        Action action = ab.getAction();
-                        if (action instanceof ActionAdjustGrid) {
-                            String currentID = (String) action.getValue("ID"); 
-                            if (id.equals(currentID)) {
-                                myGroup.setSelected(ab.getModel(), true);
-                                return;
-                            }
-                        }
-                    }
-                }
+  /**
+   * This executes one of the actions, based on the stored ArgoUML configuration. This function is
+   * intended for the initial setting of the grid when ArgoUML is started.
+   *
+   * <p>Additionally, the ButtonGroup is searched for the right Action, and when found, the button's
+   * model initialised.
+   */
+  public static void init() {
+    String id = Configuration.getString(Argo.KEY_GRID, DEFAULT_ID);
+    List actions = createAdjustGridActions(false);
+    Iterator i = actions.iterator();
+    Action a;
+    while (i.hasNext()) {
+      a = (Action) i.next();
+      if (a.getValue("ID").equals(id)) {
+        a.actionPerformed(null);
+
+        if (myGroup != null) {
+          for (Enumeration e = myGroup.getElements(); e.hasMoreElements(); ) {
+            AbstractButton ab = (AbstractButton) e.nextElement();
+            Action action = ab.getAction();
+            if (action instanceof ActionAdjustGrid) {
+              String currentID = (String) action.getValue("ID");
+              if (id.equals(currentID)) {
+                myGroup.setSelected(ab.getModel(), true);
                 return;
+              }
             }
+          }
         }
+        return;
+      }
     }
-    
-    /**
-     * This function is the one and only location 
-     * that defines the number of grid settings, and their content.
-     * 
-     * @constraint one of the actions should have the ID 'defaultID', 
-     *          since this is used in init().
-     * @param longStrings
-     * @return
-     */
-    static List createAdjustGridActions(boolean longStrings) {
-        List result = new ArrayList();
-        Action a;
-        String shortname, longname, name;
+  }
 
-        shortname = "menu.item.lines-16";
-        longname = "action.adjust-grid.lines-16";
-        name = Translator.localize(longStrings ? longname : shortname);
-        HashMap map1 = new HashMap(4);
-        map1.put("spacing", Integer.valueOf(16));
-        map1.put("paintLines", Boolean.valueOf(true));
-        map1.put("paintDots", Boolean.valueOf(true));
-        a = new ActionAdjustGrid(map1, name);
-        a.putValue("ID", "01");
-        a.putValue("shortcut", KeyStroke.getKeyStroke(
-                KeyEvent.VK_1, DEFAULT_MASK));
-        result.add(a);
+  /**
+   * This function is the one and only location that defines the number of grid settings, and their
+   * content.
+   *
+   * @constraint one of the actions should have the ID 'defaultID', since this is used in init().
+   * @param longStrings
+   * @return
+   */
+  static List createAdjustGridActions(boolean longStrings) {
+    List result = new ArrayList();
+    Action a;
+    String shortname, longname, name;
 
-        shortname = "menu.item.lines-8";
-        longname = "action.adjust-grid.lines-8";
-        name = Translator.localize(longStrings ? longname : shortname);
-        HashMap map2 = new HashMap(4);
-        map2.put("spacing", Integer.valueOf(8));
-        map2.put("paintLines", Boolean.valueOf(true));
-        map2.put("paintDots", Boolean.valueOf(true));
-        a = new ActionAdjustGrid(map2, name);
-        a.putValue("ID", "02");
-        a.putValue("shortcut", KeyStroke.getKeyStroke(
-                KeyEvent.VK_2, DEFAULT_MASK));
-        result.add(a);
-        
-        shortname = "menu.item.dots-16";
-        longname = "action.adjust-grid.dots-16";
-        name = Translator.localize(longStrings ? longname : shortname);
-        HashMap map3 = new HashMap(4);
-        map3.put("spacing", Integer.valueOf(16));
-        map3.put("paintLines", Boolean.valueOf(false));
-        map3.put("paintDots", Boolean.valueOf(true));
-        a = new ActionAdjustGrid(map3, name);
-        a.putValue("ID", "03"); /* This ID is used as DEFAULT_ID ! */
-        a.putValue("shortcut", KeyStroke.getKeyStroke(
-                KeyEvent.VK_3, DEFAULT_MASK));
-        result.add(a);
+    shortname = "menu.item.lines-16";
+    longname = "action.adjust-grid.lines-16";
+    name = Translator.localize(longStrings ? longname : shortname);
+    HashMap map1 = new HashMap(4);
+    map1.put("spacing", Integer.valueOf(16));
+    map1.put("paintLines", Boolean.valueOf(true));
+    map1.put("paintDots", Boolean.valueOf(true));
+    a = new ActionAdjustGrid(map1, name);
+    a.putValue("ID", "01");
+    a.putValue("shortcut", KeyStroke.getKeyStroke(KeyEvent.VK_1, DEFAULT_MASK));
+    result.add(a);
 
-        shortname = "menu.item.dots-32";
-        longname = "action.adjust-grid.dots-32";
-        name = Translator.localize(longStrings ? longname : shortname);
-        HashMap map4 = new HashMap(4);
-        map4.put("spacing", Integer.valueOf(32));
-        map4.put("paintLines", Boolean.valueOf(false));
-        map4.put("paintDots", Boolean.valueOf(true));
-        a = new ActionAdjustGrid(map4, name);
-        a.putValue("ID", "04");
-        a.putValue("shortcut", KeyStroke.getKeyStroke(
-                KeyEvent.VK_4, DEFAULT_MASK));
-        result.add(a);
-        
-        shortname = "menu.item.none";
-        longname = "action.adjust-grid.none";
-        name = Translator.localize(longStrings ? longname : shortname);
-        HashMap map5 = new HashMap(4);
-        map5.put("spacing", Integer.valueOf(16));
-        map5.put("paintLines", Boolean.valueOf(false));
-        map5.put("paintDots", Boolean.valueOf(false));
-        a = new ActionAdjustGrid(map5, name);
-        a.putValue("ID", "05");
-        a.putValue("shortcut", KeyStroke.getKeyStroke(
-                KeyEvent.VK_5, DEFAULT_MASK));
-        result.add(a);
-        
-        return result;
-    }
+    shortname = "menu.item.lines-8";
+    longname = "action.adjust-grid.lines-8";
+    name = Translator.localize(longStrings ? longname : shortname);
+    HashMap map2 = new HashMap(4);
+    map2.put("spacing", Integer.valueOf(8));
+    map2.put("paintLines", Boolean.valueOf(true));
+    map2.put("paintDots", Boolean.valueOf(true));
+    a = new ActionAdjustGrid(map2, name);
+    a.putValue("ID", "02");
+    a.putValue("shortcut", KeyStroke.getKeyStroke(KeyEvent.VK_2, DEFAULT_MASK));
+    result.add(a);
 
+    shortname = "menu.item.dots-16";
+    longname = "action.adjust-grid.dots-16";
+    name = Translator.localize(longStrings ? longname : shortname);
+    HashMap map3 = new HashMap(4);
+    map3.put("spacing", Integer.valueOf(16));
+    map3.put("paintLines", Boolean.valueOf(false));
+    map3.put("paintDots", Boolean.valueOf(true));
+    a = new ActionAdjustGrid(map3, name);
+    a.putValue("ID", "03"); /* This ID is used as DEFAULT_ID ! */
+    a.putValue("shortcut", KeyStroke.getKeyStroke(KeyEvent.VK_3, DEFAULT_MASK));
+    result.add(a);
+
+    shortname = "menu.item.dots-32";
+    longname = "action.adjust-grid.dots-32";
+    name = Translator.localize(longStrings ? longname : shortname);
+    HashMap map4 = new HashMap(4);
+    map4.put("spacing", Integer.valueOf(32));
+    map4.put("paintLines", Boolean.valueOf(false));
+    map4.put("paintDots", Boolean.valueOf(true));
+    a = new ActionAdjustGrid(map4, name);
+    a.putValue("ID", "04");
+    a.putValue("shortcut", KeyStroke.getKeyStroke(KeyEvent.VK_4, DEFAULT_MASK));
+    result.add(a);
+
+    shortname = "menu.item.none";
+    longname = "action.adjust-grid.none";
+    name = Translator.localize(longStrings ? longname : shortname);
+    HashMap map5 = new HashMap(4);
+    map5.put("spacing", Integer.valueOf(16));
+    map5.put("paintLines", Boolean.valueOf(false));
+    map5.put("paintDots", Boolean.valueOf(false));
+    a = new ActionAdjustGrid(map5, name);
+    a.putValue("ID", "05");
+    a.putValue("shortcut", KeyStroke.getKeyStroke(KeyEvent.VK_5, DEFAULT_MASK));
+    result.add(a);
+
+    return result;
+  }
 }

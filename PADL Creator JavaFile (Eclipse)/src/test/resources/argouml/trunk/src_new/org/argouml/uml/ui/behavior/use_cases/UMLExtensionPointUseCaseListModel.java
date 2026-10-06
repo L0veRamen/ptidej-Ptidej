@@ -31,29 +31,24 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  * @since Oct 6, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class UMLExtensionPointUseCaseListModel
-    extends UMLModelElementListModel2 {
+public class UMLExtensionPointUseCaseListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLExtensionPointUseCaseListModel.
-     */
-    public UMLExtensionPointUseCaseListModel() {
-        super("useCase");
-    }
+  /** Constructor for UMLExtensionPointUseCaseListModel. */
+  public UMLExtensionPointUseCaseListModel() {
+    super("useCase");
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        addElement(Model.getFacade().getUseCase(getTarget()));
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    addElement(Model.getFacade().getUseCase(getTarget()));
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ o) {
-        return Model.getFacade().isAUseCase(o)
-            && Model.getFacade().getUseCase(getTarget()) == o;
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ o) {
+    return Model.getFacade().isAUseCase(o) && Model.getFacade().getUseCase(getTarget()) == o;
+  }
 }

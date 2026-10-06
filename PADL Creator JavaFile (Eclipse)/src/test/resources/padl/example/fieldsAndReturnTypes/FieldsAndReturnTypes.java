@@ -4,90 +4,97 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class FieldsAndReturnTypes {
-	// refaire mettre les meme choses en return type, en type field et en param
-	// e faire demain matin inchaAllah et voir ce que donne le .class avec les
-	// memes donnees, les passer au comparateur...
+  // refaire mettre les meme choses en return type, en type field et en param
+  // e faire demain matin inchaAllah et voir ce que donne le .class avec les
+  // memes donnees, les passer au comparateur...
 
-	// Fields
-	int q;
+  // Fields
+  int q;
 
-	String compilerCompliance = "1.6";
+  String compilerCompliance = "1.6";
 
-	Integer i;
+  Integer i;
 
-	NamedReader[] classpathEntries;
+  NamedReader[] classpathEntries;
 
-	int[] tabI;
+  int[] tabI;
 
-	Object[] tabObjects;
+  Object[] tabObjects;
 
-	Object[][][] multiTabObjects;
+  Object[][][] multiTabObjects;
 
-	List l;
+  List l;
 
-	List<Object>[] tabListOjects;
+  List<Object>[] tabListOjects;
 
-	List<NamedReader> listNamedReader;
+  List<NamedReader> listNamedReader;
 
-	List<NamedReader[]> listTabsNamedReader;
+  List<NamedReader[]> listTabsNamedReader;
 
-	List<NamedReader[][]> listMultiTabsNamedReader;
+  List<NamedReader[][]> listMultiTabsNamedReader;
 
-	List<Integer> listIntegers;
+  List<Integer> listIntegers;
 
-	List<List<Integer>> listListsIntegers;
+  List<List<Integer>> listListsIntegers;
 
-	List[] listTabsObjects;// array
+  List[] listTabsObjects; // array
 
-	Map<String, String> map;
+  Map<String, String> map;
 
-	// voir le cas d'un member class comme type et compare avec le resultat en
-	// .class
+  // voir le cas d'un member class comme type et compare avec le resultat en
+  // .class
 
-	// Return Types
-	abstract protected int m1();
+  // Return Types
+  protected abstract int m1();
 
-	abstract protected String m2();
+  protected abstract String m2();
 
-	abstract protected Integer m3();
+  protected abstract Integer m3();
 
-	abstract protected int[] m4();
+  protected abstract int[] m4();
 
-	abstract protected NamedReader[] m5();
+  protected abstract NamedReader[] m5();
 
-	abstract protected NamedReader[][] m6();
+  protected abstract NamedReader[][] m6();
 
-	abstract protected Object[][] m7();
+  protected abstract Object[][] m7();
 
-	abstract protected List<Object>[] m8();
+  protected abstract List<Object>[] m8();
 
-	abstract protected List<NamedReader> m9();
+  protected abstract List<NamedReader> m9();
 
-	abstract protected List<NamedReader[]> m10();
+  protected abstract List<NamedReader[]> m10();
 
-	abstract protected List<NamedReader[][]> m11();
+  protected abstract List<NamedReader[][]> m11();
 
-	abstract protected List m12();
+  protected abstract List m12();
 
-	abstract protected List<Integer> m13();
+  protected abstract List<Integer> m13();
 
-	abstract protected List<List<Integer>> m14();
+  protected abstract List<List<Integer>> m14();
 
-	abstract protected List[] m15();
+  protected abstract List[] m15();
 
-	abstract protected Map<String, String> m16();
+  protected abstract Map<String, String> m16();
 
-	protected List<NamedReader[]> methodWithParams(int q,
-			String compilerCompliance, Integer i,
-			NamedReader[] classpathEntries, int[] tabI, Object[] tabObjects,
-			Object[][][] multiTabObjects, List l, List<Object>[] tabListOjects,
-			List<NamedReader> listNamedReader,
-			List<NamedReader[]> listTabsNamedReader,
-			List<NamedReader[][]> listMultiTabsNamedReader,
-			List<Integer> listIntegers, List<List<Integer>> listListsIntegers,
-			List[] listTabsObjects, Map<String, String> map) {
+  protected List<NamedReader[]> methodWithParams(
+      int q,
+      String compilerCompliance,
+      Integer i,
+      NamedReader[] classpathEntries,
+      int[] tabI,
+      Object[] tabObjects,
+      Object[][][] multiTabObjects,
+      List l,
+      List<Object>[] tabListOjects,
+      List<NamedReader> listNamedReader,
+      List<NamedReader[]> listTabsNamedReader,
+      List<NamedReader[][]> listMultiTabsNamedReader,
+      List<Integer> listIntegers,
+      List<List<Integer>> listListsIntegers,
+      List[] listTabsObjects,
+      Map<String, String> map) {
 
-		return null;
-	}
-
+    return null;
+  }
 }

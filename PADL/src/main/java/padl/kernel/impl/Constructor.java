@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -15,20 +15,22 @@ import padl.kernel.IElementMarker;
 import padl.kernel.IMethod;
 
 // Angelino Picone 21/08/2012:
-// Changed the visibility to public in order to allow other project to extend from this class in the particular case of Eclipse bundle loader (avoid IllegalAccessError).
+// Changed the visibility to public in order to allow other project to extend from this class in the
+// particular case of Eclipse bundle loader (avoid IllegalAccessError).
 // TODO Can we do without this ugly hack?
-public class Constructor extends Operation implements IElementMarker,
-		IConstructor {
+public class Constructor extends Operation implements IElementMarker, IConstructor {
 
-	private static final long serialVersionUID = -3313404261410898384L;
+  private static final long serialVersionUID = -3313404261410898384L;
 
-	public Constructor(final char[] anID) {
-		super(anID);
-	}
-	public Constructor(final char[] anID, final IMethod anAttachedMethod) {
-		super(anID, anAttachedMethod);
-	}
-	public Constructor(final IMethod anAttachedMethod) {
-		super(anAttachedMethod);
-	}
+  public Constructor(final char[] anID) {
+    super(anID);
+  }
+
+  public Constructor(final char[] anID, final IMethod anAttachedMethod) {
+    super(anID, anAttachedMethod);
+  }
+
+  public Constructor(final IMethod anAttachedMethod) {
+    super(anAttachedMethod);
+  }
 }

@@ -30,7 +30,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-
 import org.apache.log4j.Logger;
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
@@ -45,144 +44,131 @@ import org.argouml.uml.cognitive.ProjectMemberTodoList;
  */
 public class XmiFilePersister extends AbstractFilePersister {
 
-    private static final Logger LOG =
-        Logger.getLogger(XmiFilePersister.class);
+  private static final Logger LOG = Logger.getLogger(XmiFilePersister.class);
 
-    /**
-     * The constructor.
-     */
-    public XmiFilePersister() {
+  /** The constructor. */
+  public XmiFilePersister() {}
+
+  /**
+   * @see org.argouml.persistence.AbstractFilePersister#getExtension()
+   */
+  public String getExtension() {
+    return "xmi";
+  }
+
+  /**
+   * @see org.argouml.persistence.AbstractFilePersister#getDesc()
+   */
+  protected String getDesc() {
+    return "XML Metadata Interchange";
+  }
+
+  /**
+   * Save a project to a file in XMI format.
+   *
+   * @param project the project to save.
+   * @param file The file to write.
+   * @throws SaveException if anything goes wrong.
+   */
+  public void doSave(Project project, File file) throws SaveException {
+
+    File lastArchiveFile = new File(file.getAbsolutePath() + "~");
+    File tempFile = null;
+
+    try {
+      tempFile = createTempFile(file);
+    } catch (FileNotFoundException e) {
+      throw new SaveException("Failed to archive the previous file version", e);
+    } catch (IOException e) {
+      throw new SaveException("Failed to archive the previous file version", e);
     }
 
-    /**
-     * @see org.argouml.persistence.AbstractFilePersister#getExtension()
-     */
-    public String getExtension() {
-        return "xmi";
-    }
+    OutputStreamWriter writer = null;
+    try {
+      // project.setFile(file);
 
-    /**
-     * @see org.argouml.persistence.AbstractFilePersister#getDesc()
-     */
-    protected String getDesc() {
-        return "XML Metadata Interchange";
-    }
+      OutputStream stream = new FileOutputStream(file);
+      OutputStream bout = new BufferedOutputStream(stream);
+      writer = new OutputStreamWriter(bout, getEncoding());
 
-    /**
-     * Save a project to a file in XMI format.
-     *
-     * @param project the project to save.
-     * @param file The file to write.
-     * @throws SaveException if anything goes wrong.
-     */
-    public void doSave(Project project, File file)
-        throws SaveException {
-
-        File lastArchiveFile = new File(file.getAbsolutePath() + "~");
-        File tempFile = null;
-        
-        try {
-            tempFile = createTempFile(file);
-        } catch (FileNotFoundException e) {
-            throw new SaveException(
-                    "Failed to archive the previous file version", e);
-        } catch (IOException e) {
-            throw new SaveException(
-                    "Failed to archive the previous file version", e);
+      int size = project.getMembers().size();
+      for (int i = 0; i < size; i++) {
+        ProjectMember projectMember = (ProjectMember) project.getMembers().get(i);
+        if (projectMember.getType().equalsIgnoreCase("xmi")) {
+          if (LOG.isInfoEnabled()) {
+            LOG.info(
+                "Saving member of type: "
+                    + ((ProjectMember) project.getMembers().get(i)).getType());
+          }
+          MemberFilePersister persister = new ModelMemberFilePersister();
+          persister.save(projectMember, writer, null);
         }
+      }
 
-        OutputStreamWriter writer = null;
-        try {
-            //project.setFile(file);
+      // if save did not raise an exception
+      // and name+"#" exists move name+"#" to name+"~"
+      // this is the correct backup file
+      if (lastArchiveFile.exists()) {
+        lastArchiveFile.delete();
+      }
+      if (tempFile.exists() && !lastArchiveFile.exists()) {
+        tempFile.renameTo(lastArchiveFile);
+      }
+      if (tempFile.exists()) {
+        tempFile.delete();
+      }
+    } catch (Exception e) {
+      LOG.error("Exception occured during save attempt", e);
+      try {
+        writer.close();
+      } catch (IOException ex) {
+      }
 
-            OutputStream stream = new FileOutputStream(file);
-            OutputStream bout = new BufferedOutputStream(stream);
-            writer = new OutputStreamWriter(bout, getEncoding());
-
-            int size = project.getMembers().size();
-            for (int i = 0; i < size; i++) {
-                ProjectMember projectMember =
-                    (ProjectMember) project.getMembers().get(i);
-                if (projectMember.getType().equalsIgnoreCase("xmi")) {
-                    if (LOG.isInfoEnabled()) {
-                        LOG.info("Saving member of type: "
-                              + ((ProjectMember) project.getMembers()
-                                    .get(i)).getType());
-                    }
-                    MemberFilePersister persister
-                        = new ModelMemberFilePersister();
-                    persister.save(projectMember, writer, null);
-                }
-            }
-
-            // if save did not raise an exception
-            // and name+"#" exists move name+"#" to name+"~"
-            // this is the correct backup file
-            if (lastArchiveFile.exists()) {
-                lastArchiveFile.delete();
-            }
-            if (tempFile.exists() && !lastArchiveFile.exists()) {
-                tempFile.renameTo(lastArchiveFile);
-            }
-            if (tempFile.exists()) {
-                tempFile.delete();
-            }
-        } catch (Exception e) {
-            LOG.error("Exception occured during save attempt", e);
-            try {
-                writer.close();
-            } catch (IOException ex) { }
-
-            // frank: in case of exception
-            // delete name and mv name+"#" back to name if name+"#" exists
-            // this is the "rollback" to old file
-            file.delete();
-            tempFile.renameTo(file);
-            // we have to give a message to user and set the system to unsaved!
-            throw new SaveException(e);
-        }
-
-        try {
-            writer.close();
-        } catch (IOException ex) {
-            LOG.error("Failed to close save output writer", ex);
-        }
+      // frank: in case of exception
+      // delete name and mv name+"#" back to name if name+"#" exists
+      // this is the "rollback" to old file
+      file.delete();
+      tempFile.renameTo(file);
+      // we have to give a message to user and set the system to unsaved!
+      throw new SaveException(e);
     }
 
-
-    /**
-     * This method creates a project from the specified URL
-     *
-     * Unlike the constructor which forces an .argo extension This
-     * method will attempt to load a raw XMI file
-     *
-     * This method can fail in several different ways. Either by
-     * throwing an exception or by having the
-     * ArgoParser.SINGLETON.getLastLoadStatus() set to not true.
-     *
-     * @param file The file to load the project from.
-     * @return The newly loaded project.
-     * @throws OpenException if the file can not be opened
-     *
-     * @see org.argouml.persistence.ProjectFilePersister#doLoad(java.io.File)
-     */
-    public Project doLoad(File file)
-        throws OpenException {
-        
-        try {
-            Project p = new Project();
-            XMIParser.getSingleton().readModels(p, file.toURL());
-            Object model = XMIParser.getSingleton().getCurModel();
-            Model.getUmlHelper().addListenersToModel(model);
-            p.setUUIDRefs(XMIParser.getSingleton().getUUIDRefs());
-            p.addMember(new ProjectMemberTodoList("", p));
-            p.addMember(model);
-            p.setRoot(model);
-            ProjectManager.getManager().setNeedsSave(false);
-            return p;
-        } catch (IOException e) {
-            throw new OpenException(e);
-        }
+    try {
+      writer.close();
+    } catch (IOException ex) {
+      LOG.error("Failed to close save output writer", ex);
     }
-    
+  }
+
+  /**
+   * This method creates a project from the specified URL
+   *
+   * <p>Unlike the constructor which forces an .argo extension This method will attempt to load a
+   * raw XMI file
+   *
+   * <p>This method can fail in several different ways. Either by throwing an exception or by having
+   * the ArgoParser.SINGLETON.getLastLoadStatus() set to not true.
+   *
+   * @param file The file to load the project from.
+   * @return The newly loaded project.
+   * @throws OpenException if the file can not be opened
+   * @see org.argouml.persistence.ProjectFilePersister#doLoad(java.io.File)
+   */
+  public Project doLoad(File file) throws OpenException {
+
+    try {
+      Project p = new Project();
+      XMIParser.getSingleton().readModels(p, file.toURL());
+      Object model = XMIParser.getSingleton().getCurModel();
+      Model.getUmlHelper().addListenersToModel(model);
+      p.setUUIDRefs(XMIParser.getSingleton().getUUIDRefs());
+      p.addMember(new ProjectMemberTodoList("", p));
+      p.addMember(model);
+      p.setRoot(model);
+      ProjectManager.getManager().setNeedsSave(false);
+      return p;
+    } catch (IOException e) {
+      throw new OpenException(e);
+    }
+  }
 }

@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -12,12 +12,14 @@ package ptidej.ui.primitive;
 
 import java.awt.Dimension;
 import java.awt.Point;
-
 import ptidej.ui.IDrawable;
 
 public interface IPrimitive extends IDrawable {
-	Point getDestination();
-	boolean isNameShowable();
-	void setDimension(final Dimension dimension);
-	void setPosition(final Point position);
+  Point getDestination();
+
+  boolean isNameShowable();
+
+  void setDimension(final Dimension dimension);
+
+  void setPosition(final Point position);
 }

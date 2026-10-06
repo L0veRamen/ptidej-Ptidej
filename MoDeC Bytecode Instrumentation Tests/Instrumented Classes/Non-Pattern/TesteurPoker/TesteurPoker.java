@@ -1,97 +1,92 @@
 /*
 	IFT1170 - Hiver 2005
-	
+
 	Classe pour l'evaluation du TP1 no.2
 	(Voir resultat attendu au bas...)
-	
+
 	par Charles Lanteigne
-	
-	
+
+
 	Jeu de poker simple
-	
+
 	(Encapsulation, tableaux d'objets)
 */
 
-public class TesteurPoker
-{
-	/*
-		Construction de quelques couples de Jeux
-		Affichage + meilleur
-	*/
-	public static void main(String[] args)
-	{
-		Jeu[][] jeux =
-		{
-			{
-				new Jeu(new Carte( 4, 1), new Carte( 7, 3),
-						new Carte( 7, 4), new Carte(11, 2),
-						new Carte(14, 4)),
-		 		new Jeu(new Carte( 3, 1), new Carte( 6, 3),
-				 		new Carte( 2, 2), new Carte( 5, 1),
-				 		new Carte( 4, 4))
-		 	},
-		 	{	
-		 		new Jeu(new Carte(14, 1), new Carte(10, 1),
-			 			new Carte(13, 1), new Carte(11, 1),
-			 			new Carte(12, 1)),
-			 	new Jeu(new Carte( 9, 3), new Carte( 9, 2),
-				 		new Carte( 9, 1), new Carte( 3, 1),
-				 		new Carte(13, 2))
-		 	},
-		 	{	
-			 	new Jeu(new Carte(11, 1), new Carte(11, 2),
-				 		new Carte(11, 3), new Carte(11, 4),
-				 		new Carte( 6, 4)),
-			 	new Jeu(new Carte( 2, 4), new Carte( 6, 1),
-				 		new Carte(14, 1), new Carte( 6, 3),
-				 		new Carte( 2, 2))
-		 	},
-		 	{	
-			 	new Jeu(new Carte( 2, 1), new Carte( 3, 1),
-				 		new Carte( 3, 3), new Carte(13, 4),
-				 		new Carte(14, 2)),
-			 	new Jeu(new Carte(13, 2), new Carte(11, 1),
-				 		new Carte( 5, 3), new Carte( 6, 2),
-				 		new Carte(11, 4))
-		 	},
-		 	{	
-			 	new Jeu(new Carte( 4, 1), new Carte( 5, 1),
-				 		new Carte( 8, 1), new Carte(11, 1),
-				 		new Carte(14, 1)),
-			 	new Jeu(new Carte( 3, 2), new Carte( 7, 2),
-				 		new Carte( 4, 2), new Carte( 5, 2),
-				 		new Carte( 6, 2))
-		 	},
-		 	{	
-			 	new Jeu(new Carte(12, 1), new Carte(11, 2),
-				 		new Carte(11, 1), new Carte(11, 3),
-				 		new Carte(12, 4)),
-			 	new Jeu(new Carte( 6, 4), new Carte( 7, 2),
-				 		new Carte(13, 3), new Carte(8, 1),
-				 		new Carte( 9, 4))
-		 	}
-		};
-		
-		// pour chaque partie
-		for (int partie = 0; partie < 6; partie++)
-		{
-			System.out.println("Partie #" + (partie + 1) + ":\n");
+public class TesteurPoker {
+  /*
+  	Construction de quelques couples de Jeux
+  	Affichage + meilleur
+  */
+  public static void main(String[] args) {
+    Jeu[][] jeux = {
+      {
+        new Jeu(
+            new Carte(4, 1), new Carte(7, 3), new Carte(7, 4), new Carte(11, 2), new Carte(14, 4)),
+        new Jeu(new Carte(3, 1), new Carte(6, 3), new Carte(2, 2), new Carte(5, 1), new Carte(4, 4))
+      },
+      {
+        new Jeu(
+            new Carte(14, 1),
+            new Carte(10, 1),
+            new Carte(13, 1),
+            new Carte(11, 1),
+            new Carte(12, 1)),
+        new Jeu(
+            new Carte(9, 3), new Carte(9, 2), new Carte(9, 1), new Carte(3, 1), new Carte(13, 2))
+      },
+      {
+        new Jeu(
+            new Carte(11, 1),
+            new Carte(11, 2),
+            new Carte(11, 3),
+            new Carte(11, 4),
+            new Carte(6, 4)),
+        new Jeu(
+            new Carte(2, 4), new Carte(6, 1), new Carte(14, 1), new Carte(6, 3), new Carte(2, 2))
+      },
+      {
+        new Jeu(
+            new Carte(2, 1), new Carte(3, 1), new Carte(3, 3), new Carte(13, 4), new Carte(14, 2)),
+        new Jeu(
+            new Carte(13, 2), new Carte(11, 1), new Carte(5, 3), new Carte(6, 2), new Carte(11, 4))
+      },
+      {
+        new Jeu(
+            new Carte(4, 1), new Carte(5, 1), new Carte(8, 1), new Carte(11, 1), new Carte(14, 1)),
+        new Jeu(new Carte(3, 2), new Carte(7, 2), new Carte(4, 2), new Carte(5, 2), new Carte(6, 2))
+      },
+      {
+        new Jeu(
+            new Carte(12, 1),
+            new Carte(11, 2),
+            new Carte(11, 1),
+            new Carte(11, 3),
+            new Carte(12, 4)),
+        new Jeu(
+            new Carte(6, 4), new Carte(7, 2), new Carte(13, 3), new Carte(8, 1), new Carte(9, 4))
+      }
+    };
 
-			// affichage des jeux
-			for (int j = 0; j < 2; j++)
-			{
-				System.out.print("\tJeu #" + (j + 1) + ": ");
-				jeux[partie][j].afficher();
-			}
-			
-			// affichage du vainqueur
-			if (jeux[partie][0].force() == jeux[partie][1].force())
-				System.out.println("\nLes deux jeux sont egaux !\n");
-			else
-				System.out.println("\nLe meilleur des deux jeux est le #" +
-				(jeux[partie][0].force() > jeux[partie][1].force() ? "1": "2") + "\n");
-		}
-	}
+    // pour chaque partie
+    for (int partie = 0; partie < 6; partie++) {
+      System.out.println("Partie #" + (partie + 1) + ":\n");
+
+      // affichage des jeux
+      for (int j = 0; j < 2; j++) {
+        System.out.print("\tJeu #" + (j + 1) + ": ");
+        jeux[partie][j].afficher();
+      }
+
+      // affichage du vainqueur
+      if (jeux[partie][0].force() == jeux[partie][1].force())
+        System.out.println("\nLes deux jeux sont egaux !\n");
+      else
+        System.out.println(
+            "\nLe meilleur des deux jeux est le #"
+                + (jeux[partie][0].force() > jeux[partie][1].force() ? "1" : "2")
+                + "\n");
+    }
+  }
 }
 
 /* Resultat attendu:

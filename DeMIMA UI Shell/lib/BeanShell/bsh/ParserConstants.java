@@ -271,5 +271,4 @@ public interface ParserConstants {
     "\">>>=\"",
     "\"@right_unsigned_shift_assign\"",
   };
-
 }

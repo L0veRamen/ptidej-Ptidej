@@ -9,24 +9,24 @@ package choco.search;
 // **************************************************
 
 public class TimeLimit extends AbstractGlobalSearchLimit {
-	long starth = 0;
+  long starth = 0;
 
-	public TimeLimit(final int theLimit) {
-		super(theLimit);
-		this.unit = "millis.";
-	}
+  public TimeLimit(final int theLimit) {
+    super(theLimit);
+    this.unit = "millis.";
+  }
 
-	public boolean endNode(final AbstractGlobalSearchSolver solver) {
-		return true;
-	}
+  public boolean endNode(final AbstractGlobalSearchSolver solver) {
+    return true;
+  }
 
-	public boolean newNode(final AbstractGlobalSearchSolver solver) {
-		this.nb = (int) (System.currentTimeMillis() - this.starth);
-		return this.nb < this.nbMax;
-	}
+  public boolean newNode(final AbstractGlobalSearchSolver solver) {
+    this.nb = (int) (System.currentTimeMillis() - this.starth);
+    return this.nb < this.nbMax;
+  }
 
-	public void reset(final boolean first) {
-		super.reset(first);
-		this.starth = System.currentTimeMillis();
-	}
+  public void reset(final boolean first) {
+    super.reset(first);
+    this.starth = System.currentTimeMillis();
+  }
 }

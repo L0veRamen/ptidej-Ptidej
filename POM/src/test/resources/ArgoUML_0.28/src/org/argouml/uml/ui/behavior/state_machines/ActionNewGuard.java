@@ -26,55 +26,48 @@
 package org.argouml.uml.ui.behavior.state_machines;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.model.Model;
 import org.argouml.ui.targetmanager.TargetManager;
 import org.argouml.uml.ui.AbstractActionNewModelElement;
 
 /**
- * The action to create a new Guard for a Transition. <p>
- * 
- * This action is (currently) not fit to create a guard for a transition 
- * that already has one! If this functionality is needed, then 
- * the old guard should be deleted before making a new one.
- * 
+ * The action to create a new Guard for a Transition.
+ *
+ * <p>This action is (currently) not fit to create a guard for a transition that already has one! If
+ * this functionality is needed, then the old guard should be deleted before making a new one.
+ *
  * @since Dec 15, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
 public class ActionNewGuard extends AbstractActionNewModelElement {
 
-    private static ActionNewGuard singleton = new ActionNewGuard();
+  private static ActionNewGuard singleton = new ActionNewGuard();
 
-    /**
-     * Constructor for ActionNewCallAction.
-     */
-    protected ActionNewGuard() {
-        super();
-    }
+  /** Constructor for ActionNewCallAction. */
+  protected ActionNewGuard() {
+    super();
+  }
 
-    /*
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        TargetManager.getInstance().setTarget(
-                Model.getStateMachinesFactory().buildGuard(getTarget()));
-    }
+  /*
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    TargetManager.getInstance().setTarget(Model.getStateMachinesFactory().buildGuard(getTarget()));
+  }
 
-    /**
-     * @return Returns the singleton.
-     */
-    public static ActionNewGuard getSingleton() {
-        return singleton;
-    }
+  /**
+   * @return Returns the singleton.
+   */
+  public static ActionNewGuard getSingleton() {
+    return singleton;
+  }
 
-    /*
-     * @see javax.swing.Action#isEnabled()
-     */
-    public boolean isEnabled() {
-        Object t = getTarget();
-        return t != null
-            && Model.getFacade().getGuard(t) == null;
-    }
-
+  /*
+   * @see javax.swing.Action#isEnabled()
+   */
+  public boolean isEnabled() {
+    Object t = getTarget();
+    return t != null && Model.getFacade().getGuard(t) == null;
+  }
 }

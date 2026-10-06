@@ -30,50 +30,43 @@ import org.argouml.uml.diagram.DiagramFactory;
 import org.argouml.uml.diagram.static_structure.ui.UMLClassDiagram;
 import org.argouml.uml.diagram.ui.UMLDiagram;
 
-/** 
- * Action to trigger creation of new class diagram.
- */
+/** Action to trigger creation of new class diagram. */
 public class ActionClassDiagram extends ActionAddDiagram {
 
-    ////////////////////////////////////////////////////////////////
-    // static variables
+  ////////////////////////////////////////////////////////////////
+  // static variables
 
-    private static final Logger LOG =
-                Logger.getLogger(ActionClassDiagram.class);
+  private static final Logger LOG = Logger.getLogger(ActionClassDiagram.class);
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    public ActionClassDiagram() {
-        super("action.class-diagram");
+  public ActionClassDiagram() {
+    super("action.class-diagram");
+  }
+
+  /**
+   * @see org.argouml.uml.ui.ActionAddDiagram#createDiagram(Object)
+   */
+  public UMLDiagram createDiagram(Object ns) {
+    if (Model.getFacade().isANamespace(ns)) {
+      return (UMLDiagram)
+          DiagramFactory.getInstance().createDiagram(UMLClassDiagram.class, ns, null);
     }
+    LOG.error("No namespace as argument");
+    LOG.error(ns);
+    throw new IllegalArgumentException("The argument " + ns + "is not a namespace.");
+  }
 
-    /**
-     * @see org.argouml.uml.ui.ActionAddDiagram#createDiagram(Object)
-     */
-    public UMLDiagram createDiagram(Object ns) {
-        if (Model.getFacade().isANamespace(ns)) {
-            return (UMLDiagram)DiagramFactory.getInstance().createDiagram(
-                    UMLClassDiagram.class, 
-                    ns,
-                    null);
-        }
-        LOG.error("No namespace as argument");
-        LOG.error(ns);
-        throw new IllegalArgumentException(
-            "The argument " + ns + "is not a namespace.");
+  /**
+   * @see org.argouml.uml.ui.ActionAddDiagram#isValidNamespace(Object)
+   */
+  public boolean isValidNamespace(Object handle) {
+    if (!Model.getFacade().isANamespace(handle)) {
+      LOG.error("No namespace as argument");
+      LOG.error(handle);
+      throw new IllegalArgumentException("The argument " + handle + " is not a namespace.");
     }
-
-    /**
-     * @see org.argouml.uml.ui.ActionAddDiagram#isValidNamespace(Object)
-     */
-    public boolean isValidNamespace(Object handle) {
-        if (!Model.getFacade().isANamespace(handle)) {
-            LOG.error("No namespace as argument");
-            LOG.error(handle);
-            throw new IllegalArgumentException(
-                "The argument " + handle + " is not a namespace.");
-        }
-        return true;
-    }
+    return true;
+  }
 } /* end class ActionClassDiagram */

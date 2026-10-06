@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -14,38 +14,32 @@
 
 package util.parser.java.v15.nodes;
 
-/**
- * Grammar production:
- * f0 -> "."
- * f1 -> TypeArguments()
- * f2 -> <IDENTIFIER>
- */
+/** Grammar production: f0 -> "." f1 -> TypeArguments() f2 -> <IDENTIFIER> */
 public class MemberSelector implements Node {
-   /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-public NodeToken f0;
-   public TypeArguments f1;
-   public NodeToken f2;
+  /** */
+  private static final long serialVersionUID = 1L;
 
-   public MemberSelector(NodeToken n0, TypeArguments n1, NodeToken n2) {
-      this.f0 = n0;
-      this.f1 = n1;
-      this.f2 = n2;
-   }
+  public NodeToken f0;
+  public TypeArguments f1;
+  public NodeToken f2;
 
-   public MemberSelector(TypeArguments n0, NodeToken n1) {
-      this.f0 = new NodeToken(".");
-      this.f1 = n0;
-      this.f2 = n1;
-   }
+  public MemberSelector(NodeToken n0, TypeArguments n1, NodeToken n2) {
+    this.f0 = n0;
+    this.f1 = n1;
+    this.f2 = n2;
+  }
 
-   public void accept(util.parser.java.v15.visitors.Visitor v) {
-      v.visit(this);
-   }
-   public Object accept(util.parser.java.v15.visitors.ObjectVisitor v, Object argu) {
-      return v.visit(this,argu);
-   }
+  public MemberSelector(TypeArguments n0, NodeToken n1) {
+    this.f0 = new NodeToken(".");
+    this.f1 = n0;
+    this.f2 = n1;
+  }
+
+  public void accept(util.parser.java.v15.visitors.Visitor v) {
+    v.visit(this);
+  }
+
+  public Object accept(util.parser.java.v15.visitors.ObjectVisitor v, Object argu) {
+    return v.visit(this, argu);
+  }
 }
-

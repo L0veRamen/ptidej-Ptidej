@@ -33,30 +33,23 @@ import java.net.URL;
  * @author Luis Sergio Oliveira (euluis)
  */
 public class CoreProfileReference extends ProfileReference {
-    
-    static final String PROFILES_RESOURCE_PATH = 
-        "/org/argouml/profile/profiles/uml14/";
-    
-    static final String PROFILES_BASE_URL = 
-        "http://argouml.org/profiles/uml14/";
 
-    /**
-     * Constructor, which builds a ProfileReference for ArgoUML core profiles 
-     * by: 
-     * <li>prefixing the fileName with {@link #PROFILES_RESOURCE_PATH} and 
-     * using this as the path;</li>
-     * <li>and prefixing the fileName with {@link #PROFILES_BASE_URL} and 
-     * using this as the publicReference.</li>
-     * 
-     * @param fileName the profile file name.
-     * @throws MalformedURLException if the built URL is incorrect.
-     */
-    public CoreProfileReference(String fileName) throws MalformedURLException {
-        super(PROFILES_RESOURCE_PATH + fileName, 
-            new URL(PROFILES_BASE_URL + fileName));
-        assert fileName != null 
-            : "null isn't acceptable as the profile file name.";
-        assert !"".equals(fileName)
-        : "the empty string isn't acceptable as the profile file name.";
-    }
+  static final String PROFILES_RESOURCE_PATH = "/org/argouml/profile/profiles/uml14/";
+
+  static final String PROFILES_BASE_URL = "http://argouml.org/profiles/uml14/";
+
+  /**
+   * Constructor, which builds a ProfileReference for ArgoUML core profiles by:
+   * <li>prefixing the fileName with {@link #PROFILES_RESOURCE_PATH} and using this as the path;
+   * <li>and prefixing the fileName with {@link #PROFILES_BASE_URL} and using this as the
+   *     publicReference.
+   *
+   * @param fileName the profile file name.
+   * @throws MalformedURLException if the built URL is incorrect.
+   */
+  public CoreProfileReference(String fileName) throws MalformedURLException {
+    super(PROFILES_RESOURCE_PATH + fileName, new URL(PROFILES_BASE_URL + fileName));
+    assert fileName != null : "null isn't acceptable as the profile file name.";
+    assert !"".equals(fileName) : "the empty string isn't acceptable as the profile file name.";
+  }
 }

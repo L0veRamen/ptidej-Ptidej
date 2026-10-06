@@ -11,37 +11,38 @@
 
 package org.jhotdraw.contrib.zoom;
 
-import org.jhotdraw.contrib.MiniMapView;
-import org.jhotdraw.framework.DrawingView;
-
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import javax.swing.JScrollPane;
+import org.jhotdraw.contrib.MiniMapView;
+import org.jhotdraw.framework.DrawingView;
 
 /**
- * Specialized sub-class of MiniMapView to handle the zooming ability of the ZoomDrawingView in JHotDraw.  This subclass has been enhanced
- * to take into consideration that the scrollpane's content may itself be altered by a transform (namely a scaling transform).
+ * Specialized sub-class of MiniMapView to handle the zooming ability of the ZoomDrawingView in
+ * JHotDraw. This subclass has been enhanced to take into consideration that the scrollpane's
+ * content may itself be altered by a transform (namely a scaling transform).
  *
- * @author	S. Ruman (sruman@rogers.com)
+ * @author S. Ruman (sruman@rogers.com)
  * @version <$CURRENT_VERSION$>
  */
 public class MiniMapZoomableView extends MiniMapView {
-	public MiniMapZoomableView(DrawingView newMappedDrawingView, JScrollPane subject) {
-		super(newMappedDrawingView, subject);
-	}
+  public MiniMapZoomableView(DrawingView newMappedDrawingView, JScrollPane subject) {
+    super(newMappedDrawingView, subject);
+  }
 
-// Overridden
-	public AffineTransform getInverseSubjectTransform() {
-		double subjectsScale = ((ZoomDrawingView)getMappedComponent()).getScale();
+  // Overridden
+  public AffineTransform getInverseSubjectTransform() {
+    double subjectsScale = ((ZoomDrawingView) getMappedComponent()).getScale();
 
-		AffineTransform at = null;
-		try {
-			at = AffineTransform.getScaleInstance(subjectsScale, subjectsScale).createInverse();   // undo the zoom of the zoomable drawing view
-		}
-		catch (NoninvertibleTransformException nte) {
-			// all scale-only transforms should be invertable
-		}
+    AffineTransform at = null;
+    try {
+      at =
+          AffineTransform.getScaleInstance(subjectsScale, subjectsScale)
+              .createInverse(); // undo the zoom of the zoomable drawing view
+    } catch (NoninvertibleTransformException nte) {
+      // all scale-only transforms should be invertable
+    }
 
-		return at;
-	}
+    return at;
+  }
 }

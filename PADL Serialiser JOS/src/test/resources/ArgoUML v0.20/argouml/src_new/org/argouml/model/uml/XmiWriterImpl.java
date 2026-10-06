@@ -27,74 +27,71 @@ package org.argouml.model.uml;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
-
 import org.apache.log4j.Logger;
 import org.argouml.model.UmlException;
 import org.argouml.model.XmiWriter;
-
 import ru.novosoft.uml.model_management.MModel;
 import ru.novosoft.uml.xmi.IncompleteXMIException;
 import ru.novosoft.uml.xmi.XMIWriter;
 
 /**
- * A wrapper around the genuine XmiReader that provides public access with no
- * knowledge of actual UML implementation.
+ * A wrapper around the genuine XmiReader that provides public access with no knowledge of actual
+ * UML implementation.
  *
  * @author Bob Tarling
  */
 public class XmiWriterImpl implements XmiWriter {
-    private static final Logger LOG = Logger.getLogger(XmiWriter.class);
+  private static final Logger LOG = Logger.getLogger(XmiWriter.class);
 
-    private XMIWriter xmiWriter;
+  private XMIWriter xmiWriter;
 
-    /**
-     * Constructor for XMIReader.
-     *
-     * @throws UmlException
-     *             when there is a problem
-     * @param model
-     *            the UML model
-     * @param writer
-     *            the writer
-     */
-    public XmiWriterImpl(Object model, Writer writer) throws UmlException {
-        try {
-            xmiWriter = new XMIWriter((MModel) model, writer);
-        } catch (IOException e) {
-            throw new UmlException(e);
-        }
+  /**
+   * Constructor for XMIReader.
+   *
+   * @throws UmlException when there is a problem
+   * @param model the UML model
+   * @param writer the writer
+   */
+  public XmiWriterImpl(Object model, Writer writer) throws UmlException {
+    try {
+      xmiWriter = new XMIWriter((MModel) model, writer);
+    } catch (IOException e) {
+      throw new UmlException(e);
     }
+  }
 
-    /**
-     * Write XMI to registered writer
-     *
-     * @throws UmlException
-     *             if it goes wrong
-     */
-    public void write() throws UmlException {
-        try {
-            xmiWriter.gen();
-            if (!xmiWriter.getNotContainedElements().isEmpty()) {
-                logNotContainedElements();
-                throw new IncompleteXMIException();
-            }
-        } catch (Exception e) {
-            LOG.error("Exception thrown by the NSUML XMIWriter", e);
-            throw new UmlException(e);
-        } finally {
-            logNotContainedElements();
-        }
+  /**
+   * Write XMI to registered writer
+   *
+   * @throws UmlException if it goes wrong
+   */
+  public void write() throws UmlException {
+    try {
+      xmiWriter.gen();
+      if (!xmiWriter.getNotContainedElements().isEmpty()) {
+        logNotContainedElements();
+        throw new IncompleteXMIException();
+      }
+    } catch (Exception e) {
+      LOG.error("Exception thrown by the NSUML XMIWriter", e);
+      throw new UmlException(e);
+    } finally {
+      logNotContainedElements();
     }
+  }
 
-    private void logNotContainedElements() {
-        if (xmiWriter != null) {
-            Iterator it = xmiWriter.getNotContainedElements().iterator();
-            while (it.hasNext()) {
-                Object missingElement = it.next();
-                LOG.error("Not contained in XMI: "
-                        + missingElement.getClass().getName() + "["
-                        + missingElement + "]");
-            }
-        }
+  private void logNotContainedElements() {
+    if (xmiWriter != null) {
+      Iterator it = xmiWriter.getNotContainedElements().iterator();
+      while (it.hasNext()) {
+        Object missingElement = it.next();
+        LOG.error(
+            "Not contained in XMI: "
+                + missingElement.getClass().getName()
+                + "["
+                + missingElement
+                + "]");
+      }
     }
+  }
 }

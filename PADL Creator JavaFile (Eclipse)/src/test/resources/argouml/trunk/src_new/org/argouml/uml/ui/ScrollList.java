@@ -30,23 +30,21 @@ import javax.swing.ScrollPaneConstants;
 
 /**
  * A scrollable list of items.
+ *
  * @author Bob Tarling
  */
 public class ScrollList extends JScrollPane {
 
-    /**
-     * Builds a JList from a given list model and wraps
-     * in a scrollable view.
-     * @param listModel The model from which to build the list
-     */
-    public ScrollList(ListModel listModel) {
-        setHorizontalScrollBarPolicy(
-                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        setViewportView(new UMLLinkedList(listModel));
-    }
+  /**
+   * Builds a JList from a given list model and wraps in a scrollable view.
+   *
+   * @param listModel The model from which to build the list
+   */
+  public ScrollList(ListModel listModel) {
+    setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+    setViewportView(new UMLLinkedList(listModel));
+  }
 
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = 6711776013279497682L;
+  /** The UID. */
+  private static final long serialVersionUID = 6711776013279497682L;
 }

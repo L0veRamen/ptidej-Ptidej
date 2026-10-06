@@ -30,16 +30,14 @@ import org.argouml.application.events.ArgoStatusEvent;
 import org.tigris.gef.ui.IStatusBar;
 
 /**
- * Adapter class to convert from direct call through GEF's IStatusBar interface
- * into an event which can be received by any interested consumer.
- * 
+ * Adapter class to convert from direct call through GEF's IStatusBar interface into an event which
+ * can be received by any interested consumer.
+ *
  * @author Tom Morris <tfmorris@gmail.com>
  */
 public class StatusBarAdapter implements IStatusBar {
 
-    public void showStatus(String statusText) {
-        ArgoEventPump.fireEvent(new ArgoStatusEvent(ArgoEventTypes.STATUS_TEXT,
-                this, statusText));
-    }
-
+  public void showStatus(String statusText) {
+    ArgoEventPump.fireEvent(new ArgoStatusEvent(ArgoEventTypes.STATUS_TEXT, this, statusText));
+  }
 }

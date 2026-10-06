@@ -26,7 +26,6 @@ package org.argouml.uml.diagram.ui;
 
 import java.awt.Rectangle;
 import java.util.Collection;
-
 import org.argouml.model.Model;
 import org.argouml.notation.NotationProvider;
 import org.argouml.notation.NotationProviderFactory2;
@@ -35,89 +34,84 @@ import org.argouml.uml.diagram.DiagramSettings;
 import org.argouml.uml.diagram.static_structure.ui.FigEnumerationLiteral;
 
 /**
- * The Fig for the compartment of an Enumeration 
- * that shows a list of enumeration literals.
- * 
+ * The Fig for the compartment of an Enumeration that shows a list of enumeration literals.
+ *
  * @author Tom Morris
  */
 public class FigEnumLiteralsCompartment extends FigEditableCompartment {
-    /**
-     * Serial version for initial implementation.
-     */
-    private static final long serialVersionUID = 829674049363538379L;
+  /** Serial version for initial implementation. */
+  private static final long serialVersionUID = 829674049363538379L;
 
-    /**
-     * The constructor.
-     *
-     * @param x x
-     * @param y y
-     * @param w width
-     * @param h height
-     * @deprecated for 0.27.3 by tfmorris.  Use 
-     * {@link #FigEnumLiteralsCompartment(Object, Rectangle, DiagramSettings)}.
-     */
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    public FigEnumLiteralsCompartment(int x, int y, int w, int h) {
-        super(x, y, w, h);
-    }
+  /**
+   * The constructor.
+   *
+   * @param x x
+   * @param y y
+   * @param w width
+   * @param h height
+   * @deprecated for 0.27.3 by tfmorris. Use {@link #FigEnumLiteralsCompartment(Object, Rectangle,
+   *     DiagramSettings)}.
+   */
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  public FigEnumLiteralsCompartment(int x, int y, int w, int h) {
+    super(x, y, w, h);
+  }
 
-    /**
-     * Constructor.
-     * 
-     * @param owner owning UML element
-     * @param bounds bounding rectangle
-     * @param settings render settings
-     */
-    public FigEnumLiteralsCompartment(Object owner, Rectangle bounds, 
-            DiagramSettings settings) {
-        super(owner, bounds, settings);
-        super.populate();
-        
-        // TODO: We don't really want this to be filled, but if it's not then
-        // the user can't double click in the compartment to add a new literal
-        // Apparently GEF thinks unfilled figs are only selectable by border
-//        setFilled(false);
-    }
-    
-    /*
-     * @see org.argouml.uml.diagram.ui.FigEditableCompartment#getUmlCollection()
-     */
-    protected Collection getUmlCollection() {
-        return Model.getFacade().getEnumerationLiterals(getOwner());
-    }
+  /**
+   * Constructor.
+   *
+   * @param owner owning UML element
+   * @param bounds bounding rectangle
+   * @param settings render settings
+   */
+  public FigEnumLiteralsCompartment(Object owner, Rectangle bounds, DiagramSettings settings) {
+    super(owner, bounds, settings);
+    super.populate();
 
-    /*
-     * @see org.argouml.uml.diagram.ui.FigEditableCompartment#getNotationType()
-     */
-    protected int getNotationType() {
-        /* The EnumerationLiteral uses a dedicated notation that supports 
-         * parsing "name1;name2;name3" and stereotypes. 
-         * Also supports deleting a literal by erasing text. */
-        return NotationProviderFactory2.TYPE_ENUMERATION_LITERAL;
-    }
+    // TODO: We don't really want this to be filled, but if it's not then
+    // the user can't double click in the compartment to add a new literal
+    // Apparently GEF thinks unfilled figs are only selectable by border
+    //        setFilled(false);
+  }
 
-    /**
-     * @see org.argouml.uml.diagram.ui.FigEditableCompartment#createModelElement()
-     */
-    protected void createModelElement() {
-        Object enumeration = getGroup().getOwner();
-        Object literal = Model.getCoreFactory().buildEnumerationLiteral(
-                "literal",  enumeration);
-        TargetManager.getInstance().setTarget(literal);
-    }
+  /*
+   * @see org.argouml.uml.diagram.ui.FigEditableCompartment#getUmlCollection()
+   */
+  protected Collection getUmlCollection() {
+    return Model.getFacade().getEnumerationLiterals(getOwner());
+  }
 
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    @Override
-    protected FigSingleLineTextWithNotation createFigText(Object owner,
-            Rectangle bounds, DiagramSettings settings, NotationProvider np) {
-        return new FigEnumerationLiteral(owner, bounds, settings, np);
-    }
+  /*
+   * @see org.argouml.uml.diagram.ui.FigEditableCompartment#getNotationType()
+   */
+  protected int getNotationType() {
+    /* The EnumerationLiteral uses a dedicated notation that supports
+     * parsing "name1;name2;name3" and stereotypes.
+     * Also supports deleting a literal by erasing text. */
+    return NotationProviderFactory2.TYPE_ENUMERATION_LITERAL;
+  }
 
-    @Override
-    protected FigSingleLineTextWithNotation createFigText(Object owner,
-            Rectangle bounds, DiagramSettings settings) {
-        return new FigEnumerationLiteral(owner, bounds, settings);
-    }  
+  /**
+   * @see org.argouml.uml.diagram.ui.FigEditableCompartment#createModelElement()
+   */
+  protected void createModelElement() {
+    Object enumeration = getGroup().getOwner();
+    Object literal = Model.getCoreFactory().buildEnumerationLiteral("literal", enumeration);
+    TargetManager.getInstance().setTarget(literal);
+  }
+
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  @Override
+  protected FigSingleLineTextWithNotation createFigText(
+      Object owner, Rectangle bounds, DiagramSettings settings, NotationProvider np) {
+    return new FigEnumerationLiteral(owner, bounds, settings, np);
+  }
+
+  @Override
+  protected FigSingleLineTextWithNotation createFigText(
+      Object owner, Rectangle bounds, DiagramSettings settings) {
+    return new FigEnumerationLiteral(owner, bounds, settings);
+  }
 }

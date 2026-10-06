@@ -27,7 +27,6 @@ package org.argouml.uml.cognitive;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import org.argouml.kernel.Project;
 import org.argouml.model.Model;
 import org.argouml.uml.diagram.ArgoDiagram;
@@ -35,51 +34,51 @@ import org.argouml.util.ChildGenerator;
 
 /**
  * Convenience class gives Find/Search dialog access to parts of the project.
- * 
- * It defines a childIterator function that returns the "children" of any given
- * part of the ArgoUML project. It traverses a Project to Diagrams and Models,
- * then uses getModelElementContents to traverse the Models.
+ *
+ * <p>It defines a childIterator function that returns the "children" of any given part of the
+ * ArgoUML project. It traverses a Project to Diagrams and Models, then uses getModelElementContents
+ * to traverse the Models.
+ *
  * <p>
- * 
+ *
  * @stereotype singleton
  * @author jrobbins
  */
 public class ChildGenSearch implements ChildGenerator {
-    
-    private static final ChildGenSearch INSTANCE = new ChildGenSearch();
 
-    private ChildGenSearch() { 
-        super();
-    }
-    
-    /**
-     * Reply a Collection of the children of the given Object.  Ordering of
-     * the iterated elements is undefined and should not be relied upon.
-     * 
-     * {@inheritDoc}
-     */
-    public Iterator childIterator(Object parent) {
-        List res = new ArrayList();
-        if (parent instanceof Project) {
-            Project p = (Project) parent;
-            res.addAll(p.getUserDefinedModelList());
-            res.addAll(p.getDiagramList());
-        } else if (parent instanceof ArgoDiagram) {
-            ArgoDiagram d = (ArgoDiagram) parent;
-            res.addAll(d.getGraphModel().getNodes());
-            res.addAll(d.getGraphModel().getEdges());
-        } else if (Model.getFacade().isAModelElement(parent)) {
-            res.addAll(Model.getFacade().getModelElementContents(parent));
-        }
-        
-	return res.iterator();
+  private static final ChildGenSearch INSTANCE = new ChildGenSearch();
+
+  private ChildGenSearch() {
+    super();
+  }
+
+  /**
+   * Reply a Collection of the children of the given Object. Ordering of the iterated elements is
+   * undefined and should not be relied upon.
+   *
+   * <p>{@inheritDoc}
+   */
+  public Iterator childIterator(Object parent) {
+    List res = new ArrayList();
+    if (parent instanceof Project) {
+      Project p = (Project) parent;
+      res.addAll(p.getUserDefinedModelList());
+      res.addAll(p.getDiagramList());
+    } else if (parent instanceof ArgoDiagram) {
+      ArgoDiagram d = (ArgoDiagram) parent;
+      res.addAll(d.getGraphModel().getNodes());
+      res.addAll(d.getGraphModel().getEdges());
+    } else if (Model.getFacade().isAModelElement(parent)) {
+      res.addAll(Model.getFacade().getModelElementContents(parent));
     }
 
-    /**
-     * @return Returns the singleton instance.
-     */
-    public static ChildGenSearch getInstance() {
-        return INSTANCE;
-    }
+    return res.iterator();
+  }
 
+  /**
+   * @return Returns the singleton instance.
+   */
+  public static ChildGenSearch getInstance() {
+    return INSTANCE;
+  }
 }

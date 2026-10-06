@@ -25,90 +25,88 @@
 package org.argouml.uml.cognitive.critics;
 
 import junit.framework.TestCase;
-
 import org.argouml.model.Model;
 
 public class TestCrNoAssociations extends TestCase {
 
-    private CrNoAssociations critic = null;
+  private CrNoAssociations critic = null;
 
-    Object useCase1;
+  Object useCase1;
 
-    Object useCase2;
+  Object useCase2;
 
-    Object useCase3;
+  Object useCase3;
 
-    Object ns;
+  Object ns;
 
-    Object actor;
+  Object actor;
 
-    public TestCrNoAssociations(String arg0) {
-        super(arg0);
-    }
+  public TestCrNoAssociations(String arg0) {
+    super(arg0);
+  }
 
-    // simply create 3 usecases and an actor in a package with individual names
-    protected void setUp() throws Exception {
-        super.setUp();
-        critic = new CrNoAssociations();
-       
-        ns = Model.getModelManagementFactory().buildPackage("Test", null);
-        useCase1 = Model.getUseCasesFactory().createUseCase();
-        Model.getCoreHelper().setName(useCase1, "A");
-        Model.getCoreHelper().setNamespace(useCase1, ns);
-        useCase2 = Model.getUseCasesFactory().createUseCase();
+  // simply create 3 usecases and an actor in a package with individual names
+  protected void setUp() throws Exception {
+    super.setUp();
+    critic = new CrNoAssociations();
 
-        Model.getCoreHelper().setName(useCase2, "B");
-        Model.getCoreHelper().setNamespace(useCase2, ns);
+    ns = Model.getModelManagementFactory().buildPackage("Test", null);
+    useCase1 = Model.getUseCasesFactory().createUseCase();
+    Model.getCoreHelper().setName(useCase1, "A");
+    Model.getCoreHelper().setNamespace(useCase1, ns);
+    useCase2 = Model.getUseCasesFactory().createUseCase();
 
-        useCase3 = Model.getUseCasesFactory().createUseCase();
-        Model.getCoreHelper().setName(useCase3, "C");
-        Model.getCoreHelper().setNamespace(useCase3, ns);
+    Model.getCoreHelper().setName(useCase2, "B");
+    Model.getCoreHelper().setNamespace(useCase2, ns);
 
-        actor = Model.getUseCasesFactory().createActor();
-        Model.getCoreHelper().setName(actor, "Actor");
-        Model.getCoreHelper().setNamespace(actor, ns);
-    }
+    useCase3 = Model.getUseCasesFactory().createUseCase();
+    Model.getCoreHelper().setName(useCase3, "C");
+    Model.getCoreHelper().setNamespace(useCase3, ns);
 
-    public void testUseCaseNormal() {
-        // All use cases and actors require associations
-        // hence all predicates evalulate to true
-        assertTrue(critic.predicate2(useCase1, null));
-        assertTrue(critic.predicate2(useCase2, null));
-        assertTrue(critic.predicate2(useCase3, null));
-        assertTrue(critic.predicate2(actor, null));
-    }
+    actor = Model.getUseCasesFactory().createActor();
+    Model.getCoreHelper().setName(actor, "Actor");
+    Model.getCoreHelper().setNamespace(actor, ns);
+  }
 
-    public void testUseCaseAssociation() {
-        // build association
-        // build association between actor and top use case.
-        Model.getCoreFactory().buildAssociation(useCase1, actor);
-        assertFalse(critic.predicate2(useCase1, null));
-        assertTrue(critic.predicate2(useCase2, null));
-        assertTrue(critic.predicate2(useCase3, null));
-        assertFalse(critic.predicate2(actor, null));
-    }
+  public void testUseCaseNormal() {
+    // All use cases and actors require associations
+    // hence all predicates evalulate to true
+    assertTrue(critic.predicate2(useCase1, null));
+    assertTrue(critic.predicate2(useCase2, null));
+    assertTrue(critic.predicate2(useCase3, null));
+    assertTrue(critic.predicate2(actor, null));
+  }
 
-    public void testUseCaseExtend() {
-        // build extend
-        // these parameters seem to be in correct order
-        // add an extend. We do not need an assoc on the extending use case
-        Model.getUseCasesFactory().buildExtend(useCase1, useCase3);
-        assertTrue(critic.predicate2(useCase1, null));
-        assertTrue(critic.predicate2(useCase2, null));
-        assertFalse(critic.predicate2(useCase3, null));
-        assertTrue(critic.predicate2(actor, null));
-    }
+  public void testUseCaseAssociation() {
+    // build association
+    // build association between actor and top use case.
+    Model.getCoreFactory().buildAssociation(useCase1, actor);
+    assertFalse(critic.predicate2(useCase1, null));
+    assertTrue(critic.predicate2(useCase2, null));
+    assertTrue(critic.predicate2(useCase3, null));
+    assertFalse(critic.predicate2(actor, null));
+  }
 
-    public void testUseCaseInclude() {
-        // build include
-        // it seems that the parameters for build include are just the other way
-        // round
-        // add an include: we do not need to have associtions on one
-        Model.getUseCasesFactory().buildInclude(useCase2, useCase1);
-        assertTrue(critic.predicate2(useCase1, null));
-        assertFalse(critic.predicate2(useCase2, null));
-        assertTrue(critic.predicate2(useCase3, null));
-        assertTrue(critic.predicate2(actor, null));
-    }
+  public void testUseCaseExtend() {
+    // build extend
+    // these parameters seem to be in correct order
+    // add an extend. We do not need an assoc on the extending use case
+    Model.getUseCasesFactory().buildExtend(useCase1, useCase3);
+    assertTrue(critic.predicate2(useCase1, null));
+    assertTrue(critic.predicate2(useCase2, null));
+    assertFalse(critic.predicate2(useCase3, null));
+    assertTrue(critic.predicate2(actor, null));
+  }
 
+  public void testUseCaseInclude() {
+    // build include
+    // it seems that the parameters for build include are just the other way
+    // round
+    // add an include: we do not need to have associtions on one
+    Model.getUseCasesFactory().buildInclude(useCase2, useCase1);
+    assertTrue(critic.predicate2(useCase1, null));
+    assertFalse(critic.predicate2(useCase2, null));
+    assertTrue(critic.predicate2(useCase3, null));
+    assertTrue(critic.predicate2(actor, null));
+  }
 }

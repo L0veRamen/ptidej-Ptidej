@@ -29,117 +29,99 @@ import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.ui.targetmanager.TargetManager;
 
 /**
- * This class implements a panel that adds a navigation button to the right of
- * the combo box
- * 
+ * This class implements a panel that adds a navigation button to the right of the combo box
+ *
  * @author Curt Arnold
  * @since 0.9
  */
-public class UMLComboBoxNavigator extends JPanel implements ActionListener,
-        ItemListener {
+public class UMLComboBoxNavigator extends JPanel implements ActionListener, ItemListener {
 
-    private static ImageIcon icon = ResourceLoaderWrapper
-            .lookupIconResource("ComboNav");
+  private static ImageIcon icon = ResourceLoaderWrapper.lookupIconResource("ComboNav");
 
-    private JComboBox theComboBox;
+  private JComboBox theComboBox;
 
-    private JButton theButton;
+  private JButton theButton;
 
+  /**
+   * Constructor
+   *
+   * @param tooltip Tooltip key for button
+   * @param box Associated combo box
+   */
+  public UMLComboBoxNavigator(String tooltip, JComboBox box) {
+    super(new BorderLayout());
+    theButton = new JButton(icon);
+    theComboBox = box;
+    theButton.setPreferredSize(new Dimension(icon.getIconWidth() + 6, icon.getIconHeight() + 6));
+    theButton.setToolTipText(tooltip);
+    theButton.addActionListener(this);
+    box.addActionListener(this);
+    box.addItemListener(this);
+    add(theComboBox, BorderLayout.CENTER);
+    add(theButton, BorderLayout.EAST);
+    Object item = theComboBox.getSelectedItem();
+    setButtonEnabled(item);
+  }
 
-    /**
-     * Constructor
-     * 
-     * @param tooltip
-     *            Tooltip key for button
-     * @param box
-     *            Associated combo box
-     */
-    public UMLComboBoxNavigator(String tooltip, JComboBox box) {
-        super(new BorderLayout());
-        theButton = new JButton(icon);
-        theComboBox = box;
-        theButton.setPreferredSize(new Dimension(icon.getIconWidth() + 6, icon
-                .getIconHeight() + 6));
-        theButton.setToolTipText(tooltip);
-        theButton.addActionListener(this);
-        box.addActionListener(this);
-        box.addItemListener(this);
-        add(theComboBox, BorderLayout.CENTER);
-        add(theButton, BorderLayout.EAST);
-        Object item = theComboBox.getSelectedItem();
-        setButtonEnabled(item);
+  /**
+   * Enforce that the preferred height is the minimum height. This works around a bug in Windows LAF
+   * of JRE5 where a change in the preferred/min size of a combo has changed and has a knock on
+   * effect here. If the layout manager for prop panels finds the preferred height is greater than
+   * the minimum height then it will allow this component to resize in error. See issue 4333 - Sun
+   * has now fixed this bug in JRE6 and so this method can be removed once JRE5 is no longer
+   * supported.
+   *
+   * @return the preferred size
+   */
+  @Override
+  public Dimension getPreferredSize() {
+    return new Dimension(super.getPreferredSize().width, getMinimumSize().height);
+  }
+
+  /**
+   * Fired when the button is pushed. Navigates to the currently selected item in the combo box.
+   *
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(final java.awt.event.ActionEvent event) {
+    // button action:
+    if (event.getSource() == theButton) {
+      Object item = theComboBox.getSelectedItem();
+      if (item != null) {
+        TargetManager.getInstance().setTarget(item);
+      }
     }
-
-    /**
-     * Enforce that the preferred height is the minimum height.
-     * This works around a bug in Windows LAF of JRE5 where a change
-     * in the preferred/min size of a combo has changed and has a knock
-     * on effect here.
-     * If the layout manager for prop panels finds the preferred
-     * height is greater than the minimum height then it will allow
-     * this component to resize in error.
-     * See issue 4333 - Sun has now fixed this bug in JRE6 and so this
-     * method can be removed once JRE5 is no longer supported.
-     * @return the preferred size
-     */
-    @Override
-    public Dimension getPreferredSize() {
-        return new Dimension(
-                super.getPreferredSize().width,
-                getMinimumSize().height);
+    if (event.getSource() == theComboBox) {
+      Object item = theComboBox.getSelectedItem();
+      setButtonEnabled(item);
     }
+  }
 
-
-
-    /**
-     * Fired when the button is pushed. Navigates to the currently selected item
-     * in the combo box.
-     * 
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(final java.awt.event.ActionEvent event) {
-        // button action:
-        if (event.getSource() == theButton) {
-            Object item = theComboBox.getSelectedItem();
-            if (item != null) {
-                TargetManager.getInstance().setTarget(item);
-            }
-
-        }
-        if (event.getSource() == theComboBox) {
-            Object item = theComboBox.getSelectedItem();
-            setButtonEnabled(item);
-        }
+  public void itemStateChanged(ItemEvent event) {
+    if (event.getSource() == theComboBox) {
+      Object item = theComboBox.getSelectedItem();
+      setButtonEnabled(item);
     }
+  }
 
-    public void itemStateChanged(ItemEvent event) {
-        if (event.getSource() == theComboBox) {
-            Object item = theComboBox.getSelectedItem();
-            setButtonEnabled(item);
+  private void setButtonEnabled(Object item) {
+    if (item != null) {
+      theButton.setEnabled(true);
+    } else {
+      theButton.setEnabled(false);
+    }
+  }
 
-        }
-    }
-
-    private void setButtonEnabled(Object item) {
-        if (item != null) {
-            theButton.setEnabled(true);
-        } else {
-            theButton.setEnabled(false);
-        }
-    }
-    
-    public void setEnabled(boolean enabled) {
-        theComboBox.setEnabled(enabled);
-        theComboBox.setEditable(enabled);
-    }
+  public void setEnabled(boolean enabled) {
+    theComboBox.setEnabled(enabled);
+    theComboBox.setEditable(enabled);
+  }
 }

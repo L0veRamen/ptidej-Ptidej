@@ -27,26 +27,28 @@ package org.argouml.model;
 import java.util.EventObject;
 
 /**
- * A change event due to change in the lifetime of a model element instance.
- * That is, it is created or deleted.
+ * A change event due to change in the lifetime of a model element instance. That is, it is created
+ * or deleted.
  *
  * @author Bob Tarling
  */
 public abstract class InstanceChangeEvent extends UmlChangeEvent {
-    /**
-     * Constructor.
-     *
-     * @param source  The bean that fired the event.
-     * @param propertyName  The programmatic name of the property
-     *		that was changed.
-     * @param oldValue  The old value of the property.
-     * @param newValue  The new value of the property.
-     * @param originalEvent The event that was fired internally
-     *     in the Model subsystem that caused this.
-     */
-    public InstanceChangeEvent(Object source, String propertyName,
-            Object oldValue, Object newValue, EventObject originalEvent) {
-        super(source, propertyName, oldValue, newValue, originalEvent);
-    }
-
+  /**
+   * Constructor.
+   *
+   * @param source The bean that fired the event.
+   * @param propertyName The programmatic name of the property that was changed.
+   * @param oldValue The old value of the property.
+   * @param newValue The new value of the property.
+   * @param originalEvent The event that was fired internally in the Model subsystem that caused
+   *     this.
+   */
+  public InstanceChangeEvent(
+      Object source,
+      String propertyName,
+      Object oldValue,
+      Object newValue,
+      EventObject originalEvent) {
+    super(source, propertyName, oldValue, newValue, originalEvent);
+  }
 }

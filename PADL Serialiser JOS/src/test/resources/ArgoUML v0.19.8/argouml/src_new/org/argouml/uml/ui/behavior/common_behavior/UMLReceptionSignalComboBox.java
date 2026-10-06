@@ -25,41 +25,36 @@
 package org.argouml.uml.ui.behavior.common_behavior;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLComboBox2;
 import org.argouml.uml.ui.UMLComboBoxModel2;
 import org.argouml.uml.ui.UMLListCellRenderer2;
 import org.argouml.uml.ui.UMLUserInterfaceContainer;
 
-/**
- * Combobox for signals on the reception proppanel.
- */
+/** Combobox for signals on the reception proppanel. */
 public class UMLReceptionSignalComboBox extends UMLComboBox2 {
 
-    /**
-     * Constructor for UMLSignalComboBox.
-     * @param container the containing UI element
-     * @param arg0 the model
-     */
-    public UMLReceptionSignalComboBox(
-            UMLUserInterfaceContainer container,
-            UMLComboBoxModel2 arg0) {
-        // TODO: This super constructor has been deprecated
-        super(arg0);
-        setRenderer(new UMLListCellRenderer2(true));
-    }
+  /**
+   * Constructor for UMLSignalComboBox.
+   *
+   * @param container the containing UI element
+   * @param arg0 the model
+   */
+  public UMLReceptionSignalComboBox(UMLUserInterfaceContainer container, UMLComboBoxModel2 arg0) {
+    // TODO: This super constructor has been deprecated
+    super(arg0);
+    setRenderer(new UMLListCellRenderer2(true));
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLComboBox2#doIt(ActionEvent)
-     */
-    protected void doIt(ActionEvent event) {
-        Object o = getModel().getElementAt(getSelectedIndex());
-        Object signal = /*(MSignal)*/ o;
-        Object reception = /*(MReception)*/ getTarget();
-        if (signal != Model.getFacade().getSignal(reception)) {
-            Model.getCommonBehaviorHelper().setSignal(reception, signal);
-        }
+  /**
+   * @see org.argouml.uml.ui.UMLComboBox2#doIt(ActionEvent)
+   */
+  protected void doIt(ActionEvent event) {
+    Object o = getModel().getElementAt(getSelectedIndex());
+    Object signal = /*(MSignal)*/ o;
+    Object reception = /*(MReception)*/ getTarget();
+    if (signal != Model.getFacade().getSignal(reception)) {
+      Model.getCommonBehaviorHelper().setSignal(reception, signal);
     }
-
+  }
 }

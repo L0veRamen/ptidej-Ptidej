@@ -24,7 +24,6 @@ package org.restlet.resource;
 
 import java.io.IOException;
 import java.io.OutputStream;
-
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerConfigurationException;
@@ -34,111 +33,95 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
-
 import org.restlet.data.MediaType;
+import org.restlet.util.XmlWriter;
 import org.w3c.dom.Document;
 import org.xml.sax.ContentHandler;
 
-import org.restlet.util.XmlWriter;
-
 /**
- * Abstract representation based on SAX events processing. The purpose is to create a 
- * streamable content based on a custom Java object model instead of a neutral 
- * DOM tree. This domain object can then be directly modified and efficiently serialized 
- * at a later time.<br/>
- * Subclasses only need to override the ContentHandler methods required for the reading and also the 
- * write(XmlWriter writer) method when serialization is requested.<br/>
+ * Abstract representation based on SAX events processing. The purpose is to create a streamable
+ * content based on a custom Java object model instead of a neutral DOM tree. This domain object can
+ * then be directly modified and efficiently serialized at a later time.<br>
+ * Subclasses only need to override the ContentHandler methods required for the reading and also the
+ * write(XmlWriter writer) method when serialization is requested.<br>
+ *
  * @author Jerome Louvel (contact@noelios.com)
  */
-public abstract class SaxRepresentation extends OutputRepresentation
-{
-	/**
-	 * The source to parse.
-	 */
-	private Source source;
+public abstract class SaxRepresentation extends OutputRepresentation {
+  /** The source to parse. */
+  private Source source;
 
-	/**
-	 * Constructor.
-	 * @param mediaType The representation media type.
-	 */
-	public SaxRepresentation(MediaType mediaType)
-	{
-		super(mediaType);
-	}
+  /**
+   * Constructor.
+   *
+   * @param mediaType The representation media type.
+   */
+  public SaxRepresentation(MediaType mediaType) {
+    super(mediaType);
+  }
 
-	/**
-	 * Constructor.
-	 * @param mediaType The representation's media type.
-	 * @param xmlDocument A source DOM representation to parse.
-	 */
-	public SaxRepresentation(MediaType mediaType, Document xmlDocument)
-	{
-		super(mediaType);
-		this.source = new DOMSource(xmlDocument);
-	}
+  /**
+   * Constructor.
+   *
+   * @param mediaType The representation's media type.
+   * @param xmlDocument A source DOM representation to parse.
+   */
+  public SaxRepresentation(MediaType mediaType, Document xmlDocument) {
+    super(mediaType);
+    this.source = new DOMSource(xmlDocument);
+  }
 
-	/**
-	 * Constructor.
-	 * @param xmlRepresentation A source XML representation to parse.
-	 */
-	public SaxRepresentation(Representation xmlRepresentation) throws IOException
-	{
-		super(xmlRepresentation.getMediaType());
-		this.source = new StreamSource(xmlRepresentation.getStream());
-	}
+  /**
+   * Constructor.
+   *
+   * @param xmlRepresentation A source XML representation to parse.
+   */
+  public SaxRepresentation(Representation xmlRepresentation) throws IOException {
+    super(xmlRepresentation.getMediaType());
+    this.source = new StreamSource(xmlRepresentation.getStream());
+  }
 
-	/**
-	 * Parses the source and sends SAX events to a content handler.
-	 * @param contentHandler The SAX content handler to use for parsing. 
-	 */
-	public void parse(ContentHandler contentHandler) throws IOException
-	{
-		if (contentHandler != null)
-		{
-			try
-			{
-				Result result = new SAXResult(contentHandler);
-				TransformerFactory.getDeclaredConstructor().newInstance().newTransformer().transform(this.source,
-						result);
-			}
-			catch (TransformerConfigurationException tce)
-			{
-				throw new IOException("Couldn't parse the source representation: "
-						+ tce.getMessage());
-			}
-			catch (TransformerException te)
-			{
-				te.printStackTrace();
-				throw new IOException("Couldn't parse the source representation: "
-						+ te.getMessage());
-			}
-			catch (TransformerFactoryConfigurationError tfce)
-			{
-				throw new IOException("Couldn't parse the source representation: "
-						+ tfce.getMessage());
-			}
-		}
-		else
-		{
-			throw new IOException(
-					"Couldn't parse the source representation: no content restlet defined.");
-		}
-	}
+  /**
+   * Parses the source and sends SAX events to a content handler.
+   *
+   * @param contentHandler The SAX content handler to use for parsing.
+   */
+  public void parse(ContentHandler contentHandler) throws IOException {
+    if (contentHandler != null) {
+      try {
+        Result result = new SAXResult(contentHandler);
+        TransformerFactory.getDeclaredConstructor()
+            .newInstance()
+            .newTransformer()
+            .transform(this.source, result);
+      } catch (TransformerConfigurationException tce) {
+        throw new IOException("Couldn't parse the source representation: " + tce.getMessage());
+      } catch (TransformerException te) {
+        te.printStackTrace();
+        throw new IOException("Couldn't parse the source representation: " + te.getMessage());
+      } catch (TransformerFactoryConfigurationError tfce) {
+        throw new IOException("Couldn't parse the source representation: " + tfce.getMessage());
+      }
+    } else {
+      throw new IOException(
+          "Couldn't parse the source representation: no content restlet defined.");
+    }
+  }
 
-	/**
-	 * Writes the representation to a byte stream.
-	 * @param outputStream The output stream.
-	 */
-	public void write(OutputStream outputStream) throws IOException
-	{
-		write(new XmlWriter(outputStream, "UTF-8"));
-	}
+  /**
+   * Writes the representation to a byte stream.
+   *
+   * @param outputStream The output stream.
+   */
+  public void write(OutputStream outputStream) throws IOException {
+    write(new XmlWriter(outputStream, "UTF-8"));
+  }
 
-	/**
-	 * Writes the representation to a XML writer. 
-	 * @param writer The XML writer to write to.
-	 * @throws IOException
-	 */
-	public abstract void write(XmlWriter writer) throws IOException;
-
+  /**
+   * Writes the representation to a XML writer.
+   *
+   * @param writer The XML writer to write to.
+   * @throws IOException
+   */
+  public abstract void write(XmlWriter writer) throws IOException;
 }

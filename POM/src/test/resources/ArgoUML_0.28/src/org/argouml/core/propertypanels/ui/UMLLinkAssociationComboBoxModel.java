@@ -24,11 +24,9 @@
 
 package org.argouml.core.propertypanels.ui;
 
-import java.beans.PropertyChangeEvent;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-
 import org.argouml.model.Model;
 import org.argouml.model.UmlChangeEvent;
 import org.argouml.uml.ui.UMLComboBoxModel2;
@@ -40,93 +38,83 @@ import org.argouml.uml.ui.UMLComboBoxModel2;
  */
 class UMLLinkAssociationComboBoxModel extends UMLComboBoxModel2 {
 
-    /**
-     * Constructor for UMLModelElementNamespaceComboBoxModel.
-     */
-    public UMLLinkAssociationComboBoxModel() {
-        super("assocation", true);
-    }
+  /** Constructor for UMLModelElementNamespaceComboBoxModel. */
+  public UMLLinkAssociationComboBoxModel() {
+    super("assocation", true);
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object o) {
-        return Model.getFacade().isAAssociation(o);
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object o) {
+    return Model.getFacade().isAAssociation(o);
+  }
 
-    /**
-     * To simplify implementation, we list all associations
-     * found with any of the Classifiers
-     * represented by the linked Instances. <p>
-     *
-     * TODO: Make a foolproof algorithm that only allows selecting associations
-     * that create a correct model. Also take into account n-ary associations
-     * and associationclasses. This algo best goes in the model subsystem, e.g.
-     * in a method getAllPossibleAssociationsForALink().
-     *
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        Collection linkEnds;
-        Collection associations = new HashSet();
-        Object t = getTarget();
-        if (Model.getFacade().isALink(t)) {
-            linkEnds = Model.getFacade().getConnections(t);
-            Iterator ile = linkEnds.iterator();
-            while (ile.hasNext()) {
-                Object instance = Model.getFacade().getInstance(ile.next());
-                Collection c = Model.getFacade().getClassifiers(instance);
-                Iterator ic = c.iterator();
-                while (ic.hasNext()) {
-                    Object classifier = ic.next();
-                    Collection ae =
-                        Model.getFacade().getAssociationEnds(classifier);
-                    Iterator iae = ae.iterator();
-                    while (iae.hasNext()) {
-                        Object associationEnd = iae.next();
-                        Object association =
-                            Model.getFacade().getAssociation(associationEnd);
-                        associations.add(association);
-                    }
-                }
-            }
+  /**
+   * To simplify implementation, we list all associations found with any of the Classifiers
+   * represented by the linked Instances.
+   *
+   * <p>TODO: Make a foolproof algorithm that only allows selecting associations that create a
+   * correct model. Also take into account n-ary associations and associationclasses. This algo best
+   * goes in the model subsystem, e.g. in a method getAllPossibleAssociationsForALink().
+   *
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    Collection linkEnds;
+    Collection associations = new HashSet();
+    Object t = getTarget();
+    if (Model.getFacade().isALink(t)) {
+      linkEnds = Model.getFacade().getConnections(t);
+      Iterator ile = linkEnds.iterator();
+      while (ile.hasNext()) {
+        Object instance = Model.getFacade().getInstance(ile.next());
+        Collection c = Model.getFacade().getClassifiers(instance);
+        Iterator ic = c.iterator();
+        while (ic.hasNext()) {
+          Object classifier = ic.next();
+          Collection ae = Model.getFacade().getAssociationEnds(classifier);
+          Iterator iae = ae.iterator();
+          while (iae.hasNext()) {
+            Object associationEnd = iae.next();
+            Object association = Model.getFacade().getAssociation(associationEnd);
+            associations.add(association);
+          }
         }
-        setElements(associations);
+      }
     }
+    setElements(associations);
+  }
 
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
+   */
+  protected Object getSelectedModelElement() {
+    if (Model.getFacade().isALink(getTarget())) {
+      return Model.getFacade().getAssociation(getTarget());
+    }
+    return null;
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#modelChanged(org.argouml.model.UmlChangeEvent)
+   */
+  @Override
+  public void modelChanged(UmlChangeEvent evt) {
     /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
+     * Rebuild the list from scratch to be sure it's correct.
      */
-    protected Object getSelectedModelElement() {
-        if (Model.getFacade().isALink(getTarget())) {
-            return Model.getFacade().getAssociation(getTarget());
-        }
-        return null;
+    Object t = getTarget();
+    if (t != null && evt.getSource() == t && evt.getNewValue() != null) {
+      buildModelList();
+      /* In some cases (se issue 3780) the list remains the same, but
+       * the selected item differs. Without the next step,
+       * the combo would not be refreshed.
+       */
+      setSelectedItem(getSelectedModelElement());
     }
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#modelChanged(org.argouml.model.UmlChangeEvent)
-     */
-    @Override
-    public void modelChanged(UmlChangeEvent evt) {
-        /*
-         * Rebuild the list from scratch to be sure it's correct.
-         */
-        Object t = getTarget();
-        if (t != null
-                && evt.getSource() == t
-                && evt.getNewValue() != null) {
-            buildModelList();
-            /* In some cases (se issue 3780) the list remains the same, but
-             * the selected item differs. Without the next step,
-             * the combo would not be refreshed.
-             */
-            setSelectedItem(getSelectedModelElement());
-        }
-    }
-
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = 3232437122889409351L;
+  /** The UID. */
+  private static final long serialVersionUID = 3232437122889409351L;
 }

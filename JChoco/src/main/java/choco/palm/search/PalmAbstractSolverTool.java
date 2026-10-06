@@ -11,13 +11,13 @@
 package choco.palm.search;
 
 public abstract class PalmAbstractSolverTool {
-	protected PalmSolver manager;
+  protected PalmSolver manager;
 
-	public PalmSolver getManager() {
-		return this.manager;
-	}
+  public PalmSolver getManager() {
+    return this.manager;
+  }
 
-	public void setManager(final PalmSolver manager) {
-		this.manager = manager;
-	}
+  public void setManager(final PalmSolver manager) {
+    this.manager = manager;
+  }
 }

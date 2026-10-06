@@ -28,46 +28,41 @@ import org.argouml.uml.ui.ActionNavigateContainerElement;
 import org.argouml.uml.ui.foundation.core.PropPanelClassifier;
 import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
 
-
 /**
- * Builds the property panel for a actor.<p>
+ * Builds the property panel for a actor.
+ *
+ * <p>
  *
  * @author jrobbins
  */
-
 public class PropPanelActor extends PropPanelClassifier {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = 7368183497864490115L;
+  /** The serial version. */
+  private static final long serialVersionUID = 7368183497864490115L;
 
-    /**
-     * Construct a new property panel for an Actor.
-     */
-    public PropPanelActor() {
-    	super("label.actor", lookupIcon("Actor"));
+  /** Construct a new property panel for an Actor. */
+  public PropPanelActor() {
+    super("label.actor", lookupIcon("Actor"));
 
-    	addField("label.name", getNameTextField());
-        addField("label.namespace", getNamespaceSelector());
+    addField("label.name", getNameTextField());
+    addField("label.namespace", getNamespaceSelector());
 
-        add(getModifiersPanel());
+    add(getModifiersPanel());
 
-    	addSeparator();
+    addSeparator();
 
-    	addField("label.generalizations", getGeneralizationScroll());
-        addField("label.specializations", getSpecializationScroll());
+    addField("label.generalizations", getGeneralizationScroll());
+    addField("label.specializations", getSpecializationScroll());
 
-    	addSeparator();
+    addSeparator();
 
-    	addField("label.association-ends", getAssociationEndScroll());
+    addField("label.association-ends", getAssociationEndScroll());
 
-        // The toolbar buttons that go at the top:
-        addAction(new ActionNavigateContainerElement());
-        addAction(new ActionNewActor());
-        addAction(getActionNewReception());
-        addAction(new ActionNewStereotype());
-        addAction(getDeleteAction());
-    }
-
+    // The toolbar buttons that go at the top:
+    addAction(new ActionNavigateContainerElement());
+    addAction(new ActionNewActor());
+    addAction(getActionNewReception());
+    addAction(new ActionNewStereotype());
+    addAction(getDeleteAction());
+  }
 }

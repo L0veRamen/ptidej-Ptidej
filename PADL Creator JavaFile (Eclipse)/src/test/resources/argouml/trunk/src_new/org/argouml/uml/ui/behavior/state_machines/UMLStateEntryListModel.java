@@ -33,27 +33,23 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  */
 public class UMLStateEntryListModel extends UMLModelElementListModel2 {
 
+  /** Constructor for UMLStateEntryListModel. */
+  public UMLStateEntryListModel() {
+    super("entry");
+  }
 
-    /**
-     * Constructor for UMLStateEntryListModel.
-     */
-    public UMLStateEntryListModel() {
-        super("entry");
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    removeAllElements();
+    addElement(Model.getFacade().getEntry(getTarget()));
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        removeAllElements();
-        addElement(Model.getFacade().getEntry(getTarget()));
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ element) {
-        return element == Model.getFacade().getEntry(getTarget());
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ element) {
+    return element == Model.getFacade().getEntry(getTarget());
+  }
 }

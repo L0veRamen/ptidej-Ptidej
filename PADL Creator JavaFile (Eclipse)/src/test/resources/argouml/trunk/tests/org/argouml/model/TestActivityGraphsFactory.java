@@ -26,65 +26,56 @@ package org.argouml.model;
 
 import junit.framework.TestCase;
 
-
-/**
- * Test the ActivityGraphsFactoryImpl class.
- *
- */
+/** Test the ActivityGraphsFactoryImpl class. */
 public class TestActivityGraphsFactory extends TestCase {
 
-    /**
-     * All the ModelElements we are going to test.
-     */
-    private static String[] allModelElements = {
-        "ActivityGraph",
-        "ActionState",
-        "CallState",
-        "ClassifierInState",
-        "ObjectFlowState",
-        "Partition",
-        "SubactivityState",
+  /** All the ModelElements we are going to test. */
+  private static String[] allModelElements = {
+    "ActivityGraph",
+    "ActionState",
+    "CallState",
+    "ClassifierInState",
+    "ObjectFlowState",
+    "Partition",
+    "SubactivityState",
+  };
+
+  /**
+   * The constructor.
+   *
+   * @param n the name
+   */
+  public TestActivityGraphsFactory(String n) {
+    super(n);
+  }
+
+  /** Test the singleton pattern for the ActivityGraphsFactoryImpl class. */
+  public void testSingleton() {
+    Object o1 = Model.getActivityGraphsFactory();
+    Object o2 = Model.getActivityGraphsFactory();
+    assertTrue("Different singletons", o1 == o2);
+  }
+
+  /** The test for creation. */
+  public void testCreates() {
+    String[] objs = {
+      "ActionState",
+      "ActivityGraph",
+      "CallState",
+      "ClassifierInState",
+      "ObjectFlowState",
+      "Partition",
+      "SubactivityState",
+      null,
     };
 
-    /**
-     * The constructor.
-     *
-     * @param n the name
-     */
-    public TestActivityGraphsFactory(String n) { super(n); }
+    CheckUMLModelHelper.createAndRelease(Model.getActivityGraphsFactory(), objs);
+  }
 
-    /**
-     * Test the singleton pattern for the ActivityGraphsFactoryImpl class.
-     */
-    public void testSingleton() {
-	Object o1 = Model.getActivityGraphsFactory();
-	Object o2 = Model.getActivityGraphsFactory();
-	assertTrue("Different singletons", o1 == o2);
-    }
-
-    /**
-     * The test for creation.
-     */
-    public void testCreates() {
-	String [] objs = {
-	    "ActionState",
-	    "ActivityGraph",
-	    "CallState",
-	    "ClassifierInState",
-	    "ObjectFlowState",
-	    "Partition",
-	    "SubactivityState",
-	    null,
-	};
-
-	CheckUMLModelHelper.createAndRelease(Model.getActivityGraphsFactory(),
-					     objs);
-    }
-
-    /**
-     * @return Returns the allModelElements.
-     */
-    static String[] getAllModelElements() {
-        return allModelElements;
-    }
+  /**
+   * @return Returns the allModelElements.
+   */
+  static String[] getAllModelElements() {
+    return allModelElements;
+  }
 }

@@ -3,49 +3,38 @@ package net.intensicode.idea.core;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.openapi.fileTypes.FileTypeManager;
-import net.intensicode.idea.system.SystemErrorHandler;
-import net.intensicode.idea.system.SystemContext;
-import net.intensicode.idea.system.ResourceLoader;
 import net.intensicode.idea.system.OptionsFolder;
+import net.intensicode.idea.system.ResourceLoader;
+import net.intensicode.idea.system.SystemContext;
+import net.intensicode.idea.system.SystemErrorHandler;
 
+/** TODO: Describe this! */
+public final class FakeSystemContext implements SystemContext {
+  public FakeSystemContext(final Object aReferenceObject) {
+    myReferenceObject = aReferenceObject;
+  }
 
+  // From SystemContext
 
-/**
- * TODO: Describe this!
- */
-public final class FakeSystemContext implements SystemContext
-{
-    public FakeSystemContext( final Object aReferenceObject )
-    {
-        myReferenceObject = aReferenceObject;
-    }
+  public OptionsFolder getOptionsFolder() {
+    return new FakeOptionsFolder(myReferenceObject);
+  }
 
-    // From SystemContext
+  public ResourceLoader getResourceLoader() {
+    return new FakeResourceLoader(myReferenceObject);
+  }
 
-    public OptionsFolder getOptionsFolder()
-    {
-        return new FakeOptionsFolder( myReferenceObject );
-    }
+  public SystemErrorHandler getErrorHandler() {
+    return new FakeSystemErrorHandler();
+  }
 
-    public ResourceLoader getResourceLoader()
-    {
-        return new FakeResourceLoader( myReferenceObject );
-    }
+  public TextAttributesKey createTextAttributesKey(String aTokenID, TextAttributes aAttributes) {
+    return TextAttributesKey.find(aTokenID);
+  }
 
-    public SystemErrorHandler getErrorHandler()
-    {
-        return new FakeSystemErrorHandler();
-    }
+  public FileTypeManager getFileTypeManager() {
+    throw new RuntimeException("NYI");
+  }
 
-    public TextAttributesKey createTextAttributesKey( String aTokenID, TextAttributes aAttributes )
-    {
-        return TextAttributesKey.find( aTokenID );
-    }
-
-    public FileTypeManager getFileTypeManager()
-    {
-        throw new RuntimeException( "NYI" );
-    }
-
-    private final Object myReferenceObject;
+  private final Object myReferenceObject;
 }

@@ -25,9 +25,7 @@
 package org.argouml.uml.ui.behavior.use_cases;
 
 import javax.swing.text.BadLocationException;
-
 import junit.framework.TestCase;
-
 import org.argouml.model.Model;
 
 /**
@@ -36,131 +34,123 @@ import org.argouml.model.Model;
  */
 public class TestUMLExtensionPointLocationDocument extends TestCase {
 
-    private Object elem;
-    private UMLExtensionPointLocationDocument model;
+  private Object elem;
+  private UMLExtensionPointLocationDocument model;
 
-    /**
-     * Constructor for TestUMLExtensionPointLocationDocument.
-     *
-     * @param arg0 is the name of the test case.
-     */
-    public TestUMLExtensionPointLocationDocument(String arg0) {
-        super(arg0);
-    }
+  /**
+   * Constructor for TestUMLExtensionPointLocationDocument.
+   *
+   * @param arg0 is the name of the test case.
+   */
+  public TestUMLExtensionPointLocationDocument(String arg0) {
+    super(arg0);
+  }
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        elem = Model.getUseCasesFactory().createExtensionPoint();
-        model = new UMLExtensionPointLocationDocument();
-        model.setTarget(elem);
-        Model.getPump().flushModelEvents();
-    }
+  /**
+   * @see junit.framework.TestCase#setUp()
+   */
+  protected void setUp() throws Exception {
+    super.setUp();
+    elem = Model.getUseCasesFactory().createExtensionPoint();
+    model = new UMLExtensionPointLocationDocument();
+    model.setTarget(elem);
+    Model.getPump().flushModelEvents();
+  }
 
-    /**
-     * @see junit.framework.TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        Model.getUmlFactory().delete(elem);
-        elem = null;
-        model = null;
-    }
+  /**
+   * @see junit.framework.TestCase#tearDown()
+   */
+  protected void tearDown() throws Exception {
+    super.tearDown();
+    Model.getUmlFactory().delete(elem);
+    elem = null;
+    model = null;
+  }
 
-    /**
-     * Test setLocation().
-     *
-     * @throws BadLocationException when the lacation is refused
-     */
-    public void testSetName()
-	throws BadLocationException {
-        Model.getUseCasesHelper().setLocation(elem, "test");
-        Model.getPump().flushModelEvents();
-	assertEquals("test", model.getText(0, model.getLength()));
-    }
+  /**
+   * Test setLocation().
+   *
+   * @throws BadLocationException when the lacation is refused
+   */
+  public void testSetName() throws BadLocationException {
+    Model.getUseCasesHelper().setLocation(elem, "test");
+    Model.getPump().flushModelEvents();
+    assertEquals("test", model.getText(0, model.getLength()));
+  }
 
-    /**
-     * Test setLocation() with null argument.
-     *
-     * @throws BadLocationException when the lacation is refused
-     */
-    public void testRemoveName()
-	throws BadLocationException {
-        Model.getUseCasesHelper().setLocation(elem, "test");
-        Model.getUseCasesHelper().setLocation(elem, null);
-        Model.getPump().flushModelEvents();
-	assertEquals("", model.getText(0, model.getLength()));
-    }
+  /**
+   * Test setLocation() with null argument.
+   *
+   * @throws BadLocationException when the lacation is refused
+   */
+  public void testRemoveName() throws BadLocationException {
+    Model.getUseCasesHelper().setLocation(elem, "test");
+    Model.getUseCasesHelper().setLocation(elem, null);
+    Model.getPump().flushModelEvents();
+    assertEquals("", model.getText(0, model.getLength()));
+  }
 
-    /**
-     * Test insertString().
-     *
-     * @throws BadLocationException when the lacation is refused
-     */
-    public void testInsertString()
-	throws BadLocationException {
-        Model.getPump().flushModelEvents();
-	model.insertString(0, "test", null);
-        Model.getPump().flushModelEvents();
-        assertEquals("test", Model.getFacade().getLocation(elem));
-    }
+  /**
+   * Test insertString().
+   *
+   * @throws BadLocationException when the lacation is refused
+   */
+  public void testInsertString() throws BadLocationException {
+    Model.getPump().flushModelEvents();
+    model.insertString(0, "test", null);
+    Model.getPump().flushModelEvents();
+    assertEquals("test", Model.getFacade().getLocation(elem));
+  }
 
-    /**
-     * Test remove().
-     *
-     * @throws BadLocationException when the lacation is refused
-     */
-    public void testRemoveString()
-	throws BadLocationException {
-	model.insertString(0, "test", null);
-        Model.getPump().flushModelEvents();
-	model.remove(0, model.getLength());
-        Model.getPump().flushModelEvents();
-        assertEquals("", Model.getFacade().getLocation(elem));
-    }
+  /**
+   * Test remove().
+   *
+   * @throws BadLocationException when the lacation is refused
+   */
+  public void testRemoveString() throws BadLocationException {
+    model.insertString(0, "test", null);
+    Model.getPump().flushModelEvents();
+    model.remove(0, model.getLength());
+    Model.getPump().flushModelEvents();
+    assertEquals("", Model.getFacade().getLocation(elem));
+  }
 
-    /**
-     * Test insertString().
-     *
-     * @throws BadLocationException when the lacation is refused
-     */
-    public void testAppendString()
-	throws BadLocationException {
-        Model.getUseCasesHelper().setLocation(elem, "test");
-        Model.getPump().flushModelEvents();
-	model.insertString(model.getLength(), "test", null);
-        Model.getPump().flushModelEvents();
-        assertEquals("testtest", Model.getFacade().getLocation(elem));
-    }
+  /**
+   * Test insertString().
+   *
+   * @throws BadLocationException when the lacation is refused
+   */
+  public void testAppendString() throws BadLocationException {
+    Model.getUseCasesHelper().setLocation(elem, "test");
+    Model.getPump().flushModelEvents();
+    model.insertString(model.getLength(), "test", null);
+    Model.getPump().flushModelEvents();
+    assertEquals("testtest", Model.getFacade().getLocation(elem));
+  }
 
-    /**
-     * Test inserting a string in the middle.
-     *
-     * @throws BadLocationException when the lacation is refused
-     */
-    public void testInsertStringHalfway()
-	throws BadLocationException {
-        Model.getUseCasesHelper().setLocation(elem, "test");
-        Model.getPump().flushModelEvents();
-	model.insertString(1, "test", null);
-        Model.getPump().flushModelEvents();
-        assertEquals("ttestest", Model.getFacade().getLocation(elem));
-    }
+  /**
+   * Test inserting a string in the middle.
+   *
+   * @throws BadLocationException when the lacation is refused
+   */
+  public void testInsertStringHalfway() throws BadLocationException {
+    Model.getUseCasesHelper().setLocation(elem, "test");
+    Model.getPump().flushModelEvents();
+    model.insertString(1, "test", null);
+    Model.getPump().flushModelEvents();
+    assertEquals("ttestest", Model.getFacade().getLocation(elem));
+  }
 
-    /**
-     * Test remove a string from the middle.
-     *
-     * @throws BadLocationException when the lacation is refused
-     */
-    public void testRemoveStringHalfway()
-	throws BadLocationException {
-        Model.getUseCasesHelper().setLocation(elem, "test");
-        Model.getPump().flushModelEvents();
-	model.remove(1, model.getLength() - 2);
-        Model.getPump().flushModelEvents();
-        assertEquals("tt", Model.getFacade().getLocation(elem));
-    }
-
+  /**
+   * Test remove a string from the middle.
+   *
+   * @throws BadLocationException when the lacation is refused
+   */
+  public void testRemoveStringHalfway() throws BadLocationException {
+    Model.getUseCasesHelper().setLocation(elem, "test");
+    Model.getPump().flushModelEvents();
+    model.remove(1, model.getLength() - 2);
+    Model.getPump().flushModelEvents();
+    assertEquals("tt", Model.getFacade().getLocation(elem));
+  }
 }

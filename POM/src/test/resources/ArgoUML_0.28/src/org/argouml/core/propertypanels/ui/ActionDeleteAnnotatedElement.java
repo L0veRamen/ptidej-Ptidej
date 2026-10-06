@@ -25,27 +25,22 @@
 package org.argouml.core.propertypanels.ui;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.AbstractActionRemoveElement;
 
 class ActionDeleteAnnotatedElement extends AbstractActionRemoveElement {
-    /**
-     * Constructor.
-     */
-    public ActionDeleteAnnotatedElement() {
-        super(Translator.localize("menu.popup.remove"));
-    }
+  /** Constructor. */
+  public ActionDeleteAnnotatedElement() {
+    super(Translator.localize("menu.popup.remove"));
+  }
 
-    /*
-     * @see org.tigris.gef.undo.UndoableAction#actionPerformed(java.awt.event.ActionEvent)
-     */
-    @Override
-    public void actionPerformed(ActionEvent arg0) {
-        super.actionPerformed(arg0);
-        Model.getCoreHelper().removeAnnotatedElement(
-                getTarget(), getObjectToRemove());
-    }
-    
+  /*
+   * @see org.tigris.gef.undo.UndoableAction#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
+  public void actionPerformed(ActionEvent arg0) {
+    super.actionPerformed(arg0);
+    Model.getCoreHelper().removeAnnotatedElement(getTarget(), getObjectToRemove());
+  }
 }

@@ -29,56 +29,51 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLComboBoxModel2;
 
 /**
- * A model for stereotypes to handle their base class, or as it is a class from
- * the UML metamodel its metaclass.
- * 
- * TODO: This class needs to be replaced with a mechanism that supports multiple
- * base classes as added in UML 1.4.
- * 
+ * A model for stereotypes to handle their base class, or as it is a class from the UML metamodel
+ * its metaclass.
+ *
+ * <p>TODO: This class needs to be replaced with a mechanism that supports multiple base classes as
+ * added in UML 1.4.
+ *
  * @author mkl
  */
 public class UMLMetaClassComboBoxModel extends UMLComboBoxModel2 {
 
-    private Collection metaClasses = 
-            Model.getCoreHelper().getAllMetatypeNames();
+  private Collection metaClasses = Model.getCoreHelper().getAllMetatypeNames();
 
-    /**
-     * Constructor.
-     */
-    public UMLMetaClassComboBoxModel() {
-        super("baseClass", true);
-        Collections.sort((List) metaClasses);
+  /** Constructor. */
+  public UMLMetaClassComboBoxModel() {
+    super("baseClass", true);
+    Collections.sort((List) metaClasses);
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
+   */
+  protected Object getSelectedModelElement() {
+    if (getTarget() != null) {
+      Collection baseClasses = Model.getFacade().getBaseClasses(getTarget());
+      Iterator iter = baseClasses != null ? baseClasses.iterator() : null;
+      return iter != null ? iter.next() : null;
     }
+    return null;
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
-     */
-    protected Object getSelectedModelElement() {
-        if (getTarget() != null) {
-            Collection baseClasses = Model.getFacade().getBaseClasses(getTarget());
-            Iterator iter = baseClasses != null ? baseClasses.iterator() : null;
-            return iter != null ? iter.next() : null;
-        }
-        return null;
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    setElements(metaClasses);
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        setElements(metaClasses);
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return metaClasses.contains(element);
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return metaClasses.contains(element);
+  }
 }

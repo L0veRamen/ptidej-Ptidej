@@ -25,41 +25,41 @@
 package org.argouml.ui;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.AbstractAction;
 import javax.swing.Icon;
-
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
 
 /**
  * An action to redo from the undo stack.
- * 
+ *
  * @author mvw@tigris.org
  */
 public class ActionRedo extends AbstractAction {
-    
-    private static final long serialVersionUID = 3921952827170089931L;
 
-    /**
-     * Construct the redo action with a display name
-     * @param name the name to display for this action
-     */
-    public ActionRedo(String name) {
-        super(name);
-    }
-    
-    /**
-     * Construct the redo action with a display name and icon.
-     * @param name the name to display for this action
-     * @param icon the icon to display for this action
-     */
-    public ActionRedo(String name, Icon icon) {
-        super(name, icon);
-    }
+  private static final long serialVersionUID = 3921952827170089931L;
 
-    public void actionPerformed(ActionEvent e) {
-        final Project p = ProjectManager.getManager().getCurrentProject();
-        p.getUndoManager().redo();
-    }
+  /**
+   * Construct the redo action with a display name
+   *
+   * @param name the name to display for this action
+   */
+  public ActionRedo(String name) {
+    super(name);
+  }
+
+  /**
+   * Construct the redo action with a display name and icon.
+   *
+   * @param name the name to display for this action
+   * @param icon the icon to display for this action
+   */
+  public ActionRedo(String name, Icon icon) {
+    super(name, icon);
+  }
+
+  public void actionPerformed(ActionEvent e) {
+    final Project p = ProjectManager.getManager().getCurrentProject();
+    p.getUndoManager().redo();
+  }
 }

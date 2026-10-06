@@ -25,7 +25,6 @@
 package org.argouml.uml.ui.behavior.common_behavior;
 
 import java.util.Collection;
-
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.Model;
@@ -33,82 +32,75 @@ import org.argouml.model.RemoveAssociationEvent;
 import org.argouml.model.UmlChangeEvent;
 import org.argouml.uml.ui.UMLComboBoxModel2;
 
-
-/**
- * The model for the signal combobox on the reception proppanel.
- */
+/** The model for the signal combobox on the reception proppanel. */
 public class UMLReceptionSignalComboBoxModel extends UMLComboBoxModel2 {
 
-    /**
-     * Constructor for UMLReceptionSignalComboBoxModel.
-     */
-    public UMLReceptionSignalComboBoxModel() {
-        super("signal", false);
-        Model.getPump().addClassModelEventListener(this,
-                Model.getMetaTypes().getNamespace(), "ownedElement");
-    }
+  /** Constructor for UMLReceptionSignalComboBoxModel. */
+  public UMLReceptionSignalComboBoxModel() {
+    super("signal", false);
+    Model.getPump()
+        .addClassModelEventListener(this, Model.getMetaTypes().getNamespace(), "ownedElement");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        Object target = getTarget();
-        if (Model.getFacade().isAReception(target)) {
-            Object rec = /*(MReception)*/ target;
-            removeAllElements();
-            Project p = ProjectManager.getManager().getCurrentProject();
-            Object model = p.getRoot();
-            setElements(Model.getModelManagementHelper()
-                    .getAllModelElementsOfKindWithModel(
-                            model,
-                            Model.getMetaTypes().getSignal()));
-            setSelectedItem(Model.getFacade().getSignal(rec));
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    Object target = getTarget();
+    if (Model.getFacade().isAReception(target)) {
+      Object rec = /*(MReception)*/ target;
+      removeAllElements();
+      Project p = ProjectManager.getManager().getCurrentProject();
+      Object model = p.getRoot();
+      setElements(
+          Model.getModelManagementHelper()
+              .getAllModelElementsOfKindWithModel(model, Model.getMetaTypes().getSignal()));
+      setSelectedItem(Model.getFacade().getSignal(rec));
+    }
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object m) {
+    return Model.getFacade().isASignal(m);
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
+   */
+  protected Object getSelectedModelElement() {
+    if (getTarget() != null) {
+      return Model.getFacade().getSignal(getTarget());
+    }
+    return null;
+  }
+
+  /**
+   * Override UMLComboBoxModel2's default handling of RemoveAssociation. We get this from MDR for
+   * the previous signal when a different signal is selected. Don't let that remove it from the
+   * combo box. Only remove it if the signal was removed from the namespace.
+   *
+   * <p>
+   *
+   * @param evt the event describing the property change
+   */
+  public void modelChanged(UmlChangeEvent evt) {
+    if (evt instanceof RemoveAssociationEvent) {
+      if ("ownedElement".equals(evt.getPropertyName())) {
+        Object o = getChangedElement(evt);
+        if (contains(o)) {
+          buildingModel = true;
+          if (o instanceof Collection) {
+            removeAll((Collection) o);
+          } else {
+            removeElement(o);
+          }
+          buildingModel = false;
         }
-
+      }
+    } else {
+      super.propertyChange(evt);
     }
-
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object m) {
-        return Model.getFacade().isASignal(m);
-    }
-
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
-     */
-    protected Object getSelectedModelElement() {
-        if (getTarget() != null) {
-            return Model.getFacade().getSignal(getTarget());
-        }
-        return null;
-    }
-
-    /**
-     * Override UMLComboBoxModel2's default handling of RemoveAssociation. We
-     * get this from MDR for the previous signal when a different signal is
-     * selected. Don't let that remove it from the combo box. Only remove it if
-     * the signal was removed from the namespace.
-     * <p>
-     * @param evt the event describing the property change
-     */
-    public void modelChanged(UmlChangeEvent evt) {
-        if (evt instanceof RemoveAssociationEvent) {
-            if ("ownedElement".equals(evt.getPropertyName())) {
-                Object o = getChangedElement(evt);
-                if (contains(o)) {
-                    buildingModel = true;
-                    if (o instanceof Collection) {
-                        removeAll((Collection) o);
-                    } else {
-                        removeElement(o);
-                    }
-                    buildingModel = false;
-                }
-            }
-        } else {
-            super.propertyChange(evt);
-        }
-    }
-
+  }
 }

@@ -29,43 +29,36 @@ import org.tigris.gef.presentation.Fig;
 
 /**
  * The buttons on selection for an Enumeration.
- * 
+ *
  * @author Michiel
  */
 class SelectionEnumeration extends SelectionDataType {
 
-    // TODO: I18N
-    private static String[] instructions =
-    {"Add a super-enumeration",
-     "Add a sub-enumeration",
-     null,
-     null,
-     null,
-     "Move object(s)",
-    };
-    
-    /**
-     * @param f the given fi
-     */
-    public SelectionEnumeration(Fig f) {
-        super(f);
-    }
+  // TODO: I18N
+  private static String[] instructions = {
+    "Add a super-enumeration", "Add a sub-enumeration", null, null, null, "Move object(s)",
+  };
 
-    @Override
-    protected String getInstructions(int i) {
-        return instructions[ i - 10];
+  /**
+   * @param f the given fi
+   */
+  public SelectionEnumeration(Fig f) {
+    super(f);
+  }
 
-    }
+  @Override
+  protected String getInstructions(int i) {
+    return instructions[i - 10];
+  }
 
-    @Override
-    protected Object getNewNode(int index) {
-        Object ns = Model.getFacade().getNamespace(getContent().getOwner());
-        return Model.getCoreFactory().buildEnumeration("", ns);
-    }
+  @Override
+  protected Object getNewNode(int index) {
+    Object ns = Model.getFacade().getNamespace(getContent().getOwner());
+    return Model.getCoreFactory().buildEnumeration("", ns);
+  }
 
-    @Override
-    protected Object getNewNodeType(int index) {
-        return Model.getMetaTypes().getEnumeration();
-    }
-
+  @Override
+  protected Object getNewNodeType(int index) {
+    return Model.getMetaTypes().getEnumeration();
+  }
 }

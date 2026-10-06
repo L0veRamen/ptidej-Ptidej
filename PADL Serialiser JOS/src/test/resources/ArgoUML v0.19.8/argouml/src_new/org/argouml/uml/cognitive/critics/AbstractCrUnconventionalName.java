@@ -22,26 +22,20 @@
 // CALIFORNIA HAS NO OBLIGATIONS TO PROVIDE MAINTENANCE, SUPPORT,
 // UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
-
 package org.argouml.uml.cognitive.critics;
 
-
 /**
- *
  * @author mkl
- *
  */
 public abstract class AbstractCrUnconventionalName extends CrUML {
 
-    /**
-     * Based on the input of a model element name this method
-     * should compute a suggestion for the wizard to present
-     * to the user. Please write tests against this method for
-     * concrete implementations.
-     *
-     * @param name The unconventional name.
-     * @return a wizard suggestion
-     */
-    public abstract String computeSuggestion(String name);
-
+  /**
+   * Based on the input of a model element name this method should compute a suggestion for the
+   * wizard to present to the user. Please write tests against this method for concrete
+   * implementations.
+   *
+   * @param name The unconventional name.
+   * @return a wizard suggestion
+   */
+  public abstract String computeSuggestion(String name);
 }

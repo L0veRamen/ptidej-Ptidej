@@ -25,7 +25,6 @@
 package org.argouml.language.java.cognitive.critics;
 
 import java.util.Collection;
-
 import org.argouml.cognitive.Designer;
 import org.argouml.model.Model;
 import org.argouml.uml.cognitive.UMLDecision;
@@ -40,32 +39,30 @@ import org.argouml.uml.cognitive.critics.CrUML;
  */
 public class CrMultipleRealization extends CrUML {
 
-    /**
-     * The constructor.
-     */
-    public CrMultipleRealization() {
-        setupHeadAndDesc();;
-	addSupportedDecision(UMLDecision.INHERITANCE);
-	addSupportedDecision(UMLDecision.CODE_GEN);
-	addTrigger("generalization");
+  /** The constructor. */
+  public CrMultipleRealization() {
+    setupHeadAndDesc();
+    ;
+    addSupportedDecision(UMLDecision.INHERITANCE);
+    addSupportedDecision(UMLDecision.CODE_GEN);
+    addTrigger("generalization");
+  }
+
+  /**
+   * @see org.argouml.uml.cognitive.critics.CrUML#predicate2( java.lang.Object,
+   *     org.argouml.cognitive.Designer)
+   */
+  public boolean predicate2(Object dm, Designer dsgr) {
+    if (!(Model.getFacade().isAInterface(dm))) {
+      return NO_PROBLEM;
     }
+    Object inter = /*(MInterface)*/ dm;
 
-    /**
-     * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
-     * java.lang.Object, org.argouml.cognitive.Designer)
-     */
-    public boolean predicate2(Object dm, Designer dsgr) {
-	if (!(Model.getFacade().isAInterface(dm))) {
-	    return NO_PROBLEM;
-	}
-	Object inter = /*(MInterface)*/ dm;
+    Collection realize = Model.getCoreHelper().getSpecifications(inter);
 
-	Collection realize =
-	    Model.getCoreHelper().getSpecifications(inter);
-
-	if (realize != null && realize.size() > 0) {
-	    return PROBLEM_FOUND;
-	}
-	return NO_PROBLEM;
+    if (realize != null && realize.size() > 0) {
+      return PROBLEM_FOUND;
     }
+    return NO_PROBLEM;
+  }
 } /* end class CrMultipleRealization.java */

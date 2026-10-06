@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
 import java.util.Vector;
-
 import org.apache.log4j.Logger;
 import org.argouml.model.UmlException;
 import org.argouml.model.XmiWriter;
@@ -39,125 +38,120 @@ import org.omg.uml.modelmanagement.Model;
 
 /**
  * XmiWriter implementation for MDR.
- * 
- * This implementation is clumsy because the specified Writer interface wants
- * characters, while the XmiWriter wants an OutputStream dealing in bytes. We
- * could easily create a Writer from an OutputStream, but the reverse is not
- * true. 
- * 
- * TODO: Change interface to use OutputStream instead of Writer and change this
- * to match
- * 
+ *
+ * <p>This implementation is clumsy because the specified Writer interface wants characters, while
+ * the XmiWriter wants an OutputStream dealing in bytes. We could easily create a Writer from an
+ * OutputStream, but the reverse is not true.
+ *
+ * <p>TODO: Change interface to use OutputStream instead of Writer and change this to match
+ *
  * @author lmaitre
- * 
  */
 public class XmiWriterMDRImpl implements XmiWriter {
 
-    private Logger LOG = Logger.getLogger(XmiWriterMDRImpl.class);
+  private Logger LOG = Logger.getLogger(XmiWriterMDRImpl.class);
 
-    private MDRModelImplementation parent;
+  private MDRModelImplementation parent;
 
-    private Object model;
+  private Object model;
 
-    private OutputConfig config;
+  private OutputConfig config;
 
-    private Writer writer;
-    
-    private static final String ENCODING = "UTF-8";
-    private static final String XMI_VERSION = "1.2";
+  private Writer writer;
+
+  private static final String ENCODING = "UTF-8";
+  private static final String XMI_VERSION = "1.2";
+
+  /**
+   * Constructor.
+   *
+   * @param theParent The ModelImplementation
+   * @param theModel The Model to write
+   * @param theWriter The writer to write to
+   */
+  public XmiWriterMDRImpl(MDRModelImplementation theParent, Object theModel, Writer theWriter) {
+    this.parent = theParent;
+    this.model = theModel;
+    this.writer = theWriter;
+    config = new OutputConfig();
+    config.setEncoding(ENCODING);
+    config.setReferenceProvider(new XmiReferenceProviderImpl());
+    config.setHeaderProvider(new XmiHeaderProviderImpl());
+  }
+
+  /**
+   * @see org.argouml.model.XmiWriter#write()
+   */
+  public void write() throws UmlException {
+    XMIWriter xmiWriter = XMIWriterFactory.getDefault().createXMIWriter(config);
+    try {
+      Vector toSerialize = new Vector();
+      // Model
+      Model m = (Model) model;
+      toSerialize.add(model);
+      LOG.info("Saving model '" + m.getName() + "'");
+      // Write
+      xmiWriter.write(new WriterOuputStream(writer), toSerialize, XMI_VERSION);
+    } catch (IOException e) {
+      throw new UmlException(e);
+    }
+  }
+
+  /**
+   * Class which wraps a Writer into an OutputStream.
+   *
+   * <p>(this can go away when/if org.argouml.model.XmiWriter interface changes - see ToDo in
+   * header)
+   *
+   * @author lmaitre
+   */
+  public class WriterOuputStream extends OutputStream {
+
+    private Writer myWriter;
 
     /**
      * Constructor.
-     * @param theParent The ModelImplementation
-     * @param theModel The Model to write
-     * @param theWriter The writer to write to
+     *
+     * @param wrappedWriter The myWriter which will be wrapped
      */
-    public XmiWriterMDRImpl(MDRModelImplementation theParent, Object theModel,
-            Writer theWriter) {
-        this.parent = theParent;
-        this.model = theModel;
-        this.writer = theWriter;
-        config = new OutputConfig();
-        config.setEncoding(ENCODING);
-        config.setReferenceProvider(new XmiReferenceProviderImpl());
-        config.setHeaderProvider(new XmiHeaderProviderImpl());
+    public WriterOuputStream(Writer wrappedWriter) {
+      this.myWriter = wrappedWriter;
     }
 
     /**
-     * @see org.argouml.model.XmiWriter#write()
+     * @see java.io.OutputStream#close()
      */
-    public void write() throws UmlException {
-        XMIWriter xmiWriter = XMIWriterFactory.getDefault().createXMIWriter(
-                config);
-        try {
-            Vector toSerialize = new Vector();
-            // Model
-            Model m = (Model) model;
-            toSerialize.add(model);
-            LOG.info("Saving model '" + m.getName() + "'");
-            // Write
-            xmiWriter.write(new WriterOuputStream(writer), toSerialize,
-                    XMI_VERSION);
-        } catch (IOException e) {
-            throw new UmlException(e);
-        }
-
+    public void close() throws IOException {
+      myWriter.close();
     }
 
     /**
-     * Class which wraps a Writer into an OutputStream.
-     * 
-     * (this can go away when/if org.argouml.model.XmiWriter
-     * interface changes - see ToDo in header)
-     * 
-     * @author lmaitre
+     * @see java.io.OutputStream#flush()
      */
-    public class WriterOuputStream extends OutputStream {
-
-        private Writer myWriter;
-
-        /**
-         * Constructor.
-         * @param wrappedWriter The myWriter which will be wrapped
-         */
-        public WriterOuputStream(Writer wrappedWriter) {
-            this.myWriter = wrappedWriter;
-        }
-
-        /**
-         * @see java.io.OutputStream#close()
-         */
-        public void close() throws IOException {
-            myWriter.close();
-        }
-
-        /**
-         * @see java.io.OutputStream#flush()
-         */
-        public void flush() throws IOException {
-            myWriter.flush();
-        }
-
-        /**
-         * @see java.io.OutputStream#write(byte[], int, int)
-         */
-        public void write(byte[] b, int off, int len) throws IOException {
-            char[] c = new String(b, off, len, ENCODING).toCharArray();
-            myWriter.write(c, 0, c.length);
-        }
-
-        /**
-         * @see java.io.OutputStream#write(byte[])
-         */
-        public void write(byte[] b) throws IOException {
-            write(b, 0, b.length);
-        }
-
-        /**
-         * @see java.io.OutputStream#write(int)
-         */
-        public void write(int b) throws IOException {
-            write(new byte[] {(byte) (b & 255)}, 0, 1);
-        }
+    public void flush() throws IOException {
+      myWriter.flush();
     }
+
+    /**
+     * @see java.io.OutputStream#write(byte[], int, int)
+     */
+    public void write(byte[] b, int off, int len) throws IOException {
+      char[] c = new String(b, off, len, ENCODING).toCharArray();
+      myWriter.write(c, 0, c.length);
+    }
+
+    /**
+     * @see java.io.OutputStream#write(byte[])
+     */
+    public void write(byte[] b) throws IOException {
+      write(b, 0, b.length);
+    }
+
+    /**
+     * @see java.io.OutputStream#write(int)
+     */
+    public void write(int b) throws IOException {
+      write(new byte[] {(byte) (b & 255)}, 0, 1);
+    }
+  }
 }

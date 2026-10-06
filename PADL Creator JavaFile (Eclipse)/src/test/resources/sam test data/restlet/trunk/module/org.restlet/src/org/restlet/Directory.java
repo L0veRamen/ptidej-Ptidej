@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-
 import org.restlet.data.MediaType;
 import org.restlet.data.Reference;
 import org.restlet.data.ReferenceList;
@@ -38,167 +37,163 @@ import org.restlet.resource.StringRepresentation;
 import org.restlet.util.Factory;
 
 /**
- * Handler mapping a directory of local resources. Those resources have representations accessed by the file 
- * system, the WAR context or the class loaders. An automatic content negotiation mechanism (similar 
- * to the one in Apache HTTP server) is used to select the best representation of a resource based on the 
- * available variants and on the client capabilities and preferences.
+ * Handler mapping a directory of local resources. Those resources have representations accessed by
+ * the file system, the WAR context or the class loaders. An automatic content negotiation mechanism
+ * (similar to the one in Apache HTTP server) is used to select the best representation of a
+ * resource based on the available variants and on the client capabilities and preferences.
+ *
  * @see <a href="http://www.restlet.org/tutorial#part06">Tutorial: Serving context resources</a>
  * @author Jerome Louvel (contact@noelios.com)
  */
-public class Directory extends Handler
-{
-	/** Indicates if the subdirectories are deeply accessible (true by default). */
-	private boolean deeplyAccessible;
+public class Directory extends Handler {
+  /** Indicates if the subdirectories are deeply accessible (true by default). */
+  private boolean deeplyAccessible;
 
-	/** The absolute root URI, including the "file://" or "context://" scheme. */
-	private String rootUri;
+  /** The absolute root URI, including the "file://" or "context://" scheme. */
+  private String rootUri;
 
-	/** Indicates if modifications to context resources are allowed (false by default). */
-	private boolean modifiable;
+  /** Indicates if modifications to context resources are allowed (false by default). */
+  private boolean modifiable;
 
-	/** Indicates if the display of directory listings is allowed when no index file is found. */
-	private boolean listingAllowed;
+  /** Indicates if the display of directory listings is allowed when no index file is found. */
+  private boolean listingAllowed;
 
-	/**
-	 * Constructor.
-	 * @param context The context.
-	 * @param rootUri The absolute root Uri, including the "file://" or "context://" scheme.
-	 */
-	public Directory(Context context, String rootUri)
-	{
-		super(context);
+  /**
+   * Constructor.
+   *
+   * @param context The context.
+   * @param rootUri The absolute root Uri, including the "file://" or "context://" scheme.
+   */
+  public Directory(Context context, String rootUri) {
+    super(context);
 
-		if (rootUri.endsWith("/"))
-		{
-			this.rootUri = rootUri;
-		}
-		else
-		{
-			// We don't take the risk of exposing directory "file:///C:/AA" 
-			// if only "file:///C:/A" was intended
-			this.rootUri = rootUri + "/";
-		}
+    if (rootUri.endsWith("/")) {
+      this.rootUri = rootUri;
+    } else {
+      // We don't take the risk of exposing directory "file:///C:/AA"
+      // if only "file:///C:/A" was intended
+      this.rootUri = rootUri + "/";
+    }
 
-		this.deeplyAccessible = true;
-		this.modifiable = false;
-		this.listingAllowed = false;
-	}
+    this.deeplyAccessible = true;
+    this.modifiable = false;
+    this.listingAllowed = false;
+  }
 
-	/**
-	 * Finds the target Resource if available.
-	 * @param request The request to filter.
-	 * @param response The response to filter.
-	 * @return The target resource if available or null.
-	 */
-	public Resource findTarget(Request request, Response response)
-	{
-		try
-		{
-			return Factory.getInstance().createDirectoryResource(this, request);
-		}
-		catch (IOException ioe)
-		{
-			getLogger().log(Level.WARNING, "Unable to find the directory's resource", ioe);
-			return null;
-		}
-	}
+  /**
+   * Finds the target Resource if available.
+   *
+   * @param request The request to filter.
+   * @param response The response to filter.
+   * @return The target resource if available or null.
+   */
+  public Resource findTarget(Request request, Response response) {
+    try {
+      return Factory.getInstance().createDirectoryResource(this, request);
+    } catch (IOException ioe) {
+      getLogger().log(Level.WARNING, "Unable to find the directory's resource", ioe);
+      return null;
+    }
+  }
 
-	/**
-	 * Returns the variant representations of a directory. This method can be subclassed in order to provide
-	 * alternative representations.
-	 * @param directoryContent The list of references contained in the directory.
-	 * @return The variant representations of a directory.
-	 */
-	public List<Representation> getDirectoryVariants(ReferenceList directoryContent)
-	{
-		// Create a simple HTML list
-		StringBuilder sb = new StringBuilder();
-		sb.append("<html><body>\n");
+  /**
+   * Returns the variant representations of a directory. This method can be subclassed in order to
+   * provide alternative representations.
+   *
+   * @param directoryContent The list of references contained in the directory.
+   * @return The variant representations of a directory.
+   */
+  public List<Representation> getDirectoryVariants(ReferenceList directoryContent) {
+    // Create a simple HTML list
+    StringBuilder sb = new StringBuilder();
+    sb.append("<html><body>\n");
 
-		sb.append("<h1>Listing of directory \"" + directoryContent.getListRef().getPath()
-				+ "\"</h1>\n");
+    sb.append(
+        "<h1>Listing of directory \"" + directoryContent.getListRef().getPath() + "\"</h1>\n");
 
-		Reference parentRef = directoryContent.getListRef().getParentRef();
+    Reference parentRef = directoryContent.getListRef().getParentRef();
 
-		if (!parentRef.equals(directoryContent.getListRef()))
-		{
-			sb.append("<a href=\"" + parentRef + "\">..</a><br/>\n");
-		}
+    if (!parentRef.equals(directoryContent.getListRef())) {
+      sb.append("<a href=\"" + parentRef + "\">..</a><br/>\n");
+    }
 
-		for (Reference ref : directoryContent)
-		{
-			sb.append("<a href=\"" + ref.toString() + "\">"
-					+ ref.getRelativeRef(directoryContent.getListRef()) + "</a><br/>\n");
-		}
-		sb.append("</body></html>\n");
+    for (Reference ref : directoryContent) {
+      sb.append(
+          "<a href=\""
+              + ref.toString()
+              + "\">"
+              + ref.getRelativeRef(directoryContent.getListRef())
+              + "</a><br/>\n");
+    }
+    sb.append("</body></html>\n");
 
-		// Create the variants list
-		List<Representation> result = new ArrayList<Representation>();
-		result.add(new StringRepresentation(sb.toString(), MediaType.TEXT_HTML));
-		return result;
-	}
+    // Create the variants list
+    List<Representation> result = new ArrayList<Representation>();
+    result.add(new StringRepresentation(sb.toString(), MediaType.TEXT_HTML));
+    return result;
+  }
 
-	/**
-	 * Returns the root URI.
-	 * @return The root URI.
-	 */
-	public String getRootUri()
-	{
-		return rootUri;
-	}
+  /**
+   * Returns the root URI.
+   *
+   * @return The root URI.
+   */
+  public String getRootUri() {
+    return rootUri;
+  }
 
-	/**
-	 * Indicates if the subdirectories are deeply accessible (true by default).
-	 * @return True if the subdirectories are deeply accessible.
-	 */
-	public boolean isDeeplyAccessible()
-	{
-		return deeplyAccessible;
-	}
+  /**
+   * Indicates if the subdirectories are deeply accessible (true by default).
+   *
+   * @return True if the subdirectories are deeply accessible.
+   */
+  public boolean isDeeplyAccessible() {
+    return deeplyAccessible;
+  }
 
-	/**
-	 * Indicates if the display of directory listings is allowed when no index file is found.
-	 * @return True if the display of directory listings is allowed when no index file is found.
-	 */
-	public boolean isListingAllowed()
-	{
-		return this.listingAllowed;
-	}
+  /**
+   * Indicates if the display of directory listings is allowed when no index file is found.
+   *
+   * @return True if the display of directory listings is allowed when no index file is found.
+   */
+  public boolean isListingAllowed() {
+    return this.listingAllowed;
+  }
 
-	/** 
-	 * Indicates if modifications to context resources are allowed.
-	 * @return True if modifications to context resources are allowed.
-	 */
-	public boolean isModifiable()
-	{
-		return this.modifiable;
-	}
+  /**
+   * Indicates if modifications to context resources are allowed.
+   *
+   * @return True if modifications to context resources are allowed.
+   */
+  public boolean isModifiable() {
+    return this.modifiable;
+  }
 
-	/**
-	 * Indicates if the subdirectories are deeply accessible (true by default).
-	 * @param deeplyAccessible True if the subdirectories are deeply accessible.
-	 */
-	public void setDeeplyAccessible(boolean deeplyAccessible)
-	{
-		this.deeplyAccessible = deeplyAccessible;
-	}
+  /**
+   * Indicates if the subdirectories are deeply accessible (true by default).
+   *
+   * @param deeplyAccessible True if the subdirectories are deeply accessible.
+   */
+  public void setDeeplyAccessible(boolean deeplyAccessible) {
+    this.deeplyAccessible = deeplyAccessible;
+  }
 
-	/**
-	 * Indicates if the display of directory listings is allowed when no index file is found.
-	 * @param listingAllowed True if the display of directory listings is allowed when no index file is found.
-	 */
-	public void setListingAllowed(boolean listingAllowed)
-	{
-		this.listingAllowed = listingAllowed;
-	}
+  /**
+   * Indicates if the display of directory listings is allowed when no index file is found.
+   *
+   * @param listingAllowed True if the display of directory listings is allowed when no index file
+   *     is found.
+   */
+  public void setListingAllowed(boolean listingAllowed) {
+    this.listingAllowed = listingAllowed;
+  }
 
-	/** 
-	 * Indicates if modifications to context resources are allowed.
-	 * @param modifiable True if modifications to context resources are allowed.
-	 */
-	public void setModifiable(boolean modifiable)
-	{
-		this.modifiable = modifiable;
-	}
-
+  /**
+   * Indicates if modifications to context resources are allowed.
+   *
+   * @param modifiable True if modifications to context resources are allowed.
+   */
+  public void setModifiable(boolean modifiable) {
+    this.modifiable = modifiable;
+  }
 }

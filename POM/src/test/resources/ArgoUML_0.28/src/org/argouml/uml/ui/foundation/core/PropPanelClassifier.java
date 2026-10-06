@@ -27,189 +27,176 @@ package org.argouml.uml.ui.foundation.core;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.uml.ui.ScrollList;
 import org.argouml.uml.ui.UMLDerivedCheckBox;
 import org.argouml.uml.ui.behavior.common_behavior.ActionNewReception;
 
-/**
- * The abstract properties panel for Classifiers.
- */
+/** The abstract properties panel for Classifiers. */
 public abstract class PropPanelClassifier extends PropPanelNamespace {
 
-    private JPanel modifiersPanel;
+  private JPanel modifiersPanel;
 
-    /**
-     * The action used to add a reception to the classifier.
-     */
-    private ActionNewReception actionNewReception = new ActionNewReception();
+  /** The action used to add a reception to the classifier. */
+  private ActionNewReception actionNewReception = new ActionNewReception();
 
-    private JScrollPane generalizationScroll;
-    private JScrollPane specializationScroll;
-    private JScrollPane featureScroll;
-    private JScrollPane createActionScroll;
-    private JScrollPane powerTypeRangeScroll;
-    private JScrollPane associationEndScroll;
-    private JScrollPane attributeScroll;
-    private JScrollPane operationScroll;
+  private JScrollPane generalizationScroll;
+  private JScrollPane specializationScroll;
+  private JScrollPane featureScroll;
+  private JScrollPane createActionScroll;
+  private JScrollPane powerTypeRangeScroll;
+  private JScrollPane associationEndScroll;
+  private JScrollPane attributeScroll;
+  private JScrollPane operationScroll;
 
-    // all GUI models that can be singletons and
-    // that are being used in subclasses
-    // implemented as static (singleton) instances so that only one model is
-    // registered for some modelevent and not an instance per proppanel.
+  // all GUI models that can be singletons and
+  // that are being used in subclasses
+  // implemented as static (singleton) instances so that only one model is
+  // registered for some modelevent and not an instance per proppanel.
 
-    private static UMLGeneralizableElementGeneralizationListModel
-    generalizationListModel =
-            new UMLGeneralizableElementGeneralizationListModel();
-    private static UMLGeneralizableElementSpecializationListModel
-    specializationListModel =
-            new UMLGeneralizableElementSpecializationListModel();
-    private static UMLClassifierFeatureListModel featureListModel =
-        new UMLClassifierFeatureListModel();
-    private static UMLClassifierCreateActionListModel createActionListModel =
-        new UMLClassifierCreateActionListModel();
-    private static UMLClassifierPowertypeRangeListModel
-    powertypeRangeListModel =
-            new UMLClassifierPowertypeRangeListModel();
-    private static UMLClassifierAssociationEndListModel
-    associationEndListModel =
-            new UMLClassifierAssociationEndListModel();
-    private static UMLClassAttributeListModel attributeListModel =
-        new UMLClassAttributeListModel();
-    private static UMLClassOperationListModel operationListModel =
-        new UMLClassOperationListModel();
+  private static UMLGeneralizableElementGeneralizationListModel generalizationListModel =
+      new UMLGeneralizableElementGeneralizationListModel();
+  private static UMLGeneralizableElementSpecializationListModel specializationListModel =
+      new UMLGeneralizableElementSpecializationListModel();
+  private static UMLClassifierFeatureListModel featureListModel =
+      new UMLClassifierFeatureListModel();
+  private static UMLClassifierCreateActionListModel createActionListModel =
+      new UMLClassifierCreateActionListModel();
+  private static UMLClassifierPowertypeRangeListModel powertypeRangeListModel =
+      new UMLClassifierPowertypeRangeListModel();
+  private static UMLClassifierAssociationEndListModel associationEndListModel =
+      new UMLClassifierAssociationEndListModel();
+  private static UMLClassAttributeListModel attributeListModel = new UMLClassAttributeListModel();
+  private static UMLClassOperationListModel operationListModel = new UMLClassOperationListModel();
 
-    /**
-     * Construct a property panel for a Classififer with the given name and
-     * icon.
-     * 
-     * @param name the title of the properties panel
-     * @param icon the icon shown next to the name
-     */
-    public PropPanelClassifier(String name, ImageIcon icon) {
-        super(name, icon);
-        initialize();
+  /**
+   * Construct a property panel for a Classififer with the given name and icon.
+   *
+   * @param name the title of the properties panel
+   * @param icon the icon shown next to the name
+   */
+  public PropPanelClassifier(String name, ImageIcon icon) {
+    super(name, icon);
+    initialize();
+  }
+
+  /** Initialize the panel with the common fields and stuff. */
+  private void initialize() {
+    modifiersPanel = createBorderPanel(Translator.localize("label.modifiers"));
+    modifiersPanel.add(new UMLGeneralizableElementAbstractCheckBox());
+    modifiersPanel.add(new UMLGeneralizableElementLeafCheckBox());
+    modifiersPanel.add(new UMLGeneralizableElementRootCheckBox());
+    modifiersPanel.add(new UMLDerivedCheckBox());
+  }
+
+  /**
+   * Returns the associationEndScroll.
+   *
+   * @return JScrollPane
+   */
+  public JScrollPane getAssociationEndScroll() {
+    if (associationEndScroll == null) {
+      associationEndScroll = new ScrollList(associationEndListModel);
     }
-    
+    return associationEndScroll;
+  }
 
-    /**
-     * Initialize the panel with the common fields and stuff.
-     */
-    private void initialize() {
-        modifiersPanel = 
-            createBorderPanel(Translator.localize("label.modifiers"));
-        modifiersPanel.add(new UMLGeneralizableElementAbstractCheckBox());
-        modifiersPanel.add(new UMLGeneralizableElementLeafCheckBox());
-        modifiersPanel.add(new UMLGeneralizableElementRootCheckBox());
-        modifiersPanel.add(new UMLDerivedCheckBox());
+  /**
+   * Returns the createActionScroll.
+   *
+   * @return JScrollPane
+   */
+  public JScrollPane getCreateActionScroll() {
+    if (createActionScroll == null) {
+      createActionScroll = new ScrollList(createActionListModel);
     }
+    return createActionScroll;
+  }
 
-    /**
-     * Returns the associationEndScroll.
-     * @return JScrollPane
-     */
-    public JScrollPane getAssociationEndScroll() {
-        if (associationEndScroll == null) {
-            associationEndScroll = new ScrollList(associationEndListModel);
-        }
-        return associationEndScroll;
-
+  /**
+   * Returns the featureScroll.
+   *
+   * @return JScrollPane
+   */
+  public JScrollPane getFeatureScroll() {
+    if (featureScroll == null) {
+      featureScroll = new ScrollList(featureListModel, true, false);
     }
+    return featureScroll;
+  }
 
-    /**
-     * Returns the createActionScroll.
-     * @return JScrollPane
-     */
-    public JScrollPane getCreateActionScroll() {
-        if (createActionScroll == null) {
-            createActionScroll = new ScrollList(createActionListModel);
-        }
-        return createActionScroll;
+  /**
+   * Returns the generalizationScroll.
+   *
+   * @return JScrollPane
+   */
+  public JScrollPane getGeneralizationScroll() {
+    if (generalizationScroll == null) {
+      generalizationScroll = new ScrollList(generalizationListModel);
     }
+    return generalizationScroll;
+  }
 
-    /**
-     * Returns the featureScroll.
-     * @return JScrollPane
-     */
-    public JScrollPane getFeatureScroll() {
-        if (featureScroll == null) {
-            featureScroll = new ScrollList(featureListModel, true, false);
-        }
-        return featureScroll;
+  /**
+   * Returns the powerTypeRangeScroll.
+   *
+   * @return JScrollPane
+   */
+  public JScrollPane getPowerTypeRangeScroll() {
+    if (powerTypeRangeScroll == null) {
+      powerTypeRangeScroll = new ScrollList(powertypeRangeListModel);
     }
+    return powerTypeRangeScroll;
+  }
 
-    /**
-     * Returns the generalizationScroll.
-     * @return JScrollPane
-     */
-    public JScrollPane getGeneralizationScroll() {
-        if (generalizationScroll == null) {
-            generalizationScroll = new ScrollList(generalizationListModel);
-        }
-        return generalizationScroll;
-    }
-
-    /**
-     * Returns the powerTypeRangeScroll.
-     * @return JScrollPane
-     */
-    public JScrollPane getPowerTypeRangeScroll() {
-        if (powerTypeRangeScroll == null) {
-            powerTypeRangeScroll = new ScrollList(powertypeRangeListModel);
-        }
-        return powerTypeRangeScroll;
-    }
-
-    /**
-     * Returns the specializationScroll.
-     * @return JScrollPane
-     */
-    public JScrollPane getSpecializationScroll() {
-        if (specializationScroll == null) {
-            specializationScroll = new ScrollList(specializationListModel);
-        }
-        
-        return specializationScroll;
+  /**
+   * Returns the specializationScroll.
+   *
+   * @return JScrollPane
+   */
+  public JScrollPane getSpecializationScroll() {
+    if (specializationScroll == null) {
+      specializationScroll = new ScrollList(specializationListModel);
     }
 
-    /**
-     * Returns the attributeScroll.
-     *
-     * @return JScrollPane
-     */
-    public JScrollPane getAttributeScroll() {
-        if (attributeScroll == null) {
-            attributeScroll = new ScrollList(attributeListModel, true, false);
-        }
-        return attributeScroll;
+    return specializationScroll;
+  }
+
+  /**
+   * Returns the attributeScroll.
+   *
+   * @return JScrollPane
+   */
+  public JScrollPane getAttributeScroll() {
+    if (attributeScroll == null) {
+      attributeScroll = new ScrollList(attributeListModel, true, false);
     }
+    return attributeScroll;
+  }
 
-    /**
-     * Returns the operationScroll.
-     *
-     * @return JScrollPane
-     */
-    public JScrollPane getOperationScroll() {
-        if (operationScroll == null) {
-            operationScroll = new ScrollList(operationListModel, true, false);
-        }
-        return operationScroll;
+  /**
+   * Returns the operationScroll.
+   *
+   * @return JScrollPane
+   */
+  public JScrollPane getOperationScroll() {
+    if (operationScroll == null) {
+      operationScroll = new ScrollList(operationListModel, true, false);
     }
+    return operationScroll;
+  }
 
-    /**
-     * @return the action for a new reception
-     */
-    protected ActionNewReception getActionNewReception() {
-        return actionNewReception;
-    }
+  /**
+   * @return the action for a new reception
+   */
+  protected ActionNewReception getActionNewReception() {
+    return actionNewReception;
+  }
 
-    /**
-     * @return Returns the modifiersPanel.
-     */
-    protected JPanel getModifiersPanel() {
-        return modifiersPanel;
-    }
-
-
+  /**
+   * @return Returns the modifiersPanel.
+   */
+  protected JPanel getModifiersPanel() {
+    return modifiersPanel;
+  }
 } /* end class PropPanelClassifier */

@@ -28,20 +28,20 @@ import org.argouml.model.Model;
 
 /**
  * This is an Action to be used for Buttons to create a Change-Event.
- * 
+ *
  * @author Michiel
  */
 public class ButtonActionNewChangeEvent extends ButtonActionNewEvent {
 
-    protected Object createEvent(Object ns) {
-        return Model.getStateMachinesFactory().buildChangeEvent(ns);
-    }
-    
-    protected String getKeyName() {
-        return "button.new-changeevent";
-    }
-    
-    protected String getIconName() {
-        return "ChangeEvent";
-    }
+  protected Object createEvent(Object ns) {
+    return Model.getStateMachinesFactory().buildChangeEvent(ns);
+  }
+
+  protected String getKeyName() {
+    return "button.new-changeevent";
+  }
+
+  protected String getIconName() {
+    return "ChangeEvent";
+  }
 }

@@ -28,35 +28,29 @@ import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
 /**
- *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 26, 2003
  */
-public class UMLClassifierAssociationEndListModel
-    extends UMLModelElementListModel2 {
+public class UMLClassifierAssociationEndListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLClassifierAssociationEndListModel.
-     */
-    public UMLClassifierAssociationEndListModel() {
-        super("association", Model.getMetaTypes().getAssociation());
+  /** Constructor for UMLClassifierAssociationEndListModel. */
+  public UMLClassifierAssociationEndListModel() {
+    super("association", Model.getMetaTypes().getAssociation());
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (getTarget() != null) {
+      setAllElements(Model.getFacade().getAssociationEnds(getTarget()));
     }
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (getTarget() != null) {
-            setAllElements(Model.getFacade().getAssociationEnds(getTarget()));
-        }
-    }
-
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().getAssociationEnds(getTarget())
-        	.contains(element);
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().getAssociationEnds(getTarget()).contains(element);
+  }
 }

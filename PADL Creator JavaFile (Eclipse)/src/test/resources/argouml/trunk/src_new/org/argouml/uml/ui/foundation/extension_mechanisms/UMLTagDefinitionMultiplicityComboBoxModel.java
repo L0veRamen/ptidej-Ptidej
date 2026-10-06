@@ -28,30 +28,23 @@ import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLMultiplicityComboBoxModel;
 
 /**
- *
  * @author mkl
- *
  */
-public class UMLTagDefinitionMultiplicityComboBoxModel extends
-        UMLMultiplicityComboBoxModel {
+public class UMLTagDefinitionMultiplicityComboBoxModel extends UMLMultiplicityComboBoxModel {
 
-    /**
-     * Constructor.
-     */
-    public UMLTagDefinitionMultiplicityComboBoxModel() {
-        super("multiplicity");
+  /** Constructor. */
+  public UMLTagDefinitionMultiplicityComboBoxModel() {
+    super("multiplicity");
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
+   */
+  protected Object getSelectedModelElement() {
+    if (getTarget() != null && (Model.getFacade().isATagDefinition(getTarget()))) {
+      Object m = Model.getFacade().getMultiplicity(getTarget());
+      if (m != null) return Model.getFacade().toString(m);
     }
-
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
-     */
-    protected Object getSelectedModelElement() {
-        if (getTarget() != null
-                && (Model.getFacade().isATagDefinition(getTarget()))) {
-            Object m = Model.getFacade().getMultiplicity(getTarget());
-            if (m != null) return Model.getFacade().toString(m);
-        }
-        return null;
-    }
-
+    return null;
+  }
 }

@@ -33,109 +33,106 @@ import org.argouml.notation.providers.uml.SDMessageNotationUml;
 import org.argouml.persistence.PersistenceManager;
 import org.argouml.sequence2.diagram.SequenceDiagramFactory;
 import org.argouml.uml.diagram.DiagramFactory;
-import org.argouml.uml.diagram.DiagramFactoryInterface2;
 import org.argouml.uml.diagram.DiagramFactory.DiagramType;
+import org.argouml.uml.diagram.DiagramFactoryInterface2;
 import org.argouml.uml.ui.PropPanelFactoryManager;
 
 /**
  * The Sequence Diagram Module description.
- * 
+ *
  * @see org.argouml.moduleloader.ModuleInterface
  * @author penyaskito
  */
 public class SequenceDiagramModule implements ModuleInterface {
 
-    private static final Logger LOG = Logger
-            .getLogger(SequenceDiagramModule.class);
+  private static final Logger LOG = Logger.getLogger(SequenceDiagramModule.class);
 
-    private SequenceDiagramPropPanelFactory propPanelFactory;
-        
-    public boolean enable() {
-        
-        propPanelFactory =
-            new SequenceDiagramPropPanelFactory();
-        PropPanelFactoryManager.addPropPanelFactory(propPanelFactory);
-        // TODO: Remove the casting to DiagramFactoryInterface2
-        // as soon as DiagramFactoryInterface is removed.
-        DiagramFactory.getInstance().registerDiagramFactory(
-                DiagramType.Sequence, 
-                (DiagramFactoryInterface2) new SequenceDiagramFactory());
+  private SequenceDiagramPropPanelFactory propPanelFactory;
 
-        NotationProviderFactory2 npf = NotationProviderFactory2.getInstance();
-        NotationName nn = Notation.findNotation(Notation.DEFAULT_NOTATION);
-        npf.addNotationProvider(NotationProviderFactory2.TYPE_SD_MESSAGE, 
-                nn, SDMessageNotationUml.class);
-        
-        PersistenceManager persistanceManager =
-            PersistenceManager.getInstance();
-        
-        // Translate any old style sequence diagrams
-        persistanceManager.addTranslation(
-                "org.argouml.uml.diagram.sequence.ui.UMLSequenceDiagram",
-                "org.argouml.sequence2.diagram.UMLSequenceDiagram");
-        persistanceManager.addTranslation(
-                "org.argouml.uml.diagram.sequence.ui.FigCreateActionMessage",
-                "org.argouml.sequence2.diagram.FigMessage");
-        persistanceManager.addTranslation(
-                "org.argouml.uml.diagram.sequence.ui.FigDeleteActionMessage",
-                "org.argouml.sequence2.diagram.FigMessage");
-        persistanceManager.addTranslation(
-                "org.argouml.uml.diagram.sequence.ui.FigCallActionMessage",
-                "org.argouml.sequence2.diagram.FigMessage");
-        persistanceManager.addTranslation(
-                "org.argouml.uml.diagram.sequence.ui.FigReturnActionMessage",
-                "org.argouml.sequence2.diagram.FigMessage");
-        persistanceManager.addTranslation(
-                "org.argouml.uml.diagram.sequence.ui.FigClassifierRole",
-                "org.argouml.sequence2.diagram.FigClassifierRole");
+  public boolean enable() {
 
-        // Translate any sequence diagrams create with any previous svn
-        // work in progress
-        persistanceManager.addTranslation(
-                "org.argouml.uml.diagram.sequence2.ui.UMLSequenceDiagram",
-                "org.argouml.sequence2.diagram.UMLSequenceDiagram");
-        persistanceManager.addTranslation(
-                "org.argouml.uml.diagram.sequence2.ui.FigMessage",
-                "org.argouml.sequence2.diagram.FigMessage");
-        persistanceManager.addTranslation(
-                "org.argouml.uml.diagram.sequence2.ui.FigClassifierRole",
-                "org.argouml.sequence2.diagram.FigClassifierRole");
-        persistanceManager.addTranslation(
-                "org.argouml.uml.diagram.sequence2.ui.FigMessageSpline",
-                "org.argouml.sequence2.diagram.FigMessageSpline");
-        LOG.info("SequenceDiagram Module enabled.");
-        return true;
+    propPanelFactory = new SequenceDiagramPropPanelFactory();
+    PropPanelFactoryManager.addPropPanelFactory(propPanelFactory);
+    // TODO: Remove the casting to DiagramFactoryInterface2
+    // as soon as DiagramFactoryInterface is removed.
+    DiagramFactory.getInstance()
+        .registerDiagramFactory(
+            DiagramType.Sequence, (DiagramFactoryInterface2) new SequenceDiagramFactory());
+
+    NotationProviderFactory2 npf = NotationProviderFactory2.getInstance();
+    NotationName nn = Notation.findNotation(Notation.DEFAULT_NOTATION);
+    npf.addNotationProvider(
+        NotationProviderFactory2.TYPE_SD_MESSAGE, nn, SDMessageNotationUml.class);
+
+    PersistenceManager persistanceManager = PersistenceManager.getInstance();
+
+    // Translate any old style sequence diagrams
+    persistanceManager.addTranslation(
+        "org.argouml.uml.diagram.sequence.ui.UMLSequenceDiagram",
+        "org.argouml.sequence2.diagram.UMLSequenceDiagram");
+    persistanceManager.addTranslation(
+        "org.argouml.uml.diagram.sequence.ui.FigCreateActionMessage",
+        "org.argouml.sequence2.diagram.FigMessage");
+    persistanceManager.addTranslation(
+        "org.argouml.uml.diagram.sequence.ui.FigDeleteActionMessage",
+        "org.argouml.sequence2.diagram.FigMessage");
+    persistanceManager.addTranslation(
+        "org.argouml.uml.diagram.sequence.ui.FigCallActionMessage",
+        "org.argouml.sequence2.diagram.FigMessage");
+    persistanceManager.addTranslation(
+        "org.argouml.uml.diagram.sequence.ui.FigReturnActionMessage",
+        "org.argouml.sequence2.diagram.FigMessage");
+    persistanceManager.addTranslation(
+        "org.argouml.uml.diagram.sequence.ui.FigClassifierRole",
+        "org.argouml.sequence2.diagram.FigClassifierRole");
+
+    // Translate any sequence diagrams create with any previous svn
+    // work in progress
+    persistanceManager.addTranslation(
+        "org.argouml.uml.diagram.sequence2.ui.UMLSequenceDiagram",
+        "org.argouml.sequence2.diagram.UMLSequenceDiagram");
+    persistanceManager.addTranslation(
+        "org.argouml.uml.diagram.sequence2.ui.FigMessage",
+        "org.argouml.sequence2.diagram.FigMessage");
+    persistanceManager.addTranslation(
+        "org.argouml.uml.diagram.sequence2.ui.FigClassifierRole",
+        "org.argouml.sequence2.diagram.FigClassifierRole");
+    persistanceManager.addTranslation(
+        "org.argouml.uml.diagram.sequence2.ui.FigMessageSpline",
+        "org.argouml.sequence2.diagram.FigMessageSpline");
+    LOG.info("SequenceDiagram Module enabled.");
+    return true;
+  }
+
+  public boolean disable() {
+
+    PropPanelFactoryManager.removePropPanelFactory(propPanelFactory);
+
+    // TODO: Remove the casting to DiagramFactoryInterface2
+    // as soon as DiagramFactoryInterface is removed.
+    DiagramFactory.getInstance()
+        .registerDiagramFactory(DiagramType.Sequence, (DiagramFactoryInterface2) null);
+
+    LOG.info("SequenceDiagram Module disabled.");
+    return true;
+  }
+
+  public String getName() {
+    return "ArgoUML-Sequence";
+  }
+
+  public String getInfo(int type) {
+    switch (type) {
+      case DESCRIPTION:
+        return "The new sequence diagram implementation";
+      case AUTHOR:
+        return "Christian Lepez Espenola";
+      case VERSION:
+        return "0.28";
+      case DOWNLOADSITE:
+        return "http://argouml-sequence.tigris.org";
+      default:
+        return null;
     }
-
-    public boolean disable() {
-
-        PropPanelFactoryManager.removePropPanelFactory(propPanelFactory);
-
-        // TODO: Remove the casting to DiagramFactoryInterface2
-        // as soon as DiagramFactoryInterface is removed.
-        DiagramFactory.getInstance().registerDiagramFactory(
-                DiagramType.Sequence, (DiagramFactoryInterface2) null);
-
-        LOG.info("SequenceDiagram Module disabled.");
-        return true;
-    }
-
-    public String getName() {
-        return "ArgoUML-Sequence";
-    }
-
-    public String getInfo(int type) {
-        switch (type) {
-        case DESCRIPTION:
-            return "The new sequence diagram implementation";
-        case AUTHOR:
-            return "Christian Lepez Espenola";
-        case VERSION:
-            return "0.28";
-        case DOWNLOADSITE:
-            return "http://argouml-sequence.tigris.org";
-        default:
-            return null;
-        }
-    }
+  }
 }

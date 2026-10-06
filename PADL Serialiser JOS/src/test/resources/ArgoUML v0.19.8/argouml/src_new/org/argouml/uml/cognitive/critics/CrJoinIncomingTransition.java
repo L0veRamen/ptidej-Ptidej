@@ -35,33 +35,28 @@ import org.argouml.uml.cognitive.UMLDecision;
  */
 public class CrJoinIncomingTransition extends CrUML {
 
-    /**
-     * The constructor.
-     */
-    public CrJoinIncomingTransition() {
-        setupHeadAndDesc();
-        addSupportedDecision(UMLDecision.STATE_MACHINES);
-        addTrigger("incoming");
-    }
+  /** The constructor. */
+  public CrJoinIncomingTransition() {
+    setupHeadAndDesc();
+    addSupportedDecision(UMLDecision.STATE_MACHINES);
+    addTrigger("incoming");
+  }
 
-    /**
-     * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(java.lang.Object,
-     * org.argouml.cognitive.Designer)
-     */
-    public boolean predicate2(Object dm, Designer dsgr) {
-        if (!(Model.getFacade().isATransition(dm))) return NO_PROBLEM;
-        Object tr = /*(MTransition)*/ dm;
-        Object target = Model.getFacade().getTarget(tr);
-        Object source = Model.getFacade().getSource(tr);
-        if (!(Model.getFacade().isAPseudostate(target))) return NO_PROBLEM;
-        if (!Model
-                .getFacade()
-                .equalsPseudostateKind(Model.getFacade()
-                .getPseudostateKind(target),
-                        Model.getPseudostateKind().getJoin()))
-            return NO_PROBLEM;
-        if (Model.getFacade().isAState(source)) return NO_PROBLEM;
-        return PROBLEM_FOUND;
-    }
-
+  /**
+   * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(java.lang.Object,
+   *     org.argouml.cognitive.Designer)
+   */
+  public boolean predicate2(Object dm, Designer dsgr) {
+    if (!(Model.getFacade().isATransition(dm))) return NO_PROBLEM;
+    Object tr = /*(MTransition)*/ dm;
+    Object target = Model.getFacade().getTarget(tr);
+    Object source = Model.getFacade().getSource(tr);
+    if (!(Model.getFacade().isAPseudostate(target))) return NO_PROBLEM;
+    if (!Model.getFacade()
+        .equalsPseudostateKind(
+            Model.getFacade().getPseudostateKind(target), Model.getPseudostateKind().getJoin()))
+      return NO_PROBLEM;
+    if (Model.getFacade().isAState(source)) return NO_PROBLEM;
+    return PROBLEM_FOUND;
+  }
 } /* end class CrJoinIncomingTransition */

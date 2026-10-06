@@ -28,7 +28,6 @@ import java.beans.PropertyChangeEvent;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Iterator;
-
 import org.argouml.model.AddAssociationEvent;
 import org.argouml.model.Model;
 import org.argouml.model.RemoveAssociationEvent;
@@ -36,125 +35,95 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
 import org.tigris.gef.presentation.Fig;
 
 /**
- * List model which implements allAvailableFeatures operation for a
- * ClassifierRole as described in the well formedness rules.
- * 
+ * List model which implements allAvailableFeatures operation for a ClassifierRole as described in
+ * the well formedness rules.
+ *
  * @since Oct 4, 2002
  * @author jaap.branderhorst@xs4all.nl
- * 
  */
-public class UMLClassifierRoleAvailableFeaturesListModel
-    extends UMLModelElementListModel2 {
+public class UMLClassifierRoleAvailableFeaturesListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLClassifierRoleAvailableFeaturesListModel.
-     */
-    public UMLClassifierRoleAvailableFeaturesListModel() {
-        super();
+  /** Constructor for UMLClassifierRoleAvailableFeaturesListModel. */
+  public UMLClassifierRoleAvailableFeaturesListModel() {
+    super();
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    setAllElements(Model.getCollaborationsHelper().allAvailableFeatures(getTarget()));
+  }
+
+  /**
+   * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+   */
+  public void propertyChange(PropertyChangeEvent e) {
+    if (e instanceof AddAssociationEvent) {
+      if (e.getPropertyName().equals("base") && e.getSource() == getTarget()) {
+        Object clazz = /*(MClassifier)*/ getChangedElement(e);
+        addAll(Model.getFacade().getFeatures(clazz));
+        Model.getPump().addModelEventListener(this, clazz, "feature");
+      } else if (e.getPropertyName().equals("feature")
+          && Model.getFacade().getBases(getTarget()).contains(e.getSource())) {
+        addElement(getChangedElement(e));
+      }
+    } else if (e instanceof RemoveAssociationEvent) {
+      if (e.getPropertyName().equals("base") && e.getSource() == getTarget()) {
+        Object clazz = /*(MClassifier)*/ getChangedElement(e);
+        Model.getPump().removeModelEventListener(this, clazz, "feature");
+      } else if (e.getPropertyName().equals("feature")
+          && Model.getFacade().getBases(getTarget()).contains(e.getSource())) {
+        removeElement(getChangedElement(e));
+      }
+    } else {
+      super.propertyChange(e);
+    }
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#setTarget(java.lang.Object)
+   */
+  public void setTarget(Object target) {
+    if (getTarget() != null) {
+      Enumeration enumeration = elements();
+      while (enumeration.hasMoreElements()) {
+        Object base = enumeration.nextElement();
+        Model.getPump().removeModelEventListener(this, base, "feature");
+      }
+      Model.getPump().removeModelEventListener(this, getTarget(), "base");
     }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        setAllElements(Model.getCollaborationsHelper()
-                .allAvailableFeatures(getTarget()));
-    }
+    target = target instanceof Fig ? ((Fig) target).getOwner() : target;
+    if (!Model.getFacade().isAModelElement(target))
+      // TODO - isn't this an error condition? Should we not throw
+      // an exception or at least log.
+      return;
 
-    /**
-     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
-     */
-    public void propertyChange(PropertyChangeEvent e) {
-        if (e instanceof AddAssociationEvent) {
-            if (e.getPropertyName().equals("base")
-                    && e.getSource() == getTarget()) {
-                Object clazz = /*(MClassifier)*/ getChangedElement(e);
-                addAll(Model.getFacade().getFeatures(clazz));
-                Model.getPump().addModelEventListener(
-                                      this,
-                                      clazz,
-                                      "feature");
-            } else if (
-                e.getPropertyName().equals("feature")
-                && Model.getFacade().getBases(getTarget()).contains(
-                    e.getSource())) {
-                addElement(getChangedElement(e));
-            }
-        } else if (e instanceof RemoveAssociationEvent) {
-            if (e.getPropertyName().equals("base")
-                    && e.getSource() == getTarget()) {
-                Object clazz = /*(MClassifier)*/ getChangedElement(e);
-                Model.getPump().removeModelEventListener(
-                                     this,
-                                     clazz,
-                                     "feature");
-            } else if (
-                e.getPropertyName().equals("feature")
-                && Model.getFacade().getBases(getTarget()).contains(
-                       e.getSource())) {
-                removeElement(getChangedElement(e));
-            }
-        } else {
-            super.propertyChange(e);
-        }
+    setListTarget(target);
+    if (getTarget() != null) {
+      Collection bases = Model.getFacade().getBases(getTarget());
+      Iterator it = bases.iterator();
+      while (it.hasNext()) {
+        Object base = it.next();
+        Model.getPump().addModelEventListener(this, base, "feature");
+      }
+      // make sure we know it when a classifier is added as a base
+      Model.getPump().addModelEventListener(this, getTarget(), "base");
+      removeAllElements();
+      setBuildingModel(true);
+      buildModelList();
+      setBuildingModel(false);
+      if (getSize() > 0) {
+        fireIntervalAdded(this, 0, getSize() - 1);
+      }
     }
+  }
 
-
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#setTarget(java.lang.Object)
-     */
-    public void setTarget(Object target) {
-        if (getTarget() != null) {
-            Enumeration enumeration = elements();
-            while (enumeration.hasMoreElements()) {
-                Object base = enumeration.nextElement();
-                Model.getPump().removeModelEventListener(
-                    this,
-                    base,
-                    "feature");
-            }
-            Model.getPump().removeModelEventListener(
-                this,
-                getTarget(),
-                "base");
-        }
-        
-        target = target instanceof Fig ? ((Fig) target).getOwner() : target;
-        if (!Model.getFacade().isAModelElement(target))
-            // TODO - isn't this an error condition? Should we not throw
-            // an exception or at least log.
-            return;
-        
-        setListTarget(target);
-        if (getTarget() != null) {
-            Collection bases = Model.getFacade().getBases(getTarget());
-            Iterator it = bases.iterator();
-            while (it.hasNext()) {
-                Object base = it.next();
-                Model.getPump().addModelEventListener(
-                    this,
-                    base,
-                    "feature");
-            }
-            // make sure we know it when a classifier is added as a base
-            Model.getPump().addModelEventListener(
-                this,
-                getTarget(),
-                "base");
-            removeAllElements();
-            setBuildingModel(true);
-            buildModelList();
-            setBuildingModel(false);
-            if (getSize() > 0) {
-                fireIntervalAdded(this, 0, getSize() - 1);
-            }
-        }
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ element) {
-        return false;
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ element) {
+    return false;
+  }
 }

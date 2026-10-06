@@ -26,7 +26,6 @@ package org.argouml.uml.ui.behavior.state_machines;
 
 import javax.swing.JMenu;
 import javax.swing.JPopupMenu;
-
 import org.argouml.i18n.Translator;
 import org.argouml.uml.ui.ActionRemoveModelElement;
 import org.argouml.uml.ui.UMLMutableLinkedList;
@@ -38,63 +37,58 @@ import org.argouml.uml.ui.behavior.activity_graphs.ActionAddEventAsTrigger;
  */
 public class PopupMenuNewEvent extends JPopupMenu {
 
-    /**
-     * Constructor for PopupMenuNewEvent.<p>
-     *
-     * Constructs a new popupmenu. The given parameter role determines what
-     * the purpose is of the events that can be created via this popupmenu.
-     * The parameter must comply to the interface Roles
-     * defined on ActionNewEvent.
-     *
-     * @param role the role
-     * @param list the list
-     */
-    public PopupMenuNewEvent(String role, UMLMutableLinkedList list) {
-        super();
+  /**
+   * Constructor for PopupMenuNewEvent.
+   *
+   * <p>Constructs a new popupmenu. The given parameter role determines what the purpose is of the
+   * events that can be created via this popupmenu. The parameter must comply to the interface Roles
+   * defined on ActionNewEvent.
+   *
+   * @param role the role
+   * @param list the list
+   */
+  public PopupMenuNewEvent(String role, UMLMutableLinkedList list) {
+    super();
 
-        assert role != null;
+    assert role != null;
 
-        if (role.equals(ActionNewEvent.Roles.DEFERRABLE_EVENT)
-                || role.equals(ActionNewEvent.Roles.TRIGGER)) {
-            JMenu select = new JMenu();
-            select.setText(Translator.localize("action.select"));
-            if (role.equals(ActionNewEvent.Roles.DEFERRABLE_EVENT)) {
-                ActionAddEventAsDeferrableEvent.SINGLETON.setTarget(
-                        list.getTarget());
-                select.add(ActionAddEventAsDeferrableEvent.SINGLETON);
-            } else if (role.equals(ActionNewEvent.Roles.TRIGGER)) {
-                ActionAddEventAsTrigger.SINGLETON.setTarget(list.getTarget());
-                select.add(ActionAddEventAsTrigger.SINGLETON);
-            }
-            add(select);
-        }
-
-        JMenu newMenu = new JMenu();
-        newMenu.setText(Translator.localize("action.new"));
-        newMenu.add(ActionNewCallEvent.getSingleton());
-        ActionNewCallEvent.getSingleton().setTarget(list.getTarget());
-        ActionNewCallEvent.getSingleton().putValue(ActionNewEvent.ROLE, role);
-        newMenu.add(ActionNewChangeEvent.getSingleton());
-        ActionNewChangeEvent.getSingleton().setTarget(list.getTarget());
-        ActionNewChangeEvent.getSingleton().putValue(ActionNewEvent.ROLE, role);
-        newMenu.add(ActionNewSignalEvent.getSingleton());
-        ActionNewSignalEvent.getSingleton().setTarget(list.getTarget());
-        ActionNewSignalEvent.getSingleton().putValue(ActionNewEvent.ROLE, role);
-        newMenu.add(ActionNewTimeEvent.getSingleton());
-        ActionNewTimeEvent.getSingleton().setTarget(list.getTarget());
-        ActionNewTimeEvent.getSingleton().putValue(ActionNewEvent.ROLE, role);
-        add(newMenu);
-
-        addSeparator();
-
-        ActionRemoveModelElement.SINGLETON.setObjectToRemove(
-                ActionNewEvent.getAction(role, list.getTarget()));
-        add(ActionRemoveModelElement.SINGLETON);
-
+    if (role.equals(ActionNewEvent.Roles.DEFERRABLE_EVENT)
+        || role.equals(ActionNewEvent.Roles.TRIGGER)) {
+      JMenu select = new JMenu();
+      select.setText(Translator.localize("action.select"));
+      if (role.equals(ActionNewEvent.Roles.DEFERRABLE_EVENT)) {
+        ActionAddEventAsDeferrableEvent.SINGLETON.setTarget(list.getTarget());
+        select.add(ActionAddEventAsDeferrableEvent.SINGLETON);
+      } else if (role.equals(ActionNewEvent.Roles.TRIGGER)) {
+        ActionAddEventAsTrigger.SINGLETON.setTarget(list.getTarget());
+        select.add(ActionAddEventAsTrigger.SINGLETON);
+      }
+      add(select);
     }
 
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -7624618103144695448L;
+    JMenu newMenu = new JMenu();
+    newMenu.setText(Translator.localize("action.new"));
+    newMenu.add(ActionNewCallEvent.getSingleton());
+    ActionNewCallEvent.getSingleton().setTarget(list.getTarget());
+    ActionNewCallEvent.getSingleton().putValue(ActionNewEvent.ROLE, role);
+    newMenu.add(ActionNewChangeEvent.getSingleton());
+    ActionNewChangeEvent.getSingleton().setTarget(list.getTarget());
+    ActionNewChangeEvent.getSingleton().putValue(ActionNewEvent.ROLE, role);
+    newMenu.add(ActionNewSignalEvent.getSingleton());
+    ActionNewSignalEvent.getSingleton().setTarget(list.getTarget());
+    ActionNewSignalEvent.getSingleton().putValue(ActionNewEvent.ROLE, role);
+    newMenu.add(ActionNewTimeEvent.getSingleton());
+    ActionNewTimeEvent.getSingleton().setTarget(list.getTarget());
+    ActionNewTimeEvent.getSingleton().putValue(ActionNewEvent.ROLE, role);
+    add(newMenu);
+
+    addSeparator();
+
+    ActionRemoveModelElement.SINGLETON.setObjectToRemove(
+        ActionNewEvent.getAction(role, list.getTarget()));
+    add(ActionRemoveModelElement.SINGLETON);
+  }
+
+  /** The UID. */
+  private static final long serialVersionUID = -7624618103144695448L;
 }

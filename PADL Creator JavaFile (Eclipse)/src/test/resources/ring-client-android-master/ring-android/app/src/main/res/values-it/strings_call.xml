@@ -27,4 +27,4 @@ along with this program; if not, write to the Free Software
     <string name="call_human_state_current">Parlando</string>
     <string name="call_human_state_busy">Occupato</string>
     <string name="call_human_state_failure">Fallito</string>
-    </resources>
+</resources>

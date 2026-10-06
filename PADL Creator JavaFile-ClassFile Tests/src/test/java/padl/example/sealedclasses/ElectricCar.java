@@ -1,5 +1,3 @@
 package padl.example.sealedclasses;
 
-public final class ElectricCar extends Car {
-
-}
+public final class ElectricCar extends Car {}

@@ -33,26 +33,23 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  */
 public class UMLTransitionEffectListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLStateMachineTopListModel.
-     */
-    public UMLTransitionEffectListModel() {
-        super("effect");
-    }
+  /** Constructor for UMLStateMachineTopListModel. */
+  public UMLTransitionEffectListModel() {
+    super("effect");
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        removeAllElements();
-        addElement(Model.getFacade().getEffect(getTarget()));
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    removeAllElements();
+    addElement(Model.getFacade().getEffect(getTarget()));
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ element) {
-        return element == Model.getFacade().getEffect(getTarget());
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ element) {
+    return element == Model.getFacade().getEffect(getTarget());
+  }
 }

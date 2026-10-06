@@ -40,117 +40,123 @@ import org.argouml.application.helpers.SettingsTabHelper;
  * Action object for handling Argo settings.
  *
  * @author Thierry Lach
- * @since  0.9.4
+ * @since 0.9.4
  */
-public class SettingsTabUser extends SettingsTabHelper
-    implements SettingsTabPanel {
-    /**
-     * This is where the user enters full name in settings tab.
-     * This information is stored
-     * in the argo.user.properties file.
-     */
-    private JTextField userFullname = null;
+public class SettingsTabUser extends SettingsTabHelper implements SettingsTabPanel {
+  /**
+   * This is where the user enters full name in settings tab. This information is stored in the
+   * argo.user.properties file.
+   */
+  private JTextField userFullname = null;
 
-    /**
-     * This is where the user enters email in settings tab.
-     * This information is stored
-     * in the argo.user.properties file.
-     */
-    private JTextField userEmail = null;
+  /**
+   * This is where the user enters email in settings tab. This information is stored in the
+   * argo.user.properties file.
+   */
+  private JTextField userEmail = null;
 
-    /**
-     * The constructor.
-     *
-     */
-    public SettingsTabUser() {
-        super();
-        setLayout(new BorderLayout());
-	JPanel top = new JPanel();
-    	top.setLayout(new GridBagLayout());
+  /** The constructor. */
+  public SettingsTabUser() {
+    super();
+    setLayout(new BorderLayout());
+    JPanel top = new JPanel();
+    top.setLayout(new GridBagLayout());
 
-	GridBagConstraints labelConstraints = new GridBagConstraints();
-	labelConstraints.anchor = GridBagConstraints.WEST;
-	labelConstraints.gridy = 0;
-	labelConstraints.gridx = 0;
-	labelConstraints.gridwidth = 1;
-	labelConstraints.gridheight = 1;
-	labelConstraints.insets = new Insets(2, 20, 2, 4);
+    GridBagConstraints labelConstraints = new GridBagConstraints();
+    labelConstraints.anchor = GridBagConstraints.WEST;
+    labelConstraints.gridy = 0;
+    labelConstraints.gridx = 0;
+    labelConstraints.gridwidth = 1;
+    labelConstraints.gridheight = 1;
+    labelConstraints.insets = new Insets(2, 20, 2, 4);
 
-	GridBagConstraints fieldConstraints = new GridBagConstraints();
-	fieldConstraints.anchor = GridBagConstraints.EAST;
-	fieldConstraints.fill = GridBagConstraints.HORIZONTAL;
-	fieldConstraints.gridy = 0;
-	fieldConstraints.gridx = 1;
-	fieldConstraints.gridwidth = 3;
-	fieldConstraints.gridheight = 1;
-	fieldConstraints.weightx = 1.0;
-	fieldConstraints.insets = new Insets(2, 4, 2, 20);
+    GridBagConstraints fieldConstraints = new GridBagConstraints();
+    fieldConstraints.anchor = GridBagConstraints.EAST;
+    fieldConstraints.fill = GridBagConstraints.HORIZONTAL;
+    fieldConstraints.gridy = 0;
+    fieldConstraints.gridx = 1;
+    fieldConstraints.gridwidth = 3;
+    fieldConstraints.gridheight = 1;
+    fieldConstraints.weightx = 1.0;
+    fieldConstraints.insets = new Insets(2, 4, 2, 20);
 
-	labelConstraints.gridy = 0;
-	fieldConstraints.gridy = 0;
-	top.add(createLabel("label.user"), labelConstraints);
-        userFullname = createTextField();
-	top.add(userFullname, fieldConstraints);
+    labelConstraints.gridy = 0;
+    fieldConstraints.gridy = 0;
+    top.add(createLabel("label.user"), labelConstraints);
+    userFullname = createTextField();
+    top.add(userFullname, fieldConstraints);
 
-	labelConstraints.gridy = 1;
-	fieldConstraints.gridy = 1;
- 	top.add(createLabel("label.email"), labelConstraints);
-        userEmail = createTextField();
-	top.add(userEmail, fieldConstraints);
+    labelConstraints.gridy = 1;
+    fieldConstraints.gridy = 1;
+    top.add(createLabel("label.email"), labelConstraints);
+    userEmail = createTextField();
+    top.add(userEmail, fieldConstraints);
 
-	add(top, BorderLayout.NORTH);
-    }
+    add(top, BorderLayout.NORTH);
+  }
 
-    /**
-     * @see org.argouml.application.api.SettingsTabPanel#handleSettingsTabRefresh()
-     */
-    public void handleSettingsTabRefresh() {
-        userFullname.setText(Configuration.getString(Argo.KEY_USER_FULLNAME));
-        userEmail.setText(Configuration.getString(Argo.KEY_USER_EMAIL));
-    }
+  /**
+   * @see org.argouml.application.api.SettingsTabPanel#handleSettingsTabRefresh()
+   */
+  public void handleSettingsTabRefresh() {
+    userFullname.setText(Configuration.getString(Argo.KEY_USER_FULLNAME));
+    userEmail.setText(Configuration.getString(Argo.KEY_USER_EMAIL));
+  }
 
-    /**
-     * @see org.argouml.application.api.SettingsTabPanel#handleSettingsTabSave()
-     */
-    public void handleSettingsTabSave() {
-        Configuration.setString(Argo.KEY_USER_FULLNAME, userFullname.getText());
-        Configuration.setString(Argo.KEY_USER_EMAIL, userEmail.getText());
-    }
+  /**
+   * @see org.argouml.application.api.SettingsTabPanel#handleSettingsTabSave()
+   */
+  public void handleSettingsTabSave() {
+    Configuration.setString(Argo.KEY_USER_FULLNAME, userFullname.getText());
+    Configuration.setString(Argo.KEY_USER_EMAIL, userEmail.getText());
+  }
 
-    /**
-     * @see org.argouml.application.api.SettingsTabPanel#handleSettingsTabCancel()
-     */
-    public void handleSettingsTabCancel() {
-	handleSettingsTabRefresh();
-    }
+  /**
+   * @see org.argouml.application.api.SettingsTabPanel#handleSettingsTabCancel()
+   */
+  public void handleSettingsTabCancel() {
+    handleSettingsTabRefresh();
+  }
 
-    /**
-     * @see org.argouml.application.api.ArgoModule#getModuleName()
-     */
-    public String getModuleName() { return "SettingsTabUser"; }
+  /**
+   * @see org.argouml.application.api.ArgoModule#getModuleName()
+   */
+  public String getModuleName() {
+    return "SettingsTabUser";
+  }
 
-    /**
-     * @see org.argouml.application.api.ArgoModule#getModuleDescription()
-     */
-    public String getModuleDescription() { return "Settings Tab for User"; }
+  /**
+   * @see org.argouml.application.api.ArgoModule#getModuleDescription()
+   */
+  public String getModuleDescription() {
+    return "Settings Tab for User";
+  }
 
-    /**
-     * @see org.argouml.application.api.ArgoModule#getModuleAuthor()
-     */
-    public String getModuleAuthor() { return "ArgoUML Core"; }
+  /**
+   * @see org.argouml.application.api.ArgoModule#getModuleAuthor()
+   */
+  public String getModuleAuthor() {
+    return "ArgoUML Core";
+  }
 
-    /**
-     * @see org.argouml.application.api.ArgoModule#getModuleVersion()
-     */
-    public String getModuleVersion() { return ArgoVersion.getVersion(); }
+  /**
+   * @see org.argouml.application.api.ArgoModule#getModuleVersion()
+   */
+  public String getModuleVersion() {
+    return ArgoVersion.getVersion();
+  }
 
-    /**
-     * @see org.argouml.application.api.ArgoModule#getModuleKey()
-     */
-    public String getModuleKey() { return "module.settings.user"; }
+  /**
+   * @see org.argouml.application.api.ArgoModule#getModuleKey()
+   */
+  public String getModuleKey() {
+    return "module.settings.user";
+  }
 
-    /**
-     * @see org.argouml.application.api.SettingsTabPanel#getTabKey()
-     */
-    public String getTabKey() { return "tab.user"; }
+  /**
+   * @see org.argouml.application.api.SettingsTabPanel#getTabKey()
+   */
+  public String getTabKey() {
+    return "tab.user";
+  }
 }

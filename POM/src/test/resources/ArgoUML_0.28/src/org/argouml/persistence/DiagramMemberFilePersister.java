@@ -32,7 +32,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.log4j.Logger;
 import org.argouml.application.api.Argo;
 import org.argouml.kernel.Project;
@@ -46,120 +45,101 @@ import org.tigris.gef.ocl.TemplateReader;
 
 /**
  * The file persister for the diagram members.
+ *
  * @author Bob Tarling
  */
 class DiagramMemberFilePersister extends MemberFilePersister {
-    
-    /**
-     * Logger.
-     */
-    private static final Logger LOG =
-        Logger.getLogger(DiagramMemberFilePersister.class);
-    
-    /**
-     * The tee file for persistence.
-     */
-    private static final String PGML_TEE = "/org/argouml/persistence/PGML.tee";
-    
-    private static final Map<String, String> CLASS_TRANSLATIONS =
-        new HashMap<String, String>();
 
-    @Override
-    public void load(Project project, InputStream inputStream)
-        throws OpenException {
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(DiagramMemberFilePersister.class);
 
-        // If the model repository doesn't manage a DI model
-        // then we must generate our Figs by inspecting PGML
-        try {
-            // Give the parser a map of model elements
-            // keyed by their UUID. This is used to allocate
-            // figs to their owner using the "href" attribute
-            // in PGML.
-            DiagramSettings defaultSettings = 
-                project.getProjectSettings().getDefaultDiagramSettings();
-            // TODO: We need the project specific diagram settings here
-            PGMLStackParser parser = new PGMLStackParser(project.getUUIDRefs(),
-                    defaultSettings);
-            LOG.info("Adding translations registered by modules");
-            for (Map.Entry<String, String> translation
-                    : CLASS_TRANSLATIONS.entrySet()) {
-                parser.addTranslation(
-                        translation.getKey(),
-                        translation.getValue());
-            }
-            ArgoDiagram d = parser.readArgoDiagram(inputStream, false);
-            inputStream.close();
-            project.addMember(d);
-        } catch (Exception e) {
-            if (e instanceof OpenException) {
-                throw (OpenException) e;
-            }
-            throw new OpenException(e);
-        }
+  /** The tee file for persistence. */
+  private static final String PGML_TEE = "/org/argouml/persistence/PGML.tee";
+
+  private static final Map<String, String> CLASS_TRANSLATIONS = new HashMap<String, String>();
+
+  @Override
+  public void load(Project project, InputStream inputStream) throws OpenException {
+
+    // If the model repository doesn't manage a DI model
+    // then we must generate our Figs by inspecting PGML
+    try {
+      // Give the parser a map of model elements
+      // keyed by their UUID. This is used to allocate
+      // figs to their owner using the "href" attribute
+      // in PGML.
+      DiagramSettings defaultSettings = project.getProjectSettings().getDefaultDiagramSettings();
+      // TODO: We need the project specific diagram settings here
+      PGMLStackParser parser = new PGMLStackParser(project.getUUIDRefs(), defaultSettings);
+      LOG.info("Adding translations registered by modules");
+      for (Map.Entry<String, String> translation : CLASS_TRANSLATIONS.entrySet()) {
+        parser.addTranslation(translation.getKey(), translation.getValue());
+      }
+      ArgoDiagram d = parser.readArgoDiagram(inputStream, false);
+      inputStream.close();
+      project.addMember(d);
+    } catch (Exception e) {
+      if (e instanceof OpenException) {
+        throw (OpenException) e;
+      }
+      throw new OpenException(e);
     }
-    
-    @Override
-    public void load(Project project, URL url) throws OpenException {   
-        try {
-            load(project, url.openStream());
-        } catch (IOException e) {
-            throw new OpenException(e);
-        }
+  }
+
+  @Override
+  public void load(Project project, URL url) throws OpenException {
+    try {
+      load(project, url.openStream());
+    } catch (IOException e) {
+      throw new OpenException(e);
     }
+  }
 
-    @Override
-    public String getMainTag() {
-        return "pgml";
+  @Override
+  public String getMainTag() {
+    return "pgml";
+  }
+
+  @Override
+  public void save(ProjectMember member, OutputStream outStream) throws SaveException {
+
+    ProjectMemberDiagram diagramMember = (ProjectMemberDiagram) member;
+    OCLExpander expander;
+    try {
+      expander = new OCLExpander(TemplateReader.getInstance().read(PGML_TEE));
+    } catch (ExpansionException e) {
+      throw new SaveException(e);
     }
-
-
-    @Override
-    public void save(ProjectMember member, OutputStream outStream)
-        throws SaveException {
-
-        ProjectMemberDiagram diagramMember = (ProjectMemberDiagram) member;
-        OCLExpander expander;
-        try {
-            expander =
-                    new OCLExpander(
-                            TemplateReader.getInstance().read(PGML_TEE));
-        } catch (ExpansionException e) {
-            throw new SaveException(e);
-        }
-        OutputStreamWriter outputWriter;
-        try {
-            outputWriter = 
-                new OutputStreamWriter(outStream, Argo.getEncoding());
-        } catch (UnsupportedEncodingException e1) {
-            throw new SaveException("Bad encoding", e1);
-        }
-        
-        try {
-            // WARNING: the OutputStream version of this doesn't work! - tfm
-            expander.expand(outputWriter, diagramMember.getDiagram());
-        } catch (ExpansionException e) {
-            throw new SaveException(e);
-        } finally {
-            try {
-                outputWriter.flush();
-            } catch (IOException e) {
-                throw new SaveException(e);
-            }
-        }
-        
+    OutputStreamWriter outputWriter;
+    try {
+      outputWriter = new OutputStreamWriter(outStream, Argo.getEncoding());
+    } catch (UnsupportedEncodingException e1) {
+      throw new SaveException("Bad encoding", e1);
     }
 
-    /**
-     * Figs are stored by class name and recreated by reflection. If the class
-     * name changes or moves this provides a simple way of translating from
-     * class name at time of save to the current class name without need for
-     * XSL.
-     * @param originalClassName
-     * @param newClassName
-     */
-    public void addTranslation(
-            final String originalClassName,
-            final String newClassName) {
-        CLASS_TRANSLATIONS.put(originalClassName, newClassName);
+    try {
+      // WARNING: the OutputStream version of this doesn't work! - tfm
+      expander.expand(outputWriter, diagramMember.getDiagram());
+    } catch (ExpansionException e) {
+      throw new SaveException(e);
+    } finally {
+      try {
+        outputWriter.flush();
+      } catch (IOException e) {
+        throw new SaveException(e);
+      }
     }
+  }
+
+  /**
+   * Figs are stored by class name and recreated by reflection. If the class name changes or moves
+   * this provides a simple way of translating from class name at time of save to the current class
+   * name without need for XSL.
+   *
+   * @param originalClassName
+   * @param newClassName
+   */
+  public void addTranslation(final String originalClassName, final String newClassName) {
+    CLASS_TRANSLATIONS.put(originalClassName, newClassName);
+  }
 }

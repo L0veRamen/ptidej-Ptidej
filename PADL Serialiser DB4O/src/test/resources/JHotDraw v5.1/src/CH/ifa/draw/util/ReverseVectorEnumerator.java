@@ -9,29 +9,25 @@ import java.util.Enumeration;
 import java.util.NoSuchElementException;
 import java.util.Vector;
 
-/**
- * An Enumeration that enumerates a vector back (size-1) to front (0).
- */
-public class ReverseVectorEnumerator
-implements Enumeration {
+/** An Enumeration that enumerates a vector back (size-1) to front (0). */
+public class ReverseVectorEnumerator implements Enumeration {
 
-	Vector vector;
-	int count;
+  Vector vector;
+  int count;
 
-	public ReverseVectorEnumerator(Vector v) {
-	    vector = v;
-	    count = vector.size() - 1;
-	}
+  public ReverseVectorEnumerator(Vector v) {
+    vector = v;
+    count = vector.size() - 1;
+  }
 
-	public boolean hasMoreElements() {
-	    return count >= 0;
-	}
+  public boolean hasMoreElements() {
+    return count >= 0;
+  }
 
-	public Object nextElement() {
-	    if (count >= 0) {
-		    return vector.elementAt(count--);
-	    }
-	    throw new NoSuchElementException("ReverseVectorEnumerator");
-	}
-
+  public Object nextElement() {
+    if (count >= 0) {
+      return vector.elementAt(count--);
+    }
+    throw new NoSuchElementException("ReverseVectorEnumerator");
+  }
 }

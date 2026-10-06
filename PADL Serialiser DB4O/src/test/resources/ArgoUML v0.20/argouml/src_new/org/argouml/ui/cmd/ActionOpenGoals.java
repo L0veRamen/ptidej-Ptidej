@@ -25,25 +25,21 @@
 package org.argouml.ui.cmd;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.cognitive.ui.GoalsDialog;
 import org.argouml.ui.ProjectBrowser;
 import org.argouml.uml.ui.UMLAction;
 
-
-
 class ActionOpenGoals extends UMLAction {
 
-    public ActionOpenGoals() {
-        super("action.design-goals", NO_ICON);
-    }
+  public ActionOpenGoals() {
+    super("action.design-goals", NO_ICON);
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-	GoalsDialog d = new GoalsDialog(ProjectBrowser.getInstance());
-	d.setVisible(true);
-    }
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    GoalsDialog d = new GoalsDialog(ProjectBrowser.getInstance());
+    d.setVisible(true);
+  }
 } /* end class ActionOpenGoals */
-

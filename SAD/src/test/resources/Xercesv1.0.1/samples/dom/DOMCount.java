@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xerces" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -57,226 +57,213 @@
 
 package dom;
 
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 
 import org.apache.xerces.dom.TextImpl;
-
-import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * A sample DOM counter. This sample program illustrates how to
- * traverse a DOM tree in order to information about the document.
+ * A sample DOM counter. This sample program illustrates how to traverse a DOM tree in order to
+ * information about the document.
  *
  * @version
  */
 public class DOMCount {
 
-    //
-    // Constants
-    //
+  //
+  // Constants
+  //
 
-    /** Default parser name. */
-    private static final String
-        DEFAULT_PARSER_NAME = "dom.wrappers.DOMParser";
+  /** Default parser name. */
+  private static final String DEFAULT_PARSER_NAME = "dom.wrappers.DOMParser";
 
-    //
-    // Data
-    //
+  //
+  // Data
+  //
 
-    /** Elements. */
-    private long elements;
+  /** Elements. */
+  private long elements;
 
-    /** Attributes. */
-    private long attributes;
+  /** Attributes. */
+  private long attributes;
 
-    /** Characters. */
-    private long characters;
+  /** Characters. */
+  private long characters;
 
-    /** Ignorable whitespace. */
-    private long ignorableWhitespace;
+  /** Ignorable whitespace. */
+  private long ignorableWhitespace;
 
-    //
-    // Public static methods
-    //
+  //
+  // Public static methods
+  //
 
-    /** Counts the resulting document tree. */
-    public static void count(String parserWrapperName, String uri) {
+  /** Counts the resulting document tree. */
+  public static void count(String parserWrapperName, String uri) {
 
-        try {
-            DOMParserWrapper parser =
-                (DOMParserWrapper)Class.forName(parserWrapperName).getDeclaredConstructor().newInstance();
-            DOMCount counter = new DOMCount();
-            long before = System.currentTimeMillis();
-            Document document = parser.parse(uri);
-            counter.traverse(document);
-            long after = System.currentTimeMillis();
-            counter.printResults(uri, after - before);
+    try {
+      DOMParserWrapper parser =
+          (DOMParserWrapper)
+              Class.forName(parserWrapperName).getDeclaredConstructor().newInstance();
+      DOMCount counter = new DOMCount();
+      long before = System.currentTimeMillis();
+      Document document = parser.parse(uri);
+      counter.traverse(document);
+      long after = System.currentTimeMillis();
+      counter.printResults(uri, after - before);
+    } catch (org.xml.sax.SAXParseException spe) {
+    } catch (org.xml.sax.SAXException se) {
+      if (se.getException() != null) se.getException().printStackTrace(System.err);
+      else se.printStackTrace(System.err);
+    } catch (Exception e) {
+      e.printStackTrace(System.err);
+    }
+  } // print(String,String,boolean)
+
+  //
+  // Public methods
+  //
+
+  /** Traverses the specified node, recursively. */
+  public void traverse(Node node) {
+
+    // is there anything to do?
+    if (node == null) {
+      return;
+    }
+
+    int type = node.getNodeType();
+    switch (type) {
+      // print document
+      case Node.DOCUMENT_NODE:
+        {
+          elements = 0;
+          attributes = 0;
+          characters = 0;
+          ignorableWhitespace = 0;
+          traverse(((Document) node).getDocumentElement());
+          break;
         }
-        catch (org.xml.sax.SAXParseException spe) {
-        }
-        catch (org.xml.sax.SAXException se) {
-            if (se.getException() != null)
-                se.getException().printStackTrace(System.err);
-            else
-                se.printStackTrace(System.err);
-        }
-        catch (Exception e) {
-            e.printStackTrace(System.err);
-        }
 
-    } // print(String,String,boolean)
-
-    //
-    // Public methods
-    //
-
-    /** Traverses the specified node, recursively. */
-    public void traverse(Node node) {
-
-        // is there anything to do?
-        if (node == null) {
-            return;
-        }
-
-        int type = node.getNodeType();
-        switch (type) {
-            // print document
-            case Node.DOCUMENT_NODE: {
-                elements            = 0;
-                attributes          = 0;
-                characters          = 0;
-                ignorableWhitespace = 0;
-                traverse(((Document)node).getDocumentElement());
-                break;
+      // print element with attributes
+      case Node.ELEMENT_NODE:
+        {
+          elements++;
+          NamedNodeMap attrs = node.getAttributes();
+          if (attrs != null) {
+            attributes += attrs.getLength();
+          }
+          NodeList children = node.getChildNodes();
+          if (children != null) {
+            int len = children.getLength();
+            for (int i = 0; i < len; i++) {
+              traverse(children.item(i));
             }
-
-            // print element with attributes
-            case Node.ELEMENT_NODE: {
-                elements++;
-                NamedNodeMap attrs = node.getAttributes();
-                if (attrs != null) {
-                    attributes += attrs.getLength();
-                }
-                NodeList children = node.getChildNodes();
-                if (children != null) {
-                    int len = children.getLength();
-                    for (int i = 0; i < len; i++) {
-                        traverse(children.item(i));
-                    }
-                }
-                break;
-            }
-
-            // handle entity reference nodes
-            case Node.ENTITY_REFERENCE_NODE: {
-                NodeList children = node.getChildNodes();
-                if (children != null) {
-                    int len = children.getLength();
-                    for (int i = 0; i < len; i++) {
-                        traverse(children.item(i));
-                    }
-                }
-                break;
-            }
-
-            // print text
-            case Node.CDATA_SECTION_NODE: {
-                characters += node.getNodeValue().length();
-                break;
-            }
-            case Node.TEXT_NODE: {
-                if (node instanceof TextImpl) {
-                    if (((TextImpl)node).isIgnorableWhitespace())
-                        ignorableWhitespace += node.getNodeValue().length();
-                    else
-                        characters += node.getNodeValue().length();
-                } else
-                    characters += node.getNodeValue().length();
-                break;
-            }
+          }
+          break;
         }
 
-    } // traverse(Node)
+      // handle entity reference nodes
+      case Node.ENTITY_REFERENCE_NODE:
+        {
+          NodeList children = node.getChildNodes();
+          if (children != null) {
+            int len = children.getLength();
+            for (int i = 0; i < len; i++) {
+              traverse(children.item(i));
+            }
+          }
+          break;
+        }
 
-    /** Prints the results. */
-    public void printResults(String uri, long time) {
+      // print text
+      case Node.CDATA_SECTION_NODE:
+        {
+          characters += node.getNodeValue().length();
+          break;
+        }
+      case Node.TEXT_NODE:
+        {
+          if (node instanceof TextImpl) {
+            if (((TextImpl) node).isIgnorableWhitespace())
+              ignorableWhitespace += node.getNodeValue().length();
+            else characters += node.getNodeValue().length();
+          } else characters += node.getNodeValue().length();
+          break;
+        }
+    }
+  } // traverse(Node)
 
-        // filename.xml: 631 ms (4 elems, 0 attrs, 78 spaces, 0 chars)
-        System.out.print(uri);
-        System.out.print(": ");
-        System.out.print(time);
-        System.out.print(" ms (");
-        System.out.print(elements);
-        System.out.print(" elems, ");
-        System.out.print(attributes);
-        System.out.print(" attrs, ");
-        System.out.print(ignorableWhitespace);
-        System.out.print(" spaces, ");
-        System.out.print(characters);
-        System.out.print(" chars)");
-        System.out.println();
+  /** Prints the results. */
+  public void printResults(String uri, long time) {
 
-    } // printResults(String,long)
+    // filename.xml: 631 ms (4 elems, 0 attrs, 78 spaces, 0 chars)
+    System.out.print(uri);
+    System.out.print(": ");
+    System.out.print(time);
+    System.out.print(" ms (");
+    System.out.print(elements);
+    System.out.print(" elems, ");
+    System.out.print(attributes);
+    System.out.print(" attrs, ");
+    System.out.print(ignorableWhitespace);
+    System.out.print(" spaces, ");
+    System.out.print(characters);
+    System.out.print(" chars)");
+    System.out.println();
+  } // printResults(String,long)
 
-    //
-    // Main
-    //
+  //
+  // Main
+  //
 
-    /** Main program entry point. */
-    public static void main(String argv[]) {
+  /** Main program entry point. */
+  public static void main(String argv[]) {
 
-        // is there anything to do?
-        if (argv.length == 0) {
-            printUsage();
+    // is there anything to do?
+    if (argv.length == 0) {
+      printUsage();
+      System.exit(1);
+    }
+
+    // vars
+    String parserName = DEFAULT_PARSER_NAME;
+
+    // check parameters
+    for (int i = 0; i < argv.length; i++) {
+      String arg = argv[i];
+
+      // options
+      if (arg.startsWith("-")) {
+        if (arg.equals("-p")) {
+          if (i == argv.length - 1) {
+            System.err.println("error: missing parser name");
             System.exit(1);
+          }
+          parserName = argv[++i];
+          continue;
         }
 
-        // vars
-        String  parserName = DEFAULT_PARSER_NAME;
-
-        // check parameters
-        for (int i = 0; i < argv.length; i++) {
-            String arg = argv[i];
-
-            // options
-            if (arg.startsWith("-")) {
-                if (arg.equals("-p")) {
-                    if (i == argv.length - 1) {
-                        System.err.println("error: missing parser name");
-                        System.exit(1);
-                    }
-                    parserName = argv[++i];
-                    continue;
-                }
-
-                if (arg.equals("-h")) {
-                    printUsage();
-                    System.exit(1);
-                }
-            }
-
-            // count uri
-            count(parserName, arg);
+        if (arg.equals("-h")) {
+          printUsage();
+          System.exit(1);
         }
+      }
 
-    } // main(String[])
+      // count uri
+      count(parserName, arg);
+    }
+  } // main(String[])
 
-    /** Prints the usage. */
-    private static void printUsage() {
+  /** Prints the usage. */
+  private static void printUsage() {
 
-        System.err.println("usage: java dom.DOMCount (options) uri ...");
-        System.err.println();
-        System.err.println("options:");
-        System.err.println("  -p name  Specify DOM parser wrapper by name.");
-        System.err.println("           Default parser: "+DEFAULT_PARSER_NAME);
-        System.err.println("  -h       This help screen.");
-
-    } // printUsage()
-
+    System.err.println("usage: java dom.DOMCount (options) uri ...");
+    System.err.println();
+    System.err.println("options:");
+    System.err.println("  -p name  Specify DOM parser wrapper by name.");
+    System.err.println("           Default parser: " + DEFAULT_PARSER_NAME);
+    System.err.println("  -h       This help screen.");
+  } // printUsage()
 } // class DOMCount

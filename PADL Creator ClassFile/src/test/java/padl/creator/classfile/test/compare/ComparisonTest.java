@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -23,72 +23,63 @@ import padl.util.ModelStatistics;
 
 /**
  * @author Yann-Geel Guéhéneuc
- * @since  2004/02/18
+ * @since 2004/02/18
  */
 public class ComparisonTest extends ClassFilePrimitive {
-	public ComparisonTest(String aName) {
-		super(aName);
-	}
-	public void testCompare() {
-		final String path = "../PADL Creator ClassFile/target/test-classes/padl/example/composite2/";
-		final ICodeLevelModel codeLevelModel =
-			Factory.getInstance().createCodeLevelModel(path);
-		final ModelStatistics patternStatistics = new ModelStatistics();
-		codeLevelModel.addModelListener(patternStatistics);
+  public ComparisonTest(String aName) {
+    super(aName);
+  }
 
-		try {
-			// Building the program representation.
-			codeLevelModel.create(new CompleteClassFileCreator(
-				new String[] { path }));
-			System.out.println();
-			System.out.println(patternStatistics);
+  public void testCompare() {
+    final String path = "../PADL Creator ClassFile/target/test-classes/padl/example/composite2/";
+    final ICodeLevelModel codeLevelModel = Factory.getInstance().createCodeLevelModel(path);
+    final ModelStatistics patternStatistics = new ModelStatistics();
+    codeLevelModel.addModelListener(patternStatistics);
 
-			// Detecting design pattern.
-			System.out.println();
-			final Map solutions = new HashMap();
-			//	idiomLevelModel.compare(
-			//		PatternRepository.getCurrentPatternRepository(
-			//			fileRepository));
+    try {
+      // Building the program representation.
+      codeLevelModel.create(new CompleteClassFileCreator(new String[] {path}));
+      System.out.println();
+      System.out.println(patternStatistics);
 
-			// Display solutions... 
-			final Iterator iterator = solutions.keySet().iterator();
-			while (iterator.hasNext()) {
-				final String currentPattern = (String) iterator.next();
-				final List patternSolutions =
-					(List) solutions.get(currentPattern);
-				System.out.println("* Model: " + currentPattern + ": "
-						+ patternSolutions.size() + " instance(s).");
-				if (patternSolutions.size() > 0) {
-					final Iterator iterator2 = patternSolutions.iterator();
-					while (iterator2.hasNext()) {
-						final Map currentSol = (Map) iterator2.next();
-						final Iterator iterator3 =
-							currentSol.keySet().iterator();
-						while (iterator3.hasNext()) {
-							final String currentConstituent =
-								(String) iterator3.next();
-							System.out.print(currentConstituent);
-							System.out.println(':');
-							final Iterator iterator4 =
-								((List) currentSol.get(currentConstituent))
-									.iterator();
-							while (iterator4.hasNext()) {
-								System.out.print('\t');
-								System.out
-									.println(((IFirstClassEntity) iterator4
-										.next()).getName());
-							}
-							System.out.println();
-						}
-						System.out.println("----");
-					}
-				}
-			}
-		}
-		catch (final Exception e) {
-			e.printStackTrace();
-		}
+      // Detecting design pattern.
+      System.out.println();
+      final Map solutions = new HashMap();
+      //	idiomLevelModel.compare(
+      //		PatternRepository.getCurrentPatternRepository(
+      //			fileRepository));
 
-		// TODO: Convert the output into assertions...
-	}
+      // Display solutions...
+      final Iterator iterator = solutions.keySet().iterator();
+      while (iterator.hasNext()) {
+        final String currentPattern = (String) iterator.next();
+        final List patternSolutions = (List) solutions.get(currentPattern);
+        System.out.println(
+            "* Model: " + currentPattern + ": " + patternSolutions.size() + " instance(s).");
+        if (patternSolutions.size() > 0) {
+          final Iterator iterator2 = patternSolutions.iterator();
+          while (iterator2.hasNext()) {
+            final Map currentSol = (Map) iterator2.next();
+            final Iterator iterator3 = currentSol.keySet().iterator();
+            while (iterator3.hasNext()) {
+              final String currentConstituent = (String) iterator3.next();
+              System.out.print(currentConstituent);
+              System.out.println(':');
+              final Iterator iterator4 = ((List) currentSol.get(currentConstituent)).iterator();
+              while (iterator4.hasNext()) {
+                System.out.print('\t');
+                System.out.println(((IFirstClassEntity) iterator4.next()).getName());
+              }
+              System.out.println();
+            }
+            System.out.println("----");
+          }
+        }
+      }
+    } catch (final Exception e) {
+      e.printStackTrace();
+    }
+
+    // TODO: Convert the output into assertions...
+  }
 }

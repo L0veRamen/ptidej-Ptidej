@@ -26,39 +26,37 @@ package org.argouml.persistence;
 
 /**
  * An exception to be thrown by some persistence operation
+ *
  * @author Bob Tarling
  */
 public class PersistenceException extends Exception {
 
-    /**
-     * Constructor
-     */
-    public PersistenceException() {
-        super();
-    }
+  /** Constructor */
+  public PersistenceException() {
+    super();
+  }
 
-    /**
-     * Constructor
-     * @param message the message
-     */
-    public PersistenceException(String message) {
-        super(message);
-    }
+  /**
+   * Constructor
+   *
+   * @param message the message
+   */
+  public PersistenceException(String message) {
+    super(message);
+  }
 
-    /**
-     * @param message the message
-     * @param c the cause of the exception
-     */
-    public PersistenceException(String message, Throwable c) {
-        super(message, c);
-    }
+  /**
+   * @param message the message
+   * @param c the cause of the exception
+   */
+  public PersistenceException(String message, Throwable c) {
+    super(message, c);
+  }
 
-    /**
-     * @param c the cause of the exception
-     */
-    public PersistenceException(Throwable c) {
-        super(c);
-    }
-
+  /**
+   * @param c the cause of the exception
+   */
+  public PersistenceException(Throwable c) {
+    super(c);
+  }
 }
-

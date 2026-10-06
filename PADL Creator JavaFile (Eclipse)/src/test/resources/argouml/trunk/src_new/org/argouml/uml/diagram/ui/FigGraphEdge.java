@@ -27,23 +27,18 @@ package org.argouml.uml.diagram.ui;
 import org.apache.log4j.Logger;
 import org.tigris.gef.presentation.FigEdgePoly;
 
-/**
- * Abstract class to display diagram lines (edges) in a UML diagram
- */
-public abstract class FigGraphEdge
-    extends FigEdgePoly {
+/** Abstract class to display diagram lines (edges) in a UML diagram */
+public abstract class FigGraphEdge extends FigEdgePoly {
 
-    private static final Logger LOG =
-        Logger.getLogger(FigGraphEdge.class);
+  private static final Logger LOG = Logger.getLogger(FigGraphEdge.class);
 
-    /**
-     * Returns a {@link SelectionRerouteEdge} object that manages selection
-     * and rerouting of the edge.
-     *
-     * @return the SelectionRerouteEdge.
-     */
-//    public Selection makeSelection() {
-//        return new SelectionRerouteEdge(this);
-//    }
+  /**
+   * Returns a {@link SelectionRerouteEdge} object that manages selection and rerouting of the edge.
+   *
+   * @return the SelectionRerouteEdge.
+   */
+  //    public Selection makeSelection() {
+  //        return new SelectionRerouteEdge(this);
+  //    }
 
 } /* end class FigEdgeModelElement */

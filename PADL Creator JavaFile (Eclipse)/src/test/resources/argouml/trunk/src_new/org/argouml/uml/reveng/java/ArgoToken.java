@@ -26,28 +26,25 @@ package org.argouml.uml.reveng.java;
 
 import antlr.*;
 
-
-/**
- * This is a special token class for Argo that store its preceding whitespaces.
- */
+/** This is a special token class for Argo that store its preceding whitespaces. */
 public class ArgoToken extends CommonToken {
-    private String ws;  // Buffer for the whitespaces.
+  private String ws; // Buffer for the whitespaces.
 
-    /**
-     * Set the whitespaces for this token.
-     *
-     * @param whiteSpaces The whitespaces for the buffer.
-     */
-    public void setWhitespace(String whiteSpaces) {
-	this.ws = whiteSpaces;
-    }
+  /**
+   * Set the whitespaces for this token.
+   *
+   * @param whiteSpaces The whitespaces for the buffer.
+   */
+  public void setWhitespace(String whiteSpaces) {
+    this.ws = whiteSpaces;
+  }
 
-    /**
-     * Get the whitespace of this token.
-     *
-     * @return The whitespaces of this token.
-     */
-    public String getWhitespace() {
-	return this.ws;
-    }
+  /**
+   * Get the whitespace of this token.
+   *
+   * @return The whitespaces of this token.
+   */
+  public String getWhitespace() {
+    return this.ws;
+  }
 }

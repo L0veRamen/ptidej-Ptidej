@@ -29,24 +29,23 @@ import org.argouml.uml.generator.AbstractSection;
 /**
  * Code section handling for PHP
  *
- * @author  Kai Schr&ouml;der, k.schroeder@php.net
- * @since   ArgoUML 0.15.5
+ * @author Kai Schr&ouml;der, k.schroeder@php.net
+ * @since ArgoUML 0.15.5
  */
 public class Section extends AbstractSection {
-    /**
-     * Generates section
-     *
-     * @param sId     section identifier
-     * @param sIndent indention string
-     *
-     * @return section
-     */
-    public static String generate(String sId, String sIndent) {
-        String sSection = "";
+  /**
+   * Generates section
+   *
+   * @param sId section identifier
+   * @param sIndent indention string
+   * @return section
+   */
+  public static String generate(String sId, String sIndent) {
+    String sSection = "";
 
-        sSection += sIndent + sIndent + "// section " + sId + " begin\n";
-        sSection += sIndent + sIndent + "// section " + sId + " end\n";
+    sSection += sIndent + sIndent + "// section " + sId + " begin\n";
+    sSection += sIndent + sIndent + "// section " + sId + " end\n";
 
-        return sSection;
-    }
+    return sSection;
+  }
 }

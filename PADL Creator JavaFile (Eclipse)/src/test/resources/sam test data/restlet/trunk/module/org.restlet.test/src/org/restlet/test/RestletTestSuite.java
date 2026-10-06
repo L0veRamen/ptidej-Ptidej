@@ -27,34 +27,32 @@ import junit.framework.TestSuite;
 
 /**
  * Suite of unit tests for the Restlet RI.
+ *
  * @author Jerome Louvel (contact@noelios.com)
  */
-public class RestletTestSuite extends TestSuite
-{
-	/** Constructor. */
-	public RestletTestSuite()
-	{
-		addTestSuite(CallTestCase.class);
-		addTestSuite(CookieTestCase.class);
-		addTestSuite(DirectoryTestCase.class);
-		addTestSuite(FileReferenceTestCase.class);
-		addTestSuite(FilterTestCase.class);
-		addTestSuite(FreeMarkerTestCase.class);
-		addTestSuite(MediaTypeTestCase.class);
-		addTestSuite(RedirectTestCase.class);
-		addTestSuite(ReferenceTestCase.class);
-		addTestSuite(RestartTestCase.class);
-		addTestSuite(StringTemplateTestCase.class);
-		addTestSuite(VelocityTestCase.class);
-	}
+public class RestletTestSuite extends TestSuite {
+  /** Constructor. */
+  public RestletTestSuite() {
+    addTestSuite(CallTestCase.class);
+    addTestSuite(CookieTestCase.class);
+    addTestSuite(DirectoryTestCase.class);
+    addTestSuite(FileReferenceTestCase.class);
+    addTestSuite(FilterTestCase.class);
+    addTestSuite(FreeMarkerTestCase.class);
+    addTestSuite(MediaTypeTestCase.class);
+    addTestSuite(RedirectTestCase.class);
+    addTestSuite(ReferenceTestCase.class);
+    addTestSuite(RestartTestCase.class);
+    addTestSuite(StringTemplateTestCase.class);
+    addTestSuite(VelocityTestCase.class);
+  }
 
-	/**
-	 * JUnit constructor.
-	 * @return The unit test.
-	 */
-	public static Test suite()
-	{
-		return new RestletTestSuite();
-	}
-
+  /**
+   * JUnit constructor.
+   *
+   * @return The unit test.
+   */
+  public static Test suite() {
+    return new RestletTestSuite();
+  }
 }

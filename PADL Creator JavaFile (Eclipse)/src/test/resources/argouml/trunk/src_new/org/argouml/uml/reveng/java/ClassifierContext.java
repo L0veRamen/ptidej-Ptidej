@@ -31,68 +31,54 @@ package org.argouml.uml.reveng.java;
 
 import org.argouml.model.Model;
 
-/**
-   This context is a specific classifier.
-*/
-class ClassifierContext extends Context
-{
-    /** The classifier this context represents. */
-    private Object mClassifier;
+/** This context is a specific classifier. */
+class ClassifierContext extends Context {
+  /** The classifier this context represents. */
+  private Object mClassifier;
 
-    /**
-       Create a new context from a classifier.
+  /**
+   * Create a new context from a classifier.
+   *
+   * @param base Based on this context.
+   * @param classifier Represents this classifier.
+   */
+  public ClassifierContext(Context base, Object classifier) {
+    super(base);
+    this.mClassifier = classifier;
+  }
 
-       @param base Based on this context.
-       @param classifier Represents this classifier.
-    */
-    public ClassifierContext(Context base, Object classifier)
-    {
-	super(base);
-	this.mClassifier = classifier;
+  public Object getInterface(String name) throws ClassifierNotFoundException {
+    // Check if it is this interface
+    if (name.equals(Model.getFacade().getName(mClassifier))
+        && Model.getFacade().isAInterface(mClassifier)) {
+      return mClassifier;
+    } else {
+      // Continue the search through the rest of the model
+      if (getContext() != null) {
+        return getContext().getInterface(name);
+      } else {
+        return null;
+      }
     }
+  }
 
-    public Object getInterface(String name)
-	throws ClassifierNotFoundException
-    {
-	// Check if it is this interface
-	if (name.equals(Model.getFacade().getName(mClassifier))
-	    && Model.getFacade().isAInterface(mClassifier))
-	{
-	    return mClassifier;
-	}
-	else {
-	    // Continue the search through the rest of the model
-	    if (getContext() != null) {
-		return getContext().getInterface(name);
-	    }
-	    else {
-		return null;
-	    }
-	}
+  /**
+   * Get the classifier for a given name
+   *
+   * @param classifierName The name of the classifier to retrieve.
+   * @return A classifier for the name.
+   */
+  public Object get(String classifierName) throws ClassifierNotFoundException {
+    // Check if it is this classifier
+    if (classifierName.equals(Model.getFacade().getName(mClassifier))) {
+      return mClassifier;
+    } else {
+      // Continue the search through the rest of the model
+      if (getContext() != null) {
+        return getContext().get(classifierName);
+      } else {
+        return null;
+      }
     }
-
-    /**
-     * Get the classifier for a given name
-     *
-     * @param classifierName The name of the classifier to retrieve.
-     * @return A classifier for the name.
-     */
-    public Object get(String classifierName)
-	throws ClassifierNotFoundException
-    {
-	// Check if it is this classifier
-	if (classifierName.equals(Model.getFacade().getName(mClassifier))) {
-	    return mClassifier;
-	}
-	else {
-	    // Continue the search through the rest of the model
-	    if (getContext() != null) {
-		return getContext().get(classifierName);
-	    }
-	    else {
-		return null;
-	    }
-	}
-    }
+  }
 }
-

@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -16,16 +16,16 @@ import junit.framework.TestSuite;
 
 /**
  * @author Yann-Gaël Guéhéneuc
- * @since  2004/01/25
+ * @since 2004/01/25
  */
 public final class TestEPI extends TestSuite {
-	public static TestSuite suite() {
-		final TestEPI suite = new TestEPI();
-		suite.setName(TestEPI.class.getName());
+  public static TestSuite suite() {
+    final TestEPI suite = new TestEPI();
+    suite.setName(TestEPI.class.getName());
 
-		suite.addTestSuite(JavaAWTTest.class);
-		suite.addTestSuite(JavaSwingTest.class);
+    suite.addTestSuite(JavaAWTTest.class);
+    suite.addTestSuite(JavaSwingTest.class);
 
-		return suite;
-	}
+    return suite;
+  }
 }

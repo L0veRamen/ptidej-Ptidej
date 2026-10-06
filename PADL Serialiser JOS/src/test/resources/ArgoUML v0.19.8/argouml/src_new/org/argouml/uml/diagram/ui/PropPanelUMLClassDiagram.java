@@ -32,12 +32,8 @@ import org.argouml.i18n.Translator;
  */
 public class PropPanelUMLClassDiagram extends PropPanelDiagram {
 
-    /**
-     * Constructor for PropPanelUMLClassDiagram.
-     */
-    public PropPanelUMLClassDiagram() {
-        super(Translator.localize("label.class-diagram"),
-                lookupIcon("ClassDiagram"));
-    }
-
+  /** Constructor for PropPanelUMLClassDiagram. */
+  public PropPanelUMLClassDiagram() {
+    super(Translator.localize("label.class-diagram"), lookupIcon("ClassDiagram"));
+  }
 }

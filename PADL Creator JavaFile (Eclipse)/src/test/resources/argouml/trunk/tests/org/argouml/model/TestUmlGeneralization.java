@@ -26,90 +26,75 @@ package org.argouml.model;
 
 import java.util.Collection;
 
-
-
 /**
  * Test to check various aspects of generalization relationships
- * 
+ *
  * @author Markus Klink
  */
 public class TestUmlGeneralization extends GenericUmlObjectTestFixture {
-    
-    private Object class1, class2, class3;
-    private Object gen1, gen2;
-    private Object namespace;
 
-    /**
-     * Constructor.
-     * 
-     * @param arg0
-     *            test name
-     */
-    public TestUmlGeneralization(String arg0) {
-	super(arg0, Model.getMetaTypes().getClass());
-	validateTestClassIsGeneric(this);
-    }
+  private Object class1, class2, class3;
+  private Object gen1, gen2;
+  private Object namespace;
 
-    
-    /**
-     * Make sure that the generalization can be retrieved and followed to the
-     * correct parent.
-     */
-    public void testClasshasGeneralizations() {
-        Collection gen = Model.getFacade().getGeneralizations(class2);
-        assertNotNull(gen);
-        assertTrue(gen.size() == 1);
-        assertTrue(gen.contains(gen2));
-        assertTrue(Model.getFacade().getParent(gen2) == class3);
-    }
+  /**
+   * Constructor.
+   *
+   * @param arg0 test name
+   */
+  public TestUmlGeneralization(String arg0) {
+    super(arg0, Model.getMetaTypes().getClass());
+    validateTestClassIsGeneric(this);
+  }
 
-    /**
-     * Make sure that the specialization can be retrieved and followed to the
-     * correct child.
-     */
-    public void testClasshasSpecializations() {
-        Collection gen = Model.getFacade().getSpecializations(class2);
-        assertNotNull(gen);
-        assertTrue(gen.size() == 1);
-        assertTrue(gen.contains(gen1));
-        assertTrue(Model.getFacade().getChild(gen1) == class1);
-    }
-    
-    /**
-     * Delete the middle class in a 3 level hierarchy and make sure the
-     * generalizations and specializations on both sides get deleted as well.
-     */
-    public void testDeleteClass() {
-        Model.getUmlFactory().delete(class2);
-        Collection gens1 = Model.getFacade().getGeneralizations(class1);
-        Collection specs1 = Model.getFacade().getSpecializations(class1);
-        assertTrue(gens1.isEmpty());
-        assertTrue(specs1.isEmpty());
-        Collection gens2 = Model.getFacade().getGeneralizations(class3);
-        Collection specs2 = Model.getFacade().getSpecializations(class3);
-        assertTrue(gens2.isEmpty());
-        assertTrue(specs2.isEmpty());
-    }
-    
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        Object mmodel =
-            Model.getModelManagementFactory().createModel();
-        Model.getCoreHelper().setName(mmodel, "untitledModel");
-        Model.getModelManagementFactory().setRootModel(mmodel);
-        namespace = Model.getModelManagementFactory().createPackage();
-        class1 = Model.getCoreFactory().buildClass("Class1", namespace);
-        class2 = Model.getCoreFactory().buildClass("Class2", namespace);
-        class3 = Model.getCoreFactory().buildClass("Class3", namespace);
-        
-        gen1 =
-            Model.getCoreFactory().buildGeneralization(class1, class2);
-        gen2 =
-            Model.getCoreFactory().buildGeneralization(class2, class3);
-        
-    }
+  /** Make sure that the generalization can be retrieved and followed to the correct parent. */
+  public void testClasshasGeneralizations() {
+    Collection gen = Model.getFacade().getGeneralizations(class2);
+    assertNotNull(gen);
+    assertTrue(gen.size() == 1);
+    assertTrue(gen.contains(gen2));
+    assertTrue(Model.getFacade().getParent(gen2) == class3);
+  }
 
+  /** Make sure that the specialization can be retrieved and followed to the correct child. */
+  public void testClasshasSpecializations() {
+    Collection gen = Model.getFacade().getSpecializations(class2);
+    assertNotNull(gen);
+    assertTrue(gen.size() == 1);
+    assertTrue(gen.contains(gen1));
+    assertTrue(Model.getFacade().getChild(gen1) == class1);
+  }
+
+  /**
+   * Delete the middle class in a 3 level hierarchy and make sure the generalizations and
+   * specializations on both sides get deleted as well.
+   */
+  public void testDeleteClass() {
+    Model.getUmlFactory().delete(class2);
+    Collection gens1 = Model.getFacade().getGeneralizations(class1);
+    Collection specs1 = Model.getFacade().getSpecializations(class1);
+    assertTrue(gens1.isEmpty());
+    assertTrue(specs1.isEmpty());
+    Collection gens2 = Model.getFacade().getGeneralizations(class3);
+    Collection specs2 = Model.getFacade().getSpecializations(class3);
+    assertTrue(gens2.isEmpty());
+    assertTrue(specs2.isEmpty());
+  }
+
+  /**
+   * @see junit.framework.TestCase#setUp()
+   */
+  protected void setUp() throws Exception {
+    super.setUp();
+    Object mmodel = Model.getModelManagementFactory().createModel();
+    Model.getCoreHelper().setName(mmodel, "untitledModel");
+    Model.getModelManagementFactory().setRootModel(mmodel);
+    namespace = Model.getModelManagementFactory().createPackage();
+    class1 = Model.getCoreFactory().buildClass("Class1", namespace);
+    class2 = Model.getCoreFactory().buildClass("Class2", namespace);
+    class3 = Model.getCoreFactory().buildClass("Class3", namespace);
+
+    gen1 = Model.getCoreFactory().buildGeneralization(class1, class2);
+    gen2 = Model.getCoreFactory().buildGeneralization(class2, class3);
+  }
 }

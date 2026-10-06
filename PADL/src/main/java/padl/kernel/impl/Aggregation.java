@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -18,29 +18,30 @@ import padl.kernel.IFirstClassEntity;
 import padl.kernel.IMethod;
 
 class Aggregation extends Association implements IElementMarker, IAggregation {
-	private static final long serialVersionUID = 510083598466826486L;
-	public static String getLogo() {
-		return "[]-->";
-	}
-	public Aggregation(final Association pAssociation) {
-		this(pAssociation.getID(), pAssociation.getTargetEntity(), pAssociation
-			.getCardinality());
-	}
-	public Aggregation(
-		final char[] anID,
-		final IFirstClassEntity aTargetEntity,
-		final Cardinality aCardinality) {
+  private static final long serialVersionUID = 510083598466826486L;
 
-		super(anID, aTargetEntity, aCardinality);
-	}
-	public Aggregation(
-		final char[] anID,
-		final IFirstClassEntity aTargetEntity,
-		final Cardinality aCardinality,
-		final IField anOriginField,
-		final IMethod anOriginGetterMethod,
-		final IMethod anOriginSetterMethod) {
+  public static String getLogo() {
+    return "[]-->";
+  }
 
-		super(anID, aTargetEntity, aCardinality);
-	}
+  public Aggregation(final Association pAssociation) {
+    this(pAssociation.getID(), pAssociation.getTargetEntity(), pAssociation.getCardinality());
+  }
+
+  public Aggregation(
+      final char[] anID, final IFirstClassEntity aTargetEntity, final Cardinality aCardinality) {
+
+    super(anID, aTargetEntity, aCardinality);
+  }
+
+  public Aggregation(
+      final char[] anID,
+      final IFirstClassEntity aTargetEntity,
+      final Cardinality aCardinality,
+      final IField anOriginField,
+      final IMethod anOriginGetterMethod,
+      final IMethod anOriginSetterMethod) {
+
+    super(anID, aTargetEntity, aCardinality);
+  }
 }

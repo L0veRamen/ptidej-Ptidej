@@ -29,57 +29,52 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.argouml.model.Model;
 import org.tigris.gef.util.ChildGenerator;
 
 /**
- * Utility class to generate the subclasses of a class. It recursively moves
- * down the class hierarchy. But it does that in a safe way that will not hang
- * in case of cyclic inheritance.
- * 
+ * Utility class to generate the subclasses of a class. It recursively moves down the class
+ * hierarchy. But it does that in a safe way that will not hang in case of cyclic inheritance.
+ *
  * @stereotype singleton
  */
-
 public class GenDescendantClasses implements ChildGenerator {
-    private static final GenDescendantClasses SINGLETON =
-        new GenDescendantClasses();
+  private static final GenDescendantClasses SINGLETON = new GenDescendantClasses();
 
-    /**
-     * @return Returns the sINGLETON.
-     */
-    public static GenDescendantClasses getSINGLETON() {
-        return SINGLETON;
+  /**
+   * @return Returns the sINGLETON.
+   */
+  public static GenDescendantClasses getSINGLETON() {
+    return SINGLETON;
+  }
+
+  /*
+   * @see org.tigris.gef.util.ChildGenerator#gen(java.lang.Object)
+   */
+  public Enumeration gen(Object o) {
+    Set res = new HashSet();
+    if (Model.getFacade().isAGeneralizableElement(o)) {
+      Object cls = o;
+      accumulateDescendants(cls, res);
     }
+    return Collections.enumeration(res);
+  }
 
-    /*
-     * @see org.tigris.gef.util.ChildGenerator#gen(java.lang.Object)
-     */
-    public Enumeration gen(Object o) {
-        Set res = new HashSet();
-        if (Model.getFacade().isAGeneralizableElement(o)) {
-            Object cls = o;
-            accumulateDescendants(cls, res);
-        }
-        return Collections.enumeration(res);
+  /**
+   * @param cls the starting class (in fact GeneralizableElement)
+   * @param accum the accumulated list of descendants
+   */
+  private void accumulateDescendants(final Object cls, Collection accum) {
+    Collection gens = Model.getFacade().getSpecializations(cls);
+    if (gens == null) {
+      return;
     }
-
-
-    /**
-     * @param cls the starting class (in fact GeneralizableElement)
-     * @param accum the accumulated list of descendants
-     */
-    private void accumulateDescendants(final Object cls, Collection accum) {
-	Collection gens = Model.getFacade().getSpecializations(cls);
-	if (gens == null) {
-	    return;
-	}
-	for (Object g : gens) {
-	    Object ge = Model.getFacade().getSpecific(g);
-	    if (!accum.contains(ge)) {
-		accum.add(ge);
-		accumulateDescendants(cls, accum);
-	    }
-	}
+    for (Object g : gens) {
+      Object ge = Model.getFacade().getSpecific(g);
+      if (!accum.contains(ge)) {
+        accum.add(ge);
+        accumulateDescendants(cls, accum);
+      }
     }
-} 
+  }
+}

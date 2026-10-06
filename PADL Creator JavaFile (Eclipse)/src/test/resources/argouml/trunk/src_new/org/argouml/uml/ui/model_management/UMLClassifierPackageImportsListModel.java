@@ -25,54 +25,51 @@
 package org.argouml.uml.ui.model_management;
 
 import java.beans.PropertyChangeEvent;
-
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
 /**
  * Shows the ModelElements imported in a Package.
- * 
+ *
  * @author Michiel
  */
 class UMLClassifierPackageImportsListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLClassifierRoleBaseListModel.
-     */
-    public UMLClassifierPackageImportsListModel() {
-        super("elementImport"); // This is the right event.
-    }
+  /** Constructor for UMLClassifierRoleBaseListModel. */
+  public UMLClassifierPackageImportsListModel() {
+    super("elementImport"); // This is the right event.
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        setAllElements(Model.getFacade().getImportedElements(getTarget()));
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    setAllElements(Model.getFacade().getImportedElements(getTarget()));
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object elem) {
-        if (!Model.getFacade().isAElementImport(elem)) {
-            return false;
-        }
-        return Model.getFacade().getPackage(elem) == getTarget();
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object elem) {
+    if (!Model.getFacade().isAElementImport(elem)) {
+      return false;
     }
+    return Model.getFacade().getPackage(elem) == getTarget();
+  }
 
-    /**
-     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
-     */
-    // TODO: Should this really be overriding the super class? - tfm
-    public void propertyChange(PropertyChangeEvent e) {
-        if (isValidEvent(e)) {
-            removeAllElements();
-            setBuildingModel(true);
-            buildModelList();
-            setBuildingModel(false);
-            if (getSize() > 0) {
-                fireIntervalAdded(this, 0, getSize() - 1);
-            }
-        }
+  /**
+   * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+   */
+  // TODO: Should this really be overriding the super class? - tfm
+  public void propertyChange(PropertyChangeEvent e) {
+    if (isValidEvent(e)) {
+      removeAllElements();
+      setBuildingModel(true);
+      buildModelList();
+      setBuildingModel(false);
+      if (getSize() > 0) {
+        fireIntervalAdded(this, 0, getSize() - 1);
+      }
     }
+  }
 }

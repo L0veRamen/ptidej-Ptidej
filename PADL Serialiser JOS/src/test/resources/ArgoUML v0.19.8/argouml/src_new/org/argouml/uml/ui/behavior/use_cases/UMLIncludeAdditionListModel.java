@@ -28,39 +28,30 @@ import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
 /**
- * 
  * @author MarkusK
- *
  */
 public class UMLIncludeAdditionListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLIncludeAdditionComboBoxModel.
-     */
-    public UMLIncludeAdditionListModel() {
-        super("addition");
-        Model.getPump().addClassModelEventListener(this,
-                Model.getMetaTypes().getNamespace(), "ownedElement");
-    }
+  /** Constructor for UMLIncludeAdditionComboBoxModel. */
+  public UMLIncludeAdditionListModel() {
+    super("addition");
+    Model.getPump()
+        .addClassModelEventListener(this, Model.getMetaTypes().getNamespace(), "ownedElement");
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (!isEmpty())
-            removeAllElements();
-        addElement(Model.getFacade().getAddition(getTarget()));
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (!isEmpty()) removeAllElements();
+    addElement(Model.getFacade().getAddition(getTarget()));
+  }
 
-
-
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(java.lang.Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().isAUseCase(element)
-            && Model.getFacade().getNamespace(getTarget())
-                == Model.getFacade().getNamespace(element);
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(java.lang.Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().isAUseCase(element)
+        && Model.getFacade().getNamespace(getTarget()) == Model.getFacade().getNamespace(element);
+  }
 }

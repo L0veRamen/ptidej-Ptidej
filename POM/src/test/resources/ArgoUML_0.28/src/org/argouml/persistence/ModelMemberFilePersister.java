@@ -33,7 +33,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-
 import org.apache.log4j.Logger;
 import org.argouml.application.api.Argo;
 import org.argouml.application.helpers.ApplicationVersion;
@@ -54,340 +53,316 @@ import org.xml.sax.InputSource;
 
 /**
  * The file persister for the UML model.
+ *
  * @author Bob Tarling
  */
-class ModelMemberFilePersister extends MemberFilePersister 
-    implements XmiExtensionParser {
+class ModelMemberFilePersister extends MemberFilePersister implements XmiExtensionParser {
 
-    /**
-     * Logger.
-     */
-    private static final Logger LOG =
-        Logger.getLogger(ModelMemberFilePersister.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(ModelMemberFilePersister.class);
 
-    /**
-     * Loads a model (XMI only) from a URL. BE ADVISED this
-     * method has a side effect. It sets _UUIDREFS to the model.<p>
-     *
-     * If there is a problem with the xmi file, an error is set in the
-     * getLastLoadStatus() field. This needs to be examined by the
-     * calling function.<p>
-     *
-     * @see org.argouml.persistence.MemberFilePersister#load(org.argouml.kernel.Project,
-     * java.io.InputStream)
-     */
-    public void load(Project project, URL url)
-        throws OpenException {
-        
-        load(project, new InputSource(url.toExternalForm()));
+  /**
+   * Loads a model (XMI only) from a URL. BE ADVISED this method has a side effect. It sets
+   * _UUIDREFS to the model.
+   *
+   * <p>If there is a problem with the xmi file, an error is set in the getLastLoadStatus() field.
+   * This needs to be examined by the calling function.
+   *
+   * <p>
+   *
+   * @see org.argouml.persistence.MemberFilePersister#load(org.argouml.kernel.Project,
+   *     java.io.InputStream)
+   */
+  public void load(Project project, URL url) throws OpenException {
+
+    load(project, new InputSource(url.toExternalForm()));
+  }
+
+  /**
+   * Loads a model (XMI only) from an input stream. BE ADVISED this method has a side effect. It
+   * sets _UUIDREFS to the model.
+   *
+   * <p>If there is a problem with the xmi file, an error is set in the getLastLoadStatus() field.
+   * This needs to be examined by the calling function.
+   *
+   * <p>
+   *
+   * @see org.argouml.persistence.MemberFilePersister#load(org.argouml.kernel.Project,
+   *     java.io.InputStream)
+   */
+  public void load(Project project, InputStream inputStream) throws OpenException {
+
+    load(project, new InputSource(inputStream));
+  }
+
+  private void load(Project project, InputSource source) throws OpenException {
+
+    Object mmodel = null;
+
+    // 2002-07-18
+    // Jaap Branderhorst
+    // changed the loading of the projectfiles to solve hanging
+    // of argouml if a project is corrupted. Issue 913
+    // Created xmireader with method getErrors to check if parsing went well
+    try {
+      source.setEncoding(Argo.getEncoding());
+      readModels(source);
+      mmodel = getCurModel();
+    } catch (OpenException e) {
+      LOG.error("UmlException caught", e);
+      throw e;
     }
-    
-    /**
-     * Loads a model (XMI only) from an input stream. BE ADVISED this
-     * method has a side effect. It sets _UUIDREFS to the model.<p>
-     *
-     * If there is a problem with the xmi file, an error is set in the
-     * getLastLoadStatus() field. This needs to be examined by the
-     * calling function.<p>
-     *
-     * @see org.argouml.persistence.MemberFilePersister#load(org.argouml.kernel.Project,
-     * java.io.InputStream)
-     */
-    public void load(Project project, InputStream inputStream)
-        throws OpenException {
-        
-        load(project, new InputSource(inputStream));
+    // This should probably be inside xmiReader.parse
+    // but there is another place in this source
+    // where XMIReader is used, but it appears to be
+    // the NSUML XMIReader.  When Argo XMIReader is used
+    // consistently, it can be responsible for loading
+    // the listener.  Until then, do it here.
+    Model.getUmlHelper().addListenersToModel(mmodel);
+
+    project.addMember(mmodel);
+
+    project.setUUIDRefs(new HashMap<String, Object>(getUUIDRefs()));
+  }
+
+  /*
+   * @see org.argouml.persistence.MemberFilePersister#getMainTag()
+   */
+  public String getMainTag() {
+    try {
+      return Model.getXmiReader().getTagName();
+    } catch (UmlException e) {
+      // Should never happen - something's really wrong
+      throw new RuntimeException(e);
     }
+  }
 
+  /**
+   * Save the project model to XMI.
+   *
+   * @see org.argouml.persistence.MemberFilePersister#save(ProjectMember, OutputStream)
+   */
+  public void save(ProjectMember member, OutputStream outStream) throws SaveException {
 
-    private void load(Project project, InputSource source)
-        throws OpenException {
+    ProjectMemberModel pmm = (ProjectMemberModel) member;
+    Object model = pmm.getModel();
 
-        Object mmodel = null;
+    try {
+      XmiWriter xmiWriter =
+          Model.getXmiWriter(
+              model,
+              outStream,
+              ApplicationVersion.getVersion() + "(" + UmlFilePersister.PERSISTENCE_VERSION + ")");
 
-        // 2002-07-18
-        // Jaap Branderhorst
-        // changed the loading of the projectfiles to solve hanging
-        // of argouml if a project is corrupted. Issue 913
-        // Created xmireader with method getErrors to check if parsing went well
-        try {
-            source.setEncoding(Argo.getEncoding());
-            readModels(source);
-            mmodel = getCurModel();
-        } catch (OpenException e) {
-            LOG.error("UmlException caught", e);
-            throw e;
+      xmiWriter.write();
+      outStream.flush();
+    } catch (UmlException e) {
+      throw new SaveException(e);
+    } catch (IOException e) {
+      throw new SaveException(e);
+    }
+  }
+
+  public void parse(String label, String xmiExtensionString) {
+    LOG.info("Parsing an extension for " + label);
+  }
+
+  private Object curModel;
+  private HashMap<String, Object> uUIDRefs;
+
+  private Collection elementsRead;
+
+  /**
+   * @return the current model
+   */
+  public Object getCurModel() {
+    return curModel;
+  }
+
+  /**
+   * Return XMI id to object map for the most recently read XMI file.
+   *
+   * @return the UUID
+   */
+  public HashMap<String, Object> getUUIDRefs() {
+    return uUIDRefs;
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // main parsing methods
+
+  /**
+   * Read an XMI file from the given URL.
+   *
+   * @param url the URL
+   * @param xmiExtensionParser the XmiExtensionParser
+   * @throws OpenException when there is an IO error
+   */
+  public synchronized void readModels(URL url, XmiExtensionParser xmiExtensionParser)
+      throws OpenException {
+    LOG.info("=======================================");
+    LOG.info("== READING MODEL " + url);
+    try {
+      // TODO: What progressMgr is to be used here? Where does
+      //       it come from?
+      InputSource source =
+          new InputSource(new XmiInputStream(url.openStream(), xmiExtensionParser, 100000, null));
+
+      source.setSystemId(url.toString());
+      readModels(source);
+    } catch (IOException ex) {
+      throw new OpenException(ex);
+    }
+  }
+
+  /**
+   * Read a XMI file from the given inputsource.
+   *
+   * @param source The InputSource. The systemId of the input source should be set so that it can be
+   *     used to resolve external references.
+   * @throws OpenException If an error occur while reading the source
+   */
+  public synchronized void readModels(InputSource source) throws OpenException {
+
+    XmiReader reader = null;
+    try {
+      reader = Model.getXmiReader();
+
+      if (Configuration.getBoolean(Argo.KEY_XMI_STRIP_DIAGRAMS, false)) {
+        reader.setIgnoredElements(new String[] {"UML:Diagram"});
+      } else {
+        reader.setIgnoredElements(null);
+      }
+
+      List<String> searchPath = reader.getSearchPath();
+      String pathList = System.getProperty("org.argouml.model.modules_search_path");
+      if (pathList != null) {
+        String[] paths = pathList.split(",");
+        for (String path : paths) {
+          if (!searchPath.contains(path)) {
+            reader.addSearchPath(path);
+          }
         }
-        // This should probably be inside xmiReader.parse
-        // but there is another place in this source
-        // where XMIReader is used, but it appears to be
-        // the NSUML XMIReader.  When Argo XMIReader is used
-        // consistently, it can be responsible for loading
-        // the listener.  Until then, do it here.
-        Model.getUmlHelper().addListenersToModel(mmodel);
+      }
+      reader.addSearchPath(source.getSystemId());
 
-        project.addMember(mmodel);
-
-        project.setUUIDRefs(new HashMap<String, Object>(getUUIDRefs()));
-    }
-
-    /*
-     * @see org.argouml.persistence.MemberFilePersister#getMainTag()
-     */
-    public String getMainTag() {
-        try {
-            return Model.getXmiReader().getTagName();
-        } catch (UmlException e) {
-            // Should never happen - something's really wrong
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Save the project model to XMI.
-     * 
-     * @see org.argouml.persistence.MemberFilePersister#save(ProjectMember, OutputStream)
-     */
-    public void save(ProjectMember member, OutputStream outStream)
-        throws SaveException {
-
-        ProjectMemberModel pmm = (ProjectMemberModel) member;
-        Object model = pmm.getModel();
-
-        try {
-            XmiWriter xmiWriter = 
-                Model.getXmiWriter(model, outStream, 
-                        ApplicationVersion.getVersion() + "(" 
-                        + UmlFilePersister.PERSISTENCE_VERSION + ")");
-
-            xmiWriter.write();
-            outStream.flush();
-        } catch (UmlException e) {
-            throw new SaveException(e);
-        } catch (IOException e) {
-            throw new SaveException(e);
-        }
-
-    }
-    
-    public void parse(String label, String xmiExtensionString) {
-        LOG.info("Parsing an extension for " + label);
-    }
-    
-    private Object curModel;
-    private HashMap<String, Object> uUIDRefs;
-
-    private Collection elementsRead;
-
-
-    /**
-     * @return the current model
-     */
-    public Object getCurModel() {
-        return curModel;
-    }
-
-    /**
-     * Return XMI id to object map for the most recently read XMI file.
-     * 
-     * @return the UUID
-     */
-    public HashMap<String, Object> getUUIDRefs() {
-        return uUIDRefs;
-    }
-
-    ////////////////////////////////////////////////////////////////
-    // main parsing methods
-
-    /**
-     * Read an XMI file from the given URL.
-     *
-     * @param url the URL
-     * @param xmiExtensionParser the XmiExtensionParser
-     * @throws OpenException when there is an IO error
-     */
-    public synchronized void readModels(URL url,
-            XmiExtensionParser xmiExtensionParser) throws OpenException {
-        LOG.info("=======================================");
-        LOG.info("== READING MODEL " + url);
-        try {
-            // TODO: What progressMgr is to be used here? Where does
-            //       it come from?
-            InputSource source =
-                new InputSource(new XmiInputStream(
-                    url.openStream(), xmiExtensionParser, 100000, null));
-            
-            source.setSystemId(url.toString());
-            readModels(source);
-        } catch (IOException ex) {
-            throw new OpenException(ex);
-        }
-    }
-
-    /**
-     * Read a XMI file from the given inputsource.
-     * 
-     * @param source The InputSource. The systemId of the input source should be
-     *                set so that it can be used to resolve external references.
-     * @throws OpenException If an error occur while reading the source
-     */
-    public synchronized void readModels(InputSource source)
-        throws OpenException {
-
-        XmiReader reader = null;
-        try {
-            reader = Model.getXmiReader();
-            
-            if (Configuration.getBoolean(Argo.KEY_XMI_STRIP_DIAGRAMS, false)) {
-                reader.setIgnoredElements(new String[] {"UML:Diagram"});
-            } else {
-                reader.setIgnoredElements(null);
-            }
-
-            List<String> searchPath = reader.getSearchPath();
-            String pathList = 
-                System.getProperty("org.argouml.model.modules_search_path");
-            if (pathList != null) {
-                String[] paths = pathList.split(",");
-                for (String path : paths) {
-                    if (!searchPath.contains(path)) {
-                        reader.addSearchPath(path);
-                    }
-                }
-            }
-            reader.addSearchPath(source.getSystemId());
-            
-            curModel = null;
-            elementsRead = reader.parse(source, false);
-            if (elementsRead != null && !elementsRead.isEmpty()) {
-                Facade facade = Model.getFacade();
-                Object current;
-                Iterator elements = elementsRead.iterator();
-                while (elements.hasNext()) {
-                    current = elements.next();
-                    if (facade.isAModel(current)) {
-                        LOG.info("Loaded model '" + facade.getName(current)
-                                 + "'");
-                        if (curModel == null) {
-                            curModel = current;
-                        }
-                    }
-                }
-            }
-            uUIDRefs = 
-                new HashMap<String, Object>(reader.getXMIUUIDToObjectMap());
-        } catch (XmiException ex) {
-            throw new XmiFormatException(ex);
-        } catch (UmlException ex) {
-            // Could this be some other type of internal error that we want
-            // to handle differently?  Don't think so.  - tfm
-            throw new XmiFormatException(ex);
-        }
-        LOG.info("=======================================");
-    }
-
-    /**
-     * Create and register diagrams for activity and statemachines in the
-     * model(s) of the project. If no other diagrams are created, a default
-     * Class Diagram will be created. ArgoUML currently requires at least one
-     * diagram for proper operation. 
-     * 
-     * TODO: Move to XmiFilePersister (protected)
-     * 
-     * @param project
-     *            The project
-     */
-    public void registerDiagrams(Project project) {
-        registerDiagramsInternal(project, elementsRead, true);
-    }
-    
-
-    /**
-     * Internal method create diagrams for activity graphs and state machines.
-     * It exists soley to contain common functionality from the two public
-     * methods.  It can be merged into its caller when the deprecated version
-     * of the public method goes away.
-     * 
-     * @param project
-     *            The project
-     * @param elements
-     *            Collection of top level model elements to process
-     * @param atLeastOne
-     *            If true, forces at least one diagram to be created.
-     */
-    private void registerDiagramsInternal(Project project, Collection elements,
-            boolean atLeastOne) {
+      curModel = null;
+      elementsRead = reader.parse(source, false);
+      if (elementsRead != null && !elementsRead.isEmpty()) {
         Facade facade = Model.getFacade();
-        Collection diagramsElement = new ArrayList();
-        Iterator it = elements.iterator();
-        while (it.hasNext()) {
-            Object element = it.next();
-            if (facade.isAModel(element)) {
-                diagramsElement.addAll(Model.getModelManagementHelper()
-                        .getAllModelElementsOfKind(element,
-                                Model.getMetaTypes().getStateMachine()));
-            } else if (facade.isAStateMachine(element)) {
-                diagramsElement.add(element);
+        Object current;
+        Iterator elements = elementsRead.iterator();
+        while (elements.hasNext()) {
+          current = elements.next();
+          if (facade.isAModel(current)) {
+            LOG.info("Loaded model '" + facade.getName(current) + "'");
+            if (curModel == null) {
+              curModel = current;
             }
+          }
         }
-        DiagramFactory diagramFactory = DiagramFactory.getInstance();
-        it = diagramsElement.iterator();
-        while (it.hasNext()) {
-            Object statemachine = it.next();
-            Object namespace = facade.getNamespace(statemachine);
-            if (namespace == null) {
-                namespace = facade.getContext(statemachine);
-                Model.getCoreHelper().setNamespace(statemachine, namespace);
-            }
-            
-            ArgoDiagram diagram = null;
-            if (facade.isAActivityGraph(statemachine)) {
-                LOG.info("Creating activity diagram for "
-                        + facade.getUMLClassName(statemachine)
-                        + "<<" + facade.getName(statemachine) + ">>");
-                diagram = diagramFactory.createDiagram(
-                        DiagramType.Activity,
-                	namespace,
-                	statemachine);
-            } else {
-                LOG.info("Creating state diagram for "
-                        + facade.getUMLClassName(statemachine)
-                        + "<<" + facade.getName(statemachine) + ">>");
-                diagram = diagramFactory.createDiagram(
-                        DiagramType.State,
-                	namespace,
-                	statemachine);
-            }
-            if (diagram != null) {
-                project.addMember(diagram);
-            }
-            
-        }
-        // ISSUE 3516 : Make sure there is at least one diagram because
-        // ArgoUML requires it for correct operation
-        if (atLeastOne && project.getDiagramCount() < 1) {
-            ArgoDiagram d = diagramFactory.createDiagram(
-                    DiagramType.Class, curModel, null);
-            project.addMember(d);
-        }
-        if (project.getDiagramCount() >= 1
-                && project.getActiveDiagram() == null) {
-            project.setActiveDiagram(
-                    project.getDiagramList().get(0));
-        }
+      }
+      uUIDRefs = new HashMap<String, Object>(reader.getXMIUUIDToObjectMap());
+    } catch (XmiException ex) {
+      throw new XmiFormatException(ex);
+    } catch (UmlException ex) {
+      // Could this be some other type of internal error that we want
+      // to handle differently?  Don't think so.  - tfm
+      throw new XmiFormatException(ex);
     }
+    LOG.info("=======================================");
+  }
 
-    /**
-     * @return Returns the elementsRead.
-     */
-    public Collection getElementsRead() {
-        return elementsRead;
-    }
+  /**
+   * Create and register diagrams for activity and statemachines in the model(s) of the project. If
+   * no other diagrams are created, a default Class Diagram will be created. ArgoUML currently
+   * requires at least one diagram for proper operation.
+   *
+   * <p>TODO: Move to XmiFilePersister (protected)
+   *
+   * @param project The project
+   */
+  public void registerDiagrams(Project project) {
+    registerDiagramsInternal(project, elementsRead, true);
+  }
 
-    /**
-     * @param elements The elementsRead to set.
-     */
-    public void setElementsRead(Collection elements) {
-        this.elementsRead = elements;
+  /**
+   * Internal method create diagrams for activity graphs and state machines. It exists soley to
+   * contain common functionality from the two public methods. It can be merged into its caller when
+   * the deprecated version of the public method goes away.
+   *
+   * @param project The project
+   * @param elements Collection of top level model elements to process
+   * @param atLeastOne If true, forces at least one diagram to be created.
+   */
+  private void registerDiagramsInternal(Project project, Collection elements, boolean atLeastOne) {
+    Facade facade = Model.getFacade();
+    Collection diagramsElement = new ArrayList();
+    Iterator it = elements.iterator();
+    while (it.hasNext()) {
+      Object element = it.next();
+      if (facade.isAModel(element)) {
+        diagramsElement.addAll(
+            Model.getModelManagementHelper()
+                .getAllModelElementsOfKind(element, Model.getMetaTypes().getStateMachine()));
+      } else if (facade.isAStateMachine(element)) {
+        diagramsElement.add(element);
+      }
     }
+    DiagramFactory diagramFactory = DiagramFactory.getInstance();
+    it = diagramsElement.iterator();
+    while (it.hasNext()) {
+      Object statemachine = it.next();
+      Object namespace = facade.getNamespace(statemachine);
+      if (namespace == null) {
+        namespace = facade.getContext(statemachine);
+        Model.getCoreHelper().setNamespace(statemachine, namespace);
+      }
+
+      ArgoDiagram diagram = null;
+      if (facade.isAActivityGraph(statemachine)) {
+        LOG.info(
+            "Creating activity diagram for "
+                + facade.getUMLClassName(statemachine)
+                + "<<"
+                + facade.getName(statemachine)
+                + ">>");
+        diagram = diagramFactory.createDiagram(DiagramType.Activity, namespace, statemachine);
+      } else {
+        LOG.info(
+            "Creating state diagram for "
+                + facade.getUMLClassName(statemachine)
+                + "<<"
+                + facade.getName(statemachine)
+                + ">>");
+        diagram = diagramFactory.createDiagram(DiagramType.State, namespace, statemachine);
+      }
+      if (diagram != null) {
+        project.addMember(diagram);
+      }
+    }
+    // ISSUE 3516 : Make sure there is at least one diagram because
+    // ArgoUML requires it for correct operation
+    if (atLeastOne && project.getDiagramCount() < 1) {
+      ArgoDiagram d = diagramFactory.createDiagram(DiagramType.Class, curModel, null);
+      project.addMember(d);
+    }
+    if (project.getDiagramCount() >= 1 && project.getActiveDiagram() == null) {
+      project.setActiveDiagram(project.getDiagramList().get(0));
+    }
+  }
+
+  /**
+   * @return Returns the elementsRead.
+   */
+  public Collection getElementsRead() {
+    return elementsRead;
+  }
+
+  /**
+   * @param elements The elementsRead to set.
+   */
+  public void setElementsRead(Collection elements) {
+    this.elementsRead = elements;
+  }
 }

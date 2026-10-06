@@ -25,9 +25,7 @@
 package org.argouml.uml.ui.behavior.state_machines;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.Action;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.AbstractActionNewModelElement;
@@ -38,29 +36,26 @@ import org.argouml.uml.ui.AbstractActionNewModelElement;
  */
 public class ActionNewSynchState extends AbstractActionNewModelElement {
 
-    private static final ActionNewSynchState SINGLETON =
-        new ActionNewSynchState();
+  private static final ActionNewSynchState SINGLETON = new ActionNewSynchState();
 
-    /**
-     * Constructor for ActionNewPseudoState.
-     */
-    protected ActionNewSynchState() {
-        super();
-        putValue(Action.NAME, Translator.localize("button.new-synchstate"));
-    }
+  /** Constructor for ActionNewPseudoState. */
+  protected ActionNewSynchState() {
+    super();
+    putValue(Action.NAME, Translator.localize("button.new-synchstate"));
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        Model.getStateMachinesFactory().buildSynchState(getTarget());
-    }
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    Model.getStateMachinesFactory().buildSynchState(getTarget());
+  }
 
-    /**
-     * @return Returns the SINGLETON.
-     */
-    public static ActionNewSynchState getInstance() {
-        return SINGLETON;
-    }
+  /**
+   * @return Returns the SINGLETON.
+   */
+  public static ActionNewSynchState getInstance() {
+    return SINGLETON;
+  }
 }

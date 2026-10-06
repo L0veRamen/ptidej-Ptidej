@@ -4,19 +4,19 @@
 
 <MODE>
     <PROPS>
-        <PROPERTY NAME="commentStart" VALUE="/*" />
-        <PROPERTY NAME="commentEnd" VALUE="*/" />
-        <PROPERTY NAME="lineComment" VALUE="//" />
-        <PROPERTY NAME="wordBreakChars" VALUE=",+-=&lt;&gt;/?^&amp;*" />
+        <PROPERTY NAME="commentStart" VALUE="/*"/>
+        <PROPERTY NAME="commentEnd" VALUE="*/"/>
+        <PROPERTY NAME="lineComment" VALUE="//"/>
+        <PROPERTY NAME="wordBreakChars" VALUE=",+-=&lt;&gt;/?^&amp;*"/>
 
         <!-- Auto indent -->
-        <PROPERTY NAME="indentOpenBrackets" VALUE="{" />
-        <PROPERTY NAME="indentCloseBrackets" VALUE="}" />
+        <PROPERTY NAME="indentOpenBrackets" VALUE="{"/>
+        <PROPERTY NAME="indentCloseBrackets" VALUE="}"/>
         <PROPERTY NAME="indentNextLine"
-            VALUE="\s*(((if|while)\s*\(|else\s*|else\s+if\s*\(|for\s*\(.*\))[^{;]*)" />
+                  VALUE="\s*(((if|while)\s*\(|else\s*|else\s+if\s*\(|for\s*\(.*\))[^{;]*)"/>
         <!-- set this to 'true' if you want to use GNU coding style -->
-        <PROPERTY NAME="doubleBracketIndent" VALUE="false" />
-        <PROPERTY NAME="lineUpClosingBracket" VALUE="true" />
+        <PROPERTY NAME="doubleBracketIndent" VALUE="false"/>
+        <PROPERTY NAME="lineUpClosingBracket" VALUE="true"/>
     </PROPS>
     <RULES ESCAPE="\" IGNORE_CASE="FALSE" HIGHLIGHT_DIGITS="TRUE">
         <!-- Doxygen comment, Javadoc style -->
@@ -53,7 +53,7 @@
         <!-- preprocessor statements -->
         <SEQ TYPE="KEYWORD2">##</SEQ>
         <EOL_SPAN TYPE="KEYWORD2" DELEGATE="c::CPP">#</EOL_SPAN>
-        
+
         <EOL_SPAN TYPE="COMMENT2">//</EOL_SPAN>
         <SEQ TYPE="OPERATOR">=</SEQ>
         <SEQ TYPE="OPERATOR">!</SEQ>
@@ -74,8 +74,9 @@
         <SEQ TYPE="OPERATOR">}</SEQ>
         <SEQ TYPE="OPERATOR">{</SEQ>
         <MARK_PREVIOUS AT_WHITESPACE_END="TRUE"
-            EXCLUDE_MATCH="TRUE"
-            TYPE="LABEL">:</MARK_PREVIOUS>
+                       EXCLUDE_MATCH="TRUE"
+                       TYPE="LABEL">:
+        </MARK_PREVIOUS>
 
         <!-- Function calls -->
         <MARK_PREVIOUS TYPE="FUNCTION" EXCLUDE_MATCH="TRUE">(</MARK_PREVIOUS>
@@ -102,7 +103,7 @@
             <KEYWORD3>SEL</KEYWORD3>
             <KEYWORD3>IMP</KEYWORD3>
             <KEYWORD3>BOOL</KEYWORD3>
-            
+
             <!-- Keywords (Standard C) -->
             <KEYWORD1>auto</KEYWORD1>
             <KEYWORD1>break</KEYWORD1>
@@ -134,7 +135,7 @@
             <KEYWORD1>byref</KEYWORD1>
             <KEYWORD1>self</KEYWORD1>
             <KEYWORD1>super</KEYWORD1>
-            
+
             <!-- Preprocessor Directives (Objective C)-->
             <KEYWORD1>@interface</KEYWORD1>
             <KEYWORD1>@implementation</KEYWORD1>
@@ -147,7 +148,7 @@
             <KEYWORD1>@selector</KEYWORD1>
             <KEYWORD1>@endcode</KEYWORD1>
             <KEYWORD1>@defs</KEYWORD1>
-            
+
             <LITERAL2>true</LITERAL2>
             <LITERAL2>false</LITERAL2>
             <LITERAL2>TRUE</LITERAL2>

@@ -22,7 +22,6 @@
 // CALIFORNIA HAS NO OBLIGATIONS TO PROVIDE MAINTENANCE, SUPPORT,
 // UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
-
 package org.argouml.uml.ui.behavior.use_cases;
 
 import org.argouml.model.Model;
@@ -36,25 +35,22 @@ import org.argouml.uml.ui.UMLPlainTextDocument;
  */
 public class UMLExtensionPointLocationDocument extends UMLPlainTextDocument {
 
-    /**
-     * Constructor for UMLExtensionPointLocationDocument.
-     */
-    public UMLExtensionPointLocationDocument() {
-        super("location");
-    }
+  /** Constructor for UMLExtensionPointLocationDocument. */
+  public UMLExtensionPointLocationDocument() {
+    super("location");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLPlainTextDocument#setProperty(java.lang.String)
-     */
-    protected void setProperty(String text) {
-        Model.getUseCasesHelper().setLocation(getTarget(), text);
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLPlainTextDocument#setProperty(java.lang.String)
+   */
+  protected void setProperty(String text) {
+    Model.getUseCasesHelper().setLocation(getTarget(), text);
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLPlainTextDocument#getProperty()
-     */
-    protected String getProperty() {
-        return Model.getFacade().getLocation(getTarget());
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLPlainTextDocument#getProperty()
+   */
+  protected String getProperty() {
+    return Model.getFacade().getLocation(getTarget());
+  }
 }

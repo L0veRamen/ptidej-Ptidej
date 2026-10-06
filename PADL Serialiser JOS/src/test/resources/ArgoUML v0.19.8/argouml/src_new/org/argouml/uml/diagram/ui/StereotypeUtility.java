@@ -30,80 +30,75 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
-
 import javax.swing.Action;
-
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.Model;
 
 /**
  * @author BTarling
- *
  */
 public class StereotypeUtility {
 
-    /**
-     * Utility classes for 
-     */
-    private StereotypeUtility() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
+  /** Utility classes for */
+  private StereotypeUtility() {
+    super();
+    // TODO Auto-generated constructor stub
+  }
 
-    public static Action[] getApplyStereotypeActions(Object modelElement) {
-        Set paths = new HashSet();
-        Set availableStereotypes = new TreeSet(new Comparator() {
-            public int compare(Object o1, Object o2) {
+  public static Action[] getApplyStereotypeActions(Object modelElement) {
+    Set paths = new HashSet();
+    Set availableStereotypes =
+        new TreeSet(
+            new Comparator() {
+              public int compare(Object o1, Object o2) {
                 try {
-                    String name1 = Model.getFacade().getName(o1);
-                    String name2 = Model.getFacade().getName(o2);
-                    name1 = (name1 != null ? name1 : "");
-                    name2 = (name2 != null ? name2 : "");
+                  String name1 = Model.getFacade().getName(o1);
+                  String name2 = Model.getFacade().getName(o2);
+                  name1 = (name1 != null ? name1 : "");
+                  name2 = (name2 != null ? name2 : "");
 
-                    return name1.compareTo(name2);
+                  return name1.compareTo(name2);
                 } catch (Exception e) {
-                    throw new ClassCastException(e.getMessage());
+                  throw new ClassCastException(e.getMessage());
                 }
-            }
-        });            
-        Collection models =
-            ProjectManager.getManager().getCurrentProject().getModels();
-            
-            addAllUniqueModelElementsFrom(availableStereotypes, paths, Model.getExtensionMechanismsHelper().
-            getAllPossibleStereotypes(models, modelElement));
-        
-        if (!availableStereotypes.isEmpty()) {
-            Action[] menuActions = new Action[availableStereotypes.size()];
+              }
+            });
+    Collection models = ProjectManager.getManager().getCurrentProject().getModels();
 
-            Iterator it = availableStereotypes.iterator();
-            for (int i = 0; it.hasNext(); ++i) {
-                menuActions[i] = new ActionAddStereotype(modelElement, it.next());
-            }
-            return menuActions;
-        }
-        return null;
-    }
-    
-    /**
-     * Helper method for buildModelList.
-     * <p>
-     * Adds those elements from source that do not have the same path as any
-     * path in paths to elements, and its path to paths. Thus elements will
-     * never contain two objects with the same path, unless they are added by
-     * other means.
-     */
-    private static void addAllUniqueModelElementsFrom(Set elements, Set paths,
-            Collection source) {
-        Iterator it2 = source.iterator();
+    addAllUniqueModelElementsFrom(
+        availableStereotypes,
+        paths,
+        Model.getExtensionMechanismsHelper().getAllPossibleStereotypes(models, modelElement));
 
-        while (it2.hasNext()) {
-            Object obj = it2.next();
-            Object path = Model.getModelManagementHelper().getPath(obj);
-            if (!paths.contains(path)) {
-                paths.add(path);
-                elements.add(obj);
-            }
-        }
+    if (!availableStereotypes.isEmpty()) {
+      Action[] menuActions = new Action[availableStereotypes.size()];
+
+      Iterator it = availableStereotypes.iterator();
+      for (int i = 0; it.hasNext(); ++i) {
+        menuActions[i] = new ActionAddStereotype(modelElement, it.next());
+      }
+      return menuActions;
     }
-    
+    return null;
+  }
+
+  /**
+   * Helper method for buildModelList.
+   *
+   * <p>Adds those elements from source that do not have the same path as any path in paths to
+   * elements, and its path to paths. Thus elements will never contain two objects with the same
+   * path, unless they are added by other means.
+   */
+  private static void addAllUniqueModelElementsFrom(Set elements, Set paths, Collection source) {
+    Iterator it2 = source.iterator();
+
+    while (it2.hasNext()) {
+      Object obj = it2.next();
+      Object path = Model.getModelManagementHelper().getPath(obj);
+      if (!paths.contains(path)) {
+        paths.add(path);
+        elements.add(obj);
+      }
+    }
+  }
 }

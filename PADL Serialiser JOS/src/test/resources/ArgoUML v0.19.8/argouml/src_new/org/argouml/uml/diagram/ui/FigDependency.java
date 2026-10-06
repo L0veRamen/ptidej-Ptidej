@@ -28,7 +28,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.beans.PropertyChangeEvent;
 import java.util.Iterator;
-
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.Model;
 import org.argouml.model.ModelEventPump;
@@ -43,125 +42,123 @@ import org.tigris.gef.presentation.FigNode;
  */
 public class FigDependency extends FigEdgeModelElement {
 
-    private ArrowHeadGreater endArrow;
+  private ArrowHeadGreater endArrow;
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    /**
-     * Constructor
-     */
-    public FigDependency() {
-        addPathItem(getStereotypeFig(), new PathConvPercent(this, 50, 10));
-        endArrow = new ArrowHeadGreater();
-        endArrow.setFillColor(Color.red);
-        setDestArrowHead(endArrow);
-        setBetweenNearestPoints(true);
-        setLayer(ProjectManager.getManager()
-		 .getCurrentProject().getActiveDiagram().getLayer());
-        getFig().setDashed(true);
+  /** Constructor */
+  public FigDependency() {
+    addPathItem(getStereotypeFig(), new PathConvPercent(this, 50, 10));
+    endArrow = new ArrowHeadGreater();
+    endArrow.setFillColor(Color.red);
+    setDestArrowHead(endArrow);
+    setBetweenNearestPoints(true);
+    setLayer(ProjectManager.getManager().getCurrentProject().getActiveDiagram().getLayer());
+    getFig().setDashed(true);
+  }
+
+  /**
+   * Constructor that sets the UML element
+   *
+   * @param edge the UML element
+   */
+  public FigDependency(Object edge) {
+    this();
+    setOwner(edge);
+  }
+
+  /**
+   * @param edge theUML element
+   * @param lay the layer
+   */
+  public FigDependency(Object edge, Layer lay) {
+    this();
+    setOwner(edge);
+    setLayer(lay);
+  }
+
+  /**
+   * @see org.tigris.gef.presentation.Fig#setOwner(java.lang.Object)
+   */
+  public void setOwner(Object own) {
+    super.setOwner(own);
+
+    if (Model.getFacade().isADependency(own)) {
+      Object newDep = own; // MDependency
+      ModelEventPump pump = Model.getPump();
+      Iterator it = Model.getFacade().getSuppliers(newDep).iterator();
+      while (it.hasNext()) {
+        Object o = it.next();
+        pump.removeModelEventListener(this, o);
+        pump.addModelEventListener(this, o);
+      }
+      it = Model.getFacade().getClients(newDep).iterator();
+      while (it.hasNext()) {
+        Object o = it.next();
+        pump.removeModelEventListener(this, o);
+        pump.addModelEventListener(this, o);
+      }
+      pump.removeModelEventListener(this, newDep);
+      pump.addModelEventListener(this, newDep);
+      Object supplier = // MModelElement
+          (Model.getFacade().getSuppliers(newDep).toArray())[0];
+      Object client = // MModelElement
+          (Model.getFacade().getClients(newDep).toArray())[0];
+
+      FigNode supFN = (FigNode) getLayer().presentationFor(supplier);
+      FigNode cliFN = (FigNode) getLayer().presentationFor(client);
+
+      if (cliFN != null) {
+        setSourcePortFig(cliFN);
+        setSourceFigNode(cliFN);
+      }
+      if (supFN != null) {
+        setDestPortFig(supFN);
+        setDestFigNode(supFN);
+      }
     }
+  }
 
-    /**
-     * Constructor that sets the UML element
-     * @param edge the UML element
-     */
-    public FigDependency(Object edge) {
-        this();
-        setOwner(edge);
-    }
+  ////////////////////////////////////////////////////////////////
+  // accessors
 
-    /**
-     * @param edge theUML element
-     * @param lay the layer
-     */
-    public FigDependency(Object edge, Layer lay) {
-        this();
-        setOwner(edge);
-        setLayer(lay);
-    }
+  /**
+   * @see org.tigris.gef.presentation.FigEdge#setFig(org.tigris.gef.presentation.Fig)
+   */
+  public void setFig(Fig f) {
+    super.setFig(f);
+    getFig().setDashed(true);
+    // computeRoute();
+    // this recomputes the route if you reload the diagram.
+  }
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#setOwner(java.lang.Object)
-     */
-    public void setOwner(Object own) {
-        super.setOwner(own);
+  /**
+   * @see org.argouml.uml.diagram.ui.FigEdgeModelElement#canEdit(org.tigris.gef.presentation.Fig)
+   */
+  protected boolean canEdit(Fig f) {
+    return false;
+  }
 
-        if (Model.getFacade().isADependency(own)) {
-            Object newDep = own; //MDependency
-            ModelEventPump pump = Model.getPump();
-            Iterator it = Model.getFacade().getSuppliers(newDep).iterator();
-            while (it.hasNext()) {
-                Object o = it.next();
-                pump.removeModelEventListener(this, o);
-                pump.addModelEventListener(this, o);
-            }
-            it = Model.getFacade().getClients(newDep).iterator();
-            while (it.hasNext()) {
-                Object o = it.next();
-                pump.removeModelEventListener(this, o);
-                pump.addModelEventListener(this, o);
-            }
-            pump.removeModelEventListener(this, newDep);
-            pump.addModelEventListener(this, newDep);
-            Object supplier =	// MModelElement
-                (Model.getFacade().getSuppliers(newDep).toArray())[0];
-            Object client =	// MModelElement
-                (Model.getFacade().getClients(newDep).toArray())[0];
+  ////////////////////////////////////////////////////////////////
+  // event handlers
 
-            FigNode supFN = (FigNode) getLayer().presentationFor(supplier);
-            FigNode cliFN = (FigNode) getLayer().presentationFor(client);
+  /**
+   * This is called aftern any part of the UML MModelElement has changed.
+   *
+   * @see
+   *     org.argouml.uml.diagram.ui.FigEdgeModelElement#modelChanged(java.beans.PropertyChangeEvent)
+   */
+  protected void modelChanged(PropertyChangeEvent e) {
+    // do not set _name
+    updateStereotypeText();
+  }
 
-            if (cliFN != null) {
-                setSourcePortFig(cliFN);
-                setSourceFigNode(cliFN);
-            }
-            if (supFN != null) {
-                setDestPortFig(supFN);
-                setDestFigNode(supFN);
-            }
-        }
-    }
-    ////////////////////////////////////////////////////////////////
-    // accessors
-
-    /**
-     * @see org.tigris.gef.presentation.FigEdge#setFig(org.tigris.gef.presentation.Fig)
-     */
-    public void setFig(Fig f) {
-        super.setFig(f);
-        getFig().setDashed(true);
-        // computeRoute();
-        // this recomputes the route if you reload the diagram.
-    }
-
-    /**
-     * @see org.argouml.uml.diagram.ui.FigEdgeModelElement#canEdit(org.tigris.gef.presentation.Fig)
-     */
-    protected boolean canEdit(Fig f) {
-        return false;
-    }
-
-    ////////////////////////////////////////////////////////////////
-    // event handlers
-
-    /**
-     * This is called aftern any part of the UML MModelElement has
-     * changed.
-     *
-     * @see org.argouml.uml.diagram.ui.FigEdgeModelElement#modelChanged(java.beans.PropertyChangeEvent)
-     */
-    protected void modelChanged(PropertyChangeEvent e) {
-        // do not set _name
-        updateStereotypeText();
-    }
-
-    /**
-     * @see org.tigris.gef.presentation.Fig#paint(java.awt.Graphics)
-     */
-    public void paint(Graphics g) {
-        endArrow.setLineColor(getLineColor());
-        super.paint(g);
-    }
-
+  /**
+   * @see org.tigris.gef.presentation.Fig#paint(java.awt.Graphics)
+   */
+  public void paint(Graphics g) {
+    endArrow.setLineColor(getLineColor());
+    super.paint(g);
+  }
 } /* end class FigDependency */

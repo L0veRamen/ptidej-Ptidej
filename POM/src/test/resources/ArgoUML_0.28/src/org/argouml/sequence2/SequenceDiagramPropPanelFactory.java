@@ -37,28 +37,24 @@ import org.argouml.uml.ui.PropPanelFactory;
  */
 class SequenceDiagramPropPanelFactory implements PropPanelFactory {
 
-    public PropPanel createPropPanel(Object object) {
-        if (object instanceof UMLSequenceDiagram) {
-            return new PropPanelUMLSequenceDiagram();
-        }
-        return null;
+  public PropPanel createPropPanel(Object object) {
+    if (object instanceof UMLSequenceDiagram) {
+      return new PropPanelUMLSequenceDiagram();
     }
+    return null;
+  }
 
-    /**
-     * The properties panel for a sequence diagram.
-     *
-     * @author jaap.branderhorst@xs4all.nl
-     * @since Jan 3, 2003
-     */
-    class PropPanelUMLSequenceDiagram extends PropPanelDiagram {
+  /**
+   * The properties panel for a sequence diagram.
+   *
+   * @author jaap.branderhorst@xs4all.nl
+   * @since Jan 3, 2003
+   */
+  class PropPanelUMLSequenceDiagram extends PropPanelDiagram {
 
-        /**
-         * Constructor for PropPanelUMLSequenceDiagram.
-         */
-        public PropPanelUMLSequenceDiagram() {
-            super(Translator.localize("label.sequence-diagram"),
-                    lookupIcon("SequenceDiagram"));
-        }
-
+    /** Constructor for PropPanelUMLSequenceDiagram. */
+    public PropPanelUMLSequenceDiagram() {
+      super(Translator.localize("label.sequence-diagram"), lookupIcon("SequenceDiagram"));
     }
+  }
 }

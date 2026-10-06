@@ -32,30 +32,24 @@ import junit.framework.TestCase;
  */
 public class TestCommonBehaviorHelper extends TestCase {
 
-    /**
-     * Constructor for TestCommonBehaviorHelper.
-     *
-     * @param arg0 is the test case name.
-     */
-    public TestCommonBehaviorHelper(String arg0) {
-	super(arg0);
-    }
+  /**
+   * Constructor for TestCommonBehaviorHelper.
+   *
+   * @param arg0 is the test case name.
+   */
+  public TestCommonBehaviorHelper(String arg0) {
+    super(arg0);
+  }
 
-    /**
-     * Test the metamodel name.
-     */
-    public void testGetMetaModelName() {
-	CheckUMLModelHelper.metaModelNameCorrect(
-			 Model.getCommonBehaviorFactory(),
-			 TestCommonBehaviorFactory.getAllModelElements());
-    }
+  /** Test the metamodel name. */
+  public void testGetMetaModelName() {
+    CheckUMLModelHelper.metaModelNameCorrect(
+        Model.getCommonBehaviorFactory(), TestCommonBehaviorFactory.getAllModelElements());
+  }
 
-    /**
-     * Test if the stereotype is valid.
-     */
-    public void testIsValidStereoType() {
-	CheckUMLModelHelper.isValidStereoType(
-		      Model.getCommonBehaviorFactory(),
-		      TestCommonBehaviorFactory.getAllModelElements());
-    }
+  /** Test if the stereotype is valid. */
+  public void testIsValidStereoType() {
+    CheckUMLModelHelper.isValidStereoType(
+        Model.getCommonBehaviorFactory(), TestCommonBehaviorFactory.getAllModelElements());
+  }
 }

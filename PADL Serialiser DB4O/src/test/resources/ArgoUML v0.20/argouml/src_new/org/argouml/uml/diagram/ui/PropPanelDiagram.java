@@ -25,13 +25,11 @@
 package org.argouml.uml.diagram.ui;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-
 import org.argouml.i18n.Translator;
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
@@ -44,98 +42,90 @@ import org.argouml.uml.ui.ActionDeleteSingleModelElement;
 import org.argouml.uml.ui.PropPanel;
 import org.argouml.util.ConfigLoader;
 
-/**
- * This class represents the properties panel for a Diagram.
- *
- */
+/** This class represents the properties panel for a Diagram. */
 public class PropPanelDiagram extends PropPanel {
 
-    /**
-     * Constructs a proppanel with a given name.
-     * @see org.argouml.ui.AbstractArgoJPanel#AbstractArgoJPanel(String)
-     */
-    protected PropPanelDiagram(String diagramName, ImageIcon icon) {
-        super(diagramName, icon, ConfigLoader.getTabPropsOrientation());
+  /**
+   * Constructs a proppanel with a given name.
+   *
+   * @see org.argouml.ui.AbstractArgoJPanel#AbstractArgoJPanel(String)
+   */
+  protected PropPanelDiagram(String diagramName, ImageIcon icon) {
+    super(diagramName, icon, ConfigLoader.getTabPropsOrientation());
 
-        JTextField field = new JTextField();
-        field.getDocument().addDocumentListener(new DiagramNameDocument(field));
-        addField(Translator.localize("label.name"), field);
+    JTextField field = new JTextField();
+    field.getDocument().addDocumentListener(new DiagramNameDocument(field));
+    addField(Translator.localize("label.name"), field);
 
-        JList lst = new OneRowLinkedList(new UMLDiagramHomeModelListModel());
-        addField(Translator.localize("label.home-model"), new JScrollPane(lst));
+    JList lst = new OneRowLinkedList(new UMLDiagramHomeModelListModel());
+    addField(Translator.localize("label.home-model"), new JScrollPane(lst));
 
-        addAction(new ActionNavigateUpFromDiagram());
-        addAction(new ActionDeleteSingleModelElement());
+    addAction(new ActionNavigateUpFromDiagram());
+    addAction(new ActionDeleteSingleModelElement());
+  }
+
+  /** Default constructor if there is no child of this class that can show the diagram. */
+  public PropPanelDiagram() {
+    this("Diagram", null);
+  }
+
+  /**
+   * @see org.argouml.uml.ui.PropPanel#removeElement()
+   */
+  public void removeElement() {
+    Object target = getTarget();
+    if (target instanceof ArgoDiagram) {
+      try {
+        ArgoDiagram diagram = (ArgoDiagram) target;
+        Project project = ProjectManager.getManager().getCurrentProject();
+        //
+        //  can't easily find owner of diagram
+        //    set new target to the model
+        //
+        Object newTarget = project.getModel();
+        project.moveToTrash(diagram);
+        TargetManager.getInstance().setTarget(newTarget);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
     }
-
-    /**
-     * Default constructor if there is no child of this class that can show the
-     * diagram.
-     */
-    public PropPanelDiagram() {
-        this("Diagram", null);
-    }
-
-    /**
-     * @see org.argouml.uml.ui.PropPanel#removeElement()
-     */
-    public void removeElement() {
-        Object target = getTarget();
-        if (target instanceof ArgoDiagram) {
-            try {
-                ArgoDiagram diagram = (ArgoDiagram) target;
-                Project project =
-		    ProjectManager.getManager().getCurrentProject();
-                //
-                //  can't easily find owner of diagram
-                //    set new target to the model
-                //
-                Object newTarget = project.getModel();
-                project.moveToTrash(diagram);
-                TargetManager.getInstance().setTarget(newTarget);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
+  }
 } /* end class PropPanelDiagram */
 
 class ActionNavigateUpFromDiagram extends AbstractActionNavigate {
 
-    /**
-     * The constructor.
-     */
-    public ActionNavigateUpFromDiagram() {
-        super("button.go-up", true);
-    }
+  /** The constructor. */
+  public ActionNavigateUpFromDiagram() {
+    super("button.go-up", true);
+  }
 
-    /**
-     * @see org.argouml.uml.ui.AbstractActionNavigate#navigateTo(java.lang.Object)
-     */
-    protected Object navigateTo(Object source) {
-        if (source instanceof UMLDiagram) {
-            return ((UMLDiagram) source).getNamespace();
-        }
-        return null;
+  /**
+   * @see org.argouml.uml.ui.AbstractActionNavigate#navigateTo(java.lang.Object)
+   */
+  protected Object navigateTo(Object source) {
+    if (source instanceof UMLDiagram) {
+      return ((UMLDiagram) source).getNamespace();
     }
-    /**
-     * @see javax.swing.Action#isEnabled()
-     */
-    public boolean isEnabled() {
-        return true;
-    }
+    return null;
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        Object target = TargetManager.getInstance().getTarget();
-        Object destination = navigateTo(target);
-        if (destination != null) {
-            TargetManager.getInstance().setTarget(destination);
-        }
+  /**
+   * @see javax.swing.Action#isEnabled()
+   */
+  public boolean isEnabled() {
+    return true;
+  }
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    Object target = TargetManager.getInstance().getTarget();
+    Object destination = navigateTo(target);
+    if (destination != null) {
+      TargetManager.getInstance().setTarget(destination);
     }
+  }
 }
 
 /**
@@ -143,53 +133,49 @@ class ActionNavigateUpFromDiagram extends AbstractActionNavigate {
  *
  * @author mvw@tigris.org
  */
-class UMLDiagramHomeModelListModel
-    extends DefaultListModel
-    implements TargetListener {
+class UMLDiagramHomeModelListModel extends DefaultListModel implements TargetListener {
 
-    /**
-     * Constructor for UMLCommentAnnotatedElementListModel.
-     */
-    public UMLDiagramHomeModelListModel() {
-        super();
-        setTarget(TargetManager.getInstance().getTarget());
-        TargetManager.getInstance().addTargetListener(this);
+  /** Constructor for UMLCommentAnnotatedElementListModel. */
+  public UMLDiagramHomeModelListModel() {
+    super();
+    setTarget(TargetManager.getInstance().getTarget());
+    TargetManager.getInstance().addTargetListener(this);
+  }
+
+  /**
+   * @see TargetListener#targetAdded(TargetEvent)
+   */
+  public void targetAdded(TargetEvent e) {
+    setTarget(e.getNewTarget());
+  }
+
+  /**
+   * @see TargetListener#targetRemoved(TargetEvent)
+   */
+  public void targetRemoved(TargetEvent e) {
+    setTarget(e.getNewTarget());
+  }
+
+  /**
+   * @see TargetListener#targetSet(TargetEvent)
+   */
+  public void targetSet(TargetEvent e) {
+    setTarget(e.getNewTarget());
+  }
+
+  private void setTarget(Object t) {
+    UMLDiagram target = null;
+    if (t instanceof UMLDiagram) {
+      target = (UMLDiagram) t;
     }
+    removeAllElements();
 
-    /**
-     * @see TargetListener#targetAdded(TargetEvent)
-     */
-    public void targetAdded(TargetEvent e) {
-        setTarget(e.getNewTarget());
+    Object ns = null;
+    if (target != null) {
+      ns = target.getNamespace();
     }
-
-    /**
-     * @see TargetListener#targetRemoved(TargetEvent)
-     */
-    public void targetRemoved(TargetEvent e) {
-        setTarget(e.getNewTarget());
+    if (ns != null) {
+      addElement(ns);
     }
-
-    /**
-     * @see TargetListener#targetSet(TargetEvent)
-     */
-    public void targetSet(TargetEvent e) {
-        setTarget(e.getNewTarget());
-    }
-
-    private void setTarget(Object t) {
-        UMLDiagram target = null;
-        if (t instanceof UMLDiagram) {
-            target = (UMLDiagram) t;
-        }
-        removeAllElements();
-
-        Object ns = null;
-        if (target != null) {
-            ns = target.getNamespace();
-        }
-        if (ns != null) {
-            addElement(ns);
-        }
-    }
+  }
 }

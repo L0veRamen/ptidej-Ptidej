@@ -25,7 +25,6 @@
 package org.argouml.model.uml;
 
 import org.argouml.model.ActivityGraphsFactory;
-
 import ru.novosoft.uml.MFactory;
 import ru.novosoft.uml.behavior.activity_graphs.MActionState;
 import ru.novosoft.uml.behavior.activity_graphs.MActivityGraph;
@@ -43,258 +42,235 @@ import ru.novosoft.uml.foundation.core.MNamespace;
 import ru.novosoft.uml.model_management.MPackage;
 
 /**
- * Factory to create UML classes for the UML
- * BehaviorialElements::ActivityGraphs package.
+ * Factory to create UML classes for the UML BehaviorialElements::ActivityGraphs package.
  *
- * TODO: Change visibility to package after reflection problem solved.
+ * <p>TODO: Change visibility to package after reflection problem solved.
  *
  * @since ARGO0.11.2
  * @author Thierry Lach
  */
-public class ActivityGraphsFactoryImpl
-    	extends AbstractUmlModelFactory
-    	implements ActivityGraphsFactory {
+public class ActivityGraphsFactoryImpl extends AbstractUmlModelFactory
+    implements ActivityGraphsFactory {
 
-    /**
-     * The model implementation.
-     */
-    private NSUMLModelImplementation nsmodel;
+  /** The model implementation. */
+  private NSUMLModelImplementation nsmodel;
 
-    /**
-     * Don't allow instantiation.
-     *
-     * @param implementation To get other helpers and factories.
-     */
-    ActivityGraphsFactoryImpl(NSUMLModelImplementation implementation) {
-        nsmodel = implementation;
+  /**
+   * Don't allow instantiation.
+   *
+   * @param implementation To get other helpers and factories.
+   */
+  ActivityGraphsFactoryImpl(NSUMLModelImplementation implementation) {
+    nsmodel = implementation;
+  }
+
+  /**
+   * Create an empty but initialized instance of a UML ActionState.
+   *
+   * @return an initialized UML ActionState instance.
+   */
+  public Object createActionState() {
+    Object modelElement = MFactory.getDefaultFactory().createActionState();
+    super.initialize(modelElement);
+    return modelElement;
+  }
+
+  /**
+   * Create an empty but initialized instance of a UML ActivityGraph.
+   *
+   * @return an initialized UML ActivityGraph instance.
+   */
+  public Object createActivityGraph() {
+    MActivityGraph modelElement = MFactory.getDefaultFactory().createActivityGraph();
+    super.initialize(modelElement);
+    return modelElement;
+  }
+
+  /**
+   * Create an empty but initialized instance of a UML CallState.
+   *
+   * @return an initialized UML CallState instance.
+   */
+  public Object createCallState() {
+    MCallState modelElement = MFactory.getDefaultFactory().createCallState();
+    super.initialize(modelElement);
+    return modelElement;
+  }
+
+  /**
+   * Create an empty but initialized instance of a UML ClassifierInState.
+   *
+   * @return an initialized UML ClassifierInState instance.
+   */
+  public Object createClassifierInState() {
+    MClassifierInState modelElement = MFactory.getDefaultFactory().createClassifierInState();
+    super.initialize(modelElement);
+    return modelElement;
+  }
+
+  /**
+   * Create an empty but initialized instance of a UML ObjectFlowState.
+   *
+   * @return an initialized UML ObjectFlowState instance.
+   */
+  public Object createObjectFlowState() {
+    MObjectFlowState modelElement = MFactory.getDefaultFactory().createObjectFlowState();
+    super.initialize(modelElement);
+    return modelElement;
+  }
+
+  /**
+   * Create an empty but initialized instance of a UML Partition.
+   *
+   * @return an initialized UML Partition instance.
+   */
+  public Object createPartition() {
+    MPartition modelElement = MFactory.getDefaultFactory().createPartition();
+    super.initialize(modelElement);
+    return modelElement;
+  }
+
+  /**
+   * Create an empty but initialized instance of a UML SubactivityState.
+   *
+   * @return an initialized UML SubactivityState instance.
+   */
+  public Object createSubactivityState() {
+    MSubactivityState modelElement = MFactory.getDefaultFactory().createSubactivityState();
+    super.initialize(modelElement);
+    return modelElement;
+  }
+
+  /**
+   * Builds an activity graph owned by the given context.
+   *
+   * <p>
+   *
+   * @param theContext is a ModelElement that will own the graph.
+   * @return the new ActivityGraph as Object
+   */
+  public Object buildActivityGraph(Object theContext) {
+    if (!(theContext instanceof MBehavioralFeature
+        || theContext instanceof MClassifier
+        || theContext instanceof MPackage)) {
+      throw new IllegalArgumentException(
+          "Must have a context of a behaviorial feature, "
+              + "classifier or package to build an activity diagram.");
     }
 
-    /**
-     * Create an empty but initialized instance of a UML ActionState.
-     *
-     * @return an initialized UML ActionState instance.
-     */
-    public Object createActionState() {
-        Object modelElement = MFactory.getDefaultFactory().createActionState();
-	super.initialize(modelElement);
-	return modelElement;
+    MModelElement context = (MModelElement) theContext;
+    MActivityGraph graph = (MActivityGraph) createActivityGraph();
+    graph.setContext(context);
+    if (context instanceof MNamespace) {
+      graph.setNamespace((MNamespace) context);
+    } else if (context instanceof MBehavioralFeature) {
+      graph.setNamespace(((MBehavioralFeature) context).getOwner());
+    }
+    nsmodel.getStateMachinesFactory().buildCompositeStateOnStateMachine(graph);
+    return graph;
+  }
+
+  /**
+   * Builds an objectflowstate. The objectflowstate will be a subvertix of the given compositestate.
+   * The parameter compositeState is of type Object to decouple the factory and NSUML as much as
+   * possible from the rest of ArgoUML.
+   *
+   * @author MVW
+   * @param compositeState the given compositestate
+   * @return Object the newly build objectflow state
+   */
+  public Object buildObjectFlowState(Object compositeState) {
+    if (!(compositeState instanceof MCompositeState)) {
+      throw new IllegalArgumentException();
     }
 
-    /**
-     * Create an empty but initialized instance of a UML ActivityGraph.
-     *
-     * @return an initialized UML ActivityGraph instance.
-     */
-    public Object createActivityGraph() {
-        MActivityGraph modelElement =
-	    MFactory.getDefaultFactory().createActivityGraph();
-	super.initialize(modelElement);
-	return modelElement;
+    MObjectFlowState state = (MObjectFlowState) createObjectFlowState();
+    state.setContainer((MCompositeState) compositeState);
+    return state;
+  }
+
+  /**
+   * Builds a ClassifierInState. Links it to the 2 required objects: the classifier that forms the
+   * type of this classifierInState, and the state.
+   *
+   * @param classifier the classifier (type)
+   * @param state the state (inState)
+   * @return the newly build ClassifierInState
+   */
+  public Object buildClassifierInState(Object classifier, Object state) {
+    if (!(classifier instanceof MClassifier)) {
+      throw new IllegalArgumentException();
+    }
+    if (!(state instanceof MState)) {
+      throw new IllegalArgumentException();
     }
 
-    /**
-     * Create an empty but initialized instance of a UML CallState.
-     *
-     * @return an initialized UML CallState instance.
-     */
-    public Object createCallState() {
-        MCallState modelElement =
-	    MFactory.getDefaultFactory().createCallState();
-	super.initialize(modelElement);
-	return modelElement;
+    MClassifierInState c = (MClassifierInState) createClassifierInState();
+    c.setType((MClassifier) classifier);
+    c.addInState((MState) state);
+    return c;
+  }
+
+  /**
+   * @param elem the ActionState to be deleted
+   */
+  void deleteActionState(Object elem) {
+    if (!(elem instanceof MActionState)) {
+      throw new IllegalArgumentException();
     }
+  }
 
-    /**
-     * Create an empty but initialized instance of a UML ClassifierInState.
-     *
-     * @return an initialized UML ClassifierInState instance.
-     */
-    public Object createClassifierInState() {
-        MClassifierInState modelElement =
-            MFactory.getDefaultFactory().createClassifierInState();
-        super.initialize(modelElement);
-        return modelElement;
+  /**
+   * @param elem the ActivityGraph to be deleted
+   */
+  void deleteActivityGraph(Object elem) {
+    if (!(elem instanceof MActivityGraph)) {
+      throw new IllegalArgumentException();
     }
+  }
 
-    /**
-     * Create an empty but initialized instance of a UML ObjectFlowState.
-     *
-     * @return an initialized UML ObjectFlowState instance.
-     */
-    public Object createObjectFlowState() {
-        MObjectFlowState modelElement =
-            MFactory.getDefaultFactory().createObjectFlowState();
-        super.initialize(modelElement);
-        return modelElement;
+  /**
+   * @param elem the CallState to be deleted
+   */
+  void deleteCallState(Object elem) {
+    if (!(elem instanceof MCallState)) {
+      throw new IllegalArgumentException();
     }
+  }
 
-    /**
-     * Create an empty but initialized instance of a UML Partition.
-     *
-     * @return an initialized UML Partition instance.
-     */
-    public Object createPartition() {
-        MPartition modelElement =
-            MFactory.getDefaultFactory().createPartition();
-        super.initialize(modelElement);
-        return modelElement;
+  /**
+   * @param elem the ClassifierInState to be deleted
+   */
+  void deleteClassifierInState(Object elem) {
+    if (!(elem instanceof MClassifierInState)) {
+      throw new IllegalArgumentException();
     }
+  }
 
-    /**
-     * Create an empty but initialized instance of a UML SubactivityState.
-     *
-     * @return an initialized UML SubactivityState instance.
-     */
-    public Object createSubactivityState() {
-        MSubactivityState modelElement =
-            MFactory.getDefaultFactory().createSubactivityState();
-        super.initialize(modelElement);
-        return modelElement;
+  /**
+   * @param elem ObjectFlowState
+   */
+  void deleteObjectFlowState(Object elem) {
+    if (!(elem instanceof MObjectFlowState)) {
+      throw new IllegalArgumentException();
     }
+  }
 
-    /**
-     * Builds an activity graph owned by the given context.<p>
-     *
-     * @param theContext is a ModelElement that will own the graph.
-     * @return the new ActivityGraph as Object
-     */
-    public Object buildActivityGraph(Object theContext) {
-        if (!(theContext instanceof MBehavioralFeature
-                || theContext instanceof MClassifier
-                || theContext instanceof MPackage)) {
-            throw new IllegalArgumentException(
-                    "Must have a context of a behaviorial feature, " 
-                    + "classifier or package to build an activity diagram.");
-        }
-
-        MModelElement context = (MModelElement) theContext;
-        MActivityGraph graph = (MActivityGraph) createActivityGraph();
-        graph.setContext(context);
-        if (context instanceof MNamespace) {
-            graph.setNamespace((MNamespace) context);
-        } else if (context instanceof MBehavioralFeature) {
-            graph.setNamespace(
-                ((MBehavioralFeature) context).getOwner());
-        }
-        nsmodel.getStateMachinesFactory()
-        	.buildCompositeStateOnStateMachine(graph);
-        return graph;
+  /**
+   * @param elem Partition
+   */
+  void deletePartition(Object elem) {
+    if (!(elem instanceof MPartition)) {
+      throw new IllegalArgumentException();
     }
+  }
 
-    /**
-     * Builds an objectflowstate. The objectflowstate will be a subvertix of
-     * the given compositestate. The parameter compositeState is of
-     * type Object to decouple the factory and NSUML as much as
-     * possible from the rest of ArgoUML.
-     *
-     * @author MVW
-     * @param compositeState the given compositestate
-     * @return Object the newly build objectflow state
-     */
-    public Object buildObjectFlowState(Object compositeState) {
-        if (!(compositeState instanceof MCompositeState)) {
-            throw new IllegalArgumentException();
-        }
-
-        MObjectFlowState state = (MObjectFlowState) createObjectFlowState();
-        state.setContainer((MCompositeState) compositeState);
-        return state;
+  /**
+   * @param elem SubactivityState
+   */
+  void deleteSubactivityState(Object elem) {
+    if (!(elem instanceof MSubactivityState)) {
+      throw new IllegalArgumentException();
     }
-
-    /**
-     * Builds a ClassifierInState. Links it to the 2 required objects:
-     * the classifier that forms the type of this classifierInState,
-     * and the state.
-     *
-     * @param classifier the classifier (type)
-     * @param state the state (inState)
-     * @return the newly build ClassifierInState
-     */
-    public Object buildClassifierInState(Object classifier, Object state) {
-        if (!(classifier instanceof MClassifier)) {
-            throw new IllegalArgumentException();
-        }
-        if (!(state instanceof MState)) {
-            throw new IllegalArgumentException();
-        }
-
-        MClassifierInState c =
-            (MClassifierInState) createClassifierInState();
-        c.setType((MClassifier) classifier);
-        c.addInState((MState) state);
-        return c;
-    }
-
-
-    /**
-     * @param elem the ActionState to be deleted
-     */
-    void deleteActionState(Object elem) {
-        if (!(elem instanceof MActionState)) {
-            throw new IllegalArgumentException();
-        }
-
-    }
-
-    /**
-     * @param elem the ActivityGraph to be deleted
-     */
-    void deleteActivityGraph(Object elem) {
-        if (!(elem instanceof MActivityGraph)) {
-            throw new IllegalArgumentException();
-        }
-
-    }
-
-    /**
-     * @param elem the CallState to be deleted
-     */
-    void deleteCallState(Object elem) {
-        if (!(elem instanceof MCallState)) {
-            throw new IllegalArgumentException();
-        }
-
-    }
-
-    /**
-     * @param elem the ClassifierInState to be deleted
-     */
-    void deleteClassifierInState(Object elem) {
-        if (!(elem instanceof MClassifierInState)) {
-            throw new IllegalArgumentException();
-        }
-
-    }
-
-    /**
-     * @param elem ObjectFlowState
-     */
-    void deleteObjectFlowState(Object elem) {
-        if (!(elem instanceof MObjectFlowState)) {
-            throw new IllegalArgumentException();
-        }
-
-    }
-
-    /**
-     * @param elem Partition
-     */
-    void deletePartition(Object elem) {
-        if (!(elem instanceof MPartition)) {
-            throw new IllegalArgumentException();
-        }
-
-    }
-
-    /**
-     * @param elem SubactivityState
-     */
-    void deleteSubactivityState(Object elem) {
-        if (!(elem instanceof MSubactivityState)) {
-            throw new IllegalArgumentException();
-        }
-
-    }
-
+  }
 }
-

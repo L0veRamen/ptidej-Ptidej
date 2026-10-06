@@ -24,185 +24,166 @@
 package org.argouml.persistence;
 
 import java.util.StringTokenizer;
-
 import org.apache.log4j.Logger;
-
 import org.argouml.cognitive.ItemUID;
-
 import org.argouml.ui.ArgoDiagram;
-
 import org.argouml.uml.diagram.ui.FigEdgeModelElement;
 import org.argouml.uml.diagram.ui.FigNodeModelElement;
-
 import org.tigris.gef.persistence.pgml.Container;
 import org.tigris.gef.persistence.pgml.FigEdgeHandler;
 import org.tigris.gef.persistence.pgml.FigGroupHandler;
 import org.tigris.gef.persistence.pgml.PGMLHandler;
-
 import org.xml.sax.SAXException;
 
 /**
- * Will set the ItemUID for objects represented by
- * PGML elements that contain private elements that have
- * ItemUID assignments in them.<p>
+ * Will set the ItemUID for objects represented by PGML elements that contain private elements that
+ * have ItemUID assignments in them.
  *
- * Currently, there are three possibilities: ArgoDiagram,
- * FigNode, FigEdge
+ * <p>Currently, there are three possibilities: ArgoDiagram, FigNode, FigEdge
  */
-class PrivateHandler
-    extends org.tigris.gef.persistence.pgml.PrivateHandler {
+class PrivateHandler extends org.tigris.gef.persistence.pgml.PrivateHandler {
 
-    private Container container;
+  private Container container;
 
-    /**
-     * Logger.
-     */
-    private static final Logger LOG = Logger.getLogger(PrivateHandler.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(PrivateHandler.class);
+
+  /**
+   * The constructor.
+   *
+   * @param parser
+   * @param cont
+   */
+  public PrivateHandler(PGMLStackParser parser, Container cont) {
+    super(parser, cont);
+    container = cont;
+  }
+
+  /**
+   * If the containing object is a type for which the private element might contain an ItemUID,
+   * extract the ItemUID if it exists and assign it to the object.
+   *
+   * @param contents
+   * @exception SAXException
+   */
+  public void gotElement(String contents) throws SAXException {
+
+    if (container instanceof PGMLHandler) {
+      Object o = getPGMLStackParser().getDiagram();
+      if (o instanceof ArgoDiagram) {
+        ItemUID uid = getItemUID(contents);
+        if (uid != null) {
+          ((ArgoDiagram) o).setItemUID(uid);
+        }
+      }
+      // No other uses of string in PGMLHandler
+      return;
+    }
+
+    if (container instanceof FigGroupHandler) {
+      Object o = ((FigGroupHandler) container).getFigGroup();
+      if (o instanceof FigNodeModelElement) {
+        ItemUID uid = getItemUID(contents);
+        if (uid != null) {
+          ((FigNodeModelElement) o).setItemUID(uid);
+        }
+      }
+    }
+
+    if (container instanceof FigEdgeHandler) {
+      Object o = ((FigEdgeHandler) container).getFigEdge();
+      if (o instanceof FigEdgeModelElement) {
+        ItemUID uid = getItemUID(contents);
+        if (uid != null) {
+          ((FigEdgeModelElement) o).setItemUID(uid);
+        }
+      }
+    }
+
+    // Handle other uses of <private> contents
+    super.gotElement(contents);
+  }
+
+  /**
+   * Determine if the string contains an ItemUID.
+   *
+   * @return a newly created ItemUID (or <code>null</code>).
+   */
+  private ItemUID getItemUID(String privateContents) {
+    StringTokenizer st = new StringTokenizer(privateContents, "\n");
+
+    while (st.hasMoreElements()) {
+      String str = st.nextToken();
+      NameVal nval = splitNameVal(str);
+
+      if (nval != null) {
+        if (LOG.isDebugEnabled()) {
+          LOG.debug("Private Element: \"" + nval.getName() + "\" \"" + nval.getValue() + "\"");
+        }
+        if ("ItemUID".equals(nval.getName()) && nval.getValue().length() > 0) {
+          return new ItemUID(nval.getValue());
+        }
+      }
+    }
+    return null;
+  }
+
+  /** Utility class to pair a name and a value String together. */
+  static class NameVal {
+    private String name;
+    private String value;
 
     /**
      * The constructor.
      *
-     * @param parser
-     * @param cont
+     * @param n the name
+     * @param v the value
      */
-    public PrivateHandler(PGMLStackParser parser, Container cont) {
-        super(parser, cont);
-        container = cont;
+    NameVal(String n, String v) {
+      name = n.trim();
+      value = v.trim();
     }
 
     /**
-     * If the containing object is a type for which the private element
-     * might contain an ItemUID, extract the ItemUID if it exists and assign it
-     * to the object.
-     * 
-     * @param contents
-     * @exception SAXException
+     * @return returns the name
      */
-    public void gotElement(String contents)
-        throws SAXException {
-
-        if (container instanceof PGMLHandler) {
-            Object o = getPGMLStackParser().getDiagram();
-            if (o instanceof ArgoDiagram) {
-                ItemUID uid = getItemUID(contents);
-                if (uid != null) {
-                    ((ArgoDiagram) o).setItemUID(uid);
-                }
-            }
-            // No other uses of string in PGMLHandler
-            return;
-        }
-
-        if (container instanceof FigGroupHandler) {
-            Object o = ((FigGroupHandler) container).getFigGroup();
-            if (o instanceof FigNodeModelElement) {
-                ItemUID uid = getItemUID(contents);
-                if (uid != null) {
-                    ((FigNodeModelElement) o).setItemUID(uid);
-                }
-            }
-        }
-
-        if (container instanceof FigEdgeHandler) {
-            Object o = ((FigEdgeHandler) container).getFigEdge();
-            if (o instanceof FigEdgeModelElement) {
-                ItemUID uid = getItemUID(contents);
-                if (uid != null) {
-                    ((FigEdgeModelElement) o).setItemUID(uid);
-                }
-            }
-        }
-
-        // Handle other uses of <private> contents
-        super.gotElement(contents);
+    String getName() {
+      return name;
     }
 
     /**
-     * Determine if the string contains an ItemUID.
-     *
-     * @return a newly created ItemUID (or <code>null</code>).
+     * @return returns the value
      */
-    private ItemUID getItemUID(String privateContents) {
-        StringTokenizer st = new StringTokenizer(privateContents, "\n");
+    String getValue() {
+      return value;
+    }
+  }
 
-        while (st.hasMoreElements()) {
-            String str = st.nextToken();
-            NameVal nval = splitNameVal(str);
+  /**
+   * Splits a name value pair into a NameVal instance. A name value pair is a String on the form
+   * &lt; name = ["] value ["] &gt;.
+   *
+   * @param str A String with a name value pair.
+   * @return A NameVal, or null if they could not be split.
+   */
+  protected NameVal splitNameVal(String str) {
+    NameVal rv = null;
+    int lqpos, rqpos;
+    int eqpos = str.indexOf('=');
 
-            if (nval != null) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Private Element: \"" + nval.getName()
-                              + "\" \"" + nval.getValue() + "\"");
-                }
-                if ("ItemUID".equals(nval.getName())
-                    && nval.getValue().length() > 0) {
-                    return new ItemUID(nval.getValue());
-                }
-            }
-        }
-        return null;
+    if (eqpos < 0) {
+      return null;
     }
 
-    /**
-     * Utility class to pair a name and a value String together.
-     */
-    static class NameVal {
-        private String name;
-        private String value;
+    lqpos = str.indexOf('"', eqpos);
+    rqpos = str.lastIndexOf('"');
 
-        /**
-         * The constructor.
-         *
-         * @param n the name
-         * @param v the value
-         */
-        NameVal(String n, String v) {
-            name = n.trim();
-            value = v.trim();
-        }
-
-        /**
-         * @return returns the name
-         */
-        String getName() {
-            return name;
-        }
-
-        /**
-         * @return returns the value
-         */
-        String getValue() {
-            return value;
-        }
+    if (lqpos < 0 || rqpos <= lqpos) {
+      return null;
     }
 
-    /**
-     * Splits a name value pair into a NameVal instance. A name value pair is
-     * a String on the form &lt; name = ["] value ["] &gt;.
-     *
-     * @param str A String with a name value pair.
-     * @return A NameVal, or null if they could not be split.
-     */
-    protected NameVal splitNameVal(String str) {
-        NameVal rv = null;
-        int lqpos, rqpos;
-        int eqpos = str.indexOf('=');
+    rv = new NameVal(str.substring(0, eqpos), str.substring(lqpos + 1, rqpos));
 
-        if (eqpos < 0) {
-            return null;
-        }
-
-        lqpos = str.indexOf('"', eqpos);
-        rqpos = str.lastIndexOf('"');
-
-        if (lqpos < 0 || rqpos <= lqpos) {
-            return null;
-        }
-
-        rv =
-            new NameVal(str.substring(0, eqpos),
-                str.substring(lqpos + 1, rqpos));
-
-        return rv;
-    }
+    return rv;
+  }
 }

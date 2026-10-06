@@ -28,14 +28,13 @@ import org.argouml.model.Model;
 
 public class TestCrMissingClassName extends AbstractTestMissingName {
 
-    public TestCrMissingClassName(String arg0) {
-        super(arg0);
-    }
+  public TestCrMissingClassName(String arg0) {
+    super(arg0);
+  }
 
-    protected void setUp() throws Exception {
-        super.setUp();
-        critic = new CrMissingClassName();
-        me = Model.getCoreFactory().createClass();
-    }
-
+  protected void setUp() throws Exception {
+    super.setUp();
+    critic = new CrMissingClassName();
+    me = Model.getCoreFactory().createClass();
+  }
 }

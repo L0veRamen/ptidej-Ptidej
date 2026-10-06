@@ -26,74 +26,65 @@ package org.argouml.uml.ui.foundation.core;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLRadioButtonPanel;
 
 /**
- *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 4, 2003
  */
-public class UMLAssociationEndAggregationRadioButtonPanel
-    extends UMLRadioButtonPanel {
+public class UMLAssociationEndAggregationRadioButtonPanel extends UMLRadioButtonPanel {
 
-    private static Map labelTextsAndActionCommands = new HashMap();
+  private static Map labelTextsAndActionCommands = new HashMap();
 
-    static {
-        labelTextsAndActionCommands.put(
-            Translator.localize("label.aggregationkind-aggregate"),
-            ActionSetAssociationEndAggregation.AGGREGATE_COMMAND);
-        labelTextsAndActionCommands.put(
-            Translator.localize("label.aggregationkind-composite"),
-            ActionSetAssociationEndAggregation.COMPOSITE_COMMAND);
-        labelTextsAndActionCommands.put(
-            Translator.localize("label.aggregationkind-none"),
-            ActionSetAssociationEndAggregation.NONE_COMMAND);
-    }
+  static {
+    labelTextsAndActionCommands.put(
+        Translator.localize("label.aggregationkind-aggregate"),
+        ActionSetAssociationEndAggregation.AGGREGATE_COMMAND);
+    labelTextsAndActionCommands.put(
+        Translator.localize("label.aggregationkind-composite"),
+        ActionSetAssociationEndAggregation.COMPOSITE_COMMAND);
+    labelTextsAndActionCommands.put(
+        Translator.localize("label.aggregationkind-none"),
+        ActionSetAssociationEndAggregation.NONE_COMMAND);
+  }
 
-    /**
-     * Constructor for UMLAssociationEndAggregationRadioButtonPanel.
-     * @param title the title for the panel
-     * @param horizontal determines the orientation
-     */
-    public UMLAssociationEndAggregationRadioButtonPanel(String title,
-            boolean horizontal) {
-        super(title, labelTextsAndActionCommands, "aggregation",
-                ActionSetAssociationEndAggregation.getInstance(), horizontal);
-    }
+  /**
+   * Constructor for UMLAssociationEndAggregationRadioButtonPanel.
+   *
+   * @param title the title for the panel
+   * @param horizontal determines the orientation
+   */
+  public UMLAssociationEndAggregationRadioButtonPanel(String title, boolean horizontal) {
+    super(
+        title,
+        labelTextsAndActionCommands,
+        "aggregation",
+        ActionSetAssociationEndAggregation.getInstance(),
+        horizontal);
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLRadioButtonPanel#buildModel()
-     */
-    public void buildModel() {
-        if (getTarget() != null) {
-            Object target = getTarget();
-            Object kind = Model.getFacade().getAggregation(target);
-            if (kind == null
-                    || kind.equals(
-                            Model.getAggregationKind().getNone())) {
-                setSelected(ActionSetAssociationEndAggregation.NONE_COMMAND);
-            } else {
-		if (kind.equals(
-		        Model.getAggregationKind().getAggregate())) {
-		    setSelected(ActionSetAssociationEndAggregation
-		            .AGGREGATE_COMMAND);
-		} else {
-		    if (kind.equals(
-		            Model.getAggregationKind()
-		            	.getComposite())) {
-			setSelected(ActionSetAssociationEndAggregation
-			        .COMPOSITE_COMMAND);
-		    } else {
-		        setSelected(ActionSetAssociationEndAggregation
-
-			        .NONE_COMMAND);
-		    }
-		}
-            }
+  /**
+   * @see org.argouml.uml.ui.UMLRadioButtonPanel#buildModel()
+   */
+  public void buildModel() {
+    if (getTarget() != null) {
+      Object target = getTarget();
+      Object kind = Model.getFacade().getAggregation(target);
+      if (kind == null || kind.equals(Model.getAggregationKind().getNone())) {
+        setSelected(ActionSetAssociationEndAggregation.NONE_COMMAND);
+      } else {
+        if (kind.equals(Model.getAggregationKind().getAggregate())) {
+          setSelected(ActionSetAssociationEndAggregation.AGGREGATE_COMMAND);
+        } else {
+          if (kind.equals(Model.getAggregationKind().getComposite())) {
+            setSelected(ActionSetAssociationEndAggregation.COMPOSITE_COMMAND);
+          } else {
+            setSelected(ActionSetAssociationEndAggregation.NONE_COMMAND);
+          }
         }
+      }
     }
-
+  }
 }

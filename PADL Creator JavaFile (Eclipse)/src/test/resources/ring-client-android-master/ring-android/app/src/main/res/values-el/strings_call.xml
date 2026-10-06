@@ -31,4 +31,4 @@ along with this program; if not, write to the Free Software
     <string name="call_human_state_hold">Αναμονή</string>
     <string name="call_human_state_over">Τέλος</string>
     <string name="conference_human_state_hold">Αναμονή</string>
-    </resources>
+</resources>

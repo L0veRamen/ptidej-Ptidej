@@ -11,14 +11,12 @@
 package org.jhotdraw.contrib.html;
 
 /**
- * ContentProducerContext defines the base interface required of clients
- * of ContentProducers.<br>
- * ContentProducers may need to retrieve information from their calling client
- * in order to fulfill the contents request
+ * ContentProducerContext defines the base interface required of clients of ContentProducers.<br>
+ * ContentProducers may need to retrieve information from their calling client in order to fulfill
+ * the contents request
  *
- * @author  Eduardo Francos - InContext
+ * @author Eduardo Francos - InContext
  * @created 30 avril 2002
  * @version <$CURRENT_VERSION$>
  */
-public interface ContentProducerContext {
-}
+public interface ContentProducerContext {}

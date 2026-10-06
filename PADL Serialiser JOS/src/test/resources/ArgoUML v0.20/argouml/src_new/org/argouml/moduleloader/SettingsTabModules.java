@@ -30,7 +30,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Iterator;
 import java.util.Map;
-
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -39,272 +38,254 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
-
 import org.argouml.application.helpers.SettingsTabHelper;
 import org.argouml.application.modules.ModuleLoader;
 
 /**
- * Tab for the settings dialog that makes it possible to
- * select the modules that are to be enabled.
+ * Tab for the settings dialog that makes it possible to select the modules that are to be enabled.
  *
- * TODO: Header for the table.
+ * <p>TODO: Header for the table.
  *
  * @author Linus Tolke
  */
 public class SettingsTabModules extends SettingsTabHelper {
-    /**
-     * The table of modules.
-     */
-    private JTable table;
+  /** The table of modules. */
+  private JTable table;
 
-    /**
-     * The panel below the table that shows not yet loaded modules.
-     */
-    private JPanel notYetLoadedPanel;
+  /** The panel below the table that shows not yet loaded modules. */
+  private JPanel notYetLoadedPanel;
 
-    /**
-     * The names of the columns in the table.
-     */
-    private String[] columnNames = {
-	"Module", "Enabled",
-    };
+  /** The names of the columns in the table. */
+  private String[] columnNames = {
+    "Module", "Enabled",
+  };
 
-    /**
-     * The objects representing the modules from the new module loader.
-     */
-    private Object[][] elements;
+  /** The objects representing the modules from the new module loader. */
+  private Object[][] elements;
 
-    /**
-     * The constructor.
-     */
-    public SettingsTabModules() {
-        super();
+  /** The constructor. */
+  public SettingsTabModules() {
+    super();
 
-        setLayout(new BorderLayout());
+    setLayout(new BorderLayout());
 
-        table = new JTable(new ModuleTableModel());
-        table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
-	table.setShowVerticalLines(true);
-        add(new JScrollPane(table), BorderLayout.CENTER);
+    table = new JTable(new ModuleTableModel());
+    table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+    table.setShowVerticalLines(true);
+    add(new JScrollPane(table), BorderLayout.CENTER);
 
-	createNotYetLoaded();
+    createNotYetLoaded();
+  }
+
+  /** Table model for the table with modules. */
+  class ModuleTableModel extends AbstractTableModel {
+    /** Constructor. */
+    public ModuleTableModel() {
+      Object[] arr = ModuleLoader2.allModules().toArray();
+
+      elements = new Object[arr.length][2];
+
+      for (int i = 0; i < elements.length; i++) {
+        elements[i][0] = arr[i];
+        elements[i][1] = new Boolean(ModuleLoader2.isSelected((String) arr[i]));
+      }
     }
 
     /**
-     * Table model for the table with modules.
+     * @see javax.swing.table.TableModel#getColumnCount()
      */
-    class ModuleTableModel extends AbstractTableModel {
-        /**
-	 * Constructor.
-	 */
-	public ModuleTableModel() {
-	    Object[] arr = ModuleLoader2.allModules().toArray();
-
-	    elements = new Object[arr.length][2];
-
-	    for (int i = 0; i < elements.length; i++) {
-		elements[i][0] = arr[i];
-		elements[i][1] =
-		    new Boolean(ModuleLoader2.isSelected((String) arr[i]));
-	    }
-	}
-
-	/**
-	 * @see javax.swing.table.TableModel#getColumnCount()
-	 */
-	public int getColumnCount() {
-	    return columnNames.length;
-	}
-
-	/**
-	 * @see javax.swing.table.TableModel#getColumnName(int)
-	 */
-	public String getColumnName(int col) {
-	    return columnNames[col];
-	}
-
-	/**
-	 * @see javax.swing.table.TableModel#getRowCount()
-	 */
-	public int getRowCount() {
-	    return elements.length
-		+ ModuleLoader.getInstance().getModules().size();
-	}
-
-	/**
-	 * @see javax.swing.table.TableModel#getValueAt(int, int)
-	 */
-	public Object getValueAt(int row, int col) {
-	    if (row < elements.length) {
-		return elements[row][col];
-	    } else {
-		switch (col) {
-		case 0:
-		    return ModuleLoader.getInstance()
-			.getModules().get(row - elements.length);
-		case 1:
-		    return Boolean.TRUE;
-
-		default:
-		    throw new IllegalArgumentException("Too many columns");
-		}
-	    }
-	}
-
-	/**
-	 * @see javax.swing.table.TableModel#setValueAt(
-	 *         java.lang.Object, int, int)
-	 */
-	public void setValueAt(Object ob, int row, int col) {
-	    elements[row][col] = ob;
-	}
-
-	/**
-	 * @see javax.swing.table.TableModel#getColumnClass(int)
-	 */
-	public Class getColumnClass(int col) {
-	    switch (col) {
-	    case 0:
-		return String.class;
-	    case 1:
-		return Boolean.class;
-	    default:
-		return null;
-	    }
-	}
-
-	/**
-	 * @see javax.swing.table.TableModel#isCellEditable(int, int)
-	 */
-	public boolean isCellEditable(int row, int col) {
-	    return col >= 1 && row < elements.length;
-	}
-
-        /**
-         * The UID.
-         */
-        private static final long serialVersionUID = -5970280716477119863L;
+    public int getColumnCount() {
+      return columnNames.length;
     }
 
     /**
-     * Create the pane with not yet loaded modules.
+     * @see javax.swing.table.TableModel#getColumnName(int)
      */
-    private void createNotYetLoaded() {
-	if (notYetLoadedPanel != null) {
-	    remove(notYetLoadedPanel);
-	    notYetLoadedPanel = null;
-	}
-
-	notYetLoadedPanel = new JPanel();
-
-	Iterator iter =
-	    ModuleLoader2.notYetLoadedModules().entrySet().iterator();
-	while (iter.hasNext()) {
-	    Map.Entry entry = (Map.Entry) iter.next();
-	    final String name = (String) entry.getKey();
-	    final String classname = (String) entry.getValue();
-
-	    JLabel label = new JLabel(name);
-	    JButton button = new JButton("Attempt to load");
-	    button.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent event) {
-		    try {
-		        getClass().getClassLoader().loadClass(classname);
-		    } catch (ClassNotFoundException e) {
-			JOptionPane.showMessageDialog(
-				notYetLoadedPanel,
-			        "Cannot find class " + classname
-				+ " needed to load module " + name,
-				"Cannot find class",
-				JOptionPane.ERROR_MESSAGE);
-			return;
-		    }
-
-		    ModuleLoader2.addClass(classname);
-		    handleSettingsTabRefresh();
-		}
-	    });
-
-	    // button.setLabel(label);
-
-	    Container box = Box.createHorizontalBox();
-	    box.add(label);
-	    box.add(button);
-	    notYetLoadedPanel.add(box);
-	}
-
-	add(notYetLoadedPanel, BorderLayout.SOUTH);
+    public String getColumnName(int col) {
+      return columnNames[col];
     }
 
     /**
-     * @see org.argouml.application.api.SettingsTabPanel#handleSettingsTabRefresh()
+     * @see javax.swing.table.TableModel#getRowCount()
      */
-    public void handleSettingsTabRefresh() {
-        table.setModel(new ModuleTableModel());
-	createNotYetLoaded();
+    public int getRowCount() {
+      return elements.length + ModuleLoader.getInstance().getModules().size();
     }
 
     /**
-     * @see org.argouml.application.api.SettingsTabPanel#handleSettingsTabSave()
+     * @see javax.swing.table.TableModel#getValueAt(int, int)
      */
-    public void handleSettingsTabSave() {
-        if (elements != null) {
-            for (int i = 0; i < elements.length; i++) {
-                ModuleLoader2.setSelected(
-                        (String) elements[i][0],
-                        ((Boolean) elements[i][1]).booleanValue());
-            }
-            ModuleLoader2.doLoad(false);
+    public Object getValueAt(int row, int col) {
+      if (row < elements.length) {
+        return elements[row][col];
+      } else {
+        switch (col) {
+          case 0:
+            return ModuleLoader.getInstance().getModules().get(row - elements.length);
+          case 1:
+            return Boolean.TRUE;
+
+          default:
+            throw new IllegalArgumentException("Too many columns");
         }
-	createNotYetLoaded();
+      }
     }
 
     /**
-     * @see org.argouml.application.api.SettingsTabPanel#handleSettingsTabCancel()
+     * @see javax.swing.table.TableModel#setValueAt( java.lang.Object, int, int)
      */
-    public void handleSettingsTabCancel() {
-        // Do nothing!
-        // The next time we refresh, we will fetch the values again.
+    public void setValueAt(Object ob, int row, int col) {
+      elements[row][col] = ob;
     }
 
-
-
-    // TODO: This is rather ironic. We use the old moduleloader mechanism
-    //       to get a settings tab that will allow us to turn on an off
-    //       the new moduleloader.
+    /**
+     * @see javax.swing.table.TableModel#getColumnClass(int)
+     */
+    public Class getColumnClass(int col) {
+      switch (col) {
+        case 0:
+          return String.class;
+        case 1:
+          return Boolean.class;
+        default:
+          return null;
+      }
+    }
 
     /**
-     * @see org.argouml.application.api.ArgoModule#getModuleName()
+     * @see javax.swing.table.TableModel#isCellEditable(int, int)
      */
-    public String getModuleName() { return "SettingsTabModules"; }
+    public boolean isCellEditable(int row, int col) {
+      return col >= 1 && row < elements.length;
+    }
 
-    /**
-     * @see org.argouml.application.api.ArgoModule#getModuleDescription()
-     */
-    public String getModuleDescription() { return "Selecting Modules"; }
+    /** The UID. */
+    private static final long serialVersionUID = -5970280716477119863L;
+  }
 
-    /**
-     * @see org.argouml.application.api.ArgoModule#getModuleAuthor()
-     */
-    public String getModuleAuthor() { return "ArgoUML Core"; }
+  /** Create the pane with not yet loaded modules. */
+  private void createNotYetLoaded() {
+    if (notYetLoadedPanel != null) {
+      remove(notYetLoadedPanel);
+      notYetLoadedPanel = null;
+    }
 
-    /**
-     * @see org.argouml.application.api.ArgoModule#getModuleVersion()
-     */
-    public String getModuleVersion() { return "1.0"; }
+    notYetLoadedPanel = new JPanel();
 
-    /**
-     * @see org.argouml.application.api.ArgoModule#getModuleKey()
-     */
-    public String getModuleKey() { return "module.settings.modules"; }
+    Iterator iter = ModuleLoader2.notYetLoadedModules().entrySet().iterator();
+    while (iter.hasNext()) {
+      Map.Entry entry = (Map.Entry) iter.next();
+      final String name = (String) entry.getKey();
+      final String classname = (String) entry.getValue();
 
-    /**
-     * @see org.argouml.application.api.SettingsTabPanel#getTabKey()
-     */
-    public String getTabKey() { return "tab.modules"; }
+      JLabel label = new JLabel(name);
+      JButton button = new JButton("Attempt to load");
+      button.addActionListener(
+          new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+              try {
+                getClass().getClassLoader().loadClass(classname);
+              } catch (ClassNotFoundException e) {
+                JOptionPane.showMessageDialog(
+                    notYetLoadedPanel,
+                    "Cannot find class " + classname + " needed to load module " + name,
+                    "Cannot find class",
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+              }
 
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = 8945027241102020504L;
+              ModuleLoader2.addClass(classname);
+              handleSettingsTabRefresh();
+            }
+          });
+
+      // button.setLabel(label);
+
+      Container box = Box.createHorizontalBox();
+      box.add(label);
+      box.add(button);
+      notYetLoadedPanel.add(box);
+    }
+
+    add(notYetLoadedPanel, BorderLayout.SOUTH);
+  }
+
+  /**
+   * @see org.argouml.application.api.SettingsTabPanel#handleSettingsTabRefresh()
+   */
+  public void handleSettingsTabRefresh() {
+    table.setModel(new ModuleTableModel());
+    createNotYetLoaded();
+  }
+
+  /**
+   * @see org.argouml.application.api.SettingsTabPanel#handleSettingsTabSave()
+   */
+  public void handleSettingsTabSave() {
+    if (elements != null) {
+      for (int i = 0; i < elements.length; i++) {
+        ModuleLoader2.setSelected(
+            (String) elements[i][0], ((Boolean) elements[i][1]).booleanValue());
+      }
+      ModuleLoader2.doLoad(false);
+    }
+    createNotYetLoaded();
+  }
+
+  /**
+   * @see org.argouml.application.api.SettingsTabPanel#handleSettingsTabCancel()
+   */
+  public void handleSettingsTabCancel() {
+    // Do nothing!
+    // The next time we refresh, we will fetch the values again.
+  }
+
+  // TODO: This is rather ironic. We use the old moduleloader mechanism
+  //       to get a settings tab that will allow us to turn on an off
+  //       the new moduleloader.
+
+  /**
+   * @see org.argouml.application.api.ArgoModule#getModuleName()
+   */
+  public String getModuleName() {
+    return "SettingsTabModules";
+  }
+
+  /**
+   * @see org.argouml.application.api.ArgoModule#getModuleDescription()
+   */
+  public String getModuleDescription() {
+    return "Selecting Modules";
+  }
+
+  /**
+   * @see org.argouml.application.api.ArgoModule#getModuleAuthor()
+   */
+  public String getModuleAuthor() {
+    return "ArgoUML Core";
+  }
+
+  /**
+   * @see org.argouml.application.api.ArgoModule#getModuleVersion()
+   */
+  public String getModuleVersion() {
+    return "1.0";
+  }
+
+  /**
+   * @see org.argouml.application.api.ArgoModule#getModuleKey()
+   */
+  public String getModuleKey() {
+    return "module.settings.modules";
+  }
+
+  /**
+   * @see org.argouml.application.api.SettingsTabPanel#getTabKey()
+   */
+  public String getTabKey() {
+    return "tab.modules";
+  }
+
+  /** The UID. */
+  private static final long serialVersionUID = 8945027241102020504L;
 }

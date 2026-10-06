@@ -26,133 +26,119 @@ package org.argouml.uml.diagram.use_case.ui;
 
 import java.awt.Color;
 import java.awt.Graphics;
-
 import org.argouml.uml.diagram.ui.FigEdgeModelElement;
 import org.tigris.gef.base.PathConvPercent;
 import org.tigris.gef.presentation.ArrowHeadGreater;
 import org.tigris.gef.presentation.Fig;
 import org.tigris.gef.presentation.FigText;
 
-
 /**
- * A fig for use with include relationships on use case diagrams.<p>
+ * A fig for use with include relationships on use case diagrams.
  *
- * Realised as a dotted line with an open arrow head and the label
- * <<include>> alongside a la stereotype.<p>
+ * <p>Realised as a dotted line with an open arrow head and the label <<include>> alongside a la
+ * stereotype.
+ *
+ * <p>
  *
  * @author Jeremy Bennett
  */
 public class FigInclude extends FigEdgeModelElement {
 
+  private FigText label = null; // the label for the stereotype
 
-    private FigText label = null; // the label for the stereotype
+  private ArrowHeadGreater endArrow = new ArrowHeadGreater();
 
-    private ArrowHeadGreater endArrow = new ArrowHeadGreater();
+  /**
+   * The default constructor, but should never be called directly (use {@link #FigInclude(Object)},
+   * since that sets the owner. However we can't mark it as private, since GEF expects to be able to
+   * call this when creating the diagram.
+   */
+  public FigInclude() {
 
-    /**
-     * <p>The default constructor, but should never be called directly (use
-     *   {@link #FigInclude(Object)}, since that sets the owner. However we
-     *   can't mark it as private, since GEF expects to be able to call this
-     *   when creating the diagram.</p>
-     */
+    // We need a FigText to hold the <<include>> label. We DO NOT use the
+    // stereotype generator for it since it's not a stereotype and using
+    // the sterotype generator may cluther the model.
 
-    public FigInclude() {
+    label = new FigText(10, 30, 90, 20);
 
-        // We need a FigText to hold the <<include>> label. We DO NOT use the
-        // stereotype generator for it since it's not a stereotype and using
-        // the sterotype generator may cluther the model.
+    label.setFont(getLabelFont());
+    label.setTextColor(Color.black);
+    label.setTextFilled(false);
+    label.setFilled(false);
+    label.setLineWidth(0);
+    label.setExpandOnly(false);
+    label.setReturnAction(FigText.END_EDITING);
+    label.setTabAction(FigText.END_EDITING);
+    label.setText("<<include>>");
 
-        label = new FigText(10, 30, 90, 20);
+    addPathItem(label, new PathConvPercent(this, 50, 10));
 
-        label.setFont(getLabelFont());
-        label.setTextColor(Color.black);
-        label.setTextFilled(false);
-        label.setFilled(false);
-        label.setLineWidth(0);
-        label.setExpandOnly(false);
-        label.setReturnAction(FigText.END_EDITING);
-        label.setTabAction(FigText.END_EDITING);
-        label.setText("<<include>>");
+    // Make the line dashed
 
-        addPathItem(label, new PathConvPercent(this, 50, 10));
+    setDashed(true);
 
-        // Make the line dashed
+    // Add an arrow with an open arrow head
 
-        setDashed(true);
+    setDestArrowHead(endArrow);
 
-        // Add an arrow with an open arrow head
+    // Make the edge go between nearest points
 
-        setDestArrowHead(endArrow);
+    setBetweenNearestPoints(true);
+  }
 
-        // Make the edge go between nearest points
+  /**
+   * The main constructor. Builds the FigEdge required and makes the given edge object its owner.
+   *
+   * @param edge The edge that will own the fig
+   */
+  public FigInclude(Object edge) {
+    this();
+    setOwner(edge);
+  }
 
-        setBetweenNearestPoints(true);
-    }
+  ///////////////////////////////////////////////////////////////////////////
+  //
+  // Accessors
+  //
+  ///////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Set a new fig to represent this edge.
+   *
+   * <p>We invoke the superclass accessor. Then change aspects of the new fig that are not as we
+   * want. In this case to use dashed lines.
+   *
+   * @param f The fig to use.
+   */
+  public void setFig(Fig f) {
+    super.setFig(f);
 
-    /**
-     * <p>The main constructor. Builds the FigEdge required and makes the given
-     *   edge object its owner.</p>
-     *
-     * @param edge  The edge that will own the fig
-     */
+    // Make sure the line is dashed
 
-    public FigInclude(Object edge) {
-        this();
-        setOwner(edge);
-    }
+    setDashed(true);
+  }
 
+  /**
+   * Define whether the given fig can be edited (it can't).
+   *
+   * @param f The fig about which the enquiry is being made. Ignored in this implementation.
+   * @return <code>false</code> under all circumstances.
+   */
+  protected boolean canEdit(Fig f) {
+    return false;
+  }
 
-    ///////////////////////////////////////////////////////////////////////////
-    //
-    // Accessors
-    //
-    ///////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////
+  //
+  // Event handlers
+  //
+  ///////////////////////////////////////////////////////////////////////////
 
-    /**
-     * <p>Set a new fig to represent this edge.</p>
-     *
-     * <p>We invoke the superclass accessor. Then change aspects of the
-     *   new fig that are not as we want. In this case to use dashed lines.</p>
-     *
-     * @param f  The fig to use.
-     */
-
-    public void setFig(Fig f) {
-        super.setFig(f);
-
-        // Make sure the line is dashed
-
-        setDashed(true);
-    }
-
-    /**
-     * <p>Define whether the given fig can be edited (it can't).</p>
-     *
-     * @param f  The fig about which the enquiry is being made. Ignored in this
-     *           implementation.
-     *
-     * @return   <code>false</code> under all circumstances.
-     */
-
-    protected boolean canEdit(Fig f) {
-        return false;
-    }
-
-
-    ///////////////////////////////////////////////////////////////////////////
-    //
-    // Event handlers
-    //
-    ///////////////////////////////////////////////////////////////////////////
-
-    /**
-     * @see org.tigris.gef.presentation.Fig#paint(java.awt.Graphics)
-     */
-    public void paint(Graphics g) {
-        endArrow.setLineColor(getLineColor());
-        super.paint(g);
-    }
-
+  /**
+   * @see org.tigris.gef.presentation.Fig#paint(java.awt.Graphics)
+   */
+  public void paint(Graphics g) {
+    endArrow.setLineColor(getLineColor());
+    super.paint(g);
+  }
 } /* end class FigInclude */
-

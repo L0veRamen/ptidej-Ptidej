@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -13,16 +13,16 @@ package padl.kernel;
 /**
  * @author Yann-Gaël Guéhéneuc
  */
-public interface IParameter extends IMemberElement, IConstituentOfOperation,
-		ICardinalityAndDimension {
+public interface IParameter
+    extends IMemberElement, IConstituentOfOperation, ICardinalityAndDimension {
 
-	String LOGO = "\"P\"";
+  String LOGO = "\"P\"";
 
-	String getDisplayTypeName();
+  String getDisplayTypeName();
 
-	IEntity getType();
+  IEntity getType();
 
-	char[] getTypeName();
+  char[] getTypeName();
 
-	void setType(final IEntity aType);
+  void setType(final IEntity aType);
 }

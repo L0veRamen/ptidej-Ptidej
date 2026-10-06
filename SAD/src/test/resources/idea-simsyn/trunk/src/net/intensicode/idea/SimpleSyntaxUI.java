@@ -3,141 +3,118 @@ package net.intensicode.idea;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
-import net.intensicode.idea.util.LoggerFactory;
-import net.intensicode.idea.system.SystemContext;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.Nullable;
-
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.util.ArrayList;
-
 import javax.swing.*;
 import javax.swing.event.ListDataListener;
+import net.intensicode.idea.system.SystemContext;
+import net.intensicode.idea.util.LoggerFactory;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.Nullable;
 
+/** TODO: Describe this! */
+public final class SimpleSyntaxUI implements Configurable, ComboBoxModel {
+  public SimpleSyntaxUI(
+      final SystemContext aSystemContext, final ArrayList<SimpleSyntaxInstance> aInstances) {
+    mySystemContext = aSystemContext;
+    myInstances = aInstances;
+  }
 
+  // From Configurable
 
-/**
- * TODO: Describe this!
- */
-public final class SimpleSyntaxUI implements Configurable, ComboBoxModel
-{
-    public SimpleSyntaxUI( final SystemContext aSystemContext, final ArrayList<SimpleSyntaxInstance> aInstances )
-    {
-        mySystemContext = aSystemContext;
-        myInstances = aInstances;
-    }
+  public final String getDisplayName() {
+    return "SimpleSyntax";
+  }
 
-    // From Configurable
+  @Nullable
+  @NonNls
+  public final String getHelpTopic() {
+    return null;
+  }
 
-    public final String getDisplayName()
-    {
-        return "SimpleSyntax";
-    }
+  public final Icon getIcon() {
+    //        return mySystemContext.loadIcon( "SimpleSyntax.png" );
+    return null;
+  }
 
-    @Nullable
-    @NonNls
-    public final String getHelpTopic()
-    {
-        return null;
-    }
+  // From UnnamedConfigurable
 
-    public final Icon getIcon()
-    {
-//        return mySystemContext.loadIcon( "SimpleSyntax.png" );
-        return null;
-    }
+  public final void apply() throws ConfigurationException {
+    LOG.info("apply");
+  }
 
-    // From UnnamedConfigurable
+  public final JComponent createComponent() {
+    LOG.info("createComponent");
 
-    public final void apply() throws ConfigurationException
-    {
-        LOG.info( "apply" );
-    }
+    myEditorPane = new JEditorPane();
+    myEditorPane.setEnabled(false);
+    myEditorPane.setPreferredSize(new Dimension(640, 480));
 
-    public final JComponent createComponent()
-    {
-        LOG.info( "createComponent" );
+    final JComboBox chooser = new JComboBox(this);
+    chooser.setEditable(false);
 
-        myEditorPane = new JEditorPane();
-        myEditorPane.setEnabled( false );
-        myEditorPane.setPreferredSize( new Dimension( 640, 480 ) );
+    final JPanel panel = new JPanel(new BorderLayout());
+    panel.add(chooser, BorderLayout.NORTH);
+    panel.add(myEditorPane, BorderLayout.CENTER);
 
-        final JComboBox chooser = new JComboBox( this );
-        chooser.setEditable( false );
+    return panel;
+  }
 
-        final JPanel panel = new JPanel( new BorderLayout() );
-        panel.add( chooser, BorderLayout.NORTH );
-        panel.add( myEditorPane, BorderLayout.CENTER );
+  public final void disposeUIResources() {
+    LOG.info("disposeUIResources");
+  }
 
-        return panel;
-    }
+  public final boolean isModified() {
+    return false;
+  }
 
-    public final void disposeUIResources()
-    {
-        LOG.info( "disposeUIResources" );
-    }
+  public final void reset() {
+    LOG.info("reset");
+  }
 
-    public final boolean isModified()
-    {
-        return false;
-    }
+  // From ComboBoxModel
 
-    public final void reset()
-    {
-        LOG.info( "reset" );
-    }
+  public final Object getSelectedItem() {
+    LOG.info("getSelectedItem " + mySelectedItem);
+    return mySelectedItem;
+  }
 
-    // From ComboBoxModel
+  public final void setSelectedItem(final Object aItem) {
+    LOG.info("setSelectedItem " + aItem);
+    mySelectedItem = aItem;
+  }
 
-    public final Object getSelectedItem()
-    {
-        LOG.info( "getSelectedItem " + mySelectedItem );
-        return mySelectedItem;
-    }
+  // From ListModel
 
-    public final void setSelectedItem( final Object aItem )
-    {
-        LOG.info( "setSelectedItem " + aItem );
-        mySelectedItem = aItem;
-    }
+  public final void addListDataListener(final ListDataListener aListener) {
+    LOG.info("addListDataListener " + aListener);
+    myListeners.add(aListener);
+  }
 
-    // From ListModel
+  public final Object getElementAt(final int index) {
+    LOG.info("getElementAt " + index);
+    return myInstances.get(index);
+  }
 
-    public final void addListDataListener( final ListDataListener aListener )
-    {
-        LOG.info( "addListDataListener " + aListener );
-        myListeners.add( aListener );
-    }
+  public final int getSize() {
+    return myInstances.size();
+  }
 
-    public final Object getElementAt( final int index )
-    {
-        LOG.info( "getElementAt " + index );
-        return myInstances.get( index );
-    }
+  public final void removeListDataListener(final ListDataListener aListener) {
+    LOG.info("removeListDataListener " + aListener);
+    myListeners.remove(aListener);
+  }
 
-    public final int getSize()
-    {
-        return myInstances.size();
-    }
+  private Object mySelectedItem;
 
-    public final void removeListDataListener( final ListDataListener aListener )
-    {
-        LOG.info( "removeListDataListener " + aListener );
-        myListeners.remove( aListener );
-    }
+  private JEditorPane myEditorPane;
 
+  private final SystemContext mySystemContext;
 
+  private final ArrayList<SimpleSyntaxInstance> myInstances;
 
-    private Object mySelectedItem;
+  private final ArrayList<ListDataListener> myListeners = new ArrayList<ListDataListener>();
 
-    private JEditorPane myEditorPane;
-
-    private final SystemContext mySystemContext;
-
-    private final ArrayList<SimpleSyntaxInstance> myInstances;
-
-    private final ArrayList<ListDataListener> myListeners = new ArrayList<ListDataListener>();
-
-    private static final Logger LOG = LoggerFactory.getLogger();
+  private static final Logger LOG = LoggerFactory.getLogger();
 }

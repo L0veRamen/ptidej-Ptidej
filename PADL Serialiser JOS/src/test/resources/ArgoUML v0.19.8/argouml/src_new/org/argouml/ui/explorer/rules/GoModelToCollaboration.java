@@ -29,7 +29,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 
@@ -41,42 +40,40 @@ import org.argouml.model.Model;
  */
 public class GoModelToCollaboration extends AbstractPerspectiveRule {
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
-     */
-    public String getRuleName() {
-        return Translator.localize ("misc.model.collaboration");
-    }
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
+   */
+  public String getRuleName() {
+    return Translator.localize("misc.model.collaboration");
+  }
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
-     */
-    public Collection getChildren(Object parent) {
-	if (Model.getFacade().isAModel(parent)) {
-            Collection col =
-                Model.getModelManagementHelper().getAllModelElementsOfKind(
-                        parent,
-                        Model.getMetaTypes().getCollaboration());
-            List returnList = new ArrayList();
-            Iterator it = col.iterator();
-            while (it.hasNext()) {
-                Object collab = /*(MCollaboration)*/ it.next();
-                if (Model.getFacade().getRepresentedClassifier(collab) == null
-                    && Model.getFacade().getRepresentedOperation(collab) 
-                        == null) {
-                    returnList.add(collab);
-                }
-            }
-            return returnList;
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
+   */
+  public Collection getChildren(Object parent) {
+    if (Model.getFacade().isAModel(parent)) {
+      Collection col =
+          Model.getModelManagementHelper()
+              .getAllModelElementsOfKind(parent, Model.getMetaTypes().getCollaboration());
+      List returnList = new ArrayList();
+      Iterator it = col.iterator();
+      while (it.hasNext()) {
+        Object collab = /*(MCollaboration)*/ it.next();
+        if (Model.getFacade().getRepresentedClassifier(collab) == null
+            && Model.getFacade().getRepresentedOperation(collab) == null) {
+          returnList.add(collab);
         }
-        return null;
+      }
+      return returnList;
     }
+    return null;
+  }
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
-     */
-    public Set getDependencies(Object parent) {
-	// TODO: What?
-	return null;
-    }
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
+   */
+  public Set getDependencies(Object parent) {
+    // TODO: What?
+    return null;
+  }
 }

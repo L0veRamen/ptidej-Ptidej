@@ -21,50 +21,50 @@ along with this program; if not, write to the Free Software
 -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/contactview"
-    android:layout_width="match_parent"
-    android:layout_height="72dp"
-    android:descendantFocusability="blocksDescendants"
-    android:minHeight="72dp">
+                android:id="@+id/contactview"
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:descendantFocusability="blocksDescendants"
+                android:minHeight="72dp">
 
     <ImageView
-        android:id="@+id/photo"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:contentDescription="@string/contact_picture_description"
-        android:scaleType="centerCrop" />
+            android:id="@+id/photo"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:contentDescription="@string/contact_picture_description"
+            android:scaleType="centerCrop"/>
 
     <TextView
-        android:id="@+id/display_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toEndOf="@+id/photo"
-        android:layout_toLeftOf="@+id/quick_call"
-        android:layout_toRightOf="@+id/photo"
-        android:layout_toStartOf="@+id/quick_call"
-        android:gravity="start"
-        android:textAlignment="viewStart"
-        android:textColor="@color/text_color_primary"
-        android:textIsSelectable="false"
-        android:textSize="16sp" />
+            android:id="@+id/display_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/photo"
+            android:layout_toLeftOf="@+id/quick_call"
+            android:layout_toRightOf="@+id/photo"
+            android:layout_toStartOf="@+id/quick_call"
+            android:gravity="start"
+            android:textAlignment="viewStart"
+            android:textColor="@color/text_color_primary"
+            android:textIsSelectable="false"
+            android:textSize="16sp"/>
 
     <ImageButton
-        android:id="@+id/quick_call"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:background="?selectableItemBackgroundBorderless"
-        android:contentDescription="@string/contact_quick_call_description"
-        android:padding="16dp"
-        android:src="@drawable/ic_call_white_24dp"
-        android:tint="@color/black" />
+            android:id="@+id/quick_call"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="?selectableItemBackgroundBorderless"
+            android:contentDescription="@string/contact_quick_call_description"
+            android:padding="16dp"
+            android:src="@drawable/ic_call_white_24dp"
+            android:tint="@color/black"/>
 
 </RelativeLayout>

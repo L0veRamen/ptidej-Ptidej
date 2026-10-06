@@ -4,28 +4,28 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
 package padl.creator.cppfile.eclipse.test.big;
 
-import org.junit.Assert;
-
 import junit.framework.TestCase;
+import org.junit.Assert;
 import padl.creator.cppfile.eclipse.test.helper.ModelGenerator;
 import padl.kernel.ICodeLevelModel;
 
 public class RingDaemonTest extends TestCase {
-	public RingDaemonTest(String name) {
-		super(name);
-	}
+  public RingDaemonTest(String name) {
+    super(name);
+  }
 
-	public void test1() {
-		final ICodeLevelModel codeLevelModel = ModelGenerator
-				.generateModelFromCppTestResources("RingDaemon",
-						"../PADL Creator C++ (Eclipse)/target/test-classes/ring-daemon-master/src/");
-		Assert.assertNotNull("The code-level model is null!", codeLevelModel);
-		Assert.assertTrue(codeLevelModel.getNumberOfTopLevelEntities() > 3000);
-	}
+  public void test1() {
+    final ICodeLevelModel codeLevelModel =
+        ModelGenerator.generateModelFromCppTestResources(
+            "RingDaemon",
+            "../PADL Creator C++ (Eclipse)/target/test-classes/ring-daemon-master/src/");
+    Assert.assertNotNull("The code-level model is null!", codeLevelModel);
+    Assert.assertTrue(codeLevelModel.getNumberOfTopLevelEntities() > 3000);
+  }
 }

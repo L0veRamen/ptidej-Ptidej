@@ -1,34 +1,25 @@
 /**
  * @author Mathieu Lemoine
  * @created 2009-07-10 (金)
- *
- * Licensed under 3-clause BSD License:
- * Copyright © 2009, Mathieu Lemoine
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *  * Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- *  * Neither the name of Mathieu Lemoine nor the
- *    names of contributors may be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY Mathieu Lemoine ''AS IS'' AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL Mathieu Lemoine BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *     <p>Licensed under 3-clause BSD License: Copyright © 2009, Mathieu Lemoine All rights
+ *     reserved.
+ *     <p>Redistribution and use in source and binary forms, with or without modification, are
+ *     permitted provided that the following conditions are met: * Redistributions of source code
+ *     must retain the above copyright notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright notice, this list of
+ *     conditions and the following disclaimer in the documentation and/or other materials provided
+ *     with the distribution. * Neither the name of Mathieu Lemoine nor the names of contributors
+ *     may be used to endorse or promote products derived from this software without specific prior
+ *     written permission.
+ *     <p>THIS SOFTWARE IS PROVIDED BY Mathieu Lemoine ''AS IS'' AND ANY EXPRESS OR IMPLIED
+ *     WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ *     FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Mathieu Lemoine BE LIABLE
+ *     FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *     (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ *     DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ *     WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+ *     ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package jct.tools;
 
 import java.util.Collection;
@@ -38,7 +29,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
 import jct.kernel.IJCTClass;
 import jct.kernel.IJCTClassMember;
 import jct.kernel.IJCTComment;
@@ -48,156 +38,153 @@ import jct.util.IJCTContainer;
 import util.io.ProxyConsole;
 
 /**
- * This class attach the comments within each
- * compilation unit to the constituent following them directly.
+ * This class attach the comments within each compilation unit to the constituent following them
+ * directly.
  */
 public class JCTCommentAttachor extends JCTMap<Void, Void> {
-	private final Map<IJCTSourceCodePart, Integer> cache = new HashMap<IJCTSourceCodePart, Integer>();
+  private final Map<IJCTSourceCodePart, Integer> cache = new HashMap<IJCTSourceCodePart, Integer>();
 
-	private int getAbsoluteOffset(final IJCTSourceCodePart scp,
-			final IJCTCompilationUnit cu) {
+  private int getAbsoluteOffset(final IJCTSourceCodePart scp, final IJCTCompilationUnit cu) {
 
-		Integer offset = this.cache.get(scp);
+    Integer offset = this.cache.get(scp);
 
-		if (scp.getEnclosingCompilationUnit() != cu) {
-			// TODO This should never happened!
-			// But it happens when loading all the Java files under "/PADL/src/main/java/padl/kernel/"
-			ProxyConsole.getInstance().errorOutput().print(
-					"jct.tools.JCTCommentAttachor.getAbsoluteOffset(): source code part should enclosed in ");
-			ProxyConsole.getInstance().errorOutput().println(cu);
-			offset = 0;
-		}
+    if (scp.getEnclosingCompilationUnit() != cu) {
+      // TODO This should never happened!
+      // But it happens when loading all the Java files under "/PADL/src/main/java/padl/kernel/"
+      ProxyConsole.getInstance()
+          .errorOutput()
+          .print(
+              "jct.tools.JCTCommentAttachor.getAbsoluteOffset(): source code part should enclosed in ");
+      ProxyConsole.getInstance().errorOutput().println(cu);
+      offset = 0;
+    }
 
-		if (null == offset) {
-			this.cache.put(scp, offset = scp.getStoredSourceCodeOffset(cu));
-		}
+    if (null == offset) {
+      this.cache.put(scp, offset = scp.getStoredSourceCodeOffset(cu));
+    }
 
-		if (null == offset) {
-			// TODO This should never happened!
-			// But it happens when loading all the Java files under "/PADL/src/main/java/padl/kernel/"
-			ProxyConsole.getInstance().errorOutput().println(
-					"jct.tools.JCTCommentAttachor.getAbsoluteOffset(): source code part should contain source code data!");
-			offset = 0;
-		}
+    if (null == offset) {
+      // TODO This should never happened!
+      // But it happens when loading all the Java files under "/PADL/src/main/java/padl/kernel/"
+      ProxyConsole.getInstance()
+          .errorOutput()
+          .println(
+              "jct.tools.JCTCommentAttachor.getAbsoluteOffset(): source code part should contain source code data!");
+      offset = 0;
+    }
 
-		return offset;
-	}
+    return offset;
+  }
 
-	@Override
-	public Void visitCompilationUnit(final IJCTCompilationUnit t,
-			final Void p) {
-		this.cache.clear();
+  @Override
+  @SuppressWarnings(
+      "unchecked") // Casts to type parameters are inherent to the generic JCT containers
+  public Void visitCompilationUnit(final IJCTCompilationUnit t, final Void p) {
+    this.cache.clear();
 
-		if (null == t.getStoredSourceCode())
-			return null;
+    if (null == t.getStoredSourceCode()) return null;
 
-		final SortedSet<IJCTSourceCodePart> parts = new TreeSet<IJCTSourceCodePart>(
-				new ConstituentOffsetOrder(t, this.cache));
+    final SortedSet<IJCTSourceCodePart> parts =
+        new TreeSet<IJCTSourceCodePart>(new ConstituentOffsetOrder(t, this.cache));
 
-		parts.addAll(t.getImporteds());
-		for (IJCTClass c : t.getClazzs()) {
-			parts.add(c);
-			for (IJCTClassMember cm : c.getDeclaredMembers())
-				parts.addAll(
-						(Collection<IJCTSourceCodePart>) ((IJCTContainer<? extends IJCTSourceCodePart>) cm)
-								.getAllEnclosedElements());
-		}
+    parts.addAll(t.getImporteds());
+    for (IJCTClass c : t.getClazzs()) {
+      parts.add(c);
+      for (IJCTClassMember cm : c.getDeclaredMembers())
+        parts.addAll(
+            (Collection<IJCTSourceCodePart>)
+                ((IJCTContainer<? extends IJCTSourceCodePart>) cm).getAllEnclosedElements());
+    }
 
-		final SortedSet<IJCTComment> comments = new TreeSet<IJCTComment>(
-				new ConstituentOffsetOrder(t, this.cache));
+    final SortedSet<IJCTComment> comments =
+        new TreeSet<IJCTComment>(new ConstituentOffsetOrder(t, this.cache));
 
-		comments.addAll(t.getComments());
+    comments.addAll(t.getComments());
 
-		final Iterator<IJCTSourceCodePart> it = parts.iterator();
-		if (!it.hasNext())
-			return null;
+    final Iterator<IJCTSourceCodePart> it = parts.iterator();
+    if (!it.hasNext()) return null;
 
-		IJCTSourceCodePart last = it.next();
+    IJCTSourceCodePart last = it.next();
 
-		comments: for (final IJCTComment c : comments) {
-			while (true) {
-				if (this.getAbsoluteOffset(last, t) >= this.getAbsoluteOffset(c,
-						t) + c.getStoredSourceCodeLength()) {
-					last.addComment(c);
-					continue comments;
-				}
-				else if (it.hasNext()) {
-					last = it.next();
-					continue;
-				}
-				else
-					return null;
-			}
-		}
+    comments:
+    for (final IJCTComment c : comments) {
+      while (true) {
+        if (this.getAbsoluteOffset(last, t)
+            >= this.getAbsoluteOffset(c, t) + c.getStoredSourceCodeLength()) {
+          last.addComment(c);
+          continue comments;
+        } else if (it.hasNext()) {
+          last = it.next();
+          continue;
+        } else return null;
+      }
+    }
 
-		return null;
-	}
+    return null;
+  }
 }
 
 class ConstituentOffsetOrder implements Comparator<IJCTSourceCodePart> {
-	private final Map<IJCTSourceCodePart, Integer> cache;
+  private final Map<IJCTSourceCodePart, Integer> cache;
 
-	private final IJCTCompilationUnit compilationUnit;
+  private final IJCTCompilationUnit compilationUnit;
 
-	public ConstituentOffsetOrder(final IJCTCompilationUnit cu,
-			final Map<IJCTSourceCodePart, Integer> cache) {
-		this.compilationUnit = cu;
-		this.cache = cache;
-	}
+  public ConstituentOffsetOrder(
+      final IJCTCompilationUnit cu, final Map<IJCTSourceCodePart, Integer> cache) {
+    this.compilationUnit = cu;
+    this.cache = cache;
+  }
 
-	public ConstituentOffsetOrder(final IJCTCompilationUnit cu) {
-		this(cu, new HashMap<IJCTSourceCodePart, Integer>());
-	}
+  public ConstituentOffsetOrder(final IJCTCompilationUnit cu) {
+    this(cu, new HashMap<IJCTSourceCodePart, Integer>());
+  }
 
-	private int getAbsoluteOffset(final IJCTSourceCodePart scp) {
-		Integer offset = this.cache.get(scp);
+  private int getAbsoluteOffset(final IJCTSourceCodePart scp) {
+    Integer offset = this.cache.get(scp);
 
-		if (scp.getEnclosingCompilationUnit() != this.compilationUnit) {
-			// TODO This should never happened!
-			// But it happens when loading all the Java files under "/PADL/src/main/java/padl/kernel/"
-			ProxyConsole.getInstance().errorOutput().print(
-					"jct.tools.ConstituentOffsetOrder.getAbsoluteOffset(): source code part should enclosed in ");
-			ProxyConsole.getInstance().errorOutput()
-					.println(this.compilationUnit);
-			offset = 0;
-		}
+    if (scp.getEnclosingCompilationUnit() != this.compilationUnit) {
+      // TODO This should never happened!
+      // But it happens when loading all the Java files under "/PADL/src/main/java/padl/kernel/"
+      ProxyConsole.getInstance()
+          .errorOutput()
+          .print(
+              "jct.tools.ConstituentOffsetOrder.getAbsoluteOffset(): source code part should enclosed in ");
+      ProxyConsole.getInstance().errorOutput().println(this.compilationUnit);
+      offset = 0;
+    }
 
-		if (null == offset) {
-			this.cache.put(scp, offset = scp
-					.getStoredSourceCodeOffset(this.compilationUnit));
-		}
+    if (null == offset) {
+      this.cache.put(scp, offset = scp.getStoredSourceCodeOffset(this.compilationUnit));
+    }
 
-		if (null == offset) {
-			// TODO This should never happened!
-			// But it happens when loading all the Java files under "/PADL/src/main/java/padl/kernel/"
-			ProxyConsole.getInstance().errorOutput().println(
-					"jct.tools.ConstituentOffsetOrder.getAbsoluteOffset(): source code part should contain source code data!");
-			offset = 0;
-		}
+    if (null == offset) {
+      // TODO This should never happened!
+      // But it happens when loading all the Java files under "/PADL/src/main/java/padl/kernel/"
+      ProxyConsole.getInstance()
+          .errorOutput()
+          .println(
+              "jct.tools.ConstituentOffsetOrder.getAbsoluteOffset(): source code part should contain source code data!");
+      offset = 0;
+    }
 
-		return offset;
-	}
+    return offset;
+  }
 
-	public int compare(final IJCTSourceCodePart a, final IJCTSourceCodePart b) {
-		if (a.equals(b))
-			return 0;
+  public int compare(final IJCTSourceCodePart a, final IJCTSourceCodePart b) {
+    if (a.equals(b)) return 0;
 
-		final int ia = this.getAbsoluteOffset(a);
-		final int ib = this.getAbsoluteOffset(b);
+    final int ia = this.getAbsoluteOffset(a);
+    final int ib = this.getAbsoluteOffset(b);
 
-		if (ia != ib)
-			return ia - ib;
+    if (ia != ib) return ia - ib;
 
-		try {
-			if (a.getStoredSourceCodeLength() != null
-					&& a.getStoredSourceCodeLength().intValue() != b
-							.getStoredSourceCodeLength().intValue())
-				return b.getStoredSourceCodeLength()
-						- a.getStoredSourceCodeLength();
-		}
-		catch (final NullPointerException e) {
-		}
+    try {
+      if (a.getStoredSourceCodeLength() != null
+          && a.getStoredSourceCodeLength().intValue() != b.getStoredSourceCodeLength().intValue())
+        return b.getStoredSourceCodeLength() - a.getStoredSourceCodeLength();
+    } catch (final NullPointerException e) {
+    }
 
-		return b.getPath().isEnclosing(a.getPath()) ? 1 : -1;
-	}
+    return b.getPath().isEnclosing(a.getPath()) ? 1 : -1;
+  }
 }

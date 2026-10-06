@@ -25,18 +25,13 @@
 package org.argouml.uml.notation;
 
 /**
- * This abstract class forms the basis of all Notation providers
- * for the text shown next to the end of an association.
- * Subclass this for all languages.
- * 
+ * This abstract class forms the basis of all Notation providers for the text shown next to the end
+ * of an association. Subclass this for all languages.
+ *
  * @author michiel
  */
 public abstract class AssociationEndNameNotation extends NotationProvider {
 
-    /**
-     * The constructor. 
-     */
-    protected AssociationEndNameNotation() {
-    }
-
+  /** The constructor. */
+  protected AssociationEndNameNotation() {}
 }

@@ -25,7 +25,6 @@
 package org.argouml.ui.explorer;
 
 import java.beans.PropertyChangeListener;
-
 import org.argouml.application.api.Configuration;
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.AddAssociationEvent;
@@ -36,161 +35,145 @@ import org.argouml.model.RemoveAssociationEvent;
 import org.argouml.notation.Notation;
 
 /**
- * All events going to the Explorer must pass through here first!<p>
+ * All events going to the Explorer must pass through here first!
  *
- * Most will come from the uml model via the EventAdapter interface.<p>
+ * <p>Most will come from the uml model via the EventAdapter interface.
  *
- * TODO: In some cases (test cases) this object is created without setting
- * the treeModel. I (Linus) will add tests for this now. It would be better
- * if this is created only when the Explorer is created.
+ * <p>TODO: In some cases (test cases) this object is created without setting the treeModel. I
+ * (Linus) will add tests for this now. It would be better if this is created only when the Explorer
+ * is created.
  *
  * @since 0.15.2, Created on 16 September 2003, 23:13
- * @author  alexb
+ * @author alexb
  */
-public final class ExplorerEventAdaptor
-    implements PropertyChangeListener {
-    /**
-     * The singleton instance.
-     *
-     * TODO: Why is this a singleton? Wouldn't it be better to have exactly
-     * one for every Explorer?
-     */
-    private static ExplorerEventAdaptor instance;
+public final class ExplorerEventAdaptor implements PropertyChangeListener {
+  /**
+   * The singleton instance.
+   *
+   * <p>TODO: Why is this a singleton? Wouldn't it be better to have exactly one for every Explorer?
+   */
+  private static ExplorerEventAdaptor instance;
 
-    /**
-     * The tree model to update.
-     */
-    private TreeModelUMLEventListener treeModel;
+  /** The tree model to update. */
+  private TreeModelUMLEventListener treeModel;
 
-    /**
-     * @return the instance (singleton)
-     */
-    public static ExplorerEventAdaptor getInstance() {
-        if (instance == null) {
-            instance = new ExplorerEventAdaptor();
-	}
-	return instance;
+  /**
+   * @return the instance (singleton)
+   */
+  public static ExplorerEventAdaptor getInstance() {
+    if (instance == null) {
+      instance = new ExplorerEventAdaptor();
+    }
+    return instance;
+  }
+
+  /** Creates a new instance of ExplorerUMLEventAdaptor. */
+  private ExplorerEventAdaptor() {
+
+    Configuration.addListener(Notation.KEY_USE_GUILLEMOTS, this);
+    Configuration.addListener(Notation.KEY_SHOW_STEREOTYPES, this);
+    ProjectManager.getManager().addPropertyChangeListener(this);
+    // TODO: We really only care about events which affect things that
+    // are visible in the current perspective (view).  This could be
+    // tailored to cut down on event traffic. - tfm 20060410
+    Model.getPump()
+        .addClassModelEventListener(this, Model.getMetaTypes().getModelElement(), (String[]) null);
+  }
+
+  /** forwards this event to the tree model. */
+  public void structureChanged() {
+    if (treeModel == null) {
+      return;
+    }
+    treeModel.structureChanged();
+  }
+
+  /**
+   * forwards this event to the tree model.
+   *
+   * @param source the modelelement to be removed
+   */
+  public void modelElementRemoved(Object source) {
+    if (treeModel == null) {
+      return;
+    }
+    treeModel.modelElementRemoved(source);
+  }
+
+  /**
+   * forwards this event to the tree model.
+   *
+   * @param source the modelelement to be added
+   */
+  public void modelElementAdded(Object source) {
+    if (treeModel == null) {
+      return;
+    }
+    treeModel.modelElementAdded(source);
+  }
+
+  /**
+   * forwards this event to the tree model.
+   *
+   * @param source the modelelement to be changed
+   */
+  public void modelElementChanged(Object source) {
+    if (treeModel == null) {
+      return;
+    }
+    treeModel.modelElementChanged(source);
+  }
+
+  /**
+   * sets the tree model that will receive events.
+   *
+   * @param newTreeModel the tree model to be used
+   */
+  public void setTreeModelUMLEventListener(TreeModelUMLEventListener newTreeModel) {
+    treeModel = newTreeModel;
+  }
+
+  /**
+   * Listens to events coming from the project manager, config manager, and uml model, passes those
+   * events on to the explorer model.
+   *
+   * @since ARGO0.11.2
+   * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+   */
+  public void propertyChange(java.beans.PropertyChangeEvent pce) {
+    if (treeModel == null) {
+      return;
     }
 
-    /**
-     * Creates a new instance of ExplorerUMLEventAdaptor.
-     */
-    private ExplorerEventAdaptor() {
-
-        Configuration.addListener(Notation.KEY_USE_GUILLEMOTS, this);
-        Configuration.addListener(Notation.KEY_SHOW_STEREOTYPES, this);
-        ProjectManager.getManager().addPropertyChangeListener(this);
-        // TODO: We really only care about events which affect things that
-        // are visible in the current perspective (view).  This could be
-        // tailored to cut down on event traffic. - tfm 20060410
-        Model.getPump().addClassModelEventListener(this,
-                Model.getMetaTypes().getModelElement(), (String[]) null);
-    }
-
-    /**
-     * forwards this event to the tree model.
-     */
-    public void structureChanged() {
-        if (treeModel == null) {
-            return;
-        }
+    // uml model events
+    if (pce instanceof AttributeChangeEvent) {
+      // TODO: Can this be made more restrictive?
+      // Do we care about any attributes other than name? - tfm
+      treeModel.modelElementChanged(pce.getSource());
+    } else if (pce instanceof RemoveAssociationEvent) {
+      // TODO: This should really be coded the other way round,
+      // to only act on associations which are important for
+      // representing the current perspective (and to only act
+      // on a single end of the association) - tfm
+      if (!("namespace".equals(pce.getPropertyName()))) {
+        treeModel.modelElementChanged(((RemoveAssociationEvent) pce).getChangedValue());
+      }
+    } else if (pce instanceof AddAssociationEvent) {
+      if (!("namespace".equals(pce.getPropertyName()))) {
+        treeModel.modelElementAdded(((AddAssociationEvent) pce).getSource());
+      }
+    } else if (pce instanceof DeleteInstanceEvent) {
+      treeModel.modelElementRemoved(((DeleteInstanceEvent) pce).getSource());
+    } else if (pce.getPropertyName().equals(ProjectManager.CURRENT_PROJECT_PROPERTY_NAME)) {
+      // project events
+      if (pce.getNewValue() != null) {
         treeModel.structureChanged();
+      }
+      return;
+    } else if (Notation.KEY_USE_GUILLEMOTS.isChangedProperty(pce)
+        || Notation.KEY_SHOW_STEREOTYPES.isChangedProperty(pce)) {
+      // notation events
+      treeModel.structureChanged();
     }
-
-    /**
-     * forwards this event to the tree model.
-     *
-     * @param source the modelelement to be removed
-     */
-    public void modelElementRemoved(Object source) {
-        if (treeModel == null) {
-            return;
-        }
-        treeModel.modelElementRemoved(source);
-    }
-
-    /**
-     * forwards this event to the tree model.
-     *
-     * @param source the modelelement to be added
-     */
-    public void modelElementAdded(Object source) {
-        if (treeModel == null) {
-            return;
-        }
-        treeModel.modelElementAdded(source);
-    }
-
-    /**
-     * forwards this event to the tree model.
-     *
-     * @param source the modelelement to be changed
-     */
-    public void modelElementChanged(Object source) {
-        if (treeModel == null) {
-            return;
-        }
-        treeModel.modelElementChanged(source);
-    }
-
-    /**
-     * sets the tree model that will receive events.
-     *
-     * @param newTreeModel the tree model to be used
-     */
-    public void setTreeModelUMLEventListener(
-	    TreeModelUMLEventListener newTreeModel) {
-        treeModel = newTreeModel;
-    }
-
-    /**
-     * Listens to events coming from the project manager, config manager, and
-     * uml model, passes those events on to the explorer model.
-     *
-     * @since ARGO0.11.2
-     *
-     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
-     */
-    public void propertyChange(java.beans.PropertyChangeEvent pce) {
-        if (treeModel == null) {
-            return;
-        }
-
-        // uml model events
-        if (pce instanceof AttributeChangeEvent) {
-            // TODO: Can this be made more restrictive?
-            // Do we care about any attributes other than name? - tfm
-            treeModel.modelElementChanged(pce.getSource());
-        } else if (pce instanceof RemoveAssociationEvent) {
-            // TODO: This should really be coded the other way round,
-            // to only act on associations which are important for
-            // representing the current perspective (and to only act
-            // on a single end of the association) - tfm
-            if (!("namespace".equals(pce.getPropertyName()))) {
-                treeModel.modelElementChanged(((RemoveAssociationEvent) pce)
-                        .getChangedValue());
-            }
-        } else if (pce instanceof AddAssociationEvent) {
-            if (!("namespace".equals(pce.getPropertyName()))) {
-                treeModel.modelElementAdded(
-                        ((AddAssociationEvent) pce).getSource());
-            }
-        } else if (pce instanceof DeleteInstanceEvent) {
-            treeModel.modelElementRemoved(((DeleteInstanceEvent) pce)
-                    .getSource());
-        } else if (pce.getPropertyName()
-                .equals(ProjectManager.CURRENT_PROJECT_PROPERTY_NAME)) {
-            // project events
-            if (pce.getNewValue() != null) {
-                treeModel.structureChanged();
-            }
-            return;
-        } else if (Notation.KEY_USE_GUILLEMOTS.isChangedProperty(pce)
-            || Notation.KEY_SHOW_STEREOTYPES.isChangedProperty(pce)) {
-            // notation events
-            treeModel.structureChanged();
-        }
-
-
-    }
+  }
 }

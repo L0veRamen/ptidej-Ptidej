@@ -1,5 +1,8 @@
 package net.intensicode.idea;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.Icon;
 import net.intensicode.idea.config.BracesConfiguration;
 import net.intensicode.idea.config.CommentConfiguration;
 import net.intensicode.idea.config.FileTypeConfiguration;
@@ -7,77 +10,55 @@ import net.intensicode.idea.config.InstanceConfiguration;
 import net.intensicode.idea.syntax.RecognizedToken;
 import net.intensicode.idea.syntax.RecognizedTokenRegEx;
 
-import java.util.ArrayList;
-import java.util.List;
+/** TODO: Describe this! */
+public class FakeConfiguration implements InstanceConfiguration {
+  public final ArrayList<RecognizedToken> recognized_tokens = new ArrayList<RecognizedToken>();
 
-import javax.swing.Icon;
+  public FakeConfiguration() {
+    recognized_tokens.add(new RecognizedTokenRegEx("FAKE_TEST", "FAKE_TEST"));
+  }
 
+  public BracesConfiguration getBracesConfiguration() {
+    return new FakeBracesConfiguration();
+  }
 
+  public CommentConfiguration getCommentConfiguration() {
+    return new FakeCommentConfiguration();
+  }
 
-/**
- * TODO: Describe this!
- */
-public class FakeConfiguration implements InstanceConfiguration
-{
-    public final ArrayList<RecognizedToken> recognized_tokens = new ArrayList<RecognizedToken>();
+  public String getDescription() {
+    return null;
+  }
 
-    public FakeConfiguration()
-    {
-        recognized_tokens.add( new RecognizedTokenRegEx( "FAKE_TEST", "FAKE_TEST" ) );
-    }
+  public String getExampleCode() {
+    return null;
+  }
 
-    public BracesConfiguration getBracesConfiguration()
-    {
-        return new FakeBracesConfiguration();
-    }
+  public FileTypeConfiguration getFileTypeConfiguration() {
+    return null;
+  }
 
-    public CommentConfiguration getCommentConfiguration()
-    {
-        return new FakeCommentConfiguration();
-    }
+  public Icon getIcon() {
+    return null;
+  }
 
-    public String getDescription()
-    {
-        return null;
-    }
+  public String getName() {
+    return "Fake";
+  }
 
-    public String getExampleCode()
-    {
-        return null;
-    }
+  public List<RecognizedToken> getRecognizedTokens() {
+    return recognized_tokens;
+  }
 
-    public FileTypeConfiguration getFileTypeConfiguration()
-    {
-        return null;
-    }
+  public String getTokenAttributes(String aTokenID) {
+    return null;
+  }
 
-    public Icon getIcon()
-    {
-        return null;
-    }
+  public String getTokenDescription(String aTokenID) {
+    return null;
+  }
 
-    public String getName()
-    {
-        return "Fake";
-    }
-
-    public List<RecognizedToken> getRecognizedTokens()
-    {
-        return recognized_tokens;
-    }
-
-    public String getTokenAttributes( String aTokenID )
-    {
-        return null;
-    }
-
-    public String getTokenDescription( String aTokenID )
-    {
-        return null;
-    }
-
-    public boolean isVisibleToken( final String aTokenId )
-    {
-        return false;
-    }
+  public boolean isVisibleToken(final String aTokenId) {
+    return false;
+  }
 }

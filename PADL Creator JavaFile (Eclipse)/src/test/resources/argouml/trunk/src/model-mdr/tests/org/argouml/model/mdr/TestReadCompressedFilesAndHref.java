@@ -26,84 +26,77 @@ package org.argouml.model.mdr;
 
 import java.io.File;
 import java.io.FileInputStream;
-
 import javax.jmi.reflect.RefPackage;
-
 import org.apache.log4j.Logger;
 import org.xml.sax.InputSource;
+
 /**
- * Test read models. 
- * TODO: Move this test into argouml base when we will want to read also zip 
- * file.
- * 
+ * Test read models. TODO: Move this test into argouml base when we will want to read also zip file.
+ *
  * @author lmaitre
- * 
  */
-public class TestReadCompressedFilesAndHref extends
-        AbstractMDRModelImplementationTestCase {
+public class TestReadCompressedFilesAndHref extends AbstractMDRModelImplementationTestCase {
 
-    private Logger LOG = Logger.getLogger(TestReadCompressedFilesAndHref.class);
-    
-    //notice that i must replace and hardcode user.home on my Mac OS X computer
-    //[since this always give "/tmp" (at least under Eclipe)]
-    private static final String ANDROMDA_HOME = System.getProperty("user.home")
-            + "/andromda-bin-3.1-RC1";
+  private Logger LOG = Logger.getLogger(TestReadCompressedFilesAndHref.class);
 
-    private String testModel = "tests/testmodels/MDASampleModel.xmi";
+  // notice that i must replace and hardcode user.home on my Mac OS X computer
+  // [since this always give "/tmp" (at least under Eclipe)]
+  private static final String ANDROMDA_HOME =
+      System.getProperty("user.home") + "/andromda-bin-3.1-RC1";
 
-    //Uncomment if you test the zipfilepersister
-    //private String testModelZip = "tests/testmodels/CarRentalSystem.xml.zip";
+  private String testModel = "tests/testmodels/MDASampleModel.xmi";
 
-    public void testReadCompressedFileAndHref() {
-        File mdaIsHere = new File (ANDROMDA_HOME);
-        if (mdaIsHere.exists()) {
-            LOG.info("Begin testReadCompressedFileAndHref()");        
-            //Remove the dependency to argouml base for the moment
-            // org.argouml.persistence.ProjectFilePersister persister =
-            //     org.argouml.persistence.PersistenceManager
-            //         .getInstance().getPersisterFromFileName(testModel);
-            XmiReaderImpl reader = new XmiReaderImpl(modelImplementation,
-                    (RefPackage) modelImplementation.getMofPackage());
-            try {
-                //persister.doLoad(new File(testModel));
-                reader.parse(new InputSource(new FileInputStream(
-                        testModel)));
-            } catch (Exception e) {
-                e.printStackTrace();
-                fail("Exception while loading model");
-            }
-            assertTrue("model is loaded", true);
-        }
+  // Uncomment if you test the zipfilepersister
+  // private String testModelZip = "tests/testmodels/CarRentalSystem.xml.zip";
+
+  public void testReadCompressedFileAndHref() {
+    File mdaIsHere = new File(ANDROMDA_HOME);
+    if (mdaIsHere.exists()) {
+      LOG.info("Begin testReadCompressedFileAndHref()");
+      // Remove the dependency to argouml base for the moment
+      // org.argouml.persistence.ProjectFilePersister persister =
+      //     org.argouml.persistence.PersistenceManager
+      //         .getInstance().getPersisterFromFileName(testModel);
+      XmiReaderImpl reader =
+          new XmiReaderImpl(modelImplementation, (RefPackage) modelImplementation.getMofPackage());
+      try {
+        // persister.doLoad(new File(testModel));
+        reader.parse(new InputSource(new FileInputStream(testModel)));
+      } catch (Exception e) {
+        e.printStackTrace();
+        fail("Exception while loading model");
+      }
+      assertTrue("model is loaded", true);
     }
+  }
 
-    /* Commented out until the ZipFilePersister have been committed - notice that it works!
-     TODO: also adapt for Win32/generic, i use /tmp to store the saved file
-    public void testReadAndWriteCompressedFileAndHrefWithZargoFilePersisterAndZip() {
-        LOG.info("Begin testReadCompressedFileAndHrefWithZipFilePersisterAndZip()");
-        org.argouml.persistence.ProjectFilePersister persister = 
-            org.argouml.persistence.PersistenceManager.getInstance().
-                    getPersisterFromFileName(testModelZip);
-        try {
-            File file = new File(testModelZip);
-            LOG.info("File is "+file+", persister is "+persister);
-            Project p = persister.doLoad(file);
-            File saveFile = new File("/tmp/"+file.getName());
-            LOG.info("Saving file " + saveFile.getCanonicalPath() 
-                + ", persister is "+persister);
-            persister.save(p,saveFile);
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Exception while loading model");
-        }
-        assertTrue("model is loaded",true);
-    }*/
+  /* Commented out until the ZipFilePersister have been committed - notice that it works!
+   TODO: also adapt for Win32/generic, i use /tmp to store the saved file
+  public void testReadAndWriteCompressedFileAndHrefWithZargoFilePersisterAndZip() {
+      LOG.info("Begin testReadCompressedFileAndHrefWithZipFilePersisterAndZip()");
+      org.argouml.persistence.ProjectFilePersister persister =
+          org.argouml.persistence.PersistenceManager.getInstance().
+                  getPersisterFromFileName(testModelZip);
+      try {
+          File file = new File(testModelZip);
+          LOG.info("File is "+file+", persister is "+persister);
+          Project p = persister.doLoad(file);
+          File saveFile = new File("/tmp/"+file.getName());
+          LOG.info("Saving file " + saveFile.getCanonicalPath()
+              + ", persister is "+persister);
+          persister.save(p,saveFile);
+      } catch (Exception e) {
+          e.printStackTrace();
+          fail("Exception while loading model");
+      }
+      assertTrue("model is loaded",true);
+  }*/
 
-    /*
-     * @see org.argouml.model.mdr.AbstractMDRModelImplementationTestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        XmiReferenceResolverImpl.addModuleSearchPath(ANDROMDA_HOME
-                + "/andromda/xml.zips");
-    }
+  /*
+   * @see org.argouml.model.mdr.AbstractMDRModelImplementationTestCase#setUp()
+   */
+  protected void setUp() throws Exception {
+    super.setUp();
+    XmiReferenceResolverImpl.addModuleSearchPath(ANDROMDA_HOME + "/andromda/xml.zips");
+  }
 }

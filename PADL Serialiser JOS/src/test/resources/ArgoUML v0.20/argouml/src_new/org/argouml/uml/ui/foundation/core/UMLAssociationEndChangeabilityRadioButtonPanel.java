@@ -26,63 +26,59 @@ package org.argouml.uml.ui.foundation.core;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLRadioButtonPanel;
 
 /**
- *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 4, 2003
  */
-public class UMLAssociationEndChangeabilityRadioButtonPanel
-    extends UMLRadioButtonPanel {
+public class UMLAssociationEndChangeabilityRadioButtonPanel extends UMLRadioButtonPanel {
 
-    private static Map labelTextsAndActionCommands = new HashMap();
+  private static Map labelTextsAndActionCommands = new HashMap();
 
-    static {
-        labelTextsAndActionCommands.put(Translator.localize(
-                "label.changeability-addonly"),
-                ActionSetChangeability.ADDONLY_COMMAND);
-        labelTextsAndActionCommands.put(Translator.localize(
-                "label.changeability-changeable"),
-                ActionSetChangeability.CHANGEABLE_COMMAND);
-        labelTextsAndActionCommands.put(Translator.localize(
-                "label.changeability-frozen"),
-                ActionSetChangeability.FROZEN_COMMAND);
+  static {
+    labelTextsAndActionCommands.put(
+        Translator.localize("label.changeability-addonly"), ActionSetChangeability.ADDONLY_COMMAND);
+    labelTextsAndActionCommands.put(
+        Translator.localize("label.changeability-changeable"),
+        ActionSetChangeability.CHANGEABLE_COMMAND);
+    labelTextsAndActionCommands.put(
+        Translator.localize("label.changeability-frozen"), ActionSetChangeability.FROZEN_COMMAND);
+  }
+
+  /**
+   * Constructor for UMLAssociationEndChangeabilityRadioButtonPanel.
+   *
+   * @param title the title for the panel
+   * @param horizontal determines the orientation
+   */
+  public UMLAssociationEndChangeabilityRadioButtonPanel(String title, boolean horizontal) {
+    super(
+        title,
+        labelTextsAndActionCommands,
+        "changeability",
+        ActionSetChangeability.getInstance(),
+        horizontal);
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLRadioButtonPanel#buildModel()
+   */
+  public void buildModel() {
+    if (getTarget() != null) {
+      Object target = /*(MAssociationEnd)*/ getTarget();
+      Object kind = Model.getFacade().getChangeability(target);
+      if (kind == null || kind.equals(ActionSetChangeability.CHANGEABLE_COMMAND)) {
+        setSelected(ActionSetChangeability.CHANGEABLE_COMMAND);
+      } else if (kind.equals(ActionSetChangeability.ADDONLY_COMMAND)) {
+        setSelected(ActionSetChangeability.ADDONLY_COMMAND);
+      } else if (kind.equals(ActionSetChangeability.FROZEN_COMMAND)) {
+        setSelected(ActionSetChangeability.FROZEN_COMMAND);
+      } else {
+        setSelected(ActionSetChangeability.CHANGEABLE_COMMAND);
+      }
     }
-
-    /**
-     * Constructor for UMLAssociationEndChangeabilityRadioButtonPanel.
-     * @param title the title for the panel
-     * @param horizontal determines the orientation
-     */
-    public UMLAssociationEndChangeabilityRadioButtonPanel(
-            String title, boolean horizontal) {
-        super(title, labelTextsAndActionCommands, "changeability",
-                ActionSetChangeability.getInstance(), horizontal);
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLRadioButtonPanel#buildModel()
-     */
-    public void buildModel() {
-        if (getTarget() != null) {
-            Object target = /*(MAssociationEnd)*/ getTarget();
-            Object kind = Model.getFacade().getChangeability(target);
-            if (kind == null
-                || kind.equals(ActionSetChangeability.CHANGEABLE_COMMAND)) {
-                setSelected(ActionSetChangeability.CHANGEABLE_COMMAND);
-            } else
-		if (kind.equals(ActionSetChangeability.ADDONLY_COMMAND)) {
-		    setSelected(ActionSetChangeability.ADDONLY_COMMAND);
-		} else
-		    if (kind.equals(ActionSetChangeability.FROZEN_COMMAND)) {
-			setSelected(ActionSetChangeability.FROZEN_COMMAND);
-		    } else {
-		        setSelected(ActionSetChangeability.CHANGEABLE_COMMAND);
-		    }
-        }
-    }
+  }
 }

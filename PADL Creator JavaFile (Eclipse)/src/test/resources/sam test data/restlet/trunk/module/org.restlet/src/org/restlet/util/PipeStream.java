@@ -29,68 +29,56 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 /**
- * Pipe stream that pipes output streams into input streams. Implementation based on a shared synchronized
- * queue.
+ * Pipe stream that pipes output streams into input streams. Implementation based on a shared
+ * synchronized queue.
+ *
  * @author Jerome Louvel (contact@noelios.com)
  */
-public class PipeStream
-{
-	/** The supporting synchronized queue. */
-	private final BlockingQueue<Integer> queue;
+public class PipeStream {
+  /** The supporting synchronized queue. */
+  private final BlockingQueue<Integer> queue;
 
-	/** Constructor. */
-	public PipeStream()
-	{
-		this.queue = new ArrayBlockingQueue<Integer>(1024);
-	}
+  /** Constructor. */
+  public PipeStream() {
+    this.queue = new ArrayBlockingQueue<Integer>(1024);
+  }
 
-	/**
-	 * Returns a new input stream that can read from the pipe.
-	 * @return A new input stream that can read from the pipe.
-	 */
-	public InputStream getInputStream()
-	{
-		return new InputStream()
-		{
-			private boolean endReached = false;
+  /**
+   * Returns a new input stream that can read from the pipe.
+   *
+   * @return A new input stream that can read from the pipe.
+   */
+  public InputStream getInputStream() {
+    return new InputStream() {
+      private boolean endReached = false;
 
-			public int read() throws IOException
-			{
-				try
-				{
-					if (endReached) return -1;
-					int value = queue.take();
-					endReached = (value == -1);
-					return value;
-				}
-				catch (InterruptedException ie)
-				{
-					throw new IOException("Interruption occurred while writing in the queue");
-				}
-			}
-		};
-	}
+      public int read() throws IOException {
+        try {
+          if (endReached) return -1;
+          int value = queue.take();
+          endReached = (value == -1);
+          return value;
+        } catch (InterruptedException ie) {
+          throw new IOException("Interruption occurred while writing in the queue");
+        }
+      }
+    };
+  }
 
-	/**
-	 * Returns a new output stream that can write into the pipe.
-	 * @return A new output stream that can write into the pipe.
-	 */
-	public OutputStream getOutputStream()
-	{
-		return new OutputStream()
-		{
-			public void write(int b) throws IOException
-			{
-				try
-				{
-					queue.put(b);
-				}
-				catch (InterruptedException ie)
-				{
-					throw new IOException("Interruption occurred while writing in the queue");
-				}
-			}
-		};
-	}
-
+  /**
+   * Returns a new output stream that can write into the pipe.
+   *
+   * @return A new output stream that can write into the pipe.
+   */
+  public OutputStream getOutputStream() {
+    return new OutputStream() {
+      public void write(int b) throws IOException {
+        try {
+          queue.put(b);
+        } catch (InterruptedException ie) {
+          throw new IOException("Interruption occurred while writing in the queue");
+        }
+      }
+    };
+  }
 }

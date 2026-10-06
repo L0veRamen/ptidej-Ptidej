@@ -27,105 +27,92 @@
   Author: Marcus Andersson andersson@users.sourceforge.net
 */
 
-
 package org.argouml.language.java.generator;
 
-/**
-   This piece of code is just one token.
-*/
-public class SimpleCodePiece extends CodePiece
-{
-    /** */
-    private StringBuffer text;
+/** This piece of code is just one token. */
+public class SimpleCodePiece extends CodePiece {
+  /** */
+  private StringBuffer text;
 
-    /** */
-    private int line;
+  /** */
+  private int line;
 
-    /** */
-    private int startPosition;
+  /** */
+  private int startPosition;
 
-    /** */
-    private int endPosition;
+  /** */
+  private int endPosition;
 
-    /**
-     *  Create a simple piece of code.
-     *
-     * @param t the text
-     * @param lne the line
-     * @param sp the start position
-     * @param ep the end position
-     */
-    public SimpleCodePiece(StringBuffer t,
-                           int lne,
-                           int sp,
-                           int ep)
-    {
-	this.text = t;
-	this.line = lne;
-	this.startPosition = sp;
-	this.endPosition = ep;
-    }
+  /**
+   * Create a simple piece of code.
+   *
+   * @param t the text
+   * @param lne the line
+   * @param sp the start position
+   * @param ep the end position
+   */
+  public SimpleCodePiece(StringBuffer t, int lne, int sp, int ep) {
+    this.text = t;
+    this.line = lne;
+    this.startPosition = sp;
+    this.endPosition = ep;
+  }
 
-    /**
-     * Create a simple piece of code from a token.
-     *
-     * @param token the given token
-     */
-    public SimpleCodePiece(antlr.Token token)
-    {
-	this(new StringBuffer(token.getText()),
-	     token.getLine() - 1,
-	     token.getColumn() - 1,
-	     token.getColumn() + token.getText().length() - 1);
-    }
+  /**
+   * Create a simple piece of code from a token.
+   *
+   * @param token the given token
+   */
+  public SimpleCodePiece(antlr.Token token) {
+    this(
+        new StringBuffer(token.getText()),
+        token.getLine() - 1,
+        token.getColumn() - 1,
+        token.getColumn() + token.getText().length() - 1);
+  }
 
-    /**
-     * Return the string representation for this piece of code.
-     *
-     * @see org.argouml.language.java.generator.CodePiece#getText()
-     */
-    public StringBuffer getText()
-    {
-	return text;
-    }
+  /**
+   * Return the string representation for this piece of code.
+   *
+   * @see org.argouml.language.java.generator.CodePiece#getText()
+   */
+  public StringBuffer getText() {
+    return text;
+  }
 
-    /**
-     * Return the start position.
-     *
-     * @see org.argouml.language.java.generator.CodePiece#getStartPosition()
-     */
-    public int getStartPosition()
-    {
-	return startPosition;
-    }
+  /**
+   * Return the start position.
+   *
+   * @see org.argouml.language.java.generator.CodePiece#getStartPosition()
+   */
+  public int getStartPosition() {
+    return startPosition;
+  }
 
-    /**
-     * Return the end position.
-     *
-     * @see org.argouml.language.java.generator.CodePiece#getEndPosition()
-     */
-    public int getEndPosition()
-    {
-	return endPosition;
-    }
+  /**
+   * Return the end position.
+   *
+   * @see org.argouml.language.java.generator.CodePiece#getEndPosition()
+   */
+  public int getEndPosition() {
+    return endPosition;
+  }
 
-    /**
-     * Return the start line
-     *
-     * @see org.argouml.language.java.generator.CodePiece#getStartLine()
-     */
-    public int getStartLine()
-    {
-	return line;
-    }
+  /**
+   * Return the start line
+   *
+   * @see org.argouml.language.java.generator.CodePiece#getStartLine()
+   */
+  public int getStartLine() {
+    return line;
+  }
 
-    /**
-     * Return the end line
-     *
-     * @see org.argouml.language.java.generator.CodePiece#getEndLine()
-     */
-    public int getEndLine()
-    {
-	return line;
-    }
+  /**
+   * Return the end line
+   *
+   * @see org.argouml.language.java.generator.CodePiece#getEndLine()
+   */
+  public int getEndLine() {
+    return line;
+  }
 }

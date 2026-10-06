@@ -25,17 +25,17 @@
 package org.argouml.uml.ui;
 
 import javax.swing.Action;
-
 import org.argouml.i18n.Translator;
 import org.argouml.kernel.UmlModelMutator;
 import org.argouml.model.Model;
 import org.tigris.gef.undo.UndoableAction;
 
 /**
- * Base class for remove actions. Remove actions can remove an element
- * from the model. This can either be a total remove ('erase from
- * model') or just a remove from a list of bases as in the case of
- * classifierrole bases.<p>
+ * Base class for remove actions. Remove actions can remove an element from the model. This can
+ * either be a total remove ('erase from model') or just a remove from a list of bases as in the
+ * case of classifierrole bases.
+ *
+ * <p>
  *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 25, 2003
@@ -43,80 +43,76 @@ import org.tigris.gef.undo.UndoableAction;
 @UmlModelMutator
 public class AbstractActionRemoveElement extends UndoableAction {
 
-    /**
-     * The object that owns the object that must be removed (the
-     * object that is the target of the projectbrowser in most cases).
-     */
-    private Object target;
+  /**
+   * The object that owns the object that must be removed (the object that is the target of the
+   * projectbrowser in most cases).
+   */
+  private Object target;
 
-    private Object objectToRemove;
+  private Object objectToRemove;
 
-    /**
-     * Constructor for AbstractActionRemoveElement.
-     */
-    protected AbstractActionRemoveElement() {
-        this(Translator.localize("menu.popup.remove"));
-    }
+  /** Constructor for AbstractActionRemoveElement. */
+  protected AbstractActionRemoveElement() {
+    this(Translator.localize("menu.popup.remove"));
+  }
 
-    /**
-     *  The constructor.
-     * @param name the name for this action
-     */
-    protected AbstractActionRemoveElement(String name) {
-        super(Translator.localize(name),
-                null);
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize(name));
-    }
+  /**
+   * The constructor.
+   *
+   * @param name the name for this action
+   */
+  protected AbstractActionRemoveElement(String name) {
+    super(Translator.localize(name), null);
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize(name));
+  }
 
-     /**
-     * Returns the target.
-     *
-     * @return MModelElement
-     */
-    public Object getTarget() {
-        return target;
-    }
+  /**
+   * Returns the target.
+   *
+   * @return MModelElement
+   */
+  public Object getTarget() {
+    return target;
+  }
 
-    /**
-     * Sets the target.
-     *
-     * @param theTarget The target to set
-     */
-    public void setTarget(Object theTarget) {
-        target = theTarget;
-        setEnabled(isEnabled());
-    }
+  /**
+   * Sets the target.
+   *
+   * @param theTarget The target to set
+   */
+  public void setTarget(Object theTarget) {
+    target = theTarget;
+    setEnabled(isEnabled());
+  }
 
-    /**
-     * Returns the objectToRemove.
-     *
-     * @return Object
-     */
-    public Object getObjectToRemove() {
-        return objectToRemove;
-    }
+  /**
+   * Returns the objectToRemove.
+   *
+   * @return Object
+   */
+  public Object getObjectToRemove() {
+    return objectToRemove;
+  }
 
-    /**
-     * Sets the objectToRemove.
-     *
-     * @param theObjectToRemove The objectToRemove to set
-     */
-    public void setObjectToRemove(Object theObjectToRemove) {
-        objectToRemove = theObjectToRemove;
-        setEnabled(isEnabled());
-    }
+  /**
+   * Sets the objectToRemove.
+   *
+   * @param theObjectToRemove The objectToRemove to set
+   */
+  public void setObjectToRemove(Object theObjectToRemove) {
+    objectToRemove = theObjectToRemove;
+    setEnabled(isEnabled());
+  }
 
-    /*
-     * @see javax.swing.Action#isEnabled()
-     */
-    @Override
-    public boolean isEnabled() {
-        return getObjectToRemove() != null
-                && !Model.getModelManagementHelper().isReadOnly(
-                        getObjectToRemove()) && getTarget() != null
-                && !Model.getModelManagementHelper().isReadOnly(getTarget());
-    }
-
+  /*
+   * @see javax.swing.Action#isEnabled()
+   */
+  @Override
+  public boolean isEnabled() {
+    return getObjectToRemove() != null
+        && !Model.getModelManagementHelper().isReadOnly(getObjectToRemove())
+        && getTarget() != null
+        && !Model.getModelManagementHelper().isReadOnly(getTarget());
+  }
 }

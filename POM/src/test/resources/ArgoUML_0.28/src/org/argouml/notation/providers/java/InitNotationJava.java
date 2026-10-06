@@ -26,7 +26,6 @@ package org.argouml.notation.providers.java;
 
 import java.util.Collections;
 import java.util.List;
-
 import org.argouml.application.api.AbstractArgoJPanel;
 import org.argouml.application.api.GUISettingsTabInterface;
 import org.argouml.application.api.InitSubsystem;
@@ -36,51 +35,43 @@ import org.argouml.notation.NotationName;
 import org.argouml.notation.NotationProviderFactory2;
 
 /**
- * This class is the only one that has the knowledge of the complete list of
- * NotationProvider4 implementations for Java.
+ * This class is the only one that has the knowledge of the complete list of NotationProvider4
+ * implementations for Java.
  *
  * @author mvw@tigris.org
  */
 public class InitNotationJava implements InitSubsystem {
 
-    /**
-     * static initializer, register all appropriate notations.
-     */
-    public void init() {
-        NotationProviderFactory2 npf = NotationProviderFactory2.getInstance();
-        NotationName name = /*Notation.findNotation("Java");*/
-            Notation.makeNotation(
-                    "Java",
-                    null,
-                    ResourceLoaderWrapper.lookupIconResource("JavaNotation"));
+  /** static initializer, register all appropriate notations. */
+  public void init() {
+    NotationProviderFactory2 npf = NotationProviderFactory2.getInstance();
+    NotationName name = /*Notation.findNotation("Java");*/
+        Notation.makeNotation(
+            "Java", null, ResourceLoaderWrapper.lookupIconResource("JavaNotation"));
 
-        npf.addNotationProvider(
-                NotationProviderFactory2.TYPE_NAME,
-                name, ModelElementNameNotationJava.class);
-        npf.addNotationProvider(
-                NotationProviderFactory2.TYPE_ATTRIBUTE,
-                name, AttributeNotationJava.class);
-        npf.addNotationProvider(
-                NotationProviderFactory2.TYPE_OPERATION,
-                name, OperationNotationJava.class);
-        npf.addNotationProvider(
-                NotationProviderFactory2.TYPE_ASSOCIATION_END_NAME,
-                name, AssociationEndNameNotationJava.class);
-        npf.addNotationProvider(
-                NotationProviderFactory2.TYPE_ASSOCIATION_NAME,
-                name, AssociationNameNotationJava.class);
-    }
+    npf.addNotationProvider(
+        NotationProviderFactory2.TYPE_NAME, name, ModelElementNameNotationJava.class);
+    npf.addNotationProvider(
+        NotationProviderFactory2.TYPE_ATTRIBUTE, name, AttributeNotationJava.class);
+    npf.addNotationProvider(
+        NotationProviderFactory2.TYPE_OPERATION, name, OperationNotationJava.class);
+    npf.addNotationProvider(
+        NotationProviderFactory2.TYPE_ASSOCIATION_END_NAME,
+        name,
+        AssociationEndNameNotationJava.class);
+    npf.addNotationProvider(
+        NotationProviderFactory2.TYPE_ASSOCIATION_NAME, name, AssociationNameNotationJava.class);
+  }
 
-    public List<GUISettingsTabInterface> getProjectSettingsTabs() {
-        return Collections.emptyList();
-    }
+  public List<GUISettingsTabInterface> getProjectSettingsTabs() {
+    return Collections.emptyList();
+  }
 
-    public List<GUISettingsTabInterface> getSettingsTabs() {
-        return Collections.emptyList();
-    }
+  public List<GUISettingsTabInterface> getSettingsTabs() {
+    return Collections.emptyList();
+  }
 
-    public List<AbstractArgoJPanel> getDetailsTabs() {
-        return Collections.emptyList();
-    }
-
+  public List<AbstractArgoJPanel> getDetailsTabs() {
+    return Collections.emptyList();
+  }
 }

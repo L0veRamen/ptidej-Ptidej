@@ -21,20 +21,21 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 package org.neodatis.odb.tutorial;
 
 public class Sport {
-    private String name;
+  private String name;
 
-    public Sport(String name) {
-        this.name = name;
-    }
+  public Sport(String name) {
+    this.name = name;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-    public String toString() {
-        return name;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String toString() {
+    return name;
+  }
 }

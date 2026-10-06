@@ -34,49 +34,47 @@ import org.argouml.uml.ui.AbstractUMLModelElementListModel2Test;
 public class TestUMLAssociationRoleAssociationEndRoleListModel
     extends AbstractUMLModelElementListModel2Test {
 
-    /**
-     * Constructor for TestUMLAssociationRoleAssociationEndRoleListModel.
-     *
-     * @param arg0 is the name of the test case.
-     */
-    public TestUMLAssociationRoleAssociationEndRoleListModel(String arg0) {
-        super(arg0);
-    }
+  /**
+   * Constructor for TestUMLAssociationRoleAssociationEndRoleListModel.
+   *
+   * @param arg0 is the name of the test case.
+   */
+  public TestUMLAssociationRoleAssociationEndRoleListModel(String arg0) {
+    super(arg0);
+  }
 
-    /**
-     * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#buildElement()
-     */
-    protected void buildElement() {
-        setElem(Model.getCollaborationsFactory().createAssociationRole());
-    }
+  /**
+   * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#buildElement()
+   */
+  protected void buildElement() {
+    setElem(Model.getCollaborationsFactory().createAssociationRole());
+  }
 
-    /**
-     * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#buildModel()
-     */
-    protected void buildModel() {
-        setModel(new UMLAssociationRoleAssociationEndRoleListModel());
-    }
+  /**
+   * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#buildModel()
+   */
+  protected void buildModel() {
+    setModel(new UMLAssociationRoleAssociationEndRoleListModel());
+  }
 
-    /**
-     * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#fillModel()
-     */
-    protected Object[] fillModel() {
-        Object[] ends = new Object[10];
-        for (int i = 0; i < ends.length; i++) {
-            ends[i] =
-		Model.getCollaborationsFactory().createAssociationEndRole();
-            Model.getCoreHelper().setAssociation(ends[i], getElem());
-        }
-        return ends;
+  /**
+   * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#fillModel()
+   */
+  protected Object[] fillModel() {
+    Object[] ends = new Object[10];
+    for (int i = 0; i < ends.length; i++) {
+      ends[i] = Model.getCollaborationsFactory().createAssociationEndRole();
+      Model.getCoreHelper().setAssociation(ends[i], getElem());
     }
+    return ends;
+  }
 
-    /**
-     * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#removeHalfModel(Object[])
-     */
-    protected void removeHalfModel(Object[] elements) {
-        for (int i = 0; i < 5; i++) {
-            Model.getCoreHelper().removeConnection(getElem(), elements[i]);
-        }
+  /**
+   * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#removeHalfModel(Object[])
+   */
+  protected void removeHalfModel(Object[] elements) {
+    for (int i = 0; i < 5; i++) {
+      Model.getCoreHelper().removeConnection(getElem(), elements[i]);
     }
-
+  }
 }

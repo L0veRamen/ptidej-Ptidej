@@ -26,7 +26,6 @@ package org.argouml.uml.ui.foundation.core;
 
 import java.beans.PropertyChangeEvent;
 import java.util.Collection;
-
 import org.apache.log4j.Logger;
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.Model;
@@ -40,90 +39,79 @@ import org.argouml.uml.ui.UMLComboBoxModel2;
  */
 public class UMLModelElementNamespaceComboBoxModel extends UMLComboBoxModel2 {
 
-    /**
-     * Logger.
-     */
-    private static final Logger LOG =
-        Logger.getLogger(UMLModelElementNamespaceComboBoxModel.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(UMLModelElementNamespaceComboBoxModel.class);
 
-    /**
-     * Constructor for UMLModelElementNamespaceComboBoxModel.
+  /** Constructor for UMLModelElementNamespaceComboBoxModel. */
+  public UMLModelElementNamespaceComboBoxModel() {
+    super("namespace", true);
+    Model.getPump()
+        .addClassModelEventListener(this, Model.getMetaTypes().getNamespace(), "ownedElement");
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object o) {
+    return Model.getFacade().isANamespace(o)
+        && Model.getCoreHelper()
+            .isValidNamespace(/*(MModelElement)*/ getTarget(), /*(MNamespace)*/ o);
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    Object model = ProjectManager.getManager().getCurrentProject().getRoot();
+    Object target = getTarget();
+    Collection c = Model.getCoreHelper().getAllPossibleNamespaces(target, model);
+
+    /* These next lines for the case that the current namespace
+     * is not a valid one... Which ofcourse should not happen,
+     * but it does - see the project attached to issue 3772.
      */
-    public UMLModelElementNamespaceComboBoxModel() {
-        super("namespace", true);
-        Model.getPump().addClassModelEventListener(this,
-                Model.getMetaTypes().getNamespace(), "ownedElement");
+    /* TODO: Enhance the isValidNamespace function so
+     * that this never happens.
+     */
+    if (target != null) {
+      Object namespace = Model.getFacade().getNamespace(target);
+      if (!c.contains(namespace)) {
+        c.add(namespace);
+        LOG.warn("The current namespace is not a valid one!");
+      }
     }
+    setElements(c);
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object o) {
-        return Model.getFacade().isANamespace(o)
-        && Model.getCoreHelper().isValidNamespace(
-                /*(MModelElement)*/ getTarget(), /*(MNamespace)*/ o);
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
+   */
+  protected Object getSelectedModelElement() {
+    if (getTarget() != null) {
+      return Model.getFacade().getNamespace(getTarget());
     }
+    return null;
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
+  /**
+   * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+   */
+  public void propertyChange(PropertyChangeEvent evt) {
+    /*
+     * Rebuild the list from scratch to be sure it's correct.
      */
-    protected void buildModelList() {
-        Object model =
-            ProjectManager.getManager().getCurrentProject().getRoot();
-        Object target = getTarget();
-        Collection c = 
-            Model.getCoreHelper().getAllPossibleNamespaces(target, model);
-
-        /* These next lines for the case that the current namespace
-         * is not a valid one... Which ofcourse should not happen,
-         * but it does - see the project attached to issue 3772.
-         */
-        /* TODO: Enhance the isValidNamespace function so
-         * that this never happens.
-         */
-        if (target != null) {
-            Object namespace = Model.getFacade().getNamespace(target);
-            if (!c.contains(namespace)) {
-                c.add(namespace);
-                LOG.warn("The current namespace is not a valid one!");
-            }
-        }
-        setElements(c);
+    Object t = getTarget();
+    if (t != null && evt.getSource() == t && evt.getNewValue() != null) {
+      //            setTarget(t); // this fixes issue 3780, but causes issue 3832.
+      buildModelList();
+      /* In some cases (se issue 3780) the list remains the same, but
+       * the selected item differs. Without the next step,
+       * the combo would not be refreshed.
+       */
+      setSelectedItem(getSelectedModelElement());
     }
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
-     */
-    protected Object getSelectedModelElement() {
-        if (getTarget() != null) {
-            return Model.getFacade().getNamespace(getTarget());
-        }
-        return null;
-    }
-
-    /**
-    * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
-    */
-    public void propertyChange(PropertyChangeEvent evt) {
-        /*
-         * Rebuild the list from scratch to be sure it's correct.
-         */
-        Object t = getTarget();
-        if (t != null
-                && evt.getSource() == t
-                && evt.getNewValue() != null) {
-//            setTarget(t); // this fixes issue 3780, but causes issue 3832.
-            buildModelList();
-            /* In some cases (se issue 3780) the list remains the same, but
-             * the selected item differs. Without the next step,
-             * the combo would not be refreshed.
-             */
-            setSelectedItem(getSelectedModelElement());
-        }
-    }
-
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -775116993155949065L;
+  /** The UID. */
+  private static final long serialVersionUID = -775116993155949065L;
 }

@@ -29,31 +29,26 @@ import org.argouml.cognitive.Designer;
 import org.argouml.uml.cognitive.UMLDecision;
 
 /**
- * A critic to suggest using the facade stereotype. <p>
- * 
- * TODO: at the moment only a dummy implementation
-*/
+ * A critic to suggest using the facade stereotype.
+ *
+ * <p>TODO: at the moment only a dummy implementation
+ */
 public class CrConsiderFacade extends CrUML {
-    private static final Logger LOG =
-	Logger.getLogger(CrConsiderFacade.class);
+  private static final Logger LOG = Logger.getLogger(CrConsiderFacade.class);
 
-    /**
-     * The constructor.
-     */
-    public CrConsiderFacade() {
-        setupHeadAndDesc();
-	addSupportedDecision(UMLDecision.MODULARITY);
-	addTrigger("ownedElement");
-    }
+  /** The constructor. */
+  public CrConsiderFacade() {
+    setupHeadAndDesc();
+    addSupportedDecision(UMLDecision.MODULARITY);
+    addTrigger("ownedElement");
+  }
 
-    /**
-     * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
-     * java.lang.Object, org.argouml.cognitive.Designer)
-     */
-    public boolean predicate2(Object dm, Designer dsgr) {
-	/* TODO: Add implementation. */
-	return NO_PROBLEM;
-    }
-
+  /**
+   * @see org.argouml.uml.cognitive.critics.CrUML#predicate2( java.lang.Object,
+   *     org.argouml.cognitive.Designer)
+   */
+  public boolean predicate2(Object dm, Designer dsgr) {
+    /* TODO: Add implementation. */
+    return NO_PROBLEM;
+  }
 } /* end class CrEmptyPackage */
-

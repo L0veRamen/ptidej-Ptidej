@@ -35,53 +35,47 @@ import org.argouml.uml.ui.UMLComboBoxModel2;
  */
 public class UMLTagDefinitionOwnerComboBoxModel extends UMLComboBoxModel2 {
 
-    /**
-     * Constructor for UMLModelElementStereotypeComboBoxModel.
-     */
-    public UMLTagDefinitionOwnerComboBoxModel() {
-        super("owner", true);
-        Model.getPump().addClassModelEventListener(
-            this,
-            Model.getMetaTypes().getNamespace(),
-            "ownedElement");
-    }
+  /** Constructor for UMLModelElementStereotypeComboBoxModel. */
+  public UMLTagDefinitionOwnerComboBoxModel() {
+    super("owner", true);
+    Model.getPump()
+        .addClassModelEventListener(this, Model.getMetaTypes().getNamespace(), "ownedElement");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object o) {
-        return Model.getFacade().isAStereotype(o);
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object o) {
+    return Model.getFacade().isAStereotype(o);
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        /* TODO: Ths following code does not work. 
-         * But we still need to support multiple models in a similar way,
-         * to be able to pull in stereotypes from a profile model. */
-//        Object elem = getTarget();
-//        Collection models =
-//            ProjectManager.getManager().getCurrentProject().getModels();
-//        setElements(Model.getExtensionMechanismsHelper()
-//	        .getAllPossibleStereotypes(models, elem));
-        Project p = ProjectManager.getManager().getCurrentProject();
-        Object model = p.getRoot();
-        setElements(Model.getModelManagementHelper()
-                .getAllModelElementsOfKindWithModel(model, 
-                        Model.getMetaTypes().getStereotype()));
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    /* TODO: Ths following code does not work.
+     * But we still need to support multiple models in a similar way,
+     * to be able to pull in stereotypes from a profile model. */
+    //        Object elem = getTarget();
+    //        Collection models =
+    //            ProjectManager.getManager().getCurrentProject().getModels();
+    //        setElements(Model.getExtensionMechanismsHelper()
+    //	        .getAllPossibleStereotypes(models, elem));
+    Project p = ProjectManager.getManager().getCurrentProject();
+    Object model = p.getRoot();
+    setElements(
+        Model.getModelManagementHelper()
+            .getAllModelElementsOfKindWithModel(model, Model.getMetaTypes().getStereotype()));
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
-     */
-    protected Object getSelectedModelElement() {
-        Object owner = null;
-        if (getTarget() != null 
-                && Model.getFacade().isATagDefinition(getTarget())) {
-            owner = Model.getFacade().getOwner(getTarget());
-        }
-        return owner;
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
+   */
+  protected Object getSelectedModelElement() {
+    Object owner = null;
+    if (getTarget() != null && Model.getFacade().isATagDefinition(getTarget())) {
+      owner = Model.getFacade().getOwner(getTarget());
     }
-
+    return owner;
+  }
 }

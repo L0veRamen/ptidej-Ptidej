@@ -34,199 +34,154 @@ import org.argouml.uml.reveng.ImportClassLoader;
  * @author Marcus Andersson
  */
 class OuterClassifierContext extends Context {
-    
-    private static final Logger LOG = 
-        Logger.getLogger(OuterClassifierContext.class);
-    
-    /** The classifier this context represents. */
-    private Object mClassifier;
 
-    /** The package this classifier belongs to */
-    private Object mPackage;
+  private static final Logger LOG = Logger.getLogger(OuterClassifierContext.class);
 
-    /** This is appended to classname when searching in classpath. */
-    private String namePrefix;
+  /** The classifier this context represents. */
+  private Object mClassifier;
 
-    /** The java style name of the package. */
-    private String packageJavaName;
+  /** The package this classifier belongs to */
+  private Object mPackage;
 
-    /**
-     Create a new context from a classifier.
+  /** This is appended to classname when searching in classpath. */
+  private String namePrefix;
 
-     @param base Based on this context.
-     @param theClassifier The classifier.
-     @param thePackage The package the classifier belongs to.
-     @param theNamePrefix Inner class prefix, like "OuterClassname$"
-    */
-    public OuterClassifierContext(Context base,
-				  Object theClassifier,
-				  Object thePackage,
-				  String theNamePrefix) {
-	super(base);
-	this.mClassifier = theClassifier;
-	this.mPackage = thePackage;
-	this.namePrefix = theNamePrefix;
-	packageJavaName = getJavaName(thePackage);
-    }
+  /** The java style name of the package. */
+  private String packageJavaName;
 
-    public Object getInterface(String name)
-	throws ClassifierNotFoundException {
-        // Search in classifier
-        Object mInterface = Model.getFacade().lookupIn(mClassifier, name);
+  /**
+   * Create a new context from a classifier.
+   *
+   * @param base Based on this context.
+   * @param theClassifier The classifier.
+   * @param thePackage The package the classifier belongs to.
+   * @param theNamePrefix Inner class prefix, like "OuterClassname$"
+   */
+  public OuterClassifierContext(
+      Context base, Object theClassifier, Object thePackage, String theNamePrefix) {
+    super(base);
+    this.mClassifier = theClassifier;
+    this.mPackage = thePackage;
+    this.namePrefix = theNamePrefix;
+    packageJavaName = getJavaName(thePackage);
+  }
 
-	if (mInterface == null) {
-	    Class classifier;
-	    // Try to find it via the classpath
-	    try {
+  public Object getInterface(String name) throws ClassifierNotFoundException {
+    // Search in classifier
+    Object mInterface = Model.getFacade().lookupIn(mClassifier, name);
 
-		// Special case for model
-		if (Model.getFacade().isAModel(mPackage)) {
-		    classifier = Class.forName(namePrefix + name);
-		}
-		else {
-                    String clazzName =
-			packageJavaName + "." + namePrefix + name;
-		    classifier =
-			Class.forName(clazzName);
-		}
-		if (classifier.isInterface()) {
-		    mInterface =
-			Model.getCoreFactory()
-			    .buildInterface(name, mClassifier);
-		}
-		else {
-		    // Only interfaces will do
-		    throw new ClassNotFoundException();
-		}
-	    }
-	    catch (ClassNotFoundException e) {
+    if (mInterface == null) {
+      Class classifier;
+      // Try to find it via the classpath
+      try {
 
-                // try USER classpath
-                try {
-                    // Special case for model
-                    if (Model.getFacade().isAModel(mPackage)) {
-                        classifier = Class.forName(namePrefix + name);
-                        classifier =
-			    ImportClassLoader.getInstance()
-			        .loadClass(namePrefix + name);
-                    }
-                    else {
-                        String clazzName =
-			    packageJavaName + "." + namePrefix + name;
-                        classifier =
-			    ImportClassLoader.getInstance()
-			        .loadClass(clazzName);
-                    }
-                    if (classifier.isInterface()) {
-                        mInterface =
-			    Model.getCoreFactory()
-			        .buildInterface(name, mClassifier);
-                    }
-                    else {
-                        // Only interfaces will do
-                        throw new ClassNotFoundException();
-                    }
-
-                }
-                catch (Exception e1) {
-                    // TODO: This too broad an exception catch to just continue
-                    // with - narrow to specific expected errors that can be
-                    // ignored
-                    LOG.warn(e1);
-                    // Continue the search through the rest of the model
-                    if (getContext() != null) {
-                        mInterface = getContext().getInterface(name);
-                    }
-                }
-	    }
+        // Special case for model
+        if (Model.getFacade().isAModel(mPackage)) {
+          classifier = Class.forName(namePrefix + name);
+        } else {
+          String clazzName = packageJavaName + "." + namePrefix + name;
+          classifier = Class.forName(clazzName);
         }
-        return mInterface;
+        if (classifier.isInterface()) {
+          mInterface = Model.getCoreFactory().buildInterface(name, mClassifier);
+        } else {
+          // Only interfaces will do
+          throw new ClassNotFoundException();
+        }
+      } catch (ClassNotFoundException e) {
+
+        // try USER classpath
+        try {
+          // Special case for model
+          if (Model.getFacade().isAModel(mPackage)) {
+            classifier = Class.forName(namePrefix + name);
+            classifier = ImportClassLoader.getInstance().loadClass(namePrefix + name);
+          } else {
+            String clazzName = packageJavaName + "." + namePrefix + name;
+            classifier = ImportClassLoader.getInstance().loadClass(clazzName);
+          }
+          if (classifier.isInterface()) {
+            mInterface = Model.getCoreFactory().buildInterface(name, mClassifier);
+          } else {
+            // Only interfaces will do
+            throw new ClassNotFoundException();
+          }
+
+        } catch (Exception e1) {
+          // TODO: This too broad an exception catch to just continue
+          // with - narrow to specific expected errors that can be
+          // ignored
+          LOG.warn(e1);
+          // Continue the search through the rest of the model
+          if (getContext() != null) {
+            mInterface = getContext().getInterface(name);
+          }
+        }
+      }
     }
+    return mInterface;
+  }
 
-    /**
-     * Get a classifier from the model. If it is not in the model, try
-     * to find it with the CLASSPATH. If found, in the classpath, the
-     * classifier is created and added to the model. If not found at
-     * all, a datatype is created and added to the model.
-     *
-     * @param name The name of the classifier to find.
-     * @return Found classifier.
-     */
-    public Object get(String name)
-	throws ClassifierNotFoundException {
-	// Search in classifier
-	Object iClassifier = Model.getFacade().lookupIn(mClassifier, name);
+  /**
+   * Get a classifier from the model. If it is not in the model, try to find it with the CLASSPATH.
+   * If found, in the classpath, the classifier is created and added to the model. If not found at
+   * all, a datatype is created and added to the model.
+   *
+   * @param name The name of the classifier to find.
+   * @return Found classifier.
+   */
+  public Object get(String name) throws ClassifierNotFoundException {
+    // Search in classifier
+    Object iClassifier = Model.getFacade().lookupIn(mClassifier, name);
 
-	if (iClassifier == null) {
-	    Class classifier;
-	    // Try to find it via the classpath
-	    try {
+    if (iClassifier == null) {
+      Class classifier;
+      // Try to find it via the classpath
+      try {
 
-		// Special case for model
-		if (Model.getFacade().isAModel(mPackage)) {
-		    classifier = Class.forName(namePrefix + name);
-		}
-		else {
-                    String clazzName =
-			packageJavaName + "." + namePrefix + name;
-		    classifier =
-			Class.forName(clazzName);
-		}
-		if (classifier.isInterface()) {
-		    iClassifier =
-			Model.getCoreFactory()
-			    .buildInterface(name, mClassifier);
-		}
-		else {
-		    iClassifier =
-			Model.getCoreFactory()
-			    .buildClass(name, mClassifier);
-		}
-	    }
-	    catch (ClassNotFoundException e) {
+        // Special case for model
+        if (Model.getFacade().isAModel(mPackage)) {
+          classifier = Class.forName(namePrefix + name);
+        } else {
+          String clazzName = packageJavaName + "." + namePrefix + name;
+          classifier = Class.forName(clazzName);
+        }
+        if (classifier.isInterface()) {
+          iClassifier = Model.getCoreFactory().buildInterface(name, mClassifier);
+        } else {
+          iClassifier = Model.getCoreFactory().buildClass(name, mClassifier);
+        }
+      } catch (ClassNotFoundException e) {
 
-                // try USER classpath
-                try {
+        // try USER classpath
+        try {
 
-                    // Special case for model
-                    if (Model.getFacade().isAModel(mPackage)) {
-                        classifier =
-			    ImportClassLoader.getInstance()
-			        .loadClass(namePrefix + name);
-                    }
-                    else {
-                        String clazzName =
-			    packageJavaName + "." + namePrefix + name;
-                        classifier =
-			    ImportClassLoader.getInstance()
-			        .loadClass(clazzName);
-                    }
-                    if (classifier.isInterface()) {
-                        iClassifier =
-			    Model.getCoreFactory()
-			        .buildInterface(name, mClassifier);
-                    }
-                    else {
-                        iClassifier =
-			    Model.getCoreFactory()
-			        .buildClass(name, mClassifier);
-                    }
+          // Special case for model
+          if (Model.getFacade().isAModel(mPackage)) {
+            classifier = ImportClassLoader.getInstance().loadClass(namePrefix + name);
+          } else {
+            String clazzName = packageJavaName + "." + namePrefix + name;
+            classifier = ImportClassLoader.getInstance().loadClass(clazzName);
+          }
+          if (classifier.isInterface()) {
+            iClassifier = Model.getCoreFactory().buildInterface(name, mClassifier);
+          } else {
+            iClassifier = Model.getCoreFactory().buildClass(name, mClassifier);
+          }
 
-                }
-                catch (Exception e1) {
-                    // TODO: This too broad an exception catch to just continue
-                    // with - narrow to specific expected errors that can be
-                    // ignored - tfm
-                    LOG.warn(e1);
-                    
-                    // Continue the search through the rest of the model
-                    if (getContext() != null) {
-                        iClassifier = getContext().get(name);
-                    }
-                }
-	    }
-	}
-	return iClassifier;
+        } catch (Exception e1) {
+          // TODO: This too broad an exception catch to just continue
+          // with - narrow to specific expected errors that can be
+          // ignored - tfm
+          LOG.warn(e1);
+
+          // Continue the search through the rest of the model
+          if (getContext() != null) {
+            iClassifier = getContext().get(name);
+          }
+        }
+      }
     }
+    return iClassifier;
+  }
 }
-

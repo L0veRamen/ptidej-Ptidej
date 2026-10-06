@@ -13,16 +13,16 @@ import java.util.logging.Logger;
 import junit.framework.Test;
 
 public class TestSuite extends junit.framework.TestSuite {
-	private static Logger logger = Logger.getLogger("choco.test.search");
+  private static Logger logger = Logger.getLogger("choco.test.search");
 
-	public static Test suite() {
-		final TestSuite test = new TestSuite();
+  public static Test suite() {
+    final TestSuite test = new TestSuite();
 
-		TestSuite.logger.fine("Build TestSuite for choco.test.search");
-		test.addTestSuite(SolveTest.class);
-		// TODO Fix and add these tests back
-		//	test.addTestSuite(QueensTest.class);
-		//	test.addTestSuite(ZebraTest.class);
-		return test;
-	}
+    TestSuite.logger.fine("Build TestSuite for choco.test.search");
+    test.addTestSuite(SolveTest.class);
+    // TODO Fix and add these tests back
+    //	test.addTestSuite(QueensTest.class);
+    //	test.addTestSuite(ZebraTest.class);
+    return test;
+  }
 }

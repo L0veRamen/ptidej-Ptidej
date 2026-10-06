@@ -26,67 +26,55 @@
 package org.argouml.uml.ui.behavior.state_machines;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.model.Model;
 import org.argouml.ui.targetmanager.TargetManager;
 import org.argouml.uml.ui.AbstractActionNewModelElement;
 
 /**
- * Action to create a new transition, either
- * an internal transition or a transition
- * between two states.
+ * Action to create a new transition, either an internal transition or a transition between two
+ * states.
+ *
  * @since Dec 15, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
 public class ActionNewTransition extends AbstractActionNewModelElement {
 
-    /**
-     * Key used for storing the source of the transition.
-     * If this value is not set,
-     * the action assumes that an internal transition should be constructed.
-     */
-    public static final String SOURCE = "source";
+  /**
+   * Key used for storing the source of the transition. If this value is not set, the action assumes
+   * that an internal transition should be constructed.
+   */
+  public static final String SOURCE = "source";
 
-     /**
-     * Key used for storing the destination of the transition.
-     * If this value is not set,
-     * the action assumes that an internal transition should be constructed.
-     */
-    public static final String DESTINATION = "destination";
+  /**
+   * Key used for storing the destination of the transition. If this value is not set, the action
+   * assumes that an internal transition should be constructed.
+   */
+  public static final String DESTINATION = "destination";
 
+  /** Constructor for ActionNewTransition. */
+  public ActionNewTransition() {
+    super();
+  }
 
-    /**
-     * Constructor for ActionNewTransition.
-     */
-    public ActionNewTransition() {
-        super();
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    if (getValue(SOURCE) == null || getValue(DESTINATION) == null) {
+      Object target = TargetManager.getInstance().getModelTarget();
+      Model.getStateMachinesFactory().buildInternalTransition(target);
+    } else {
+      Model.getStateMachinesFactory().buildTransition(getValue(SOURCE), getValue(DESTINATION));
     }
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        if (getValue(SOURCE) == null || getValue(DESTINATION) == null) {
-            Object target = TargetManager.getInstance().getModelTarget();
-            Model.getStateMachinesFactory()
-                .buildInternalTransition(target);
-        } else {
-            Model.getStateMachinesFactory()
-                .buildTransition(getValue(SOURCE), getValue(DESTINATION));
-        }
-    }
-
-    /**
-     * @return true if the action is enabled
-     * @see org.tigris.gef.undo.UndoableAction#isEnabled()
-     */
-    public boolean isEnabled() {
-        Object target = TargetManager.getInstance().getModelTarget();
-        return super.isEnabled() 
-            && !Model.getStateMachinesHelper().isTopState(target);
-    }
-    
-    
-
+  /**
+   * @return true if the action is enabled
+   * @see org.tigris.gef.undo.UndoableAction#isEnabled()
+   */
+  public boolean isEnabled() {
+    Object target = TargetManager.getInstance().getModelTarget();
+    return super.isEnabled() && !Model.getStateMachinesHelper().isTopState(target);
+  }
 }

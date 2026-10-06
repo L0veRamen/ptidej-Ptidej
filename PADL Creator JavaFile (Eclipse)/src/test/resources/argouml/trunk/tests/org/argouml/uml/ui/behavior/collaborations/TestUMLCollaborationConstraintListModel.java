@@ -27,60 +27,53 @@ package org.argouml.uml.ui.behavior.collaborations;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.AbstractUMLModelElementListModel2Test;
 
-
 /**
  * @since Oct 27, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class TestUMLCollaborationConstraintListModel
-    extends AbstractUMLModelElementListModel2Test {
+public class TestUMLCollaborationConstraintListModel extends AbstractUMLModelElementListModel2Test {
 
-    /**
-     * Constructor for TestUMLCollaborationConstraintListModel.
-     *
-     * @param arg0 is the name of the test case.
-     */
-    public TestUMLCollaborationConstraintListModel(String arg0) {
-        super(arg0);
+  /**
+   * Constructor for TestUMLCollaborationConstraintListModel.
+   *
+   * @param arg0 is the name of the test case.
+   */
+  public TestUMLCollaborationConstraintListModel(String arg0) {
+    super(arg0);
+  }
+
+  /**
+   * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#buildElement()
+   */
+  protected void buildElement() {
+    setElem(Model.getCollaborationsFactory().createCollaboration());
+  }
+
+  /**
+   * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#buildModel()
+   */
+  protected void buildModel() {
+    setModel(new UMLCollaborationConstrainingElementListModel());
+  }
+
+  /**
+   * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#fillModel()
+   */
+  protected Object[] fillModel() {
+    Object[] constraints = new Object[10];
+    for (int i = 0; i < constraints.length; i++) {
+      constraints[i] = Model.getCoreFactory().createConstraint();
+      Model.getCollaborationsHelper().addConstrainingElement(getElem(), constraints[i]);
     }
+    return constraints;
+  }
 
-    /**
-     * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#buildElement()
-     */
-    protected void buildElement() {
-        setElem(Model.getCollaborationsFactory().createCollaboration());
+  /**
+   * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#removeHalfModel(Object[])
+   */
+  protected void removeHalfModel(Object[] elements) {
+    for (int i = 0; i < 5; i++) {
+      Model.getCollaborationsHelper().removeConstrainingElement(getElem(), elements[i]);
     }
-
-    /**
-     * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#buildModel()
-     */
-    protected void buildModel() {
-        setModel(new UMLCollaborationConstrainingElementListModel());
-    }
-
-    /**
-     * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#fillModel()
-     */
-    protected Object[] fillModel() {
-        Object[] constraints = new Object[10];
-        for (int i = 0; i < constraints.length; i++) {
-            constraints[i] = Model.getCoreFactory().createConstraint();
-            Model.getCollaborationsHelper().addConstrainingElement(
-                    getElem(),
-                    constraints[i]);
-        }
-        return constraints;
-    }
-
-    /**
-     * @see org.argouml.uml.ui.AbstractUMLModelElementListModel2Test#removeHalfModel(Object[])
-     */
-    protected void removeHalfModel(Object[] elements) {
-        for (int i = 0; i < 5; i++) {
-            Model.getCollaborationsHelper().removeConstrainingElement(
-                    getElem(),
-                    elements[i]);
-        }
-    }
-
+  }
 }

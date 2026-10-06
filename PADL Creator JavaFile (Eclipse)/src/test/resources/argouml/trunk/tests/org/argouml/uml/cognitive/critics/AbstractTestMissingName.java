@@ -25,37 +25,35 @@
 package org.argouml.uml.cognitive.critics;
 
 import junit.framework.TestCase;
-
 import org.argouml.model.Model;
 
 public abstract class AbstractTestMissingName extends TestCase {
 
-    protected Object me = null;
+  protected Object me = null;
 
-    protected CrUML critic = null;
+  protected CrUML critic = null;
 
-    public AbstractTestMissingName(String arg0) {
-        super(arg0);
-    }
+  public AbstractTestMissingName(String arg0) {
+    super(arg0);
+  }
 
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
+  protected void setUp() throws Exception {
+    super.setUp();
+  }
 
-    public void testWrongInput() {
-        assertFalse(critic.predicate2(null, null));
-    }
+  public void testWrongInput() {
+    assertFalse(critic.predicate2(null, null));
+  }
 
-    public void testHasName() {
-        Model.getCoreHelper().setName(me, "A");
-        assertFalse(critic.predicate2(me, null));
-    }
+  public void testHasName() {
+    Model.getCoreHelper().setName(me, "A");
+    assertFalse(critic.predicate2(me, null));
+  }
 
-    public void testHasNoName() {
-        Model.getCoreHelper().setName(me, null);
-        assertTrue(critic.predicate2(me, null));
-        Model.getCoreHelper().setName(me, "");
-        assertTrue(critic.predicate2(me, null));
-    }
-
+  public void testHasNoName() {
+    Model.getCoreHelper().setName(me, null);
+    assertTrue(critic.predicate2(me, null));
+    Model.getCoreHelper().setName(me, "");
+    assertTrue(critic.predicate2(me, null));
+  }
 }

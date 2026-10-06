@@ -25,17 +25,18 @@
 package org.argouml.persistence;
 
 /**
- * An exception to be thrown when tryuing to read a file of an unknown
- * version.
+ * An exception to be thrown when tryuing to read a file of an unknown version.
+ *
  * @author Bob Tarling
  */
 public class VersionException extends OpenException {
 
-    /**
-     * Construct the exception with a message.
-     * @param message the message
-     */
-    public VersionException(String message) {
-        super(message);
-    }
+  /**
+   * Construct the exception with a message.
+   *
+   * @param message the message
+   */
+  public VersionException(String message) {
+    super(message);
+  }
 }

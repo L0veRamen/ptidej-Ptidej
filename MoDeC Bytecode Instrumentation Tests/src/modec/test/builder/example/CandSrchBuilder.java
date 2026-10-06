@@ -4,17 +4,16 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
 package modec.test.builder.example;
 
-//package src.BUILDER;
+// package src.BUILDER;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -29,8 +28,7 @@ class CandSrchBuilder extends UIBuilder {
   public void addUIControls() {
     this.searchUI = new JPanel();
     JLabel lblUserName = new JLabel("Name :");
-    JLabel lblExperienceRange =
-      new JLabel("Experience(min Yrs.):");
+    JLabel lblExperienceRange = new JLabel("Experience(min Yrs.):");
     JLabel lblSkill = new JLabel("Skill :");
     this.cmbExperience.addItem("<5");
     this.cmbExperience.addItem(">5");
@@ -71,7 +69,6 @@ class CandSrchBuilder extends UIBuilder {
     gbc.gridx = 1;
     gbc.gridy = 2;
     gridbag.setConstraints(this.txtSkill, gbc);
-
   }
 
   public void initialize() {
@@ -80,13 +77,13 @@ class CandSrchBuilder extends UIBuilder {
   }
 
   public String getSQL() {
-    String experience =
-      (String) this.cmbExperience.getSelectedItem();
-    return ("Select * from Candidate where Username='" +
-            this.txtUserName.getText() + "' and Experience " +
-            experience + " and Skill='" +
-            this.txtSkill.getText() + "'");
-
+    String experience = (String) this.cmbExperience.getSelectedItem();
+    return ("Select * from Candidate where Username='"
+        + this.txtUserName.getText()
+        + "' and Experience "
+        + experience
+        + " and Skill='"
+        + this.txtSkill.getText()
+        + "'");
   }
-
 }

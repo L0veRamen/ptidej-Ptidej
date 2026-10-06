@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xerces" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -57,46 +57,37 @@
 package org.apache.xerces.dom;
 
 import java.io.*;
-import java.util.Vector;
-
+import org.apache.xerces.domx.events.*;
 import org.w3c.dom.*;
 
-import org.apache.xerces.domx.events.*;
-//import org.w3c.dom.events.*;
+// import org.w3c.dom.events.*;
 
+/**
+ * Internal class LCount is used to track the number of listeners registered for a given event name,
+ * as an entry in a global hashtable. This should allow us to avoid generating, or discard, events
+ * for which no listeners are registered.
+ *
+ * <p>**** There should undoubtedly be methods here to manipulate this table. At the moment that
+ * code's residing in NodeImpl. Move it when we have a chance to do so. Sorry; we were rushed.
+ *
+ * <p>**** Also, I'm currently asking "are there any listeners" by testing captures+bubbles+defaults
+ * =? 0. It would probably make sense to have a separate "total" field, calculated at add/remove, to
+ * save a few cycles during dispatch. Fix.
+ *
+ * <p>???? CONCERN: Hashtables are known to be "overserialized" in current versions of Java. That
+ * may impact performance.
+ *
+ * <p>???? CONCERN: The hashtable should probably be a per-document object. Finer granularity would
+ * be even better, but would cost more cycles to resolve and might not save enough event traffic to
+ * be worth the investment.
+ */
+class LCount {
+  static java.util.Hashtable lCounts = new java.util.Hashtable();
+  public int captures = 0, bubbles = 0, defaults = 0;
 
-/** Internal class LCount is used to track the number of
-    listeners registered for a given event name, as an entry
-    in a global hashtable. This should allow us to avoid generating,
-    or discard, events for which no listeners are registered. 
-    
-    ***** There should undoubtedly be methods here to manipulate
-    this table. At the moment that code's residing in NodeImpl.
-    Move it when we have a chance to do so. Sorry; we were
-    rushed.
-    
-    ***** Also, I'm currently asking "are there any listeners"
-    by testing captures+bubbles+defaults =? 0. It would probably
-    make sense to have a separate "total" field, calculated at
-    add/remove, to save a few cycles during dispatch. Fix.
-    
-    ???? CONCERN: Hashtables are known to be "overserialized" in
-    current versions of Java. That may impact performance.
-    
-    ???? CONCERN: The hashtable should probably be a per-document object.
-    Finer granularity would be even better, but would cost more cycles to
-    resolve and might not save enough event traffic to be worth the investment.
-*/
-class LCount 
-{ 
-    static java.util.Hashtable lCounts=new java.util.Hashtable();
-    public int captures=0,bubbles=0,defaults=0;
-
-    static LCount lookup(String evtName)
-    {
-        LCount lc=(LCount)lCounts.get(evtName);
-        if(lc==null)
-            lCounts.put(evtName,(lc=new LCount()));
-        return lc;	        
-    }
+  static LCount lookup(String evtName) {
+    LCount lc = (LCount) lCounts.get(evtName);
+    if (lc == null) lCounts.put(evtName, (lc = new LCount()));
+    return lc;
+  }
 } // class LCount

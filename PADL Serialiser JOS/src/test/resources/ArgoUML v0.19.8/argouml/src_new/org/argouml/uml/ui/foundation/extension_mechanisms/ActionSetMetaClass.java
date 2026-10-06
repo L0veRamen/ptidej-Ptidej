@@ -25,62 +25,50 @@
 package org.argouml.uml.ui.foundation.extension_mechanisms;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLAction;
 import org.argouml.uml.ui.UMLComboBox2;
 
 /**
- *
  * @author mkl
- *
  */
 public class ActionSetMetaClass extends UMLAction {
 
-    /**
-     * The Singleton.
-     */
-    public static final ActionSetMetaClass SINGLETON =
-	new ActionSetMetaClass();
+  /** The Singleton. */
+  public static final ActionSetMetaClass SINGLETON = new ActionSetMetaClass();
 
-    /**
-     * Constructor.
-     */
-    public ActionSetMetaClass() {
-        super("Set", HAS_ICON);
-    }
+  /** Constructor. */
+  public ActionSetMetaClass() {
+    super("Set", HAS_ICON);
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        Object source = e.getSource();
-        Object newBase = null;
-        Object oldBase = null;
-        Object stereo = null;
-        if (source instanceof UMLComboBox2) {
-            UMLComboBox2 combo = (UMLComboBox2) source;
-            newBase = combo.getSelectedItem();
-            Object o = combo.getTarget();
-            if (Model.getFacade().isAStereotype(o)) {
-                stereo = /* (String) */o;
-                o = combo.getSelectedItem();
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    Object source = e.getSource();
+    Object newBase = null;
+    Object oldBase = null;
+    Object stereo = null;
+    if (source instanceof UMLComboBox2) {
+      UMLComboBox2 combo = (UMLComboBox2) source;
+      newBase = combo.getSelectedItem();
+      Object o = combo.getTarget();
+      if (Model.getFacade().isAStereotype(o)) {
+        stereo = /* (String) */ o;
+        o = combo.getSelectedItem();
 
-                newBase = /* (MUseCase) */o;
-                oldBase = Model.getFacade().getBaseClass(stereo);
-                if (newBase != oldBase) {
-                    Model.getExtensionMechanismsHelper().setBaseClass(
-                            stereo,
-                            newBase);
-                } else {
-                    if (o != null && o.equals("")) {
-                        Model.getExtensionMechanismsHelper().setBaseClass(
-                                stereo,
-                                "ModelElement");
-                    }
-                }
-            }
+        newBase = /* (MUseCase) */ o;
+        oldBase = Model.getFacade().getBaseClass(stereo);
+        if (newBase != oldBase) {
+          Model.getExtensionMechanismsHelper().setBaseClass(stereo, newBase);
+        } else {
+          if (o != null && o.equals("")) {
+            Model.getExtensionMechanismsHelper().setBaseClass(stereo, "ModelElement");
+          }
         }
+      }
     }
+  }
 }

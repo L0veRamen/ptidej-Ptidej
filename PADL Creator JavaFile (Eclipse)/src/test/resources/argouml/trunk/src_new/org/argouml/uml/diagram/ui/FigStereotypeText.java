@@ -25,7 +25,6 @@
 package org.argouml.uml.diagram.ui;
 
 import java.awt.Color;
-
 import org.apache.log4j.Logger;
 import org.argouml.i18n.Translator;
 import org.argouml.kernel.Project;
@@ -37,111 +36,103 @@ import org.tigris.gef.presentation.FigText;
 
 /**
  * A specialist FigText for display stereotypes.
+ *
  * @deprecated by Bob in 0.23.1 - this has not been used since UML 1.3
  * @author Bob Tarling
  */
 public class FigStereotypeText extends FigGroup {
 
-    /**
-     * Logger.
-     */
-    private static final Logger LOG = Logger.getLogger(FigComment.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(FigComment.class);
 
-    /**
-     * Height in pixels of stereotype text.
-     */
-    protected static final int STEREOHEIGHT = 18;
+  /** Height in pixels of stereotype text. */
+  protected static final int STEREOHEIGHT = 18;
 
-    private String pseudoStereotype;
+  private String pseudoStereotype;
 
-    /**
-     * The constructor.
-     *
-     * @param x
-     *            x
-     * @param y
-     *            y
-     * @param w
-     *            width
-     * @param h
-     *            height
-     * @param expandOnly
-     *            true if the fig can only grow, not shrink
-     */
-    public FigStereotypeText(int x, int y, int w, int h, boolean expandOnly) {
-        super();
-        addStereotypeText("stereo", x, y);
+  /**
+   * The constructor.
+   *
+   * @param x x
+   * @param y y
+   * @param w width
+   * @param h height
+   * @param expandOnly true if the fig can only grow, not shrink
+   */
+  public FigStereotypeText(int x, int y, int w, int h, boolean expandOnly) {
+    super();
+    addStereotypeText("stereo", x, y);
+  }
+
+  /**
+   * @see org.tigris.gef.presentation.Fig#setLineWidth(int)
+   */
+  public void setLineWidth(int arg0) {
+    super.setLineWidth(0);
+  }
+
+  /**
+   * Allows a parent Fig to specify some stereotype text to display that is not actually contained
+   * by its owner. An example of this usage is to display <<interface>> as a stereotype on
+   * FigInterface.
+   *
+   * @param stereotype the text of the pseudo stereotype
+   */
+  public void setPseudoSereotype(String stereotype) {
+    pseudoStereotype = stereotype;
+  }
+
+  /**
+   * @see org.tigris.gef.presentation.Fig#setOwner(java.lang.Object)
+   */
+  public void setOwner(Object modelElement) {
+    super.setOwner(modelElement);
+
+    if (modelElement == null) {
+      setVisible(false);
+      return;
     }
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#setLineWidth(int)
-     */
-    public void setLineWidth(int arg0) {
-        super.setLineWidth(0);
-    }
+    setVisible(true);
 
-    /**
-     * Allows a parent Fig to specify some stereotype text to display that is
-     * not actually contained by its owner.
-     * An example of this usage is to display <<interface>> as a stereotype
-     * on FigInterface.
-     * @param stereotype the text of the pseudo stereotype
-     */
-    public void setPseudoSereotype(String stereotype) {
-        pseudoStereotype = stereotype;
-    }
+    this.removeAll();
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#setOwner(java.lang.Object)
-     */
-    public void setOwner(Object modelElement) {
-        super.setOwner(modelElement);
+    //        int xPosn = getX();
+    //        int yPosn = getY();
 
-        if (modelElement == null) {
-            setVisible(false);
-            return;
-        }
+    //        if (pseudoStereotype != null) {
+    //            addStereotypeText(pseudoStereotype, xPosn, yPosn);
+    //            yPosn += STEREOHEIGHT;
+    //        }
+    //
+    //        Iterator it = Model.getFacade().getStereotypes(getOwner()).iterator();
+    //        while (it.hasNext()) {
+    //            Object stereotype = it.next();
+    //            addStereotypeText(Model.getFacade().getName(stereotype), xPosn,
+    //                              yPosn);
+    //            yPosn += STEREOHEIGHT;
+    //        }
+  }
 
-        setVisible(true);
+  private void addStereotypeText(String text, int xPosn, int yPosn) {
+    Project p = ProjectManager.getManager().getCurrentProject();
+    ProjectSettings ps = p.getProjectSettings();
 
-        this.removeAll();
-
-
-//        int xPosn = getX();
-//        int yPosn = getY();
-
-//        if (pseudoStereotype != null) {
-//            addStereotypeText(pseudoStereotype, xPosn, yPosn);
-//            yPosn += STEREOHEIGHT;
-//        }
-//
-//        Iterator it = Model.getFacade().getStereotypes(getOwner()).iterator();
-//        while (it.hasNext()) {
-//            Object stereotype = it.next();
-//            addStereotypeText(Model.getFacade().getName(stereotype), xPosn, 
-//                              yPosn);
-//            yPosn += STEREOHEIGHT;
-//        }
-    }
-
-    private void addStereotypeText(String text, int xPosn, int yPosn) {
-        Project p = ProjectManager.getManager().getCurrentProject();
-        ProjectSettings ps = p.getProjectSettings();
-        
-        FigSingleLineText singleStereotype = new FigSingleLineText(xPosn,
-                yPosn, getWidth(), STEREOHEIGHT, true);
-        singleStereotype.setEditable(false);
-        singleStereotype.setJustification(FigText.JUSTIFY_CENTER);
-        singleStereotype.setLineWidth(0);
-        singleStereotype.setFilled(true);
-        singleStereotype.setVisible(true);
-        singleStereotype.setFont(FigNodeModelElement.getLabelFont());
-        singleStereotype.setTextColor(Color.black);
-        // TODO: Use message formatting here
-        singleStereotype.setText(ps.getLeftGuillemot()
-                + (text == null ? Translator.localize("misc.name.anon") : text)
-                + ps.getRightGuillemot());
-        LOG.info("Adding " + singleStereotype.getText() + " to Fig");
-        addFig(singleStereotype);
-    }
+    FigSingleLineText singleStereotype =
+        new FigSingleLineText(xPosn, yPosn, getWidth(), STEREOHEIGHT, true);
+    singleStereotype.setEditable(false);
+    singleStereotype.setJustification(FigText.JUSTIFY_CENTER);
+    singleStereotype.setLineWidth(0);
+    singleStereotype.setFilled(true);
+    singleStereotype.setVisible(true);
+    singleStereotype.setFont(FigNodeModelElement.getLabelFont());
+    singleStereotype.setTextColor(Color.black);
+    // TODO: Use message formatting here
+    singleStereotype.setText(
+        ps.getLeftGuillemot()
+            + (text == null ? Translator.localize("misc.name.anon") : text)
+            + ps.getRightGuillemot());
+    LOG.info("Adding " + singleStereotype.getText() + " to Fig");
+    addFig(singleStereotype);
+  }
 }

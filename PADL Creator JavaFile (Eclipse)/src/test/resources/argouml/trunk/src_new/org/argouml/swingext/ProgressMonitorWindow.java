@@ -27,111 +27,104 @@ package org.argouml.swingext;
 import javax.swing.JFrame;
 import javax.swing.ProgressMonitor;
 import javax.swing.UIManager;
-
 import org.argouml.i18n.Translator;
 import org.argouml.persistence.ProgressEvent;
 
 /**
  * Manages a ProgressMonitor dialog.
- * 
- * NOTE: Users of this class should use the type of the interface
- * org.argouml.application.api.ProgressMonitor wherever possible to
- * maintain GUI independance.
- * 
+ *
+ * <p>NOTE: Users of this class should use the type of the interface
+ * org.argouml.application.api.ProgressMonitor wherever possible to maintain GUI independance.
+ *
  * @author andrea_nironi@tigris.org
  */
-public class ProgressMonitorWindow implements
-        org.argouml.application.api.ProgressMonitor {
-    
-    private ProgressMonitor pbar;
-    
-    /**
-     * initializes a ProgressMonitor
-     * 
-     * @param parent	the Component to be set as parent
-     * @param title     the (internationalized) title of the ProgressMonitor
-     */
-    public ProgressMonitorWindow(JFrame parent, String title) {
-        this.pbar = new ProgressMonitor(parent, 
-                title,
-                null, 0, 100);
-        this.pbar.setMillisToDecideToPopup(250);       
-        this.pbar.setMillisToPopup(500);
-        parent.repaint();
-        updateProgress(5);
-        
-    }
-    
-    /*
-     * Report a progress to the ProgressMonitor window.
-     * @see org.argouml.persistence.ProgressListener#progress(org.argouml.persistence.ProgressEvent)
-     */
-    public void progress(final ProgressEvent event) {
-        updateProgress((int) event.getPosition());
-    }
-    
-    /*
-     * Report a progress to the ProgressMonitor window.
-     * @see org.argouml.application.api.ProgressMonitor#updateProgress(int)
-     */
-    public void updateProgress(final int progress) {
-        if (this.pbar != null) {
-            pbar.setProgress(progress);
-            Object[] args = new Object[]{String.valueOf(progress)};
-            pbar.setNote(Translator.localize("dialog.progress.note", args));
-        }
-    }
-    
-    /*
-     * @see org.argouml.application.api.ProgressMonitor#isCanceled()
-     */
-    public boolean isCanceled() {
-        return this.pbar != null && this.pbar.isCanceled();
-    }
+public class ProgressMonitorWindow implements org.argouml.application.api.ProgressMonitor {
 
-    /*
-     * @see org.argouml.application.api.ProgressMonitor#close()
-     */
-    public void close() {
-        this.pbar.close();
-        this.pbar = null;
-    }
-    
-    // these settings are needed to make the ProgressMonitor pop up early
-    static {
-        UIManager.put("ProgressBar.repaintInterval", Integer.valueOf(150));
-        UIManager.put("ProgressBar.cycleTime", Integer.valueOf(1050));        
-    }
+  private ProgressMonitor pbar;
 
-    /*
-     * @see org.argouml.application.api.ProgressMonitor#notifyMessage(java.lang.String, java.lang.String, java.lang.String)
-     */
-    public void notifyMessage(String title, String introduction, 
-            String message) {
-        pbar.setNote(introduction + " : " + message);
-    }
+  /**
+   * initializes a ProgressMonitor
+   *
+   * @param parent the Component to be set as parent
+   * @param title the (internationalized) title of the ProgressMonitor
+   */
+  public ProgressMonitorWindow(JFrame parent, String title) {
+    this.pbar = new ProgressMonitor(parent, title, null, 0, 100);
+    this.pbar.setMillisToDecideToPopup(250);
+    this.pbar.setMillisToPopup(500);
+    parent.repaint();
+    updateProgress(5);
+  }
 
-    /*
-     * @see org.argouml.application.api.ProgressMonitor#notifyNullAction()
-     */
-    public void notifyNullAction() {
-        // ignored
-    }
+  /*
+   * Report a progress to the ProgressMonitor window.
+   * @see org.argouml.persistence.ProgressListener#progress(org.argouml.persistence.ProgressEvent)
+   */
+  public void progress(final ProgressEvent event) {
+    updateProgress((int) event.getPosition());
+  }
 
-    /*
-     * @see org.argouml.application.api.ProgressMonitor#setMaximumProgress(int)
-     */
-    public void setMaximumProgress(int max) {
-        pbar.setMaximum(max);
+  /*
+   * Report a progress to the ProgressMonitor window.
+   * @see org.argouml.application.api.ProgressMonitor#updateProgress(int)
+   */
+  public void updateProgress(final int progress) {
+    if (this.pbar != null) {
+      pbar.setProgress(progress);
+      Object[] args = new Object[] {String.valueOf(progress)};
+      pbar.setNote(Translator.localize("dialog.progress.note", args));
     }
+  }
 
-    public void updateSubTask(String action) {
-        // TODO Auto-generated method stub
-        
-    }
+  /*
+   * @see org.argouml.application.api.ProgressMonitor#isCanceled()
+   */
+  public boolean isCanceled() {
+    return this.pbar != null && this.pbar.isCanceled();
+  }
 
-    public void updateMainTask(String name) {
-        // TODO Auto-generated method stub
-        
-    }
+  /*
+   * @see org.argouml.application.api.ProgressMonitor#close()
+   */
+  public void close() {
+    this.pbar.close();
+    this.pbar = null;
+  }
+
+  // these settings are needed to make the ProgressMonitor pop up early
+  static {
+    UIManager.put("ProgressBar.repaintInterval", Integer.valueOf(150));
+    UIManager.put("ProgressBar.cycleTime", Integer.valueOf(1050));
+  }
+
+  /*
+   * @see org.argouml.application.api.ProgressMonitor#notifyMessage(java.lang.String, java.lang.String, java.lang.String)
+   */
+  public void notifyMessage(String title, String introduction, String message) {
+    pbar.setNote(introduction + " : " + message);
+  }
+
+  /*
+   * @see org.argouml.application.api.ProgressMonitor#notifyNullAction()
+   */
+  public void notifyNullAction() {
+    // ignored
+  }
+
+  /*
+   * @see org.argouml.application.api.ProgressMonitor#setMaximumProgress(int)
+   */
+  public void setMaximumProgress(int max) {
+    pbar.setMaximum(max);
+  }
+
+  public void updateSubTask(String action) {
+    // TODO Auto-generated method stub
+
+  }
+
+  public void updateMainTask(String name) {
+    // TODO Auto-generated method stub
+
+  }
 }

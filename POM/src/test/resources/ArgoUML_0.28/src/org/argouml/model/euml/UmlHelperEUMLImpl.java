@@ -28,79 +28,70 @@ package org.argouml.model.euml;
 
 import java.util.Collection;
 import java.util.Iterator;
-
 import org.argouml.model.UmlHelper;
 import org.eclipse.uml2.uml.Property;
 import org.eclipse.uml2.uml.Relationship;
 import org.eclipse.uml2.uml.Transition;
 
-
-/**
- * The implementation of the UmlHelper for EUML2.
- */
+/** The implementation of the UmlHelper for EUML2. */
 class UmlHelperEUMLImpl implements UmlHelper {
 
-    /**
-     * The model implementation.
-     */
-    private EUMLModelImplementation modelImpl;
+  /** The model implementation. */
+  private EUMLModelImplementation modelImpl;
 
-    /**
-     * Constructor.
-     * 
-     * @param implementation
-     *            The ModelImplementation.
-     */
-    public UmlHelperEUMLImpl(EUMLModelImplementation implementation) {
-        modelImpl = implementation;
+  /**
+   * Constructor.
+   *
+   * @param implementation The ModelImplementation.
+   */
+  public UmlHelperEUMLImpl(EUMLModelImplementation implementation) {
+    modelImpl = implementation;
+  }
+
+  public void addListenersToModel(Object model) {
+    // Nothing to do
+
+  }
+
+  // TODO: Model implementation independent
+  public void deleteCollection(Collection col) {
+    Iterator it = col.iterator();
+    while (it.hasNext()) {
+      modelImpl.getUmlFactory().delete(it.next());
     }
+  }
 
-    public void addListenersToModel(Object model) {
-        // Nothing to do
-
+  /*
+   * @see org.argouml.model.UmlHelper#getSource(java.lang.Object)
+   */
+  public Object getSource(Object relationship) {
+    if (relationship instanceof Relationship) {
+      // handles all children of relationship including extend and
+      // include which are not members of core
+      return modelImpl.getCoreHelper().getSource(relationship);
+    } else if (relationship instanceof Transition) {
+      return modelImpl.getStateMachinesHelper().getSource(relationship);
+    } else if (relationship instanceof Property) {
+      // TODO: We expect an association end here - check more carefully? - tfm
+      return modelImpl.getCoreHelper().getSource(relationship);
     }
+    throw new IllegalArgumentException();
+  }
 
-    // TODO: Model implementation independent
-    public void deleteCollection(Collection col) {
-        Iterator it = col.iterator();
-        while (it.hasNext()) {
-            modelImpl.getUmlFactory().delete(it.next());
-        }
+  /*
+   * @see org.argouml.model.UmlHelper#getDestination(java.lang.Object)
+   */
+  public Object getDestination(Object relationShip) {
+    if (relationShip instanceof Relationship) {
+      // handles all children of relationship including extend and
+      // include which are not members of core
+      return modelImpl.getCoreHelper().getDestination(relationShip);
+    } else if (relationShip instanceof Transition) {
+      return modelImpl.getStateMachinesHelper().getDestination(relationShip);
+    } else if (relationShip instanceof Property) {
+      // TODO: We expect an association end here - check more carefully? - tfm
+      return modelImpl.getCoreHelper().getDestination(relationShip);
     }
-
-    /*
-     * @see org.argouml.model.UmlHelper#getSource(java.lang.Object)
-     */
-    public Object getSource(Object relationship) {
-        if (relationship instanceof Relationship) {
-            // handles all children of relationship including extend and
-            // include which are not members of core
-            return modelImpl.getCoreHelper().getSource(relationship);
-        } else if (relationship instanceof Transition) {
-            return modelImpl.getStateMachinesHelper().getSource(relationship);
-        } else if (relationship instanceof Property) {
-            // TODO: We expect an association end here - check more carefully? - tfm
-            return modelImpl.getCoreHelper().getSource(relationship);
-        }
-        throw new IllegalArgumentException();
-    }
-
-    /*
-     * @see org.argouml.model.UmlHelper#getDestination(java.lang.Object)
-     */
-    public Object getDestination(Object relationShip) {
-        if (relationShip instanceof Relationship) {
-            // handles all children of relationship including extend and
-            // include which are not members of core
-            return modelImpl.getCoreHelper().getDestination(relationShip);
-        } else if (relationShip instanceof Transition) {
-            return modelImpl.getStateMachinesHelper().
-                    getDestination(relationShip);
-        } else if (relationShip instanceof Property) {
-            // TODO: We expect an association end here - check more carefully? - tfm
-            return modelImpl.getCoreHelper().getDestination(relationShip);
-        }
-        throw new IllegalArgumentException();
-    }
-
+    throw new IllegalArgumentException();
+  }
 }

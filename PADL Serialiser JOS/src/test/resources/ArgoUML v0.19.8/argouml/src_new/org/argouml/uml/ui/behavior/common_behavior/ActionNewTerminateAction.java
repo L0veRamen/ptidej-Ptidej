@@ -26,7 +26,6 @@
 package org.argouml.uml.ui.behavior.common_behavior;
 
 import javax.swing.Action;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 
@@ -36,32 +35,25 @@ import org.argouml.model.Model;
  */
 public class ActionNewTerminateAction extends ActionNewAction {
 
-    private static final ActionNewTerminateAction SINGLETON =
-        new ActionNewTerminateAction();
+  private static final ActionNewTerminateAction SINGLETON = new ActionNewTerminateAction();
 
-    /**
-     * Constructor for ActionNewTerminateAction.
-     */
-    protected ActionNewTerminateAction() {
-        super();
-        putValue(Action.NAME, Translator.localize(
-                "button.new-terminateaction"));
-    }
+  /** Constructor for ActionNewTerminateAction. */
+  protected ActionNewTerminateAction() {
+    super();
+    putValue(Action.NAME, Translator.localize("button.new-terminateaction"));
+  }
 
+  /**
+   * @see org.argouml.uml.ui.behavior.common_behavior.ActionNewAction#createAction()
+   */
+  protected Object createAction() {
+    return Model.getCommonBehaviorFactory().createTerminateAction();
+  }
 
-    /**
-     * @see org.argouml.uml.ui.behavior.common_behavior.ActionNewAction#createAction()
-     */
-    protected Object createAction() {
-        return Model.getCommonBehaviorFactory().createTerminateAction();
-    }
-
-
-    /**
-     * @return Returns the SINGLETON.
-     */
-    public static ActionNewTerminateAction getInstance() {
-        return SINGLETON;
-    }
-
+  /**
+   * @return Returns the SINGLETON.
+   */
+  public static ActionNewTerminateAction getInstance() {
+    return SINGLETON;
+  }
 }

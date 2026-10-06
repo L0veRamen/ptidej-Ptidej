@@ -27,35 +27,28 @@ package org.argouml.application;
 import org.argouml.application.helpers.ApplicationVersion;
 
 /**
- * This class <strong>only</strong> encapsulates the ArgoUML version string.<p>
+ * This class <strong>only</strong> encapsulates the ArgoUML version string.
  *
- * It should <strong>not</strong> be edited manually because it is
- * build from the file ArgoVersion.template when necessary.<p>
- * 
- * Since this class resides in the top-level package, 
- * none of its functionality should be used
+ * <p>It should <strong>not</strong> be edited manually because it is build from the file
+ * ArgoVersion.template when necessary.
+ *
+ * <p>Since this class resides in the top-level package, none of its functionality should be used
  * outside this package.
  *
  * @author Thierry Lach
- * @since  Argo0.11.1
+ * @since Argo0.11.1
  */
 final class ArgoVersion {
-    /**
-     * Version number.
-     */
-    private static final String VERSION = "0.28";
-    private static final String STABLE_VERSION = "0.26";
+  /** Version number. */
+  private static final String VERSION = "0.28";
 
-    /**
-     * Make the version of ArgoUML public. 
-     */
-    static void init() {
-        ApplicationVersion.init(VERSION, STABLE_VERSION);
-    }
+  private static final String STABLE_VERSION = "0.26";
 
-    /**
-     * Don't allow instantiation.
-     */
-    private ArgoVersion() {
-    }
+  /** Make the version of ArgoUML public. */
+  static void init() {
+    ApplicationVersion.init(VERSION, STABLE_VERSION);
+  }
+
+  /** Don't allow instantiation. */
+  private ArgoVersion() {}
 }

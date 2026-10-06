@@ -27,18 +27,13 @@ package org.argouml.uml.diagram.ui;
 import org.argouml.i18n.Translator;
 
 /**
- *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 3, 2003
  */
 public class PropPanelUMLActivityDiagram extends PropPanelDiagram {
 
-    /**
-     * Constructor for PropPanelUMLActivityDiagram.
-     */
-    public PropPanelUMLActivityDiagram() {
-        super(Translator.localize("label.activity-diagram"),
-                lookupIcon("ActivityDiagram"));
-    }
-
+  /** Constructor for PropPanelUMLActivityDiagram. */
+  public PropPanelUMLActivityDiagram() {
+    super(Translator.localize("label.activity-diagram"), lookupIcon("ActivityDiagram"));
+  }
 }

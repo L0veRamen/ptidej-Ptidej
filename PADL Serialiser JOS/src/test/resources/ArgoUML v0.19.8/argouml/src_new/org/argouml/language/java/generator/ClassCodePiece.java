@@ -32,99 +32,89 @@ import java.util.Stack;
 /**
  * This code piece represents a class declaration.
  *
- * JavaRE - Code generation and reverse engineering for UML and Java
+ * <p>JavaRE - Code generation and reverse engineering for UML and Java
  *
  * @author Marcus Andersson andersson@users.sourceforge.net
  */
 public class ClassCodePiece extends NamedCodePiece {
-    /** The code piece this class represents. */
-    private CodePiece classDef;
+  /** The code piece this class represents. */
+  private CodePiece classDef;
 
-    /** The name of the class. */
-    private String name;
+  /** The name of the class. */
+  private String name;
 
-    /**
-       Constructor.
+  /**
+   * Constructor.
+   *
+   * @param def The code piece this class represents.
+   * @param n The name of the class.
+   */
+  public ClassCodePiece(CodePiece def, String n) {
+    classDef = def;
+    name = n;
+  }
 
-       @param def The code piece this class represents.
-       @param n The name of the class.
-    */
-    public ClassCodePiece(CodePiece def,
-                          String n) {
-	classDef = def;
-	name = n;
+  /**
+   * @see org.argouml.language.java.generator.CodePiece#getText()
+   *     <p>Return the string representation for this piece of code.
+   */
+  public StringBuffer getText() {
+    return classDef.getText();
+  }
+
+  /**
+   * @see org.argouml.language.java.generator.CodePiece#getStartPosition()
+   *     <p>Return the start position.
+   */
+  public int getStartPosition() {
+    return classDef.getStartPosition();
+  }
+
+  /**
+   * @see org.argouml.language.java.generator.CodePiece#getEndPosition()
+   *     <p>Return the end position.
+   */
+  public int getEndPosition() {
+    return classDef.getEndPosition();
+  }
+
+  /**
+   * @see org.argouml.language.java.generator.CodePiece#getStartLine() Return the start line
+   */
+  public int getStartLine() {
+    return classDef.getStartLine();
+  }
+
+  /**
+   * @see org.argouml.language.java.generator.CodePiece#getEndLine()
+   *     <p>Return the end line
+   */
+  public int getEndLine() {
+    return classDef.getEndLine();
+  }
+
+  /**
+   * @see org.argouml.language.java.generator.NamedCodePiece#write( java.io.BufferedReader,
+   *     java.io.BufferedWriter, java.util.Stack)
+   *     <p>Write the code this piece represents to file. This adds a new level to the stack if the
+   *     class is in the model.
+   */
+  public void write(BufferedReader reader, BufferedWriter writer, Stack parseStateStack)
+      throws IOException {
+    ParseState parseState = (ParseState) parseStateStack.peek();
+    Object mClass = /*(MClass)*/ parseState.newClassifier(name);
+
+    if (mClass != null) {
+      parseStateStack.push(new ParseState(mClass));
+      StringBuffer sbText = GeneratorJava.getInstance().generateClassifierStart(mClass);
+      if (sbText != null) {
+        writer.write(sbText.toString());
+      }
+      // dispose code piece in reader
+      ffCodePiece(reader, null);
+    } else {
+      // not in model, so write the original code
+      ffCodePiece(reader, writer);
     }
-
-    /**
-     * @see org.argouml.language.java.generator.CodePiece#getText()
-     *
-     * Return the string representation for this piece of code.
-     */
-    public StringBuffer getText() {
-	return classDef.getText();
-    }
-
-    /**
-     * @see org.argouml.language.java.generator.CodePiece#getStartPosition()
-     *
-     * Return the start position.
-     */
-    public int getStartPosition() {
-	return classDef.getStartPosition();
-    }
-
-    /**
-     * @see org.argouml.language.java.generator.CodePiece#getEndPosition()
-     *
-     * Return the end position.
-     */
-    public int getEndPosition() {
-	return classDef.getEndPosition();
-    }
-
-    /**
-     * @see org.argouml.language.java.generator.CodePiece#getStartLine()
-     * Return the start line
-     */
-    public int getStartLine() {
-	return classDef.getStartLine();
-    }
-
-    /**
-     * @see org.argouml.language.java.generator.CodePiece#getEndLine()
-     *
-     * Return the end line
-     */
-    public int getEndLine()
-    {
-	return classDef.getEndLine();
-    }
-
-    /**
-     * @see org.argouml.language.java.generator.NamedCodePiece#write(
-     *         java.io.BufferedReader, java.io.BufferedWriter, java.util.Stack)
-     *
-     * Write the code this piece represents to file. This adds a new
-     * level to the stack if the class is in the model.
-     */
-    public void write(BufferedReader reader,
-                      BufferedWriter writer,
-                      Stack parseStateStack) throws IOException {
-	ParseState parseState = (ParseState) parseStateStack.peek();
-	Object mClass = /*(MClass)*/ parseState.newClassifier(name);
-
-	if (mClass != null) {
-	    parseStateStack.push(new ParseState(mClass));
-	    StringBuffer sbText =
-		GeneratorJava.getInstance().generateClassifierStart(mClass);
-	    if (sbText != null) {
-		writer.write (sbText.toString());
-	    }
-            // dispose code piece in reader
-            ffCodePiece(reader, null);
-        } else {
-            // not in model, so write the original code
-            ffCodePiece(reader, writer);
-        }
-    }
+  }
 }

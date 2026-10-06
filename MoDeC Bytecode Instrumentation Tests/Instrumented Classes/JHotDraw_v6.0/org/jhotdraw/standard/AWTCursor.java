@@ -13,34 +13,33 @@ package org.jhotdraw.standard;
 import java.awt.Cursor;
 
 /**
- * Default implementation of the {@link org.jhotdraw.framework.Cursor} interface
- * for AWT/Swing.
- * 
- * <p>Created on: 08/05/2003.</p>
- * 
+ * Default implementation of the {@link org.jhotdraw.framework.Cursor} interface for AWT/Swing.
+ *
+ * <p>Created on: 08/05/2003.
+ *
  * @version $Revision: 1.1 $
- * @author <a href="mailto:ricardo_padilha@users.sourceforge.net">Ricardo 
- * Sangoi Padilha</a>
+ * @author <a href="mailto:ricardo_padilha@users.sourceforge.net">Ricardo Sangoi Padilha</a>
  * @see org.jhotdraw.framework.Cursor
  */
 public class AWTCursor extends Cursor implements org.jhotdraw.framework.Cursor {
 
-	/**
-	 * Constructor for <code>AWTCursor</code>.
-	 * @param type
-	 * @see Cursor#Cursor(int)
-	 */
-	public AWTCursor(int type) {
-		super(type);
-	}
+  /**
+   * Constructor for <code>AWTCursor</code>.
+   *
+   * @param type
+   * @see Cursor#Cursor(int)
+   */
+  public AWTCursor(int type) {
+    super(type);
+  }
 
-	/**
-	 * Constructor for <code>AWTCursor</code>.
-	 * @param name
-	 * @see Cursor#Cursor(java.lang.String)
-	 */
-	public AWTCursor(String newName) {
-		super(newName);
-	}
-
+  /**
+   * Constructor for <code>AWTCursor</code>.
+   *
+   * @param name
+   * @see Cursor#Cursor(java.lang.String)
+   */
+  public AWTCursor(String newName) {
+    super(newName);
+  }
 }

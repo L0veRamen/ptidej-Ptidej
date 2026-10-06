@@ -24,13 +24,9 @@
 
 package org.argouml.uml.diagram.layout;
 
-/**
- * This is a layouted edge in a diagram.
- */
+/** This is a layouted edge in a diagram. */
 public interface LayoutedEdge extends LayoutedObject {
 
-    /**
-     * Abstract method to layout the edge.
-     */
-    public void layout();
+  /** Abstract method to layout the edge. */
+  public void layout();
 }

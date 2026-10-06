@@ -22,56 +22,56 @@
 // CALIFORNIA HAS NO OBLIGATIONS TO PROVIDE MAINTENANCE, SUPPORT,
 // UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
-
 package org.argouml.uml;
 
 import java.util.Iterator;
+
 /**
- *   This abstract class captures the configurable behavior of Argo.
+ * This abstract class captures the configurable behavior of Argo.
  *
- *   @author Curt Arnold
+ * @author Curt Arnold
  */
 public abstract class Profile {
 
-    /**
-     *    This method produces a string that represents the specific
-     *    model element in the context of the specified namespace.
-     *    @param element element to represent.
-     *    @param namespace context namespace (may be null).
-     *    @return a string representing the model element
-     */
-    public abstract String formatElement(Object/*MModelElement*/ element,
-					 Object namespace);
-    /**
-     *   This method produces a string the represents the collection
-     *   of model elements in the context of the specified namespace.
-     *   @param iter iterator over collection
-     *   @param namespace context namespace (may be null).
-     *   @return a string representing the collection
-     */
-    public abstract String formatCollection(Iterator iter,
-					    Object namespace);
-    /**
-     * @return the UML Model that contains the profile model
-     * @throws ProfileException if failed to get profile.
-     */
-    public abstract Object/*MModel*/ getProfileModel() throws ProfileException;
-    
-    /**
-     * Set the filename to load the profile model from.  This will be
-     * remembered and used as the file for all future loads.
-     * @param filename file name of XMI file containing model to use as profile
-     * 
-     * @throws ProfileException if the given file isn't a valid profile
-     */
-    public abstract void setProfileModelFilename(String filename)
-        throws ProfileException;
-    
-    /**
-     * Return the filename that was or will be used to load the profile/default
-     * model.
-     * @return the filename
-     */
-    public abstract String getProfileModelFilename();
+  /**
+   * This method produces a string that represents the specific model element in the context of the
+   * specified namespace.
+   *
+   * @param element element to represent.
+   * @param namespace context namespace (may be null).
+   * @return a string representing the model element
+   */
+  public abstract String formatElement(Object /*MModelElement*/ element, Object namespace);
 
+  /**
+   * This method produces a string the represents the collection of model elements in the context of
+   * the specified namespace.
+   *
+   * @param iter iterator over collection
+   * @param namespace context namespace (may be null).
+   * @return a string representing the collection
+   */
+  public abstract String formatCollection(Iterator iter, Object namespace);
+
+  /**
+   * @return the UML Model that contains the profile model
+   * @throws ProfileException if failed to get profile.
+   */
+  public abstract Object /*MModel*/ getProfileModel() throws ProfileException;
+
+  /**
+   * Set the filename to load the profile model from. This will be remembered and used as the file
+   * for all future loads.
+   *
+   * @param filename file name of XMI file containing model to use as profile
+   * @throws ProfileException if the given file isn't a valid profile
+   */
+  public abstract void setProfileModelFilename(String filename) throws ProfileException;
+
+  /**
+   * Return the filename that was or will be used to load the profile/default model.
+   *
+   * @return the filename
+   */
+  public abstract String getProfileModelFilename();
 }

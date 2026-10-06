@@ -29,36 +29,23 @@ import org.argouml.uml.ui.ActionDeleteSingleModelElement;
 import org.argouml.uml.ui.ActionNavigateNamespace;
 import org.argouml.util.ConfigLoader;
 
-/**
- * The properties panel for a Abstraction.
- *
- */
+/** The properties panel for a Abstraction. */
 public class PropPanelAbstraction extends PropPanelDependency {
 
-    /**
-     * The constructor.
-     *
-     */
-    public PropPanelAbstraction() {
-        super("Abstraction", ConfigLoader.getTabPropsOrientation());
+  /** The constructor. */
+  public PropPanelAbstraction() {
+    super("Abstraction", ConfigLoader.getTabPropsOrientation());
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.stereotype"),
-                getStereotypeSelector());
-        addField(Translator.localize("label.namespace"),
-                getNamespaceSelector());
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.stereotype"), getStereotypeSelector());
+    addField(Translator.localize("label.namespace"), getNamespaceSelector());
 
-        addSeperator();
+    addSeperator();
 
-        addField(Translator.localize("label.suppliers"),
-                getSupplierScroll());
-        addField(Translator.localize("label.clients"),
-                getClientScroll());
+    addField(Translator.localize("label.suppliers"), getSupplierScroll());
+    addField(Translator.localize("label.clients"), getClientScroll());
 
-        addAction(new ActionNavigateNamespace());
-        addAction(new ActionDeleteSingleModelElement());
-    }
-
+    addAction(new ActionNavigateNamespace());
+    addAction(new ActionDeleteSingleModelElement());
+  }
 } /* end class PropPanelAbstraction */
-

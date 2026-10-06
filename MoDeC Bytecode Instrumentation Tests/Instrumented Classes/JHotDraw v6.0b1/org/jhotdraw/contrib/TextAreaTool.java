@@ -10,6 +10,10 @@
  */
 package org.jhotdraw.contrib;
 
+import java.awt.Container;
+import java.awt.Font;
+import java.awt.Rectangle;
+import java.awt.event.MouseEvent;
 import org.jhotdraw.framework.DrawingEditor;
 import org.jhotdraw.framework.DrawingView;
 import org.jhotdraw.framework.Figure;
@@ -20,426 +24,409 @@ import org.jhotdraw.standard.TextHolder;
 import org.jhotdraw.util.Undoable;
 import org.jhotdraw.util.UndoableAdapter;
 
-import java.awt.Container;
-import java.awt.Font;
-import java.awt.Rectangle;
-import java.awt.event.MouseEvent;
-
 /**
  * A TextAreaTool creates TextAreaFigures.<br>
- * To create a new text area, the user drags a rectangle on the drawing on
- * a free spot.<br>
+ * To create a new text area, the user drags a rectangle on the drawing on a free spot.<br>
  * When releasing the mouse the tool calls the area's editor to enter the text.<br>
- * If the tool is clicked on an existing area the tool simply calls the
- * area's editor.<br>
- * When creating a new area, if the user leaves the text empty, the newly created
- * area figure is discarded.
+ * If the tool is clicked on an existing area the tool simply calls the area's editor.<br>
+ * When creating a new area, if the user leaves the text empty, the newly created area figure is
+ * discarded.
  *
- * @author    Eduardo Francos - InContext
- * @created   29 april 2002
- * @version   1.0
+ * @author Eduardo Francos - InContext
+ * @created 29 april 2002
+ * @version 1.0
  */
 public class TextAreaTool extends CreationTool {
-	/** The field used for editing */
-	protected FloatingTextArea fTextField;
+  /** The field used for editing */
+  protected FloatingTextArea fTextField;
 
-	/** The typing target */
-	protected TextHolder fTypingTarget;
-	/** The edited figure */
-	protected Figure fEditedFigure;
+  /** The typing target */
+  protected TextHolder fTypingTarget;
 
-	/**
-	 * Constructor for the TextAreaTool object
-	 *
-	 * @param newDrawingEditor  the managing drawing editor
-	 * @param prototype         the prototype for the figure
-	 */
-	public TextAreaTool(DrawingEditor newDrawingEditor, Figure prototype) {
-		super(newDrawingEditor, prototype);
-	}
+  /** The edited figure */
+  protected Figure fEditedFigure;
 
-	/**
-	 * If the pressed figure is a TextHolder and it accepts editing it can be edited.<br>
-	 * If there is no pressed figure a new text figure is created.
-	 *
-	 * @param e  Description of the Parameter
-	 * @param x  Description of the Parameter
-	 * @param y  Description of the Parameter
-	 */
-	public void mouseDown(MouseEvent e, int x, int y) {
-		setView((DrawingView)e.getSource());
-		Figure pressedFigure = drawing().findFigureInside(x, y);
-		TextHolder textHolder = null;
-		if (pressedFigure != null) {
-			textHolder = pressedFigure.getTextHolder();
-		}
+  /**
+   * Constructor for the TextAreaTool object
+   *
+   * @param newDrawingEditor the managing drawing editor
+   * @param prototype the prototype for the figure
+   */
+  public TextAreaTool(DrawingEditor newDrawingEditor, Figure prototype) {
+    super(newDrawingEditor, prototype);
+  }
 
-		if ((textHolder != null) && (textHolder.acceptsTyping())) {
-			beginEdit(textHolder, pressedFigure);
-			return;
-		}
-		if (getTypingTarget() != null) {
-			endEdit();
+  /**
+   * If the pressed figure is a TextHolder and it accepts editing it can be edited.<br>
+   * If there is no pressed figure a new text figure is created.
+   *
+   * @param e Description of the Parameter
+   * @param x Description of the Parameter
+   * @param y Description of the Parameter
+   */
+  public void mouseDown(MouseEvent e, int x, int y) {
+    setView((DrawingView) e.getSource());
+    Figure pressedFigure = drawing().findFigureInside(x, y);
+    TextHolder textHolder = null;
+    if (pressedFigure != null) {
+      textHolder = pressedFigure.getTextHolder();
+    }
 
-			if (getCreatedFigure() != null && getCreatedFigure().isEmpty()) {
-				drawing().remove(getAddedFigure());
-				// nothing to undo
-				setUndoActivity(null);
-			}
-			else {
-//				// use undo activity from paste command...
-//				setUndoActivity(createUndoActivity());
-//
-//				// put created figure into a figure enumeration
-//				getUndoActivity().setAffectedFigures(new SingleFigureEnumerator(getAddedFigure()));
-			}
-			setTypingTarget(null);
-			setCreatedFigure(null);
-			setEditedFigure(null);
-			setAddedFigure(null);
-			editor().toolDone();
-		}
-		else {
-			super.mouseDown(e, x, y);
-		}
-	}
+    if ((textHolder != null) && (textHolder.acceptsTyping())) {
+      beginEdit(textHolder, pressedFigure);
+      return;
+    }
+    if (getTypingTarget() != null) {
+      endEdit();
 
-	/**
-	 * Drags to set the initial text area display box
-	 *
-	 * @param e  Description of the Parameter
-	 * @param x  Description of the Parameter
-	 * @param y  Description of the Parameter
-	 */
-	public void mouseDrag(MouseEvent e, int x, int y) {
-		// if not creating just ignore
-		if (getCreatedFigure() == null) {
-			return;
-		}
-		super.mouseDrag(e, x, y);
-	}
+      if (getCreatedFigure() != null && getCreatedFigure().isEmpty()) {
+        drawing().remove(getAddedFigure());
+        // nothing to undo
+        setUndoActivity(null);
+      } else {
+        //				// use undo activity from paste command...
+        //				setUndoActivity(createUndoActivity());
+        //
+        //				// put created figure into a figure enumeration
+        //				getUndoActivity().setAffectedFigures(new SingleFigureEnumerator(getAddedFigure()));
+      }
+      setTypingTarget(null);
+      setCreatedFigure(null);
+      setEditedFigure(null);
+      setAddedFigure(null);
+      editor().toolDone();
+    } else {
+      super.mouseDown(e, x, y);
+    }
+  }
 
-	/**
-	 * If creating a figure it ends the creation process and calls the editor
-	 *
-	 * @param e  Description of the Parameter
-	 * @param x  Description of the Parameter
-	 * @param y  Description of the Parameter
-	 */
-	public void mouseUp(MouseEvent e, int x, int y) {
-		// if not creating just ignore
-		if (getCreatedFigure() == null) {
-			return;
-		}
+  /**
+   * Drags to set the initial text area display box
+   *
+   * @param e Description of the Parameter
+   * @param x Description of the Parameter
+   * @param y Description of the Parameter
+   */
+  public void mouseDrag(MouseEvent e, int x, int y) {
+    // if not creating just ignore
+    if (getCreatedFigure() == null) {
+      return;
+    }
+    super.mouseDrag(e, x, y);
+  }
 
-		// update view so the created figure is drawn before the floating text
-		// figure is overlaid. (Note, fDamage should be null in StandardDrawingView
-		// when the overlay figure is drawn because a JTextField cannot be scrolled)
-		view().checkDamage();
-		TextHolder textHolder = (TextHolder)getCreatedFigure();
-		if (textHolder.acceptsTyping()) {
-			beginEdit(textHolder, getCreatedFigure());
-		}
-		else {
-			editor().toolDone();
-		}
-	}
+  /**
+   * If creating a figure it ends the creation process and calls the editor
+   *
+   * @param e Description of the Parameter
+   * @param x Description of the Parameter
+   * @param y Description of the Parameter
+   */
+  public void mouseUp(MouseEvent e, int x, int y) {
+    // if not creating just ignore
+    if (getCreatedFigure() == null) {
+      return;
+    }
 
-	/**
-	 * Terminates the editing of a text figure.
-	 */
-	public void deactivate() {
-		endEdit();
-		super.deactivate();
-	}
+    // update view so the created figure is drawn before the floating text
+    // figure is overlaid. (Note, fDamage should be null in StandardDrawingView
+    // when the overlay figure is drawn because a JTextField cannot be scrolled)
+    view().checkDamage();
+    TextHolder textHolder = (TextHolder) getCreatedFigure();
+    if (textHolder.acceptsTyping()) {
+      beginEdit(textHolder, getCreatedFigure());
+    } else {
+      editor().toolDone();
+    }
+  }
 
-	/**
-	 * Activates the figure's editor
-	 */
-	public void activate() {
-		super.activate();
-		getActiveView().clearSelection();
-	}
+  /** Terminates the editing of a text figure. */
+  public void deactivate() {
+    endEdit();
+    super.deactivate();
+  }
 
-	/**
-	 * Test whether the text tool is currently activated and is displaying
-	 * a overlay TextFigure for accepting input.
-	 *
-	 * @return   true, if the text tool has a accepting target TextFigure for its input, false otherwise
-	 */
-	public boolean isActivated() {
-		return getTypingTarget() != null;
-	}
+  /** Activates the figure's editor */
+  public void activate() {
+    super.activate();
+    getActiveView().clearSelection();
+  }
 
-	/**
-	 * Begins editing the figure's text
-	 *
-	 * @param figure          the typing target
-	 * @param selectedFigure  the edited figure
-	 */
-	protected void beginEdit(TextHolder figure, Figure selectedFigure) {
-		if (fTextField == null) {
-			fTextField = new FloatingTextArea();
-		}
+  /**
+   * Test whether the text tool is currently activated and is displaying a overlay TextFigure for
+   * accepting input.
+   *
+   * @return true, if the text tool has a accepting target TextFigure for its input, false otherwise
+   */
+  public boolean isActivated() {
+    return getTypingTarget() != null;
+  }
 
-		if (figure != getTypingTarget() && getTypingTarget() != null) {
-			endEdit();
-		}
+  /**
+   * Begins editing the figure's text
+   *
+   * @param figure the typing target
+   * @param selectedFigure the edited figure
+   */
+  protected void beginEdit(TextHolder figure, Figure selectedFigure) {
+    if (fTextField == null) {
+      fTextField = new FloatingTextArea();
+    }
 
-		fTextField.createOverlay((Container)view(), getFont(figure));
-		fTextField.setBounds(fieldBounds(figure), figure.getText());
+    if (figure != getTypingTarget() && getTypingTarget() != null) {
+      endEdit();
+    }
 
-		setTypingTarget(figure);
-		setEditedFigure(selectedFigure);
-		setUndoActivity(createUndoActivity());
-	}
+    fTextField.createOverlay((Container) view(), getFont(figure));
+    fTextField.setBounds(fieldBounds(figure), figure.getText());
 
-	/**
-	 * Gets the font to be used for editing the figure
-	 *
-	 * @param figure  the figure
-	 * @return        The font
-	 */
-	protected Font getFont(TextHolder figure) {
-		return figure.getFont();
-	}
+    setTypingTarget(figure);
+    setEditedFigure(selectedFigure);
+    setUndoActivity(createUndoActivity());
+  }
 
-	/** Ends editing of the figure's text */
-	protected void endEdit() {
-		if ((getTypingTarget() != null) && (fTextField != null)) {
-			if (fTextField.getText().length() > 0) {
-				getTypingTarget().setText(fTextField.getText());
-				// put created figure into a figure enumeration
-				getUndoActivity().setAffectedFigures(
-						new SingleFigureEnumerator(getEditedFigure()));
-				((TextAreaTool.UndoActivity)getUndoActivity()).setBackupText(
-						getTypingTarget().getText());
-			}
-			else {
-				drawing().orphan(getAddedFigure());
-				// nothing to undo
-//	            setUndoActivity(null);
-			}
+  /**
+   * Gets the font to be used for editing the figure
+   *
+   * @param figure the figure
+   * @return The font
+   */
+  protected Font getFont(TextHolder figure) {
+    return figure.getFont();
+  }
 
-			fTextField.endOverlay();
-			fTextField = null;
-//			view().checkDamage();
-		}
-	}
+  /** Ends editing of the figure's text */
+  protected void endEdit() {
+    if ((getTypingTarget() != null) && (fTextField != null)) {
+      if (fTextField.getText().length() > 0) {
+        getTypingTarget().setText(fTextField.getText());
+        // put created figure into a figure enumeration
+        getUndoActivity().setAffectedFigures(new SingleFigureEnumerator(getEditedFigure()));
+        ((TextAreaTool.UndoActivity) getUndoActivity()).setBackupText(getTypingTarget().getText());
+      } else {
+        drawing().orphan(getAddedFigure());
+        // nothing to undo
+        //	            setUndoActivity(null);
+      }
 
-	/**
-	 * Returns the bounds fo the figure
-	 *
-	 * @param figure  the edited figure
-	 * @return        Description of the Return Value
-	 */
-	private Rectangle fieldBounds(TextHolder figure) {
-		return figure.textDisplayBox();
-	}
+      fTextField.endOverlay();
+      fTextField = null;
+      //			view().checkDamage();
+    }
+  }
 
-	/**
-	 * Sets the typingTarget attribute of the TextAreaTool
-	 *
-	 * @param newTypingTarget  The new typingTarget value
-	 */
-	protected void setTypingTarget(TextHolder newTypingTarget) {
-		fTypingTarget = newTypingTarget;
-	}
+  /**
+   * Returns the bounds fo the figure
+   *
+   * @param figure the edited figure
+   * @return Description of the Return Value
+   */
+  private Rectangle fieldBounds(TextHolder figure) {
+    return figure.textDisplayBox();
+  }
 
-	/**
-	 * Gets the editedFigure attribute of the TextAreaTool
-	 *
-	 * @return   The editedFigure value
-	 */
-	protected Figure getEditedFigure() {
-		return fEditedFigure;
-	}
+  /**
+   * Sets the typingTarget attribute of the TextAreaTool
+   *
+   * @param newTypingTarget The new typingTarget value
+   */
+  protected void setTypingTarget(TextHolder newTypingTarget) {
+    fTypingTarget = newTypingTarget;
+  }
 
-	/**
-	 * Sets the editedFigure attribute of the TextAreaTool
-	 *
-	 * @param figure  The new editedFigure value
-	 */
-	protected void setEditedFigure(Figure figure) {
-		fEditedFigure = figure;
-	}
+  /**
+   * Gets the editedFigure attribute of the TextAreaTool
+   *
+   * @return The editedFigure value
+   */
+  protected Figure getEditedFigure() {
+    return fEditedFigure;
+  }
 
-	/**
-	 * Gets the typingTarget attribute of the TextAreaTool
-	 *
-	 * @return   The typingTarget value
-	 */
-	protected TextHolder getTypingTarget() {
-		return fTypingTarget;
-	}
+  /**
+   * Sets the editedFigure attribute of the TextAreaTool
+   *
+   * @param figure The new editedFigure value
+   */
+  protected void setEditedFigure(Figure figure) {
+    fEditedFigure = figure;
+  }
 
-	/**
-	 * Factory method for undo activity
-	 *
-	 * @return   Description of the Return Value
-	 */
-	protected Undoable createUndoActivity() {
-		return new TextAreaTool.UndoActivity(view(), getTypingTarget().getText());
-	}
+  /**
+   * Gets the typingTarget attribute of the TextAreaTool
+   *
+   * @return The typingTarget value
+   */
+  protected TextHolder getTypingTarget() {
+    return fTypingTarget;
+  }
 
-	/**
-	 * Handles undo/redo for text areas
-	 *
-	 * @author    gualo
-	 */
-	public static class UndoActivity extends UndoableAdapter {
-		/** The original text */
-		private String myOriginalText;
-		/** The backup text */
-		private String myBackupText;
+  /**
+   * Factory method for undo activity
+   *
+   * @return Description of the Return Value
+   */
+  protected Undoable createUndoActivity() {
+    return new TextAreaTool.UndoActivity(view(), getTypingTarget().getText());
+  }
 
-		/**
-		 * Constructor for the UndoActivity object
-		 *
-		 * @param newDrawingView   Description of the Parameter
-		 * @param newOriginalText  Description of the Parameter
-		 */
-		public UndoActivity(DrawingView newDrawingView, String newOriginalText) {
-			super(newDrawingView);
-			setOriginalText(newOriginalText);
-			setUndoable(true);
-			setRedoable(true);
-		}
+  /**
+   * Handles undo/redo for text areas
+   *
+   * @author gualo
+   */
+  public static class UndoActivity extends UndoableAdapter {
+    /** The original text */
+    private String myOriginalText;
 
-		/*
-		 *  Undo the activity
-		 *  @return true if the activity could be undone, false otherwise
-		 */
-		/**
-		 * Undo the activity
-		 *
-		 * @return   Description of the Return Value
-		 */
-		public boolean undo() {
-			if (!super.undo()) {
-				return false;
-			}
+    /** The backup text */
+    private String myBackupText;
 
-			getDrawingView().clearSelection();
+    /**
+     * Constructor for the UndoActivity object
+     *
+     * @param newDrawingView Description of the Parameter
+     * @param newOriginalText Description of the Parameter
+     */
+    public UndoActivity(DrawingView newDrawingView, String newOriginalText) {
+      super(newDrawingView);
+      setOriginalText(newOriginalText);
+      setUndoable(true);
+      setRedoable(true);
+    }
 
-			if (!isValidText(getOriginalText())) {
-				FigureEnumeration fe = getAffectedFigures();
-				while (fe.hasNextFigure()) {
-					getDrawingView().drawing().orphan(fe.nextFigure());
-				}
-			}
-			// add text figure if it has been removed (no backup text)
-			else if (!isValidText(getBackupText())) {
-				FigureEnumeration fe = getAffectedFigures();
-				while (fe.hasNextFigure()) {
-					getDrawingView().add(fe.nextFigure());
-				}
-				setText(getOriginalText());
-			}
-			else {
-				setText(getOriginalText());
-			}
+    /*
+     *  Undo the activity
+     *  @return true if the activity could be undone, false otherwise
+     */
+    /**
+     * Undo the activity
+     *
+     * @return Description of the Return Value
+     */
+    public boolean undo() {
+      if (!super.undo()) {
+        return false;
+      }
 
-			return true;
-		}
+      getDrawingView().clearSelection();
 
-		/*
-		 *  Redo the activity
-		 *  @return true if the activity could be redone, false otherwise
-		 */
-		/**
-		 * Redo the activity
-		 *
-		 * @return   Description of the Return Value
-		 */
-		public boolean redo() {
-			if (!super.redo()) {
-				return false;
-			}
+      if (!isValidText(getOriginalText())) {
+        FigureEnumeration fe = getAffectedFigures();
+        while (fe.hasNextFigure()) {
+          getDrawingView().drawing().orphan(fe.nextFigure());
+        }
+      }
+      // add text figure if it has been removed (no backup text)
+      else if (!isValidText(getBackupText())) {
+        FigureEnumeration fe = getAffectedFigures();
+        while (fe.hasNextFigure()) {
+          getDrawingView().add(fe.nextFigure());
+        }
+        setText(getOriginalText());
+      } else {
+        setText(getOriginalText());
+      }
 
-			getDrawingView().clearSelection();
+      return true;
+    }
 
-			// the text figure did exist but was remove
-			if (!isValidText(getBackupText())) {
-				FigureEnumeration fe = getAffectedFigures();
-				while (fe.hasNextFigure()) {
-					getDrawingView().drawing().orphan(fe.nextFigure());
-				}
-			}
-			// the text figure didn't exist before
-			else if (!isValidText(getOriginalText())) {
-				FigureEnumeration fe = getAffectedFigures();
-				while (fe.hasNextFigure()) {
-					getDrawingView().drawing().add(fe.nextFigure());
-					setText(getBackupText());
-				}
-			}
-			else {
-				setText(getBackupText());
-			}
+    /*
+     *  Redo the activity
+     *  @return true if the activity could be redone, false otherwise
+     */
+    /**
+     * Redo the activity
+     *
+     * @return Description of the Return Value
+     */
+    public boolean redo() {
+      if (!super.redo()) {
+        return false;
+      }
 
-			return true;
-		}
+      getDrawingView().clearSelection();
 
-		/**
-		 * Validates the text in the undo activity
-		 *
-		 * @param toBeChecked  Description of the Parameter
-		 * @return             The validText value
-		 */
-		protected boolean isValidText(String toBeChecked) {
-			return ((toBeChecked != null) && (toBeChecked.length() > 0));
-		}
+      // the text figure did exist but was remove
+      if (!isValidText(getBackupText())) {
+        FigureEnumeration fe = getAffectedFigures();
+        while (fe.hasNextFigure()) {
+          getDrawingView().drawing().orphan(fe.nextFigure());
+        }
+      }
+      // the text figure didn't exist before
+      else if (!isValidText(getOriginalText())) {
+        FigureEnumeration fe = getAffectedFigures();
+        while (fe.hasNextFigure()) {
+          getDrawingView().drawing().add(fe.nextFigure());
+          setText(getBackupText());
+        }
+      } else {
+        setText(getBackupText());
+      }
 
-		/**
-		 * Sets the text attribute of the UndoActivity
-		 *
-		 * @param newText  The new text value
-		 */
-		protected void setText(String newText) {
-			FigureEnumeration fe = getAffectedFigures();
-			while (fe.hasNextFigure()) {
-				Figure currentFigure = fe.nextFigure();
-				if (currentFigure.getTextHolder() != null) {
-					currentFigure.getTextHolder().setText(newText);
-				}
-			}
-		}
+      return true;
+    }
 
-		/**
-		 * Sets the backupText attribute of the UndoActivity
-		 *
-		 * @param newBackupText  The new backupText value
-		 */
-		public void setBackupText(String newBackupText) {
-			myBackupText = newBackupText;
-		}
+    /**
+     * Validates the text in the undo activity
+     *
+     * @param toBeChecked Description of the Parameter
+     * @return The validText value
+     */
+    protected boolean isValidText(String toBeChecked) {
+      return ((toBeChecked != null) && (toBeChecked.length() > 0));
+    }
 
-		/**
-		 * Gets the backupText attribute of the UndoActivity
-		 *
-		 * @return   The backupText value
-		 */
-		public String getBackupText() {
-			return myBackupText;
-		}
+    /**
+     * Sets the text attribute of the UndoActivity
+     *
+     * @param newText The new text value
+     */
+    protected void setText(String newText) {
+      FigureEnumeration fe = getAffectedFigures();
+      while (fe.hasNextFigure()) {
+        Figure currentFigure = fe.nextFigure();
+        if (currentFigure.getTextHolder() != null) {
+          currentFigure.getTextHolder().setText(newText);
+        }
+      }
+    }
 
-		/**
-		 * Sets the originalText attribute of the UndoActivity
-		 *
-		 * @param newOriginalText  The new originalText value
-		 */
-		public void setOriginalText(String newOriginalText) {
-			myOriginalText = newOriginalText;
-		}
+    /**
+     * Sets the backupText attribute of the UndoActivity
+     *
+     * @param newBackupText The new backupText value
+     */
+    public void setBackupText(String newBackupText) {
+      myBackupText = newBackupText;
+    }
 
-		/**
-		 * Gets the originalText attribute of the UndoActivity
-		 *
-		 * @return   The originalText value
-		 */
-		public String getOriginalText() {
-			return myOriginalText;
-		}
-	}
+    /**
+     * Gets the backupText attribute of the UndoActivity
+     *
+     * @return The backupText value
+     */
+    public String getBackupText() {
+      return myBackupText;
+    }
+
+    /**
+     * Sets the originalText attribute of the UndoActivity
+     *
+     * @param newOriginalText The new originalText value
+     */
+    public void setOriginalText(String newOriginalText) {
+      myOriginalText = newOriginalText;
+    }
+
+    /**
+     * Gets the originalText attribute of the UndoActivity
+     *
+     * @return The originalText value
+     */
+    public String getOriginalText() {
+      return myOriginalText;
+    }
+  }
 }

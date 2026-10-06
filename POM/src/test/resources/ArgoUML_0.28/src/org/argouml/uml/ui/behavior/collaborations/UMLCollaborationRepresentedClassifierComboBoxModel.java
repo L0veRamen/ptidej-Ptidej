@@ -1,4 +1,5 @@
-// $Id: UMLCollaborationRepresentedClassifierComboBoxModel.java 15837 2008-09-30 23:53:25Z bobtarling $
+// $Id: UMLCollaborationRepresentedClassifierComboBoxModel.java 15837 2008-09-30 23:53:25Z
+// bobtarling $
 // Copyright (c) 2006 The Regents of the University of California. All
 // Rights Reserved. Permission to use, copy, modify, and distribute this
 // software and its documentation without fee, and without a written
@@ -26,7 +27,6 @@ package org.argouml.uml.ui.behavior.collaborations;
 
 import java.util.ArrayList;
 import java.util.Collection;
-
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
 import org.argouml.model.Model;
@@ -34,60 +34,53 @@ import org.argouml.model.UmlChangeEvent;
 import org.argouml.uml.ui.UMLComboBoxModel2;
 
 /**
- * The ComboBox model for the represented classifier 
- * of a collaboration.
- * 
+ * The ComboBox model for the represented classifier of a collaboration.
+ *
  * @author michiel
  */
-class UMLCollaborationRepresentedClassifierComboBoxModel
-    extends  UMLComboBoxModel2  {
-    
-    /**
-     * Constructor for UMLCollaborationRepresentedClassifierComboBoxModel.
-     */
-    public UMLCollaborationRepresentedClassifierComboBoxModel() {
-        super("representedClassifier", true);
-    }
-    
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        Collection classifiers = new ArrayList();
-        Project p = ProjectManager.getManager().getCurrentProject();
-        for (Object model : p.getUserDefinedModelList()) {
-            Collection c = Model.getModelManagementHelper()
-                .getAllModelElementsOfKind(model, 
-                    Model.getMetaTypes().getClassifier());
-            for (Object cls : c) {
-                Collection s = Model.getModelManagementHelper()
-                    .getAllSurroundingNamespaces(cls);
-                if (!s.contains(getTarget())) {
-                    classifiers.add(cls);
-                }
-            }
-        }
-        setElements(classifiers);
-    }
-    
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().isAClassifier(element)
-            && Model.getFacade().getRepresentedClassifier(getTarget()) 
-                == element;
-    }
-    
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
-     */
-    protected Object getSelectedModelElement() {
-        return Model.getFacade().getRepresentedClassifier(getTarget());
-    }
-    
-    public void modelChange(UmlChangeEvent evt) {
-        /* Do nothing by design. */
-    }
-}
+class UMLCollaborationRepresentedClassifierComboBoxModel extends UMLComboBoxModel2 {
 
+  /** Constructor for UMLCollaborationRepresentedClassifierComboBoxModel. */
+  public UMLCollaborationRepresentedClassifierComboBoxModel() {
+    super("representedClassifier", true);
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    Collection classifiers = new ArrayList();
+    Project p = ProjectManager.getManager().getCurrentProject();
+    for (Object model : p.getUserDefinedModelList()) {
+      Collection c =
+          Model.getModelManagementHelper()
+              .getAllModelElementsOfKind(model, Model.getMetaTypes().getClassifier());
+      for (Object cls : c) {
+        Collection s = Model.getModelManagementHelper().getAllSurroundingNamespaces(cls);
+        if (!s.contains(getTarget())) {
+          classifiers.add(cls);
+        }
+      }
+    }
+    setElements(classifiers);
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().isAClassifier(element)
+        && Model.getFacade().getRepresentedClassifier(getTarget()) == element;
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
+   */
+  protected Object getSelectedModelElement() {
+    return Model.getFacade().getRepresentedClassifier(getTarget());
+  }
+
+  public void modelChange(UmlChangeEvent evt) {
+    /* Do nothing by design. */
+  }
+}

@@ -25,24 +25,19 @@
 package org.argouml.application.api;
 
 /**
- * A module interface which identifies an ArgoUML plug-in used
- * as a tab in the about dialog.
+ * A module interface which identifies an ArgoUML plug-in used as a tab in the about dialog.
  *
  * @author Andreas Rueckert
  * @since 0.13.2
  */
 public interface PluggableAboutTab extends Pluggable {
 
+  // Methods
 
-    // Methods
-
-    /**
-     * Returns the about tab panel for the plugin.
-     * @return the provided tab panel.
-     */
-    AboutTabPanel getAboutTabPanel();
-
+  /**
+   * Returns the about tab panel for the plugin.
+   *
+   * @return the provided tab panel.
+   */
+  AboutTabPanel getAboutTabPanel();
 } /* End interface PluggableAboutTab */
-
-
-

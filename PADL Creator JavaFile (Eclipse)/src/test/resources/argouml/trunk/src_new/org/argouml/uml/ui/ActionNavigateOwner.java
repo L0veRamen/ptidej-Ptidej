@@ -22,24 +22,21 @@
 // CALIFORNIA HAS NO OBLIGATIONS TO PROVIDE MAINTENANCE, SUPPORT,
 // UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
-
 package org.argouml.uml.ui;
 
 import org.argouml.model.Model;
 
-
 /**
  * Navigate to the owner.
- * @author mkl
  *
+ * @author mkl
  */
 public class ActionNavigateOwner extends AbstractActionNavigate {
 
-    /**
-     * @see org.argouml.uml.ui.AbstractActionNavigate#navigateTo(java.lang.Object)
-     */
-    protected Object navigateTo(Object source) {
-        return Model.getFacade().getOwner(source);
-    }
-
+  /**
+   * @see org.argouml.uml.ui.AbstractActionNavigate#navigateTo(java.lang.Object)
+   */
+  protected Object navigateTo(Object source) {
+    return Model.getFacade().getOwner(source);
+  }
 }

@@ -31,36 +31,35 @@ import org.argouml.uml.notation.OperationNotation;
  */
 public class OperationNotationUml extends OperationNotation {
 
-    /**
-     * The constructor.
-     *
-     * @param operation the operation that is represented
-     */
-    public OperationNotationUml(Object operation) {
-        super(operation);
-    }
+  /**
+   * The constructor.
+   *
+   * @param operation the operation that is represented
+   */
+  public OperationNotationUml(Object operation) {
+    super(operation);
+  }
 
-    /**
-     * @see org.argouml.notation.NotationProvider4#parse(java.lang.String)
-     */
-    public String parse(String text) {
-        // TODO: Auto-generated method stub
-        return null;
-    }
+  /**
+   * @see org.argouml.notation.NotationProvider4#parse(java.lang.String)
+   */
+  public String parse(String text) {
+    // TODO: Auto-generated method stub
+    return null;
+  }
 
-    /**
-     * @see org.argouml.notation.NotationProvider4#getParsingHelp()
-     */
-    public String getParsingHelp() {
-        return "parsing.help.operation";
-    }
+  /**
+   * @see org.argouml.notation.NotationProvider4#getParsingHelp()
+   */
+  public String getParsingHelp() {
+    return "parsing.help.operation";
+  }
 
-    /**
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-        // TODO: Auto-generated method stub
-        return super.toString();
-    }
-
+  /**
+   * @see java.lang.Object#toString()
+   */
+  public String toString() {
+    // TODO: Auto-generated method stub
+    return super.toString();
+  }
 }

@@ -26,19 +26,19 @@ package org.argouml.model;
 
 /**
  * The different ScopeKinds.
- * 
- * @deprecated for 0.25.4 by tfmorris. This enumeration has been removed from
- *             UML 2. Use the getter for the isStatic attribute.
+ *
+ * @deprecated for 0.25.4 by tfmorris. This enumeration has been removed from UML 2. Use the getter
+ *     for the isStatic attribute.
  */
 @Deprecated
 public interface ScopeKind {
-    /**
-     * @return Returns the Classifier ScopeKind.
-     */
-    Object getClassifier();
+  /**
+   * @return Returns the Classifier ScopeKind.
+   */
+  Object getClassifier();
 
-    /**
-     * @return Returns the Instance ScopeKind.
-     */
-    Object getInstance();
+  /**
+   * @return Returns the Instance ScopeKind.
+   */
+  Object getInstance();
 }

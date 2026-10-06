@@ -26,9 +26,7 @@ package org.argouml.language.ui;
 
 import java.awt.Dimension;
 import java.util.Iterator;
-
 import javax.swing.JComboBox;
-
 import org.apache.log4j.Logger;
 import org.argouml.application.events.ArgoEventPump;
 import org.argouml.application.events.ArgoEventTypes;
@@ -39,75 +37,72 @@ import org.argouml.uml.generator.Language;
 
 /**
  * This class provides a self-updating language combo box.
+ *
  * @author Daniele Tamino
  */
-public class LanguageComboBox
-    extends JComboBox
-    implements ArgoGeneratorEventListener {
+public class LanguageComboBox extends JComboBox implements ArgoGeneratorEventListener {
 
-    /** logger */
-    private static final Logger LOG = Logger.getLogger(LanguageComboBox.class);
+  /** logger */
+  private static final Logger LOG = Logger.getLogger(LanguageComboBox.class);
 
-    /**
-     * The constructor.
-     */
-    public LanguageComboBox() {
-        super();
-        setEditable(false);
-        setMaximumRowCount(6);
+  /** The constructor. */
+  public LanguageComboBox() {
+    super();
+    setEditable(false);
+    setMaximumRowCount(6);
 
-        Dimension d = getPreferredSize();
-        d.width = 200;
-        setMaximumSize(d);
+    Dimension d = getPreferredSize();
+    d.width = 200;
+    setMaximumSize(d);
 
-        ArgoEventPump.addListener(ArgoEventTypes.ANY_GENERATOR_EVENT, this);
-        refresh();
+    ArgoEventPump.addListener(ArgoEventTypes.ANY_GENERATOR_EVENT, this);
+    refresh();
+  }
+
+  /**
+   * @see java.lang.Object#finalize()
+   */
+  protected void finalize() {
+    ArgoEventPump.removeListener(this);
+  }
+
+  /** Refresh the combobox contents. */
+  public void refresh() {
+    removeAllItems();
+    Iterator iterator = GeneratorManager.getInstance().getLanguages().iterator();
+    while (iterator.hasNext()) {
+      try {
+        Language ll = (Language) iterator.next();
+        addItem(ll);
+      } catch (Exception e) {
+        LOG.error("Unexpected exception", e);
+      }
     }
+    setVisible(true);
+    invalidate();
+  }
 
-    /**
-     * @see java.lang.Object#finalize()
-     */
-    protected void finalize() {
-        ArgoEventPump.removeListener(this);
-    }
+  /**
+   * @see
+   *     org.argouml.application.events.ArgoGeneratorEventListener#generatorChanged(org.argouml.application.events.ArgoGeneratorEvent)
+   */
+  public void generatorChanged(ArgoGeneratorEvent e) {
+    refresh();
+  }
 
-    /**
-     * Refresh the combobox contents.
-     */
-    public void refresh() {
-        removeAllItems();
-        Iterator iterator =
-            GeneratorManager.getInstance().getLanguages().iterator();
-        while (iterator.hasNext()) {
-            try {
-                Language ll = (Language) iterator.next();
-                addItem(ll);
-            } catch (Exception e) {
-                LOG.error("Unexpected exception", e);
-            }
-        }
-        setVisible(true);
-        invalidate();
-    }
+  /**
+   * @see
+   *     org.argouml.application.events.ArgoGeneratorEventListener#generatorAdded(org.argouml.application.events.ArgoGeneratorEvent)
+   */
+  public void generatorAdded(ArgoGeneratorEvent e) {
+    refresh();
+  }
 
-    /**
-     * @see org.argouml.application.events.ArgoGeneratorEventListener#generatorChanged(org.argouml.application.events.ArgoGeneratorEvent)
-     */
-    public void generatorChanged(ArgoGeneratorEvent e) {
-        refresh();
-    }
-
-    /**
-     * @see org.argouml.application.events.ArgoGeneratorEventListener#generatorAdded(org.argouml.application.events.ArgoGeneratorEvent)
-     */
-    public void generatorAdded(ArgoGeneratorEvent e) {
-        refresh();
-    }
-
-    /**
-     * @see org.argouml.application.events.ArgoGeneratorEventListener#generatorRemoved(org.argouml.application.events.ArgoGeneratorEvent)
-     */
-    public void generatorRemoved(ArgoGeneratorEvent e) {
-        refresh();
-    }
+  /**
+   * @see
+   *     org.argouml.application.events.ArgoGeneratorEventListener#generatorRemoved(org.argouml.application.events.ArgoGeneratorEvent)
+   */
+  public void generatorRemoved(ArgoGeneratorEvent e) {
+    refresh();
+  }
 }

@@ -25,58 +25,50 @@
 package org.argouml.uml.ui.behavior.activity_graphs;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLAction;
 import org.argouml.uml.ui.UMLComboBox2;
 
 /**
-* @since Aug 11, 2004
-* @author mvw
-* @stereotype singleton
-*/
+ * @since Aug 11, 2004
+ * @author mvw
+ * @stereotype singleton
+ */
 public class ActionSetObjectFlowStateClassifier extends UMLAction {
 
-    /**
-     * <code>SINGLETON</code>.
-     */
-    public static final ActionSetObjectFlowStateClassifier SINGLETON =
-        new ActionSetObjectFlowStateClassifier();
+  /** <code>SINGLETON</code>. */
+  public static final ActionSetObjectFlowStateClassifier SINGLETON =
+      new ActionSetObjectFlowStateClassifier();
 
-    /**
-     * Constructor for ActionSetObjectFlowStateClassifier.
-     */
-    protected ActionSetObjectFlowStateClassifier() {
-        super(Translator.localize("Set"), false, NO_ICON);
+  /** Constructor for ActionSetObjectFlowStateClassifier. */
+  protected ActionSetObjectFlowStateClassifier() {
+    super(Translator.localize("Set"), false, NO_ICON);
+  }
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    Object source = e.getSource(); // the source UI element of the event
+    Object oldClassifier = null;
+    Object newClassifier = null;
+    Object m = null;
+    if (source instanceof UMLComboBox2) {
+      UMLComboBox2 box = (UMLComboBox2) source;
+      Object ofs = box.getTarget();
+      if (Model.getFacade().isAObjectFlowState(ofs)) {
+        oldClassifier = Model.getFacade().getType(ofs);
+        m = ofs;
+      }
+      Object cl = box.getSelectedItem();
+      if (Model.getFacade().isAClassifier(cl)) {
+        newClassifier = cl;
+      }
     }
-
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        Object source = e.getSource(); // the source UI element of the event
-        Object oldClassifier = null;
-        Object newClassifier = null;
-        Object m = null;
-        if (source instanceof UMLComboBox2) {
-            UMLComboBox2 box = (UMLComboBox2) source;
-            Object ofs = box.getTarget();
-            if (Model.getFacade().isAObjectFlowState(ofs)) {
-                oldClassifier = Model.getFacade().getType(ofs);
-                m = ofs;
-            }
-            Object cl = box.getSelectedItem();
-            if (Model.getFacade().isAClassifier(cl)) {
-                newClassifier = cl;
-            }
-        }
-        if (newClassifier != oldClassifier
-                && m != null
-                && newClassifier != null) {
-            Model.getCoreHelper().setType(m, newClassifier);
-            super.actionPerformed(e);
-        }
+    if (newClassifier != oldClassifier && m != null && newClassifier != null) {
+      Model.getCoreHelper().setType(m, newClassifier);
+      super.actionPerformed(e);
     }
-
+  }
 }

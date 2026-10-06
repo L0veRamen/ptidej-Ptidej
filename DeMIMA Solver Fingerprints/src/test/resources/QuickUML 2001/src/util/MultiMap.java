@@ -1,25 +1,19 @@
 /**
+ * Java Diagram Package; An extremely flexible and fast multipurpose diagram component for Swing.
+ * Copyright (C) 2001 Eric Crahen <crahen@cse.buffalo.edu>
  *
-    Java Diagram Package; An extremely flexible and fast multipurpose diagram 
-    component for Swing.
-    Copyright (C) 2001  Eric Crahen <crahen@cse.buffalo.edu>
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
+ * <p>This program is free software; you can redistribute it and/or modify it under the terms of the
+ * GNU General Public License as published by the Free Software Foundation; either version 2 of the
+ * License, or (at your option) any later version.
+ *
+ * <p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * <p>You should have received a copy of the GNU General Public License along with this program; if
+ * not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307 USA
  */
-
 package util;
 
 import java.util.Collection;
@@ -27,13 +21,11 @@ import java.util.Map;
 
 /**
  * @class MultiMap
- *
  * @date 08-20-2001
  * @author Eric Crahen
  * @version 1.0
- *
- * MutliMaps are similar to regular maps except that a MutliMap
- * can have more than one entry mapped from a single key.
+ *     <p>MutliMaps are similar to regular maps except that a MutliMap can have more than one entry
+ *     mapped from a single key.
  */
 public interface MultiMap extends Map {
 
@@ -42,14 +34,12 @@ public interface MultiMap extends Map {
    *
    * @param Object key
    * @param Object value
-   *
    * @return boolean
    */
   public boolean contains(Object key, Object value);
 
   /**
-   * Removes a particular mapping, or all mappings to the given
-   * value if the key is null.
+   * Removes a particular mapping, or all mappings to the given value if the key is null.
    *
    * @param Object key or all keys if null
    * @param Object value
@@ -64,26 +54,23 @@ public interface MultiMap extends Map {
   public void removeAll(Object key);
 
   /**
-   * Store this item in the map, uses an internal object as the key. This 
-   * can be retrieved later using a null key.
+   * Store this item in the map, uses an internal object as the key. This can be retrieved later
+   * using a null key.
    *
    * @param Object
    */
   public void put(Object value);
 
   /**
-   * Create all of the mappings from the specified key to the elements in
-   * the given Collection.
+   * Create all of the mappings from the specified key to the elements in the given Collection.
    *
    * @param Object
    * @param Collection
    */
   public void putAll(Object key, Collection c);
 
-
   /**
-   * Create all of the mappings from the specified key to the elements in
-   * the given Collection.
+   * Create all of the mappings from the specified key to the elements in the given Collection.
    *
    * @param Object
    * @param Object[]
@@ -99,8 +86,7 @@ public interface MultiMap extends Map {
   public Object[] getAll(Object key, Object[] array);
 
   /**
-   * Returns a collection view of the values contained in this map
-   * which map to a certain key.
+   * Returns a collection view of the values contained in this map which map to a certain key.
    *
    * @return Collection
    */
@@ -108,8 +94,7 @@ public interface MultiMap extends Map {
 
   /**
    * @class Entry
-   *
-   * Simple Map.Entry
+   *     <p>Simple Map.Entry
    */
   public static class Entry implements Map.Entry {
 
@@ -140,9 +125,5 @@ public interface MultiMap extends Map {
     public String toString() {
       return "[" + key + "], [" + val + "]";
     }
-
   }
-
- 
-
 }

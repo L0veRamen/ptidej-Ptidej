@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -13,12 +13,12 @@ package ptidej.ui.kernel.builder.test;
 import junit.framework.TestSuite;
 
 public class TestAspectJBuilder extends TestSuite {
-	public static TestSuite suite() {
-		final TestAspectJBuilder suite = new TestAspectJBuilder();
-		suite.setName(TestAspectJBuilder.class.getName());
+  public static TestSuite suite() {
+    final TestAspectJBuilder suite = new TestAspectJBuilder();
+    suite.setName(TestAspectJBuilder.class.getName());
 
-		suite.addTestSuite(SanityTest.class);
+    suite.addTestSuite(SanityTest.class);
 
-		return suite;
-	}
+    return suite;
+  }
 }

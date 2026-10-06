@@ -26,9 +26,7 @@ package org.argouml.uml.ui.behavior.common_behavior;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.Action;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.AbstractActionNavigate;
@@ -38,58 +36,48 @@ import org.argouml.uml.ui.foundation.core.PropPanelModelElement;
 /**
  * A basic property panel for link ends.
  *
- * TODO: uses the associationEnd icon
+ * <p>TODO: uses the associationEnd icon
  *
  * @author mkl
- *
  */
 public class PropPanelLinkEnd extends PropPanelModelElement {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = 666929091194719951L;
+  /** The serial version. */
+  private static final long serialVersionUID = 666929091194719951L;
 
-    /**
-     * Construct a property panel for a Link End.
-     */
-    public PropPanelLinkEnd() {
-        super("label.association-link-end", lookupIcon("AssociationEnd"));
-        addField("label.name", getNameTextField());
+  /** Construct a property panel for a Link End. */
+  public PropPanelLinkEnd() {
+    super("label.association-link-end", lookupIcon("AssociationEnd"));
+    addField("label.name", getNameTextField());
 
-        addSeparator();
+    addSeparator();
 
-        addAction(new ActionNavigateContainerElement());
-        addAction(new ActionNavigateOppositeLinkEnd());
-        addAction(getDeleteAction());
-    }
-
+    addAction(new ActionNavigateContainerElement());
+    addAction(new ActionNavigateOppositeLinkEnd());
+    addAction(getDeleteAction());
+  }
 } /* end class PropPanelLinkEnd */
 
 class ActionNavigateOppositeLinkEnd extends AbstractActionNavigate {
 
-    /**
-     * The constructor.
-     */
-    public ActionNavigateOppositeLinkEnd() {
-        super("button.go-opposite", true);
-        putValue(Action.SMALL_ICON,
-                ResourceLoaderWrapper.lookupIconResource("LinkEnd"));
-    }
+  /** The constructor. */
+  public ActionNavigateOppositeLinkEnd() {
+    super("button.go-opposite", true);
+    putValue(Action.SMALL_ICON, ResourceLoaderWrapper.lookupIconResource("LinkEnd"));
+  }
 
-    /*
-     * @see org.argouml.uml.ui.AbstractActionNavigate#navigateTo(java.lang.Object)
-     */
-    protected Object navigateTo(Object source) {
-        Object link = Model.getFacade().getLink(source);
-        /* The MDR does not return a List, but Collection for getConnections().
-         * This is a bug AFAIK for UML 1.4. */
-        List ends = new ArrayList(Model.getFacade().getConnections(link));
-        int index = ends.indexOf(source);
-        if (ends.size() > index + 1) {
-            return ends.get(index + 1);
-        }
-        return ends.get(0);
+  /*
+   * @see org.argouml.uml.ui.AbstractActionNavigate#navigateTo(java.lang.Object)
+   */
+  protected Object navigateTo(Object source) {
+    Object link = Model.getFacade().getLink(source);
+    /* The MDR does not return a List, but Collection for getConnections().
+     * This is a bug AFAIK for UML 1.4. */
+    List ends = new ArrayList(Model.getFacade().getConnections(link));
+    int index = ends.indexOf(source);
+    if (ends.size() > index + 1) {
+      return ends.get(index + 1);
     }
-
+    return ends.get(0);
+  }
 }

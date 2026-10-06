@@ -25,148 +25,142 @@
 package org.argouml.model;
 
 /**
- * The interface for the factory of Collaboration.<p>
+ * The interface for the factory of Collaboration.
  *
- * Created from the old CollaborationsFactory.
+ * <p>Created from the old CollaborationsFactory.
  */
 public interface CollaborationsFactory {
-    /**
-     * Create an empty but initialized instance of a UML AssociationEndRole.
-     *
-     * @return an initialized UML AssociationEndRole instance.
-     */
-    Object createAssociationEndRole();
+  /**
+   * Create an empty but initialized instance of a UML AssociationEndRole.
+   *
+   * @return an initialized UML AssociationEndRole instance.
+   */
+  Object createAssociationEndRole();
 
-    /**
-     * Create an empty but initialized instance of a UML AssociationRole.
-     *
-     * @return an initialized UML AssociationRole instance.
-     */
-    Object createAssociationRole();
+  /**
+   * Create an empty but initialized instance of a UML AssociationRole.
+   *
+   * @return an initialized UML AssociationRole instance.
+   */
+  Object createAssociationRole();
 
-    /**
-     * Create an empty but initialized instance of a UML ClassifierRole.
-     *
-     * @return an initialized UML ClassifierRole instance.
-     */
-    Object createClassifierRole();
+  /**
+   * Create an empty but initialized instance of a UML ClassifierRole.
+   *
+   * @return an initialized UML ClassifierRole instance.
+   */
+  Object createClassifierRole();
 
-    /**
-     * Create an empty but initialized instance of a UML Collaboration.
-     *
-     * @return an initialized UML Collaboration instance.
-     */
-    Object createCollaboration();
+  /**
+   * Create an empty but initialized instance of a UML Collaboration.
+   *
+   * @return an initialized UML Collaboration instance.
+   */
+  Object createCollaboration();
 
-    /**
-     * Create an empty but initialized instance of a UML Interaction.
-     *
-     * @return an initialized UML Interaction instance.
-     */
-    Object createInteraction();
+  /**
+   * Create an empty but initialized instance of a UML Interaction.
+   *
+   * @return an initialized UML Interaction instance.
+   */
+  Object createInteraction();
 
-    /**
-     * Create an empty but initialized instance of a UML Message.
-     *
-     * @return an initialized UML Message instance.
-     */
-    Object createMessage();
+  /**
+   * Create an empty but initialized instance of a UML Message.
+   *
+   * @return an initialized UML Message instance.
+   */
+  Object createMessage();
 
-    /**
-     * Creates a classifierrole and adds it to the given collaboration.
-     *
-     * @param collaboration the given collaboration
-     * @return the created classifier role
-     */
-    Object buildClassifierRole(Object collaboration);
+  /**
+   * Creates a classifierrole and adds it to the given collaboration.
+   *
+   * @param collaboration the given collaboration
+   * @return the created classifier role
+   */
+  Object buildClassifierRole(Object collaboration);
 
-    /**
-     * Builds a default collaboration not attached to a classifier.
-     *
-     * @param handle the namespace for the collaboration
-     * @return the created collaboration
-     */
-    Object buildCollaboration(Object handle);
+  /**
+   * Builds a default collaboration not attached to a classifier.
+   *
+   * @param handle the namespace for the collaboration
+   * @return the created collaboration
+   */
+  Object buildCollaboration(Object handle);
 
-    /**
-     * Builds a collaboration that is owned by a certain namespace and
-     * represents the given represented element.
-     *
-     * @param namespace the namespace for the collaboration
-     * @param representedElement the represented element
-     * @return the created collaboration
-     */
-    Object buildCollaboration(Object namespace,
-            Object representedElement);
+  /**
+   * Builds a collaboration that is owned by a certain namespace and represents the given
+   * represented element.
+   *
+   * @param namespace the namespace for the collaboration
+   * @param representedElement the represented element
+   * @return the created collaboration
+   */
+  Object buildCollaboration(Object namespace, Object representedElement);
 
-    /**
-     * Builds an interaction belonging to some collaboration.
-     *
-     * @param handle the collaboration that will be the context
-     * for the new interaction
-     * @return the newly build interaction
-     */
-    Object buildInteraction(Object handle);
+  /**
+   * Builds an interaction belonging to some collaboration.
+   *
+   * @param handle the collaboration that will be the context for the new interaction
+   * @return the newly build interaction
+   */
+  Object buildInteraction(Object handle);
 
-    /**
-     * Builds an associationendrole based on some classifierrole.
-     *
-     * @param atype the classifierrole
-     * @return the associationendrole
-     */
-    Object buildAssociationEndRole(Object atype);
+  /**
+   * Builds an associationendrole based on some classifierrole.
+   *
+   * @param atype the classifierrole
+   * @return the associationendrole
+   */
+  Object buildAssociationEndRole(Object atype);
 
-    /**
-     * Builds a binary associationrole on basis of two classifierroles.
-     *
-     * @param from the first classifierrole
-     * @param to the second classifierrole
-     * @return the newly build associationrole
-     */
-    Object buildAssociationRole(Object from, Object to);
+  /**
+   * Builds a binary associationrole on basis of two classifierroles.
+   *
+   * @param from the first classifierrole
+   * @param to the second classifierrole
+   * @return the newly build associationrole
+   */
+  Object buildAssociationRole(Object from, Object to);
 
-    /**
-     * Builds a binary associationrole on basis of two classifierroles,
-     * navigation and aggregation.
-     *
-     * @param from   the first classifierrole
-     * @param agg1   the first aggregationkind
-     * @param to     the second classifierrole
-     * @param agg2   the second aggregationkind
-     * @param unidirectional true if unidirectional
-     * @return the newly build assoc. role
-     */
-    Object buildAssociationRole(Object from,
-            Object agg1, Object to, Object agg2,
-            Boolean unidirectional);
+  /**
+   * Builds a binary associationrole on basis of two classifierroles, navigation and aggregation.
+   *
+   * @param from the first classifierrole
+   * @param agg1 the first aggregationkind
+   * @param to the second classifierrole
+   * @param agg2 the second aggregationkind
+   * @param unidirectional true if unidirectional
+   * @return the newly build assoc. role
+   */
+  Object buildAssociationRole(
+      Object from, Object agg1, Object to, Object agg2, Boolean unidirectional);
 
-    /**
-     * Builds an associationrole based on a given link. The link must
-     * have a source and a destination instance that both have a
-     * classifierrole as classifier.  The classifierroles must have
-     * the same collaboration as owner. This collaboration will be the
-     * new owner of the associationrole.
-     *
-     * @param link a UML Link
-     * @return the newly created association role (an Object)
-     */
-    Object buildAssociationRole(Object link);
+  /**
+   * Builds an associationrole based on a given link. The link must have a source and a destination
+   * instance that both have a classifierrole as classifier. The classifierroles must have the same
+   * collaboration as owner. This collaboration will be the new owner of the associationrole.
+   *
+   * @param link a UML Link
+   * @return the newly created association role (an Object)
+   */
+  Object buildAssociationRole(Object link);
 
-    /**
-     * Builds a message within some collaboration or interaction.
-     *
-     * @param acollab a collaboration or interaction
-     * @param arole an associationrole
-     * @return the newly build message
-     */
-    Object buildMessage(Object acollab, Object arole);
+  /**
+   * Builds a message within some collaboration or interaction.
+   *
+   * @param acollab a collaboration or interaction
+   * @param arole an associationrole
+   * @return the newly build message
+   */
+  Object buildMessage(Object acollab, Object arole);
 
-    /**
-     * Builds an activator for some message.
-     *
-     * @param owner the owner
-     * @param interaction the interaction
-     * @return the newly build message
-     */
-    Object buildActivator(Object owner, Object interaction);
+  /**
+   * Builds an activator for some message.
+   *
+   * @param owner the owner
+   * @param interaction the interaction
+   * @return the newly build message
+   */
+  Object buildActivator(Object owner, Object interaction);
 }

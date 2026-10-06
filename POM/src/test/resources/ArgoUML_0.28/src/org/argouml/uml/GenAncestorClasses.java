@@ -29,41 +29,41 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.argouml.model.Model;
 import org.tigris.gef.util.ChildGenerator;
-/** Utility class to generate the base classes of a class. It
- *  recursively moves up the class hierarchy.  But it does that in a
- *  safe way that will not hang in case of cyclic inheritance.
+
+/**
+ * Utility class to generate the base classes of a class. It recursively moves up the class
+ * hierarchy. But it does that in a safe way that will not hang in case of cyclic inheritance.
  */
 public class GenAncestorClasses implements ChildGenerator {
 
-    /*
-     * @see org.tigris.gef.util.ChildGenerator#gen(java.lang.Object)
-     */
-    public Enumeration gen(Object cls) {
-	Set res = new HashSet();
-	if (Model.getFacade().isAGeneralizableElement(cls)) {
-	    accumulateAncestors(cls, res);
-        }
-	return Collections.enumeration(res);
+  /*
+   * @see org.tigris.gef.util.ChildGenerator#gen(java.lang.Object)
+   */
+  public Enumeration gen(Object cls) {
+    Set res = new HashSet();
+    if (Model.getFacade().isAGeneralizableElement(cls)) {
+      accumulateAncestors(cls, res);
     }
+    return Collections.enumeration(res);
+  }
 
-    /**
-     * @param cls the class (in fact any GeneralizableElement will do)
-     * @param accum the accumulated list of generalizations
-     */
-    public void accumulateAncestors(Object cls, Collection accum) {
-	Collection gens = Model.getFacade().getGeneralizations(cls);
-	if (gens == null) {
-	    return;
-	}
-	for (Object g : gens) {
-	    Object ge = Model.getFacade().getGeneral(g);
-	    if (!accum.contains(ge)) {
-		accum.add(ge);
-		accumulateAncestors(cls, accum);
-	    }
-	}
+  /**
+   * @param cls the class (in fact any GeneralizableElement will do)
+   * @param accum the accumulated list of generalizations
+   */
+  public void accumulateAncestors(Object cls, Collection accum) {
+    Collection gens = Model.getFacade().getGeneralizations(cls);
+    if (gens == null) {
+      return;
     }
+    for (Object g : gens) {
+      Object ge = Model.getFacade().getGeneral(g);
+      if (!accum.contains(ge)) {
+        accum.add(ge);
+        accumulateAncestors(cls, accum);
+      }
+    }
+  }
 }

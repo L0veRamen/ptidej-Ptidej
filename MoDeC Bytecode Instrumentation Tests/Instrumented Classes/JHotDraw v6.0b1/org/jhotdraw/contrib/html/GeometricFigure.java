@@ -11,23 +11,22 @@
 package org.jhotdraw.contrib.html;
 
 import java.awt.Shape;
-
 import org.jhotdraw.framework.Figure;
 
 /**
- * GeometricFigure defines required of figures that can be used as shape providers
- * for other figures. See HTMLTextArea for an example.
+ * GeometricFigure defines required of figures that can be used as shape providers for other
+ * figures. See HTMLTextArea for an example.
  *
- * @author  Eduardo Francos - InContext
+ * @author Eduardo Francos - InContext
  * @created 1 mai 2002
  * @version <$CURRENT_VERSION$>
  */
 public interface GeometricFigure extends Figure {
 
-	/**
-	 * Returns a shape with the figures area outline
-	 *
-	 * @return   The shape
-	 */
-	public Shape getShape();
+  /**
+   * Returns a shape with the figures area outline
+   *
+   * @return The shape
+   */
+  public Shape getShape();
 }

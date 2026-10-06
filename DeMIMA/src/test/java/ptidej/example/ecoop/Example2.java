@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -16,21 +16,27 @@ import java.util.List;
 /**
  * @author Yann-Gaël Guéhéneuc
  */
+@SuppressWarnings(
+    "unchecked") // Analysis fixture: kept raw on purpose so that its analysed structure does not
+                 // change
 public class Example2 {
-	public static void main(final String[] args) {
-		final Example2 example2 = new Example2();
-		example2.addA(new A());
-		// ...
-	}
+  public static void main(final String[] args) {
+    final Example2 example2 = new Example2();
+    example2.addA(new A());
+    // ...
+  }
 
-	private final List listOfAs = new ArrayList();
-	public void addA(final A a) {
-		this.listOfAs.add(a);
-	}
-	public A getA(final int index) {
-		return (A) this.listOfAs.remove(index);
-	}
-	public void removeA(final A a) {
-		this.listOfAs.remove(a);
-	}
+  private final List listOfAs = new ArrayList();
+
+  public void addA(final A a) {
+    this.listOfAs.add(a);
+  }
+
+  public A getA(final int index) {
+    return (A) this.listOfAs.remove(index);
+  }
+
+  public void removeA(final A a) {
+    this.listOfAs.remove(a);
+  }
 }

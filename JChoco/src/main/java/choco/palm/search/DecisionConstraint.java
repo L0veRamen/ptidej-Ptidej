@@ -13,15 +13,9 @@ package choco.palm.search;
 import choco.Constraint;
 import choco.palm.PalmConstraint;
 
-/**
- * An enumeration constraint like instantiation.
- */
-
+/** An enumeration constraint like instantiation. */
 public interface DecisionConstraint extends PalmConstraint {
 
-	/**
-	 * Returns the negation of this enumeration constraint.
-	 */
-
-	public Constraint negate();
+  /** Returns the negation of this enumeration constraint. */
+  public Constraint negate();
 }

@@ -25,55 +25,50 @@
 package org.argouml.uml.diagram.state.ui;
 
 import java.util.Hashtable;
-
 import org.argouml.model.Model;
 import org.argouml.ui.CmdCreateNode;
 
 /**
  * An Action to create a Pseudostate of some kind.
  *
- *
  * @author jrobbins
  */
 public class ActionCreatePseudostate extends CmdCreateNode {
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    /**
-     * Construct a new Cmd with the given classes for the NetNode
-     * and its FigNode.
-     *
-     * @param kind the pseudostatekind
-     * @param name the name of this kind of pseudostate
-     */
-    public ActionCreatePseudostate(Object kind, String name) {
-	super(new Hashtable(), name);
+  /**
+   * Construct a new Cmd with the given classes for the NetNode and its FigNode.
+   *
+   * @param kind the pseudostatekind
+   * @param name the name of this kind of pseudostate
+   */
+  public ActionCreatePseudostate(Object kind, String name) {
+    super(new Hashtable(), name);
 
-        if (!Model.getFacade().isAPseudostateKind(kind)) {
-            throw new IllegalArgumentException();
-	}
-
-	setArg("className", Model.getMetaTypes().getPseudostate());
-	setArg("kind", kind);
+    if (!Model.getFacade().isAPseudostateKind(kind)) {
+      throw new IllegalArgumentException();
     }
 
-    ////////////////////////////////////////////////////////////////
-    // Cmd API
+    setArg("className", Model.getMetaTypes().getPseudostate());
+    setArg("kind", kind);
+  }
 
-    /**
-     * Actually instanciate the NetNode and FigNode objects and
-     * set the global next mode to ModePlace
-     * TODO: should call super, reduce code volume!
-     *
-     * @see org.tigris.gef.graph.GraphFactory#makeNode()
-     */
-    public Object makeNode() {
-	Object newNode = super.makeNode();
-	Object kind = _args.get("kind");
-	Model.getCoreHelper().setKind(newNode, kind);
+  ////////////////////////////////////////////////////////////////
+  // Cmd API
 
-	return newNode;
-    }
+  /**
+   * Actually instanciate the NetNode and FigNode objects and set the global next mode to ModePlace
+   * TODO: should call super, reduce code volume!
+   *
+   * @see org.tigris.gef.graph.GraphFactory#makeNode()
+   */
+  public Object makeNode() {
+    Object newNode = super.makeNode();
+    Object kind = _args.get("kind");
+    Model.getCoreHelper().setKind(newNode, kind);
 
+    return newNode;
+  }
 } /* end class ActionCreatePseudostate */

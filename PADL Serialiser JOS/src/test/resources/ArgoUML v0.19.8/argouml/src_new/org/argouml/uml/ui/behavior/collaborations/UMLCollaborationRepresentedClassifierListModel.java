@@ -28,35 +28,31 @@ import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
 /**
- * The list of classifiers represented by some collaboration as shown on the
- * collaboration proppanel
+ * The list of classifiers represented by some collaboration as shown on the collaboration proppanel
+ *
  * @since Oct 2, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class UMLCollaborationRepresentedClassifierListModel
-    extends UMLModelElementListModel2 {
+public class UMLCollaborationRepresentedClassifierListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLCollaborationRepresentedClassifierListModel.
-     */
-    public UMLCollaborationRepresentedClassifierListModel() {
-        super("representedClassifier");
-    }
+  /** Constructor for UMLCollaborationRepresentedClassifierListModel. */
+  public UMLCollaborationRepresentedClassifierListModel() {
+    super("representedClassifier");
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        removeAllElements();
-        addElement(Model.getFacade().getRepresentedClassifier(getTarget()));
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    removeAllElements();
+    addElement(Model.getFacade().getRepresentedClassifier(getTarget()));
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ elem) {
-        return Model.getFacade().isAClassifier(elem)
-            && Model.getFacade().getRepresentedClassifier(getTarget()) == elem;
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ elem) {
+    return Model.getFacade().isAClassifier(elem)
+        && Model.getFacade().getRepresentedClassifier(getTarget()) == elem;
+  }
 }

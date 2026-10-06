@@ -27,35 +27,29 @@ package org.argouml.uml.ui.foundation.core;
 import javax.swing.ImageIcon;
 
 /**
- * Added this class to give as much information to the user as possible
- * if the lookup mechanism for proppanels fails.
+ * Added this class to give as much information to the user as possible if the lookup mechanism for
+ * proppanels fails.
  *
  * @since Oct 12, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
 public class PropPanelRelationship extends PropPanelModelElement {
 
-    /**
-     * Construct a property panel for a Relationship with the given name and
-     * icon.
-     * 
-     * @param name The name of the panel to be shown at the top.
-     * @param icon The icon to be shown next to the name.
-     */
-    public PropPanelRelationship(String name, ImageIcon icon) {
-        super(name, icon);
-    }
-    
+  /**
+   * Construct a property panel for a Relationship with the given name and icon.
+   *
+   * @param name The name of the panel to be shown at the top.
+   * @param icon The icon to be shown next to the name.
+   */
+  public PropPanelRelationship(String name, ImageIcon icon) {
+    super(name, icon);
+  }
 
-    /**
-     * Constructor for PropPanelRelationship.
-     */
-    public PropPanelRelationship() {
-        super("label.relationship", lookupIcon("Relationship"));
-    }
+  /** Constructor for PropPanelRelationship. */
+  public PropPanelRelationship() {
+    super("label.relationship", lookupIcon("Relationship"));
+  }
 
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -1610200799419501588L;
+  /** The UID. */
+  private static final long serialVersionUID = -1610200799419501588L;
 }

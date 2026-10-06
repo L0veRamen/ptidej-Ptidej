@@ -27,7 +27,6 @@ package org.argouml.uml.ui.foundation.core;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.ui.targetmanager.TargetEvent;
@@ -47,27 +46,21 @@ import org.argouml.util.ConfigLoader;
  */
 public class PropPanelEnumerationLiteral extends PropPanelModelElement {
 
-    /**
-     * The constructor.
-     *
-     */
-    public PropPanelEnumerationLiteral() {
-        super("EnumerationLiteral", ConfigLoader.getTabPropsOrientation());
+  /** The constructor. */
+  public PropPanelEnumerationLiteral() {
+    super("EnumerationLiteral", ConfigLoader.getTabPropsOrientation());
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.stereotype"),
-                getStereotypeSelector());
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.stereotype"), getStereotypeSelector());
 
-        JList lst = new OneRowLinkedList(new EnumerationListModel());
-        addField(Translator.localize("label.enumeration"),
-                new JScrollPane(lst));
+    JList lst = new OneRowLinkedList(new EnumerationListModel());
+    addField(Translator.localize("label.enumeration"), new JScrollPane(lst));
 
-        addAction(new ActionNavigateContainerElement());
-        addAction(new ActionAddLiteral());
-        addAction(new ActionNewStereotype());
-        addAction(new ActionDeleteSingleModelElement());
-    }
+    addAction(new ActionNavigateContainerElement());
+    addAction(new ActionAddLiteral());
+    addAction(new ActionNewStereotype());
+    addAction(new ActionDeleteSingleModelElement());
+  }
 } /* end class PropPanelAttribute */
 
 /**
@@ -75,44 +68,40 @@ public class PropPanelEnumerationLiteral extends PropPanelModelElement {
  *
  * @author mvw@tigris.org
  */
-class EnumerationListModel
-    extends DefaultListModel
-    implements TargetListener {
+class EnumerationListModel extends DefaultListModel implements TargetListener {
 
-    /**
-     * Constructor for UMLCommentAnnotatedElementListModel.
-     */
-    public EnumerationListModel() {
-        super();
-        setTarget(TargetManager.getInstance().getModelTarget());
-        TargetManager.getInstance().addTargetListener(this);
-    }
+  /** Constructor for UMLCommentAnnotatedElementListModel. */
+  public EnumerationListModel() {
+    super();
+    setTarget(TargetManager.getInstance().getModelTarget());
+    TargetManager.getInstance().addTargetListener(this);
+  }
 
-    /**
-     * @see TargetListener#targetAdded(TargetEvent)
-     */
-    public void targetAdded(TargetEvent e) {
-        setTarget(e.getNewTarget());
-    }
+  /**
+   * @see TargetListener#targetAdded(TargetEvent)
+   */
+  public void targetAdded(TargetEvent e) {
+    setTarget(e.getNewTarget());
+  }
 
-    /**
-     * @see TargetListener#targetRemoved(TargetEvent)
-     */
-    public void targetRemoved(TargetEvent e) {
-        setTarget(e.getNewTarget());
-    }
+  /**
+   * @see TargetListener#targetRemoved(TargetEvent)
+   */
+  public void targetRemoved(TargetEvent e) {
+    setTarget(e.getNewTarget());
+  }
 
-    /**
-     * @see TargetListener#targetSet(TargetEvent)
-     */
-    public void targetSet(TargetEvent e) {
-        setTarget(e.getNewTarget());
-    }
+  /**
+   * @see TargetListener#targetSet(TargetEvent)
+   */
+  public void targetSet(TargetEvent e) {
+    setTarget(e.getNewTarget());
+  }
 
-    private void setTarget(Object t) {
-        removeAllElements();
-        if (Model.getFacade().isAEnumerationLiteral(t)) {
-            addElement(Model.getFacade().getEnumeration(t));
-        }
+  private void setTarget(Object t) {
+    removeAllElements();
+    if (Model.getFacade().isAEnumerationLiteral(t)) {
+      addElement(Model.getFacade().getEnumeration(t));
     }
+  }
 }

@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -17,38 +17,33 @@ import padl.kernel.impl.Element;
 /**
  * @author Jean-Yves
  */
-public class InterTypeDeclareParents extends Element implements
-		IInterTypeDeclareParents {
+public class InterTypeDeclareParents extends Element implements IInterTypeDeclareParents {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 7447403607229450032L;
-	private IFirstClassEntity target;
-	private IFirstClassEntity declaredParent;
+  /** */
+  private static final long serialVersionUID = 7447403607229450032L;
 
-	public InterTypeDeclareParents(final char[] anID) {
-		super(anID);
-		this.target = null;
-		this.declaredParent = null;
-	}
+  private IFirstClassEntity target;
+  private IFirstClassEntity declaredParent;
 
-	public IFirstClassEntity getDeclaredParent() {
-		return this.declaredParent;
-	}
+  public InterTypeDeclareParents(final char[] anID) {
+    super(anID);
+    this.target = null;
+    this.declaredParent = null;
+  }
 
-	public IFirstClassEntity getTargetEntity() {
-		return this.target;
-	}
+  public IFirstClassEntity getDeclaredParent() {
+    return this.declaredParent;
+  }
 
-	public void setDeclaredParent(final IFirstClassEntity anEntity) {
-		this.declaredParent = anEntity;
+  public IFirstClassEntity getTargetEntity() {
+    return this.target;
+  }
 
-	}
+  public void setDeclaredParent(final IFirstClassEntity anEntity) {
+    this.declaredParent = anEntity;
+  }
 
-	public void setTargetEntity(final IFirstClassEntity anEntity) {
-		this.target = anEntity;
-
-	}
-
+  public void setTargetEntity(final IFirstClassEntity anEntity) {
+    this.target = anEntity;
+  }
 }

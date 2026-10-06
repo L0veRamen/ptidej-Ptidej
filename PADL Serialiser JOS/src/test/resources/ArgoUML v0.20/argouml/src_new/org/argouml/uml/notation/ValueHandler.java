@@ -25,65 +25,61 @@
 package org.argouml.uml.notation;
 
 import java.util.HashMap;
-
 import javax.swing.Action;
-
 import org.argouml.notation.NotationProvider4;
 
 /**
  * @author mvw@tigris.org
  */
-public abstract class ValueHandler implements NotationProvider4{
+public abstract class ValueHandler implements NotationProvider4 {
 
-    protected HashMap keyTable;
+  protected HashMap keyTable;
 
-    /**
-     * @see org.argouml.notation.NotationProvider4#putValue(java.lang.String, java.lang.Object)
-     */
-    public void putValue(String key, Object newValue) {
-        if (keyTable == null) {
-            keyTable = new HashMap();
-        }
-        // Remove the entry for key if newValue is null
-        // else put in the newValue for key.
-        if (newValue == null) {
-            keyTable.remove(key);
-        } else {
-            keyTable.put(key,newValue);
-        }
-
+  /**
+   * @see org.argouml.notation.NotationProvider4#putValue(java.lang.String, java.lang.Object)
+   */
+  public void putValue(String key, Object newValue) {
+    if (keyTable == null) {
+      keyTable = new HashMap();
     }
-
-    /**
-     * Gets the <code>Object</code> associated with the specified key.
-     *
-     * @param key a string containing the specified <code>key</code>
-     * @return the binding <code>Object</code> stored with this key; if there
-     *          are no keys, it will return <code>null</code>
-     * @see Action#getValue
-     */
-    public Object getValue(String key) {
-        if (keyTable == null) {
-            return null;
-        }
-        return keyTable.get(key);
+    // Remove the entry for key if newValue is null
+    // else put in the newValue for key.
+    if (newValue == null) {
+      keyTable.remove(key);
+    } else {
+      keyTable.put(key, newValue);
     }
+  }
 
-    /**
-     * @see org.argouml.notation.NotationProvider4#putValue(java.lang.String, boolean)
-     */
-    public void putValue(String key, boolean newValue) {
-        Boolean b = new Boolean(newValue);
-        putValue(key, b);
+  /**
+   * Gets the <code>Object</code> associated with the specified key.
+   *
+   * @param key a string containing the specified <code>key</code>
+   * @return the binding <code>Object</code> stored with this key; if there are no keys, it will
+   *     return <code>null</code>
+   * @see Action#getValue
+   */
+  public Object getValue(String key) {
+    if (keyTable == null) {
+      return null;
     }
+    return keyTable.get(key);
+  }
 
-    /**
-     * @see org.argouml.notation.NotationProvider4#isValue(java.lang.String)
-     */
-    public boolean isValue(String key) {
-        Object o = this.getValue(key);
-        if (!(o instanceof Boolean)) return false;
-        return ((Boolean) o).booleanValue();
-    }
+  /**
+   * @see org.argouml.notation.NotationProvider4#putValue(java.lang.String, boolean)
+   */
+  public void putValue(String key, boolean newValue) {
+    Boolean b = new Boolean(newValue);
+    putValue(key, b);
+  }
 
+  /**
+   * @see org.argouml.notation.NotationProvider4#isValue(java.lang.String)
+   */
+  public boolean isValue(String key) {
+    Object o = this.getValue(key);
+    if (!(o instanceof Boolean)) return false;
+    return ((Boolean) o).booleanValue();
+  }
 }

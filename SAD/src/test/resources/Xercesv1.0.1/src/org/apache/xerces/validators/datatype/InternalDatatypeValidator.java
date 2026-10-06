@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xerces" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -58,24 +58,19 @@
 package org.apache.xerces.validators.datatype;
 
 interface InternalDatatypeValidator extends DatatypeValidator {
-	/**
-     * validate that a string matches a datatype
-     *
-     * validate returns true or false depending on whether the string content is an
-     * instance of the data type represented by this validator.
-     * 
-     * @param content A string containing the content to be validated
-     *
-     * @exception throws InvalidDatatypeException if the content is
-     *  invalid according to the rules for the validators
-     */
-	public void validate(int contentIndex) throws InvalidDatatypeValueException;
-	
-	/**
-	 * set the facets for this datatype
-	 *
-	 *
-	 */
-	public void setFacets(int facets[]) throws UnknownFacetException, IllegalFacetException, IllegalFacetValueException; 
+  /**
+   * validate that a string matches a datatype
+   *
+   * <p>validate returns true or false depending on whether the string content is an instance of the
+   * data type represented by this validator.
+   *
+   * @param content A string containing the content to be validated
+   * @exception throws InvalidDatatypeException if the content is invalid according to the rules for
+   *     the validators
+   */
+  public void validate(int contentIndex) throws InvalidDatatypeValueException;
 
+  /** set the facets for this datatype */
+  public void setFacets(int facets[])
+      throws UnknownFacetException, IllegalFacetException, IllegalFacetValueException;
 }

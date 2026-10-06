@@ -26,9 +26,7 @@ package org.argouml.uml.diagram.static_structure.ui;
 
 import java.awt.Graphics;
 import java.awt.Rectangle;
-
 import javax.swing.Icon;
-
 import org.apache.log4j.Logger;
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.model.Model;
@@ -48,165 +46,153 @@ import org.tigris.gef.presentation.Handle;
  * @author jrobbins@ics.uci.edu
  */
 public class SelectionInterface extends SelectionNodeClarifiers {
-    /**
-     * Logger.
-     */
-    private static final Logger LOG = Logger
-            .getLogger(SelectionInterface.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(SelectionInterface.class);
 
-    private static Icon realiz = ResourceLoaderWrapper
-            .lookupIconResource("Realization");
+  private static Icon realiz = ResourceLoaderWrapper.lookupIconResource("Realization");
 
-    private static Icon inherit = ResourceLoaderWrapper
-            .lookupIconResource("Generalization");
+  private static Icon inherit = ResourceLoaderWrapper.lookupIconResource("Generalization");
 
+  /**
+   * Construct a new SelectionInterface for the given Fig.
+   *
+   * @param f The given Fig.
+   */
+  public SelectionInterface(Fig f) {
+    super(f);
+  }
 
-    /**
-     * Construct a new SelectionInterface for the given Fig.
-     *
-     * @param f
-     *            The given Fig.
-     */
-    public SelectionInterface(Fig f) {
-        super(f);
+  /**
+   * Return a handle ID for the handle under the mouse, or -1 if none. TODO: in the future, return a
+   * Handle instance or null.
+   *
+   * <p>
+   *
+   * <pre>
+   *    0-------1-------2
+   *    |               |
+   *    3               4
+   *    |               |
+   *    5-------6-------7
+   * </pre>
+   *
+   * @see org.tigris.gef.base.Selection#hitHandle(java.awt.Rectangle,
+   *     org.tigris.gef.presentation.Handle)
+   */
+  public void hitHandle(Rectangle r, Handle h) {
+    super.hitHandle(r, h);
+    if (h.index != -1) {
+      return;
     }
-
-    /**
-     * Return a handle ID for the handle under the mouse, or -1 if none. TODO:
-     * in the future, return a Handle instance or null.
-     * <p>
-     *
-     * <pre>
-     *    0-------1-------2
-     *    |               |
-     *    3               4
-     *    |               |
-     *    5-------6-------7
-     * </pre>
-     *
-     * @see org.tigris.gef.base.Selection#hitHandle(java.awt.Rectangle,
-     *      org.tigris.gef.presentation.Handle)
-     */
-    public void hitHandle(Rectangle r, Handle h) {
-        super.hitHandle(r, h);
-        if (h.index != -1) {
-            return;
-        }
-        if (!isPaintButtons()) {
-            return;
-        }
-        Editor ce = Globals.curEditor();
-        SelectionManager sm = ce.getSelectionManager();
-        if (sm.size() != 1) {
-            return;
-        }
-        ModeManager mm = ce.getModeManager();
-        if (mm.includes(ModeModify.class) && getPressedButton() == -1) {
-            return;
-        }
-        int cx = getContent().getX();
-        int cy = getContent().getY();
-        int cw = getContent().getWidth();
-        int ch = getContent().getHeight();
-        int iw = realiz.getIconWidth();
-        int ih = realiz.getIconHeight();
-        int gw = inherit.getIconWidth();
-        int gh = inherit.getIconHeight();
-        if (hitAbove(cx + cw / 2, cy, gw, gh, r)) {
-            h.index = 10;
-            h.instructions = "Add an interface";
-        } else
-        if (hitBelow(cx + cw / 2, cy + ch, iw, ih, r)) {
-            h.index = 11;
-            h.instructions = "Add a realization";
-        } else {
-            h.index = -1;
-            h.instructions = "Move object(s)";
-        }
+    if (!isPaintButtons()) {
+      return;
     }
-
-    /**
-     * @see org.tigris.gef.base.SelectionButtons#paintButtons(
-     *      java.awt.Graphics)
-     */
-    public void paintButtons(Graphics g) {
-        int cx = getContent().getX();
-        int cy = getContent().getY();
-        int cw = getContent().getWidth();
-        int ch = getContent().getHeight();
-        paintButtonAbove(inherit, g, cx + cw / 2, cy, 10);
-        paintButtonBelow(realiz, g, cx + cw / 2, cy + ch, 11);
+    Editor ce = Globals.curEditor();
+    SelectionManager sm = ce.getSelectionManager();
+    if (sm.size() != 1) {
+      return;
     }
-
-    /**
-     * @see org.tigris.gef.base.Selection#dragHandle(int, int, int, int,
-     *      org.tigris.gef.presentation.Handle)
-     */
-    public void dragHandle(int mX, int mY, int anX, int anY, Handle hand) {
-        if (hand.index < 10) {
-            setPaintButtons(false);
-            super.dragHandle(mX, mY, anX, anY, hand);
-            return;
-        }
-        int cx = getContent().getX(), cy = getContent().getY();
-        int cw = getContent().getWidth(), ch = getContent().getHeight();
-        Object edgeType = null;
-        Object nodeType = null;
-        int bx = mX, by = mY;
-        boolean reverse = false;
-        switch (hand.index) {
-        case 10: //add superclass
-            edgeType = Model.getMetaTypes().getGeneralization();
-            nodeType = Model.getMetaTypes().getInterface();
-            by = cy;
-            bx = cx + cw / 2;
-            reverse = false;
-            break;
-        case 11: // add realization
-            edgeType = Model.getMetaTypes().getAbstraction();
-            nodeType = Model.getMetaTypes().getUMLClass();
-            reverse = true;
-            by = cy + ch;
-            bx = cx + cw / 2;
-            break;
-        default:
-            LOG.warn("invalid handle number");
-            break;
-        }
-        if (edgeType != null && nodeType != null) {
-            Editor ce = Globals.curEditor();
-            ModeCreateEdgeAndNode m = new ModeCreateEdgeAndNode(ce, edgeType,
-                    nodeType, false);
-            m.setup((FigNode) getContent(), getContent().getOwner(), bx, by,
-                    reverse);
-            ce.pushMode(m);
-        }
-
+    ModeManager mm = ce.getModeManager();
+    if (mm.includes(ModeModify.class) && getPressedButton() == -1) {
+      return;
     }
-
-    protected Object createEdgeAbove(MutableGraphModel gm, Object newNode) {
-        return gm.connect(getContent().getOwner(), newNode,
-               (Class) Model.getMetaTypes().getGeneralization());
+    int cx = getContent().getX();
+    int cy = getContent().getY();
+    int cw = getContent().getWidth();
+    int ch = getContent().getHeight();
+    int iw = realiz.getIconWidth();
+    int ih = realiz.getIconHeight();
+    int gw = inherit.getIconWidth();
+    int gh = inherit.getIconHeight();
+    if (hitAbove(cx + cw / 2, cy, gw, gh, r)) {
+      h.index = 10;
+      h.instructions = "Add an interface";
+    } else if (hitBelow(cx + cw / 2, cy + ch, iw, ih, r)) {
+      h.index = 11;
+      h.instructions = "Add a realization";
+    } else {
+      h.index = -1;
+      h.instructions = "Move object(s)";
     }
+  }
 
-    /**
-     * @see org.tigris.gef.base.SelectionButtons#createEdgeUnder(
-     *      org.tigris.gef.graph.MutableGraphModel, java.lang.Object)
-     */
-    protected Object createEdgeUnder(MutableGraphModel gm, Object newNode) {
-        return gm.connect(newNode, getContent().getOwner(), (Class) Model
-                .getMetaTypes().getAbstraction());
+  /**
+   * @see org.tigris.gef.base.SelectionButtons#paintButtons( java.awt.Graphics)
+   */
+  public void paintButtons(Graphics g) {
+    int cx = getContent().getX();
+    int cy = getContent().getY();
+    int cw = getContent().getWidth();
+    int ch = getContent().getHeight();
+    paintButtonAbove(inherit, g, cx + cw / 2, cy, 10);
+    paintButtonBelow(realiz, g, cx + cw / 2, cy + ch, 11);
+  }
+
+  /**
+   * @see org.tigris.gef.base.Selection#dragHandle(int, int, int, int,
+   *     org.tigris.gef.presentation.Handle)
+   */
+  public void dragHandle(int mX, int mY, int anX, int anY, Handle hand) {
+    if (hand.index < 10) {
+      setPaintButtons(false);
+      super.dragHandle(mX, mY, anX, anY, hand);
+      return;
     }
-
-    /**
-     * @see org.tigris.gef.base.SelectionButtons#getNewNode(int)
-     */
-    protected Object getNewNode(int buttonCode) {
-        if (buttonCode == 10) {
-            return Model.getCoreFactory().buildInterface();
-        } else {
-            return Model.getCoreFactory().buildClass();
-        }
+    int cx = getContent().getX(), cy = getContent().getY();
+    int cw = getContent().getWidth(), ch = getContent().getHeight();
+    Object edgeType = null;
+    Object nodeType = null;
+    int bx = mX, by = mY;
+    boolean reverse = false;
+    switch (hand.index) {
+      case 10: // add superclass
+        edgeType = Model.getMetaTypes().getGeneralization();
+        nodeType = Model.getMetaTypes().getInterface();
+        by = cy;
+        bx = cx + cw / 2;
+        reverse = false;
+        break;
+      case 11: // add realization
+        edgeType = Model.getMetaTypes().getAbstraction();
+        nodeType = Model.getMetaTypes().getUMLClass();
+        reverse = true;
+        by = cy + ch;
+        bx = cx + cw / 2;
+        break;
+      default:
+        LOG.warn("invalid handle number");
+        break;
     }
+    if (edgeType != null && nodeType != null) {
+      Editor ce = Globals.curEditor();
+      ModeCreateEdgeAndNode m = new ModeCreateEdgeAndNode(ce, edgeType, nodeType, false);
+      m.setup((FigNode) getContent(), getContent().getOwner(), bx, by, reverse);
+      ce.pushMode(m);
+    }
+  }
 
+  protected Object createEdgeAbove(MutableGraphModel gm, Object newNode) {
+    return gm.connect(
+        getContent().getOwner(), newNode, (Class) Model.getMetaTypes().getGeneralization());
+  }
+
+  /**
+   * @see org.tigris.gef.base.SelectionButtons#createEdgeUnder(
+   *     org.tigris.gef.graph.MutableGraphModel, java.lang.Object)
+   */
+  protected Object createEdgeUnder(MutableGraphModel gm, Object newNode) {
+    return gm.connect(
+        newNode, getContent().getOwner(), (Class) Model.getMetaTypes().getAbstraction());
+  }
+
+  /**
+   * @see org.tigris.gef.base.SelectionButtons#getNewNode(int)
+   */
+  protected Object getNewNode(int buttonCode) {
+    if (buttonCode == 10) {
+      return Model.getCoreFactory().buildInterface();
+    } else {
+      return Model.getCoreFactory().buildClass();
+    }
+  }
 } /* end class SelectionInterface */

@@ -28,129 +28,121 @@ import org.argouml.model.Model;
 
 /**
  * This class is a utility for the Java notation.
- *  
+ *
  * @author michiel
  */
 public class NotationUtilityJava {
 
-    /**
-     * The constructor - nothing to construct.
-     */
-    NotationUtilityJava() { }
+  /** The constructor - nothing to construct. */
+  NotationUtilityJava() {}
 
-    /**
-     * Returns a visibility String either for a VisibilityKind, but also 
-     * for a model element,
-     * because if it is a Feature, then the tag 'src_visibility' is to be
-     * taken into account for generating language dependent visibilities.
-     *
-     * @param o the object which may be a VisibilityKind or a ModelElelement
-     * @return the generated visibility string
-     */
-    static String generateVisibility(Object o) {
-        if (Model.getFacade().isAFeature(o)) {
-            Object tv = Model.getFacade().getTaggedValue(o, "src_visibility");
-            if (tv != null) {
-                Object tvValue = Model.getFacade().getValue(tv);
-                /* Not all taggedvalues are string - see issue 4322: */
-                if (tvValue instanceof String) {
-                    String tagged = (String) tvValue;
-                    if (tagged != null) {
-                        if (tagged.trim().equals("")
-                            || tagged.trim().toLowerCase().equals("package")
-                            || tagged.trim().toLowerCase().equals("default")) {
-                            return "";
-                        }
-                        return tagged + " ";
-                    }
-                }
+  /**
+   * Returns a visibility String either for a VisibilityKind, but also for a model element, because
+   * if it is a Feature, then the tag 'src_visibility' is to be taken into account for generating
+   * language dependent visibilities.
+   *
+   * @param o the object which may be a VisibilityKind or a ModelElelement
+   * @return the generated visibility string
+   */
+  static String generateVisibility(Object o) {
+    if (Model.getFacade().isAFeature(o)) {
+      Object tv = Model.getFacade().getTaggedValue(o, "src_visibility");
+      if (tv != null) {
+        Object tvValue = Model.getFacade().getValue(tv);
+        /* Not all taggedvalues are string - see issue 4322: */
+        if (tvValue instanceof String) {
+          String tagged = (String) tvValue;
+          if (tagged != null) {
+            if (tagged.trim().equals("")
+                || tagged.trim().toLowerCase().equals("package")
+                || tagged.trim().toLowerCase().equals("default")) {
+              return "";
             }
+            return tagged + " ";
+          }
         }
-        if (Model.getFacade().isAModelElement(o)) {
-            if (Model.getFacade().isPublic(o)) {
-                return "public ";
-            }
-            if (Model.getFacade().isPrivate(o)) {
-                return "private ";
-            }
-            if (Model.getFacade().isProtected(o)) {
-                return "protected ";
-            }
-            if (Model.getFacade().isPackage(o)) {
-                return "";
-            }
-        }
-        if (Model.getFacade().isAVisibilityKind(o)) {
-            if (Model.getVisibilityKind().getPublic().equals(o)) {
-                return "public ";
-            }
-            if (Model.getVisibilityKind().getPrivate().equals(o)) {
-                return "private ";
-            }
-            if (Model.getVisibilityKind().getProtected().equals(o)) {
-                return "protected ";
-            }
-            if (Model.getVisibilityKind().getPackage().equals(o)) {
-                return "";
-            }
-        }
+      }
+    }
+    if (Model.getFacade().isAModelElement(o)) {
+      if (Model.getFacade().isPublic(o)) {
+        return "public ";
+      }
+      if (Model.getFacade().isPrivate(o)) {
+        return "private ";
+      }
+      if (Model.getFacade().isProtected(o)) {
+        return "protected ";
+      }
+      if (Model.getFacade().isPackage(o)) {
         return "";
+      }
     }
-    
-    static String generateScope(Object f) {
-        if (Model.getFacade().isClassifierScope(f)) {
-            return "static ";
+    if (Model.getFacade().isAVisibilityKind(o)) {
+      if (Model.getVisibilityKind().getPublic().equals(o)) {
+        return "public ";
+      }
+      if (Model.getVisibilityKind().getPrivate().equals(o)) {
+        return "private ";
+      }
+      if (Model.getVisibilityKind().getProtected().equals(o)) {
+        return "protected ";
+      }
+      if (Model.getVisibilityKind().getPackage().equals(o)) {
+        return "";
+      }
+    }
+    return "";
+  }
+
+  static String generateScope(Object f) {
+    if (Model.getFacade().isClassifierScope(f)) {
+      return "static ";
+    }
+    return "";
+  }
+
+  /** Generate "final" keyword for final operations or attributes. */
+  static String generateChangeability(Object obj) {
+    if (Model.getFacade().isAAttribute(obj)) {
+      if (!Model.getFacade().isChangeable(obj)) {
+        return "final ";
+      }
+    } else {
+      if (Model.getFacade().isAOperation(obj)) {
+        if (Model.getFacade().isLeaf(obj)) {
+          return "final ";
         }
-        return "";
+      }
     }
-    
-    /**
-     * Generate "final" keyword for final operations or attributes.
-     */
-    static String generateChangeability(Object obj) {
-        if (Model.getFacade().isAAttribute(obj)) {
-            if (!Model.getFacade().isChangeable(obj)) {
-                return "final ";
-            }
-        } else {
-            if (Model.getFacade().isAOperation(obj)) {
-                if (Model.getFacade().isLeaf(obj)) {
-                    return "final ";
-                }
-            }
-        }
-        return "";
-    }
-    
-    static String generateClassifierRef(Object cls) {
-        if (cls == null)
-            return "";
-        return Model.getFacade().getName(cls);
-    }
-    
-    static String generateExpression(Object expr) {
-        if (Model.getFacade().isAExpression(expr))
-            return generateUninterpreted(
-                    (String) Model.getFacade().getBody(expr));
-        else if (Model.getFacade().isAConstraint(expr))
-            return generateExpression(Model.getFacade().getBody(expr));
-        return "";
-    }
-    
-    static String generateUninterpreted(String un) {
-        if (un == null)
-            return "";
-        return un;
-    }
-    
-    static String generateParameter(Object parameter) {
-        StringBuffer sb = new StringBuffer(20);
-        //TODO: qualifiers (e.g., const)
-        //TODO: stereotypes...
-        sb.append(generateClassifierRef(Model.getFacade().getType(parameter)));
-        sb.append(' ');
-        sb.append(Model.getFacade().getName(parameter));
-        //TODO: initial value
-        return sb.toString();
-    }
+    return "";
+  }
+
+  static String generateClassifierRef(Object cls) {
+    if (cls == null) return "";
+    return Model.getFacade().getName(cls);
+  }
+
+  static String generateExpression(Object expr) {
+    if (Model.getFacade().isAExpression(expr))
+      return generateUninterpreted((String) Model.getFacade().getBody(expr));
+    else if (Model.getFacade().isAConstraint(expr))
+      return generateExpression(Model.getFacade().getBody(expr));
+    return "";
+  }
+
+  static String generateUninterpreted(String un) {
+    if (un == null) return "";
+    return un;
+  }
+
+  static String generateParameter(Object parameter) {
+    StringBuffer sb = new StringBuffer(20);
+    // TODO: qualifiers (e.g., const)
+    // TODO: stereotypes...
+    sb.append(generateClassifierRef(Model.getFacade().getType(parameter)));
+    sb.append(' ');
+    sb.append(Model.getFacade().getName(parameter));
+    // TODO: initial value
+    return sb.toString();
+  }
 }

@@ -35,12 +35,8 @@ import org.argouml.uml.diagram.ui.PropPanelDiagram;
  */
 class PropPanelUMLActivityDiagram extends PropPanelDiagram {
 
-    /**
-     * Constructor for PropPanelUMLActivityDiagram.
-     */
-    public PropPanelUMLActivityDiagram() {
-        super(Translator.localize("label.activity-diagram"),
-                lookupIcon("ActivityDiagram"));
-    }
-
+  /** Constructor for PropPanelUMLActivityDiagram. */
+  public PropPanelUMLActivityDiagram() {
+    super(Translator.localize("label.activity-diagram"), lookupIcon("ActivityDiagram"));
+  }
 }

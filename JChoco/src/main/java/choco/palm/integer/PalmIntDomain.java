@@ -15,116 +15,76 @@ import choco.ConstraintCollection;
 import choco.palm.explain.Explanation;
 
 /**
- * Created by IntelliJ IDEA.
- * User: grochart
- * Date: 7 janv. 2004
- * Time: 13:50:57
- * To change this template use Options | File Templates.
+ * Created by IntelliJ IDEA. User: grochart Date: 7 janv. 2004 Time: 13:50:57 To change this
+ * template use Options | File Templates.
  */
 public interface PalmIntDomain {
-	int DOM = 0;
-	int INF = 1;
-	int SUP = 2;
-	int VAL = 3;
+  int DOM = 0;
+  int INF = 1;
+  int SUP = 2;
+  int VAL = 3;
 
-	/**
-	 * Returns all the value currently in the domain.
-	 */
+  /** Returns all the value currently in the domain. */
+  public int[] getAllValues();
 
-	public int[] getAllValues();
+  /**
+   * Returns the decision constraint assigning the domain to the specified value. The constraint is
+   * created if it is not yet created.
+   */
+  public Constraint getDecisionConstraint(int val);
 
-	/**
-	 * Returns the decision constraint assigning the domain to the specified value. The constraint is created if
-	 * it is not yet created.
-	 */
+  /** Returns the negated decision constraint. */
+  public Constraint getNegDecisionConstraint(int val);
 
-	public Constraint getDecisionConstraint(int val);
+  /** Returns the original lower bound. */
+  public int getOriginalInf();
 
-	/**
-	 * Returns the negated decision constraint.
-	 */
+  /** Returns the original upper bound. */
+  public int getOriginalSup();
 
-	public Constraint getNegDecisionConstraint(int val);
+  /** Removes a value and posts the event. */
+  public boolean removeVal(int value, int idx, Explanation e);
 
-	/**
-	 * Returns the original lower bound.
-	 */
+  /** When a lower bound is restored, it deletes the explanation associated to the value removal. */
+  public void resetExplanationOnInf();
 
-	public int getOriginalInf();
+  /**
+   * When an upper bound is restored, it deletes the explanation associated to the value removal.
+   */
+  public void resetExplanationOnSup();
 
-	/**
-	 * Returns the original upper bound.
-	 */
+  /** When a value is restored, it deletes the explanation associated to the value removal. */
+  public void resetExplanationOnVal(int val);
 
-	public int getOriginalSup();
+  /** Restores a lower bound and posts the event. Not supported for such a domain. */
+  public void restoreInf(int newValue);
 
-	/**
-	 * Removes a value and posts the event.
-	 */
+  /** Restores an upper bound and posts the event. Not supported for such a domain. */
+  public void restoreSup(int newValue);
 
-	public boolean removeVal(int value, int idx, Explanation e);
+  /** Restores a value and posts the event. */
+  public void restoreVal(int val);
 
-	/**
-	 * When a lower bound is restored, it deletes the explanation associated to the value removal.
-	 */
+  /**
+   * Allows to get an explanation for the domain or a bound of the variable. This explanation is
+   * merge to the explanation in parameter.
+   *
+   * @param select Should be <code>PalmIntDomain.INF</code>, <code>PalmIntDomain.SUP</code>, or
+   *     <code>PalmIntDomain.DOM</code>
+   */
+  public void self_explain(int select, ConstraintCollection expl);
 
-	public void resetExplanationOnInf();
+  /**
+   * Allows to get an explanation for a value removal from the variable. This explanation is merge
+   * to the explanation in parameter.
+   *
+   * @param select Should be <code>PalmIntDomain.VAL</code>
+   */
+  public void self_explain(int select, int x, ConstraintCollection expl);
 
-	/**
-	 * When an upper bound is restored, it deletes the explanation associated to the value removal.
-	 */
+  /** Updates the lower bound and posts the event. */
+  public boolean updateInf(int x, int idx, Explanation e);
 
-	public void resetExplanationOnSup();
-
-	/**
-	 * When a value is restored, it deletes the explanation associated to the value removal.
-	 */
-
-	public void resetExplanationOnVal(int val);
-
-	/**
-	 * Restores a lower bound and posts the event. Not supported for such a domain.
-	 */
-
-	public void restoreInf(int newValue);
-
-	/**
-	 * Restores an upper bound and posts the event. Not supported for such a domain.
-	 */
-
-	public void restoreSup(int newValue);
-
-	/**
-	 * Restores a value and posts the event.
-	 */
-
-	public void restoreVal(int val);
-
-	/**
-	 * Allows to get an explanation for the domain or a bound of the variable. This explanation is merge to the
-	 * explanation in parameter.
-	 * @param select Should be <code>PalmIntDomain.INF</code>, <code>PalmIntDomain.SUP</code>, or <code>PalmIntDomain.DOM</code>
-	 */
-
-	public void self_explain(int select, ConstraintCollection expl);
-
-	/**
-	 * Allows to get an explanation for a value removal from the variable. This explanation is merge to the
-	 * explanation in parameter.
-	 * @param select Should be <code>PalmIntDomain.VAL</code>
-	 */
-
-	public void self_explain(int select, int x, ConstraintCollection expl);
-
-	/**
-	 * Updates the lower bound and posts the event.
-	 */
-
-	public boolean updateInf(int x, int idx, Explanation e);
-
-	/**
-	 * Updates the upper bound and posts the event.
-	 */
-
-	public boolean updateSup(int x, int idx, Explanation e);
+  /** Updates the upper bound and posts the event. */
+  public boolean updateSup(int x, int idx, Explanation e);
 }

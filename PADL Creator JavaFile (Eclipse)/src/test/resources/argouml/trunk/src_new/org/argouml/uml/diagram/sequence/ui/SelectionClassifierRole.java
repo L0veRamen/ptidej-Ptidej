@@ -29,55 +29,51 @@ import org.tigris.gef.presentation.Fig;
 import org.tigris.gef.presentation.Handle;
 
 /**
- * A custom select object to handle the special requirements of reshaping
- * a classifier role.
+ * A custom select object to handle the special requirements of reshaping a classifier role.
  *
  * @author Bob Tarling
  */
 public class SelectionClassifierRole extends SelectionNodeClarifiers {
 
-    /**
-     * The constructor.
-     *
-     * @param f the fig
-     */
-    public SelectionClassifierRole(Fig f) {
-        super(f);
+  /**
+   * The constructor.
+   *
+   * @param f the fig
+   */
+  public SelectionClassifierRole(Fig f) {
+    super(f);
+  }
+
+  /**
+   * Make sure that the north facing handles cannot be dragged as part of a resize.
+   *
+   * @see org.tigris.gef.base.Selection#dragHandle(int, int, int, int,
+   *     org.tigris.gef.presentation.Handle)
+   */
+  public void dragHandle(int mX, int mY, int anX, int anY, Handle hand) {
+
+    if (!getContent().isResizable()) {
+      return;
     }
 
-    /**
-     * Make sure that the north facing handles cannot be dragged as
-     * part of a resize.
-     *
-     * @see org.tigris.gef.base.Selection#dragHandle(int, int, int, int,
-     * org.tigris.gef.presentation.Handle)
-     */
-    public void dragHandle(int mX, int mY, int anX, int anY, Handle hand) {
-
-        if (!getContent().isResizable()) {
-            return;
-        }
-
-        switch (hand.index) {
-	case Handle.NORTHWEST :
-	case Handle.NORTH :
-	case Handle.NORTHEAST :
-	    return;
-	default:
-        }
-
-        super.dragHandle(mX, mY, anX, anY, hand);
+    switch (hand.index) {
+      case Handle.NORTHWEST:
+      case Handle.NORTH:
+      case Handle.NORTHEAST:
+        return;
+      default:
     }
 
-    /**
-     * @see org.argouml.uml.diagram.ui.SelectionNodeClarifiers#getNewNode(int)
-     */
-    protected Object getNewNode(int buttonCode) {
-        return null;
-    }
+    super.dragHandle(mX, mY, anX, anY, hand);
+  }
 
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = 3570571152608122095L;
+  /**
+   * @see org.argouml.uml.diagram.ui.SelectionNodeClarifiers#getNewNode(int)
+   */
+  protected Object getNewNode(int buttonCode) {
+    return null;
+  }
+
+  /** The UID. */
+  private static final long serialVersionUID = 3570571152608122095L;
 }

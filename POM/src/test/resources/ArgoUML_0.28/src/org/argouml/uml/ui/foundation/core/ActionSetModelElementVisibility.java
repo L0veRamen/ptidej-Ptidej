@@ -25,94 +25,75 @@
 package org.argouml.uml.ui.foundation.core;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.Action;
 import javax.swing.JRadioButton;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLRadioButtonPanel;
 import org.tigris.gef.undo.UndoableAction;
 
 /**
- * This action sets the Visibility of a ModelElement. 
- * Next to a ModelElement, this also works for an 
+ * This action sets the Visibility of a ModelElement. Next to a ModelElement, this also works for an
  * ElementResidence and ElementImport.
  *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 4, 2003
  */
 public class ActionSetModelElementVisibility extends UndoableAction {
-    /**
-     * The instance.
-     */
-    private static final ActionSetModelElementVisibility SINGLETON =
-        new ActionSetModelElementVisibility();
+  /** The instance. */
+  private static final ActionSetModelElementVisibility SINGLETON =
+      new ActionSetModelElementVisibility();
 
-    /**
-     * PUBLIC_COMMAND determines the visibility.
-     */
-    public static final String PUBLIC_COMMAND = "public";
+  /** PUBLIC_COMMAND determines the visibility. */
+  public static final String PUBLIC_COMMAND = "public";
 
-    /**
-     * PROTECTED_COMMAND determines the visibility.
-     */
-    public static final String PROTECTED_COMMAND = "protected";
+  /** PROTECTED_COMMAND determines the visibility. */
+  public static final String PROTECTED_COMMAND = "protected";
 
-    /**
-     * PRIVATE_COMMAND determines the visibility.
-     */
-    public static final String PRIVATE_COMMAND = "private";
+  /** PRIVATE_COMMAND determines the visibility. */
+  public static final String PRIVATE_COMMAND = "private";
 
-    /**
-     * PACKAGE_COMMAND determines the visibility.
-     */
-    public static final String PACKAGE_COMMAND = "package";
+  /** PACKAGE_COMMAND determines the visibility. */
+  public static final String PACKAGE_COMMAND = "package";
 
-    /**
-     * Constructor for ActionSetElementOwnershipSpecification.
-     */
-    protected ActionSetModelElementVisibility() {
-        super(Translator.localize("Set"), null);
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize("Set"));
-    }
+  /** Constructor for ActionSetElementOwnershipSpecification. */
+  protected ActionSetModelElementVisibility() {
+    super(Translator.localize("Set"), null);
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize("Set"));
+  }
 
-    /*
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        if (e.getSource() instanceof JRadioButton) {
-            JRadioButton source = (JRadioButton) e.getSource();
-            String actionCommand = source.getActionCommand();
-            Object target =
-                ((UMLRadioButtonPanel) source.getParent()).getTarget();
-            if (Model.getFacade().isAModelElement(target)
-                    || Model.getFacade().isAElementResidence(target)
-                    || Model.getFacade().isAElementImport(target)) {
-                Object kind = null;
-                if (actionCommand.equals(PUBLIC_COMMAND)) {
-                    kind = Model.getVisibilityKind().getPublic();
-                } else if (actionCommand.equals(PROTECTED_COMMAND)) {
-                    kind = Model.getVisibilityKind().getProtected();
-                } else if (actionCommand.equals(PACKAGE_COMMAND)) {
-                    kind = Model.getVisibilityKind().getPackage();
-                } else {
-                    kind = Model.getVisibilityKind().getPrivate();
-                }
-                Model.getCoreHelper().setVisibility(target, kind);
-
-            }
+  /*
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    if (e.getSource() instanceof JRadioButton) {
+      JRadioButton source = (JRadioButton) e.getSource();
+      String actionCommand = source.getActionCommand();
+      Object target = ((UMLRadioButtonPanel) source.getParent()).getTarget();
+      if (Model.getFacade().isAModelElement(target)
+          || Model.getFacade().isAElementResidence(target)
+          || Model.getFacade().isAElementImport(target)) {
+        Object kind = null;
+        if (actionCommand.equals(PUBLIC_COMMAND)) {
+          kind = Model.getVisibilityKind().getPublic();
+        } else if (actionCommand.equals(PROTECTED_COMMAND)) {
+          kind = Model.getVisibilityKind().getProtected();
+        } else if (actionCommand.equals(PACKAGE_COMMAND)) {
+          kind = Model.getVisibilityKind().getPackage();
+        } else {
+          kind = Model.getVisibilityKind().getPrivate();
         }
+        Model.getCoreHelper().setVisibility(target, kind);
+      }
     }
+  }
 
-    /**
-     * @return Returns the sINGLETON.
-     */
-    public static ActionSetModelElementVisibility getInstance() {
-        return SINGLETON;
-    }
-
+  /**
+   * @return Returns the sINGLETON.
+   */
+  public static ActionSetModelElementVisibility getInstance() {
+    return SINGLETON;
+  }
 }

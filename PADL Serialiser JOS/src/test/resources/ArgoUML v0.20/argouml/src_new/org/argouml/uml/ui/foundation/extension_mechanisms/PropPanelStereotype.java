@@ -29,7 +29,6 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
-
 import org.argouml.i18n.Translator;
 import org.argouml.uml.ui.ActionDeleteSingleModelElement;
 import org.argouml.uml.ui.ActionNavigateNamespace;
@@ -44,108 +43,89 @@ import org.argouml.uml.ui.foundation.core.UMLGeneralizableElementSpecializationL
 import org.argouml.util.ConfigLoader;
 import org.tigris.swidgets.FlexiGridLayout;
 
-/**
- * The properties panel for a Stereotype.
- */
+/** The properties panel for a Stereotype. */
 public class PropPanelStereotype extends PropPanelModelElement {
 
-    private static UMLGeneralizableElementSpecializationListModel
-    specializationListModel =
-        new UMLGeneralizableElementSpecializationListModel();
+  private static UMLGeneralizableElementSpecializationListModel specializationListModel =
+      new UMLGeneralizableElementSpecializationListModel();
 
-    private static UMLGeneralizableElementGeneralizationListModel
-        generalizationListModel =
-            new UMLGeneralizableElementGeneralizationListModel();
+  private static UMLGeneralizableElementGeneralizationListModel generalizationListModel =
+      new UMLGeneralizableElementGeneralizationListModel();
 
-    private static UMLTagDefinitionListModel
-    tagDefinitionListModel =
-        new UMLTagDefinitionListModel();
+  private static UMLTagDefinitionListModel tagDefinitionListModel = new UMLTagDefinitionListModel();
 
-    private JScrollPane generalizationScroll;
+  private JScrollPane generalizationScroll;
 
-    private JScrollPane specializationScroll;
+  private JScrollPane specializationScroll;
 
-    private JScrollPane tagDefinitionScroll;
+  private JScrollPane tagDefinitionScroll;
 
-    /**
-     * Construct new stereotype properties tab
-     */
-    public PropPanelStereotype() {
-        super("Stereotype", lookupIcon("Stereotype"),
-                ConfigLoader.getTabPropsOrientation());
+  /** Construct new stereotype properties tab */
+  public PropPanelStereotype() {
+    super("Stereotype", lookupIcon("Stereotype"), ConfigLoader.getTabPropsOrientation());
 
-        addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.name"), getNameTextField());
 
+    JComboBox baseClass =
+        new UMLComboBox2(new UMLMetaClassComboBoxModel(), ActionSetMetaClass.SINGLETON, false);
+    addField(Translator.localize("label.base-class"), baseClass);
 
-        JComboBox baseClass = new UMLComboBox2(new UMLMetaClassComboBoxModel(),
-                ActionSetMetaClass.SINGLETON, false);
-        addField(Translator.localize("label.base-class"), baseClass);
+    addField(Translator.localize("label.namespace"), getNamespaceSelector());
 
-        addField(Translator.localize("label.namespace"),
-                 getNamespaceSelector());
+    JPanel modifiersPanel = new JPanel(new FlexiGridLayout(0, 3, FlexiGridLayout.ROWCOLPREFERRED));
+    modifiersPanel.setBorder(new TitledBorder(Translator.localize("label.modifiers")));
+    modifiersPanel.add(new UMLGeneralizableElementAbstractCheckBox());
+    modifiersPanel.add(new UMLGeneralizableElementLeafCheckBox());
+    modifiersPanel.add(new UMLGeneralizableElementRootCheckBox());
+    add(modifiersPanel);
 
+    addSeperator();
 
-        JPanel modifiersPanel = new JPanel(new FlexiGridLayout(0, 3,
-                FlexiGridLayout.ROWCOLPREFERRED));
-        modifiersPanel.setBorder(new TitledBorder(
-                Translator.localize("label.modifiers")));
-        modifiersPanel.add(new UMLGeneralizableElementAbstractCheckBox());
-        modifiersPanel.add(new UMLGeneralizableElementLeafCheckBox());
-        modifiersPanel.add(new UMLGeneralizableElementRootCheckBox());
-        add(modifiersPanel);
+    addField(Translator.localize("label.generalizations"), getGeneralizationScroll());
+    addField(Translator.localize("label.specializations"), getSpecializationScroll());
+    addField(Translator.localize("label.tagdefinitions"), getTagDefinitionScroll());
+    addAction(new ActionNavigateNamespace());
+    addAction(new ActionNewStereotype());
+    addAction(new ActionNewTagDefinition());
+    addAction(new ActionDeleteSingleModelElement());
+  }
 
-        addSeperator();
-
-        addField(Translator.localize("label.generalizations"),
-                getGeneralizationScroll());
-        addField(Translator.localize("label.specializations"),
-                getSpecializationScroll());
-        addField(Translator.localize("label.tagdefinitions"),
-                getTagDefinitionScroll());
-        addAction(new ActionNavigateNamespace());
-        addAction(new ActionNewStereotype());
-        addAction(new ActionNewTagDefinition());
-        addAction(new ActionDeleteSingleModelElement());
+  /**
+   * Returns the generalizationScroll.
+   *
+   * @return JScrollPane
+   */
+  protected JScrollPane getGeneralizationScroll() {
+    if (generalizationScroll == null) {
+      JList list = new UMLLinkedList(generalizationListModel);
+      generalizationScroll = new JScrollPane(list);
     }
+    return generalizationScroll;
+  }
 
-    /**
-     * Returns the generalizationScroll.
-     *
-     * @return JScrollPane
-     */
-
-    protected JScrollPane getGeneralizationScroll() {
-        if (generalizationScroll == null) {
-            JList list = new UMLLinkedList(generalizationListModel);
-            generalizationScroll = new JScrollPane(list);
-        }
-        return generalizationScroll;
+  /**
+   * Returns the specializationScroll.
+   *
+   * @return JScrollPane
+   */
+  protected JScrollPane getSpecializationScroll() {
+    if (specializationScroll == null) {
+      JList list = new UMLLinkedList(specializationListModel);
+      specializationScroll = new JScrollPane(list);
     }
+    return specializationScroll;
+  }
 
-    /**
-     * Returns the specializationScroll.
-     *
-     * @return JScrollPane
-     */
-    protected JScrollPane getSpecializationScroll() {
-        if (specializationScroll == null) {
-            JList list = new UMLLinkedList(specializationListModel);
-            specializationScroll = new JScrollPane(list);
-        }
-        return specializationScroll;
+  /**
+   * Returns the tagDefinitionScroll.
+   *
+   * @return JScrollPane
+   */
+  protected JScrollPane getTagDefinitionScroll() {
+    if (tagDefinitionScroll == null) {
+      JList list = new UMLLinkedList(tagDefinitionListModel);
+      tagDefinitionScroll = new JScrollPane(list);
     }
-
-    /**
-     * Returns the tagDefinitionScroll.
-     *
-     * @return JScrollPane
-     */
-    protected JScrollPane getTagDefinitionScroll() {
-        if (tagDefinitionScroll == null) {
-            JList list = new UMLLinkedList(tagDefinitionListModel);
-            tagDefinitionScroll = new JScrollPane(list);
-        }
-        return tagDefinitionScroll;
-    }
-
+    return tagDefinitionScroll;
+  }
 } /* end class PropPanelStereotype */

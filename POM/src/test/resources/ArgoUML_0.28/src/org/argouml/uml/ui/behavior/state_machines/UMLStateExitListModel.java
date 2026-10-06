@@ -33,26 +33,23 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  */
 public class UMLStateExitListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLStateExitListModel.
-     */
-    public UMLStateExitListModel() {
-        super("exit");
-    }
+  /** Constructor for UMLStateExitListModel. */
+  public UMLStateExitListModel() {
+    super("exit");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        removeAllElements();
-        addElement(Model.getFacade().getExit(getTarget()));
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    removeAllElements();
+    addElement(Model.getFacade().getExit(getTarget()));
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return element == Model.getFacade().getExit(getTarget());
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return element == Model.getFacade().getExit(getTarget());
+  }
 }

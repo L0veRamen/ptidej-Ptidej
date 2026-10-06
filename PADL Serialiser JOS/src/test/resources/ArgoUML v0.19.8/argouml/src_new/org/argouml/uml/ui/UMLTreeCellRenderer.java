@@ -25,98 +25,86 @@
 package org.argouml.uml.ui;
 
 import java.awt.Component;
-
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
-
 import org.argouml.application.helpers.ResourceLoaderWrapper;
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.diagram.ui.UMLDiagram;
 
 /**
- * UMTreeCellRenderer determines how the entries in the Explorerpane
- * and ToDoList will be represented graphically.<p>
+ * UMTreeCellRenderer determines how the entries in the Explorerpane and ToDoList will be
+ * represented graphically.
  *
- * In particular it makes decisions about the icons to use,
- * in order to display an Explorerpane artifact depending on the kind
- * of object to be displayed.<p>
+ * <p>In particular it makes decisions about the icons to use, in order to display an Explorerpane
+ * artifact depending on the kind of object to be displayed.
  *
- * This class must be efficient as it is called many 1000's of times.
+ * <p>This class must be efficient as it is called many 1000's of times.
  */
 public class UMLTreeCellRenderer extends DefaultTreeCellRenderer {
 
-    // get localised strings once only
-    private static String name = Translator.localize("label.name");
-    private static String typeName = Translator.localize("label.type");
+  // get localised strings once only
+  private static String name = Translator.localize("label.name");
+  private static String typeName = Translator.localize("label.type");
 
-    ////////////////////////////////////////////////////////////////
-    // TreeCellRenderer implementation
+  ////////////////////////////////////////////////////////////////
+  // TreeCellRenderer implementation
 
-    /**
-     * @see javax.swing.tree.TreeCellRenderer#getTreeCellRendererComponent(
-     * javax.swing.JTree, java.lang.Object, boolean, boolean, boolean, int,
-     * boolean)
-     */
-    public Component getTreeCellRendererComponent(
-        JTree tree,
-        Object value,
-        boolean sel,
-        boolean expanded,
-        boolean leaf,
-        int row,
-        boolean hasFocusParam) {
+  /**
+   * @see javax.swing.tree.TreeCellRenderer#getTreeCellRendererComponent( javax.swing.JTree,
+   *     java.lang.Object, boolean, boolean, boolean, int, boolean)
+   */
+  public Component getTreeCellRendererComponent(
+      JTree tree,
+      Object value,
+      boolean sel,
+      boolean expanded,
+      boolean leaf,
+      int row,
+      boolean hasFocusParam) {
 
-	if (value instanceof DefaultMutableTreeNode) {
-	    value = ((DefaultMutableTreeNode) value).getUserObject();
-	}
-
-        Component r =
-            super.getTreeCellRendererComponent(
-                tree,
-                value,
-                sel,
-                expanded,
-                leaf,
-                row,
-                hasFocusParam);
-
-        if (r instanceof JLabel) {
-            JLabel lab = (JLabel) r;
-
-            // setting the icon
-            Icon icon = ResourceLoaderWrapper.getInstance().lookupIcon(value);
-            if (icon != null) {
-                lab.setIcon(icon);
-            }
-
-            // setting the tooltip to type and name
-            String type = null;
-            if (Model.getFacade().isAModelElement(value)) {
-                type = Model.getFacade().getUMLClassName(value);
-            } else if (value instanceof UMLDiagram) {
-                type = ((UMLDiagram) value).getLabelName();
-            }
-
-            if (type != null) {
-                StringBuffer buf = new StringBuffer();
-                buf.append("<html>");
-                buf.append(name);
-                buf.append(' ');
-                buf.append(lab.getText());
-                buf.append("<br>");
-                buf.append(typeName);
-                buf.append(' ');
-                buf.append(type);
-                lab.setToolTipText(buf.toString());
-            } else {
-                lab.setToolTipText(lab.getText());
-            }
-        }
-        return r;
+    if (value instanceof DefaultMutableTreeNode) {
+      value = ((DefaultMutableTreeNode) value).getUserObject();
     }
 
+    Component r =
+        super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocusParam);
+
+    if (r instanceof JLabel) {
+      JLabel lab = (JLabel) r;
+
+      // setting the icon
+      Icon icon = ResourceLoaderWrapper.getInstance().lookupIcon(value);
+      if (icon != null) {
+        lab.setIcon(icon);
+      }
+
+      // setting the tooltip to type and name
+      String type = null;
+      if (Model.getFacade().isAModelElement(value)) {
+        type = Model.getFacade().getUMLClassName(value);
+      } else if (value instanceof UMLDiagram) {
+        type = ((UMLDiagram) value).getLabelName();
+      }
+
+      if (type != null) {
+        StringBuffer buf = new StringBuffer();
+        buf.append("<html>");
+        buf.append(name);
+        buf.append(' ');
+        buf.append(lab.getText());
+        buf.append("<br>");
+        buf.append(typeName);
+        buf.append(' ');
+        buf.append(type);
+        lab.setToolTipText(buf.toString());
+      } else {
+        lab.setToolTipText(lab.getText());
+      }
+    }
+    return r;
+  }
 } /* end class UMLTreeCellRenderer */

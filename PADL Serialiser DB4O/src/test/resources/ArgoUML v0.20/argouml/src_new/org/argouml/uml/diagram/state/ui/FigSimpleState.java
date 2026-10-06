@@ -28,7 +28,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.util.Iterator;
-
 import org.tigris.gef.graph.GraphModel;
 import org.tigris.gef.presentation.FigLine;
 import org.tigris.gef.presentation.FigRRect;
@@ -42,215 +41,221 @@ import org.tigris.gef.presentation.FigText;
  */
 public class FigSimpleState extends FigState {
 
-    ////////////////////////////////////////////////////////////////
-    // constants
+  ////////////////////////////////////////////////////////////////
+  // constants
 
-    private static final int MARGIN = 2;
+  private static final int MARGIN = 2;
 
-    ////////////////////////////////////////////////////////////////
-    // instance variables
+  ////////////////////////////////////////////////////////////////
+  // instance variables
 
-    private FigRect cover;
-    private FigLine divider;
+  private FigRect cover;
 
+  private FigLine divider;
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    /**
-     * The main constructor
-     */
-    public FigSimpleState() {
-	cover =
-	    new FigRRect(getInitialX(), getInitialY(),
-			 getInitialWidth(), getInitialHeight(),
-			 Color.black, Color.white);
+  /** The main constructor */
+  public FigSimpleState() {
+    cover =
+        new FigRRect(
+            getInitialX(),
+            getInitialY(),
+            getInitialWidth(),
+            getInitialHeight(),
+            Color.black,
+            Color.white);
 
-	getBigPort().setLineWidth(0);
+    getBigPort().setLineWidth(0);
 
-	divider =
-	    new FigLine(getInitialX(),
-			getInitialY() + 2 + getNameFig().getBounds().height + 1,
-			getInitialWidth() - 1,
-			getInitialY() + 2 + getNameFig().getBounds().height + 1,
-			Color.black);
+    divider =
+        new FigLine(
+            getInitialX(),
+            getInitialY() + 2 + getNameFig().getBounds().height + 1,
+            getInitialWidth() - 1,
+            getInitialY() + 2 + getNameFig().getBounds().height + 1,
+            Color.black);
 
-	// add Figs to the FigNode in back-to-front order
-	addFig(getBigPort());
-	addFig(cover);
-	addFig(getNameFig());
-	addFig(divider);
-	addFig(getInternal());
+    // add Figs to the FigNode in back-to-front order
+    addFig(getBigPort());
+    addFig(cover);
+    addFig(getNameFig());
+    addFig(divider);
+    addFig(getInternal());
 
-	//setBlinkPorts(false); //make port invisble unless mouse enters
-	Rectangle r = getBounds();
-	setBounds(r.x, r.y, r.width, r.height);
+    // setBlinkPorts(false); //make port invisble unless mouse enters
+    Rectangle r = getBounds();
+    setBounds(r.x, r.y, r.width, r.height);
+  }
+
+  /**
+   * The constructor that hooks into an existing UML element
+   *
+   * @param gm ignored
+   * @param node the UML element
+   */
+  public FigSimpleState(GraphModel gm, Object node) {
+    this();
+    setOwner(node);
+  }
+
+  /**
+   * @see org.argouml.uml.diagram.ui.FigNodeModelElement#placeString()
+   */
+  public String placeString() {
+    return "new State";
+  }
+
+  /**
+   * @see java.lang.Object#clone()
+   */
+  public Object clone() {
+    FigSimpleState figClone = (FigSimpleState) super.clone();
+    Iterator it = figClone.getFigs().iterator();
+    figClone.setBigPort((FigRRect) it.next());
+    figClone.cover = (FigRect) it.next();
+    figClone.setNameFig((FigText) it.next());
+    figClone.divider = (FigLine) it.next();
+    figClone.setInternal((FigText) it.next());
+    return figClone;
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // accessors
+
+  /**
+   * @see org.tigris.gef.presentation.Fig#getMinimumSize()
+   */
+  public Dimension getMinimumSize() {
+    Dimension nameDim = getNameFig().getMinimumSize();
+    Dimension internalDim = getInternal().getMinimumSize();
+
+    int h = SPACE_TOP + nameDim.height + SPACE_MIDDLE + internalDim.height + SPACE_BOTTOM;
+    int w = Math.max(nameDim.width + 2 * MARGIN, internalDim.width + 2 * MARGIN);
+    return new Dimension(w, h);
+  }
+
+  /**
+   * Override setBounds to keep shapes looking right.
+   *
+   * @see org.tigris.gef.presentation.Fig#setBounds(int, int, int, int)
+   */
+  protected void setBoundsImpl(int x, int y, int w, int h) {
+    if (getNameFig() == null) {
+      return;
     }
+    Rectangle oldBounds = getBounds();
+    Dimension nameDim = getNameFig().getMinimumSize();
 
-    /**
-     * The constructor that hooks into an existing UML element
-     * @param gm ignored
-     * @param node the UML element
-     */
-    public FigSimpleState(GraphModel gm, Object node) {
-	this();
-	setOwner(node);
-    }
+    getNameFig().setBounds(x + MARGIN, y + SPACE_TOP, w - 2 * MARGIN, nameDim.height);
+    divider.setShape(x, y + DIVIDER_Y + nameDim.height, x + w - 1, y + DIVIDER_Y + nameDim.height);
 
-    /**
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement#placeString()
-     */
-    public String placeString() { return "new State"; }
+    getInternal()
+        .setBounds(
+            x + MARGIN,
+            y + SPACE_TOP + nameDim.height + SPACE_MIDDLE,
+            w - 2 * MARGIN,
+            h - SPACE_TOP - nameDim.height - SPACE_MIDDLE - SPACE_BOTTOM);
 
-    /**
-     * @see java.lang.Object#clone()
-     */
-    public Object clone() {
-	FigSimpleState figClone = (FigSimpleState) super.clone();
-	Iterator it = figClone.getFigs().iterator();
-	figClone.setBigPort((FigRRect) it.next());
-	figClone.cover = (FigRect) it.next();
-	figClone.setNameFig((FigText) it.next());
-	figClone.divider = (FigLine) it.next();
-	figClone.setInternal((FigText) it.next());
-	return figClone;
-    }
+    getBigPort().setBounds(x, y, w, h);
+    cover.setBounds(x, y, w, h);
 
-    ////////////////////////////////////////////////////////////////
-    // accessors
+    calcBounds(); // _x = x; _y = y; _w = w; _h = h;
+    updateEdges();
+    firePropChange("bounds", oldBounds, getBounds());
+  }
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#getMinimumSize()
-     */
-    public Dimension getMinimumSize() {
-	Dimension nameDim = getNameFig().getMinimumSize();
-	Dimension internalDim = getInternal().getMinimumSize();
+  ////////////////////////////////////////////////////////////////
+  // Fig accessors
 
-	int h = SPACE_TOP + nameDim.height
-            + SPACE_MIDDLE + internalDim.height
-            + SPACE_BOTTOM;
-	int w = Math.max(nameDim.width + 2 * MARGIN,
-                internalDim.width + 2 * MARGIN);
-	return new Dimension(w, h);
-    }
+  /**
+   * @see org.tigris.gef.presentation.Fig#setLineColor(java.awt.Color)
+   */
+  public void setLineColor(Color col) {
+    cover.setLineColor(col);
+    divider.setLineColor(col);
+  }
 
-    /**
-     * Override setBounds to keep shapes looking right.
-     *
-     * @see org.tigris.gef.presentation.Fig#setBounds(int, int, int, int)
-     */
-    protected void setBoundsImpl(int x, int y, int w, int h) {
-	if (getNameFig() == null) {
-	    return;
-	}
-	Rectangle oldBounds = getBounds();
-	Dimension nameDim = getNameFig().getMinimumSize();
+  /**
+   * @see org.tigris.gef.presentation.Fig#getLineColor()
+   */
+  public Color getLineColor() {
+    return cover.getLineColor();
+  }
 
-	getNameFig().setBounds(x + MARGIN,
-                y + SPACE_TOP,
-                w - 2 * MARGIN,
-                nameDim.height);
-	divider.setShape(x,
-                y + DIVIDER_Y + nameDim.height,
-                x + w - 1,
-                y + DIVIDER_Y + nameDim.height);
+  /**
+   * @see org.tigris.gef.presentation.Fig#setFillColor(java.awt.Color)
+   */
+  public void setFillColor(Color col) {
+    cover.setFillColor(col);
+  }
 
-	getInternal().setBounds(
-                x + MARGIN,
-	        y + SPACE_TOP + nameDim.height + SPACE_MIDDLE,
-	        w - 2 * MARGIN,
-	        h - SPACE_TOP - nameDim.height - SPACE_MIDDLE - SPACE_BOTTOM);
+  /**
+   * @see org.tigris.gef.presentation.Fig#getFillColor()
+   */
+  public Color getFillColor() {
+    return cover.getFillColor();
+  }
 
-	getBigPort().setBounds(x, y, w, h);
-	cover.setBounds(x, y, w, h);
+  /**
+   * @see org.tigris.gef.presentation.Fig#setFilled(boolean)
+   */
+  public void setFilled(boolean f) {
+    cover.setFilled(f);
+    getBigPort().setFilled(f);
+  }
 
-	calcBounds(); //_x = x; _y = y; _w = w; _h = h;
-	updateEdges();
-	firePropChange("bounds", oldBounds, getBounds());
-    }
+  /**
+   * @see org.tigris.gef.presentation.Fig#getFilled()
+   */
+  public boolean getFilled() {
+    return cover.getFilled();
+  }
 
-    ////////////////////////////////////////////////////////////////
-    // Fig accessors
+  /**
+   * @see org.tigris.gef.presentation.Fig#setLineWidth(int)
+   */
+  public void setLineWidth(int w) {
+    cover.setLineWidth(w);
+    divider.setLineWidth(w);
+  }
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#setLineColor(java.awt.Color)
-     */
-    public void setLineColor(Color col) {
-	cover.setLineColor(col);
-	divider.setLineColor(col);
-    }
+  /**
+   * @see org.tigris.gef.presentation.Fig#getLineWidth()
+   */
+  public int getLineWidth() {
+    return cover.getLineWidth();
+  }
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#getLineColor()
-     */
-    public Color getLineColor() { return cover.getLineColor(); }
+  ////////////////////////////////////////////////////////////////
+  // event processing
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#setFillColor(java.awt.Color)
-     */
-    public void setFillColor(Color col) { cover.setFillColor(col); }
+  /**
+   * @see org.argouml.uml.diagram.state.ui.FigState#getInitialHeight()
+   */
+  protected int getInitialHeight() {
+    return 40;
+  }
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#getFillColor()
-     */
-    public Color getFillColor() { return cover.getFillColor(); }
+  /**
+   * @see org.argouml.uml.diagram.state.ui.FigState#getInitialWidth()
+   */
+  protected int getInitialWidth() {
+    return 70;
+  }
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#setFilled(boolean)
-     */
-    public void setFilled(boolean f) {
-        cover.setFilled(f);
-        getBigPort().setFilled(f);
-    }
+  /**
+   * @see org.argouml.uml.diagram.state.ui.FigState#getInitialX()
+   */
+  protected int getInitialX() {
+    return 0;
+  }
 
-    /**
-     * @see org.tigris.gef.presentation.Fig#getFilled()
-     */
-    public boolean getFilled() { return cover.getFilled(); }
-
-    /**
-     * @see org.tigris.gef.presentation.Fig#setLineWidth(int)
-     */
-    public void setLineWidth(int w) {
-	cover.setLineWidth(w);
-	divider.setLineWidth(w);
-    }
-
-    /**
-     * @see org.tigris.gef.presentation.Fig#getLineWidth()
-     */
-    public int getLineWidth() { return cover.getLineWidth(); }
-
-
-    ////////////////////////////////////////////////////////////////
-    // event processing
-
-    /**
-     * @see org.argouml.uml.diagram.state.ui.FigState#getInitialHeight()
-     */
-    protected int getInitialHeight() {
-        return 40;
-    }
-
-    /**
-     * @see org.argouml.uml.diagram.state.ui.FigState#getInitialWidth()
-     */
-    protected int getInitialWidth() {
-        return 70;
-    }
-
-    /**
-     * @see org.argouml.uml.diagram.state.ui.FigState#getInitialX()
-     */
-    protected int getInitialX() {
-        return 0;
-    }
-
-    /**
-     * @see org.argouml.uml.diagram.state.ui.FigState#getInitialY()
-     */
-    protected int getInitialY() {
-        return 0;
-    }
-
+  /**
+   * @see org.argouml.uml.diagram.state.ui.FigState#getInitialY()
+   */
+  protected int getInitialY() {
+    return 0;
+  }
 } /* end class FigSimpleState */

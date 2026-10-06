@@ -31,32 +31,27 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  * @since Oct 11, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class UMLModelElementNamespaceListModel
-    extends UMLModelElementListModel2 {
+public class UMLModelElementNamespaceListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLModelElementNamespaceListModel.
-     */
-    public UMLModelElementNamespaceListModel() {
-        super("namespace");
+  /** Constructor for UMLModelElementNamespaceListModel. */
+  public UMLModelElementNamespaceListModel() {
+    super("namespace");
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    removeAllElements();
+    if (getTarget() != null) {
+      addElement(Model.getFacade().getNamespace(getTarget()));
     }
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        removeAllElements();
-        if (getTarget() != null) {
-            addElement(Model.getFacade().getNamespace(getTarget()));
-        }
-    }
-
-
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().getNamespace(getTarget()) == element;
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().getNamespace(getTarget()) == element;
+  }
 }

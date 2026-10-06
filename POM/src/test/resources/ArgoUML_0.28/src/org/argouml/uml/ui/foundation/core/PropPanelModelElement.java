@@ -27,7 +27,6 @@ package org.argouml.uml.ui.foundation.core;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
@@ -37,7 +36,6 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-
 import org.argouml.i18n.Translator;
 import org.argouml.kernel.UmlModelMutator;
 import org.argouml.model.Model;
@@ -51,330 +49,302 @@ import org.argouml.uml.ui.UMLPlainTextDocument;
 import org.argouml.uml.ui.UMLSearchableComboBox;
 import org.argouml.uml.ui.UMLTextField2;
 
-/**
- * The properties panel for a modelelement.
- */
+/** The properties panel for a modelelement. */
 public abstract class PropPanelModelElement extends PropPanel {
 
-    private JComboBox namespaceSelector;
+  private JComboBox namespaceSelector;
 
-    private JScrollPane supplierDependencyScroll;
+  private JScrollPane supplierDependencyScroll;
 
-    private JScrollPane clientDependencyScroll;
+  private JScrollPane clientDependencyScroll;
 
-    private JScrollPane targetFlowScroll;
+  private JScrollPane targetFlowScroll;
 
-    private JScrollPane sourceFlowScroll;
+  private JScrollPane sourceFlowScroll;
 
-    private JScrollPane constraintScroll;
+  private JScrollPane constraintScroll;
 
-    private JPanel visibilityPanel;
+  private JPanel visibilityPanel;
 
-    private JScrollPane elementResidenceScroll;
+  private JScrollPane elementResidenceScroll;
 
-    private JTextField nameTextField;
-    
-    private UMLModelElementNamespaceComboBoxModel namespaceComboBoxModel =
-	new UMLModelElementNamespaceComboBoxModel();
+  private JTextField nameTextField;
 
-    private static UMLModelElementClientDependencyListModel
-    clientDependencyListModel =
-	new UMLModelElementClientDependencyListModel();
+  private UMLModelElementNamespaceComboBoxModel namespaceComboBoxModel =
+      new UMLModelElementNamespaceComboBoxModel();
 
-    private static UMLModelElementConstraintListModel constraintListModel =
-	new UMLModelElementConstraintListModel();
+  private static UMLModelElementClientDependencyListModel clientDependencyListModel =
+      new UMLModelElementClientDependencyListModel();
 
-    private static UMLModelElementElementResidenceListModel
-    elementResidenceListModel =
-	new UMLModelElementElementResidenceListModel();
+  private static UMLModelElementConstraintListModel constraintListModel =
+      new UMLModelElementConstraintListModel();
 
-    private static UMLModelElementNameDocument nameDocument =
-	new UMLModelElementNameDocument();
+  private static UMLModelElementElementResidenceListModel elementResidenceListModel =
+      new UMLModelElementElementResidenceListModel();
 
-    private static UMLModelElementSourceFlowListModel sourceFlowListModel =
-	new UMLModelElementSourceFlowListModel();
+  private static UMLModelElementNameDocument nameDocument = new UMLModelElementNameDocument();
 
-    private static UMLModelElementTargetFlowListModel targetFlowListModel =
-	new UMLModelElementTargetFlowListModel();
+  private static UMLModelElementSourceFlowListModel sourceFlowListModel =
+      new UMLModelElementSourceFlowListModel();
 
-//    private JScrollPane templateParameterScroll;
-//    
-//    private UMLModelElementTemplateParameterListModel templateParameterListModel
-//        = new UMLModelElementTemplateParameterListModel();
-//    
-//    private UMLModelElementTemplateBindingComboBoxModel 
-//    templateBindingComboBoxModel;
-//
-//    private JComboBox templateBindingSelector;
+  private static UMLModelElementTargetFlowListModel targetFlowListModel =
+      new UMLModelElementTargetFlowListModel();
 
+  //    private JScrollPane templateParameterScroll;
+  //
+  //    private UMLModelElementTemplateParameterListModel templateParameterListModel
+  //        = new UMLModelElementTemplateParameterListModel();
+  //
+  //    private UMLModelElementTemplateBindingComboBoxModel
+  //    templateBindingComboBoxModel;
+  //
+  //    private JComboBox templateBindingSelector;
 
-    /**
-     * The constructor.
-     *
-     * @param name the name of the properties panel
-     * @param icon the icon
-     */
-    public PropPanelModelElement(String name, ImageIcon icon) {
-        super(name, icon);
-    }
-    
-    /**
-     * Constructor that is used if no other proppanel can be found for a
-     * modelelement of some kind. Since this is the default
-     */
-    public PropPanelModelElement() {
-        this("label.model-element-title", (ImageIcon) null);
-        addField("label.name",
-                getNameTextField());
-        addField("label.namespace",
-                getNamespaceSelector());
+  /**
+   * The constructor.
+   *
+   * @param name the name of the properties panel
+   * @param icon the icon
+   */
+  public PropPanelModelElement(String name, ImageIcon icon) {
+    super(name, icon);
+  }
 
-        addSeparator();
+  /**
+   * Constructor that is used if no other proppanel can be found for a modelelement of some kind.
+   * Since this is the default
+   */
+  public PropPanelModelElement() {
+    this("label.model-element-title", (ImageIcon) null);
+    addField("label.name", getNameTextField());
+    addField("label.namespace", getNamespaceSelector());
 
-        addField("label.supplier-dependencies",
-                getSupplierDependencyScroll());
-        addField("label.client-dependencies",
-                getClientDependencyScroll());
-        addField("label.source-flows",
-                getSourceFlowScroll());
-        addField("label.target-flows",
-                getTargetFlowScroll());
+    addSeparator();
 
-        addSeparator();
+    addField("label.supplier-dependencies", getSupplierDependencyScroll());
+    addField("label.client-dependencies", getClientDependencyScroll());
+    addField("label.source-flows", getSourceFlowScroll());
+    addField("label.target-flows", getTargetFlowScroll());
 
-        addField("label.constraints",
-                getConstraintScroll());
-        add(getVisibilityPanel());
-        
-        addField("label.derived",
-                new UMLDerivedCheckBox());
+    addSeparator();
 
-    }
-    
-    /*
-     * @see org.argouml.uml.ui.PropPanel#setTarget(java.lang.Object)
-     */
-    @Override
-    public void setTarget(Object target) {
-        super.setTarget(target);
-        /* This for e.g. a CommentEdge: */
-        if (Model.getFacade().isAUMLElement(target)) {
-            boolean enable =
-                !Model.getModelManagementHelper().isReadOnly(target);
-            for (final Component component : getComponents()) {
-                if (component instanceof JScrollPane) {
-                    Component c = 
-                        ((JScrollPane) component).getViewport().getView();
-                    if (c.getClass().isAnnotationPresent(
-                            UmlModelMutator.class)) {
-                        c.setEnabled(enable);
-                    }
-                } else if (!(component instanceof JLabel)
-                        && component.isEnabled() != enable) {
-                    /* See issue 5289. */
-                    component.setEnabled(enable);
-                }
-            }
+    addField("label.constraints", getConstraintScroll());
+    add(getVisibilityPanel());
+
+    addField("label.derived", new UMLDerivedCheckBox());
+  }
+
+  /*
+   * @see org.argouml.uml.ui.PropPanel#setTarget(java.lang.Object)
+   */
+  @Override
+  public void setTarget(Object target) {
+    super.setTarget(target);
+    /* This for e.g. a CommentEdge: */
+    if (Model.getFacade().isAUMLElement(target)) {
+      boolean enable = !Model.getModelManagementHelper().isReadOnly(target);
+      for (final Component component : getComponents()) {
+        if (component instanceof JScrollPane) {
+          Component c = ((JScrollPane) component).getViewport().getView();
+          if (c.getClass().isAnnotationPresent(UmlModelMutator.class)) {
+            c.setEnabled(enable);
+          }
+        } else if (!(component instanceof JLabel) && component.isEnabled() != enable) {
+          /* See issue 5289. */
+          component.setEnabled(enable);
         }
+      }
     }
+  }
 
-    /**
-     * This overrides the behaviour of the base class to filter out any
-     * actions that could be used to attempt to modify the UML model on
-     * a readonly element.
-     * @return The list of actions to show for this panel.
-     */
-    @Override
-    protected final List getActions() {
-        List actions = super.getActions();
-        if (Model.getFacade().isAUMLElement(getTarget())
-                && Model.getModelManagementHelper().isReadOnly(getTarget())) {
-            final List<Action> filteredActions = new ArrayList<Action>(2);
-            for (Object o : actions) {
-                if (o instanceof Action && !o.getClass().isAnnotationPresent(
-                        UmlModelMutator.class)) {
-                    filteredActions.add((Action) o);
-                }
-            }
-            return filteredActions;
-        } else {
-            return actions;
+  /**
+   * This overrides the behaviour of the base class to filter out any actions that could be used to
+   * attempt to modify the UML model on a readonly element.
+   *
+   * @return The list of actions to show for this panel.
+   */
+  @Override
+  protected final List getActions() {
+    List actions = super.getActions();
+    if (Model.getFacade().isAUMLElement(getTarget())
+        && Model.getModelManagementHelper().isReadOnly(getTarget())) {
+      final List<Action> filteredActions = new ArrayList<Action>(2);
+      for (Object o : actions) {
+        if (o instanceof Action && !o.getClass().isAnnotationPresent(UmlModelMutator.class)) {
+          filteredActions.add((Action) o);
         }
+      }
+      return filteredActions;
+    } else {
+      return actions;
     }
+  }
 
-    /**
-     * Calling this method navigates the target one level up, to the owner of
-     * the current target. In most cases this navigates to the owning namespace.
-     * In some cases it navigates to, for example, the owning composite state
-     * for some simple state.
-     */
-    public void navigateUp() {
-        TargetManager.getInstance().setTarget(
-                Model.getFacade().getModelElementContainer(getTarget()));
+  /**
+   * Calling this method navigates the target one level up, to the owner of the current target. In
+   * most cases this navigates to the owning namespace. In some cases it navigates to, for example,
+   * the owning composite state for some simple state.
+   */
+  public void navigateUp() {
+    TargetManager.getInstance().setTarget(Model.getFacade().getModelElementContainer(getTarget()));
+  }
+
+  /**
+   * Returns the namespace selector. This is a component which allows the user to select a single
+   * item as the namespace.
+   *
+   * @return a component for selecting the namespace
+   */
+  protected JComponent getNamespaceSelector() {
+    if (namespaceSelector == null) {
+      namespaceSelector =
+          new UMLSearchableComboBox(
+              namespaceComboBoxModel, new ActionSetModelElementNamespace(), true);
     }
+    return new UMLComboBoxNavigator(
+        Translator.localize("label.namespace.navigate.tooltip"), namespaceSelector);
+  }
 
-
-    /**
-     * Returns the namespace selector. This is a component which allows the
-     * user to select a single item as the namespace.
-     *
-     * @return a component for selecting the namespace
-     */
-    protected JComponent getNamespaceSelector() {
-        if (namespaceSelector == null) {
-            namespaceSelector = new UMLSearchableComboBox(
-                    namespaceComboBoxModel,
-                    new ActionSetModelElementNamespace(), true);
-        }
-        return new UMLComboBoxNavigator(
-                Translator.localize("label.namespace.navigate.tooltip"),
-                namespaceSelector);
+  /**
+   * @return a scrollpane for supplier dependency
+   */
+  protected JComponent getSupplierDependencyScroll() {
+    if (supplierDependencyScroll == null) {
+      JList list =
+          new UMLMutableLinkedList(
+              new UMLModelElementSupplierDependencyListModel(),
+              new ActionAddSupplierDependencyAction(),
+              null,
+              null,
+              true);
+      supplierDependencyScroll = new JScrollPane(list);
     }
+    return supplierDependencyScroll;
+  }
 
-    /**
-     * @return a scrollpane for supplier dependency
-     */
-    protected JComponent getSupplierDependencyScroll() {
-        if (supplierDependencyScroll == null) {
-            JList list = new UMLMutableLinkedList(
-                    new UMLModelElementSupplierDependencyListModel(),
-                    new ActionAddSupplierDependencyAction(),
-                    null,
-                    null,
-                    true);
-            supplierDependencyScroll = new JScrollPane(list);
-        }
-        return supplierDependencyScroll;
+  /**
+   * @return a scrollpane for client dependency
+   */
+  protected JComponent getClientDependencyScroll() {
+    if (clientDependencyScroll == null) {
+      JList list =
+          new UMLMutableLinkedList(
+              clientDependencyListModel, new ActionAddClientDependencyAction(), null, null, true);
+      clientDependencyScroll = new JScrollPane(list);
     }
+    return clientDependencyScroll;
+  }
 
-    /**
-     * @return a scrollpane for client dependency
-     */
-    protected JComponent getClientDependencyScroll() {
-        if (clientDependencyScroll == null) {
-            JList list = new UMLMutableLinkedList(
-                    clientDependencyListModel,
-                    new ActionAddClientDependencyAction(),
-                    null,
-                    null,
-                    true);
-            clientDependencyScroll = new JScrollPane(list);
-        }
-        return clientDependencyScroll;
+  /**
+   * @return a scrollpane for target flow
+   */
+  protected JComponent getTargetFlowScroll() {
+    if (targetFlowScroll == null) {
+      targetFlowScroll = new ScrollList(targetFlowListModel);
     }
+    return targetFlowScroll;
+  }
 
-    /**
-     * @return a scrollpane for target flow
-     */
-    protected JComponent getTargetFlowScroll() {
-        if (targetFlowScroll == null) {
-            targetFlowScroll = new ScrollList(targetFlowListModel);
-        }
-        return targetFlowScroll;
+  /**
+   * @return a scrollpane for source flow
+   */
+  protected JComponent getSourceFlowScroll() {
+    if (sourceFlowScroll == null) {
+      sourceFlowScroll = new ScrollList(sourceFlowListModel);
     }
+    return sourceFlowScroll;
+  }
 
-    /**
-     * @return a scrollpane for source flow
-     */
-    protected JComponent getSourceFlowScroll() {
-        if (sourceFlowScroll == null) {
-            sourceFlowScroll = new ScrollList(sourceFlowListModel);
-        }
-        return sourceFlowScroll;
+  /**
+   * @return a scrollpane for constraints
+   */
+  protected JComponent getConstraintScroll() {
+    if (constraintScroll == null) {
+      JList constraintList =
+          new UMLMutableLinkedList(
+              constraintListModel, null, ActionNewModelElementConstraint.getInstance());
+      constraintScroll = new JScrollPane(constraintList);
     }
+    return constraintScroll;
+  }
 
-    /**
-     * @return a scrollpane for constraints
-     */
-    protected JComponent getConstraintScroll() {
-        if (constraintScroll == null) {
-            JList constraintList = new UMLMutableLinkedList(
-                    constraintListModel, null,
-                    ActionNewModelElementConstraint.getInstance());
-            constraintScroll = new JScrollPane(constraintList);
-        }
-        return constraintScroll;
+  /**
+   * @return a panel for the visibility
+   */
+  protected JComponent getVisibilityPanel() {
+    if (visibilityPanel == null) {
+      visibilityPanel =
+          new UMLModelElementVisibilityRadioButtonPanel(
+              Translator.localize("label.visibility"), true);
     }
+    return visibilityPanel;
+  }
 
-    /**
-     * @return a panel for the visibility
-     */
-    protected JComponent getVisibilityPanel() {
-        if (visibilityPanel == null) {
-            visibilityPanel =
-		new UMLModelElementVisibilityRadioButtonPanel(
-                    Translator.localize("label.visibility"), true);
-        }
-        return visibilityPanel;
+  /**
+   * @return a scrollpane for residence
+   */
+  protected JComponent getElementResidenceScroll() {
+    if (elementResidenceScroll == null) {
+      elementResidenceScroll = new ScrollList(elementResidenceListModel);
     }
+    return elementResidenceScroll;
+  }
 
-    
-    /**
-     * @return a scrollpane for residence
-     */
-    protected JComponent getElementResidenceScroll() {
-        if (elementResidenceScroll == null) {
-            elementResidenceScroll = new ScrollList(elementResidenceListModel);
-        }
-        return elementResidenceScroll;
+  /**
+   * @return a textfield for the name
+   */
+  protected JComponent getNameTextField() {
+    if (nameTextField == null) {
+      nameTextField = new UMLTextField2(nameDocument);
     }
+    return nameTextField;
+  }
 
-    /**
-     * @return a textfield for the name
-     */
-    protected JComponent getNameTextField() {
-        if (nameTextField == null) {
-            nameTextField = new UMLTextField2(nameDocument);
-        }
-        return nameTextField;
-    }
+  /**
+   * Returns the document (model) for the name. Only used for the PropPanelComment.
+   *
+   * @return Document
+   */
+  protected UMLPlainTextDocument getNameDocument() {
+    return nameDocument;
+  }
 
-    /**
-     * Returns the document (model) for the name. Only used for the
-     * PropPanelComment.
-     *
-     * @return Document
-     */
-    protected UMLPlainTextDocument getNameDocument() {
-        return nameDocument;
-    }
+  /**
+   * @return a scrollpane for template parameters
+   */
+  //    protected JComponent getTemplateParameterScroll() {
+  //        if (templateParameterScroll == null) {
+  //
+  //            templateParameterScroll = new ScrollList(
+  //                    templateParameterListModel, false, false);
+  //
+  //            // TODO: Use some kind of list to allow user to select type for
+  //            // new parameters to be added
+  ////            JList list = new UMLMutableLinkedList(
+  ////                    templateParameterListModel,
+  ////                    new ActionAddClientDependencyAction(),
+  ////                    null,
+  ////                    null,
+  ////                    true);
+  ////            templateParameterScroll = new JScrollPane(list);
+  //        }
+  //        return templateParameterScroll;
+  //    }
 
-    /**
-     * @return a scrollpane for template parameters
-     */
-//    protected JComponent getTemplateParameterScroll() {
-//        if (templateParameterScroll == null) {
-//
-//            templateParameterScroll = new ScrollList(
-//                    templateParameterListModel, false, false);
-//
-//            // TODO: Use some kind of list to allow user to select type for
-//            // new parameters to be added
-////            JList list = new UMLMutableLinkedList(
-////                    templateParameterListModel,
-////                    new ActionAddClientDependencyAction(),
-////                    null,
-////                    null,
-////                    true);
-////            templateParameterScroll = new JScrollPane(list);
-//        }
-//        return templateParameterScroll;
-//    }
-    
-    /**
-     * Returns the template selector. This is a component which allows the
-     * user to select a single item as the template to be used.
-     *
-     * @return a component for selecting the template binding
-     */
-//    protected JComponent getTemplateBindingSelector() {
-//        if (templateBindingSelector == null) {
-//            templateBindingSelector = new UMLSearchableComboBox(
-//                    templateBindingComboBoxModel,
-//                    new ActionSetModelElementTemplateBinding(), true);
-//        }
-//        return new UMLComboBoxNavigator(
-//                Translator.localize("label.namespace.navigate.tooltip"),
-//                templateBindingSelector);
-//    }
+  /**
+   * Returns the template selector. This is a component which allows the user to select a single
+   * item as the template to be used.
+   *
+   * @return a component for selecting the template binding
+   */
+  //    protected JComponent getTemplateBindingSelector() {
+  //        if (templateBindingSelector == null) {
+  //            templateBindingSelector = new UMLSearchableComboBox(
+  //                    templateBindingComboBoxModel,
+  //                    new ActionSetModelElementTemplateBinding(), true);
+  //        }
+  //        return new UMLComboBoxNavigator(
+  //                Translator.localize("label.namespace.navigate.tooltip"),
+  //                templateBindingSelector);
+  //    }
 }

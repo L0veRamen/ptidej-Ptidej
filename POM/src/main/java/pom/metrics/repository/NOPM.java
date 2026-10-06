@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -22,43 +22,40 @@ import pom.metrics.IUnaryMetric;
 
 /**
  * @author Foutse Khomh
- * @since  2007/03/01
+ * @since 2007/03/01
  */
 public class NOPM extends AbstractMetric implements IMetric, IUnaryMetric {
-	public String getDefinition() {
-		final String def =
-			"Number of methods that can exhibit polymorphic behavior. (A method can exhibit polymorphic behaviour if it is overridden by one or more descendent classes.)";
-		return def;
-	}
-	protected double concretelyCompute(
-		final IAbstractModel anAbstractModel,
-		final IFirstClassEntity anEntity) {
+  public String getDefinition() {
+    final String def =
+        "Number of methods that can exhibit polymorphic behavior. (A method can exhibit polymorphic behaviour if it is overridden by one or more descendent classes.)";
+    return def;
+  }
 
-		double result = 0;
+  protected double concretelyCompute(
+      final IAbstractModel anAbstractModel, final IFirstClassEntity anEntity) {
 
-		final Collection Methods =
-			this.classPrimitives.listOfDeclaredMethods(anEntity);
-		final List descendent =
-			super.classPrimitives.listOfDescendents(anEntity);
-		final Iterator iterMethod = Methods.iterator();
-		while (iterMethod.hasNext()) {
-			final IOperation method = (IOperation) iterMethod.next();
-			final List overidden = new ArrayList();
-			final Iterator iterdest = descendent.iterator();
-			while (iterdest.hasNext()) {
-				final IFirstClassEntity firstClassEntity =
-					(IFirstClassEntity) iterdest.next();
-				if (super.operators.belongTo(method, this.classPrimitives
-					.listOfOverriddenMethods(firstClassEntity))) {
+    double result = 0;
 
-					overidden.add(firstClassEntity);
-				}
-			}
-			if (overidden.size() > 0) {
-				result = result + 1;
-			}
-		}
+    final Collection Methods = this.classPrimitives.listOfDeclaredMethods(anEntity);
+    final List descendent = super.classPrimitives.listOfDescendents(anEntity);
+    final Iterator iterMethod = Methods.iterator();
+    while (iterMethod.hasNext()) {
+      final IOperation method = (IOperation) iterMethod.next();
+      final List<IFirstClassEntity> overidden = new ArrayList<>();
+      final Iterator iterdest = descendent.iterator();
+      while (iterdest.hasNext()) {
+        final IFirstClassEntity firstClassEntity = (IFirstClassEntity) iterdest.next();
+        if (super.operators.belongTo(
+            method, this.classPrimitives.listOfOverriddenMethods(firstClassEntity))) {
 
-		return result;
-	}
+          overidden.add(firstClassEntity);
+        }
+      }
+      if (overidden.size() > 0) {
+        result = result + 1;
+      }
+    }
+
+    return result;
+  }
 }

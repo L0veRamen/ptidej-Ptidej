@@ -13,20 +13,19 @@ package choco.palm.integer.explain;
 import choco.Problem;
 import choco.palm.integer.PalmIntVar;
 
-public abstract class BoundExplanation extends
-		choco.palm.explain.GenericExplanation {
-	int previousValue;
-	PalmIntVar variable;
+public abstract class BoundExplanation extends choco.palm.explain.GenericExplanation {
+  int previousValue;
+  PalmIntVar variable;
 
-	public BoundExplanation(final Problem pb) {
-		super(pb);
-	}
+  public BoundExplanation(final Problem pb) {
+    super(pb);
+  }
 
-	public int getPreviousValue() {
-		return this.previousValue;
-	}
+  public int getPreviousValue() {
+    return this.previousValue;
+  }
 
-	public PalmIntVar getVariable() {
-		return this.variable;
-	}
+  public PalmIntVar getVariable() {
+    return this.variable;
+  }
 }

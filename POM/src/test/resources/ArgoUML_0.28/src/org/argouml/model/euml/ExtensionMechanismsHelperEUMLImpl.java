@@ -28,144 +28,133 @@ package org.argouml.model.euml;
 
 import java.util.Collection;
 import java.util.Collections;
-
 import org.argouml.model.ExtensionMechanismsHelper;
 import org.eclipse.uml2.uml.Element;
 
-/**
- * The implementation of the ExtensionMechanismsHelper for EUML2.
- */
+/** The implementation of the ExtensionMechanismsHelper for EUML2. */
 class ExtensionMechanismsHelperEUMLImpl implements ExtensionMechanismsHelper {
 
-    /**
-     * The model implementation.
-     */
-    private EUMLModelImplementation modelImpl;
+  /** The model implementation. */
+  private EUMLModelImplementation modelImpl;
 
-    /**
-     * Constructor.
-     *
-     * @param implementation The ModelImplementation.
-     */
-    public ExtensionMechanismsHelperEUMLImpl(
-            EUMLModelImplementation implementation) {
-        modelImpl = implementation;
-    }
+  /**
+   * Constructor.
+   *
+   * @param implementation The ModelImplementation.
+   */
+  public ExtensionMechanismsHelperEUMLImpl(EUMLModelImplementation implementation) {
+    modelImpl = implementation;
+  }
 
-    public void addBaseClass(Object handle, Object baseClass) {
-        // TODO: Auto-generated method stub
-        
-    }
+  public void addBaseClass(Object handle, Object baseClass) {
+    // TODO: Auto-generated method stub
 
-    public void addCopyStereotype(Object modelElement, Object stereotype) {
-        // TODO: Auto-generated method stub
-        
-    }
+  }
 
-    public void addExtendedElement(Object handle, Object extendedElement) {
-        // TODO: Auto-generated method stub
-        
-    }
+  public void addCopyStereotype(Object modelElement, Object stereotype) {
+    // TODO: Auto-generated method stub
 
-    public void addTaggedValue(Object handle, Object taggedValue) {
-        // TODO: Auto-generated method stub
-        
-    }
+  }
 
-    public Collection getAllPossibleStereotypes(Collection models,
-            Object modelElement) {
-        // TODO: Auto-generated method stub
-        return Collections.emptySet();
-    }
+  public void addExtendedElement(Object handle, Object extendedElement) {
+    // TODO: Auto-generated method stub
 
-    public String getMetaModelName(Object m) {
-        if (m instanceof Element) {
-            return getMetaModelName(m.getClass());
-        }
-        throw new IllegalArgumentException("Not an Element"); //$NON-NLS-1$
-    }
+  }
 
-    /**
-     * @param clazz
-     *            the UML class
-     * @return the meta name of the UML class
-     */
-    protected String getMetaModelName(Class clazz) {
-        return modelImpl.getMetaTypes().getName(clazz);
-    }
-    
-    
-    public Object getStereotype(Object ns, Object stereo) {
-        // TODO: Auto-generated method stub
-        return null;
-    }
+  public void addTaggedValue(Object handle, Object taggedValue) {
+    // TODO: Auto-generated method stub
 
-    public Object getStereotype(Collection models, Object stereo) {
-        // TODO: Auto-generated method stub
-        return null;
-    }
+  }
 
-    public Collection getStereotypes(Object ns) {
-        // TODO: Auto-generated method stub
-        return Collections.emptySet();
-    }
+  public Collection getAllPossibleStereotypes(Collection models, Object modelElement) {
+    // TODO: Auto-generated method stub
+    return Collections.emptySet();
+  }
 
-    public Collection getStereotypes(Collection models) {
-        // TODO: Auto-generated method stub
-        return Collections.emptySet();
+  public String getMetaModelName(Object m) {
+    if (m instanceof Element) {
+      return getMetaModelName(m.getClass());
     }
+    throw new IllegalArgumentException("Not an Element"); // $NON-NLS-1$
+  }
 
-    public boolean hasStereotype(Object handle, String name) {
-        // TODO: Auto-generated method stub
-        return false;
-    }
+  /**
+   * @param clazz the UML class
+   * @return the meta name of the UML class
+   */
+  protected String getMetaModelName(Class clazz) {
+    return modelImpl.getMetaTypes().getName(clazz);
+  }
 
-    public boolean isStereotype(Object object, String name, String base) {
-        // TODO: Auto-generated method stub
-        return false;
-    }
+  public Object getStereotype(Object ns, Object stereo) {
+    // TODO: Auto-generated method stub
+    return null;
+  }
 
-    public boolean isStereotypeInh(Object object, String name, String base) {
-        // TODO: Auto-generated method stub
-        return false;
-    }
+  public Object getStereotype(Collection models, Object stereo) {
+    // TODO: Auto-generated method stub
+    return null;
+  }
 
-    public boolean isValidStereotype(Object theModelElement,
-            Object theStereotype) {
-        // TODO: Auto-generated method stub
-        return false;
-    }
+  public Collection getStereotypes(Object ns) {
+    // TODO: Auto-generated method stub
+    return Collections.emptySet();
+  }
 
-    public void removeBaseClass(Object handle, Object baseClass) {
-        // TODO: Auto-generated method stub
-    }
+  public Collection getStereotypes(Collection models) {
+    // TODO: Auto-generated method stub
+    return Collections.emptySet();
+  }
 
-    public void removeTaggedValue(Object handle, Object taggedValue) {
-        // TODO: Auto-generated method stub
-    }
+  public boolean hasStereotype(Object handle, String name) {
+    // TODO: Auto-generated method stub
+    return false;
+  }
 
-    public void setIcon(Object handle, Object icon) {
-        // TODO: Auto-generated method stub
-    }
+  public boolean isStereotype(Object object, String name, String base) {
+    // TODO: Auto-generated method stub
+    return false;
+  }
 
-    public void setTaggedValue(Object handle, Collection taggedValues) {
-        // TODO: Auto-generated method stub
-    }
+  public boolean isStereotypeInh(Object object, String name, String base) {
+    // TODO: Auto-generated method stub
+    return false;
+  }
 
-    public void setTagType(Object handle, String tagType) {
-        // TODO: Auto-generated method stub        
-    }
-    
-    public void setType(Object handle, Object type) {
-        // TODO: Auto-generated method stub        
-    }
+  public boolean isValidStereotype(Object theModelElement, Object theStereotype) {
+    // TODO: Auto-generated method stub
+    return false;
+  }
 
-    public void setValueOfTag(Object handle, String value) {
-        // TODO: Auto-generated method stub
-    }
+  public void removeBaseClass(Object handle, Object baseClass) {
+    // TODO: Auto-generated method stub
+  }
 
-    public void setDataValues(Object handle, String[] value) {
-        // TODO: Auto-generated method stub
-    }
+  public void removeTaggedValue(Object handle, Object taggedValue) {
+    // TODO: Auto-generated method stub
+  }
 
+  public void setIcon(Object handle, Object icon) {
+    // TODO: Auto-generated method stub
+  }
+
+  public void setTaggedValue(Object handle, Collection taggedValues) {
+    // TODO: Auto-generated method stub
+  }
+
+  public void setTagType(Object handle, String tagType) {
+    // TODO: Auto-generated method stub
+  }
+
+  public void setType(Object handle, Object type) {
+    // TODO: Auto-generated method stub
+  }
+
+  public void setValueOfTag(Object handle, String value) {
+    // TODO: Auto-generated method stub
+  }
+
+  public void setDataValues(Object handle, String[] value) {
+    // TODO: Auto-generated method stub
+  }
 }

@@ -29,67 +29,61 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLComboBoxModel2;
 
 /**
- * A model for selecting a UML metaclass. Originally designed for use in
- * selecting the base class of stereotypes in UML 1.3, but now used to select
- * the type of a TagDefinition.
- * 
+ * A model for selecting a UML metaclass. Originally designed for use in selecting the base class of
+ * stereotypes in UML 1.3, but now used to select the type of a TagDefinition.
+ *
  * @author mkl
  */
 public class UMLMetaClassComboBoxModel extends UMLComboBoxModel2 {
 
-    private List<String> metaClasses;
+  private List<String> metaClasses;
 
-    /**
-     * Construct a default combo box model.
-     */
-    public UMLMetaClassComboBoxModel() {
-        super("tagType", true);
-        Collection<String> tmpMetaClasses =
-                Model.getCoreHelper().getAllMetatypeNames();
-        
-        if (tmpMetaClasses instanceof List) {
-            metaClasses = (List<String>) tmpMetaClasses;
-        } else {
-            metaClasses = new LinkedList<String>(tmpMetaClasses);
-        }
-        tmpMetaClasses.addAll(Model.getCoreHelper().getAllMetaDatatypeNames());
-        try {
-            Collections.sort(metaClasses);
-        } catch (UnsupportedOperationException e) {
-            // We got passed an unmodifiable List.  Copy it and sort the result
-            metaClasses = new LinkedList<String>(tmpMetaClasses);
-            Collections.sort(metaClasses);
-        }
+  /** Construct a default combo box model. */
+  public UMLMetaClassComboBoxModel() {
+    super("tagType", true);
+    Collection<String> tmpMetaClasses = Model.getCoreHelper().getAllMetatypeNames();
+
+    if (tmpMetaClasses instanceof List) {
+      metaClasses = (List<String>) tmpMetaClasses;
+    } else {
+      metaClasses = new LinkedList<String>(tmpMetaClasses);
     }
-
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
-     */
-    @Override
-    protected Object getSelectedModelElement() {
-        if (getTarget() != null) {
-            return Model.getFacade().getType(getTarget());
-        }
-        return null;
+    tmpMetaClasses.addAll(Model.getCoreHelper().getAllMetaDatatypeNames());
+    try {
+      Collections.sort(metaClasses);
+    } catch (UnsupportedOperationException e) {
+      // We got passed an unmodifiable List.  Copy it and sort the result
+      metaClasses = new LinkedList<String>(tmpMetaClasses);
+      Collections.sort(metaClasses);
     }
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        setElements(metaClasses);
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
+   */
+  @Override
+  protected Object getSelectedModelElement() {
+    if (getTarget() != null) {
+      return Model.getFacade().getType(getTarget());
     }
+    return null;
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return metaClasses.contains(element);
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    setElements(metaClasses);
+  }
 
+  /*
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return metaClasses.contains(element);
+  }
 }

@@ -25,40 +25,34 @@
 package org.argouml.uml.cognitive.critics;
 
 import junit.framework.TestCase;
-
 import org.argouml.model.Model;
 
 public class TestCrNoInitialState extends TestCase {
 
-    private CrUML critic = null;
+  private CrUML critic = null;
 
-    private Object statemachine;
+  private Object statemachine;
 
-    private Object compositestate;
+  private Object compositestate;
 
-    private Object initial;
+  private Object initial;
 
-    
-    public TestCrNoInitialState(String arg0) {
-        super(arg0);
-    }
+  public TestCrNoInitialState(String arg0) {
+    super(arg0);
+  }
 
-    protected void setUp() throws Exception {
-        super.setUp();
-        critic = new CrNoInitialState();
-        statemachine = Model.getStateMachinesFactory().createStateMachine();
-        compositestate = Model.getStateMachinesFactory()
-                .buildCompositeStateOnStateMachine(statemachine);
-        initial = Model.getStateMachinesFactory().buildPseudoState(
-                compositestate);
-      
+  protected void setUp() throws Exception {
+    super.setUp();
+    critic = new CrNoInitialState();
+    statemachine = Model.getStateMachinesFactory().createStateMachine();
+    compositestate =
+        Model.getStateMachinesFactory().buildCompositeStateOnStateMachine(statemachine);
+    initial = Model.getStateMachinesFactory().buildPseudoState(compositestate);
+  }
 
-    }
-
-    public void testPredicate2() {
-        assertTrue(critic.predicate2(compositestate, null));
-        Model.getCoreHelper().setKind(initial,
-                Model.getPseudostateKind().getInitial());
-        assertFalse(critic.predicate2(compositestate, null));
-    }
+  public void testPredicate2() {
+    assertTrue(critic.predicate2(compositestate, null));
+    Model.getCoreHelper().setKind(initial, Model.getPseudostateKind().getInitial());
+    assertFalse(critic.predicate2(compositestate, null));
+  }
 }

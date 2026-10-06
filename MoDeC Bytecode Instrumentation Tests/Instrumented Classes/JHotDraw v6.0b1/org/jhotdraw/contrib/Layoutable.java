@@ -14,30 +14,28 @@ package org.jhotdraw.contrib;
 import org.jhotdraw.framework.Figure;
 
 /**
- * A Layoutable is a target for a Layouter who lays out the Layoutable
- * according to its layout algorithm
+ * A Layoutable is a target for a Layouter who lays out the Layoutable according to its layout
+ * algorithm
  *
  * @author Wolfram Kaiser
  * @version <$CURRENT_VERSION$>
  */
 public interface Layoutable extends Figure {
 
-	/**
-	 * Layout the figure
-	 */
-	public void layout();
+  /** Layout the figure */
+  public void layout();
 
-	/**
-	 * Set the Layouter for this Layoutable
-	 *
-	 * @param newLayouter layouter
-	 */
-	public void setLayouter(Layouter newLayouter);
-	
-	/**
-	 * Return the Layouter for this Layoutable
-	 *
-	 * @return layouter
-	 */
-	public Layouter getLayouter();
+  /**
+   * Set the Layouter for this Layoutable
+   *
+   * @param newLayouter layouter
+   */
+  public void setLayouter(Layouter newLayouter);
+
+  /**
+   * Return the Layouter for this Layoutable
+   *
+   * @return layouter
+   */
+  public Layouter getLayouter();
 }

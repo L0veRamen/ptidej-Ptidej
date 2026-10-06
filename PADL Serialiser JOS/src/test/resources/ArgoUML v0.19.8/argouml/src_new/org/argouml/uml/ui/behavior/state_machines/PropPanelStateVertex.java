@@ -27,7 +27,6 @@ package org.argouml.uml.ui.behavior.state_machines;
 import javax.swing.ImageIcon;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-
 import org.argouml.uml.ui.ActionDeleteSingleModelElement;
 import org.argouml.uml.ui.ActionNavigateNamespace;
 import org.argouml.uml.ui.UMLLinkedList;
@@ -42,63 +41,57 @@ import org.tigris.swidgets.Orientation;
  */
 public abstract class PropPanelStateVertex extends PropPanelModelElement {
 
-    private JScrollPane incomingScroll;
+  private JScrollPane incomingScroll;
 
-    private JScrollPane outgoingScroll;
+  private JScrollPane outgoingScroll;
 
-    private JScrollPane containerScroll;
+  private JScrollPane containerScroll;
 
-    /**
-     * Constructor for PropPanelStateVertex.
-     *
-     * @param name the name of the tabpanel shown at the top
-     * @param icon the icon of the tabpanel shown at the top
-     * @param orientation the orientation
-     */
-    public PropPanelStateVertex(String name, ImageIcon icon,
-            Orientation orientation) {
-        super(name, icon, orientation);
-        JList incomingList = new UMLLinkedList(
-                new UMLStateVertexIncomingListModel());
-        incomingScroll = new JScrollPane(incomingList);
-        JList outgoingList = new UMLLinkedList(
-                new UMLStateVertexOutgoingListModel());
-        outgoingScroll = new JScrollPane(outgoingList);
+  /**
+   * Constructor for PropPanelStateVertex.
+   *
+   * @param name the name of the tabpanel shown at the top
+   * @param icon the icon of the tabpanel shown at the top
+   * @param orientation the orientation
+   */
+  public PropPanelStateVertex(String name, ImageIcon icon, Orientation orientation) {
+    super(name, icon, orientation);
+    JList incomingList = new UMLLinkedList(new UMLStateVertexIncomingListModel());
+    incomingScroll = new JScrollPane(incomingList);
+    JList outgoingList = new UMLLinkedList(new UMLStateVertexOutgoingListModel());
+    outgoingScroll = new JScrollPane(outgoingList);
 
-        JList compositeList = new UMLLinkedList(
-                new UMLStateVertexContainerListModel());
-        compositeList.setVisibleRowCount(1);
-        containerScroll = new JScrollPane(compositeList);
+    JList compositeList = new UMLLinkedList(new UMLStateVertexContainerListModel());
+    compositeList.setVisibleRowCount(1);
+    containerScroll = new JScrollPane(compositeList);
 
-        addAction(new ActionNavigateNamespace());
-        addExtraButtons();
-        addAction(new ActionNewStereotype());
-        addAction(new ActionDeleteSingleModelElement());
-    }
+    addAction(new ActionNavigateNamespace());
+    addExtraButtons();
+    addAction(new ActionNewStereotype());
+    addAction(new ActionDeleteSingleModelElement());
+  }
 
-    /** Overrule this to add extra buttons. */
-    protected void addExtraButtons() { }
-    
-    /**
-     * @return Returns the incomingScroll.
-     */
-    protected JScrollPane getIncomingScroll() {
-        return incomingScroll;
-    }
+  /** Overrule this to add extra buttons. */
+  protected void addExtraButtons() {}
 
-    /**
-     * @return Returns the outgoingScroll.
-     */
-    protected JScrollPane getOutgoingScroll() {
-        return outgoingScroll;
-    }
+  /**
+   * @return Returns the incomingScroll.
+   */
+  protected JScrollPane getIncomingScroll() {
+    return incomingScroll;
+  }
 
-    /**
-     * @return Returns the containerScroll.
-     */
-    protected JScrollPane getContainerScroll() {
-        return containerScroll;
-    }
+  /**
+   * @return Returns the outgoingScroll.
+   */
+  protected JScrollPane getOutgoingScroll() {
+    return outgoingScroll;
+  }
 
+  /**
+   * @return Returns the containerScroll.
+   */
+  protected JScrollPane getContainerScroll() {
+    return containerScroll;
+  }
 } /* end class PropPanelStateVertex */
-

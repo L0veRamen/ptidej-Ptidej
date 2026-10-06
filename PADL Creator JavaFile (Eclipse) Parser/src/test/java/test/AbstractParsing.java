@@ -10,54 +10,54 @@
  ******************************************************************************/
 package test;
 
-import java.io.File;
-
-import org.eclipse.jdt.core.dom.ASTVisitor;
-import org.junit.Assert;
-
 import client.WrapperClient;
 import common.tools.constants.Constants;
 import common.tools.file.FileTools;
+import java.io.File;
 import junit.framework.TestCase;
+import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.junit.Assert;
 
 public abstract class AbstractParsing extends TestCase {
-	private String resultFilePath;
-	private String oracleFilePath;
-	private String testCaseName;
-	private WrapperClient parserClient;
-	private ASTVisitor visitor;
+  private String resultFilePath;
+  private String oracleFilePath;
+  private String testCaseName;
+  private WrapperClient parserClient;
+  private ASTVisitor visitor;
 
-	public AbstractParsing(final String aName) {
-		super(aName);
-	}
+  public AbstractParsing(final String aName) {
+    super(aName);
+  }
 
-	protected void init(final String resultFilePath,
-			final String oracleFilePath, final String testCaseName,
-			final WrapperClient wrapper, final ASTVisitor visitor) {
+  protected void init(
+      final String resultFilePath,
+      final String oracleFilePath,
+      final String testCaseName,
+      final WrapperClient wrapper,
+      final ASTVisitor visitor) {
 
-		this.resultFilePath = resultFilePath;
-		this.oracleFilePath = oracleFilePath;
-		this.testCaseName = testCaseName;
-		this.parserClient = wrapper;
-		this.visitor = visitor;
-	}
+    this.resultFilePath = resultFilePath;
+    this.oracleFilePath = oracleFilePath;
+    this.testCaseName = testCaseName;
+    this.parserClient = wrapper;
+    this.visitor = visitor;
+  }
 
-	protected void testParse() {
-		this.parserClient
-				.parseAllJavaSources(new ASTVisitor[] { this.visitor });
+  protected void testParse() {
+    this.parserClient.parseAllJavaSources(new ASTVisitor[] {this.visitor});
 
-		final String STR = " java files took ";
+    final String STR = " java files took ";
 
-		String oracle = new String(
-				FileTools.Instance.readFile(new File(this.oracleFilePath)))
-				.replace(Constants.CR_LF, Constants.NEW_LINE);
-		oracle = oracle.substring(1, oracle.lastIndexOf(STR));
+    String oracle =
+        new String(FileTools.Instance.readFile(new File(this.oracleFilePath)))
+            .replace(Constants.CR_LF, Constants.NEW_LINE);
+    oracle = oracle.substring(1, oracle.lastIndexOf(STR));
 
-		String result = new String(
-				FileTools.Instance.readTempFile(new File(this.resultFilePath)))
-				.replace(Constants.CR_LF, Constants.NEW_LINE);
-		result = result.substring(1, result.lastIndexOf(STR));
+    String result =
+        new String(FileTools.Instance.readTempFile(new File(this.resultFilePath)))
+            .replace(Constants.CR_LF, Constants.NEW_LINE);
+    result = result.substring(1, result.lastIndexOf(STR));
 
-		Assert.assertEquals(this.testCaseName, oracle, result);
-	}
+    Assert.assertEquals(this.testCaseName, oracle, result);
+  }
 }

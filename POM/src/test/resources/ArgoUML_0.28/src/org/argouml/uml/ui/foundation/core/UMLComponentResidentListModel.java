@@ -24,47 +24,41 @@
 
 package org.argouml.uml.ui.foundation.core;
 
-import org.argouml.model.Model;
-import org.argouml.uml.ui.UMLModelElementListModel2;
-
 import java.util.ArrayList;
 import java.util.Iterator;
+import org.argouml.model.Model;
+import org.argouml.uml.ui.UMLModelElementListModel2;
 
 /**
  * ListModel for resident elements in a component
  *
  * @author pepargouml@yahoo.es
  */
-public class UMLComponentResidentListModel
-        extends UMLModelElementListModel2 {
+public class UMLComponentResidentListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor.
-     */
-    public UMLComponentResidentListModel() {
-        super("resident");
+  /** Constructor. */
+  public UMLComponentResidentListModel() {
+    super("resident");
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (Model.getFacade().isAComponent(getTarget())) {
+      Iterator it = Model.getFacade().getResidentElements(getTarget()).iterator();
+      ArrayList list = new ArrayList();
+      while (it.hasNext()) {
+        list.add(Model.getFacade().getResident(it.next()));
+      }
+      setAllElements(list);
     }
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (Model.getFacade().isAComponent(getTarget())) {
-            Iterator it = Model.getFacade()
-                    .getResidentElements(getTarget()).iterator();
-            ArrayList list = new ArrayList();
-            while (it.hasNext()) {
-                list.add(Model.getFacade().getResident(it.next()));
-            }
-            setAllElements(list);
-        }
-    }
-
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object o) {
-        return (Model.getFacade().isAModelElement(o));
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object o) {
+    return (Model.getFacade().isAModelElement(o));
+  }
 }

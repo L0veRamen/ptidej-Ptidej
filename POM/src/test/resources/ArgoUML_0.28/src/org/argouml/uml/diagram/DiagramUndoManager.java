@@ -25,7 +25,6 @@
 package org.argouml.uml.diagram;
 
 import java.beans.PropertyChangeListener;
-
 import org.apache.log4j.Logger;
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
@@ -33,96 +32,92 @@ import org.tigris.gef.undo.Memento;
 import org.tigris.gef.undo.UndoManager;
 
 /**
- * This class is a temporary wrapper around the GEF UndoManager.
- * This will be changed when GEF is modified to create commands and
- * provide an observer interface for ArgoUML to receive them.
- * <p>
- * TODO: How does this relate to {@link org.argouml.kernel.DefaultUndoManager}?
- * 
+ * This class is a temporary wrapper around the GEF UndoManager. This will be changed when GEF is
+ * modified to create commands and provide an observer interface for ArgoUML to receive them.
+ *
+ * <p>TODO: How does this relate to {@link org.argouml.kernel.DefaultUndoManager}?
+ *
  * @author Bob Tarling
  */
 public class DiagramUndoManager extends UndoManager {
-    
-    private static final Logger LOG = Logger.getLogger(UndoManager.class);
-    
-    private boolean startChain;
-    
-    /**
-     * Called when a new user interaction starts
-     * @see org.tigris.gef.undo.UndoManager#startChain()
-     */
-    @Override
-    public void startChain() {
-        startChain = true;
+
+  private static final Logger LOG = Logger.getLogger(UndoManager.class);
+
+  private boolean startChain;
+
+  /**
+   * Called when a new user interaction starts
+   *
+   * @see org.tigris.gef.undo.UndoManager#startChain()
+   */
+  @Override
+  public void startChain() {
+    startChain = true;
+  }
+
+  @Override
+  public boolean isGenerateMementos() {
+    // TODO: This shouldn't depend on the current project, but for now
+    // just make sure it's defined and that we have an undo manager
+    Project p = ProjectManager.getManager().getCurrentProject();
+    return super.isGenerateMementos() && p != null && p.getUndoManager() != null;
+  }
+
+  /**
+   * @param memento the GEF memento
+   * @see org.tigris.gef.undo.UndoManager#addMemento(org.tigris.gef.undo.Memento)
+   */
+  @Override
+  public void addMemento(final Memento memento) {
+    // TODO: This shouldn't be referencing the current project.  Instead
+    // the appropriate UndoManager should have already been retrieved from
+    // the correct project.
+    Project p = ProjectManager.getManager().getCurrentProject();
+    if (p != null) {
+      org.argouml.kernel.UndoManager undo = p.getUndoManager();
+      if (undo != null) {
+        if (startChain) {
+          // TODO i18n: GEF needs to pass us back the description
+          // of what is being done.
+          undo.startInteraction("Diagram Interaction");
+        }
+        // TODO: I presume this would fix issue 5250 - but
+        // GEF would need to be adapted:
+        //                if (!(memento instanceof SelectionMemento))
+        undo.addCommand(new DiagramCommand(memento));
+
+        startChain = false;
+      }
     }
-    
+  }
+
+  public void addPropertyChangeListener(PropertyChangeListener listener) {
+    LOG.info("Adding property listener " + listener);
+    super.addPropertyChangeListener(listener);
+  }
+
+  private class DiagramCommand extends org.argouml.kernel.AbstractCommand {
+
+    private final Memento memento;
+
+    DiagramCommand(final Memento theMemento) {
+      this.memento = theMemento;
+    }
 
     @Override
-    public boolean isGenerateMementos() {
-        // TODO: This shouldn't depend on the current project, but for now
-        // just make sure it's defined and that we have an undo manager
-        Project p = ProjectManager.getManager().getCurrentProject();
-        return super.isGenerateMementos() && p != null 
-                && p.getUndoManager() != null;
+    public Object execute() {
+      memento.redo();
+      return null;
     }
-    
-    /**
-     * @param memento the GEF memento
-     * @see org.tigris.gef.undo.UndoManager#addMemento(org.tigris.gef.undo.Memento)
-     */
+
     @Override
-    public void addMemento(final Memento memento) {
-        // TODO: This shouldn't be referencing the current project.  Instead
-        // the appropriate UndoManager should have already been retrieved from
-        // the correct project.
-        Project p = ProjectManager.getManager().getCurrentProject();
-        if (p != null) {
-            org.argouml.kernel.UndoManager undo = p.getUndoManager();
-            if (undo != null) {
-                if (startChain) {
-                    //TODO i18n: GEF needs to pass us back the description
-                    // of what is being done.
-                    undo.startInteraction("Diagram Interaction");
-                }
-                // TODO: I presume this would fix issue 5250 - but
-                // GEF would need to be adapted:
-//                if (!(memento instanceof SelectionMemento))  
-                undo.addCommand(new DiagramCommand(memento));
-
-                startChain = false;
-            }
-        }
+    public void undo() {
+      memento.undo();
     }
-    
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
-        LOG.info("Adding property listener " + listener);
-        super.addPropertyChangeListener(listener);
-    }
-    
-    
-    private class DiagramCommand
-            extends org.argouml.kernel.AbstractCommand {
-        
-        private final Memento memento;
-        
-        DiagramCommand(final Memento theMemento) {
-            this.memento = theMemento;
-        }
 
-        @Override
-        public Object execute() {
-            memento.redo();
-            return null;
-        }
-
-        @Override
-        public void undo() {
-            memento.undo();
-        }
-        
-        @Override
-        public String toString() {
-            return memento.toString();
-        }
+    @Override
+    public String toString() {
+      return memento.toString();
     }
+  }
 }

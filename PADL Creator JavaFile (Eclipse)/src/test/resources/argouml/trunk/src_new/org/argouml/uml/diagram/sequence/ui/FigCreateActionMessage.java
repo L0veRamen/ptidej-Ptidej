@@ -31,23 +31,19 @@ import org.tigris.gef.presentation.ArrowHeadGreater;
  */
 public class FigCreateActionMessage extends FigMessage {
 
-    private static final long serialVersionUID = -2607959442732866191L;
+  private static final long serialVersionUID = -2607959442732866191L;
 
-    /**
-     * @param owner the owner object
-     */
-    public FigCreateActionMessage(Object owner) {
-        super(owner);
-        setDestArrowHead(new ArrowHeadGreater());
-        setDashed(false);
-    }
+  /**
+   * @param owner the owner object
+   */
+  public FigCreateActionMessage(Object owner) {
+    super(owner);
+    setDestArrowHead(new ArrowHeadGreater());
+    setDashed(false);
+  }
 
-    /**
-     * The constructor.
-     *
-     */
-    public FigCreateActionMessage() {
-        this(null);
-    }
-
+  /** The constructor. */
+  public FigCreateActionMessage() {
+    this(null);
+  }
 }

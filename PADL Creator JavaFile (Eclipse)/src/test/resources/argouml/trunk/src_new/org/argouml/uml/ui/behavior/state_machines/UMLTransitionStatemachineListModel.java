@@ -31,29 +31,25 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  * @since Dec 15, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class UMLTransitionStatemachineListModel
-    extends UMLModelElementListModel2 {
+public class UMLTransitionStatemachineListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLStateVertexIncomingListModel.
-     */
-    public UMLTransitionStatemachineListModel() {
-        super("statemachine");
-    }
+  /** Constructor for UMLStateVertexIncomingListModel. */
+  public UMLTransitionStatemachineListModel() {
+    super("statemachine");
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        removeAllElements();
-        addElement(Model.getFacade().getStateMachine(getTarget()));
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    removeAllElements();
+    addElement(Model.getFacade().getStateMachine(getTarget()));
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ element) {
-        return Model.getFacade().getStateMachine(getTarget()) == element;
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ element) {
+    return Model.getFacade().getStateMachine(getTarget()) == element;
+  }
 }

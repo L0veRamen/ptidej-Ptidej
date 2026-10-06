@@ -29,27 +29,26 @@ import org.tigris.gef.presentation.Fig;
 
 /**
  * The buttons on selection for a DataType.
- * 
+ *
  * @author Michiel
  */
 class SelectionDataType extends SelectionGeneralizableElement {
 
-    /**
-     * Construct a new SelectionClass for the given Fig.
-     *
-     * @param f The given Fig.
-     */
-    public SelectionDataType(Fig f) { 
-        super(f); 
-    }
+  /**
+   * Construct a new SelectionClass for the given Fig.
+   *
+   * @param f The given Fig.
+   */
+  public SelectionDataType(Fig f) {
+    super(f);
+  }
 
-    protected Object getNewNode(int buttonCode) {
-        Object ns = Model.getFacade().getNamespace(getContent().getOwner());
-        return Model.getCoreFactory().buildDataType("", ns);
-    }
+  protected Object getNewNode(int buttonCode) {
+    Object ns = Model.getFacade().getNamespace(getContent().getOwner());
+    return Model.getCoreFactory().buildDataType("", ns);
+  }
 
-    protected Object getNewNodeType(int buttonCode) {
-        return Model.getMetaTypes().getDataType();
-    }
-
+  protected Object getNewNodeType(int buttonCode) {
+    return Model.getMetaTypes().getDataType();
+  }
 }

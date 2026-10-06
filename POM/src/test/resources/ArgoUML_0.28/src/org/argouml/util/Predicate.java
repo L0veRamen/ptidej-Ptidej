@@ -25,20 +25,19 @@
 package org.argouml.util;
 
 /**
- * Interface for objects that act as predicate functions. Based on
- * {@link gef.util.Predicate} by Jason Robbins, but uses <code>evaluate</code>
- * instead of <code>predicate</code> for better compatibility with other
- * implementations.
- * 
+ * Interface for objects that act as predicate functions. Based on {@link gef.util.Predicate} by
+ * Jason Robbins, but uses <code>evaluate</code> instead of <code>predicate</code> for better
+ * compatibility with other implementations.
+ *
  * @author Tom Morris
  */
 public interface Predicate {
 
-    /**
-     * Evaluate the predicate for the given object and return true or false.
-     * 
-     * @param object object to be tested
-     * @return boolean indicating whether predicate evaluated true or false.
-     */
-    public boolean evaluate(Object object);
+  /**
+   * Evaluate the predicate for the given object and return true or false.
+   *
+   * @param object object to be tested
+   * @return boolean indicating whether predicate evaluated true or false.
+   */
+  public boolean evaluate(Object object);
 }

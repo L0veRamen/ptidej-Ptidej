@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -19,48 +19,45 @@ import padl.kernel.impl.Method;
  * @author Jean-Yves Guyomarc'h
  */
 public class InterTypeMethod extends Method implements IInterTypeMethod {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -6216609307716703816L;
-	private IFirstClassEntity target = null;
-	private IMethod method = null;
+  /** */
+  private static final long serialVersionUID = -6216609307716703816L;
 
-	public InterTypeMethod(final char[] anID) {
-		super(anID);
-	}
+  private IFirstClassEntity target = null;
+  private IMethod method = null;
 
-	//	public InterTypeMethod(MethodInfo aMethod) {
-	//		super(aMethod);
-	//	}
+  public InterTypeMethod(final char[] anID) {
+    super(anID);
+  }
 
-	public InterTypeMethod(final char[] anID, final IMethod anAttachedMethod) {
-		super(anID, anAttachedMethod);
-	}
+  //	public InterTypeMethod(MethodInfo aMethod) {
+  //		super(aMethod);
+  //	}
 
-	public InterTypeMethod(final IMethod attachedMethod) {
-		super(attachedMethod);
-	}
+  public InterTypeMethod(final char[] anID, final IMethod anAttachedMethod) {
+    super(anID, anAttachedMethod);
+  }
 
-	//	public InterTypeMethod(String anID, MethodInfo aMethod) {
-	//		super(anID, aMethod);
-	//	}
+  public InterTypeMethod(final IMethod attachedMethod) {
+    super(attachedMethod);
+  }
 
-	public IMethod getMethod() {
-		return this.method;
-	}
+  //	public InterTypeMethod(String anID, MethodInfo aMethod) {
+  //		super(anID, aMethod);
+  //	}
 
-	public IFirstClassEntity getTargetEntity() {
-		return this.target;
-	}
+  public IMethod getMethod() {
+    return this.method;
+  }
 
-	public void setMethod(final IMethod method) {
-		this.method = method;
-	}
+  public IFirstClassEntity getTargetEntity() {
+    return this.target;
+  }
 
-	public void setTargetEntity(final IFirstClassEntity anEntity) {
-		this.target = anEntity;
+  public void setMethod(final IMethod method) {
+    this.method = method;
+  }
 
-	}
-
+  public void setTargetEntity(final IFirstClassEntity anEntity) {
+    this.target = anEntity;
+  }
 }

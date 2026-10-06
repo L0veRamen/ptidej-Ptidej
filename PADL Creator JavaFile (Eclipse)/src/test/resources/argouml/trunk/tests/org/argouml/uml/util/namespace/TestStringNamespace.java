@@ -30,159 +30,124 @@ import junit.framework.*;
  * Tests for the StringNamespace class.
  *
  * @author mkl
- *
  */
-public class TestStringNamespace extends TestCase
-{
-    /**
-     * The constructor.
-     *
-     * @param testName the name of the test
-     */
-    public TestStringNamespace(java.lang.String testName)
-    {
-        super(testName);
-    }
+public class TestStringNamespace extends TestCase {
+  /**
+   * The constructor.
+   *
+   * @param testName the name of the test
+   */
+  public TestStringNamespace(java.lang.String testName) {
+    super(testName);
+  }
 
-    /**
-     * @param args the arguments given on the commandline
-     */
-    public static void main(java.lang.String[] args)
-    {
-        junit.textui.TestRunner.run(suite());
-    }
+  /**
+   * @param args the arguments given on the commandline
+   */
+  public static void main(java.lang.String[] args) {
+    junit.textui.TestRunner.run(suite());
+  }
 
-    /**
-     * @return the test suite
-     */
-    public static Test suite()
-    {
-        TestSuite suite = new TestSuite(TestStringNamespace.class);
+  /**
+   * @return the test suite
+   */
+  public static Test suite() {
+    TestSuite suite = new TestSuite(TestStringNamespace.class);
 
-        return suite;
-    }
+    return suite;
+  }
 
-    /**
-     * Test getCommonNamespace().
-     */
-    public void testGetCommonNamespace()
-    {
-        StringNamespace sns1 =
-            new StringNamespace(
-                new String[] {"org", "argouml", "model" },
-                Namespace.UML_NS_TOKEN);
+  /** Test getCommonNamespace(). */
+  public void testGetCommonNamespace() {
+    StringNamespace sns1 =
+        new StringNamespace(new String[] {"org", "argouml", "model"}, Namespace.UML_NS_TOKEN);
 
-        StringNamespace sns2 =
-            new StringNamespace(
-                new String[] {"org", "argouml", "model" },
-                Namespace.UML_NS_TOKEN);
+    StringNamespace sns2 =
+        new StringNamespace(new String[] {"org", "argouml", "model"}, Namespace.UML_NS_TOKEN);
 
-        StringNamespace result =
-            (StringNamespace) sns1.getCommonNamespace(sns2);
-        assertEquals("org::argouml::model", result.toString());
+    StringNamespace result = (StringNamespace) sns1.getCommonNamespace(sns2);
+    assertEquals("org::argouml::model", result.toString());
 
-        sns1.popNamespaceElement();
-        result = (StringNamespace) sns1.getCommonNamespace(sns2);
-        assertEquals("org::argouml", result.toString());
+    sns1.popNamespaceElement();
+    result = (StringNamespace) sns1.getCommonNamespace(sns2);
+    assertEquals("org::argouml", result.toString());
 
-        sns1.popNamespaceElement();
-        result = (StringNamespace) sns1.getCommonNamespace(sns2);
-        assertEquals("org", result.toString());
+    sns1.popNamespaceElement();
+    result = (StringNamespace) sns1.getCommonNamespace(sns2);
+    assertEquals("org", result.toString());
 
-        sns1.popNamespaceElement();
-        result = (StringNamespace) sns1.getCommonNamespace(sns2);
-        assertEquals("", result.toString());
+    sns1.popNamespaceElement();
+    result = (StringNamespace) sns1.getCommonNamespace(sns2);
+    assertEquals("", result.toString());
+  }
 
-    }
+  /** Test parse() with a Java token. */
+  public void testParseWithJavaToken() {
+    StringNamespace sns =
+        (StringNamespace) StringNamespace.parse("org.argouml.model.", Namespace.JAVA_NS_TOKEN);
 
-    /**
-     * Test parse() with a Java token.
-     */
-    public void testParseWithJavaToken()
-    {
-        StringNamespace sns =
-            (StringNamespace) StringNamespace.parse(
-                "org.argouml.model.",
-                Namespace.JAVA_NS_TOKEN);
+    assertEquals(sns.toString(), "org.argouml.model");
 
-        assertEquals(sns.toString(), "org.argouml.model");
+    sns.popNamespaceElement();
+    assertEquals(sns.toString(), "org.argouml");
 
-        sns.popNamespaceElement();
-        assertEquals(sns.toString(), "org.argouml");
+    sns.popNamespaceElement();
+    assertEquals(sns.toString(), "org");
 
-        sns.popNamespaceElement();
-        assertEquals(sns.toString(), "org");
+    sns.popNamespaceElement();
+    assertEquals(sns.toString(), "");
 
-        sns.popNamespaceElement();
-        assertEquals(sns.toString(), "");
+    assertTrue(sns.isEmpty());
+  }
 
-        assertTrue(sns.isEmpty());
-    }
+  /** Test parse() with a UML token. */
+  public void testParseWithUMLToken() {
+    StringNamespace sns =
+        (StringNamespace) StringNamespace.parse("org::argouml::model", Namespace.UML_NS_TOKEN);
 
-    /**
-     * Test parse() with a UML token.
-     */
-    public void testParseWithUMLToken()
-    {
-        StringNamespace sns =
-            (StringNamespace) StringNamespace.parse(
-                "org::argouml::model",
-                Namespace.UML_NS_TOKEN);
+    assertEquals(sns.toString(), "org::argouml::model");
 
-        assertEquals(sns.toString(), "org::argouml::model");
+    sns.popNamespaceElement();
+    assertEquals(sns.toString(), "org::argouml");
 
-        sns.popNamespaceElement();
-        assertEquals(sns.toString(), "org::argouml");
+    sns.popNamespaceElement();
+    assertEquals(sns.toString(), "org");
 
-        sns.popNamespaceElement();
-        assertEquals(sns.toString(), "org");
+    sns.popNamespaceElement();
+    assertEquals(sns.toString(), "");
 
-        sns.popNamespaceElement();
-        assertEquals(sns.toString(), "");
+    assertTrue(sns.isEmpty());
+  }
 
-        assertTrue(sns.isEmpty());
-    }
+  /** Test parse() with an esoteric token. */
+  public void testParseWithEsotericToken() {
+    StringNamespace sns = (StringNamespace) StringNamespace.parse("org:!argouml:!m:odel", ":!");
 
-    /**
-     * Test parse() with an esoteric token.
-     */
-    public void testParseWithEsotericToken()
-    {
-        StringNamespace sns =
-            (StringNamespace) StringNamespace.parse(
-                "org:!argouml:!m:odel",
-                ":!");
+    assertEquals(sns.toString(), "org:!argouml:!m:odel");
 
-        assertEquals(sns.toString(), "org:!argouml:!m:odel");
+    sns.popNamespaceElement();
+    assertEquals(sns.toString(), "org:!argouml");
 
-        sns.popNamespaceElement();
-        assertEquals(sns.toString(), "org:!argouml");
+    sns.popNamespaceElement();
+    assertEquals(sns.toString(), "org");
 
-        sns.popNamespaceElement();
-        assertEquals(sns.toString(), "org");
+    sns.popNamespaceElement();
+    assertEquals(sns.toString(), "");
 
-        sns.popNamespaceElement();
-        assertEquals(sns.toString(), "");
+    assertTrue(sns.isEmpty());
+  }
 
-        assertTrue(sns.isEmpty());
-    }
+  /** Class to test for String toString(String) */
+  public void testToString() {
+    StringNamespace sns = new StringNamespace("::");
 
-    /**
-     * Class to test for String toString(String)
-     */
-    public void testToString()
-    {
-        StringNamespace sns = new StringNamespace("::");
+    sns.pushNamespaceElement("org");
+    assertEquals(sns.toString(), "org");
 
-        sns.pushNamespaceElement("org");
-        assertEquals(sns.toString(), "org");
+    sns.pushNamespaceElement("argouml");
+    assertEquals(sns.toString(), "org::argouml");
 
-        sns.pushNamespaceElement("argouml");
-        assertEquals(sns.toString(), "org::argouml");
-
-        sns.popNamespaceElement();
-        assertEquals(sns.toString(), "org");
-
-    }
-
+    sns.popNamespaceElement();
+    assertEquals(sns.toString(), "org");
+  }
 }

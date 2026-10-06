@@ -28,38 +28,33 @@ import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
 /**
- * List model that shows the AssociationEndRoles belonging to some
- * AssociationRole. <p>
- * 
- * This is NOT an ordered list, according to the UML 1.4 standard. 
- * This is a derived association in the metamodel.
- * 
+ * List model that shows the AssociationEndRoles belonging to some AssociationRole.
+ *
+ * <p>This is NOT an ordered list, according to the UML 1.4 standard. This is a derived association
+ * in the metamodel.
+ *
  * @since Oct 4, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class UMLAssociationRoleAssociationEndRoleListModel
-    extends UMLModelElementListModel2 {
+public class UMLAssociationRoleAssociationEndRoleListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLAssociationRoleAssociationEndRoleListModel.
-     */
-    public UMLAssociationRoleAssociationEndRoleListModel() {
-        super("connection");
-    }
+  /** Constructor for UMLAssociationRoleAssociationEndRoleListModel. */
+  public UMLAssociationRoleAssociationEndRoleListModel() {
+    super("connection");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        setAllElements(Model.getFacade().getConnections(getTarget()));
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    setAllElements(Model.getFacade().getConnections(getTarget()));
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object o) {
-        return Model.getFacade().isAAssociationEndRole(o)
-            && Model.getFacade().getConnections(getTarget()).contains(o);
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object o) {
+    return Model.getFacade().isAAssociationEndRole(o)
+        && Model.getFacade().getConnections(getTarget()).contains(o);
+  }
 }

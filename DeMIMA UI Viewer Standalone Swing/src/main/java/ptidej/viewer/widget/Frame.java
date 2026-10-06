@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -16,79 +16,83 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 public class Frame extends JFrame {
-	private static final long serialVersionUID = 1L;
-	private int frameWidth;
-	private int frameHeight;
-	private int frameX;
-	private int frameY;
-	private Dimension screenSize;
-	private int screenSizeWidth;
-	private int screenSizeHeight;
+  private static final long serialVersionUID = 1L;
+  private int frameWidth;
+  private int frameHeight;
+  private int frameX;
+  private int frameY;
+  private Dimension screenSize;
+  private int screenSizeWidth;
+  private int screenSizeHeight;
 
-	public Frame() {
-	}
-	public Frame(
-		final String titre,
-		final int inFrameWidth,
-		final int inFrameHeight) {
+  public Frame() {}
 
-		this.setTitle(titre);
+  public Frame(final String titre, final int inFrameWidth, final int inFrameHeight) {
 
-		this.frameWidth = inFrameWidth;
-		this.frameHeight = inFrameHeight;
-		this.screenSize = this.getToolkit().getScreenSize();
-		this.screenSizeWidth = this.screenSize.width;
-		this.screenSizeHeight = this.screenSize.height;
-		this.frameX = (int) ((this.screenSizeWidth - this.frameWidth) / 2);
-		this.frameY = (int) ((this.screenSizeHeight - this.frameHeight) / 2);
-		this.checkAndMakeCentered(inFrameWidth, inFrameHeight);
+    this.setTitle(titre);
 
-		this.setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
+    this.frameWidth = inFrameWidth;
+    this.frameHeight = inFrameHeight;
+    this.screenSize = this.getToolkit().getScreenSize();
+    this.screenSizeWidth = this.screenSize.width;
+    this.screenSizeHeight = this.screenSize.height;
+    this.frameX = (int) ((this.screenSizeWidth - this.frameWidth) / 2);
+    this.frameY = (int) ((this.screenSizeHeight - this.frameHeight) / 2);
+    this.checkAndMakeCentered(inFrameWidth, inFrameHeight);
 
-		this.addWindowListener(new java.awt.event.WindowAdapter() {
-			public void windowClosing(final WindowEvent we) {
-				System.exit(0);
-			}
-		});
-	}
+    this.setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
 
-	/**
-	 * Si le frame reeoit une largeur et/ou hauteur superieures e celles de la
-	 * resolution de l'ecran, cette methode les redefinit pour qu'ils y soient
-	 * inferieures.
-	 * @param inTmpFrameWidth   la largeur passe en parametre au constructeur
-	 * @param inTmpFrameHeight  la hauteur passe en parametre au constructeur
-	 */
-	private void checkAndMakeCentered(int inTmpFrameWidth, int inTmpFrameHeight) {
-		boolean boolTooBig = false;
-		if (this.frameHeight > this.screenSizeHeight) {
-			this.frameHeight = this.screenSizeHeight - 50;
-			this.frameY = 20;
-			boolTooBig = true;
-		}
-		if (this.frameWidth > this.screenSizeWidth) {
-			this.frameWidth = this.screenSizeWidth - 50;
-			this.frameX = 25;
-			boolTooBig = true;
-		}
-		this.setSize(this.frameWidth, this.frameHeight);
-		this.setLocation(this.frameX, this.frameY);
+    this.addWindowListener(
+        new java.awt.event.WindowAdapter() {
+          public void windowClosing(final WindowEvent we) {
+            System.exit(0);
+          }
+        });
+  }
 
-		if (boolTooBig) {
-			/**
-			 * @todo make me international please please please ...
-			 * I was born french and nobody translated me yet :(
-			 */
-			JOptionPane.showMessageDialog(
-				this,
-				"Pour une meilleur interface utilisateur,"
-						+ " veillez augmenter votre resolution d'ecran"
-						+ "\nResolution Actuelle :  " + this.screenSizeWidth
-						+ " par " + this.screenSizeHeight + " pixels."
-						+ "\nResolution Minimale Prefere :  " + inTmpFrameWidth
-						+ " par " + inTmpFrameHeight + " pixels.",
-				"Information",
-				JOptionPane.INFORMATION_MESSAGE);
-		}
-	}
+  /**
+   * Si le frame reeoit une largeur et/ou hauteur superieures e celles de la resolution de l'ecran,
+   * cette methode les redefinit pour qu'ils y soient inferieures.
+   *
+   * @param inTmpFrameWidth la largeur passe en parametre au constructeur
+   * @param inTmpFrameHeight la hauteur passe en parametre au constructeur
+   */
+  private void checkAndMakeCentered(int inTmpFrameWidth, int inTmpFrameHeight) {
+    boolean boolTooBig = false;
+    if (this.frameHeight > this.screenSizeHeight) {
+      this.frameHeight = this.screenSizeHeight - 50;
+      this.frameY = 20;
+      boolTooBig = true;
+    }
+    if (this.frameWidth > this.screenSizeWidth) {
+      this.frameWidth = this.screenSizeWidth - 50;
+      this.frameX = 25;
+      boolTooBig = true;
+    }
+    this.setSize(this.frameWidth, this.frameHeight);
+    this.setLocation(this.frameX, this.frameY);
+
+    if (boolTooBig) {
+      /**
+       * @todo make me international please please please ... I was born french and nobody
+       *     translated me yet :(
+       */
+      JOptionPane.showMessageDialog(
+          this,
+          "Pour une meilleur interface utilisateur,"
+              + " veillez augmenter votre resolution d'ecran"
+              + "\nResolution Actuelle :  "
+              + this.screenSizeWidth
+              + " par "
+              + this.screenSizeHeight
+              + " pixels."
+              + "\nResolution Minimale Prefere :  "
+              + inTmpFrameWidth
+              + " par "
+              + inTmpFrameHeight
+              + " pixels.",
+          "Information",
+          JOptionPane.INFORMATION_MESSAGE);
+    }
+  }
 }

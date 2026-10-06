@@ -25,7 +25,6 @@
 package org.argouml.uml.diagram.collaboration.ui;
 
 import java.util.Map;
-
 import org.apache.log4j.Logger;
 import org.argouml.model.Model;
 import org.argouml.uml.CommentEdge;
@@ -44,9 +43,10 @@ import org.tigris.gef.presentation.FigEdge;
 import org.tigris.gef.presentation.FigNode;
 
 /**
- * This class defines a renderer object for UML Collaboration Diagrams.
- * In a collaboration Diagram the following UML objects are displayed with the
- * following Figs:<p>
+ * This class defines a renderer object for UML Collaboration Diagrams. In a collaboration Diagram
+ * the following UML objects are displayed with the following Figs:
+ *
+ * <p>
  *
  * <pre>
  *   UML Object       ---  Fig
@@ -56,103 +56,90 @@ import org.tigris.gef.presentation.FigNode;
  *   MComment         ---  FigComment
  * </pre>
  *
- * Provides {@link #getFigNodeFor} to implement the
- * {@link org.tigris.gef.graph.GraphNodeRenderer} interface and
- * {@link #getFigEdgeFor} to implement the
- * {@link org.tigris.gef.graph.GraphEdgeRenderer} interface.<p>
+ * Provides {@link #getFigNodeFor} to implement the {@link org.tigris.gef.graph.GraphNodeRenderer}
+ * interface and {@link #getFigEdgeFor} to implement the {@link
+ * org.tigris.gef.graph.GraphEdgeRenderer} interface.
  *
- * <em>Note</em>. Should be implemented as a singleton - we don't really
- * need a separate instance for each use case diagram.<p>
+ * <p><em>Note</em>. Should be implemented as a singleton - we don't really need a separate instance
+ * for each use case diagram.
  *
+ * <p>
  *
  * @author agauthie
  */
 public class CollabDiagramRenderer extends UmlDiagramRenderer {
-    /**
-     * Logger.
-     */
-    private static final Logger LOG =
-	Logger.getLogger(CollabDiagramRenderer.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(CollabDiagramRenderer.class);
 
-    /*
-     * @see org.tigris.gef.graph.GraphNodeRenderer#getFigNodeFor(
-     *         org.tigris.gef.graph.GraphModel, org.tigris.gef.base.Layer,
-     *         java.lang.Object, java.util.Map)
-     */
-    public FigNode getFigNodeFor(GraphModel gm, Layer lay,
-				 Object node, Map styleAttributes) {
+  /*
+   * @see org.tigris.gef.graph.GraphNodeRenderer#getFigNodeFor(
+   *         org.tigris.gef.graph.GraphModel, org.tigris.gef.base.Layer,
+   *         java.lang.Object, java.util.Map)
+   */
+  public FigNode getFigNodeFor(GraphModel gm, Layer lay, Object node, Map styleAttributes) {
 
-        FigNode figNode = null;
+    FigNode figNode = null;
 
-        assert node != null;
+    assert node != null;
 
-        // Although not generally true for GEF, for Argo we know that the layer
-        // is a LayerPerspective which knows the associated diagram
-        Diagram diag = ((LayerPerspective) lay).getDiagram(); 
-        if (diag instanceof UMLDiagram
-                && ((UMLDiagram) diag).doesAccept(node)) {
-            figNode = ((UMLDiagram) diag).drop(node, null);
-        } else { 
-            LOG.error("TODO: CollabDiagramRenderer getFigNodeFor");
-            throw new IllegalArgumentException(
-                    "Node is not a recognised type. Received "
-                    + node.getClass().getName());
-        }
-        
-        lay.add(figNode);
-        return figNode;
+    // Although not generally true for GEF, for Argo we know that the layer
+    // is a LayerPerspective which knows the associated diagram
+    Diagram diag = ((LayerPerspective) lay).getDiagram();
+    if (diag instanceof UMLDiagram && ((UMLDiagram) diag).doesAccept(node)) {
+      figNode = ((UMLDiagram) diag).drop(node, null);
+    } else {
+      LOG.error("TODO: CollabDiagramRenderer getFigNodeFor");
+      throw new IllegalArgumentException(
+          "Node is not a recognised type. Received " + node.getClass().getName());
     }
 
-    /**
-     * Return a Fig that can be used to represent the given edge,
-     * Generally the same code as for the ClassDiagram, since its
-     * very related to it.
-     *
-     * {@inheritDoc}
-     */
-    public FigEdge getFigEdgeFor(GraphModel gm, Layer lay,
-				 Object edge, Map styleAttributes) {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("making figedge for " + edge);
-        }
-        if (edge == null) {
-            throw new IllegalArgumentException("A model edge must be supplied");
-        }
+    lay.add(figNode);
+    return figNode;
+  }
 
-        assert lay instanceof LayerPerspective;
-        ArgoDiagram diag = (ArgoDiagram) ((LayerPerspective) lay).getDiagram();
-        DiagramSettings settings = diag.getDiagramSettings();
-
-        FigEdge newEdge = null;
-        if (Model.getFacade().isAAssociationRole(edge)) {
-            newEdge = new FigAssociationRole(edge, settings);
-        } else if (Model.getFacade().isAGeneralization(edge)) {
-            newEdge = new FigGeneralization(edge, settings);
-        } else if (Model.getFacade().isADependency(edge)) {
-            newEdge = new FigDependency(edge , settings);
-        } else if (edge instanceof CommentEdge) {
-            newEdge = new FigEdgeNote(edge, settings); // TODO -> settings
-        }
-    
-        if (newEdge == null) {
-            throw new IllegalArgumentException(
-                    "Don't know how to create FigEdge for model type "
-                    + edge.getClass().getName());
-        }
-        
-        setPorts(lay, newEdge);
-
-        assert newEdge != null : "There has been no FigEdge created";
-        assert (newEdge.getDestFigNode() != null) 
-            : "The FigEdge has no dest node";
-        assert (newEdge.getDestPortFig() != null) 
-            : "The FigEdge has no dest port";
-        assert (newEdge.getSourceFigNode() != null) 
-            : "The FigEdge has no source node";
-        assert (newEdge.getSourcePortFig() != null) 
-            : "The FigEdge has no source port";
-        
-        lay.add(newEdge);
-        return newEdge;
+  /**
+   * Return a Fig that can be used to represent the given edge, Generally the same code as for the
+   * ClassDiagram, since its very related to it.
+   *
+   * <p>{@inheritDoc}
+   */
+  public FigEdge getFigEdgeFor(GraphModel gm, Layer lay, Object edge, Map styleAttributes) {
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("making figedge for " + edge);
     }
+    if (edge == null) {
+      throw new IllegalArgumentException("A model edge must be supplied");
+    }
+
+    assert lay instanceof LayerPerspective;
+    ArgoDiagram diag = (ArgoDiagram) ((LayerPerspective) lay).getDiagram();
+    DiagramSettings settings = diag.getDiagramSettings();
+
+    FigEdge newEdge = null;
+    if (Model.getFacade().isAAssociationRole(edge)) {
+      newEdge = new FigAssociationRole(edge, settings);
+    } else if (Model.getFacade().isAGeneralization(edge)) {
+      newEdge = new FigGeneralization(edge, settings);
+    } else if (Model.getFacade().isADependency(edge)) {
+      newEdge = new FigDependency(edge, settings);
+    } else if (edge instanceof CommentEdge) {
+      newEdge = new FigEdgeNote(edge, settings); // TODO -> settings
+    }
+
+    if (newEdge == null) {
+      throw new IllegalArgumentException(
+          "Don't know how to create FigEdge for model type " + edge.getClass().getName());
+    }
+
+    setPorts(lay, newEdge);
+
+    assert newEdge != null : "There has been no FigEdge created";
+    assert (newEdge.getDestFigNode() != null) : "The FigEdge has no dest node";
+    assert (newEdge.getDestPortFig() != null) : "The FigEdge has no dest port";
+    assert (newEdge.getSourceFigNode() != null) : "The FigEdge has no source node";
+    assert (newEdge.getSourcePortFig() != null) : "The FigEdge has no source port";
+
+    lay.add(newEdge);
+    return newEdge;
+  }
 }

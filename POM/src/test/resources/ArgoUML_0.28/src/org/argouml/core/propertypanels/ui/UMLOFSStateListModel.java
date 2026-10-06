@@ -25,7 +25,6 @@
 package org.argouml.core.propertypanels.ui;
 
 import java.util.Collection;
-
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
@@ -34,45 +33,42 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  */
 class UMLOFSStateListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLOFSStateListModel.
+  /** Constructor for UMLOFSStateListModel. */
+  public UMLOFSStateListModel() {
+    /* TODO: This needs work...
+     * We also need to listen to addition/removal
+     * of states to/from a ClassifierInState.
      */
-    public UMLOFSStateListModel() {
-        /* TODO: This needs work...
-         * We also need to listen to addition/removal
-         * of states to/from a ClassifierInState.
-         */
-        super("type");
-    }
+    super("type");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (getTarget() != null) {
-            Object classifier = Model.getFacade().getType(getTarget());
-            if (Model.getFacade().isAClassifierInState(classifier)) {
-                Collection c = Model.getFacade().getInStates(classifier);
-                setAllElements(c);
-            }
-        }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (getTarget() != null) {
+      Object classifier = Model.getFacade().getType(getTarget());
+      if (Model.getFacade().isAClassifierInState(classifier)) {
+        Collection c = Model.getFacade().getInStates(classifier);
+        setAllElements(c);
+      }
     }
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(java.lang.Object)
-     */
-    protected boolean isValidElement(Object elem) {
-        Object t = getTarget();
-        if (Model.getFacade().isAState(elem)
-                && Model.getFacade().isAObjectFlowState(t)) {
-            Object type = Model.getFacade().getType(t);
-            if (Model.getFacade().isAClassifierInState(type)) {
-                Collection c = Model.getFacade().getInStates(type);
-                if (c.contains(elem)) {
-                    return true;
-                }
-            }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(java.lang.Object)
+   */
+  protected boolean isValidElement(Object elem) {
+    Object t = getTarget();
+    if (Model.getFacade().isAState(elem) && Model.getFacade().isAObjectFlowState(t)) {
+      Object type = Model.getFacade().getType(t);
+      if (Model.getFacade().isAClassifierInState(type)) {
+        Collection c = Model.getFacade().getInStates(type);
+        if (c.contains(elem)) {
+          return true;
         }
-        return false;
+      }
     }
+    return false;
+  }
 }

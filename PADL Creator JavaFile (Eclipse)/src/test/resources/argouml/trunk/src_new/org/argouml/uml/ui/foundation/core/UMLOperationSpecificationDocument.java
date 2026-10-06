@@ -32,36 +32,30 @@ import org.argouml.uml.ui.UMLPlainTextDocument;
  */
 public class UMLOperationSpecificationDocument extends UMLPlainTextDocument {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = -152721992761681537L;
+  /** The serial version. */
+  private static final long serialVersionUID = -152721992761681537L;
 
-    /**
-     * Constructor.
-     */
-    public UMLOperationSpecificationDocument() {
-        super("specification");
+  /** Constructor. */
+  public UMLOperationSpecificationDocument() {
+    super("specification");
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLPlainTextDocument#setProperty(java.lang.String)
+   */
+  protected void setProperty(String text) {
+    if (Model.getFacade().isAOperation(getTarget())) {
+      Model.getCoreHelper().setSpecification(getTarget(), text);
     }
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLPlainTextDocument#setProperty(java.lang.String)
-     */
-    protected void setProperty(String text) {
-        if (Model.getFacade().isAOperation(getTarget())) {
-            Model.getCoreHelper().setSpecification(getTarget(), text);
-        }
-
+  /**
+   * @see org.argouml.uml.ui.UMLPlainTextDocument#getProperty()
+   */
+  protected String getProperty() {
+    if (Model.getFacade().isAOperation(getTarget())) {
+      return Model.getFacade().getSpecification(getTarget());
     }
-
-    /**
-     * @see org.argouml.uml.ui.UMLPlainTextDocument#getProperty()
-     */
-    protected String getProperty() {
-        if (Model.getFacade().isAOperation(getTarget())) {
-            return Model.getFacade().getSpecification(getTarget());
-        }
-        return null;
-    }
-
+    return null;
+  }
 }

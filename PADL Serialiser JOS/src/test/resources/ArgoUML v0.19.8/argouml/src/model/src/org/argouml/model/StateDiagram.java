@@ -26,8 +26,7 @@ package org.argouml.model;
 
 /**
  * An interface to act as an enumerated type for a di state diagram
+ *
  * @author Bob Tarling
  */
-public interface StateDiagram extends DiDiagram {
-
-}
+public interface StateDiagram extends DiDiagram {}

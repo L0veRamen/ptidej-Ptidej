@@ -10,18 +10,17 @@ package choco.search;
 
 public final class NodeLimit extends AbstractGlobalSearchLimit {
 
-	public NodeLimit(final int theLimit) {
-		super(theLimit);
-		this.unit = "nodes";
-	}
+  public NodeLimit(final int theLimit) {
+    super(theLimit);
+    this.unit = "nodes";
+  }
 
-	public boolean endNode(final AbstractGlobalSearchSolver solver) {
-		return true;
-	}
+  public boolean endNode(final AbstractGlobalSearchSolver solver) {
+    return true;
+  }
 
-	public boolean newNode(final AbstractGlobalSearchSolver solver) {
-		this.nb++;
-		return this.nb < this.nbMax;
-	}
-
+  public boolean newNode(final AbstractGlobalSearchSolver solver) {
+    this.nb++;
+    return this.nb < this.nbMax;
+  }
 }

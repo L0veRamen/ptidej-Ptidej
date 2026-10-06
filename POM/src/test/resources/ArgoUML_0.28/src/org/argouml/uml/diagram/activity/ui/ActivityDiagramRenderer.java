@@ -22,11 +22,9 @@
 // CALIFORNIA HAS NO OBLIGATIONS TO PROVIDE MAINTENANCE, SUPPORT,
 // UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
-
 package org.argouml.uml.diagram.activity.ui;
 
 import java.util.Map;
-
 import org.argouml.uml.diagram.state.ui.StateDiagramRenderer;
 import org.argouml.uml.diagram.ui.UMLDiagram;
 import org.tigris.gef.base.Diagram;
@@ -35,11 +33,12 @@ import org.tigris.gef.base.LayerPerspective;
 import org.tigris.gef.graph.GraphModel;
 import org.tigris.gef.presentation.FigNode;
 
-
 /**
- * This class defines a renderer object for UML Activity Diagrams. In a
- * Activity Diagram the following UML objects are displayed with the
- * following Figs: <p>
+ * This class defines a renderer object for UML Activity Diagrams. In a Activity Diagram the
+ * following UML objects are displayed with the following Figs:
+ *
+ * <p>
+ *
  * <pre>
  *  UML Object          ---  Fig
  *  ---------------------------------------
@@ -62,34 +61,31 @@ import org.tigris.gef.presentation.FigNode;
  *  </pre>
  *
  * @author mkl
- *
  */
 public class ActivityDiagramRenderer extends StateDiagramRenderer {
 
-    /*
-     * @see org.tigris.gef.graph.GraphNodeRenderer#getFigNodeFor(
-     *      org.tigris.gef.graph.GraphModel, org.tigris.gef.base.Layer,
-     *      java.lang.Object, java.util.Map)
-     */
-    @Override
-    public FigNode getFigNodeFor(GraphModel gm, Layer lay, Object node,
-            Map styleAttributes) {
+  /*
+   * @see org.tigris.gef.graph.GraphNodeRenderer#getFigNodeFor(
+   *      org.tigris.gef.graph.GraphModel, org.tigris.gef.base.Layer,
+   *      java.lang.Object, java.util.Map)
+   */
+  @Override
+  public FigNode getFigNodeFor(GraphModel gm, Layer lay, Object node, Map styleAttributes) {
 
-        FigNode figNode = null;
-        // Although not generally true for GEF, for Argo we know that the layer
-        // is a LayerPerspective which knows the associated diagram
-        Diagram diag = ((LayerPerspective) lay).getDiagram(); 
-        if (diag instanceof UMLDiagram
-            && ((UMLDiagram) diag).doesAccept(node)) {
-            figNode = ((UMLDiagram) diag).drop(node, null);
-        } else {
-            figNode =  super.getFigNodeFor(gm, lay, node, styleAttributes);
-            if (figNode == null) {
-                return null;
-            }
-        }
-
-        lay.add(figNode);
-        return figNode;
+    FigNode figNode = null;
+    // Although not generally true for GEF, for Argo we know that the layer
+    // is a LayerPerspective which knows the associated diagram
+    Diagram diag = ((LayerPerspective) lay).getDiagram();
+    if (diag instanceof UMLDiagram && ((UMLDiagram) diag).doesAccept(node)) {
+      figNode = ((UMLDiagram) diag).drop(node, null);
+    } else {
+      figNode = super.getFigNodeFor(gm, lay, node, styleAttributes);
+      if (figNode == null) {
+        return null;
+      }
     }
+
+    lay.add(figNode);
+    return figNode;
+  }
 }

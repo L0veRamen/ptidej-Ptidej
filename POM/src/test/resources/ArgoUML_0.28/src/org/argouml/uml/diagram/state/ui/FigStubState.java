@@ -29,7 +29,6 @@ import java.awt.Font;
 import java.awt.Rectangle;
 import java.beans.PropertyChangeEvent;
 import java.util.Iterator;
-
 import org.apache.log4j.Logger;
 import org.argouml.model.Facade;
 import org.argouml.model.Model;
@@ -47,438 +46,412 @@ import org.tigris.gef.presentation.FigText;
  *
  * @author pepargouml@yahoo.es
  */
-
 public class FigStubState extends FigStateVertex {
-    
-    private static final Logger LOG = Logger.getLogger(FigStubState.class);
 
-    private static final int X = 0;
-    private static final int Y = 0;
-    private static final int WIDTH = 45;
-    private static final int HEIGHT = 20;
+  private static final Logger LOG = Logger.getLogger(FigStubState.class);
 
-    private FigText referenceFig;
-    private FigLine stubline;
-    
-    private Facade facade;
-    private StateMachinesHelper stateMHelper;
+  private static final int X = 0;
+  private static final int Y = 0;
+  private static final int WIDTH = 45;
+  private static final int HEIGHT = 20;
 
-    
-    /**
-     * Construct a new FigStubState.
-     * 
-     * @param owner owning UML element
-     * @param bounds position and size
-     * @param settings rendering settings
-     */
-    public FigStubState(Object owner, Rectangle bounds,
-            DiagramSettings settings) {
-        super(owner, bounds, settings);
-        initFigs();
+  private FigText referenceFig;
+  private FigLine stubline;
+
+  private Facade facade;
+  private StateMachinesHelper stateMHelper;
+
+  /**
+   * Construct a new FigStubState.
+   *
+   * @param owner owning UML element
+   * @param bounds position and size
+   * @param settings rendering settings
+   */
+  public FigStubState(Object owner, Rectangle bounds, DiagramSettings settings) {
+    super(owner, bounds, settings);
+    initFigs();
+  }
+
+  /**
+   * The constructor.
+   *
+   * @deprecated for 0.27.4 by tfmorris. Use {@link #FigStubState(Object, Rectangle,
+   *     DiagramSettings)}.
+   */
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  public FigStubState() {
+    super();
+    initFigs();
+  }
+
+  private void initFigs() {
+    facade = Model.getFacade();
+    stateMHelper = Model.getStateMachinesHelper();
+
+    setBigPort(new FigRect(X, Y, WIDTH, HEIGHT));
+    getBigPort().setLineWidth(0);
+    getBigPort().setFilled(false);
+    stubline = new FigLine(X, Y, WIDTH, Y, TEXT_COLOR);
+
+    referenceFig = new FigText(0, 0, WIDTH, HEIGHT, true);
+    referenceFig.setFont(getSettings().getFontPlain());
+    referenceFig.setTextColor(TEXT_COLOR);
+    referenceFig.setReturnAction(FigText.END_EDITING);
+    referenceFig.setTabAction(FigText.END_EDITING);
+    referenceFig.setJustification(FigText.JUSTIFY_CENTER);
+    referenceFig.setLineWidth(0);
+    referenceFig.setBounds(X, Y, WIDTH, referenceFig.getBounds().height);
+    referenceFig.setFilled(false);
+    referenceFig.setEditable(false);
+
+    addFig(getBigPort());
+    addFig(referenceFig);
+    addFig(stubline);
+
+    setShadowSize(0);
+    setBlinkPorts(false); // make port invisible unless mouse enters
+  }
+
+  /**
+   * The constructor.
+   *
+   * @param gm (ignored)
+   * @param node the UML owner element
+   * @deprecated for 0.27.4 by tfmorris. Use {@link #FigStubState(Object, Rectangle,
+   *     DiagramSettings)}.
+   */
+  @Deprecated
+  public FigStubState(@SuppressWarnings("unused") GraphModel gm, Object node) {
+    this();
+    setOwner(node);
+  }
+
+  /*
+   * @see org.tigris.gef.presentation.Fig#setOwner(java.lang.Object)
+   */
+  @Override
+  public void setOwner(Object node) {
+    super.setOwner(node);
+    renderingChanged();
+  }
+
+  /*
+   * @see java.lang.Object#clone()
+   */
+  @Override
+  public Object clone() {
+    FigStubState figClone = (FigStubState) super.clone();
+    Iterator it = figClone.getFigs().iterator();
+    figClone.setBigPort((FigRect) it.next());
+    figClone.referenceFig = (FigText) it.next();
+    figClone.stubline = (FigLine) it.next();
+    return figClone;
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // Fig accessors
+
+  /**
+   * Synch states are fixed size.
+   *
+   * @return false
+   */
+  @Override
+  public boolean isResizable() {
+    return false;
+  }
+
+  /*
+   * @see org.tigris.gef.presentation.Fig#makeSelection()
+   */
+  @Override
+  public Selection makeSelection() {
+    return new SelectionMoveClarifiers(this);
+  }
+
+  /*
+   * @see org.tigris.gef.presentation.Fig#setLineColor(java.awt.Color)
+   */
+  @Override
+  public void setLineColor(Color col) {
+    stubline.setLineColor(col);
+  }
+
+  /*
+   * @see org.tigris.gef.presentation.Fig#getLineColor()
+   */
+  @Override
+  public Color getLineColor() {
+    return stubline.getLineColor();
+  }
+
+  /*
+   * @see org.tigris.gef.presentation.Fig#setFillColor(java.awt.Color)
+   */
+  @Override
+  public void setFillColor(Color col) {
+    referenceFig.setFillColor(col);
+  }
+
+  /*
+   * @see org.tigris.gef.presentation.Fig#getFillColor()
+   */
+  @Override
+  public Color getFillColor() {
+    return referenceFig.getFillColor();
+  }
+
+  /*
+   * @see org.tigris.gef.presentation.Fig#setFilled(boolean)
+   */
+  @Override
+  public void setFilled(boolean f) {
+    referenceFig.setFilled(f);
+  }
+
+  @Override
+  public boolean isFilled() {
+    return referenceFig.isFilled();
+  }
+
+  /*
+   * @see org.tigris.gef.presentation.Fig#setLineWidth(int)
+   */
+  @Override
+  public void setLineWidth(int w) {
+    stubline.setLineWidth(w);
+  }
+
+  /*
+   * @see org.tigris.gef.presentation.Fig#getLineWidth()
+   */
+  @Override
+  public int getLineWidth() {
+    return stubline.getLineWidth();
+  }
+
+  /*
+   * @see org.tigris.gef.presentation.Fig#setBoundsImpl(int, int, int, int)
+   */
+  @Override
+  protected void setStandardBounds(int theX, int theY, int theW, int theH) {
+    Rectangle oldBounds = getBounds();
+    theW = 60;
+
+    referenceFig.setBounds(theX, theY, theW, referenceFig.getBounds().height);
+    stubline.setShape(theX, theY, theX + theW, theY);
+
+    getBigPort().setBounds(theX, theY, theW, theH);
+
+    calcBounds(); // _x = x; _y = y; _w = w; _h = h;
+    updateEdges();
+    firePropChange("bounds", oldBounds, getBounds());
+  }
+
+  ////////////////////////////////////////////////////////////////
+  // event processing
+
+  /*
+   * Update the text labels.
+   *
+   * @see org.argouml.uml.diagram.ui.FigNodeModelElement#modelChanged(java.beans.PropertyChangeEvent)
+   */
+  @Override
+  protected void modelChanged(PropertyChangeEvent mee) {
+    super.modelChanged(mee);
+    if (getOwner() == null) {
+      return;
     }
-    
-    /**
-     * The constructor.
-     * @deprecated for 0.27.4 by tfmorris.  Use 
-     * {@link #FigStubState(Object, Rectangle, DiagramSettings)}.
-     */
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    public FigStubState() {
-        super();
-        initFigs();
-    }
+    Object top = null;
+    Object oldRef = null;
+    Object container = facade.getContainer(getOwner());
 
-    private void initFigs() {
-        facade = Model.getFacade();
-        stateMHelper = Model.getStateMachinesHelper();
-
-        setBigPort(new FigRect(X, Y, WIDTH, HEIGHT));
-        getBigPort().setLineWidth(0);
-        getBigPort().setFilled(false);
-        stubline = new FigLine(X,
-                Y,
-                WIDTH,
-                Y,
-                TEXT_COLOR);
-
-        referenceFig = new FigText(0, 0, WIDTH, HEIGHT, true);
-        referenceFig.setFont(getSettings().getFontPlain());
-        referenceFig.setTextColor(TEXT_COLOR);
-        referenceFig.setReturnAction(FigText.END_EDITING);
-        referenceFig.setTabAction(FigText.END_EDITING);
-        referenceFig.setJustification(FigText.JUSTIFY_CENTER);
-        referenceFig.setLineWidth(0);
-        referenceFig.setBounds(X, Y,
-                WIDTH, referenceFig.getBounds().height);
-        referenceFig.setFilled(false);
-        referenceFig.setEditable(false);
-
-
-        addFig(getBigPort());
-        addFig(referenceFig);
-        addFig(stubline);
-
-        setShadowSize(0);
-        setBlinkPorts(false); //make port invisible unless mouse enters
-    }
-
-    /**
-     * The constructor.
-     *
-     * @param gm (ignored)
-     * @param node the UML owner element
-     * @deprecated for 0.27.4 by tfmorris.  Use 
-     * {@link #FigStubState(Object, Rectangle, DiagramSettings)}.
-     */
-    @Deprecated
-    public FigStubState(@SuppressWarnings("unused") GraphModel gm, 
-            Object node) {
-        this();
-        setOwner(node);
-    }
-
-    /*
-     * @see org.tigris.gef.presentation.Fig#setOwner(java.lang.Object)
-     */
-    @Override
-    public void setOwner(Object node) {
-        super.setOwner(node);
-        renderingChanged();
-    }
-
-    /*
-     * @see java.lang.Object#clone()
-     */
-    @Override
-    public Object clone() {
-        FigStubState figClone = (FigStubState) super.clone();
-        Iterator it = figClone.getFigs().iterator();
-        figClone.setBigPort((FigRect) it.next());
-        figClone.referenceFig = (FigText) it.next();
-        figClone.stubline = (FigLine) it.next();
-        return figClone;
-    }
-
-    ////////////////////////////////////////////////////////////////
-    // Fig accessors
-
-    /**
-     * Synch states are fixed size.
-     * @return false
-     */
-    @Override
-    public boolean isResizable() {
-        return false;
-    }
-
-    /*
-     * @see org.tigris.gef.presentation.Fig#makeSelection()
-     */
-    @Override
-    public Selection makeSelection() {
-        return new SelectionMoveClarifiers(this);
-    }
-
-    /*
-     * @see org.tigris.gef.presentation.Fig#setLineColor(java.awt.Color)
-     */
-    @Override
-    public void setLineColor(Color col) {
-        stubline.setLineColor(col);
-    }
-
-    /*
-     * @see org.tigris.gef.presentation.Fig#getLineColor()
-     */
-    @Override
-    public Color getLineColor() {
-        return stubline.getLineColor();
-    }
-
-    /*
-     * @see org.tigris.gef.presentation.Fig#setFillColor(java.awt.Color)
-     */
-    @Override
-    public void setFillColor(Color col) {
-        referenceFig.setFillColor(col);
-    }
-
-    /*
-     * @see org.tigris.gef.presentation.Fig#getFillColor()
-     */
-    @Override
-    public Color getFillColor() {
-        return referenceFig.getFillColor();
-    }
-
-    /*
-     * @see org.tigris.gef.presentation.Fig#setFilled(boolean)
-     */
-    @Override
-    public void setFilled(boolean f) {
-        referenceFig.setFilled(f);
-    }
-
-    @Override
-    public boolean isFilled() {
-        return referenceFig.isFilled();
-    }
-
-    /*
-     * @see org.tigris.gef.presentation.Fig#setLineWidth(int)
-     */
-    @Override
-    public void setLineWidth(int w) {
-        stubline.setLineWidth(w);
-    }
-
-    /*
-     * @see org.tigris.gef.presentation.Fig#getLineWidth()
-     */
-    @Override
-    public int getLineWidth() {
-        return stubline.getLineWidth();
-    }
-
-    /*
-     * @see org.tigris.gef.presentation.Fig#setBoundsImpl(int, int, int, int)
-     */
-    @Override
-    protected void setStandardBounds(int theX, int theY, int theW, int theH) {
-        Rectangle oldBounds = getBounds();
-        theW = 60;
-
-        referenceFig.setBounds(theX, theY, theW,
-                referenceFig.getBounds().height);
-        stubline.setShape(theX, theY,
-                theX + theW, theY);
-
-        getBigPort().setBounds(theX, theY, theW, theH);
-
-        calcBounds(); //_x = x; _y = y; _w = w; _h = h;
-        updateEdges();
-        firePropChange("bounds", oldBounds, getBounds());
-    }
-
-    ////////////////////////////////////////////////////////////////
-    // event processing
-
-    /*
-     * Update the text labels.
-     *
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement#modelChanged(java.beans.PropertyChangeEvent)
-     */
-    @Override
-    protected void modelChanged(PropertyChangeEvent mee) {
-        super.modelChanged(mee);
-        if (getOwner() == null) {
-            return;
-        }
-        Object top = null;
-        Object oldRef = null;
-        Object container = facade.getContainer(getOwner());
-
-        //The event source is the owner stub state
-        if ((mee.getSource().equals(getOwner()))) {
-            if (mee.getPropertyName().equals("referenceState")) {
-                updateReferenceText();
-                if (container != null && facade.isASubmachineState(container)
-                        && facade.getSubmachine(container) != null) {
-                    top = facade.getTop(facade.getSubmachine(container));
-                    oldRef = stateMHelper.getStatebyName(
-                            (String) mee.getOldValue(), top);
-                }
-                updateListeners(oldRef, getOwner());
-            } else if ((mee.getPropertyName().equals("container")
-                    && facade.isASubmachineState(container))) {
-                removeListeners();
-                Object o = mee.getOldValue();
-                if (o != null && facade.isASubmachineState(o)) {
-                    removeElementListener(o);
-                }
-                stateMHelper.setReferenceState(getOwner(), null);
-                updateListeners(getOwner(), getOwner());
-                updateReferenceText();
-            }
-        } else {
-            /*The event source is the submachine state*/
-            if (container != null
-                    && mee.getSource().equals(container)
-                    && facade.isASubmachineState(container)
-                    && facade.getSubmachine(container) != null) {
-                /* The submachine has got a new name*/
-                // This indicates a change in association, not name - tfm
-                if (mee.getPropertyName().equals("submachine")) {
-                    if (mee.getOldValue() != null) {
-                        top = facade.getTop(mee.getOldValue());
-                        oldRef = stateMHelper.getStatebyName(facade
-                                .getReferenceState(getOwner()), top);
-                    }
-                    stateMHelper.setReferenceState(getOwner(), null);
-                    updateListeners(oldRef, getOwner());
-                    updateReferenceText();
-                }
-
-            } else {
-                // The event source is the stub state's referenced state
-                // or one of the referenced state's path.
-                if (facade.getSubmachine(container) != null) {
-                    top = facade.getTop(facade.getSubmachine(container));
-                }
-                String path = facade.getReferenceState(getOwner());
-                Object refObject = stateMHelper.getStatebyName(path, top);
-                String ref;
-                if (refObject == null) {
-                    // The source was the referenced state that has got
-                    // a new name.
-                    ref = stateMHelper.getPath(mee.getSource());
-                } else {
-                    //The source was one of the referenced state's path which
-                    // has got a new name.
-                    ref = stateMHelper.getPath(refObject);
-                }
-                // The Referenced State or one of his path's states has got
-                // a new name
-                stateMHelper.setReferenceState(getOwner(), ref);
-                updateReferenceText();
-            }
-        }
-    }
-
-    /**
-     * Rerender the whole figure.
-     * Call superclass then add reference text
-     */
-    @Override
-    public void renderingChanged() {
-        super.renderingChanged();
+    // The event source is the owner stub state
+    if ((mee.getSource().equals(getOwner()))) {
+      if (mee.getPropertyName().equals("referenceState")) {
         updateReferenceText();
-    }
-    
-    /**
-     * Update the reference text.
-     */
-    public void updateReferenceText() {
-        Object text = null;
-        try {
-            text = facade.getReferenceState(getOwner());
-        } catch (Exception e) {
-            LOG.error("Exception caught and ignored!!", e);
+        if (container != null
+            && facade.isASubmachineState(container)
+            && facade.getSubmachine(container) != null) {
+          top = facade.getTop(facade.getSubmachine(container));
+          oldRef = stateMHelper.getStatebyName((String) mee.getOldValue(), top);
         }
-        if (text != null) {
-            referenceFig.setText((String) text);
+        updateListeners(oldRef, getOwner());
+      } else if ((mee.getPropertyName().equals("container")
+          && facade.isASubmachineState(container))) {
+        removeListeners();
+        Object o = mee.getOldValue();
+        if (o != null && facade.isASubmachineState(o)) {
+          removeElementListener(o);
+        }
+        stateMHelper.setReferenceState(getOwner(), null);
+        updateListeners(getOwner(), getOwner());
+        updateReferenceText();
+      }
+    } else {
+      /*The event source is the submachine state*/
+      if (container != null
+          && mee.getSource().equals(container)
+          && facade.isASubmachineState(container)
+          && facade.getSubmachine(container) != null) {
+        /* The submachine has got a new name*/
+        // This indicates a change in association, not name - tfm
+        if (mee.getPropertyName().equals("submachine")) {
+          if (mee.getOldValue() != null) {
+            top = facade.getTop(mee.getOldValue());
+            oldRef = stateMHelper.getStatebyName(facade.getReferenceState(getOwner()), top);
+          }
+          stateMHelper.setReferenceState(getOwner(), null);
+          updateListeners(oldRef, getOwner());
+          updateReferenceText();
+        }
+
+      } else {
+        // The event source is the stub state's referenced state
+        // or one of the referenced state's path.
+        if (facade.getSubmachine(container) != null) {
+          top = facade.getTop(facade.getSubmachine(container));
+        }
+        String path = facade.getReferenceState(getOwner());
+        Object refObject = stateMHelper.getStatebyName(path, top);
+        String ref;
+        if (refObject == null) {
+          // The source was the referenced state that has got
+          // a new name.
+          ref = stateMHelper.getPath(mee.getSource());
         } else {
-            referenceFig.setText("");
+          // The source was one of the referenced state's path which
+          // has got a new name.
+          ref = stateMHelper.getPath(refObject);
         }
-        calcBounds();
-        setBounds(getBounds());
-        damage();
+        // The Referenced State or one of his path's states has got
+        // a new name
+        stateMHelper.setReferenceState(getOwner(), ref);
+        updateReferenceText();
+      }
+    }
+  }
+
+  /** Rerender the whole figure. Call superclass then add reference text */
+  @Override
+  public void renderingChanged() {
+    super.renderingChanged();
+    updateReferenceText();
+  }
+
+  /** Update the reference text. */
+  public void updateReferenceText() {
+    Object text = null;
+    try {
+      text = facade.getReferenceState(getOwner());
+    } catch (Exception e) {
+      LOG.error("Exception caught and ignored!!", e);
+    }
+    if (text != null) {
+      referenceFig.setText((String) text);
+    } else {
+      referenceFig.setText("");
+    }
+    calcBounds();
+    setBounds(getBounds());
+    damage();
+  }
+
+  /**
+   * @param newOwner
+   */
+  private void addListeners(Object newOwner) {
+    Object container;
+    Object top;
+    Object reference;
+    container = facade.getContainer(newOwner);
+    // The new submachine container is added as listener
+    if (container != null && facade.isASubmachineState(container)) {
+      addElementListener(container);
     }
 
-    /**
-     * @param newOwner
-     */
-    private void addListeners(Object newOwner) {
-        Object container;
-        Object top;
-        Object reference;
-        container = facade.getContainer(newOwner);
-        //The new submachine container is added as listener
-        if (container != null
-                && facade.isASubmachineState(container)) {
-            addElementListener(container);
-        }
-        
-        //All states in the new reference state's path are added
-        // as listeners
-        if (container != null
-                && facade.isASubmachineState(container)
-                && facade.getSubmachine(container) != null) {
-            top = facade.getTop(facade.getSubmachine(container));
-            reference = stateMHelper.getStatebyName(facade
-                    .getReferenceState(newOwner), top);
-            String[] properties = {"name", "container"};
-            container = reference;
-            while (container != null
-                    && !container.equals(top)) {
-                addElementListener(container);
-                container = facade.getContainer(container);
-            }
-        }
+    // All states in the new reference state's path are added
+    // as listeners
+    if (container != null
+        && facade.isASubmachineState(container)
+        && facade.getSubmachine(container) != null) {
+      top = facade.getTop(facade.getSubmachine(container));
+      reference = stateMHelper.getStatebyName(facade.getReferenceState(newOwner), top);
+      String[] properties = {"name", "container"};
+      container = reference;
+      while (container != null && !container.equals(top)) {
+        addElementListener(container);
+        container = facade.getContainer(container);
+      }
     }
+  }
 
-    /**
-     * Remove all the existing listeners
-     */
-    private void removeListeners() {
-        Object container;
-        Object top;
-        Object reference;
-        Object owner = getOwner();
-        if (owner == null) {
-            return;
-        }
-        container = facade.getContainer(owner);
-        //The old submachine container is deleted as listener
-        if (container != null
-                && facade.isASubmachineState(container)) {
-            removeElementListener(container);
-        }
-        //All states in the old reference state's path are deleted
-        // as listeners
-        if (container != null
-                && facade.isASubmachineState(container)
-                && facade.getSubmachine(container) != null) {
-            
-            top = facade.getTop(facade.getSubmachine(container));
-            reference = stateMHelper.getStatebyName(facade
-                    .getReferenceState(owner), top);
-            if (reference != null) {
-                removeElementListener(reference);
-                container = facade.getContainer(reference);
-                while (container != null && !facade.isTop(container)) {
-                    removeElementListener(container);
-                    container = facade.getContainer(container);
-                }
-            }
-        }
+  /** Remove all the existing listeners */
+  private void removeListeners() {
+    Object container;
+    Object top;
+    Object reference;
+    Object owner = getOwner();
+    if (owner == null) {
+      return;
     }
+    container = facade.getContainer(owner);
+    // The old submachine container is deleted as listener
+    if (container != null && facade.isASubmachineState(container)) {
+      removeElementListener(container);
+    }
+    // All states in the old reference state's path are deleted
+    // as listeners
+    if (container != null
+        && facade.isASubmachineState(container)
+        && facade.getSubmachine(container) != null) {
 
-    /**
-     * @param newOwner the new owner UML object
-     * @param oldV the old owner UML object
-     * @deprecated for 0.27.2 by tfmorris. Use
-     *             {@link #updateListeners(Object, Object)} with the argument
-     *             order swapper. There are no internal users of this method, so
-     *             the only potential users are people who've subclassed this
-     *             Fig.
-     */
-    protected void updateListenersX(Object newOwner, Object oldV) {
-        // Just swap order of arguments to get to new form
-        updateListeners(oldV, newOwner);
-    }
-
-    @Override
-    protected void updateListeners(Object oldV, Object newOwner) {
-        if (oldV != null) {
-            if (oldV != newOwner) {
-                removeElementListener(oldV);
-            }
-            Object container = facade.getContainer(oldV);
-            while (container != null && !facade.isTop(container)) {
-                removeElementListener(container);
-                container = facade.getContainer(container);
-            }
+      top = facade.getTop(facade.getSubmachine(container));
+      reference = stateMHelper.getStatebyName(facade.getReferenceState(owner), top);
+      if (reference != null) {
+        removeElementListener(reference);
+        container = facade.getContainer(reference);
+        while (container != null && !facade.isTop(container)) {
+          removeElementListener(container);
+          container = facade.getContainer(container);
         }
-        super.updateListeners(getOwner(), newOwner);
+      }
     }
-    
-    @Override
-    protected void updateFont() {
-        super.updateFont();
-        Font f = getSettings().getFont(Font.PLAIN);
-        referenceFig.setFont(f);
-    }
+  }
 
+  /**
+   * @param newOwner the new owner UML object
+   * @param oldV the old owner UML object
+   * @deprecated for 0.27.2 by tfmorris. Use {@link #updateListeners(Object, Object)} with the
+   *     argument order swapper. There are no internal users of this method, so the only potential
+   *     users are people who've subclassed this Fig.
+   */
+  protected void updateListenersX(Object newOwner, Object oldV) {
+    // Just swap order of arguments to get to new form
+    updateListeners(oldV, newOwner);
+  }
+
+  @Override
+  protected void updateListeners(Object oldV, Object newOwner) {
+    if (oldV != null) {
+      if (oldV != newOwner) {
+        removeElementListener(oldV);
+      }
+      Object container = facade.getContainer(oldV);
+      while (container != null && !facade.isTop(container)) {
+        removeElementListener(container);
+        container = facade.getContainer(container);
+      }
+    }
+    super.updateListeners(getOwner(), newOwner);
+  }
+
+  @Override
+  protected void updateFont() {
+    super.updateFont();
+    Font f = getSettings().getFont(Font.PLAIN);
+    referenceFig.setFont(f);
+  }
 }

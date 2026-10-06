@@ -27,32 +27,28 @@ package org.argouml.uml.notation;
 import org.argouml.model.Model;
 
 /**
- * This abstract class forms the basis of all Notation providers 
- * for the text shown next to a Transition. Subclass this for all languages.
- * 
+ * This abstract class forms the basis of all Notation providers for the text shown next to a
+ * Transition. Subclass this for all languages.
+ *
  * @author mvw@tigris.org
  */
 public abstract class TransitionNotation extends ValueHandler {
 
-    protected Object myTransition;
-    
-    /**
-     * The constructor.
-     */
-    public TransitionNotation(Object transition) {
-        if (!Model.getFacade().isATransition(transition)) {
-            throw new IllegalArgumentException();
-        }
-        myTransition = transition;
+  protected Object myTransition;
+
+  /** The constructor. */
+  public TransitionNotation(Object transition) {
+    if (!Model.getFacade().isATransition(transition)) {
+      throw new IllegalArgumentException();
     }
+    myTransition = transition;
+  }
 
-    /**
-     * @see org.argouml.notation.NotationProvider4#putValue(java.lang.String, java.lang.Object)
-     */
-    public void putValue(String key, Object newValue) {
-        // TODO: Auto-generated method stub
-        
-    }
+  /**
+   * @see org.argouml.notation.NotationProvider4#putValue(java.lang.String, java.lang.Object)
+   */
+  public void putValue(String key, Object newValue) {
+    // TODO: Auto-generated method stub
 
-
+  }
 }

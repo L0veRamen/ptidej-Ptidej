@@ -107,378 +107,376 @@ import org.omg.uml.modelmanagement.Subsystem;
 import org.omg.uml.modelmanagement.UmlPackage;
 
 /**
- * This class contains methods to retrieve objects that represent the different
- * UML types. These objects are use as tokens used to create model elements in
- * some methods.
- * 
- * @see org.argouml.model.UmlFactory#buildConnection( Object, Object, Object,
- *      Object, Object, Object, Object)
+ * This class contains methods to retrieve objects that represent the different UML types. These
+ * objects are use as tokens used to create model elements in some methods.
+ *
+ * @see org.argouml.model.UmlFactory#buildConnection( Object, Object, Object, Object, Object,
+ *     Object, Object)
  * @see org.argouml.model.UmlFactory#buildNode(Object)
  */
 public final class MetaTypesMDRImpl implements MetaTypes {
 
-    /**
-     * Given a model element instance returns the name of its meta type.
-     * @param modelElement The ModelElement on which extract the name
-     * @return A string which is the metatype name of the modelElement 
-     */
-    public String getName(Object modelElement) {
-        Class clazz;
-        if (modelElement instanceof Class) {
-            clazz = (Class) modelElement;
-        } else {
-            clazz = modelElement.getClass();
-        }
-        String name = clazz.getName();
-
-        // The name of the meta type is the class name (after the last .)
-        // and before the next $ or end of class name.
-        int startName = name.lastIndexOf('.') + 1;
-
-        // MDR classes may have a UML or Uml prefix which should be removed.
-        if (name.regionMatches(true, startName, "UML", 0, 3)) {
-            startName += 3;
-        }
-
-        int endName = name.indexOf('$', startName);
-        if (endName < 0) {
-            endName = name.length();
-        }
-
-        return name.substring(startName, endName);
-    }
-
-    /**
-     * Constructor that forbids to instantiate.
-     */
-    MetaTypesMDRImpl() {
-        // forbid instantiation
-    }
-
-    /*
-     * @see org.argouml.model.MetaTypes#getAbstraction()
-     */
-    public Object getAbstraction() {
-        return Abstraction.class;
-    }
-
-    public Object getAction() {
-        return Action.class;
-    }
-
-    public Object getActionExpression() {
-        return ActionExpression.class;
-    }
-
-    public Object getActionState() {
-        return ActionState.class;
-    }
-
-    public Object getActor() {
-        return Actor.class;
-    }
-
-    public Object getAggregationKind() {
-        return AggregationKind.class;
-    }
-
-    public Object getAssociation() {
-        return UmlAssociation.class;
-    }
-
-    public Object getAssociationClass() {
-        return AssociationClass.class;
-    }
-
-    public Object getAssociationEnd() {
-        return AssociationEnd.class;
-    }
-
-    public Object getAssociationEndRole() {
-        return AssociationEndRole.class;
-    }
-
-    public Object getAssociationRole() {
-        return AssociationRole.class;
-    }
-
-    public Object getAttribute() {
-        return Attribute.class;
-    }
-
-    public Object getBehavioralFeature() {
-        return BehavioralFeature.class;    
-    }
-
-    public Object getBooleanExpression() {
-        return BooleanExpression.class;
-    }
-
-    public Object getCallAction() {
-        return CallAction.class;
-    }
-
-    public Object getCallConcurrencyKind() {
-        return CallConcurrencyKind.class;
-    }
-
-    public Object getCallState() {
-        return CallState.class;
-    }
-
-    public Object getUMLClass() {
-        return UmlClass.class;
-    }
-
-    public Object getClassifier() {
-        return Classifier.class;
-    }
-
-    public Object getClassifierRole() {
-        return ClassifierRole.class;
-    }
-
-    public Object getCollaboration() {
-        return Collaboration.class;
-    }
-
-    public Object getComment() {
-        return Comment.class;
-    }
-
-    public Object getComponent() {
-        return Component.class;
-    }
-
-    public Object getComponentInstance() {
-        return ComponentInstance.class;
-    }
-
-    public Object getCompositeState() {
-        return CompositeState.class;
-    }
-
-    public Object getCreateAction() {
-        return CreateAction.class;
-    }
-
-    public Object getDataType() {
-        return DataType.class;
-    }
-
-    public Object getDependency() {
-        return Dependency.class;
-    }
-
-    public Object getDestroyAction() {
-        return DestroyAction.class;
-    }
-
-    public Object getEnumeration() {
-        return Enumeration.class;
-    }
-
-    public Object getEvent() {
-        return Event.class;
-    }
-
-    public Object getException() {
-        return UmlException.class;
-    }
-
-    public Object getExtend() {
-        return Extend.class;
-    }
-
-    public Object getFinalState() {
-        return FinalState.class;
-    }
-
-    public Object getGeneralizableElement() {
-        return GeneralizableElement.class;
-    }
-
-    public Object getGeneralization() {
-        return Generalization.class;
-    }
-
-    public Object getGuard() {
-        return Guard.class;
-    }
-
-    public Object getInclude() {
-        return Include.class;
-    }
-
-    public Object getInstance() {
-        return Instance.class;
-    }
-
-    public Object getInterface() {
-        return Interface.class;
-    }
-
-    public Object getLink() {
-        return Link.class;
-    }
-
-    public Object getMessage() {
-        return Message.class;
-    }
-
-    public Object getModel() {
-        return Model.class;
-    }
-
-    public Object getModelElement() {
-        return ModelElement.class;
-    }
-
-    public Object getMultiplicity() {
-        return Multiplicity.class;
-    }
-
-    public Object getNamespace() {
-        return Namespace.class;
-    }
-
-    public Object getNode() {
-        return Node.class;
-    }
-
-    public Object getNodeInstance() {
-        return NodeInstance.class;
-    }
-
-    public Object getObject() {
-        return org.omg.uml.behavioralelements.commonbehavior.Object.class;
-    }
-
-    public Object getObjectFlowState() {
-        return ObjectFlowState.class;
-    }
-
-    public Object getOperation() {
-        return Operation.class;
-    }
-
-    public Object getPackage() {
-        return UmlPackage.class;
-    }
-
-    public Object getParameter() {
-        return Parameter.class;
-    }
-
-    public Object getParameterDirectionKind() {
-        return ParameterDirectionKind.class;
-    }
-
-    public Object getPartition() {
-        return Partition.class;
-    }
-
-    public Object getPermission() {
-        return Permission.class;
-    }
-
-    public Object getPseudostate() {
-        return Pseudostate.class;
-    }
-
-    public Object getPseudostateKind() {
-        return PseudostateKind.class;
-    }
-
-    public Object getReception() {
-        return Reception.class;
-    }
-
-    public Object getReturnAction() {
-        return ReturnAction.class;
-    }
-
-    public Object getScopeKind() {
-        return ScopeKind.class;
-    }
-
-    public Object getSendAction() {
-        return SendAction.class;
-    }
-
-    public Object getSignal() {
-        return Signal.class;
-    }
-
-    public Object getSimpleState() {
-        return SimpleState.class;
-    }
-
-    public Object getState() {
-        return State.class;
-    }
-
-    public Object getStateMachine() {
-        return StateMachine.class;
-    }
-
-    public Object getStateVertex() {
-        return StateVertex.class;
-    }
-
-    public Object getStereotype() {
-        return Stereotype.class;
-    }
-
-    public Object getStimulus() {
-        return Stimulus.class;
-    }
-
-    public Object getStubState() {
-        return StubState.class;
-    }
-
-    public Object getSubactivityState() {
-        return SubactivityState.class;
-    }
-
-    public Object getSubmachineState() {
-        return SubmachineState.class;
-    }
-
-    public Object getSubsystem() {
-        return Subsystem.class;
-    }
-
-    public Object getSynchState() {
-        return SynchState.class;
-    }
-
-    public Object getTerminateAction() {
-        return TerminateAction.class;
-    }
-
-    public Object getTransition() {
-        return Transition.class;
-    }
-
-    public Object getUsage() {
-        return Usage.class;
-    }
-
-    public Object getUseCase() {
-        return UseCase.class;
-    }
-
-    public Object getVisibilityKind() {
-        return VisibilityKind.class;
-    }
-
-    public Object getTagDefinition() {
-        return TagDefinition.class;
-    }
-
-    public Object getInteraction() {
-        return Interaction.class;
-    }
+  /**
+   * Given a model element instance returns the name of its meta type.
+   *
+   * @param modelElement The ModelElement on which extract the name
+   * @return A string which is the metatype name of the modelElement
+   */
+  public String getName(Object modelElement) {
+    Class clazz;
+    if (modelElement instanceof Class) {
+      clazz = (Class) modelElement;
+    } else {
+      clazz = modelElement.getClass();
+    }
+    String name = clazz.getName();
+
+    // The name of the meta type is the class name (after the last .)
+    // and before the next $ or end of class name.
+    int startName = name.lastIndexOf('.') + 1;
+
+    // MDR classes may have a UML or Uml prefix which should be removed.
+    if (name.regionMatches(true, startName, "UML", 0, 3)) {
+      startName += 3;
+    }
+
+    int endName = name.indexOf('$', startName);
+    if (endName < 0) {
+      endName = name.length();
+    }
+
+    return name.substring(startName, endName);
+  }
+
+  /** Constructor that forbids to instantiate. */
+  MetaTypesMDRImpl() {
+    // forbid instantiation
+  }
+
+  /*
+   * @see org.argouml.model.MetaTypes#getAbstraction()
+   */
+  public Object getAbstraction() {
+    return Abstraction.class;
+  }
+
+  public Object getAction() {
+    return Action.class;
+  }
+
+  public Object getActionExpression() {
+    return ActionExpression.class;
+  }
+
+  public Object getActionState() {
+    return ActionState.class;
+  }
+
+  public Object getActor() {
+    return Actor.class;
+  }
+
+  public Object getAggregationKind() {
+    return AggregationKind.class;
+  }
+
+  public Object getAssociation() {
+    return UmlAssociation.class;
+  }
+
+  public Object getAssociationClass() {
+    return AssociationClass.class;
+  }
+
+  public Object getAssociationEnd() {
+    return AssociationEnd.class;
+  }
+
+  public Object getAssociationEndRole() {
+    return AssociationEndRole.class;
+  }
+
+  public Object getAssociationRole() {
+    return AssociationRole.class;
+  }
+
+  public Object getAttribute() {
+    return Attribute.class;
+  }
+
+  public Object getBehavioralFeature() {
+    return BehavioralFeature.class;
+  }
+
+  public Object getBooleanExpression() {
+    return BooleanExpression.class;
+  }
+
+  public Object getCallAction() {
+    return CallAction.class;
+  }
+
+  public Object getCallConcurrencyKind() {
+    return CallConcurrencyKind.class;
+  }
+
+  public Object getCallState() {
+    return CallState.class;
+  }
+
+  public Object getUMLClass() {
+    return UmlClass.class;
+  }
+
+  public Object getClassifier() {
+    return Classifier.class;
+  }
+
+  public Object getClassifierRole() {
+    return ClassifierRole.class;
+  }
+
+  public Object getCollaboration() {
+    return Collaboration.class;
+  }
+
+  public Object getComment() {
+    return Comment.class;
+  }
+
+  public Object getComponent() {
+    return Component.class;
+  }
+
+  public Object getComponentInstance() {
+    return ComponentInstance.class;
+  }
+
+  public Object getCompositeState() {
+    return CompositeState.class;
+  }
+
+  public Object getCreateAction() {
+    return CreateAction.class;
+  }
+
+  public Object getDataType() {
+    return DataType.class;
+  }
+
+  public Object getDependency() {
+    return Dependency.class;
+  }
+
+  public Object getDestroyAction() {
+    return DestroyAction.class;
+  }
+
+  public Object getEnumeration() {
+    return Enumeration.class;
+  }
+
+  public Object getEvent() {
+    return Event.class;
+  }
+
+  public Object getException() {
+    return UmlException.class;
+  }
+
+  public Object getExtend() {
+    return Extend.class;
+  }
+
+  public Object getFinalState() {
+    return FinalState.class;
+  }
+
+  public Object getGeneralizableElement() {
+    return GeneralizableElement.class;
+  }
+
+  public Object getGeneralization() {
+    return Generalization.class;
+  }
+
+  public Object getGuard() {
+    return Guard.class;
+  }
+
+  public Object getInclude() {
+    return Include.class;
+  }
+
+  public Object getInstance() {
+    return Instance.class;
+  }
+
+  public Object getInterface() {
+    return Interface.class;
+  }
+
+  public Object getLink() {
+    return Link.class;
+  }
+
+  public Object getMessage() {
+    return Message.class;
+  }
+
+  public Object getModel() {
+    return Model.class;
+  }
+
+  public Object getModelElement() {
+    return ModelElement.class;
+  }
+
+  public Object getMultiplicity() {
+    return Multiplicity.class;
+  }
+
+  public Object getNamespace() {
+    return Namespace.class;
+  }
+
+  public Object getNode() {
+    return Node.class;
+  }
+
+  public Object getNodeInstance() {
+    return NodeInstance.class;
+  }
+
+  public Object getObject() {
+    return org.omg.uml.behavioralelements.commonbehavior.Object.class;
+  }
+
+  public Object getObjectFlowState() {
+    return ObjectFlowState.class;
+  }
+
+  public Object getOperation() {
+    return Operation.class;
+  }
+
+  public Object getPackage() {
+    return UmlPackage.class;
+  }
+
+  public Object getParameter() {
+    return Parameter.class;
+  }
+
+  public Object getParameterDirectionKind() {
+    return ParameterDirectionKind.class;
+  }
+
+  public Object getPartition() {
+    return Partition.class;
+  }
+
+  public Object getPermission() {
+    return Permission.class;
+  }
+
+  public Object getPseudostate() {
+    return Pseudostate.class;
+  }
+
+  public Object getPseudostateKind() {
+    return PseudostateKind.class;
+  }
+
+  public Object getReception() {
+    return Reception.class;
+  }
+
+  public Object getReturnAction() {
+    return ReturnAction.class;
+  }
+
+  public Object getScopeKind() {
+    return ScopeKind.class;
+  }
+
+  public Object getSendAction() {
+    return SendAction.class;
+  }
+
+  public Object getSignal() {
+    return Signal.class;
+  }
+
+  public Object getSimpleState() {
+    return SimpleState.class;
+  }
+
+  public Object getState() {
+    return State.class;
+  }
+
+  public Object getStateMachine() {
+    return StateMachine.class;
+  }
+
+  public Object getStateVertex() {
+    return StateVertex.class;
+  }
+
+  public Object getStereotype() {
+    return Stereotype.class;
+  }
+
+  public Object getStimulus() {
+    return Stimulus.class;
+  }
+
+  public Object getStubState() {
+    return StubState.class;
+  }
+
+  public Object getSubactivityState() {
+    return SubactivityState.class;
+  }
+
+  public Object getSubmachineState() {
+    return SubmachineState.class;
+  }
+
+  public Object getSubsystem() {
+    return Subsystem.class;
+  }
+
+  public Object getSynchState() {
+    return SynchState.class;
+  }
+
+  public Object getTerminateAction() {
+    return TerminateAction.class;
+  }
+
+  public Object getTransition() {
+    return Transition.class;
+  }
+
+  public Object getUsage() {
+    return Usage.class;
+  }
+
+  public Object getUseCase() {
+    return UseCase.class;
+  }
+
+  public Object getVisibilityKind() {
+    return VisibilityKind.class;
+  }
+
+  public Object getTagDefinition() {
+    return TagDefinition.class;
+  }
+
+  public Object getInteraction() {
+    return Interaction.class;
+  }
 }

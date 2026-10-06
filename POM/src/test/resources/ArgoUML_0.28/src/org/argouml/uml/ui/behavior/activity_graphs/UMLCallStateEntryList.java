@@ -26,7 +26,6 @@ package org.argouml.uml.ui.behavior.activity_graphs;
 
 import javax.swing.JMenu;
 import javax.swing.JPopupMenu;
-
 import org.argouml.i18n.Translator;
 import org.argouml.uml.ui.ActionRemoveModelElement;
 import org.argouml.uml.ui.UMLModelElementListModel2;
@@ -35,59 +34,56 @@ import org.argouml.uml.ui.behavior.common_behavior.ActionNewAction;
 import org.argouml.uml.ui.behavior.common_behavior.ActionNewCallAction;
 
 /**
- * This class is very similar to the UMLStateEntryList,
- * but since it is used for a CallState,
- * it allows only the creation of one Action type: CallAction.
+ * This class is very similar to the UMLStateEntryList, but since it is used for a CallState, it
+ * allows only the creation of one Action type: CallAction.
  *
  * @author michiel
  */
 class UMLCallStateEntryList extends UMLMutableLinkedList {
 
+  /**
+   * Constructor for UMLStateEntryList.
+   *
+   * @param dataModel the model
+   */
+  public UMLCallStateEntryList(UMLModelElementListModel2 dataModel) {
+    super(dataModel);
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLMutableLinkedList#getPopupMenu()
+   */
+  public JPopupMenu getPopupMenu() {
+    return new PopupMenuNewCallAction(ActionNewAction.Roles.ENTRY, this);
+  }
+
+  static class PopupMenuNewCallAction extends JPopupMenu {
+
     /**
-     * Constructor for UMLStateEntryList.
-     * @param dataModel the model
+     * Constructs a new popupmenu. The given parameter role determines what the purpose is of the
+     * actions that can be created via this popupmenu. The parameter must comply to the interface
+     * Roles defined on ActionNewAction.
+     *
+     * @param role the role
+     * @param list the list
      */
-    public UMLCallStateEntryList(
-        UMLModelElementListModel2 dataModel) {
-        super(dataModel);
+    public PopupMenuNewCallAction(String role, UMLMutableLinkedList list) {
+      super();
+
+      JMenu newMenu = new JMenu();
+      newMenu.setText(Translator.localize("action.new"));
+
+      newMenu.add(ActionNewCallAction.getInstance());
+      ActionNewCallAction.getInstance().setTarget(list.getTarget());
+      ActionNewCallAction.getInstance().putValue(ActionNewAction.ROLE, role);
+
+      add(newMenu);
+
+      addSeparator();
+
+      ActionRemoveModelElement.SINGLETON.setObjectToRemove(
+          ActionNewAction.getAction(role, list.getTarget()));
+      add(ActionRemoveModelElement.SINGLETON);
     }
-
-    /*
-     * @see org.argouml.uml.ui.UMLMutableLinkedList#getPopupMenu()
-     */
-    public JPopupMenu getPopupMenu() {
-        return new PopupMenuNewCallAction(ActionNewAction.Roles.ENTRY, this);
-    }
-
-    static class PopupMenuNewCallAction extends JPopupMenu {
-
-        /**
-         * Constructs a new popupmenu. The given parameter role determines what
-         * the purpose is of the actions that can be created via this popupmenu.
-         * The parameter must comply to the interface Roles
-         * defined on ActionNewAction.
-         * @param role the role
-         * @param list the list
-         */
-        public PopupMenuNewCallAction(String role, UMLMutableLinkedList list) {
-            super();
-
-            JMenu newMenu = new JMenu();
-            newMenu.setText(Translator.localize("action.new"));
-
-            newMenu.add(ActionNewCallAction.getInstance());
-            ActionNewCallAction.getInstance().setTarget(list.getTarget());
-            ActionNewCallAction.getInstance().putValue(
-                    ActionNewAction.ROLE, role);
-
-            add(newMenu);
-
-            addSeparator();
-
-            ActionRemoveModelElement.SINGLETON.setObjectToRemove(ActionNewAction
-                 .getAction(role, list.getTarget()));
-            add(ActionRemoveModelElement.SINGLETON);
-        }
-    }
-
+  }
 }

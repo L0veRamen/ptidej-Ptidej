@@ -33,31 +33,27 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  * @since Oct 12, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class UMLModelElementClientDependencyListModel
-    extends UMLModelElementListModel2 {
+public class UMLModelElementClientDependencyListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLModelElementClientDependencyListModel.
-     */
-    public UMLModelElementClientDependencyListModel() {
-        super("clientDependency", Model.getMetaTypes().getDependency());
-    }
+  /** Constructor for UMLModelElementClientDependencyListModel. */
+  public UMLModelElementClientDependencyListModel() {
+    super("clientDependency", Model.getMetaTypes().getDependency());
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (getTarget() != null) {
-            setAllElements(
-                    Model.getFacade().getClientDependencies(getTarget()));
-        }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (getTarget() != null) {
+      setAllElements(Model.getFacade().getClientDependencies(getTarget()));
     }
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object o) {
-        return Model.getFacade().isADependency(o)
-            && Model.getFacade().getClientDependencies(getTarget()).contains(o);
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object o) {
+    return Model.getFacade().isADependency(o)
+        && Model.getFacade().getClientDependencies(getTarget()).contains(o);
+  }
 }

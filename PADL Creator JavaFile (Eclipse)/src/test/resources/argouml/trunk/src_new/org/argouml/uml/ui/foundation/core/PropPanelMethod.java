@@ -26,12 +26,10 @@ package org.argouml.uml.ui.foundation.core;
 
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
-
 import javax.swing.Action;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.AttributeChangeEvent;
 import org.argouml.model.Model;
@@ -53,286 +51,248 @@ import org.tigris.gef.undo.UndoableAction;
  */
 public class PropPanelMethod extends PropPanelFeature {
 
-    private JTextField languageTextField;
-    private UMLComboBox2 specificationComboBox;
-    private static UMLMethodSpecificationComboBoxModel
-        specificationComboBoxModel;
-    private UMLModelElementLanguageDocument languageDocument =
-        new UMLModelElementLanguageDocument();
+  private JTextField languageTextField;
+  private UMLComboBox2 specificationComboBox;
+  private static UMLMethodSpecificationComboBoxModel specificationComboBoxModel;
+  private UMLModelElementLanguageDocument languageDocument = new UMLModelElementLanguageDocument();
 
-    /**
-     * Construct a property panel for UML Method elements.
-     */
-    public PropPanelMethod() {
-        super("Method", lookupIcon("Method"), ConfigLoader
-                .getTabPropsOrientation());
-        UMLPlainTextDocument uptd = new UMLMethodBodyDocument();
+  /** Construct a property panel for UML Method elements. */
+  public PropPanelMethod() {
+    super("Method", lookupIcon("Method"), ConfigLoader.getTabPropsOrientation());
+    UMLPlainTextDocument uptd = new UMLMethodBodyDocument();
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
+    addField(Translator.localize("label.name"), getNameTextField());
 
-        addField(Translator.localize("label.owner"),
-                getOwnerScroll());
+    addField(Translator.localize("label.owner"), getOwnerScroll());
 
-        /* The specification field shows the Operation: */
-        addField(Translator.localize("label.specification"),
-                new UMLComboBoxNavigator(
-                        this,
-                        Translator
-                            .localize("label.specification.navigate.tooltip"),
-                        getSpecificationComboBox()));
+    /* The specification field shows the Operation: */
+    addField(
+        Translator.localize("label.specification"),
+        new UMLComboBoxNavigator(
+            this,
+            Translator.localize("label.specification.navigate.tooltip"),
+            getSpecificationComboBox()));
 
-        add(getVisibilityPanel());
+    add(getVisibilityPanel());
 
-        JPanel modifiersPanel = createBorderPanel(Translator.localize(
-                "label.modifiers"));
-        modifiersPanel.add(new UMLBehavioralFeatureQueryCheckBox());
-        modifiersPanel.add(new UMLFeatureOwnerScopeCheckBox());
-        add(modifiersPanel);
+    JPanel modifiersPanel = createBorderPanel(Translator.localize("label.modifiers"));
+    modifiersPanel.add(new UMLBehavioralFeatureQueryCheckBox());
+    modifiersPanel.add(new UMLFeatureOwnerScopeCheckBox());
+    add(modifiersPanel);
 
-        addSeparator();
+    addSeparator();
 
-        addField(Translator.localize("label.language"),
-                getLanguageTextField());
+    addField(Translator.localize("label.language"), getLanguageTextField());
 
-        UMLTextArea2 bodyArea = new UMLTextArea2(uptd);
-        bodyArea.setLineWrap(true);
-        bodyArea.setRows(5);
-        bodyArea.setFont(LookAndFeelMgr.getInstance().getStandardFont());
-        JScrollPane pane = new JScrollPane(bodyArea);
-        addField(Translator.localize("label.body"), pane);
+    UMLTextArea2 bodyArea = new UMLTextArea2(uptd);
+    bodyArea.setLineWrap(true);
+    bodyArea.setRows(5);
+    bodyArea.setFont(LookAndFeelMgr.getInstance().getStandardFont());
+    JScrollPane pane = new JScrollPane(bodyArea);
+    addField(Translator.localize("label.body"), pane);
 
-        addAction(new ActionNavigateOwner());
-        addAction(getDeleteAction());
+    addAction(new ActionNavigateOwner());
+    addAction(getDeleteAction());
+  }
+
+  /**
+   * @return a textfield for the name
+   */
+  protected JTextField getLanguageTextField() {
+    if (languageTextField == null) {
+      languageTextField = new UMLTextField2(languageDocument);
+    }
+    return languageTextField;
+  }
+
+  /**
+   * @return the Specification ComboBox
+   */
+  public UMLComboBox2 getSpecificationComboBox() {
+    if (specificationComboBox == null) {
+      if (specificationComboBoxModel == null) {
+        specificationComboBoxModel = new UMLMethodSpecificationComboBoxModel();
+      }
+      specificationComboBox =
+          new UMLComboBox2(specificationComboBoxModel, new ActionSetMethodSpecification());
+    }
+    return specificationComboBox;
+  }
+
+  private static class UMLMethodSpecificationComboBoxModel extends UMLComboBoxModel2 {
+    /** Constructor. */
+    public UMLMethodSpecificationComboBoxModel() {
+      super("specification", false);
+      Model.getPump()
+          .addClassModelEventListener(this, Model.getMetaTypes().getOperation(), "method");
     }
 
     /**
-     * @return a textfield for the name
+     * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement( java.lang.Object)
      */
-    protected JTextField getLanguageTextField() {
-        if (languageTextField == null) {
-            languageTextField = new UMLTextField2(languageDocument);
-        }
-        return languageTextField;
+    protected boolean isValidElement(Object element) {
+      Object specification = Model.getCoreHelper().getSpecification(getTarget());
+      return specification == element;
     }
 
     /**
-     * @return the Specification ComboBox
+     * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
      */
-    public UMLComboBox2 getSpecificationComboBox() {
-        if (specificationComboBox == null) {
-            if (specificationComboBoxModel == null) {
-                specificationComboBoxModel =
-                    new UMLMethodSpecificationComboBoxModel();
-            }
-            specificationComboBox =
-                new UMLComboBox2(
-                        specificationComboBoxModel,
-                                 new ActionSetMethodSpecification());
-        }
-        return specificationComboBox;
-    }
-
-    private static class UMLMethodSpecificationComboBoxModel
-        extends UMLComboBoxModel2 {
-        /**
-         * Constructor.
-         */
-        public UMLMethodSpecificationComboBoxModel() {
-            super("specification", false);
-            Model.getPump().addClassModelEventListener(this,
-                    Model.getMetaTypes().getOperation(), "method");
-        }
-
-        /**
-         * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(
-         *         java.lang.Object)
-         */
-        protected boolean isValidElement(Object element) {
-            Object specification =
-                Model.getCoreHelper().getSpecification(getTarget());
-            return specification == element;
-        }
-
-        /**
-         * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
-         */
-        protected void buildModelList() {
-            if (getTarget() != null) {
-                removeAllElements();
-                Object classifier = Model.getFacade().getOwner(getTarget());
-                addAll(Model.getFacade().getOperations(classifier));
-            }
-        }
-
-        /**
-         * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
-         */
-        protected Object getSelectedModelElement() {
-            return Model.getCoreHelper().getSpecification(getTarget());
-        }
-
-        /**
-         * @see java.beans.PropertyChangeListener#propertyChange(
-         *         java.beans.PropertyChangeEvent)
-         */
-        public void propertyChange(PropertyChangeEvent evt) {
-            if (evt instanceof AttributeChangeEvent) {
-                if (evt.getPropertyName().equals("specification")) {
-                    if (evt.getSource() == getTarget()
-                            && (getChangedElement(evt) != null)) {
-                        Object elem = getChangedElement(evt);
-                        setSelectedItem(elem);
-                    }
-                }
-            }
-        }
-
-        /**
-         * The UID.
-         */
-        private static final long serialVersionUID = -7439424794380015022L;
-    }
-
-    private static class ActionSetMethodSpecification extends UndoableAction {
-
-        /**
-         * Constructor for ActionSetStructuralFeatureType.
-         */
-        protected ActionSetMethodSpecification() {
-            super(Translator.localize("Set"), null);
-            // Set the tooltip string:
-            putValue(Action.SHORT_DESCRIPTION, 
-                    Translator.localize("Set"));
-        }
-
-        /**
-         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-         */
-        public void actionPerformed(ActionEvent e) {
-            super.actionPerformed(e);
-            Object source = e.getSource();
-            Object oldOperation = null;
-            Object newOperation = null;
-            Object method = null;
-            if (source instanceof UMLComboBox2) {
-                UMLComboBox2 box = (UMLComboBox2) source;
-                Object o = box.getTarget(); // the method
-                if (Model.getFacade().isAMethod(o)) {
-                    method = o;
-                    oldOperation =
-                        Model.getCoreHelper().getSpecification(method);
-                }
-                o = box.getSelectedItem(); // the selected operation
-                if (Model.getFacade().isAOperation(o)) {
-                    newOperation = o;
-                }
-            }
-            if (newOperation != oldOperation && method != null) {
-                Model.getCoreHelper().setSpecification(method, newOperation);
-            }
-        }
-    }
-
-    private static class UMLModelElementLanguageDocument
-        extends UMLPlainTextDocument {
-        /**
-         * Constructor for UMLModelElementNameDocument.
-         */
-        public UMLModelElementLanguageDocument() {
-             super("language");
-        }
-
-        /**
-         * @see org.argouml.uml.ui.UMLPlainTextDocument#setProperty(java.lang.String)
-         */
-        protected void setProperty(String text) {
-            Object meth = getTarget();
-            if (Model.getFacade().isAMethod(meth)) {
-                Object expr = Model.getFacade().getBody(meth);
-                if (expr != null) {
-                    Model.getDataTypesHelper().setLanguage(expr, text);
-                } else {
-                    Model.getCoreHelper().setBody(meth,
-                            Model.getDataTypesFactory()
-                            .createProcedureExpression(text, null));
-                }
-            }
-        }
-
-        /**
-         * @see org.argouml.uml.ui.UMLPlainTextDocument#getProperty()
-         */
-        protected String getProperty() {
-            Object expr = Model.getFacade().getBody(getTarget());
-            if (expr == null) {
-                return null;
-            } else {
-                return Model.getDataTypesHelper().getLanguage(expr);
-            }
-        }
-
-        /**
-         * The UID.
-         */
-        private static final long serialVersionUID = -2004931253036454061L;
-    }
-
-    private static class UMLMethodBodyDocument extends UMLPlainTextDocument {
-        /**
-         * Constructor for UMLMethodBodyDocument.
-         */
-        public UMLMethodBodyDocument() {
-            super("body");
-            /*
-             * TODO: This is probably not the right location
-             * for switching off the "filterNewlines".
-             * The setting gets lost after selecting a different
-             * ModelElement in the diagram.
-             * BTW, see how it is used in
-             * javax.swing.text.PlainDocument.
-             * See issue 1812.
-             */
-            putProperty("filterNewlines", Boolean.FALSE);
-        }
-
-        /**
-         * @see org.argouml.uml.ui.UMLPlainTextDocument#setProperty(java.lang.String)
-         */
-        protected void setProperty(String text) {
-            Object meth = getTarget();
-            if (Model.getFacade().isAMethod(meth)) {
-                Object expr = Model.getFacade().getBody(meth);
-                if (expr != null) {
-                    Model.getDataTypesHelper().setBody(expr, text);
-                } else {
-                    Model.getCoreHelper().setBody(meth,
-                            Model.getDataTypesFactory()
-                            .createProcedureExpression(null, text));
-                }
-            }
-        }
-
-        /**
-         * @see org.argouml.uml.ui.UMLPlainTextDocument#getProperty()
-         */
-        protected String getProperty() {
-            Object expr = Model.getFacade().getBody(getTarget());
-            if (expr == null) {
-                return null;
-            } else {
-                return (String) Model.getFacade().getBody(expr);
-            }
-        }
-
-        /**
-         * The UID.
-         */
-        private static final long serialVersionUID = -4797010104885972301L;
+    protected void buildModelList() {
+      if (getTarget() != null) {
+        removeAllElements();
+        Object classifier = Model.getFacade().getOwner(getTarget());
+        addAll(Model.getFacade().getOperations(classifier));
+      }
     }
 
     /**
-     * The UID.
+     * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
      */
-    private static final long serialVersionUID = -6443549338375514393L;
+    protected Object getSelectedModelElement() {
+      return Model.getCoreHelper().getSpecification(getTarget());
+    }
+
+    /**
+     * @see java.beans.PropertyChangeListener#propertyChange( java.beans.PropertyChangeEvent)
+     */
+    public void propertyChange(PropertyChangeEvent evt) {
+      if (evt instanceof AttributeChangeEvent) {
+        if (evt.getPropertyName().equals("specification")) {
+          if (evt.getSource() == getTarget() && (getChangedElement(evt) != null)) {
+            Object elem = getChangedElement(evt);
+            setSelectedItem(elem);
+          }
+        }
+      }
+    }
+
+    /** The UID. */
+    private static final long serialVersionUID = -7439424794380015022L;
+  }
+
+  private static class ActionSetMethodSpecification extends UndoableAction {
+
+    /** Constructor for ActionSetStructuralFeatureType. */
+    protected ActionSetMethodSpecification() {
+      super(Translator.localize("Set"), null);
+      // Set the tooltip string:
+      putValue(Action.SHORT_DESCRIPTION, Translator.localize("Set"));
+    }
+
+    /**
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    public void actionPerformed(ActionEvent e) {
+      super.actionPerformed(e);
+      Object source = e.getSource();
+      Object oldOperation = null;
+      Object newOperation = null;
+      Object method = null;
+      if (source instanceof UMLComboBox2) {
+        UMLComboBox2 box = (UMLComboBox2) source;
+        Object o = box.getTarget(); // the method
+        if (Model.getFacade().isAMethod(o)) {
+          method = o;
+          oldOperation = Model.getCoreHelper().getSpecification(method);
+        }
+        o = box.getSelectedItem(); // the selected operation
+        if (Model.getFacade().isAOperation(o)) {
+          newOperation = o;
+        }
+      }
+      if (newOperation != oldOperation && method != null) {
+        Model.getCoreHelper().setSpecification(method, newOperation);
+      }
+    }
+  }
+
+  private static class UMLModelElementLanguageDocument extends UMLPlainTextDocument {
+    /** Constructor for UMLModelElementNameDocument. */
+    public UMLModelElementLanguageDocument() {
+      super("language");
+    }
+
+    /**
+     * @see org.argouml.uml.ui.UMLPlainTextDocument#setProperty(java.lang.String)
+     */
+    protected void setProperty(String text) {
+      Object meth = getTarget();
+      if (Model.getFacade().isAMethod(meth)) {
+        Object expr = Model.getFacade().getBody(meth);
+        if (expr != null) {
+          Model.getDataTypesHelper().setLanguage(expr, text);
+        } else {
+          Model.getCoreHelper()
+              .setBody(meth, Model.getDataTypesFactory().createProcedureExpression(text, null));
+        }
+      }
+    }
+
+    /**
+     * @see org.argouml.uml.ui.UMLPlainTextDocument#getProperty()
+     */
+    protected String getProperty() {
+      Object expr = Model.getFacade().getBody(getTarget());
+      if (expr == null) {
+        return null;
+      } else {
+        return Model.getDataTypesHelper().getLanguage(expr);
+      }
+    }
+
+    /** The UID. */
+    private static final long serialVersionUID = -2004931253036454061L;
+  }
+
+  private static class UMLMethodBodyDocument extends UMLPlainTextDocument {
+    /** Constructor for UMLMethodBodyDocument. */
+    public UMLMethodBodyDocument() {
+      super("body");
+      /*
+       * TODO: This is probably not the right location
+       * for switching off the "filterNewlines".
+       * The setting gets lost after selecting a different
+       * ModelElement in the diagram.
+       * BTW, see how it is used in
+       * javax.swing.text.PlainDocument.
+       * See issue 1812.
+       */
+      putProperty("filterNewlines", Boolean.FALSE);
+    }
+
+    /**
+     * @see org.argouml.uml.ui.UMLPlainTextDocument#setProperty(java.lang.String)
+     */
+    protected void setProperty(String text) {
+      Object meth = getTarget();
+      if (Model.getFacade().isAMethod(meth)) {
+        Object expr = Model.getFacade().getBody(meth);
+        if (expr != null) {
+          Model.getDataTypesHelper().setBody(expr, text);
+        } else {
+          Model.getCoreHelper()
+              .setBody(meth, Model.getDataTypesFactory().createProcedureExpression(null, text));
+        }
+      }
+    }
+
+    /**
+     * @see org.argouml.uml.ui.UMLPlainTextDocument#getProperty()
+     */
+    protected String getProperty() {
+      Object expr = Model.getFacade().getBody(getTarget());
+      if (expr == null) {
+        return null;
+      } else {
+        return (String) Model.getFacade().getBody(expr);
+      }
+    }
+
+    /** The UID. */
+    private static final long serialVersionUID = -4797010104885972301L;
+  }
+
+  /** The UID. */
+  private static final long serialVersionUID = -6443549338375514393L;
 } /* end class PropPanelMethod */

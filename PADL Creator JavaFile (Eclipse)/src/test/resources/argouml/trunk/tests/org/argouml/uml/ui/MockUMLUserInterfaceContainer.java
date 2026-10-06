@@ -25,112 +25,105 @@
 package org.argouml.uml.ui;
 
 import java.util.Iterator;
-
 import org.argouml.uml.Profile;
 
 /**
  * @since Oct 12, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class MockUMLUserInterfaceContainer
-    implements UMLUserInterfaceContainer {
+public class MockUMLUserInterfaceContainer implements UMLUserInterfaceContainer {
 
-    private Object target;
+  private Object target;
 
-    /**
-     * Constructor for MockUMLUserInterfaceContainer.
-     */
-    public MockUMLUserInterfaceContainer() {
-        super();
-    }
+  /** Constructor for MockUMLUserInterfaceContainer. */
+  public MockUMLUserInterfaceContainer() {
+    super();
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLUserInterfaceContainer#getTarget()
-     */
-    public Object getTarget() {
-        return target;
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLUserInterfaceContainer#getTarget()
+   */
+  public Object getTarget() {
+    return target;
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLUserInterfaceContainer#getModelElement()
-     */
-    public Object getModelElement() {
-        return null;
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLUserInterfaceContainer#getModelElement()
+   */
+  public Object getModelElement() {
+    return null;
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLUserInterfaceContainer#getProfile()
-     */
-    public Profile getProfile() {
-        return null;
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLUserInterfaceContainer#getProfile()
+   */
+  public Profile getProfile() {
+    return null;
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLUserInterfaceContainer#formatElement(java.lang.Object)
-     */
-    public String formatElement(/*ModelElement*/Object element) {
-        return null;
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLUserInterfaceContainer#formatElement(java.lang.Object)
+   */
+  public String formatElement(/*ModelElement*/ Object element) {
+    return null;
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLUserInterfaceContainer#formatCollection(java.util.Iterator)
-     */
-    public String formatCollection(Iterator iter) {
-        return null;
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLUserInterfaceContainer#formatCollection(java.util.Iterator)
+   */
+  public String formatCollection(Iterator iter) {
+    return null;
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLUserInterfaceContainer#formatNamespace(java.lang.Object)
-     */
-    public String formatNamespace(/*Namespace*/Object ns) {
-        return null;
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLUserInterfaceContainer#formatNamespace(java.lang.Object)
+   */
+  public String formatNamespace(/*Namespace*/ Object ns) {
+    return null;
+  }
 
-    /**
-     * @see org.argouml.ui.NavigationListener#navigateTo(java.lang.Object)
-     */
-    public void navigateTo(Object element) {
-    }
+  /**
+   * @see org.argouml.ui.NavigationListener#navigateTo(java.lang.Object)
+   */
+  public void navigateTo(Object element) {}
 
-    /**
-     * @see org.argouml.ui.NavigationListener#open(java.lang.Object)
-     */
-    public void open(Object element) {
-    }
+  /**
+   * @see org.argouml.ui.NavigationListener#open(java.lang.Object)
+   */
+  public void open(Object element) {}
 
-    /**
-     * @see org.argouml.ui.NavigationListener#navigateBack(boolean)
-     */
-    public boolean navigateBack(boolean attempt) {
-        return false;
-    }
+  /**
+   * @see org.argouml.ui.NavigationListener#navigateBack(boolean)
+   */
+  public boolean navigateBack(boolean attempt) {
+    return false;
+  }
 
-    /**
-     * @see org.argouml.ui.NavigationListener#navigateForward(boolean)
-     */
-    public boolean navigateForward(boolean attempt) {
-        return false;
-    }
+  /**
+   * @see org.argouml.ui.NavigationListener#navigateForward(boolean)
+   */
+  public boolean navigateForward(boolean attempt) {
+    return false;
+  }
 
-    /**
-     * @see org.argouml.ui.NavigationListener#isNavigateBackEnabled()
-     */
-    public boolean isNavigateBackEnabled() {
-        return false;
-    }
+  /**
+   * @see org.argouml.ui.NavigationListener#isNavigateBackEnabled()
+   */
+  public boolean isNavigateBackEnabled() {
+    return false;
+  }
 
-    /**
-     * @see org.argouml.ui.NavigationListener#isNavigateForwardEnabled()
-     */
-    public boolean isNavigateForwardEnabled() {
-        return false;
-    }
+  /**
+   * @see org.argouml.ui.NavigationListener#isNavigateForwardEnabled()
+   */
+  public boolean isNavigateForwardEnabled() {
+    return false;
+  }
 
-    /**
-     * @param t the target
-     */
-    public void setTarget(Object t) {
-        target = t;
-    }
-
+  /**
+   * @param t the target
+   */
+  public void setTarget(Object t) {
+    target = t;
+  }
 }

@@ -25,44 +25,37 @@
 package org.argouml.uml.ui;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.kernel.ProjectManager;
 import org.argouml.uml.diagram.ui.UMLDiagram;
 
-/**
- * Action for viewing/editing source path settings of model elements.
- */
+/** Action for viewing/editing source path settings of model elements. */
 public class ActionGenerationSettings extends UMLAction {
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    /**
-     *  The constructor.
-     */
-    public ActionGenerationSettings() {
-	super("action.settings-for-project-code-generation", true, NO_ICON);
-    }
+  /** The constructor. */
+  public ActionGenerationSettings() {
+    super("action.settings-for-project-code-generation", true, NO_ICON);
+  }
 
-    ////////////////////////////////////////////////////////////////
-    // main methods
+  ////////////////////////////////////////////////////////////////
+  // main methods
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-	SourcePathDialog cgd = new SourcePathDialog();
-	cgd.setVisible(true);
-    }
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    SourcePathDialog cgd = new SourcePathDialog();
+    cgd.setVisible(true);
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLAction#shouldBeEnabled()
-     */
-    public boolean shouldBeEnabled() {
-	org.argouml.ui.ArgoDiagram activeDiagram =
-	    ProjectManager.getManager().getCurrentProject().getActiveDiagram();
-	return super.shouldBeEnabled()
-	    && (activeDiagram instanceof UMLDiagram);
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLAction#shouldBeEnabled()
+   */
+  public boolean shouldBeEnabled() {
+    org.argouml.ui.ArgoDiagram activeDiagram =
+        ProjectManager.getManager().getCurrentProject().getActiveDiagram();
+    return super.shouldBeEnabled() && (activeDiagram instanceof UMLDiagram);
+  }
 } /* end class ActionGenerationSettings */

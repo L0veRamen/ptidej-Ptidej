@@ -33,26 +33,23 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  */
 public class UMLTransitionStateListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLStateVertexIncomingListModel.
-     */
-    public UMLTransitionStateListModel() {
-        super("state");
-    }
+  /** Constructor for UMLStateVertexIncomingListModel. */
+  public UMLTransitionStateListModel() {
+    super("state");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        removeAllElements();
-        addElement(Model.getFacade().getState(getTarget()));
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    removeAllElements();
+    addElement(Model.getFacade().getState(getTarget()));
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().getState(getTarget()) == element;
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().getState(getTarget()) == element;
+  }
 }

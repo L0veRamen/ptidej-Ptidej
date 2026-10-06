@@ -3,17 +3,15 @@ package choco.real.var;
 import choco.Entity;
 import choco.real.RealInterval;
 
-/**
- * An interface for real variable domains.
- */
+/** An interface for real variable domains. */
 public interface RealDomain extends Entity, RealInterval {
-	public void clearDeltaDomain();
+  public void clearDeltaDomain();
 
-	void freezeDeltaDomain();
+  void freezeDeltaDomain();
 
-	boolean getReleasedDeltaDomain();
+  boolean getReleasedDeltaDomain();
 
-	boolean releaseDeltaDomain();
+  boolean releaseDeltaDomain();
 
-	void silentlyAssign(RealInterval i);
+  void silentlyAssign(RealInterval i);
 }

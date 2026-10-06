@@ -25,9 +25,7 @@
 package org.argouml.uml.diagram.ui;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.Action;
-
 import org.argouml.i18n.Translator;
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
@@ -35,68 +33,61 @@ import org.argouml.kernel.ProjectSettings;
 import org.argouml.model.Model;
 import org.tigris.gef.undo.UndoableAction;
 
-
 /**
  * Action to add a sterotype to a model element.
+ *
  * @author Bob Tarling
  */
 class ActionAddStereotype extends UndoableAction {
-    private Object modelElement;
-    private Object stereotype;
+  private Object modelElement;
+  private Object stereotype;
 
-    /**
-     * Constructor.
-     *
-     * @param me The model element.
-     * @param st The stereotype.
-     */
-    public ActionAddStereotype(Object me, Object st) {
-        super(Translator.localize(buildString(st)),
-                null);
-        // Set the tooltip string:
-        putValue(Action.SHORT_DESCRIPTION, 
-                Translator.localize(buildString(st)));
-        modelElement = me;
-        stereotype = st;
-    }
-    
-    private static String buildString(Object st) {
-        Project p = ProjectManager.getManager().getCurrentProject();
-        ProjectSettings ps = p.getProjectSettings();
-        return ps.getLeftGuillemot() 
-            + Model.getFacade().getName(st)
-            + ps.getRightGuillemot();
-    }
+  /**
+   * Constructor.
+   *
+   * @param me The model element.
+   * @param st The stereotype.
+   */
+  public ActionAddStereotype(Object me, Object st) {
+    super(Translator.localize(buildString(st)), null);
+    // Set the tooltip string:
+    putValue(Action.SHORT_DESCRIPTION, Translator.localize(buildString(st)));
+    modelElement = me;
+    stereotype = st;
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-    	super.actionPerformed(ae);
-        if (Model.getFacade().getStereotypes(modelElement)
-                .contains(stereotype)) {
-            Model.getCoreHelper().removeStereotype(modelElement, stereotype);
-        } else {
-            Object stereo =
-                Model.getModelManagementHelper()
-                    .getCorrespondingElement(stereotype,
-                        Model.getFacade().getModel(modelElement), true);
-            Model.getCoreHelper().addStereotype(modelElement, stereo);
-        }
-    }
+  private static String buildString(Object st) {
+    Project p = ProjectManager.getManager().getCurrentProject();
+    ProjectSettings ps = p.getProjectSettings();
+    return ps.getLeftGuillemot() + Model.getFacade().getName(st) + ps.getRightGuillemot();
+  }
 
-    /**
-     * @see javax.swing.Action#getValue(java.lang.String)
-     */
-    public Object getValue(String key) {
-        if ("SELECTED".equals(key)) {
-            if (Model.getFacade().getStereotypes(modelElement).contains(
-                    stereotype)) {
-                return Boolean.TRUE;
-            } else {
-                return Boolean.FALSE;
-            }
-        }
-        return super.getValue(key);
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    super.actionPerformed(ae);
+    if (Model.getFacade().getStereotypes(modelElement).contains(stereotype)) {
+      Model.getCoreHelper().removeStereotype(modelElement, stereotype);
+    } else {
+      Object stereo =
+          Model.getModelManagementHelper()
+              .getCorrespondingElement(stereotype, Model.getFacade().getModel(modelElement), true);
+      Model.getCoreHelper().addStereotype(modelElement, stereo);
     }
+  }
+
+  /**
+   * @see javax.swing.Action#getValue(java.lang.String)
+   */
+  public Object getValue(String key) {
+    if ("SELECTED".equals(key)) {
+      if (Model.getFacade().getStereotypes(modelElement).contains(stereotype)) {
+        return Boolean.TRUE;
+      } else {
+        return Boolean.FALSE;
+      }
+    }
+    return super.getValue(key);
+  }
 }

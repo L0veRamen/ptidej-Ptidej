@@ -25,88 +25,79 @@
 package org.argouml.uml.ui;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
-
 import org.argouml.i18n.Translator;
 import org.tigris.gef.undo.UndoableAction;
 
 /**
- * This class resembles UMLModelElementListModel2, but is for those associations
- * in the metamodel (see UML standard) that have a {ordered} constraint.
- * <p>
+ * This class resembles UMLModelElementListModel2, but is for those associations in the metamodel
+ * (see UML standard) that have a {ordered} constraint.
  *
- * This adds the functionality of a popup menu with the items "Move Up",
- * "Move Down", "Move to Top", and "Move to Bottom".
+ * <p>This adds the functionality of a popup menu with the items "Move Up", "Move Down", "Move to
+ * Top", and "Move to Bottom".
  *
  * @author Michiel
  */
-public abstract class UMLModelElementOrderedListModel2 extends
-        UMLModelElementListModel2 {
+public abstract class UMLModelElementOrderedListModel2 extends UMLModelElementListModel2 {
 
-    /**
-     * The constructor.
-     *
-     * @param name
-     *            the name
-     */
-    public UMLModelElementOrderedListModel2(String name) {
-        super(name);
-    }
+  /**
+   * The constructor.
+   *
+   * @param name the name
+   */
+  public UMLModelElementOrderedListModel2(String name) {
+    super(name);
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected abstract void buildModelList();
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected abstract void buildModelList();
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(java.lang.Object)
-     */
-    protected abstract boolean isValidElement(Object element);
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(java.lang.Object)
+   */
+  protected abstract boolean isValidElement(Object element);
 
-    /**
-     * Move a element from the given position down one position, i.e. a swap of
-     * the two positions. Anyone listening to the model will then be updated by
-     * the events/listener mechanism. If the element is already the last element
-     * in the list, nothing is done.
-     *
-     * @param index
-     *            the current position
-     */
-    protected abstract void moveDown(int index);
+  /**
+   * Move a element from the given position down one position, i.e. a swap of the two positions.
+   * Anyone listening to the model will then be updated by the events/listener mechanism. If the
+   * element is already the last element in the list, nothing is done.
+   *
+   * @param index the current position
+   */
+  protected abstract void moveDown(int index);
 
-    /**
-     * Move element at given index to top of list.
-     * 
-     * @param index starting position of element to be moved
-     */
-    protected abstract void moveToTop(int index);
+  /**
+   * Move element at given index to top of list.
+   *
+   * @param index starting position of element to be moved
+   */
+  protected abstract void moveToTop(int index);
 
-    /**
-     * Move element at given index to bottom of list.
-     * 
-     * @param index starting position of element to be moved
-     */
-    protected abstract void moveToBottom(int index);
+  /**
+   * Move element at given index to bottom of list.
+   *
+   * @param index starting position of element to be moved
+   */
+  protected abstract void moveToBottom(int index);
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildPopup(
-     *      javax.swing.JPopupMenu, int)
-     */
-    public boolean buildPopup(JPopupMenu popup, int index) {
-        JMenuItem moveToTop = new JMenuItem(new MoveToTopAction(this, index));
-        JMenuItem moveUp = new JMenuItem(new MoveUpAction(this, index));
-        JMenuItem moveDown = new JMenuItem(new MoveDownAction(this, index));
-        JMenuItem moveToBottom = new JMenuItem(new MoveToBottomAction(this,
-                index));
-        popup.add(moveToTop);
-        popup.add(moveUp);
-        popup.add(moveDown);
-        popup.add(moveToBottom);
-        return true;
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildPopup(
+   *      javax.swing.JPopupMenu, int)
+   */
+  public boolean buildPopup(JPopupMenu popup, int index) {
+    JMenuItem moveToTop = new JMenuItem(new MoveToTopAction(this, index));
+    JMenuItem moveUp = new JMenuItem(new MoveUpAction(this, index));
+    JMenuItem moveDown = new JMenuItem(new MoveDownAction(this, index));
+    JMenuItem moveToBottom = new JMenuItem(new MoveToBottomAction(this, index));
+    popup.add(moveToTop);
+    popup.add(moveUp);
+    popup.add(moveDown);
+    popup.add(moveToBottom);
+    return true;
+  }
 }
 
 /**
@@ -115,36 +106,33 @@ public abstract class UMLModelElementOrderedListModel2 extends
  * @author mvw@tigris.org
  */
 class MoveUpAction extends UndoableAction {
-    private UMLModelElementOrderedListModel2 model;
+  private UMLModelElementOrderedListModel2 model;
 
-    private int index;
+  private int index;
 
-    /**
-     * The constructor.
-     */
-    public MoveUpAction(UMLModelElementOrderedListModel2 theModel, 
-            int theIndex) {
-        super(Translator.localize("menu.popup.moveup"));
-        model = theModel;
-        index = theIndex;
-    }
+  /** The constructor. */
+  public MoveUpAction(UMLModelElementOrderedListModel2 theModel, int theIndex) {
+    super(Translator.localize("menu.popup.moveup"));
+    model = theModel;
+    index = theIndex;
+  }
 
-    /*
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        model.moveDown(index - 1);
-    }
+  /*
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    model.moveDown(index - 1);
+  }
 
-    /*
-     * @see javax.swing.Action#isEnabled()
-     */
-    @Override
-    public boolean isEnabled() {
-        return index > 0;
-    }
+  /*
+   * @see javax.swing.Action#isEnabled()
+   */
+  @Override
+  public boolean isEnabled() {
+    return index > 0;
+  }
 }
 
 /**
@@ -153,36 +141,33 @@ class MoveUpAction extends UndoableAction {
  * @author mvw@tigris.org
  */
 class MoveDownAction extends UndoableAction {
-    private UMLModelElementOrderedListModel2 model;
+  private UMLModelElementOrderedListModel2 model;
 
-    private int index;
+  private int index;
 
-    /**
-     * The constructor.
-     */
-    public MoveDownAction(UMLModelElementOrderedListModel2 theModel,
-            int theIndex) {
-        super(Translator.localize("menu.popup.movedown"));
-        model = theModel;
-        index = theIndex;
-    }
+  /** The constructor. */
+  public MoveDownAction(UMLModelElementOrderedListModel2 theModel, int theIndex) {
+    super(Translator.localize("menu.popup.movedown"));
+    model = theModel;
+    index = theIndex;
+  }
 
-    /*
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        model.moveDown(index);
-    }
+  /*
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    model.moveDown(index);
+  }
 
-    /*
-     * @see javax.swing.Action#isEnabled()
-     */
-    @Override
-    public boolean isEnabled() {
-        return model.getSize() > index + 1;
-    }
+  /*
+   * @see javax.swing.Action#isEnabled()
+   */
+  @Override
+  public boolean isEnabled() {
+    return model.getSize() > index + 1;
+  }
 }
 
 /**
@@ -191,42 +176,38 @@ class MoveDownAction extends UndoableAction {
  * @author Aleksandar Vucetica
  */
 class MoveToTopAction extends UndoableAction {
-    private UMLModelElementOrderedListModel2 model;
+  private UMLModelElementOrderedListModel2 model;
 
-    private int index;
+  private int index;
 
-    /**
-     * Construct an action to move the item at the given index to the top of
-     * the given list.
-     * 
-     * @param theModel
-     *            the list model to operate on
-     * @param theIndex
-     *            starting position of element to move
-     */
-    public MoveToTopAction(UMLModelElementOrderedListModel2 theModel,
-            int theIndex) {
-        super(Translator.localize("menu.popup.movetotop"));
-        model = theModel;
-        index = theIndex;
-    }
+  /**
+   * Construct an action to move the item at the given index to the top of the given list.
+   *
+   * @param theModel the list model to operate on
+   * @param theIndex starting position of element to move
+   */
+  public MoveToTopAction(UMLModelElementOrderedListModel2 theModel, int theIndex) {
+    super(Translator.localize("menu.popup.movetotop"));
+    model = theModel;
+    index = theIndex;
+  }
 
-    /*
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        model.moveToTop(index);
-    }
+  /*
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    model.moveToTop(index);
+  }
 
-    /*
-     * @see javax.swing.Action#isEnabled()
-     */
-    @Override
-    public boolean isEnabled() {
-        return model.getSize() > 1 && index > 0;
-    }
+  /*
+   * @see javax.swing.Action#isEnabled()
+   */
+  @Override
+  public boolean isEnabled() {
+    return model.getSize() > 1 && index > 0;
+  }
 }
 
 /**
@@ -235,40 +216,36 @@ class MoveToTopAction extends UndoableAction {
  * @author Aleksandar Vucetica
  */
 class MoveToBottomAction extends UndoableAction {
-    private UMLModelElementOrderedListModel2 model;
+  private UMLModelElementOrderedListModel2 model;
 
-    private int index;
+  private int index;
 
-    /**
-     * Construct an action to move the item at the given index to the bottom of
-     * the given list.
-     * 
-     * @param theModel
-     *            the list model to operate on
-     * @param theIndex
-     *            starting position of element to move
-     */
-    public MoveToBottomAction(UMLModelElementOrderedListModel2 theModel,
-            int theIndex) {
-        super(Translator.localize("menu.popup.movetobottom"));
-        model = theModel;
-        index = theIndex;
-    }
+  /**
+   * Construct an action to move the item at the given index to the bottom of the given list.
+   *
+   * @param theModel the list model to operate on
+   * @param theIndex starting position of element to move
+   */
+  public MoveToBottomAction(UMLModelElementOrderedListModel2 theModel, int theIndex) {
+    super(Translator.localize("menu.popup.movetobottom"));
+    model = theModel;
+    index = theIndex;
+  }
 
-    /*
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        model.moveToBottom(index);
-    }
+  /*
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    model.moveToBottom(index);
+  }
 
-    /*
-     * @see javax.swing.Action#isEnabled()
-     */
-    @Override
-    public boolean isEnabled() {
-        return model.getSize() > 1 && index < model.getSize() - 1;
-    }
+  /*
+   * @see javax.swing.Action#isEnabled()
+   */
+  @Override
+  public boolean isEnabled() {
+    return model.getSize() > 1 && index < model.getSize() - 1;
+  }
 }

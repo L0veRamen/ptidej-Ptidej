@@ -26,103 +26,93 @@ package org.argouml.model;
 
 import java.util.Collection;
 import java.util.Vector;
-
 import junit.framework.TestCase;
 
-
-/**
- * Test the CommonBehaviorFactory.
- */
+/** Test the CommonBehaviorFactory. */
 public class TestCommonBehaviorFactory extends TestCase {
 
-    /**
-     * All the ModelElements that we will test.
-     */
-    private static String[] allModelElements =
-    {
-	"Action",
-	"ActionSequence",
-	"Argument",
-	"AttributeLink",
-	"CallAction",
-	"ComponentInstance",
-	"CreateAction",
-	"DataValue",
-	"DestroyAction",
-	"Exception",
-	"Instance",
-	"Link",
-	"LinkEnd",
-	"LinkObject",
-	"NodeInstance",
-	"Object",
-	"Reception",
-	"ReturnAction",
-	"SendAction",
-	"Signal",
-	"Stimulus",
-	"TerminateAction",
-	"UninterpretedAction",
-    };
+  /** All the ModelElements that we will test. */
+  private static String[] allModelElements = {
+    "Action",
+    "ActionSequence",
+    "Argument",
+    "AttributeLink",
+    "CallAction",
+    "ComponentInstance",
+    "CreateAction",
+    "DataValue",
+    "DestroyAction",
+    "Exception",
+    "Instance",
+    "Link",
+    "LinkEnd",
+    "LinkObject",
+    "NodeInstance",
+    "Object",
+    "Reception",
+    "ReturnAction",
+    "SendAction",
+    "Signal",
+    "Stimulus",
+    "TerminateAction",
+    "UninterpretedAction",
+  };
 
-    /**
-     * The constructor.
-     *
-     * @param n the name
-     */
-    public TestCommonBehaviorFactory(String n) {
-	super(n);
-    }
+  /**
+   * The constructor.
+   *
+   * @param n the name
+   */
+  public TestCommonBehaviorFactory(String n) {
+    super(n);
+  }
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    public void setUp() {
-    		//This should instantiate a new model implementation
-        Model.getFacade();
-    }
+  /**
+   * @see junit.framework.TestCase#setUp()
+   */
+  public void setUp() {
+    // This should instantiate a new model implementation
+    Model.getFacade();
+  }
 
-    /**
-     * Test for creation.
-     */
-    public void testCreates() {
+  /** Test for creation. */
+  public void testCreates() {
 
-	Collection objs = new Vector();
+    Collection objs = new Vector();
 
-        // Action is abstract
-	objs.add("ActionSequence");
-	objs.add("Argument");
-	objs.add("AttributeLink");
-	objs.add("CallAction");
-	objs.add("ComponentInstance");
-	objs.add("CreateAction");
-	objs.add("DataValue");
-	objs.add("DestroyAction");
-	objs.add("Exception");
-        // Instance is abstract
-	objs.add("Link");
-	objs.add("LinkEnd");
-	objs.add("NodeInstance");
-	objs.add("Object");
-	objs.add("Reception");
-	objs.add("ReturnAction");
-	objs.add("SendAction");
-	objs.add("Signal");
-	objs.add("Stimulus");
-	objs.add("TerminateAction");
-	objs.add("UninterpretedAction");
+    // Action is abstract
+    objs.add("ActionSequence");
+    objs.add("Argument");
+    objs.add("AttributeLink");
+    objs.add("CallAction");
+    objs.add("ComponentInstance");
+    objs.add("CreateAction");
+    objs.add("DataValue");
+    objs.add("DestroyAction");
+    objs.add("Exception");
+    // Instance is abstract
+    objs.add("Link");
+    objs.add("LinkEnd");
+    objs.add("NodeInstance");
+    objs.add("Object");
+    objs.add("Reception");
+    objs.add("ReturnAction");
+    objs.add("SendAction");
+    objs.add("Signal");
+    objs.add("Stimulus");
+    objs.add("TerminateAction");
+    objs.add("UninterpretedAction");
 
-	CheckUMLModelHelper.createAndRelease(
-	        Model.getCommonBehaviorFactory(),
-	        // +1 in array size because we also test the null value
-	        (String[]) objs.toArray(new String[objs.size() + 1]));
+    CheckUMLModelHelper.createAndRelease(
+        Model.getCommonBehaviorFactory(),
+        // +1 in array size because we also test the null value
+        (String[]) objs.toArray(new String[objs.size() + 1]));
+  }
 
-    }
-
-    /**
-     * @return Returns the allModelElements.
-     */
-    static String[] getAllModelElements() {
-        return allModelElements;
-    }
+  /**
+   * @return Returns the allModelElements.
+   */
+  static String[] getAllModelElements() {
+    return allModelElements;
+  }
 }

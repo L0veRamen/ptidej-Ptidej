@@ -27,38 +27,35 @@ package org.argouml.ui;
 import org.argouml.ui.targetmanager.TargetListener;
 
 /**
- * An interface for JPanels that are in the DetailsPane, and that change target
- * based on the selections made in the gui/views.
+ * An interface for JPanels that are in the DetailsPane, and that change target based on the
+ * selections made in the gui/views.
  *
  * @since 0.13.4
  */
 public interface TabTarget extends TargetListener {
 
-    /**
-     * set the target
-     *
-     * @param target
-     *            the target to set
-     */
-    public void setTarget(Object target);
+  /**
+   * set the target
+   *
+   * @param target the target to set
+   */
+  public void setTarget(Object target);
 
-    /**
-     * get the current target
-     *
-     * @return the target
-     */
-    public Object getTarget();
+  /**
+   * get the current target
+   *
+   * @return the target
+   */
+  public Object getTarget();
 
-    /**
-     * Refreshes the tab IN TOTAL
-     */
-    public void refresh();
+  /** Refreshes the tab IN TOTAL */
+  public void refresh();
 
-    /**
-     * Returns true if the tab should be enabled with the given target
-     *
-     * @param target the given target
-     * @return true if the tab should be enabled
-     */
-    public boolean shouldBeEnabled(Object target);
+  /**
+   * Returns true if the tab should be enabled with the given target
+   *
+   * @param target the given target
+   * @return true if the tab should be enabled
+   */
+  public boolean shouldBeEnabled(Object target);
 }

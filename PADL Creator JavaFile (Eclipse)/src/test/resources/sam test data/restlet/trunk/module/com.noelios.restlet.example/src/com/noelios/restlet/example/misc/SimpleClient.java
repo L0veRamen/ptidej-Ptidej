@@ -31,46 +31,42 @@ import org.restlet.data.Response;
 
 /**
  * Simple HTTP client calling the simple server.
+ *
  * @author Jerome Louvel (contact@noelios.com)
  */
-public class SimpleClient
-{
-	public static void main(String[] args) throws Exception
-	{
-		// Prepare the REST call.
-		Request request = new Request();
+public class SimpleClient {
+  public static void main(String[] args) throws Exception {
+    // Prepare the REST call.
+    Request request = new Request();
 
-		// Identify oursevles.
-		request.setReferrerRef("http://www.foo.com/");
+    // Identify oursevles.
+    request.setReferrerRef("http://www.foo.com/");
 
-		// Target resource.
-		request.setResourceRef("http://127.0.0.1:9876/test");
+    // Target resource.
+    request.setResourceRef("http://127.0.0.1:9876/test");
 
-		// Action: Update
-		request.setMethod(Method.PUT);
+    // Action: Update
+    request.setMethod(Method.PUT);
 
-		Form form = new Form();
-		form.add("name", "John D. Mitchell");
-		form.add("email", "john@bob.net");
-		form.add("email2", "joe@bob.net");
-		request.setEntity(form.getWebRepresentation());
+    Form form = new Form();
+    form.add("name", "John D. Mitchell");
+    form.add("email", "john@bob.net");
+    form.add("email2", "joe@bob.net");
+    request.setEntity(form.getWebRepresentation());
 
-		// Prepare HTTP client connector.
-		Client client = new Client(Protocol.HTTP);
+    // Prepare HTTP client connector.
+    Client client = new Client(Protocol.HTTP);
 
-		// Make the call.
-		Response response = client.handle(request);
+    // Make the call.
+    Response response = client.handle(request);
 
-		if (response.getStatus().isSuccess())
-		{
-			// Output the response entity on the JVM console
-			response.getEntity().write(System.out);
-			System.out.println("client: success!");
-		}
-		else
-		{
-			System.out.println("client: failure!");
-			System.out.println(response.getStatus().getDescription());
-		}
-	}
+    if (response.getStatus().isSuccess()) {
+      // Output the response entity on the JVM console
+      response.getEntity().write(System.out);
+      System.out.println("client: success!");
+    } else {
+      System.out.println("client: failure!");
+      System.out.println(response.getStatus().getDescription());
+    }
+  }
 }

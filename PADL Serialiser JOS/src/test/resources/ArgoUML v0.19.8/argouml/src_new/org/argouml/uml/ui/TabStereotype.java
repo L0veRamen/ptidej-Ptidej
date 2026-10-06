@@ -33,58 +33,59 @@ import org.tigris.swidgets.Horizontal;
 import org.tigris.swidgets.Vertical;
 
 /**
- * This the tab in the details pane for displaying the stereotypes applied to a
- * model element and allowing adding and removal of stereotypes to that list.<p>
+ * This the tab in the details pane for displaying the stereotypes applied to a model element and
+ * allowing adding and removal of stereotypes to that list.
+ *
+ * <p>
  */
 public class TabStereotype extends PropPanel {
 
-    private static String orientation = Configuration.getString(Configuration
-            .makeKey("layout", "tabstereotype"));
-    
-    private Object target;
+  private static String orientation =
+      Configuration.getString(Configuration.makeKey("layout", "tabstereotype"));
 
-    private UMLModelElementStereotypeListModel stereoListModel;
+  private Object target;
 
-    /**
-     * Construct new documentation tab
-     */
-    public TabStereotype() {
-        super(Translator.localize("tab.stereotype"), (orientation
-                .equals("West") || orientation.equals("East")) ? Vertical
-                .getInstance() : Horizontal.getInstance());
+  private UMLModelElementStereotypeListModel stereoListModel;
 
-        stereoListModel = new UMLModelElementStereotypeListModel();
-        add(new ScrollList(stereoListModel));
+  /** Construct new documentation tab */
+  public TabStereotype() {
+    super(
+        Translator.localize("tab.stereotype"),
+        (orientation.equals("West") || orientation.equals("East"))
+            ? Vertical.getInstance()
+            : Horizontal.getInstance());
+
+    stereoListModel = new UMLModelElementStereotypeListModel();
+    add(new ScrollList(stereoListModel));
+  }
+
+  /**
+   * Checks if the tab should be enabled. Returns true if the target returned by getTarget is a
+   * modelelement or if that target shows up as Fig on the active diagram and has a modelelement as
+   * owner.
+   *
+   * @return true if this tab should be enabled, otherwise false.
+   */
+  public boolean shouldBeEnabled() {
+    Object target = getTarget();
+    target = (target instanceof Fig) ? ((Fig) target).getOwner() : target;
+    return Model.getFacade().isAModelElement(target);
+  }
+
+  /**
+   * @see org.argouml.ui.TabTarget#setTarget(java.lang.Object)
+   */
+  public void setTarget(Object theTarget) {
+
+    Object t = (theTarget instanceof Fig) ? ((Fig) theTarget).getOwner() : theTarget;
+    if (!(Model.getFacade().isAModelElement(t))) {
+      target = null;
+      return;
     }
+    target = t;
 
-    /**
-     * Checks if the tab should be enabled. Returns true if the target
-     * returned by getTarget is a modelelement or if that target shows up as Fig
-     * on the active diagram and has a modelelement as owner.
-     *
-     * @return true if this tab should be enabled, otherwise false.
-     */
-    public boolean shouldBeEnabled() {
-        Object target = getTarget();
-        target = (target instanceof Fig) ? ((Fig) target).getOwner() : target;
-        return Model.getFacade().isAModelElement(target);
-    }
+    stereoListModel.setTarget(t);
 
-    /**
-     * @see org.argouml.ui.TabTarget#setTarget(java.lang.Object)
-     */
-    public void setTarget(Object theTarget) {
-
-        Object t = (theTarget instanceof Fig)
-                    ? ((Fig) theTarget).getOwner() : theTarget;
-        if (!(Model.getFacade().isAModelElement(t))) {
-            target = null;
-            return;
-        }
-        target = t;
-        
-        stereoListModel.setTarget(t);
-
-        validate();
-    }
+    validate();
+  }
 }

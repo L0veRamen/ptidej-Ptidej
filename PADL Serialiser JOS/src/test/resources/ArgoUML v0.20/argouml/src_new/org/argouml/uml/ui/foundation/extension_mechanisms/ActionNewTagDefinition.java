@@ -25,53 +25,42 @@
 package org.argouml.uml.ui.foundation.extension_mechanisms;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.Action;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.ui.targetmanager.TargetManager;
 import org.argouml.uml.ui.AbstractActionNewModelElement;
 
-
 /**
- * This action creates a new TagDefinition in the current Model or Stereotype or
- * Package.
+ * This action creates a new TagDefinition in the current Model or Stereotype or Package.
  *
  * @author rastaman@tigris.org
  */
 public class ActionNewTagDefinition extends AbstractActionNewModelElement {
 
-    /**
-     * The constructor.
-     */
-    public ActionNewTagDefinition() {
-        super("button.new-tagdefinition");
-        putValue(Action.NAME, Translator.localize("button.new-tagdefinition"));
-    }
+  /** The constructor. */
+  public ActionNewTagDefinition() {
+    super("button.new-tagdefinition");
+    putValue(Action.NAME, Translator.localize("button.new-tagdefinition"));
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        Object t = TargetManager.getInstance().getModelTarget();
-        Object owner = null;
-        Object namespace = null;
-        if (Model.getFacade().isAStereotype(t)) {
-            owner = t;
-        } else if (Model.getFacade().isAPackage(t)) {
-            namespace = t;
-        } else {
-            namespace = Model.getFacade().getModel(t);
-        }
-        Object newTagDefinition = Model.getExtensionMechanismsFactory()
-            .buildTagDefinition(
-                    (String) null,
-                    owner,
-                    namespace
-            );
-        TargetManager.getInstance().setTarget(newTagDefinition);
-        super.actionPerformed(e);
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    Object t = TargetManager.getInstance().getModelTarget();
+    Object owner = null;
+    Object namespace = null;
+    if (Model.getFacade().isAStereotype(t)) {
+      owner = t;
+    } else if (Model.getFacade().isAPackage(t)) {
+      namespace = t;
+    } else {
+      namespace = Model.getFacade().getModel(t);
     }
-
+    Object newTagDefinition =
+        Model.getExtensionMechanismsFactory().buildTagDefinition((String) null, owner, namespace);
+    TargetManager.getInstance().setTarget(newTagDefinition);
+    super.actionPerformed(e);
+  }
 }

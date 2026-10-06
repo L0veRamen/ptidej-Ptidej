@@ -28,7 +28,6 @@ import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.util.Vector;
-
 import org.argouml.model.AssociationChangeEvent;
 import org.argouml.model.AttributeChangeEvent;
 import org.argouml.uml.diagram.DiagramSettings;
@@ -37,104 +36,98 @@ import org.tigris.gef.graph.GraphModel;
 
 /**
  * Class to display graphics for a UML Signal in a diagram.
- * <p>
- * A Signal may have attributes - the UML standard document 
- * contains an example diagram showing this.
- * <p>
- * A Signal may have operations.
- * 
+ *
+ * <p>A Signal may have attributes - the UML standard document contains an example diagram showing
+ * this.
+ *
+ * <p>A Signal may have operations.
+ *
  * @author Tom Morris
  */
 public class FigSignal extends FigClassifierBoxWithAttributes {
-    
 
-    /**
-     * Default constructor for a {@link FigSignal}.
-     * @deprecated for 0.27.3 by tfmorris.  Use 
-     * {@link #FigSignal(Object, Rectangle, DiagramSettings)}.
-     */
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    public FigSignal() {
-        super();
-        constructFigs();
+  /**
+   * Default constructor for a {@link FigSignal}.
+   *
+   * @deprecated for 0.27.3 by tfmorris. Use {@link #FigSignal(Object, Rectangle, DiagramSettings)}.
+   */
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  public FigSignal() {
+    super();
+    constructFigs();
+  }
+
+  private void constructFigs() {
+    getStereotypeFig().setKeyword("signal");
+
+    addFig(getBigPort());
+    addFig(getStereotypeFig());
+    addFig(getNameFig());
+    addFig(getOperationsFig());
+    addFig(getAttributesFig());
+    addFig(borderFig);
+
+    // by default, do not show operations nor attributes:
+    setOperationsVisible(false);
+    setAttributesVisible(false);
+  }
+
+  /**
+   * Constructor for use if this figure is created for an existing interface node in the metamodel.
+   *
+   * @param gm Not actually used in the current implementation
+   * @param node The UML object being placed.
+   * @deprecated for 0.27.3 by tfmorris. Use {@link #FigSignal(Object, Rectangle, DiagramSettings)}.
+   */
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  public FigSignal(@SuppressWarnings("unused") GraphModel gm, Object node) {
+    this();
+    setOwner(node);
+  }
+
+  /**
+   * Construct a Fig representing a Signal.
+   *
+   * @param owner owning Signal
+   * @param bounds position and size
+   * @param settings render settings
+   */
+  public FigSignal(Object owner, Rectangle bounds, DiagramSettings settings) {
+    super(owner, bounds, settings);
+    constructFigs();
+  }
+
+  /*
+   * @see org.argouml.uml.diagram.static_structure.ui.FigDataType#makeSelection()
+   */
+  @Override
+  public Selection makeSelection() {
+    return new SelectionSignal(this);
+  }
+
+  /*
+   * @see org.argouml.uml.diagram.static_structure.ui.FigClassifierBox#getPopUpActions(java.awt.event.MouseEvent)
+   */
+  @Override
+  public Vector getPopUpActions(MouseEvent me) {
+    Vector popUpActions = super.getPopUpActions(me);
+
+    // TODO: Do we have anything to add here?
+
+    return popUpActions;
+  }
+
+  /*
+   * @see org.argouml.uml.diagram.ui.FigNodeModelElement#modelChanged(java.beans.PropertyChangeEvent)
+   */
+  @Override
+  protected void modelChanged(PropertyChangeEvent mee) {
+    super.modelChanged(mee);
+    if (mee instanceof AssociationChangeEvent || mee instanceof AttributeChangeEvent) {
+      renderingChanged();
+      updateListeners(getOwner(), getOwner());
     }
-
-    private void constructFigs() {
-        getStereotypeFig().setKeyword("signal");
-
-        addFig(getBigPort());
-        addFig(getStereotypeFig());
-        addFig(getNameFig());
-        addFig(getOperationsFig());
-        addFig(getAttributesFig());
-        addFig(borderFig);
-
-        // by default, do not show operations nor attributes:
-        setOperationsVisible(false);
-        setAttributesVisible(false);
-    }
-
-    /**
-     * Constructor for use if this figure is created for an
-     * existing interface node in the metamodel.
-     *
-     * @param gm   Not actually used in the current implementation
-     *
-     * @param node The UML object being placed.
-     * @deprecated for 0.27.3 by tfmorris.  Use 
-     * {@link #FigSignal(Object, Rectangle, DiagramSettings)}.
-     */
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    public FigSignal(@SuppressWarnings("unused") GraphModel gm, Object node) {
-        this();
-        setOwner(node);
-    }
-
-    /**
-     * Construct a Fig representing a Signal.
-     * 
-     * @param owner owning Signal
-     * @param bounds position and size
-     * @param settings render settings
-     */
-    public FigSignal(Object owner, Rectangle bounds, DiagramSettings settings) {
-        super(owner, bounds, settings);
-        constructFigs();
-    }
-    
-    /*
-     * @see org.argouml.uml.diagram.static_structure.ui.FigDataType#makeSelection()
-     */
-    @Override
-    public Selection makeSelection() {
-        return new SelectionSignal(this);
-    }
-
-    /*
-     * @see org.argouml.uml.diagram.static_structure.ui.FigClassifierBox#getPopUpActions(java.awt.event.MouseEvent)
-     */
-    @Override
-    public Vector getPopUpActions(MouseEvent me) {
-        Vector popUpActions = super.getPopUpActions(me);
-        
-        // TODO: Do we have anything to add here?
-
-        return popUpActions;
-    }
-
-    /*
-     * @see org.argouml.uml.diagram.ui.FigNodeModelElement#modelChanged(java.beans.PropertyChangeEvent)
-     */
-    @Override
-    protected void modelChanged(PropertyChangeEvent mee) {
-        super.modelChanged(mee);
-        if (mee instanceof AssociationChangeEvent 
-                || mee instanceof AttributeChangeEvent) {
-            renderingChanged();
-            updateListeners(getOwner(), getOwner());
-        }
-    }
-
-} 
+  }
+}

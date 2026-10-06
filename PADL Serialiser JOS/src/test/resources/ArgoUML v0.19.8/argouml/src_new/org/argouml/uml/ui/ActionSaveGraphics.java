@@ -29,10 +29,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-
 import org.apache.log4j.Logger;
 import org.argouml.application.api.CommandLineInterface;
 import org.argouml.application.api.Configuration;
@@ -46,196 +44,174 @@ import org.tigris.gef.base.CmdSaveGraphics;
 import org.tigris.gef.base.Diagram;
 import org.tigris.gef.util.Util;
 
+/** Wraps a CmdSaveGIF or CmdSave(E)PS to allow selection of an output file. */
+public class ActionSaveGraphics extends UMLAction implements CommandLineInterface {
 
-/**
- * Wraps a CmdSaveGIF or CmdSave(E)PS to allow selection of an output file.
- */
-public class ActionSaveGraphics
-        extends UMLAction
-        implements CommandLineInterface {
+  private static final Logger LOG = Logger.getLogger(ActionSaveGraphics.class);
 
-    private static final Logger LOG =
-        Logger.getLogger(ActionSaveGraphics.class);
+  ////////////////////////////////////////////////////////////////
+  // constructors
 
-    ////////////////////////////////////////////////////////////////
-    // constructors
+  /** Constructor for this action. */
+  public ActionSaveGraphics() {
+    super("action.save-graphics", NO_ICON);
+  }
 
-    /**
-     * Constructor for this action.
-     */
-    public ActionSaveGraphics() {
-        super("action.save-graphics", NO_ICON);
+  ////////////////////////////////////////////////////////////////
+  // main methods
+
+  /**
+   * @see UMLAction#actionPerformed(ActionEvent)
+   */
+  public void actionPerformed(ActionEvent ae) {
+    trySave(); // TODO: what to do with the return value?
+  }
+
+  /**
+   * Method that does almost everything in this class.
+   *
+   * <p>
+   *
+   * @return true if all went well.
+   */
+  private boolean trySave() {
+    Object target = ProjectManager.getManager().getCurrentProject().getActiveDiagram();
+
+    if (!(target instanceof Diagram)) {
+      return false;
     }
 
+    String defaultName = ((Diagram) target).getName();
+    defaultName = Util.stripJunk(defaultName);
 
-    ////////////////////////////////////////////////////////////////
-    // main methods
+    ProjectBrowser pb = ProjectBrowser.getInstance();
+    Project p = ProjectManager.getManager().getCurrentProject();
+    SaveGraphicsManager sgm = SaveGraphicsManager.getInstance();
+    try {
+      JFileChooser chooser = null;
 
-    /**
-     * @see UMLAction#actionPerformed(ActionEvent)
-     */
-    public void actionPerformed(ActionEvent ae) {
-        trySave(); //TODO: what to do with the return value?
+      if (p != null && p.getURL() != null && p.getURL().getFile().length() > 0) {
+
+        String filename = p.getURL().getFile();
+        // TODO: Someone please explain this.
+        if (!filename.startsWith("/FILE1/+/")) {
+          chooser = new JFileChooser(p.getURL().getFile());
+        }
+      }
+
+      if (chooser == null) {
+        chooser = new JFileChooser();
+      }
+
+      Object[] s = {defaultName};
+      chooser.setDialogTitle(Translator.messageFormat("filechooser.save-graphics", s));
+      // Only specified format are allowed.
+      chooser.setAcceptAllFileFilterUsed(false);
+      sgm.setFileChooserFilters(chooser, defaultName);
+
+      String fn = Configuration.getString(SaveGraphicsManager.KEY_SAVE_GRAPHICS_PATH);
+      if (fn.length() > 0) {
+        chooser.setSelectedFile(new File(fn));
+      }
+
+      int retval = chooser.showSaveDialog(pb);
+      if (retval == JFileChooser.APPROVE_OPTION) {
+        File theFile = chooser.getSelectedFile();
+        if (theFile != null) {
+          String path = theFile.getPath();
+          Configuration.setString(SaveGraphicsManager.KEY_SAVE_GRAPHICS_PATH, path);
+
+          theFile = new File(theFile.getParentFile(), sgm.fixExtension(theFile.getName()));
+          String suffix = sgm.getFilterFromFileName(theFile.getName()).getSuffix();
+          return doSave(theFile, suffix, true);
+        }
+      }
+    } catch (OutOfMemoryError e) {
+      new ExceptionDialog(
+          ProjectBrowser.getInstance(),
+          "You have run out of memory. "
+              + "Close down ArgoUML and restart with a larger heap size.",
+          e);
+    } catch (Exception e) {
+      new ExceptionDialog(ProjectBrowser.getInstance(), e);
+      LOG.error("Got some exception", e);
     }
 
-    /**
-     * Method that does almost everything in this class.<p>
-     *
-     * @return true if all went well.
-     */
-    private boolean trySave() {
-        Object target =
-            ProjectManager.getManager().getCurrentProject().getActiveDiagram();
-        
-        if (!(target instanceof Diagram)) {
-            return false;
-        }
-        
-        String defaultName = ((Diagram) target).getName();
-        defaultName = Util.stripJunk(defaultName);
-        
-        ProjectBrowser pb = ProjectBrowser.getInstance();
-        Project p =  ProjectManager.getManager().getCurrentProject();
-        SaveGraphicsManager sgm = SaveGraphicsManager.getInstance(); 
-        try {
-            JFileChooser chooser = null;
-        
-            if (p != null
-                	&& p.getURL() != null
-                	&& p.getURL().getFile().length() > 0) {
-        
-            	String filename = p.getURL().getFile();
-                // TODO: Someone please explain this.
-            	if (!filename.startsWith("/FILE1/+/")) {
-            	    chooser = new JFileChooser(p.getURL().getFile());
-            	}
-            }
-        
-            if (chooser == null) {
-                chooser = new JFileChooser();
-            }
-        
-            Object[] s = { defaultName };
-            chooser.setDialogTitle(
-                    Translator.messageFormat("filechooser.save-graphics", s));
-            // Only specified format are allowed.
-            chooser.setAcceptAllFileFilterUsed(false);
-            sgm.setFileChooserFilters(chooser, defaultName);
-            
-            String fn = Configuration.getString(
-                    SaveGraphicsManager.KEY_SAVE_GRAPHICS_PATH);
-            if (fn.length() > 0) {
-                chooser.setSelectedFile(new File(fn));
-            }
-            
-            int retval = chooser.showSaveDialog(pb);
-            if (retval == JFileChooser.APPROVE_OPTION) {
-                File theFile = chooser.getSelectedFile();
-                if (theFile != null) {
-                    String path = theFile.getPath();
-                    Configuration.setString(
-                            SaveGraphicsManager.KEY_SAVE_GRAPHICS_PATH,
-                            path);
-                    
-                    theFile = new File(theFile.getParentFile(), 
-                            sgm.fixExtension(theFile.getName()));
-                    String suffix = sgm.getFilterFromFileName(theFile.getName())
-                        .getSuffix();
-                    return doSave(theFile, suffix, true);
-                }
-            }
-        } catch (OutOfMemoryError e) {
-            new ExceptionDialog(ProjectBrowser.getInstance(),
-                "You have run out of memory. " 
-                + "Close down ArgoUML and restart with a larger heap size.", e);
-        } catch (Exception e) {
-            new ExceptionDialog(ProjectBrowser.getInstance(), e);
-            LOG.error("Got some exception", e);
-        }
-        
+    return false;
+  }
+
+  /**
+   * Actually do the saving of the graphics file.
+   *
+   * @return true if it was successful.
+   * @param theFile is the file that we are writing to
+   * @param suffix is the suffix. Used for deciding what format the file shall have.
+   * @param useUI is true if we are supposed to use the UI e.g. to warn the user that we are
+   *     replacing an old file.
+   */
+  private boolean doSave(File theFile, String suffix, boolean useUI)
+      throws FileNotFoundException, IOException {
+
+    SaveGraphicsManager sgm = SaveGraphicsManager.getInstance();
+    CmdSaveGraphics cmd = null;
+
+    cmd = sgm.getSaveCommandBySuffix(suffix);
+    if (cmd == null) {
+      return false;
+    }
+
+    if (useUI) {
+      ProjectBrowser.getInstance().showStatus("Writing " + theFile + "...");
+    }
+    if (theFile.exists() && useUI) {
+      int response =
+          JOptionPane.showConfirmDialog(
+              ProjectBrowser.getInstance(),
+              Translator.messageFormat("optionpane.confirm-overwrite", new Object[] {theFile}),
+              Translator.localize("optionpane.confirm-overwrite-title"),
+              JOptionPane.YES_NO_OPTION);
+      if (response != JOptionPane.YES_OPTION) {
         return false;
+      }
+    }
+    FileOutputStream fo = new FileOutputStream(theFile);
+    cmd.setStream(fo);
+    cmd.setScale(Configuration.getInteger(SaveGraphicsManager.KEY_GRAPHICS_RESOLUTION, 1));
+    cmd.doIt();
+    fo.close();
+    if (useUI) {
+      ProjectBrowser.getInstance().showStatus("Wrote " + theFile);
+    }
+    return true;
+  }
+
+  /**
+   * Execute this action from the command line.
+   *
+   * <p>TODO: The underlying GEF library relies on Acme that doesn't allow us to create these files
+   * unless there is a window showing. For this reason I have had to split the performing of
+   * commands in {@link org.argouml.application.Main#main(String[])} so that we can, by not
+   * supplying the -batch option, run these commands with the window showing. Hopefully this can
+   * eventually be fixed.
+   *
+   * @see org.argouml.application.api.CommandLineInterface#doCommand(String)
+   * @param argument is the file name that we save to.
+   * @return true if it is OK.
+   */
+  public boolean doCommand(String argument) {
+    File file = new File(argument);
+    String suffix = SuffixFilter.getExtension(file);
+    if (suffix == null) {
+      return false;
     }
 
-    /**
-     * Actually do the saving of the graphics file.
-     *
-     * @return true if it was successful.
-     * @param theFile is the file that we are writing to
-     * @param suffix is the suffix. Used for deciding what format the file
-     * shall have.
-     * @param useUI is true if we are supposed to use the UI e.g. to warn 
-     *              the user that we are replacing an old file.
-     */
-    private boolean doSave(File theFile,
-			   String suffix, boolean useUI)
-	throws FileNotFoundException, IOException {
-        
-        SaveGraphicsManager sgm = SaveGraphicsManager.getInstance(); 
-        CmdSaveGraphics cmd = null;
-        
-        cmd = sgm.getSaveCommandBySuffix(suffix);
-        if (cmd == null) {
-            return false;
-        }
-        
-        if (useUI) {
-            ProjectBrowser.getInstance().showStatus(
-                            "Writing " + theFile + "...");
-        }
-	if (theFile.exists() && useUI) {
-	    int response = JOptionPane.showConfirmDialog(
-                ProjectBrowser.getInstance(), 
-                Translator.messageFormat("optionpane.confirm-overwrite", 
-                        new Object[] {theFile}), 
-                Translator.localize("optionpane.confirm-overwrite-title"), 
-                JOptionPane.YES_NO_OPTION);
-	    if (response != JOptionPane.YES_OPTION) {
-		return false;
-	    }
-	}
-	FileOutputStream fo = new FileOutputStream(theFile);
-	cmd.setStream(fo);
-        cmd.setScale(Configuration.getInteger(
-                SaveGraphicsManager.KEY_GRAPHICS_RESOLUTION, 1));
-	cmd.doIt();
-	fo.close();
-        if (useUI) {
-            ProjectBrowser.getInstance().showStatus("Wrote " + theFile);
-        }
-	return true;
+    try {
+      return doSave(file, suffix, false);
+    } catch (FileNotFoundException e) {
+      LOG.error("File not found error when writing.", e);
+    } catch (IOException e) {
+      LOG.error("IO error when writing.", e);
     }
-
-
-    /**
-     * Execute this action from the command line.
-     *
-     * TODO: The underlying GEF library relies on Acme that doesn't allow
-     * us to create these files unless there is a window showing. For this
-     * reason I have had to split the performing of commands in
-     * {@link org.argouml.application.Main#main(String[])} so that we can,
-     * by not supplying the -batch option, run these commands
-     * with the window showing. Hopefully this can eventually be fixed.
-     *
-     * @see org.argouml.application.api.CommandLineInterface#doCommand(String)
-     * @param argument is the file name that we save to.
-     * @return true if it is OK.
-     */
-    public boolean doCommand(String argument) {
-	File file = new File(argument);
-	String suffix = SuffixFilter.getExtension(file);
-	if (suffix == null) {
-	    return false;
-	}
-
-	try {
-	    return doSave(file, suffix, false);
-	} catch (FileNotFoundException e) {
-	    LOG.error("File not found error when writing.", e);
-	} catch (IOException e) {
-	    LOG.error("IO error when writing.", e);
-	}
-	return false;
-    }
+    return false;
+  }
 } /* end class ActionSaveGraphics */
-
-

@@ -27,27 +27,25 @@ package org.argouml.uml.diagram.static_structure.ui;
 import org.argouml.model.Model;
 import org.tigris.gef.presentation.Fig;
 
-/**
- * The buttons on selection for an Exception.
- */
+/** The buttons on selection for an Exception. */
 class SelectionException extends SelectionGeneralizableElement {
 
-    /**
-     * Construct a new SelectionClass for the given Fig.
-     *
-     * @param f The given Fig.
-     */
-    public SelectionException(Fig f) { 
-        super(f);
-    }
+  /**
+   * Construct a new SelectionClass for the given Fig.
+   *
+   * @param f The given Fig.
+   */
+  public SelectionException(Fig f) {
+    super(f);
+  }
 
-    @Override
-    protected Object getNewNode(int buttonCode) {
-        return Model.getCommonBehaviorFactory().createException();
-    }
+  @Override
+  protected Object getNewNode(int buttonCode) {
+    return Model.getCommonBehaviorFactory().createException();
+  }
 
-    @Override
-    protected Object getNewNodeType(int buttonCode) {
-        return Model.getMetaTypes().getException();
-    }
+  @Override
+  protected Object getNewNodeType(int buttonCode) {
+    return Model.getMetaTypes().getException();
+  }
 }

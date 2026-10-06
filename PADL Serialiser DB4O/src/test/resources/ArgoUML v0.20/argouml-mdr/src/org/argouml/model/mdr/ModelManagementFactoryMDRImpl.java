@@ -36,191 +36,164 @@ import org.omg.uml.modelmanagement.UmlPackage;
 
 /**
  * The ModelManagementFactory.
+ *
  * <p>
+ *
  * @since ARGO0.19.5
- * @author Ludovic Maître
- * @author Tom Morris
- * derived from NSUML implementation by:
+ * @author Ludovic Maï¿½tre
+ * @author Tom Morris derived from NSUML implementation by:
  * @author Linus Tolke
  */
-public final class ModelManagementFactoryMDRImpl extends
-        AbstractUmlModelFactoryMDR implements ModelManagementFactory {
+public final class ModelManagementFactoryMDRImpl extends AbstractUmlModelFactoryMDR
+    implements ModelManagementFactory {
 
-    /**
-     * Logger.
-     */
-    private static final Logger LOG = Logger.
-            getLogger(ModelManagementFactoryMDRImpl.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(ModelManagementFactoryMDRImpl.class);
 
-    /**
-     * The model.
-     */
-    private Object theRootModel;
+  /** The model. */
+  private Object theRootModel;
 
-    /**
-     * The ModelManagement package.
-     */
-    private ModelManagementPackage modelManagementPackage;
+  /** The ModelManagement package. */
+  private ModelManagementPackage modelManagementPackage;
 
-    /**
-     * The model implementation.
-     */
-    private ModelImplementation nsmodel;
-  
-    /**
-     * Constructor.
-     * 
-     * @param mi
-     *            The MDRModelImplementation.
-     */
-    public ModelManagementFactoryMDRImpl(MDRModelImplementation mi) {
-        modelManagementPackage = mi.getUmlPackage().getModelManagement();
-        nsmodel = mi;
+  /** The model implementation. */
+  private ModelImplementation nsmodel;
+
+  /**
+   * Constructor.
+   *
+   * @param mi The MDRModelImplementation.
+   */
+  public ModelManagementFactoryMDRImpl(MDRModelImplementation mi) {
+    modelManagementPackage = mi.getUmlPackage().getModelManagement();
+    nsmodel = mi;
+  }
+
+  /**
+   * @see org.argouml.model.ModelManagementFactory#createModel()
+   */
+  public Object createModel() {
+    Model myModel = modelManagementPackage.getModel().createModel();
+    super.initialize(myModel);
+    return myModel;
+  }
+
+  /**
+   * @see org.argouml.model.ModelManagementFactory#setRootModel(java.lang.Object)
+   */
+  public void setRootModel(Object rootModel) {
+    if (rootModel != null && !(rootModel instanceof Model)) {
+      throw new IllegalArgumentException(
+          "The rootModel supplied must be a Model. Got a " + rootModel.getClass().getName());
+    }
+    theRootModel = rootModel;
+  }
+
+  /**
+   * @see org.argouml.model.ModelManagementFactory#getRootModel()
+   */
+  public Object getRootModel() {
+    return theRootModel;
+  }
+
+  /**
+   * @see org.argouml.model.ModelManagementFactory#createElementImport()
+   */
+  public Object createElementImport() {
+    ElementImport myElementImport = modelManagementPackage.getElementImport().createElementImport();
+    super.initialize(myElementImport);
+    return myElementImport;
+  }
+
+  /**
+   * @see org.argouml.model.ModelManagementFactory#createPackage()
+   */
+  public Object createPackage() {
+    UmlPackage myUmlPackage = modelManagementPackage.getUmlPackage().createUmlPackage();
+    super.initialize(myUmlPackage);
+    return myUmlPackage;
+  }
+
+  /**
+   * @see org.argouml.model.ModelManagementFactory#buildPackage( java.lang.String, java.lang.String)
+   */
+  public Object buildPackage(String name, String uuid) {
+    UmlPackage pkg = (UmlPackage) createPackage();
+    pkg.setName(name);
+    // TODO: not sure who added below message.  Needs resolution. - tfm
+    LOG.warn("UUID [" + uuid + "] ignored - what to do with it?");
+    return pkg;
+  }
+
+  /**
+   * @see org.argouml.model.ModelManagementFactory#createSubsystem()
+   */
+  public Object createSubsystem() {
+    Subsystem mySubsystem = modelManagementPackage.getSubsystem().createSubsystem();
+    super.initialize(mySubsystem);
+    return mySubsystem;
+  }
+
+  /**
+   * @see org.argouml.model.ModelManagementFactory#copyPackage( java.lang.Object, java.lang.Object)
+   */
+  public Object copyPackage(Object source, Object ns) {
+    if (!(source instanceof UmlPackage)) {
+      throw new IllegalArgumentException("source");
+    }
+    if (!(ns instanceof Namespace)) {
+      throw new IllegalArgumentException("namespace");
     }
 
-    /**
-     * @see org.argouml.model.ModelManagementFactory#createModel()
-     */
-    public Object createModel() {
-        Model myModel = modelManagementPackage.getModel().createModel();
-        super.initialize(myModel);
-        return myModel;
+    UmlPackage p = (UmlPackage) createPackage();
+    ((Namespace) ns).getOwnedElement().add(p);
+    doCopyPackage((UmlPackage) source, p);
+    return p;
+  }
+
+  /**
+   * Used by the copy functions. Do not call this function directly.
+   *
+   * @param source The source package.
+   * @param target The target package.
+   */
+  private void doCopyPackage(UmlPackage source, UmlPackage target) {
+    ((CoreFactoryMDRImpl) nsmodel.getCoreFactory()).doCopyNamespace(source, target);
+  }
+
+  /**
+   * @param elem to be deleted
+   */
+  void deleteElementImport(Object elem) {
+    if (!(elem instanceof ElementImport)) {
+      throw new IllegalArgumentException();
     }
+  }
 
-    /**
-     * @see org.argouml.model.ModelManagementFactory#setRootModel(java.lang.Object)
-     */
-    public void setRootModel(Object rootModel) {
-        if (rootModel != null && !(rootModel instanceof Model)) {
-            throw new IllegalArgumentException(
-                    "The rootModel supplied must be a Model. Got a "
-                            + rootModel.getClass().getName());
-        }
-        theRootModel = rootModel;
+  /**
+   * @param elem to be deleted
+   */
+  void deleteModel(Object elem) {
+    if (!(elem instanceof Model)) {
+      throw new IllegalArgumentException();
     }
+  }
 
-    /**
-     * @see org.argouml.model.ModelManagementFactory#getRootModel()
-     */
-    public Object getRootModel() {
-        return theRootModel;
+  /**
+   * @param elem to be deleted
+   */
+  void deletePackage(Object elem) {
+    if (!(elem instanceof UmlPackage)) {
+      throw new IllegalArgumentException();
     }
+  }
 
-    /**
-     * @see org.argouml.model.ModelManagementFactory#createElementImport()
-     */
-    public Object createElementImport() {
-        ElementImport myElementImport = modelManagementPackage.
-                getElementImport().createElementImport();
-        super.initialize(myElementImport);
-        return myElementImport;
+  /**
+   * @param elem to be deleted
+   */
+  void deleteSubsystem(Object elem) {
+    if (!(elem instanceof Subsystem)) {
+      throw new IllegalArgumentException();
     }
-
-    /**
-     * @see org.argouml.model.ModelManagementFactory#createPackage()
-     */
-    public Object createPackage() {
-        UmlPackage myUmlPackage = modelManagementPackage.getUmlPackage().
-                createUmlPackage();
-        super.initialize(myUmlPackage);
-        return myUmlPackage;
-    }
-
-    /**
-     * @see org.argouml.model.ModelManagementFactory#buildPackage(
-     *      java.lang.String, java.lang.String)
-     */
-    public Object buildPackage(String name, String uuid) {
-        UmlPackage pkg = (UmlPackage) createPackage();
-        pkg.setName(name);
-        // TODO: not sure who added below message.  Needs resolution. - tfm
-        LOG.warn("UUID [" + uuid + "] ignored - what to do with it?");
-        return pkg;
-    }
-
-    /**
-     * @see org.argouml.model.ModelManagementFactory#createSubsystem()
-     */
-    public Object createSubsystem() {
-        Subsystem mySubsystem = modelManagementPackage.getSubsystem().
-                createSubsystem();
-        super.initialize(mySubsystem);
-        return mySubsystem;
-    }
-
-    /**
-     * @see org.argouml.model.ModelManagementFactory#copyPackage(
-     *      java.lang.Object, java.lang.Object)
-     */
-    public Object copyPackage(Object source, Object ns) {
-        if (!(source instanceof UmlPackage)) {
-            throw new IllegalArgumentException("source");
-        }
-        if (!(ns instanceof Namespace)) {
-            throw new IllegalArgumentException("namespace");
-        }
-
-        UmlPackage p = (UmlPackage) createPackage();
-        ((Namespace) ns).getOwnedElement().add(p);
-        doCopyPackage((UmlPackage) source, p);
-        return p;
-    }
-
-    /**
-     * Used by the copy functions. Do not call this function directly.
-     * 
-     * @param source
-     *            The source package.
-     * @param target
-     *            The target package.
-     */
-    private void doCopyPackage(UmlPackage source, UmlPackage target) {
-        ((CoreFactoryMDRImpl) nsmodel.getCoreFactory())
-            .doCopyNamespace(source, target);
-    }
-
-    /**
-     * @param elem
-     *            to be deleted
-     */
-    void deleteElementImport(Object elem) {
-        if (!(elem instanceof ElementImport)) {
-            throw new IllegalArgumentException();
-        }
-
-    }
-
-    /**
-     * @param elem
-     *            to be deleted
-     */
-    void deleteModel(Object elem) {
-        if (!(elem instanceof Model)) {
-            throw new IllegalArgumentException();
-        }
-
-    }
-
-    /**
-     * @param elem
-     *            to be deleted
-     */
-    void deletePackage(Object elem) {
-        if (!(elem instanceof UmlPackage)) {
-            throw new IllegalArgumentException();
-        }
-
-    }
-
-    /**
-     * @param elem
-     *            to be deleted
-     */
-    void deleteSubsystem(Object elem) {
-        if (!(elem instanceof Subsystem)) {
-            throw new IllegalArgumentException();
-        }
-
-    }
-
+  }
 }

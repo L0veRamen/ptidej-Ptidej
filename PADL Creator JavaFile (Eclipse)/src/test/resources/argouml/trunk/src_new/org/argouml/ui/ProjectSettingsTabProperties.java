@@ -28,11 +28,9 @@ import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
 import org.argouml.application.api.Argo;
 import org.argouml.application.api.Configuration;
 import org.argouml.i18n.Translator;
@@ -40,143 +38,136 @@ import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
 
 /**
- * Tab Panel for setting the project attributes: 
- * author name and email, project description. 
- * These are stored in the project file.
+ * Tab Panel for setting the project attributes: author name and email, project description. These
+ * are stored in the project file.
  *
  * @author michiel
  */
-public class ProjectSettingsTabProperties extends JPanel implements
-        GUISettingsTabInterface {
-    /**
-     * This is where the user enters full name in settings tab.
-     * This information is stored in the zargo file.
-     */
-    private JTextField userFullname;
+public class ProjectSettingsTabProperties extends JPanel implements GUISettingsTabInterface {
+  /**
+   * This is where the user enters full name in settings tab. This information is stored in the
+   * zargo file.
+   */
+  private JTextField userFullname;
 
-    /**
-     * This is where the user enters email in settings tab.
-     * This information is stored in the zargo file.
-     */
-    private JTextField userEmail;
+  /**
+   * This is where the user enters email in settings tab. This information is stored in the zargo
+   * file.
+   */
+  private JTextField userEmail;
 
-    /**
-     * This is where the user enters a description of the project
-     * in the settings tab.
-     * This information is stored in the zargo file.
-     */
-    private JTextField description;
+  /**
+   * This is where the user enters a description of the project in the settings tab. This
+   * information is stored in the zargo file.
+   */
+  private JTextField description;
 
-    /**
-     * This is where the ArgoUML version that last saved this project
-     * is shown in the settings tab.
-     * This information is stored in the zargo file.
-     */
-    private JTextField version;
+  /**
+   * This is where the ArgoUML version that last saved this project is shown in the settings tab.
+   * This information is stored in the zargo file.
+   */
+  private JTextField version;
 
-    /**
-     * The constructor.
-     */
-    ProjectSettingsTabProperties() {
-        setLayout(new BorderLayout());
-        JPanel top = new JPanel();
-        top.setLayout(new GridBagLayout());
+  /** The constructor. */
+  ProjectSettingsTabProperties() {
+    setLayout(new BorderLayout());
+    JPanel top = new JPanel();
+    top.setLayout(new GridBagLayout());
 
-        GridBagConstraints labelConstraints = new GridBagConstraints();
-        labelConstraints.anchor = GridBagConstraints.WEST;
-        labelConstraints.gridy = 0;
-        labelConstraints.gridx = 0;
-        labelConstraints.gridwidth = 1;
-        labelConstraints.gridheight = 1;
-        labelConstraints.insets = new Insets(2, 20, 2, 4);
+    GridBagConstraints labelConstraints = new GridBagConstraints();
+    labelConstraints.anchor = GridBagConstraints.WEST;
+    labelConstraints.gridy = 0;
+    labelConstraints.gridx = 0;
+    labelConstraints.gridwidth = 1;
+    labelConstraints.gridheight = 1;
+    labelConstraints.insets = new Insets(2, 20, 2, 4);
 
-        GridBagConstraints fieldConstraints = new GridBagConstraints();
-        fieldConstraints.anchor = GridBagConstraints.EAST;
-        fieldConstraints.fill = GridBagConstraints.HORIZONTAL;
-        fieldConstraints.gridy = 0;
-        fieldConstraints.gridx = 1;
-        fieldConstraints.gridwidth = 3;
-        fieldConstraints.gridheight = 1;
-        fieldConstraints.weightx = 1.0;
-        fieldConstraints.insets = new Insets(2, 4, 2, 20);
+    GridBagConstraints fieldConstraints = new GridBagConstraints();
+    fieldConstraints.anchor = GridBagConstraints.EAST;
+    fieldConstraints.fill = GridBagConstraints.HORIZONTAL;
+    fieldConstraints.gridy = 0;
+    fieldConstraints.gridx = 1;
+    fieldConstraints.gridwidth = 3;
+    fieldConstraints.gridheight = 1;
+    fieldConstraints.weightx = 1.0;
+    fieldConstraints.insets = new Insets(2, 4, 2, 20);
 
-        labelConstraints.gridy = 0;
-        fieldConstraints.gridy = 0;
-        top.add(new JLabel(Translator.localize("label.user")),
-                labelConstraints);
-        userFullname = new JTextField();
-        top.add(userFullname, fieldConstraints);
+    labelConstraints.gridy = 0;
+    fieldConstraints.gridy = 0;
+    top.add(new JLabel(Translator.localize("label.user")), labelConstraints);
+    userFullname = new JTextField();
+    top.add(userFullname, fieldConstraints);
 
-        labelConstraints.gridy = 1;
-        fieldConstraints.gridy = 1;
-        top.add(new JLabel(Translator.localize("label.email")),
-                labelConstraints);
-        userEmail = new JTextField();
-        top.add(userEmail, fieldConstraints);
+    labelConstraints.gridy = 1;
+    fieldConstraints.gridy = 1;
+    top.add(new JLabel(Translator.localize("label.email")), labelConstraints);
+    userEmail = new JTextField();
+    top.add(userEmail, fieldConstraints);
 
-        labelConstraints.gridy = 2;
-        fieldConstraints.gridy = 2;
-        top.add(new JLabel(Translator.localize("label.project.description")),
-                labelConstraints);
-        description = new JTextField();
-        top.add(description, fieldConstraints);
+    labelConstraints.gridy = 2;
+    fieldConstraints.gridy = 2;
+    top.add(new JLabel(Translator.localize("label.project.description")), labelConstraints);
+    description = new JTextField();
+    top.add(description, fieldConstraints);
 
-        labelConstraints.gridy = 3;
-        fieldConstraints.gridy = 3;
-        top.add(new JLabel(Translator.localize("label.argouml.version")),
-                labelConstraints);
-        version = new JTextField();
-        version.setEditable(false);
-        top.add(version, fieldConstraints);
+    labelConstraints.gridy = 3;
+    fieldConstraints.gridy = 3;
+    top.add(new JLabel(Translator.localize("label.argouml.version")), labelConstraints);
+    version = new JTextField();
+    version.setEditable(false);
+    top.add(version, fieldConstraints);
 
-        add(top, BorderLayout.NORTH);
-    }
+    add(top, BorderLayout.NORTH);
+  }
 
-    /**
-     * @see GUISettingsTabInterface#handleSettingsTabRefresh()
-     */
-    public void handleSettingsTabRefresh() {
-        Project p = ProjectManager.getManager().getCurrentProject();
-        userFullname.setText(p.getAuthorname());
-        userEmail.setText(p.getAuthoremail());
-        description.setText(p.getDescription());
-        version.setText(p.getVersion());
-    }
+  /**
+   * @see GUISettingsTabInterface#handleSettingsTabRefresh()
+   */
+  public void handleSettingsTabRefresh() {
+    Project p = ProjectManager.getManager().getCurrentProject();
+    userFullname.setText(p.getAuthorname());
+    userEmail.setText(p.getAuthoremail());
+    description.setText(p.getDescription());
+    version.setText(p.getVersion());
+  }
 
-    /**
-     * @see GUISettingsTabInterface#handleSettingsTabSave()
-     */
-    public void handleSettingsTabSave() {
-        Project p = ProjectManager.getManager().getCurrentProject();
-        p.setAuthorname(userFullname.getText());
-        p.setAuthoremail(userEmail.getText());
-        p.setDescription(description.getText());
-    }
+  /**
+   * @see GUISettingsTabInterface#handleSettingsTabSave()
+   */
+  public void handleSettingsTabSave() {
+    Project p = ProjectManager.getManager().getCurrentProject();
+    p.setAuthorname(userFullname.getText());
+    p.setAuthoremail(userEmail.getText());
+    p.setDescription(description.getText());
+  }
 
-    /**
-     * @see GUISettingsTabInterface#handleSettingsTabCancel()
-     */
-    public void handleSettingsTabCancel() {
-        handleSettingsTabRefresh();
-    }
+  /**
+   * @see GUISettingsTabInterface#handleSettingsTabCancel()
+   */
+  public void handleSettingsTabCancel() {
+    handleSettingsTabRefresh();
+  }
 
-    /**
-     * @see org.argouml.ui.GUISettingsTabInterface#handleResetToDefault()
-     */
-    public void handleResetToDefault() {
-        userFullname.setText(Configuration.getString(Argo.KEY_USER_FULLNAME));
-        userEmail.setText(Configuration.getString(Argo.KEY_USER_EMAIL));
-        // There is no default description.
-    }
+  /**
+   * @see org.argouml.ui.GUISettingsTabInterface#handleResetToDefault()
+   */
+  public void handleResetToDefault() {
+    userFullname.setText(Configuration.getString(Argo.KEY_USER_FULLNAME));
+    userEmail.setText(Configuration.getString(Argo.KEY_USER_EMAIL));
+    // There is no default description.
+  }
 
-    /**
-     * @see GUISettingsTabInterface#getTabKey()
-     */
-    public String getTabKey() { return "tab.user"; }
+  /**
+   * @see GUISettingsTabInterface#getTabKey()
+   */
+  public String getTabKey() {
+    return "tab.user";
+  }
 
-    /**
-     * @see GUISettingsTabInterface#getTabPanel()
-     */
-    public JPanel getTabPanel() { return this; }
-
+  /**
+   * @see GUISettingsTabInterface#getTabPanel()
+   */
+  public JPanel getTabPanel() {
+    return this;
+  }
 }

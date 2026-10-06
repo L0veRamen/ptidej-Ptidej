@@ -29,7 +29,6 @@
  */
 package org.argouml.uml.diagram.ui;
 
-
 import org.argouml.uml.CommentEdge;
 
 /**
@@ -37,19 +36,14 @@ import org.argouml.uml.CommentEdge;
  *
  * @author Bob Tarling
  */
-
 public class ActionSetAddCommentLinkMode extends ActionSetMode {
 
-    /**
-     * Construct a new ActionSetAddCommentLinkMode.<p>
-     */
-    public ActionSetAddCommentLinkMode() {
-        super(
-                ModeCreateCommentEdge.class,
-                "edgeClass",
-                CommentEdge.class,
-                "button.new-commentlink");
-    }
+  /**
+   * Construct a new ActionSetAddCommentLinkMode.
+   *
+   * <p>
+   */
+  public ActionSetAddCommentLinkMode() {
+    super(ModeCreateCommentEdge.class, "edgeClass", CommentEdge.class, "button.new-commentlink");
+  }
 }
-
-

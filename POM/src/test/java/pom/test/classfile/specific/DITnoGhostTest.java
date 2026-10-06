@@ -4,22 +4,18 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc  and others, see in file; API and its implementation
  ******************************************************************************/
 package pom.test.classfile.specific;
 
-import org.junit.Assert;
 
-import padl.kernel.IFirstClassEntity;
-import pom.metrics.IUnaryMetric;
 
 public class DITnoGhostTest extends DITTest {
-	public DITnoGhostTest(String name) {
-		super(name);
-		this.metricName = "DITnoGhost";
-		this.expectedDITGhost = 1d;
-	}
-	
+  public DITnoGhostTest(String name) {
+    super(name);
+    this.metricName = "DITnoGhost";
+    this.expectedDITGhost = 1d;
+  }
 }

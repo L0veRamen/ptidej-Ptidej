@@ -27,35 +27,32 @@ package org.argouml.uml.reveng;
 import org.argouml.application.api.PluggableImportTypes;
 
 /**
- * This is an implementation of the generic Label defined in
- * {@link PluggableImportTypes.Label}.
- * 
+ * This is an implementation of the generic Label defined in {@link PluggableImportTypes.Label}.
+ *
  * @see PluggableImportTypes.Label
  * @author Bogdan Pistol
  */
 class LabelImportSetting implements PluggableImportTypes.Label {
-    
-    /**
-     * The message of the Label
-     */
-    private String label;
 
-    /**
-     * Constructor with package access.
-     * @param msg the message
-     */
-    LabelImportSetting(String msg) {
-        label = msg;
-    }
-    
-    /**
-     * We return a new String with this message instead of the String that
-     * is the message because we don't want the user to be able to
-     * change the Label's message.
-     * @see org.argouml.application.api.PluggableImportTypes.Label#getLabel()
-     */
-    public String getLabel() {
-        return new String(label);
-    }
+  /** The message of the Label */
+  private String label;
 
+  /**
+   * Constructor with package access.
+   *
+   * @param msg the message
+   */
+  LabelImportSetting(String msg) {
+    label = msg;
+  }
+
+  /**
+   * We return a new String with this message instead of the String that is the message because we
+   * don't want the user to be able to change the Label's message.
+   *
+   * @see org.argouml.application.api.PluggableImportTypes.Label#getLabel()
+   */
+  public String getLabel() {
+    return new String(label);
+  }
 }

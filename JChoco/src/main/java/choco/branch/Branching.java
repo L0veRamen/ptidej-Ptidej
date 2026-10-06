@@ -14,9 +14,10 @@ package choco.branch;
  */
 public interface Branching {
 
-	/**
-	 * selecting the object under scrutiny (that object on which an alternative will be set)
-	 * @return the object on which an alternative will be set (often  a variable)
-	 */
-	public Object selectBranchingObject();
+  /**
+   * selecting the object under scrutiny (that object on which an alternative will be set)
+   *
+   * @return the object on which an alternative will be set (often a variable)
+   */
+  public Object selectBranchingObject();
 }

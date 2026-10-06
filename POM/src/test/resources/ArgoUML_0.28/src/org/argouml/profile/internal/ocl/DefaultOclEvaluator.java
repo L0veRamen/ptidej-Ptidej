@@ -27,9 +27,7 @@ package org.argouml.profile.internal.ocl;
 import java.io.PushbackReader;
 import java.io.StringReader;
 import java.util.Map;
-
 import org.apache.log4j.Logger;
-
 import tudresden.ocl.parser.OclParser;
 import tudresden.ocl.parser.lexer.Lexer;
 import tudresden.ocl.parser.node.Start;
@@ -41,51 +39,46 @@ import tudresden.ocl.parser.node.Start;
  */
 public class DefaultOclEvaluator implements OclExpressionEvaluator {
 
-    /**
-     * Logger.
-     */
-    private static final Logger LOG = Logger
-            .getLogger(DefaultOclEvaluator.class);
-    
-    private static OclExpressionEvaluator instance = null;
-    
-    /**
-     * @return unique instance
-     */
-    public static OclExpressionEvaluator getInstance() {
-        if (instance == null) {
-            instance = new DefaultOclEvaluator();
-        }
-        return instance;
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(DefaultOclEvaluator.class);
+
+  private static OclExpressionEvaluator instance = null;
+
+  /**
+   * @return unique instance
+   */
+  public static OclExpressionEvaluator getInstance() {
+    if (instance == null) {
+      instance = new DefaultOclEvaluator();
     }
-    
-    /*
-     * @see org.argouml.profile.internal.ocl.OclExpressionEvaluator#evaluate(java.util.HashMap, org.argouml.profile.internal.ocl.ModelInterpreter, java.lang.String)
-     */
-    public Object evaluate(Map<String, Object> vt, ModelInterpreter mi,
-            String ocl) throws InvalidOclException {
-        // XXX this seems to be a bug of the parser, 
-        // it always requires a context
-        
-        LOG.debug("OCL: " + ocl);
-        if (ocl.contains("ore")) {
-            // TODO: Convert this to some sensible logging
-            System.out.println("VOILA!");
-        }
-        Lexer lexer = new Lexer(new PushbackReader(new StringReader(
-                "context X inv: " + ocl), 2));
-        OclParser parser = new OclParser(lexer);
-        Start tree = null;
-        
-        try {
-            tree = parser.parse();
-        } catch (Exception e) {
-            throw new InvalidOclException(ocl);
-        }
-        
-        EvaluateExpression ee = new EvaluateExpression(vt, mi);
-        tree.apply(ee);
-        return ee.getValue();
+    return instance;
+  }
+
+  /*
+   * @see org.argouml.profile.internal.ocl.OclExpressionEvaluator#evaluate(java.util.HashMap, org.argouml.profile.internal.ocl.ModelInterpreter, java.lang.String)
+   */
+  public Object evaluate(Map<String, Object> vt, ModelInterpreter mi, String ocl)
+      throws InvalidOclException {
+    // XXX this seems to be a bug of the parser,
+    // it always requires a context
+
+    LOG.debug("OCL: " + ocl);
+    if (ocl.contains("ore")) {
+      // TODO: Convert this to some sensible logging
+      System.out.println("VOILA!");
+    }
+    Lexer lexer = new Lexer(new PushbackReader(new StringReader("context X inv: " + ocl), 2));
+    OclParser parser = new OclParser(lexer);
+    Start tree = null;
+
+    try {
+      tree = parser.parse();
+    } catch (Exception e) {
+      throw new InvalidOclException(ocl);
     }
 
+    EvaluateExpression ee = new EvaluateExpression(vt, mi);
+    tree.apply(ee);
+    return ee.getValue();
+  }
 }

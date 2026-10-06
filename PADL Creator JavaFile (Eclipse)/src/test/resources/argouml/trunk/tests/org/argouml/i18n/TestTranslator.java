@@ -25,55 +25,53 @@
 package org.argouml.i18n;
 
 import java.util.Locale;
-
 import junit.framework.TestCase;
 
 public class TestTranslator extends TestCase {
 
-    public TestTranslator(String arg0) {
-        super(arg0);
-    }
+  public TestTranslator(String arg0) {
+    super(arg0);
+  }
 
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
+  protected void setUp() throws Exception {
+    super.setUp();
+  }
 
-    public void testGetLocales() {
-        Translator.getLocales();
-    }
+  public void testGetLocales() {
+    Translator.getLocales();
+  }
 
-    public void testSetLocaleString() {
-        try {
-            Translator.setLocale((String) null);
-            fail();
-        } catch (NullPointerException e) {
-        }
+  public void testSetLocaleString() {
+    try {
+      Translator.setLocale((String) null);
+      fail();
+    } catch (NullPointerException e) {
     }
+  }
 
-    public void testSetLocaleLocale() {
-        try {
-            Translator.setLocale((Locale) null);
-        } catch (NullPointerException e) {
-        }
+  public void testSetLocaleLocale() {
+    try {
+      Translator.setLocale((Locale) null);
+    } catch (NullPointerException e) {
     }
+  }
 
-    public void testGetSystemDefaultLocale() {
-        Translator.getSystemDefaultLocale();
+  public void testGetSystemDefaultLocale() {
+    Translator.getSystemDefaultLocale();
+  }
+
+  public void testLocalizeString() {
+    try {
+      Translator.localize(null);
+      fail();
+    } catch (IllegalArgumentException e) {
     }
+  }
 
-    public void testLocalizeString() {
-        try {
-            Translator.localize(null);
-            fail();
-        } catch (IllegalArgumentException e) {
-        }
+  public void testMessageFormat() {
+    try {
+      Translator.messageFormat(null, null);
+    } catch (IllegalArgumentException e) {
     }
-
-    public void testMessageFormat() {
-        try {
-            Translator.messageFormat(null, null);
-        } catch (IllegalArgumentException e) {
-        }
-    }
-
+  }
 }

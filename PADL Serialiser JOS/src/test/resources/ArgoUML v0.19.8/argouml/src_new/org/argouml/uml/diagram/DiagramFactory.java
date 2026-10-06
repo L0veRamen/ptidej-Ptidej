@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-
 import org.apache.log4j.Logger;
 import org.argouml.model.ActivityDiagram;
 import org.argouml.model.ClassDiagram;
@@ -53,129 +52,121 @@ import org.tigris.gef.graph.GraphNodeRenderer;
 import org.tigris.gef.presentation.Fig;
 
 /**
-* Provide a factory method to create different UML diagrams.
-* @author Bob Tarling
-*/
+ * Provide a factory method to create different UML diagrams.
+ *
+ * @author Bob Tarling
+ */
 public class DiagramFactory {
- 
-    private static final Logger LOG = Logger.getLogger(DiagramFactory.class);
-    
-    private static DiagramFactory diagramFactory = new DiagramFactory();
- 
-    private List diagrams = new Vector();
-    
-    private DiagramFactory() {
+
+  private static final Logger LOG = Logger.getLogger(DiagramFactory.class);
+
+  private static DiagramFactory diagramFactory = new DiagramFactory();
+
+  private List diagrams = new Vector();
+
+  private DiagramFactory() {}
+
+  /**
+   * @return the singleton
+   */
+  public static DiagramFactory getInstance() {
+    return diagramFactory;
+  }
+
+  /**
+   * @return the list of diagrams
+   */
+  public List getDiagram() {
+    return diagrams;
+  }
+
+  /**
+   * Factory method to create a new instance of a Class Diagram
+   *
+   * @param type The class of rendering diagram to create
+   * @param model The model that this class diagram represents
+   * @param owningElement The modelElement which own this diagram (can be the model)
+   * @return the newly instantiated class diagram
+   */
+  public ArgoDiagram createDiagram(Class type, Object model, Object owningElement) {
+
+    ArgoDiagram diagram = null;
+    Class diType = null;
+
+    if (type == UMLClassDiagram.class) {
+      diagram = new UMLClassDiagram(model);
+      diType = ClassDiagram.class;
+    } else if (type == UMLUseCaseDiagram.class) {
+      diagram = new UMLUseCaseDiagram(model);
+      diType = UseCaseDiagram.class;
+    } else if (type == UMLStateDiagram.class) {
+      diagram = new UMLStateDiagram(model, owningElement);
+      diType = StateDiagram.class;
+    } else if (type == UMLDeploymentDiagram.class) {
+      diagram = new UMLDeploymentDiagram(model);
+      diType = DeploymentDiagram.class;
+    } else if (type == UMLCollaborationDiagram.class) {
+      diagram = new UMLCollaborationDiagram(model);
+      diType = CollaborationDiagram.class;
+    } else if (type == UMLActivityDiagram.class) {
+      diagram = new UMLActivityDiagram(model, owningElement);
+      diType = ActivityDiagram.class;
+    } else if (type == UMLSequenceDiagram.class) {
+      diagram = new UMLSequenceDiagram(model);
+      diType = SequenceDiagram.class;
     }
 
-    /**
-     * @return the singleton
-     */
-    public static DiagramFactory getInstance() {
-        return diagramFactory;
-    }
- 
-    /**
-     * @return the list of diagrams
-     */
-    public List getDiagram() {
-        return diagrams;
+    if (diagram == null) {
+      throw new IllegalArgumentException("Unknown diagram type");
     }
 
-    
-    /**
-     * Factory method to create a new instance of a Class Diagram
-     * @param type The class of rendering diagram to create
-     * @param model The model that this class diagram represents
-     * @param owningElement The modelElement which own this diagram 
-     *                      (can be the model)
-     * @return the newly instantiated class diagram
-     */
-    public ArgoDiagram createDiagram(Class type, Object model, 
-            Object owningElement) {
-        
-        ArgoDiagram diagram = null;
-        Class diType = null;
-        
-        if (type == UMLClassDiagram.class) {
-            diagram = new UMLClassDiagram(model);
-            diType = ClassDiagram.class;
-        } else if (type == UMLUseCaseDiagram.class) {
-            diagram = new UMLUseCaseDiagram(model);
-            diType = UseCaseDiagram.class;
-        } else if (type == UMLStateDiagram.class) {
-            diagram = new UMLStateDiagram(model, owningElement);
-            diType = StateDiagram.class;
-        } else if (type == UMLDeploymentDiagram.class) {
-            diagram = new UMLDeploymentDiagram(model);
-            diType = DeploymentDiagram.class;
-        } else if (type == UMLCollaborationDiagram.class) {
-            diagram = new UMLCollaborationDiagram(model);
-            diType = CollaborationDiagram.class;
-        } else if (type == UMLActivityDiagram.class) {
-            diagram = new UMLActivityDiagram(model, owningElement);
-            diType = ActivityDiagram.class;
-        } else if (type == UMLSequenceDiagram.class) {
-            diagram = new UMLSequenceDiagram(model);
-            diType = SequenceDiagram.class;
-        }
-            
-        if (diagram == null) {
-            throw new IllegalArgumentException ("Unknown diagram type");
-        }
-        
-        if (Model.getDiagramInterchangeModel() != null) {
-            diagram.getGraphModel().addGraphEventListener(
-                 GraphChangeAdapter.getInstance());
-            /* The diagram are always owned by the model 
-             * in this first implementation */
-            DiDiagram dd =
-                GraphChangeAdapter.getInstance().createDiagram(diType, model);
-            ((UMLMutableGraphSupport) diagram.getGraphModel()).setDiDiagram(dd);
-        }
-        
-        //keep a reference on it in the case where we must add all the diagrams
-        //as project members (loading)
-        diagrams.add(diagram);
-        return diagram;
-    }
-    
-    /**
-     * Factory method to create a new instance of a Class Diagram.
-     * 
-     * @param diagram the diagram
-     * @return the newly instantiated class diagram
-     */
-    public ArgoDiagram removeDiagram(ArgoDiagram diagram) {
-        
-        DiDiagram dd =
-            ((UMLMutableGraphSupport) diagram.getGraphModel()).getDiDiagram();
-        if (dd != null) {
-            GraphChangeAdapter.getInstance().removeDiagram(dd);
-        }
-        return diagram;
+    if (Model.getDiagramInterchangeModel() != null) {
+      diagram.getGraphModel().addGraphEventListener(GraphChangeAdapter.getInstance());
+      /* The diagram are always owned by the model
+       * in this first implementation */
+      DiDiagram dd = GraphChangeAdapter.getInstance().createDiagram(diType, model);
+      ((UMLMutableGraphSupport) diagram.getGraphModel()).setDiDiagram(dd);
     }
 
-    public DiDiagram getDiDiagram(Object graphModel) {
-        if (graphModel instanceof UMLMutableGraphSupport)
-            return ((UMLMutableGraphSupport) graphModel).getDiDiagram();
-        throw new IllegalArgumentException("graphModel: " + graphModel);
-    }
-    
-    public void addElement(Object diagram, Object element) {
-        if (!(diagram instanceof ArgoDiagram))
-            throw new IllegalArgumentException("diagram: " + diagram);
-        if (!(element instanceof Fig))
-            throw new IllegalArgumentException("fig: " + element);
-        ((ArgoDiagram) diagram).add((Fig) element);
-    }
+    // keep a reference on it in the case where we must add all the diagrams
+    // as project members (loading)
+    diagrams.add(diagram);
+    return diagram;
+  }
 
-    
-    private final Map noStyleProperties = new HashMap();
-    
-    public Object createRenderingElement(Object diagram, Object model) {
-        GraphNodeRenderer rend =
-            ((UMLDiagram) diagram).getLayer().getGraphNodeRenderer();
-        Object renderingElement = rend.getFigNodeFor(model, noStyleProperties);
-        return renderingElement;
-    }    
+  /**
+   * Factory method to create a new instance of a Class Diagram.
+   *
+   * @param diagram the diagram
+   * @return the newly instantiated class diagram
+   */
+  public ArgoDiagram removeDiagram(ArgoDiagram diagram) {
+
+    DiDiagram dd = ((UMLMutableGraphSupport) diagram.getGraphModel()).getDiDiagram();
+    if (dd != null) {
+      GraphChangeAdapter.getInstance().removeDiagram(dd);
+    }
+    return diagram;
+  }
+
+  public DiDiagram getDiDiagram(Object graphModel) {
+    if (graphModel instanceof UMLMutableGraphSupport)
+      return ((UMLMutableGraphSupport) graphModel).getDiDiagram();
+    throw new IllegalArgumentException("graphModel: " + graphModel);
+  }
+
+  public void addElement(Object diagram, Object element) {
+    if (!(diagram instanceof ArgoDiagram))
+      throw new IllegalArgumentException("diagram: " + diagram);
+    if (!(element instanceof Fig)) throw new IllegalArgumentException("fig: " + element);
+    ((ArgoDiagram) diagram).add((Fig) element);
+  }
+
+  private final Map noStyleProperties = new HashMap();
+
+  public Object createRenderingElement(Object diagram, Object model) {
+    GraphNodeRenderer rend = ((UMLDiagram) diagram).getLayer().getGraphNodeRenderer();
+    Object renderingElement = rend.getFigNodeFor(model, noStyleProperties);
+    return renderingElement;
+  }
 }

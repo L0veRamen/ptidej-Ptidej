@@ -7,139 +7,119 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.util.text.CharArrayCharSequence;
 import net.intensicode.idea.config.LanguageConfiguration;
 
+/** TODO: Describe this! */
+final class SimpleSyntaxLexer implements Lexer {
+  SimpleSyntaxLexer(
+      final LanguageConfiguration aLanguageConfiguration, final TokenFinder aTokenFinder) {
+    myLanguageConfiguration = aLanguageConfiguration;
+    myTokenFinder = aTokenFinder;
+  }
 
+  // From Lexer
 
-/**
- * TODO: Describe this!
- */
-final class SimpleSyntaxLexer implements Lexer
-{
-    SimpleSyntaxLexer( final LanguageConfiguration aLanguageConfiguration, final TokenFinder aTokenFinder )
-    {
-        myLanguageConfiguration = aLanguageConfiguration;
-        myTokenFinder = aTokenFinder;
-    }
+  public final void advance() {
+    updateTokenType(myTokenEnd);
+  }
 
-    // From Lexer
+  public final char[] getBuffer() {
+    return myBuffer;
+  }
 
-    public final void advance()
-    {
-        updateTokenType( myTokenEnd );
-    }
+  public final int getBufferEnd() {
+    return myEndOffset;
+  }
 
-    public final char[] getBuffer()
-    {
-        return myBuffer;
-    }
+  public final LexerPosition getCurrentPosition() {
+    throw new RuntimeException("NYI");
+  }
 
-    public final int getBufferEnd()
-    {
-        return myEndOffset;
-    }
+  public final int getState() {
+    return 0;
+  }
 
-    public final LexerPosition getCurrentPosition()
-    {
-        throw new RuntimeException( "NYI" );
-    }
+  public final int getTokenEnd() {
+    return Math.min(myEndOffset, myTokenEnd);
+  }
 
-    public final int getState()
-    {
-        return 0;
-    }
+  public final int getTokenStart() {
+    return Math.max(myStartOffset, myTokenStart);
+  }
 
-    public final int getTokenEnd()
-    {
-        return Math.min( myEndOffset, myTokenEnd );
-    }
+  public final IElementType getTokenType() {
+    return myTokenType;
+  }
 
-    public final int getTokenStart()
-    {
-        return Math.max( myStartOffset, myTokenStart );
-    }
+  public final void restore(final LexerPosition position) {
+    throw new RuntimeException("NYI");
+  }
 
-    public final IElementType getTokenType()
-    {
-        return myTokenType;
-    }
+  public final void start(char[] buffer) {
+    start(buffer, 0, buffer.length);
+  }
 
-    public final void restore( final LexerPosition position )
-    {
-        throw new RuntimeException( "NYI" );
-    }
+  public final void start(char[] buffer, int startOffset, int endOffset) {
+    start(buffer, startOffset, endOffset, 0);
+  }
 
-    public final void start( char[] buffer )
-    {
-        start( buffer, 0, buffer.length );
-    }
+  public final void start(char[] buffer, int startOffset, int endOffset, int initialState) {
+    if (buffer == null) buffer = new char[0];
+    if (startOffset < 0) startOffset = 0;
+    if (startOffset > buffer.length) startOffset = buffer.length;
+    if (endOffset < 0) endOffset = 0;
+    if (endOffset > buffer.length) endOffset = buffer.length;
+    if (startOffset > endOffset) endOffset = startOffset;
 
-    public final void start( char[] buffer, int startOffset, int endOffset )
-    {
-        start( buffer, startOffset, endOffset, 0 );
-    }
+    myCharSequence = new CharArrayCharSequence(buffer, 0, buffer.length);
 
-    public final void start( char[] buffer, int startOffset, int endOffset, int initialState )
-    {
-        if ( buffer == null ) buffer = new char[0];
-        if ( startOffset < 0 ) startOffset = 0;
-        if ( startOffset > buffer.length ) startOffset = buffer.length;
-        if ( endOffset < 0 ) endOffset = 0;
-        if ( endOffset > buffer.length ) endOffset = buffer.length;
-        if ( startOffset > endOffset ) endOffset = startOffset;
+    myBuffer = buffer;
+    myStartOffset = startOffset;
+    myEndOffset = endOffset;
 
-        myCharSequence = new CharArrayCharSequence( buffer, 0, buffer.length );
+    myTokenType = null;
+    myTokenStart = myTokenEnd = startOffset;
 
-        myBuffer = buffer;
-        myStartOffset = startOffset;
-        myEndOffset = endOffset;
+    advance();
+  }
 
-        myTokenType = null;
-        myTokenStart = myTokenEnd = startOffset;
+  // Test Interface
 
-        advance();
-    }
+  final CharSequence getTokenText() {
+    return myCharSequence.subSequence(myTokenStart, myTokenEnd);
+  }
 
-    // Test Interface
+  // Implementation
 
-    final CharSequence getTokenText()
-    {
-        return myCharSequence.subSequence( myTokenStart, myTokenEnd );
-    }
+  private final void updateTokenType(final int aStartOffset) {
+    myTokenStart = aStartOffset;
+    myTokenEnd = myEndOffset;
+    myTokenType = myTokenStart < myTokenEnd ? DEFAULT_TOKEN : null;
 
-    // Implementation
+    final RecognizedToken recognizedToken =
+        myTokenFinder.findClosest(myCharSequence, aStartOffset, myEndOffset);
+    if (recognizedToken == null) return;
 
-    private final void updateTokenType( final int aStartOffset )
-    {
-        myTokenStart = aStartOffset;
-        myTokenEnd = myEndOffset;
-        myTokenType = myTokenStart < myTokenEnd ? DEFAULT_TOKEN : null;
+    myTokenType = myLanguageConfiguration.getToken(recognizedToken.getTokenID());
+    myTokenStart = recognizedToken.getTokenStart();
+    myTokenEnd = recognizedToken.getTokenEnd();
+  }
 
-        final RecognizedToken recognizedToken = myTokenFinder.findClosest( myCharSequence, aStartOffset, myEndOffset );
-        if ( recognizedToken == null ) return;
+  private char[] myBuffer;
 
-        myTokenType = myLanguageConfiguration.getToken( recognizedToken.getTokenID() );
-        myTokenStart = recognizedToken.getTokenStart();
-        myTokenEnd = recognizedToken.getTokenEnd();
-    }
+  private int myStartOffset;
 
+  private int myEndOffset;
 
+  private int myTokenStart;
 
-    private char[] myBuffer;
+  private int myTokenEnd;
 
-    private int myStartOffset;
+  private IElementType myTokenType;
 
-    private int myEndOffset;
+  private final TokenFinder myTokenFinder;
 
-    private int myTokenStart;
+  private CharArrayCharSequence myCharSequence;
 
-    private int myTokenEnd;
+  private final LanguageConfiguration myLanguageConfiguration;
 
-    private IElementType myTokenType;
-
-    private final TokenFinder myTokenFinder;
-
-    private CharArrayCharSequence myCharSequence;
-
-    private final LanguageConfiguration myLanguageConfiguration;
-
-    private static final IElementType DEFAULT_TOKEN = new IElementType( "DEFAULT", Language.ANY );
+  private static final IElementType DEFAULT_TOKEN = new IElementType("DEFAULT", Language.ANY);
 }

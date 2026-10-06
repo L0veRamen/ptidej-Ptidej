@@ -9,13 +9,12 @@
 /* File choco.search.search.IValSelector.java, last modified by Francois 2 nov. 2003 15:03:47 */
 package choco.integer.search;
 
-/**
- * An interface for control objects that model a binary choice to an search value
- */
+/** An interface for control objects that model a binary choice to an search value */
 public interface IValSelector {
-	/**
-	 * A method selecting the search value used for the alternative
-	 * @return
-	 */
-	int getBestVal(choco.integer.var.IntDomainVar x);
+  /**
+   * A method selecting the search value used for the alternative
+   *
+   * @return
+   */
+  int getBestVal(choco.integer.var.IntDomainVar x);
 }

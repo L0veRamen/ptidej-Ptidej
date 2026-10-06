@@ -17,23 +17,22 @@ import ptidej.solver.java.domain.Entity;
 
 /**
  * @author Yann-Gaël Guéhéneuc
- * @since  2007/02/26
+ * @since 2007/02/26
  */
 public class NoGhostEntityConstraint extends UnaryConstraint {
 
-	public NoGhostEntityConstraint(
-			final String name,
-			final String command,
-			final Variable v0,
-			final int weight,
-			final IApproximations approximations) {
+  public NoGhostEntityConstraint(
+      final String name,
+      final String command,
+      final Variable v0,
+      final int weight,
+      final IApproximations approximations) {
 
-		super(name, command, v0, weight, approximations);
-	}
+    super(name, command, v0, weight, approximations);
+  }
 
-	@Override
-	protected boolean getPropagateCondition(Entity entity) {
-		return entity.isGhost();
-	}
-
+  @Override
+  protected boolean getPropagateCondition(Entity entity) {
+    return entity.isGhost();
+  }
 }

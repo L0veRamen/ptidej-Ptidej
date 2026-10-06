@@ -25,7 +25,6 @@
 package org.argouml.uml.cognitive.critics;
 
 import java.util.Iterator;
-
 import org.argouml.cognitive.Designer;
 import org.argouml.cognitive.Goal;
 import org.argouml.cognitive.critics.Critic;
@@ -33,52 +32,45 @@ import org.argouml.model.Model;
 import org.argouml.uml.cognitive.UMLDecision;
 
 /**
- * A critic to detect when a class can never have instances (of
- * itself of any subclasses).
+ * A critic to detect when a class can never have instances (of itself of any subclasses).
  *
  * @author jrobbins
  */
 public class CrUselessInterface extends CrUML {
 
-    /**
-     * The constructor.
-     */
-    public CrUselessInterface() {
-        setupHeadAndDesc();
-	addSupportedDecision(UMLDecision.INHERITANCE);
-	addSupportedGoal(Goal.getUnspecifiedGoal());
-	setKnowledgeTypes(Critic.KT_COMPLETENESS);
-	addTrigger("realization");
+  /** The constructor. */
+  public CrUselessInterface() {
+    setupHeadAndDesc();
+    addSupportedDecision(UMLDecision.INHERITANCE);
+    addSupportedGoal(Goal.getUnspecifiedGoal());
+    setKnowledgeTypes(Critic.KT_COMPLETENESS);
+    addTrigger("realization");
+  }
+
+  /**
+   * @see org.argouml.uml.cognitive.critics.CrUML#predicate2( java.lang.Object,
+   *     org.argouml.cognitive.Designer)
+   */
+  public boolean predicate2(Object dm, Designer dsgr) {
+    if (!Model.getFacade().isAInterface(dm)) {
+      return NO_PROBLEM;
     }
 
-    /**
-     * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(
-     * java.lang.Object, org.argouml.cognitive.Designer)
-     */
-    public boolean predicate2(Object dm, Designer dsgr) {
-	if (!Model.getFacade().isAInterface(dm)) {
-            return NO_PROBLEM;
-        }
-
-	if (!Model.getFacade().isPrimaryObject(dm)) {
-            return NO_PROBLEM;
-        }
-
-
-	Iterator iter =
-	    Model.getFacade().getSupplierDependencies(dm).iterator();
-
-	while (iter.hasNext()) {
-	    if (Model.getFacade().isRealize(iter.next())) {
-		return NO_PROBLEM;
-            }
-        }
-
-	return PROBLEM_FOUND;
+    if (!Model.getFacade().isPrimaryObject(dm)) {
+      return NO_PROBLEM;
     }
 
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -6586457111453473553L;
+    Iterator iter = Model.getFacade().getSupplierDependencies(dm).iterator();
+
+    while (iter.hasNext()) {
+      if (Model.getFacade().isRealize(iter.next())) {
+        return NO_PROBLEM;
+      }
+    }
+
+    return PROBLEM_FOUND;
+  }
+
+  /** The UID. */
+  private static final long serialVersionUID = -6586457111453473553L;
 } /* end class CrUselessInterface */

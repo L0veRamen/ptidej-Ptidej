@@ -27,24 +27,23 @@ package org.argouml.argoeclipse.internal.ui.actionSet;
 import org.argouml.argoeclipse.internal.ui.model.Actions;
 import org.argouml.i18n.Translator;
 
-
 /**
  * Select menu from Edit menu
+ *
  * @author Bogdan Pistol
  */
 public class Select extends PulldownMenu {
-    
-    public Select() {
-        super("Ar&go " + Translator.localize("menu.select")); //$NON-NLS-1$ //$NON-NLS-2$
-    }
 
-    protected void initMenu() {
-        addToMenu(getMenu(), Actions.getInstance().getActionSelectAll());
-        addSeparator(getMenu());
-        addToMenu(getMenu(), Actions.getInstance().getActionNavigateBack());
-        addToMenu(getMenu(), Actions.getInstance().getActionNavigateForward());
-        addSeparator(getMenu());
-        addToMenu(getMenu(), Actions.getInstance().getActionInvertSelection());
-    }
+  public Select() {
+    super("Ar&go " + Translator.localize("menu.select")); // $NON-NLS-1$ //$NON-NLS-2$
+  }
 
+  protected void initMenu() {
+    addToMenu(getMenu(), Actions.getInstance().getActionSelectAll());
+    addSeparator(getMenu());
+    addToMenu(getMenu(), Actions.getInstance().getActionNavigateBack());
+    addToMenu(getMenu(), Actions.getInstance().getActionNavigateForward());
+    addSeparator(getMenu());
+    addToMenu(getMenu(), Actions.getInstance().getActionInvertSelection());
+  }
 }

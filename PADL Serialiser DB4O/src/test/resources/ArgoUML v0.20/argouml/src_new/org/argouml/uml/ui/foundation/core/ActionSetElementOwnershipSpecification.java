@@ -25,11 +25,11 @@
 package org.argouml.uml.ui.foundation.core;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLAction;
 import org.argouml.uml.ui.UMLCheckBox2;
+
 /**
  * @since Oct 12, 2002
  * @author jaap.branderhorst@xs4all.nl
@@ -37,37 +37,33 @@ import org.argouml.uml.ui.UMLCheckBox2;
  */
 public class ActionSetElementOwnershipSpecification extends UMLAction {
 
-    private static final ActionSetElementOwnershipSpecification SINGLETON =
-        new ActionSetElementOwnershipSpecification();
+  private static final ActionSetElementOwnershipSpecification SINGLETON =
+      new ActionSetElementOwnershipSpecification();
 
-    /**
-     * Constructor for ActionSetElementOwnershipSpecification.
-     */
-    protected ActionSetElementOwnershipSpecification() {
-        super(Translator.localize("Set"), true, NO_ICON);
+  /** Constructor for ActionSetElementOwnershipSpecification. */
+  protected ActionSetElementOwnershipSpecification() {
+    super(Translator.localize("Set"), true, NO_ICON);
+  }
+
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    if (e.getSource() instanceof UMLCheckBox2) {
+      UMLCheckBox2 source = (UMLCheckBox2) e.getSource();
+      Object target = source.getTarget();
+      if (Model.getFacade().isAModelElement(target)) {
+        Object m = /*(MModelElement)*/ target;
+        Model.getCoreHelper().setSpecification(m, !Model.getFacade().isSpecification(m));
+      }
     }
+  }
 
-    /**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        if (e.getSource() instanceof UMLCheckBox2) {
-            UMLCheckBox2 source = (UMLCheckBox2) e.getSource();
-            Object target = source.getTarget();
-            if (Model.getFacade().isAModelElement(target)) {
-                Object m = /*(MModelElement)*/ target;
-                Model.getCoreHelper().setSpecification(m,
-                        !Model.getFacade().isSpecification(m));
-            }
-        }
-    }
-
-    /**
-     * @return Returns the SINGLETON.
-     */
-    public static ActionSetElementOwnershipSpecification getInstance() {
-        return SINGLETON;
-    }
-
+  /**
+   * @return Returns the SINGLETON.
+   */
+  public static ActionSetElementOwnershipSpecification getInstance() {
+    return SINGLETON;
+  }
 }

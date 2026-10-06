@@ -24,80 +24,78 @@
 
 package org.argouml.model;
 
-/**
- * The interface for the factory for ModelManagement.
- */
+/** The interface for the factory for ModelManagement. */
 public interface ModelManagementFactory extends Factory {
-    /**
-     * Create an empty but initialized instance of a UML Model.
-     *
-     * @return an initialized UML Model instance.
-     */
-    Object createModel();
+  /**
+   * Create an empty but initialized instance of a UML Model.
+   *
+   * @return an initialized UML Model instance.
+   */
+  Object createModel();
 
-    /**
-     * Sets the root model of the project.
-     *
-     * @param rootModel the new root model.
-     */
-    void setRootModel(Object rootModel);
+  /**
+   * Sets the root model of the project.
+   *
+   * @param rootModel the new root model.
+   */
+  void setRootModel(Object rootModel);
 
-    /**
-     * Gets the root model of the project.
-     *
-     * @return the current root model.
-     */
-    Object getRootModel();
+  /**
+   * Gets the root model of the project.
+   *
+   * @return the current root model.
+   */
+  Object getRootModel();
 
-    /**
-     * Create an empty but initialized instance of a UML ElementImport.
-     *
-     * @return an initialized UML ElementImport instance.
-     */
-    Object createElementImport();
+  /**
+   * Create an empty but initialized instance of a UML ElementImport.
+   *
+   * @return an initialized UML ElementImport instance.
+   */
+  Object createElementImport();
 
-    /**
-     * Build a ElementImport for the given package and modelelement.
-     * The visibility, alias and isSpecification are not filled in.
-     * 
-     * @param pack the given package
-     * @param me the given modelelement
-     * @return the newly created ElementImport
-     */
-    Object buildElementImport(Object pack, Object me);
+  /**
+   * Build a ElementImport for the given package and modelelement. The visibility, alias and
+   * isSpecification are not filled in.
+   *
+   * @param pack the given package
+   * @param me the given modelelement
+   * @return the newly created ElementImport
+   */
+  Object buildElementImport(Object pack, Object me);
 
-    /**
-     * Create an empty but initialized instance of a UML Package.
-     *
-     * @return an initialized UML Package instance.
-     */
-    Object createPackage();
+  /**
+   * Create an empty but initialized instance of a UML Package.
+   *
+   * @return an initialized UML Package instance.
+   */
+  Object createPackage();
 
-    /**
-     * Build an empty but initialized instance of a UML Package
-     * with a given name, and set it's UUID, if it doesn't exist.
-     *
-     * @param name is the given name
-     * @param uuid is the UUID.
-     * @return an initialized UML Package instance.
-     */
-    Object buildPackage(String name, String uuid);
+  /**
+   * Build an empty but initialized instance of a UML Package with a given name, and set it's UUID,
+   * if it doesn't exist.
+   *
+   * @param name is the given name
+   * @param uuid is the UUID.
+   * @return an initialized UML Package instance.
+   */
+  Object buildPackage(String name, String uuid);
 
-    /**
-     * Create an empty but initialized instance of a UML Subsystem.
-     *
-     * @return an initialized UML Subsystem instance.
-     */
-    Object createSubsystem();
+  /**
+   * Create an empty but initialized instance of a UML Subsystem.
+   *
+   * @return an initialized UML Subsystem instance.
+   */
+  Object createSubsystem();
 
-    /**
-     * Copies a package, but not any elements within it. This does however
-     * not mean the package will be empty, since eg it or it's parents may
-     * reference a stereotype within it causing that to be copied into it.
-     *
-     * @param source is the package to copy.
-     * @param ns is the namespace to put the copy in.
-     * @return the newly created package.
-     */
-    Object copyPackage(Object source, Object ns);
+  /**
+   * Copies a package, but not any elements within it. This does however not mean the package will
+   * be empty, since eg it or it's parents may reference a stereotype within it causing that to be
+   * copied into it.
+   *
+   * @param source is the package to copy.
+   * @param ns is the namespace to put the copy in.
+   * @return the newly created package.
+   */
+  Object copyPackage(Object source, Object ns);
 }

@@ -25,48 +25,38 @@
 package org.argouml.uml.ui.behavior.collaborations;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.AbstractActionRemoveElement;
 
 /**
  * Action to remove a base from a classifierrole.
+ *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 25, 2003
  */
-public class ActionRemoveClassifierRoleBase
-    extends AbstractActionRemoveElement {
+public class ActionRemoveClassifierRoleBase extends AbstractActionRemoveElement {
 
-    private static final ActionRemoveClassifierRoleBase SINGLETON =
-	new ActionRemoveClassifierRoleBase();
+  private static final ActionRemoveClassifierRoleBase SINGLETON =
+      new ActionRemoveClassifierRoleBase();
 
-    /**
-     * Constructor for ActionRemoveClassifierRoleBase.
-     */
-    protected ActionRemoveClassifierRoleBase() {
-        super(Translator.localize("menu.popup.remove"));
-    }
+  /** Constructor for ActionRemoveClassifierRoleBase. */
+  protected ActionRemoveClassifierRoleBase() {
+    super(Translator.localize("menu.popup.remove"));
+  }
 
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    Model.getCollaborationsHelper().removeBase(getTarget(), getObjectToRemove());
+  }
 
-
-    /**
-     * @see
-     * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        Model.getCollaborationsHelper()
-        	.removeBase(getTarget(), getObjectToRemove());
-    }
-
-
-
-    /**
-     * @return Returns the sINGLETON.
-     */
-    public static ActionRemoveClassifierRoleBase getInstance() {
-        return SINGLETON;
-    }
-
+  /**
+   * @return Returns the sINGLETON.
+   */
+  public static ActionRemoveClassifierRoleBase getInstance() {
+    return SINGLETON;
+  }
 }

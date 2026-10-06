@@ -26,32 +26,26 @@ package org.argouml.util.logging;
 
 import org.apache.log4j.Logger;
 
-/**
- * Last chance exception handler for AWT thread to make sure things get logged.
- */
+/** Last chance exception handler for AWT thread to make sure things get logged. */
 public class AwtExceptionHandler {
-    
-    private static final Logger LOG = 
-        Logger.getLogger(AwtExceptionHandler.class);
 
-    /**
-     * DO NOT CHANGE THIS METHOD SIGNATURE.
-     * @param t the uncaught exception
-     */
-    public void handle(Throwable t) {
-        try {
-            LOG.error("Last chance error handler in AWT thread caught", t);
-        } catch (Throwable t2) {
-            // Ignore any nested exceptions. We don't want infinite loop.
-        }
-    }
+  private static final Logger LOG = Logger.getLogger(AwtExceptionHandler.class);
 
-    /**
-     * Register our exception handler with AWT.
-     */
-    public static void registerExceptionHandler() {
-        System.setProperty("sun.awt.exception.handler",
-                AwtExceptionHandler.class.getName());
+  /**
+   * DO NOT CHANGE THIS METHOD SIGNATURE.
+   *
+   * @param t the uncaught exception
+   */
+  public void handle(Throwable t) {
+    try {
+      LOG.error("Last chance error handler in AWT thread caught", t);
+    } catch (Throwable t2) {
+      // Ignore any nested exceptions. We don't want infinite loop.
     }
+  }
+
+  /** Register our exception handler with AWT. */
+  public static void registerExceptionHandler() {
+    System.setProperty("sun.awt.exception.handler", AwtExceptionHandler.class.getName());
+  }
 }
-

@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xerces" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -58,106 +58,93 @@
 package org.apache.xerces.validators.dtd;
 
 /**
- *
  * @version
  */
-public abstract class CMNode
-{
-    // -------------------------------------------------------------------
-    //  Constructors
-    // -------------------------------------------------------------------
-    CMNode(int type) throws CMException
-    {
-        fType = type;
+public abstract class CMNode {
+  // -------------------------------------------------------------------
+  //  Constructors
+  // -------------------------------------------------------------------
+  CMNode(int type) throws CMException {
+    fType = type;
+  }
+
+  // -------------------------------------------------------------------
+  //  Package, abstract methods
+  // -------------------------------------------------------------------
+  abstract boolean isNullable() throws CMException;
+
+  // -------------------------------------------------------------------
+  //  Package final methods
+  // -------------------------------------------------------------------
+  final int type() {
+    return fType;
+  }
+
+  final CMStateSet firstPos() throws CMException {
+    if (fFirstPos == null) {
+      fFirstPos = new CMStateSet(fMaxStates);
+      calcFirstPos(fFirstPos);
     }
+    return fFirstPos;
+  }
 
-
-    // -------------------------------------------------------------------
-    //  Package, abstract methods
-    // -------------------------------------------------------------------
-    abstract boolean isNullable() throws CMException;
-
-
-    // -------------------------------------------------------------------
-    //  Package final methods
-    // -------------------------------------------------------------------
-    final int type()
-    {
-        return fType;
+  final CMStateSet lastPos() throws CMException {
+    if (fLastPos == null) {
+      fLastPos = new CMStateSet(fMaxStates);
+      calcLastPos(fLastPos);
     }
+    return fLastPos;
+  }
 
-    final CMStateSet firstPos() throws CMException
-    {
-        if (fFirstPos == null)
-        {
-            fFirstPos = new CMStateSet(fMaxStates);
-            calcFirstPos(fFirstPos);
-        }
-        return fFirstPos;
-    }
+  final void setFollowPos(CMStateSet setToAdopt) {
+    fFollowPos = setToAdopt;
+  }
 
-    final CMStateSet lastPos() throws CMException
-    {
-        if (fLastPos == null)
-        {
-            fLastPos = new CMStateSet(fMaxStates);
-            calcLastPos(fLastPos);
-        }
-        return fLastPos;
-    }
+  final void setMaxStates(int maxStates) {
+    fMaxStates = maxStates;
+  }
 
-    final void setFollowPos(CMStateSet setToAdopt)
-    {
-        fFollowPos = setToAdopt;
-    }
+  // -------------------------------------------------------------------
+  //  Protected, abstract methods
+  // -------------------------------------------------------------------
+  protected abstract void calcFirstPos(CMStateSet toSet) throws CMException;
 
-    final void setMaxStates(int maxStates)
-    {
-        fMaxStates = maxStates;
-    }
+  protected abstract void calcLastPos(CMStateSet toSet) throws CMException;
 
-
-    // -------------------------------------------------------------------
-    //  Protected, abstract methods
-    // -------------------------------------------------------------------
-    protected abstract void calcFirstPos(CMStateSet toSet) throws CMException;
-
-    protected abstract void calcLastPos(CMStateSet toSet) throws CMException;
-
-
-    // -------------------------------------------------------------------
-    //  Private data members
-    //
-    //  fType
-    //      The type of node. This indicates whether its a leaf or an
-    //      operation. Though we also do derived classes for these types,
-    //      it is too expensive to use runtime typing to find this out.
-    //      This is one of the ContentSpecNode.NODE_XXX types.
-    //
-    //  fFirstPos
-    //      The set of NFA states that represent the entry states of this
-    //      node in the DFA.
-    //
-    //  fFollowPos
-    //      The set of NFA states that can be gotten to from from this
-    //      node in the DFA.
-    //
-    //  fLastPos
-    //      The set of NFA states that represent the final states of this
-    //      node in the DFA.
-    //
-    //  fMaxStates
-    //      The maximum number of states that the NFA has, which means the
-    //      max number of NFA states that have to be traced in the state
-    //      sets during the building of the DFA. Its unfortunate that it
-    //      has to be stored redundantly, but we need to fault in the
-    //      state set members and they have to be sized to this size. We
-    //      init to to -1 so it will cause an error if its used without
-    //      being initialized.
-    // -------------------------------------------------------------------
-    private int         fType;
-    private CMStateSet  fFirstPos   = null;
-    private CMStateSet  fFollowPos  = null;
-    private CMStateSet  fLastPos    = null;
-    private int         fMaxStates  = -1;
-};
+  // -------------------------------------------------------------------
+  //  Private data members
+  //
+  //  fType
+  //      The type of node. This indicates whether its a leaf or an
+  //      operation. Though we also do derived classes for these types,
+  //      it is too expensive to use runtime typing to find this out.
+  //      This is one of the ContentSpecNode.NODE_XXX types.
+  //
+  //  fFirstPos
+  //      The set of NFA states that represent the entry states of this
+  //      node in the DFA.
+  //
+  //  fFollowPos
+  //      The set of NFA states that can be gotten to from from this
+  //      node in the DFA.
+  //
+  //  fLastPos
+  //      The set of NFA states that represent the final states of this
+  //      node in the DFA.
+  //
+  //  fMaxStates
+  //      The maximum number of states that the NFA has, which means the
+  //      max number of NFA states that have to be traced in the state
+  //      sets during the building of the DFA. Its unfortunate that it
+  //      has to be stored redundantly, but we need to fault in the
+  //      state set members and they have to be sized to this size. We
+  //      init to to -1 so it will cause an error if its used without
+  //      being initialized.
+  // -------------------------------------------------------------------
+  private int fType;
+  private CMStateSet fFirstPos = null;
+  private CMStateSet fFollowPos = null;
+  private CMStateSet fLastPos = null;
+  private int fMaxStates = -1;
+}
+;

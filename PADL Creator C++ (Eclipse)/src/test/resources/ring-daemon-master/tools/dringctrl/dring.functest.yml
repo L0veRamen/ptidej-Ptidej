@@ -1,152 +1,152 @@
 ---
 accounts:
-- alias: 100
-  codecs: 0/3/8/9/110/111/112/
-  credential:
-  - Account.password: password
-    Account.realm: '*'
-    Account.username: 100
-  displayName:
-  dtmfType: overrtp
-  enable: true
-  hostname: 127.0.0.1:5062
-  id: Account:1334024061
-  interface: default
-  mailbox:
-  port: 5060
-  publishAddr: 0.0.0.0
-  publishPort: 5060
-  registrationexpire: 600
-  ringtoneEnabled: true
-  ringtonePath: /usr/share/ring/ringtones/default.wav
-  sameasLocal: true
-  serviceRoute:
-  srtp:
-    enable: false
-    keyExchange:
-    rtpFallback: false
-  stunEnabled: false
-  stunServer: stun.sflphone.org
-  tls:
-    calist:
-    certificate:
-    ciphers:
-    enable: false
-    method: TLSv1
-    password:
-    privateKey:
-    requireCertif: true
-    server:
-    timeout: 2
-    tlsPort: 5061
-    verifyClient: true
-    verifyServer: true
-  type: SIP
-  updateContact: false
-  username: 100
-  zrtp:
-    displaySas: true
-    displaySasOnce: false
-    helloHashEnabled: true
-    notSuppWarning: true
-- alias: 200
-  codecs: 0/3/8/9/110/111/112/
-  credential:
-  - Account.password: password
-    Account.realm: '*'
-    Account.username: 200
-  displayName:
-  dtmfType: overrtp
-  enable: true
-  hostname: 127.0.0.1:5062
-  id: Account:1334024356
-  interface: default
-  mailbox:
-  port: 5060
-  publishAddr: 0.0.0.0
-  publishPort: 5060
-  registrationexpire: 600
-  ringtoneEnabled: true
-  ringtonePath: /usr/share/ring/ringtones/default.wav
-  sameasLocal: true
-  serviceRoute:
-  srtp:
-    enable: false
-    keyExchange:
-    rtpFallback: false
-  stunEnabled: false
-  stunServer: stun.sflphone.org
-  tls:
-    calist:
-    certificate:
-    ciphers:
-    enable: false
-    method: TLSv1
-    password:
-    privateKey:
-    requireCertif: true
-    server:
-    timeout: 2
-    tlsPort: 5061
-    verifyClient: true
-    verifyServer: true
-  type: SIP
-  updateContact: false
-  username: 200
-  zrtp:
-    displaySas: true
-    displaySasOnce: false
-    helloHashEnabled: true
-    notSuppWarning: true
-- alias:
-  codecs: 0/3/8/9/110/111/112/
-  credential:
-  - Account.password:
-    Account.realm: '*'
-    Account.username:
-  displayName:
-  dtmfType: overrtp
-  enable: true
-  hostname:
-  id: IP2IP
-  interface: default
-  mailbox:
-  port: 5060
-  publishAddr:
-  publishPort: 5060
-  registrationexpire: 600
-  ringtoneEnabled: true
-  ringtonePath: /usr/share/ring/ringtones/default.wav
-  sameasLocal: true
-  serviceRoute:
-  srtp:
-    enable: false
-    keyExchange: sdes
-    rtpFallback: false
-  stunEnabled: false
-  stunServer: stun.sflphone.org
-  tls:
-    calist:
-    certificate:
-    ciphers:
-    enable: false
-    method: TLSv1
-    password:
-    privateKey:
-    requireCertif: true
-    server:
-    timeout: 2
-    tlsPort: 5061
-    verifyClient: true
-    verifyServer: true
-  type: SIP
-  updateContact: false
-  username:
-  zrtp:
-    displaySas: true
-    displaySasOnce: false
-    helloHashEnabled: true
-    notSuppWarning: true
+  - alias: 100
+    codecs: 0/3/8/9/110/111/112/
+    credential:
+      - Account.password: password
+        Account.realm: '*'
+        Account.username: 100
+    displayName:
+    dtmfType: overrtp
+    enable: true
+    hostname: 127.0.0.1:5062
+    id: Account:1334024061
+    interface: default
+    mailbox:
+    port: 5060
+    publishAddr: 0.0.0.0
+    publishPort: 5060
+    registrationexpire: 600
+    ringtoneEnabled: true
+    ringtonePath: /usr/share/ring/ringtones/default.wav
+    sameasLocal: true
+    serviceRoute:
+    srtp:
+      enable: false
+      keyExchange:
+      rtpFallback: false
+    stunEnabled: false
+    stunServer: stun.sflphone.org
+    tls:
+      calist:
+      certificate:
+      ciphers:
+      enable: false
+      method: TLSv1
+      password:
+      privateKey:
+      requireCertif: true
+      server:
+      timeout: 2
+      tlsPort: 5061
+      verifyClient: true
+      verifyServer: true
+    type: SIP
+    updateContact: false
+    username: 100
+    zrtp:
+      displaySas: true
+      displaySasOnce: false
+      helloHashEnabled: true
+      notSuppWarning: true
+  - alias: 200
+    codecs: 0/3/8/9/110/111/112/
+    credential:
+      - Account.password: password
+        Account.realm: '*'
+        Account.username: 200
+    displayName:
+    dtmfType: overrtp
+    enable: true
+    hostname: 127.0.0.1:5062
+    id: Account:1334024356
+    interface: default
+    mailbox:
+    port: 5060
+    publishAddr: 0.0.0.0
+    publishPort: 5060
+    registrationexpire: 600
+    ringtoneEnabled: true
+    ringtonePath: /usr/share/ring/ringtones/default.wav
+    sameasLocal: true
+    serviceRoute:
+    srtp:
+      enable: false
+      keyExchange:
+      rtpFallback: false
+    stunEnabled: false
+    stunServer: stun.sflphone.org
+    tls:
+      calist:
+      certificate:
+      ciphers:
+      enable: false
+      method: TLSv1
+      password:
+      privateKey:
+      requireCertif: true
+      server:
+      timeout: 2
+      tlsPort: 5061
+      verifyClient: true
+      verifyServer: true
+    type: SIP
+    updateContact: false
+    username: 200
+    zrtp:
+      displaySas: true
+      displaySasOnce: false
+      helloHashEnabled: true
+      notSuppWarning: true
+  - alias:
+    codecs: 0/3/8/9/110/111/112/
+    credential:
+      - Account.password:
+        Account.realm: '*'
+        Account.username:
+    displayName:
+    dtmfType: overrtp
+    enable: true
+    hostname:
+    id: IP2IP
+    interface: default
+    mailbox:
+    port: 5060
+    publishAddr:
+    publishPort: 5060
+    registrationexpire: 600
+    ringtoneEnabled: true
+    ringtonePath: /usr/share/ring/ringtones/default.wav
+    sameasLocal: true
+    serviceRoute:
+    srtp:
+      enable: false
+      keyExchange: sdes
+      rtpFallback: false
+    stunEnabled: false
+    stunServer: stun.sflphone.org
+    tls:
+      calist:
+      certificate:
+      ciphers:
+      enable: false
+      method: TLSv1
+      password:
+      privateKey:
+      requireCertif: true
+      server:
+      timeout: 2
+      tlsPort: 5061
+      verifyClient: true
+      verifyServer: true
+    type: SIP
+    updateContact: false
+    username:
+    zrtp:
+      displaySas: true
+      displaySasOnce: false
+      helloHashEnabled: true
+      notSuppWarning: true
 preferences:
   historyLimit: 30
   historyMaxCalls: 20

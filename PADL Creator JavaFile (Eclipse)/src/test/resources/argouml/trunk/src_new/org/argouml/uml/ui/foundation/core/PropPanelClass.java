@@ -30,62 +30,43 @@ import org.argouml.uml.ui.ActionNavigateNamespace;
 import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
 import org.argouml.util.ConfigLoader;
 
-/**
- * The properties panel for a Class.
- */
+/** The properties panel for a Class. */
 public class PropPanelClass extends PropPanelClassifier {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = -8288739384387629966L;
+  /** The serial version. */
+  private static final long serialVersionUID = -8288739384387629966L;
 
-    /**
-     * Construct a property panel for UML Class elements.
-     */
-    public PropPanelClass() {
-        super("Class",
-            lookupIcon("Class"),
-            ConfigLoader.getTabPropsOrientation());
+  /** Construct a property panel for UML Class elements. */
+  public PropPanelClass() {
+    super("Class", lookupIcon("Class"), ConfigLoader.getTabPropsOrientation());
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.namespace"),
-                getNamespaceSelector());
-        getModifiersPanel().add(new UMLClassActiveCheckBox());
-        add(getModifiersPanel());
-        add(getNamespaceVisibilityPanel());
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.namespace"), getNamespaceSelector());
+    getModifiersPanel().add(new UMLClassActiveCheckBox());
+    add(getModifiersPanel());
+    add(getNamespaceVisibilityPanel());
 
-        addSeparator();
+    addSeparator();
 
-        addField(Translator.localize("label.client-dependencies"),
-                getClientDependencyScroll());
-        addField(Translator.localize("label.supplier-dependencies"),
-                getSupplierDependencyScroll());
-        addField(Translator.localize("label.generalizations"),
-                getGeneralizationScroll());
-        addField(Translator.localize("label.specializations"),
-                getSpecializationScroll());
+    addField(Translator.localize("label.client-dependencies"), getClientDependencyScroll());
+    addField(Translator.localize("label.supplier-dependencies"), getSupplierDependencyScroll());
+    addField(Translator.localize("label.generalizations"), getGeneralizationScroll());
+    addField(Translator.localize("label.specializations"), getSpecializationScroll());
 
-        addSeparator();
+    addSeparator();
 
-        addField(Translator.localize("label.attributes"),
-                getAttributeScroll());
-        addField(Translator.localize("label.association-ends"),
-                getAssociationEndScroll());
-        addField(Translator.localize("label.operations"),
-                getOperationScroll());
-        addField(Translator.localize("label.owned-elements"),
-                getOwnedElementsScroll());
+    addField(Translator.localize("label.attributes"), getAttributeScroll());
+    addField(Translator.localize("label.association-ends"), getAssociationEndScroll());
+    addField(Translator.localize("label.operations"), getOperationScroll());
+    addField(Translator.localize("label.owned-elements"), getOwnedElementsScroll());
 
-        addAction(new ActionNavigateNamespace());
-        addAction(TargetManager.getInstance().getAddAttributeAction());
-        addAction(TargetManager.getInstance().getAddOperationAction());
-        addAction(getActionNewReception());
-        addAction(new ActionNewInnerClass());
-        addAction(new ActionNewClass());
-        addAction(new ActionNewStereotype());
-        addAction(getDeleteAction());
-    }
-
+    addAction(new ActionNavigateNamespace());
+    addAction(TargetManager.getInstance().getAddAttributeAction());
+    addAction(TargetManager.getInstance().getAddOperationAction());
+    addAction(getActionNewReception());
+    addAction(new ActionNewInnerClass());
+    addAction(new ActionNewClass());
+    addAction(new ActionNewStereotype());
+    addAction(getDeleteAction());
+  }
 } /* end class PropPanelClass */

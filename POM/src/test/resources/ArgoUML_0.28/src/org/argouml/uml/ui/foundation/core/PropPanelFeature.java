@@ -26,7 +26,6 @@ package org.argouml.uml.ui.foundation.core;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
-
 import org.argouml.i18n.Translator;
 
 /**
@@ -37,64 +36,61 @@ import org.argouml.i18n.Translator;
  */
 public abstract class PropPanelFeature extends PropPanelModelElement {
 
-    private UMLFeatureOwnerScopeCheckBox ownerScopeCheckbox;
+  private UMLFeatureOwnerScopeCheckBox ownerScopeCheckbox;
 
-    private JPanel ownerScroll;
+  private JPanel ownerScroll;
 
-    private static UMLFeatureOwnerListModel ownerListModel;
+  private static UMLFeatureOwnerListModel ownerListModel;
 
-    private JPanel visibilityPanel;
+  private JPanel visibilityPanel;
 
-    /**
-     * Construct a property panel for a Feature with the given name and icon.
-     * 
-     * @param name name of property which contains string to use for property
-     *                panel name. This will be localized by the super
-     *                constructor.
-     * @param icon icon
-     */
-    protected PropPanelFeature(String name, ImageIcon icon) {
-        super(name, icon);
+  /**
+   * Construct a property panel for a Feature with the given name and icon.
+   *
+   * @param name name of property which contains string to use for property panel name. This will be
+   *     localized by the super constructor.
+   * @param icon icon
+   */
+  protected PropPanelFeature(String name, ImageIcon icon) {
+    super(name, icon);
+  }
+
+  /**
+   * Returns the ownerScroll.
+   *
+   * @return JScrollPane
+   */
+  public JPanel getOwnerScroll() {
+    if (ownerScroll == null) {
+      if (ownerListModel == null) {
+        ownerListModel = new UMLFeatureOwnerListModel();
+      }
+      ownerScroll = getSingleRowScroll(ownerListModel);
     }
-    
+    return ownerScroll;
+  }
 
-    /**
-     * Returns the ownerScroll.
-     *
-     * @return JScrollPane
-     */
-    public JPanel getOwnerScroll() {
-        if (ownerScroll == null) {
-            if (ownerListModel == null) {
-                ownerListModel = new UMLFeatureOwnerListModel();
-            }
-            ownerScroll = getSingleRowScroll(ownerListModel);
-        }
-        return ownerScroll;
+  /**
+   * Returns the ownerScopeCheckbox.
+   *
+   * @return UMLFeatureOwnerScopeCheckBox
+   */
+  public UMLFeatureOwnerScopeCheckBox getOwnerScopeCheckbox() {
+    if (ownerScopeCheckbox == null) {
+      ownerScopeCheckbox = new UMLFeatureOwnerScopeCheckBox();
     }
+    return ownerScopeCheckbox;
+  }
 
-    /**
-     * Returns the ownerScopeCheckbox.
-     *
-     * @return UMLFeatureOwnerScopeCheckBox
-     */
-    public UMLFeatureOwnerScopeCheckBox getOwnerScopeCheckbox() {
-        if (ownerScopeCheckbox == null) {
-            ownerScopeCheckbox = new UMLFeatureOwnerScopeCheckBox();
-        }
-        return ownerScopeCheckbox;
+  /**
+   * @return the panel for the visibility
+   */
+  protected JPanel getVisibilityPanel() {
+    if (visibilityPanel == null) {
+      visibilityPanel =
+          new UMLModelElementVisibilityRadioButtonPanel(
+              Translator.localize("label.visibility"), true);
     }
-
-    /**
-     * @return the panel for the visibility
-     */
-    protected JPanel getVisibilityPanel() {
-        if (visibilityPanel == null) {
-            visibilityPanel =
-                new UMLModelElementVisibilityRadioButtonPanel(
-                    Translator.localize("label.visibility"), true);
-        }
-        return visibilityPanel;
-    }
-
+    return visibilityPanel;
+  }
 }

@@ -14,17 +14,17 @@ import org.jhotdraw.contrib.Desktop;
 import org.jhotdraw.contrib.SplitPaneDrawApplication;
 
 /**
- * @author  Wolfram Kaiser <mrfloppy@sourceforge.net>
+ * @author Wolfram Kaiser <mrfloppy@sourceforge.net>
  * @version <$CURRENT_VERSION$>
  */
 public class MiniMapApplication extends SplitPaneDrawApplication {
 
-	protected Desktop createDesktop() {
-		return new MiniMapDesktop();
-	}
+  protected Desktop createDesktop() {
+    return new MiniMapDesktop();
+  }
 
-	public static void main(String[] args) {
-		MiniMapApplication window = new MiniMapApplication();
-		window.open();
-	}
+  public static void main(String[] args) {
+    MiniMapApplication window = new MiniMapApplication();
+    window.open();
+  }
 }

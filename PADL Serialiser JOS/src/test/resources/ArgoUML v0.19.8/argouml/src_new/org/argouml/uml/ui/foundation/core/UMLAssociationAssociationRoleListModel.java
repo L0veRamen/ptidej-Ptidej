@@ -28,34 +28,30 @@ import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
 /**
- *
  * @author jaap.branderhorst@xs4all.nl
  * @since Jan 4, 2003
  */
-public class UMLAssociationAssociationRoleListModel
-    extends UMLModelElementListModel2 {
+public class UMLAssociationAssociationRoleListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLAssociationAssociationRoleListModel.
-     */
-    public UMLAssociationAssociationRoleListModel() {
-        super("associationRole");
-    }
+  /** Constructor for UMLAssociationAssociationRoleListModel. */
+  public UMLAssociationAssociationRoleListModel() {
+    super("associationRole");
+  }
 
-     /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (getTarget() != null) {
-            setAllElements(Model.getFacade().getAssociationRoles(getTarget()));
-        }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (getTarget() != null) {
+      setAllElements(Model.getFacade().getAssociationRoles(getTarget()));
     }
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ o) {
-        return Model.getFacade().isAAssociationRole(o)
-            && Model.getFacade().getAssociationRoles(getTarget()).contains(o);
-    }
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ o) {
+    return Model.getFacade().isAAssociationRole(o)
+        && Model.getFacade().getAssociationRoles(getTarget()).contains(o);
+  }
 }

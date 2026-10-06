@@ -27,120 +27,97 @@ package org.argouml.uml.notation;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
-
 import org.argouml.model.Model;
 
 /**
- * A class that implements this abstract class manages a text
- * shown on a diagram. This means it is able to generate
- * text that represents one or more UML objects.
- * And when the user has edited this text, the model may be adapted
- * by parsing the text.
- * Additionally, a help text for the parsing is provided,
- * so that the user knows the syntax.
- * 
+ * A class that implements this abstract class manages a text shown on a diagram. This means it is
+ * able to generate text that represents one or more UML objects. And when the user has edited this
+ * text, the model may be adapted by parsing the text. Additionally, a help text for the parsing is
+ * provided, so that the user knows the syntax.
+ *
  * @author mvw@tigris.org
  */
 public abstract class NotationProvider {
 
-    /**
-     * @return a i18 key that represents a help string
-     *         giving an explanation to the user of the syntax
-     */
-    public abstract String getParsingHelp();
+  /**
+   * @return a i18 key that represents a help string giving an explanation to the user of the syntax
+   */
+  public abstract String getParsingHelp();
 
-    
-    /**
-     * Utility function to determine the presence of a key. 
-     * The default is false.
-     * 
-     * @param key the string for the key
-     * @param map the hashmap to check for the presence 
-     * and value of the key
-     * @return true if the value for the key is true, otherwise false
-     */
-    public static boolean isValue(String key, HashMap map) {
-        if (map == null) return false;
-        Object o = map.get(key);
-        if (!(o instanceof Boolean)) {
-            return false;
-        }
-        return ((Boolean) o).booleanValue();
+  /**
+   * Utility function to determine the presence of a key. The default is false.
+   *
+   * @param key the string for the key
+   * @param map the hashmap to check for the presence and value of the key
+   * @return true if the value for the key is true, otherwise false
+   */
+  public static boolean isValue(String key, HashMap map) {
+    if (map == null) return false;
+    Object o = map.get(key);
+    if (!(o instanceof Boolean)) {
+      return false;
     }
+    return ((Boolean) o).booleanValue();
+  }
 
-    /**
-     * Parses the given text, and adapts the modelElement and
-     * maybe related elements accordingly.
-     * 
-     * @param modelElement the modelelement to adapt
-     * @param text the string given by the user to be parsed
-     * to adapt the model
-     */
-    public abstract void parse(Object modelElement, String text);
+  /**
+   * Parses the given text, and adapts the modelElement and maybe related elements accordingly.
+   *
+   * @param modelElement the modelelement to adapt
+   * @param text the string given by the user to be parsed to adapt the model
+   */
+  public abstract void parse(Object modelElement, String text);
 
-    /**
-     * Generates a string representation for the given model element.
-     * 
-     * @param modelElement the base UML modelelement
-     * @param args arguments that may determine the notation
-     * @return the string written in the correct notation
-     */
-    public abstract String toString(Object modelElement, HashMap args);
-    
-    /**
-     * Add the appropriate model change listeners 
-     * for the given modelelement to the given listener.
-     * 
-     * @param listener the given listener
-     * @param modelElement the modelelement that we provide 
-     * notation for
-     */
-    public void addListener(PropertyChangeListener listener, 
-            Object modelElement) {
-        Model.getPump().addModelEventListener(
-                listener, 
-                modelElement, 
-                "name");
-    }
-    
-    /**
-     * Remove the listeners registered before.
-     * 
-     * @param listener the given listener
-     * @param modelElement the modelelement that we provide 
-     * notation for
-     */
-    public void removeListener(PropertyChangeListener listener, 
-            Object modelElement) {
-        Model.getPump().removeModelEventListener(
-                listener, 
-                modelElement, 
-                "name");
-    }
-    
-    /**
-     * Update the set of listeners based on the given event.
-     * 
-     * @param listener the given listener
-     * @param modelElement the modelelement that we provide 
-     * notation for
-     * @param pce the received event, that we base the changes on
-     */
-    public void updateListener(PropertyChangeListener listener, 
-            Object modelElement,
-            PropertyChangeEvent pce) {
-        // e.g. for an operation:
-        // if pce.getSource() == modelElement
-        // && event.propertyName = "parameter"
-        //     if event instanceof AddAssociationEvent
-        //         Get the parameter instance from event.newValue
-        //         Call model to add listener on parameter on change 
-        //             of "name", "type"
-        //     else if event instanceof RemoveAssociationEvent
-        //         Get the parameter instance from event.oldValue
-        //         Call model to remove listener on parameter on change 
-        //             of "name", "type"
-        //     end if
-        // end if 
-    }
+  /**
+   * Generates a string representation for the given model element.
+   *
+   * @param modelElement the base UML modelelement
+   * @param args arguments that may determine the notation
+   * @return the string written in the correct notation
+   */
+  public abstract String toString(Object modelElement, HashMap args);
+
+  /**
+   * Add the appropriate model change listeners for the given modelelement to the given listener.
+   *
+   * @param listener the given listener
+   * @param modelElement the modelelement that we provide notation for
+   */
+  public void addListener(PropertyChangeListener listener, Object modelElement) {
+    Model.getPump().addModelEventListener(listener, modelElement, "name");
+  }
+
+  /**
+   * Remove the listeners registered before.
+   *
+   * @param listener the given listener
+   * @param modelElement the modelelement that we provide notation for
+   */
+  public void removeListener(PropertyChangeListener listener, Object modelElement) {
+    Model.getPump().removeModelEventListener(listener, modelElement, "name");
+  }
+
+  /**
+   * Update the set of listeners based on the given event.
+   *
+   * @param listener the given listener
+   * @param modelElement the modelelement that we provide notation for
+   * @param pce the received event, that we base the changes on
+   */
+  public void updateListener(
+      PropertyChangeListener listener, Object modelElement, PropertyChangeEvent pce) {
+    // e.g. for an operation:
+    // if pce.getSource() == modelElement
+    // && event.propertyName = "parameter"
+    //     if event instanceof AddAssociationEvent
+    //         Get the parameter instance from event.newValue
+    //         Call model to add listener on parameter on change
+    //             of "name", "type"
+    //     else if event instanceof RemoveAssociationEvent
+    //         Get the parameter instance from event.oldValue
+    //         Call model to remove listener on parameter on change
+    //             of "name", "type"
+    //     end if
+    // end if
+  }
 }

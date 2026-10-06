@@ -32,31 +32,30 @@ package org.argouml.uml.util.namespace;
  */
 public class StringNamespaceElement implements NamespaceElement {
 
-    private final String element;
-    /* {transient=false, volatile=false} */
+  private final String element;
 
-    /**
-     * Construct an element using the string.
-     *
-     * @param strelement
-     *            the element
-     */
-    public StringNamespaceElement(String strelement) {
-        this.element = strelement;
-    }
+  /* {transient=false, volatile=false} */
 
-    /*
-     * @see org.argouml.uml.util.namespace.NamespaceElement#getNamespaceElement()
-     */
-    public Object getNamespaceElement() {
-        return element;
-    }
+  /**
+   * Construct an element using the string.
+   *
+   * @param strelement the element
+   */
+  public StringNamespaceElement(String strelement) {
+    this.element = strelement;
+  }
 
-    /**
-     * @return the plain string object.
-     */
-    public String toString() {
-        return element;
-    }
+  /*
+   * @see org.argouml.uml.util.namespace.NamespaceElement#getNamespaceElement()
+   */
+  public Object getNamespaceElement() {
+    return element;
+  }
 
+  /**
+   * @return the plain string object.
+   */
+  public String toString() {
+    return element;
+  }
 }

@@ -30,50 +30,45 @@ import org.argouml.uml.diagram.ArgoDiagram;
 import org.argouml.uml.diagram.DiagramFactory;
 
 /**
- * Action to trigger creation of a new activity diagram.<p>
- * 
- * An ActivityGraph specifies the dynamics of<ul>
- * <li> a Package, or
- * <li> a Classifier (including UseCase), or
- * <li> a BehavioralFeature.
+ * Action to trigger creation of a new activity diagram.
+ *
+ * <p>An ActivityGraph specifies the dynamics of
+ *
+ * <ul>
+ *   <li>a Package, or
+ *   <li>a Classifier (including UseCase), or
+ *   <li>a BehavioralFeature.
  * </ul>
- * 
+ *
  * @author michiel
  */
 public class ActionActivityDiagram extends ActionNewDiagram {
 
-    /**
-     * Constructor.
-     */
-    public ActionActivityDiagram() {
-        super("action.activity-diagram");
+  /** Constructor. */
+  public ActionActivityDiagram() {
+    super("action.activity-diagram");
+  }
+
+  /**
+   * Create the diagram.
+   *
+   * @param namespace the namespace in which to create the diagram
+   * @return the newly created and initialized diagram
+   */
+  protected ArgoDiagram createDiagram(Object namespace) {
+    Object context = TargetManager.getInstance().getModelTarget();
+
+    if (!Model.getActivityGraphsHelper().isAddingActivityGraphAllowed(context)
+        || Model.getModelManagementHelper().isReadOnly(context)) {
+      context = namespace;
     }
+    Object graph = Model.getActivityGraphsFactory().buildActivityGraph(context);
 
-    /**
-     * Create the diagram.
-     * @param namespace the namespace in which to create the diagram
-     * @return the newly created and initialized diagram
-     */
-    protected ArgoDiagram createDiagram(Object namespace) {
-        Object context = TargetManager.getInstance().getModelTarget();
-        
-        if (!Model.getActivityGraphsHelper().isAddingActivityGraphAllowed(
-                context)
-                || Model.getModelManagementHelper().isReadOnly(context)) {
-            context = namespace;
-        } 
-        Object graph = 
-            Model.getActivityGraphsFactory().buildActivityGraph(context);
+    return DiagramFactory.getInstance()
+        .createDiagram(
+            DiagramFactory.DiagramType.Activity, Model.getFacade().getNamespace(graph), graph);
+  }
 
-        return DiagramFactory.getInstance().createDiagram(
-                DiagramFactory.DiagramType.Activity,
-                Model.getFacade().getNamespace(graph),
-                graph);
-    }
-
-    /**
-     * The UID.
-     */
-    private static final long serialVersionUID = -28844322376391273L;
-
-} 
+  /** The UID. */
+  private static final long serialVersionUID = -28844322376391273L;
+}

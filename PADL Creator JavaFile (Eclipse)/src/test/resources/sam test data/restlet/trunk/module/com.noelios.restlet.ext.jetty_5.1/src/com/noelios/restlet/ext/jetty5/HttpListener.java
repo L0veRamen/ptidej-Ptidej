@@ -24,61 +24,64 @@ package com.noelios.restlet.ext.jetty5;
 
 import java.io.IOException;
 import java.net.Socket;
-
 import org.mortbay.http.SocketListener;
 import org.mortbay.util.InetAddrPort;
 
 /**
  * Jetty HTTP listener.
+ *
  * @author Jerome Louvel (contact@noelios.com)
  */
-public class HttpListener extends SocketListener
-{
-	/** Serial version identifier. */
-	private static final long serialVersionUID = 1L;
+public class HttpListener extends SocketListener {
+  /** Serial version identifier. */
+  private static final long serialVersionUID = 1L;
 
-	/** The parent Jetty server helper. */
-	private transient JettyServerHelper helper;
+  /** The parent Jetty server helper. */
+  private transient JettyServerHelper helper;
 
-	/**
-	 * Constructor.
-	 * @param server The parent Jetty server.
-	 */
-	public HttpListener(JettyServerHelper server)
-	{
-		this.helper = server;
-	}
+  /**
+   * Constructor.
+   *
+   * @param server The parent Jetty server.
+   */
+  public HttpListener(JettyServerHelper server) {
+    this.helper = server;
+  }
 
-	/**
-	 * Constructor.
-	 * @param server The parent Jetty server.
-	 * @param address The listening address.
-	 */
-	public HttpListener(JettyServerHelper server, InetAddrPort address)
-	{
-		super(address);
-		this.helper = server;
-	}
+  /**
+   * Constructor.
+   *
+   * @param server The parent Jetty server.
+   * @param address The listening address.
+   */
+  public HttpListener(JettyServerHelper server, InetAddrPort address) {
+    super(address);
+    this.helper = server;
+  }
 
-	/**
-	 * Returns the parent Jetty server.
-	 * @return The parent Jetty server.
-	 */
-	public JettyServerHelper getHelper()
-	{
-		return this.helper;
-	}
+  /**
+   * Returns the parent Jetty server.
+   *
+   * @return The parent Jetty server.
+   */
+  public JettyServerHelper getHelper() {
+    return this.helper;
+  }
 
-	/** 
-	 * Creates an AJP13Connection instance. 
-	 * This method can be used to override the connection instance.
-	 * @param socket The underlying socket.
-	 * @return The created connection.
-	 */
-	protected HttpConnection createConnection(Socket socket) throws IOException
-	{
-		return new HttpConnection(getHelper().getLogger(), this, socket.getInetAddress(),
-				socket.getInputStream(), socket.getOutputStream(), socket);
-	}
-
+  /**
+   * Creates an AJP13Connection instance. This method can be used to override the connection
+   * instance.
+   *
+   * @param socket The underlying socket.
+   * @return The created connection.
+   */
+  protected HttpConnection createConnection(Socket socket) throws IOException {
+    return new HttpConnection(
+        getHelper().getLogger(),
+        this,
+        socket.getInetAddress(),
+        socket.getInputStream(),
+        socket.getOutputStream(),
+        socket);
+  }
 }

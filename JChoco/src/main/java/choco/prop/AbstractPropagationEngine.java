@@ -13,70 +13,50 @@
 
 package choco.prop;
 
-import java.util.logging.Logger;
 import choco.AbstractEntity;
 import choco.Entity;
 import choco.Problem;
+import java.util.logging.Logger;
 
-/**
- * An abstract class for all implementations of propagation engines.
- */
+/** An abstract class for all implementations of propagation engines. */
 public abstract class AbstractPropagationEngine extends AbstractEntity
-		implements PropagationEngine {
+    implements PropagationEngine {
 
-	/**
-	 * Storing the cause of the last contradiction.
-	 */
+  /** Storing the cause of the last contradiction. */
+  protected Entity contradictionCause;
 
-	protected Entity contradictionCause;
+  /**
+   * Reference to an object for logging trace statements related to propagation events (using the
+   * java.util.logging package)
+   */
+  protected static Logger logger = Logger.getLogger("choco.prop");
 
-	/**
-	 * Reference to an object for logging trace statements related to propagation events (using the java.util.logging package)
-	 */
+  protected AbstractPropagationEngine(final Problem pb) {
+    this.problem = pb;
+  }
 
-	protected static Logger logger = Logger.getLogger("choco.prop");
+  /** Retrieving the cause of the last contradiction. */
+  public Entity getContradictionCause() {
+    return this.contradictionCause;
+  }
 
-	protected AbstractPropagationEngine(final Problem pb) {
-		this.problem = pb;
-	}
+  /** Gets the next queue from which a var will be propagated. */
+  public EventQueue getNextActiveEventQueue() {
+    return null;
+  }
 
-	/**
-	 * Retrieving the cause of the last contradiction.
-	 */
+  /** Retrieving the overall problem. */
+  public Problem getProblem() {
+    return this.problem;
+  }
 
-	public Entity getContradictionCause() {
-		return this.contradictionCause;
-	}
+  /** Store the cause of the last contradiction. */
+  public void setContradictionCause(final Entity cause) {
+    this.contradictionCause = cause;
+  }
 
-	/**
-	 * Gets the next queue from which a var will be propagated.
-	 */
-
-	public EventQueue getNextActiveEventQueue() {
-		return null;
-	}
-
-	/**
-	 * Retrieving the overall problem.
-	 */
-	public Problem getProblem() {
-		return this.problem;
-	}
-
-	/**
-	 * Store the cause of the last contradiction.
-	 */
-
-	public void setContradictionCause(final Entity cause) {
-		this.contradictionCause = cause;
-	}
-
-	/**
-	 * Erase the cause of the last contradiction.
-	 */
-
-	public void setNoContradictionCause() {
-		this.contradictionCause = null;
-	}
-
+  /** Erase the cause of the last contradiction. */
+  public void setNoContradictionCause() {
+    this.contradictionCause = null;
+  }
 }

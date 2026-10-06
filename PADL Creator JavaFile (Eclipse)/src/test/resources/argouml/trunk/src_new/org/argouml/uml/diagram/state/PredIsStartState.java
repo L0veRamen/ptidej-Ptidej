@@ -27,33 +27,26 @@ package org.argouml.uml.diagram.state;
 import org.argouml.model.Model;
 import org.tigris.gef.util.Predicate;
 
-/**
- * Predicate to test if this is a start state.
- *
- */
+/** Predicate to test if this is a start state. */
 public class PredIsStartState implements Predicate {
 
-    /**
-     * theInstance is the singleton.
-     */
-    private static PredIsStartState theInstance = new PredIsStartState();
+  /** theInstance is the singleton. */
+  private static PredIsStartState theInstance = new PredIsStartState();
 
-    private PredIsStartState() { }
+  private PredIsStartState() {}
 
-    /**
-     * @see org.tigris.gef.util.Predicate#predicate(java.lang.Object)
-     */
-    public boolean predicate(Object obj) {
-	return (Model.getFacade().isAPseudostate(obj))
-	    && (Model.getPseudostateKind().getInitial().equals(
-                Model.getFacade().getKind(obj)));
-    }
+  /**
+   * @see org.tigris.gef.util.Predicate#predicate(java.lang.Object)
+   */
+  public boolean predicate(Object obj) {
+    return (Model.getFacade().isAPseudostate(obj))
+        && (Model.getPseudostateKind().getInitial().equals(Model.getFacade().getKind(obj)));
+  }
 
-    /**
-     * @return the instance
-     */
-    public static PredIsStartState getTheInstance() {
-        return theInstance;
-    }
-
+  /**
+   * @return the instance
+   */
+  public static PredIsStartState getTheInstance() {
+    return theInstance;
+  }
 } /* end class PredIsStartpackage */

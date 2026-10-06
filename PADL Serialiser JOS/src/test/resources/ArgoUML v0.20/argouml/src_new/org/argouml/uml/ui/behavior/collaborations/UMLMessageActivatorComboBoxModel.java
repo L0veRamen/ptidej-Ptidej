@@ -28,82 +28,66 @@ import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLComboBoxModel2;
 
 /**
- * The model behind the UMLMessageActivatorComboBox.
- * I don't use the UMLComboBoxModel
- * since this mixes the GUI and the model
- * too much and is much more maintainance
- * intensive then this implementation.
+ * The model behind the UMLMessageActivatorComboBox. I don't use the UMLComboBoxModel since this
+ * mixes the GUI and the model too much and is much more maintainance intensive then this
+ * implementation.
  */
 public class UMLMessageActivatorComboBoxModel extends UMLComboBoxModel2 {
 
+  /** Constructor for UMLMessageActivatorComboBoxModel. */
+  public UMLMessageActivatorComboBoxModel() {
+    super("activator", false);
+  }
 
-
-    /**
-     * Constructor for UMLMessageActivatorComboBoxModel.
-     */
-    public UMLMessageActivatorComboBoxModel() {
-        super("activator", false);
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    Object target = getTarget();
+    if (Model.getFacade().isAMessage(target)) {
+      Object mes = /*(MMessage)*/ target;
+      removeAllElements();
+      // fill the list with items
+      setElements(Model.getCollaborationsHelper().getAllPossibleActivators(mes));
     }
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        Object target = getTarget();
-        if (Model.getFacade().isAMessage(target)) {
-            Object mes = /*(MMessage)*/ target;
-            removeAllElements();
-            // fill the list with items
-            setElements(Model.getCollaborationsHelper()
-                    .getAllPossibleActivators(mes));
-        }
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object m) {
+    return ((Model.getFacade().isAMessage(m))
+        && m != getTarget()
+        && !Model.getFacade().getPredecessors((getTarget())).contains(m)
+        && Model.getFacade().getInteraction(m) == Model.getFacade().getInteraction((getTarget())));
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
+   */
+  protected Object getSelectedModelElement() {
+    if (getTarget() != null) {
+      return Model.getFacade().getActivator(getTarget());
     }
+    return null;
+  }
 
-
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object m) {
-        return ((Model.getFacade().isAMessage(m))
-                && m != getTarget()
-                && !Model.getFacade().getPredecessors((getTarget())).contains(m)
-                && Model.getFacade().getInteraction(m)
-                    == Model.getFacade().getInteraction((getTarget())));
+  /**
+   * @see org.argouml.uml.ui.UMLComboBoxModel2#setTarget(java.lang.Object)
+   */
+  protected void setTarget(Object target) {
+    if (Model.getFacade().isAMessage(getTarget())) {
+      Object inter = Model.getFacade().getInteraction(getTarget());
+      if (inter != null) {
+        Model.getPump().removeModelEventListener(this, inter, "message");
+      }
     }
-
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#getSelectedModelElement()
-     */
-    protected Object getSelectedModelElement() {
-        if (getTarget() != null) {
-            return Model.getFacade().getActivator(getTarget());
-        }
-        return null;
+    super.setTarget(target);
+    if (Model.getFacade().isAMessage(target)) {
+      Object inter = Model.getFacade().getInteraction(target);
+      if (inter != null) {
+        Model.getPump().addModelEventListener(this, inter, "message");
+      }
     }
-
-    /**
-     * @see org.argouml.uml.ui.UMLComboBoxModel2#setTarget(java.lang.Object)
-     */
-    protected void setTarget(Object target) {
-        if (Model.getFacade().isAMessage(getTarget())) {
-            Object inter = Model.getFacade().getInteraction(getTarget());
-            if (inter != null) {
-                Model.getPump().removeModelEventListener(
-                    this,
-                    inter,
-                    "message");
-            }
-        }
-        super.setTarget(target);
-        if (Model.getFacade().isAMessage(target)) {
-            Object inter = Model.getFacade().getInteraction(target);
-            if (inter != null) {
-                Model.getPump().addModelEventListener(
-                    this,
-                    inter,
-                    "message");
-            }
-        }
-    }
-
+  }
 }

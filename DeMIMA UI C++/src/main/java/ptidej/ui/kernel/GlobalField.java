@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -23,14 +23,15 @@ import ptidej.ui.primitive.IPrimitiveFactory;
 // So, it has all the inheritance properties.
 // Implementation to be checked ...
 public final class GlobalField extends Entity {
-	public GlobalField(
-		final IPrimitiveFactory aPrimitiveFactory,
-		final Builder aBuilder,
-		final IGlobalField aGlobalField) {
+  public GlobalField(
+      final IPrimitiveFactory aPrimitiveFactory,
+      final Builder aBuilder,
+      final IGlobalField aGlobalField) {
 
-		super(aPrimitiveFactory, aBuilder, aGlobalField);
-	}
-	protected String getStereotype() {
-		return "<<global field>>\n";
-	}
+    super(aPrimitiveFactory, aBuilder, aGlobalField);
+  }
+
+  protected String getStereotype() {
+    return "<<global field>>\n";
+  }
 }

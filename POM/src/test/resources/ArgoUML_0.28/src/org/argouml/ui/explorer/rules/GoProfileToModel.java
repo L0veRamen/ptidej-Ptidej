@@ -27,44 +27,40 @@ package org.argouml.ui.explorer.rules;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
-
 import org.argouml.i18n.Translator;
 import org.argouml.profile.Profile;
 import org.argouml.profile.ProfileException;
 
-/**
- * Rule for Profile->Model.
- *
- */
+/** Rule for Profile->Model. */
 public class GoProfileToModel extends AbstractPerspectiveRule {
 
-    /*
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
-     */
-    public String getRuleName() {
-	return Translator.localize("misc.profile.model");
-    }
+  /*
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
+   */
+  public String getRuleName() {
+    return Translator.localize("misc.profile.model");
+  }
 
-    /*
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
-     */
-    public Collection getChildren(Object parent) {
-	if (parent instanceof Profile) {
-            try {
-                Collection col = ((Profile) parent).getProfilePackages();
-                return col;
-            } catch (ProfileException e) {
-                return Collections.EMPTY_SET;
-            }
-        }
+  /*
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
+   */
+  public Collection getChildren(Object parent) {
+    if (parent instanceof Profile) {
+      try {
+        Collection col = ((Profile) parent).getProfilePackages();
+        return col;
+      } catch (ProfileException e) {
         return Collections.EMPTY_SET;
+      }
     }
+    return Collections.EMPTY_SET;
+  }
 
-    /*
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
-     */
-    public Set getDependencies(Object parent) {
-        // TODO: What?
-	return Collections.EMPTY_SET;
-    }
+  /*
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
+   */
+  public Set getDependencies(Object parent) {
+    // TODO: What?
+    return Collections.EMPTY_SET;
+  }
 }

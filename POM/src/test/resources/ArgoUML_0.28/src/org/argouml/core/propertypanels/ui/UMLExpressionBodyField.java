@@ -23,84 +23,71 @@
 // UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 package org.argouml.core.propertypanels.ui;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+
 
 import javax.swing.JTextArea;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-
 import org.apache.log4j.Logger;
 import org.argouml.i18n.Translator;
 import org.argouml.ui.LookAndFeelMgr;
 
-/**
- * This text field shows the body of a UML expression.
- *
- */
-class UMLExpressionBodyField extends JTextArea
-    implements DocumentListener {
+/** This text field shows the body of a UML expression. */
+class UMLExpressionBodyField extends JTextArea implements DocumentListener {
 
-    /**
-     * Logger.
-     */
-    private static final Logger LOG =
-        Logger.getLogger(UMLExpressionBodyField.class);
+  /** Logger. */
+  private static final Logger LOG = Logger.getLogger(UMLExpressionBodyField.class);
 
-    private UMLExpressionModel model;
-    private boolean notifyModel;
+  private UMLExpressionModel model;
+  private boolean notifyModel;
 
-    /**
-     * The constructor.
-     * 
-     * @param expressionModel
-     *            Expression model, should be shared between Language and Body
-     *            fields
-     * @param notify
-     *            Set to true to forward events to model. Only one of Language
-     *            and Body fields should have this set to true.
-     */
-    public UMLExpressionBodyField(UMLExpressionModel expressionModel,
-				  boolean notify) {
-        model = expressionModel;
-        notifyModel = notify;
-        getDocument().addDocumentListener(this);
-        setToolTipText(Translator.localize("label.body.tooltip"));
-        setFont(LookAndFeelMgr.getInstance().getStandardFont());
-        setRows(2); // make it stretch vertically
-        
-        update();
+  /**
+   * The constructor.
+   *
+   * @param expressionModel Expression model, should be shared between Language and Body fields
+   * @param notify Set to true to forward events to model. Only one of Language and Body fields
+   *     should have this set to true.
+   */
+  public UMLExpressionBodyField(UMLExpressionModel expressionModel, boolean notify) {
+    model = expressionModel;
+    notifyModel = notify;
+    getDocument().addDocumentListener(this);
+    setToolTipText(Translator.localize("label.body.tooltip"));
+    setFont(LookAndFeelMgr.getInstance().getStandardFont());
+    setRows(2); // make it stretch vertically
+
+    update();
+  }
+
+  private void update() {
+    String oldText = getText();
+    String newText = model.getBody();
+
+    if (oldText == null || newText == null || !oldText.equals(newText)) {
+      if (oldText != newText) {
+        setText(newText);
+      }
     }
+  }
 
-    private void update() {
-        String oldText = getText();
-        String newText = model.getBody();
+  /*
+   * @see javax.swing.event.DocumentListener#changedUpdate(javax.swing.event.DocumentEvent)
+   */
+  public void changedUpdate(final DocumentEvent p1) {
+    model.setBody(getText());
+  }
 
-        if (oldText == null || newText == null || !oldText.equals(newText)) {
-            if (oldText != newText) {
-                setText(newText);
-            }
-        }
-    }
+  /*
+   * @see javax.swing.event.DocumentListener#removeUpdate(javax.swing.event.DocumentEvent)
+   */
+  public void removeUpdate(final DocumentEvent p1) {
+    model.setBody(getText());
+  }
 
-    /*
-     * @see javax.swing.event.DocumentListener#changedUpdate(javax.swing.event.DocumentEvent)
-     */
-    public void changedUpdate(final DocumentEvent p1) {
-        model.setBody(getText());
-    }
-
-    /*
-     * @see javax.swing.event.DocumentListener#removeUpdate(javax.swing.event.DocumentEvent)
-     */
-    public void removeUpdate(final DocumentEvent p1) {
-        model.setBody(getText());
-    }
-
-    /*
-     * @see javax.swing.event.DocumentListener#insertUpdate(javax.swing.event.DocumentEvent)
-     */
-    public void insertUpdate(final DocumentEvent p1) {
-        model.setBody(getText());
-    }
+  /*
+   * @see javax.swing.event.DocumentListener#insertUpdate(javax.swing.event.DocumentEvent)
+   */
+  public void insertUpdate(final DocumentEvent p1) {
+    model.setBody(getText());
+  }
 }

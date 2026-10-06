@@ -28,36 +28,30 @@ import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
 /**
- *
  * @author rastaman@tigris.org
  * @since Oct 11, 2005
  */
-public class UMLTagDefinitionListModel
-    extends UMLModelElementListModel2 {
+public class UMLTagDefinitionListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLGeneralizableElementGeneralizationListModel.
-     */
-    public UMLTagDefinitionListModel() {
-        super("tagdefinition");
+  /** Constructor for UMLGeneralizableElementGeneralizationListModel. */
+  public UMLTagDefinitionListModel() {
+    super("tagdefinition");
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (getTarget() != null) {
+      setAllElements(Model.getFacade().getTagDefinitions(getTarget()));
     }
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (getTarget() != null) {
-            setAllElements(Model.getFacade().getTagDefinitions(getTarget()));
-        }
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object/*MBase*/ element) {
-        return Model.getFacade().isATagDefinition(element)
-            && Model.getFacade().getTagDefinitions(getTarget())
-            	.contains(element);
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object /*MBase*/ element) {
+    return Model.getFacade().isATagDefinition(element)
+        && Model.getFacade().getTagDefinitions(getTarget()).contains(element);
+  }
 }

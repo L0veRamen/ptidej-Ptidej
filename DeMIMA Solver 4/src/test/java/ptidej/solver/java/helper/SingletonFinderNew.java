@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -35,117 +35,99 @@ import util.io.ProxyDisk;
 
 /**
  * @author Yann-Gaël Guéhéneuc
- * @since  2007/02/21
- * @author Aminata Sabane
- * 2011/11/05
- * 
+ * @since 2007/02/21
+ * @author Aminata Sabane 2011/11/05
  */
 public class SingletonFinderNew {
-	public static void main(final String[] args) {
-		//take as argument the configuration file and the path of result files
-		//read the configuration file (.csv with ; as separator) that contains the paths of jars or bin
-		//split each line into path and name
+  public static void main(final String[] args) {
+    // take as argument the configuration file and the path of result files
+    // read the configuration file (.csv with ; as separator) that contains the paths of jars or bin
+    // split each line into path and name
 
-		ProxyConsole.getInstance().setDebugOutput(new NullWriter());
-		ProxyConsole.getInstance().setNormalOutput(new NullWriter());
-		ProxyConsole.getInstance().setErrorOutput(new NullWriter());
+    ProxyConsole.getInstance().setDebugOutput(new NullWriter());
+    ProxyConsole.getInstance().setNormalOutput(new NullWriter());
+    ProxyConsole.getInstance().setErrorOutput(new NullWriter());
 
-		if (args.length < 2) {
-			System.out.println("This sprogram need 2 arguments :");
-			System.out
-				.println("1 - a csv file that contains on each line the path of the binaries or the jar to analyse and the name corresponding");
-			System.out.println("1 - Results destination path");
-			return;
-		}
-		final String destinationPath = args[1];
+    if (args.length < 2) {
+      System.out.println("This sprogram need 2 arguments :");
+      System.out.println(
+          "1 - a csv file that contains on each line the path of the binaries or the jar to analyse and the name corresponding");
+      System.out.println("1 - Results destination path");
+      return;
+    }
+    final String destinationPath = args[1];
 
-		try {
-			final BufferedReader bufferedReader =
-				new BufferedReader(new FileReader(args[0]));
+    try {
+      final BufferedReader bufferedReader = new BufferedReader(new FileReader(args[0]));
 
-			String line = bufferedReader.readLine();
+      String line = bufferedReader.readLine();
 
-			while (line != null) {
+      while (line != null) {
 
-				final String[] lineContent = line.split(";");
-				final String path = lineContent[0];
-				final String name = lineContent[1];
+        final String[] lineContent = line.split(";");
+        final String path = lineContent[0];
+        final String name = lineContent[1];
 
-				final ModelStatistics modelStatistics = new ModelStatistics();
-				final ICodeLevelModel codeLevelModel =
-					Factory.getInstance().createCodeLevelModel("");
-				codeLevelModel.addModelListener(modelStatistics);
-				codeLevelModel.create(new CompleteClassFileCreator(
-					new String[] { path },
-					true));
+        final ModelStatistics modelStatistics = new ModelStatistics();
+        final ICodeLevelModel codeLevelModel = Factory.getInstance().createCodeLevelModel("");
+        codeLevelModel.addModelListener(modelStatistics);
+        codeLevelModel.create(new CompleteClassFileCreator(new String[] {path}, true));
 
-				final IIdiomLevelModel idiomLevelModel =
-					(IIdiomLevelModel) new AACRelationshipsAnalysis()
-						.invoke(codeLevelModel);
+        final IIdiomLevelModel idiomLevelModel =
+            (IIdiomLevelModel) new AACRelationshipsAnalysis().invoke(codeLevelModel);
 
-				final Writer writer =
-					ProxyDisk.getInstance().fileAbsoluteOutput(
-						new StringBuffer()
-							.append(destinationPath)
-							.append(File.separatorChar)
-							.append("ConstraintResults in ")
-							.append(name)
-							.append(" for Singleton.ini")
-							.toString());
+        final Writer writer =
+            ProxyDisk.getInstance()
+                .fileAbsoluteOutput(
+                    new StringBuffer()
+                        .append(destinationPath)
+                        .append(File.separatorChar)
+                        .append("ConstraintResults in ")
+                        .append(name)
+                        .append(" for Singleton.ini")
+                        .toString());
 
-				final Iterator entities =
-					idiomLevelModel.getIteratorOnTopLevelEntities();
-				int numberOfOccurrences = 0;
-				while (entities.hasNext()) {
-					final IFirstClassEntity firstClassEntity =
-						(IFirstClassEntity) entities.next();
-					final char[] entityId = firstClassEntity.getID();
-					final Iterator methods =
-						firstClassEntity
-							.getIteratorOnConstituents(IMethod.class);
-					while (methods.hasNext()) {
-						final IMethod method = (IMethod) methods.next();
-						if (method.isStatic()
-								&& Arrays.equals(
-									method.getReturnType(),
-									entityId)
-								&& method
-									.getNumberOfConstituents(IParameter.class) < 2) {
+        final Iterator entities = idiomLevelModel.getIteratorOnTopLevelEntities();
+        int numberOfOccurrences = 0;
+        while (entities.hasNext()) {
+          final IFirstClassEntity firstClassEntity = (IFirstClassEntity) entities.next();
+          final char[] entityId = firstClassEntity.getID();
+          final Iterator methods = firstClassEntity.getIteratorOnConstituents(IMethod.class);
+          while (methods.hasNext()) {
+            final IMethod method = (IMethod) methods.next();
+            if (method.isStatic()
+                && Arrays.equals(method.getReturnType(), entityId)
+                && method.getNumberOfConstituents(IParameter.class) < 2) {
 
-							writer.write(Integer.toString(numberOfOccurrences));
-							writer.write(".100.singleton = ");
-							writer.write(entityId);
-							writer.write('\n');
+              writer.write(Integer.toString(numberOfOccurrences));
+              writer.write(".100.singleton = ");
+              writer.write(entityId);
+              writer.write('\n');
 
-							numberOfOccurrences++;
-						}
-					}
-				}
+              numberOfOccurrences++;
+            }
+          }
+        }
 
-				writer.close();
+        writer.close();
 
-				System.out.println(path);
-				System.out.println(modelStatistics);
-				System.out.println();
+        System.out.println(path);
+        System.out.println(modelStatistics);
+        System.out.println();
 
-				line = bufferedReader.readLine();
-			}
+        line = bufferedReader.readLine();
+      }
 
-			bufferedReader.close();
-		}
-		catch (final FileNotFoundException e) {
+      bufferedReader.close();
+    } catch (final FileNotFoundException e) {
 
-			e.printStackTrace();
-		}
-		catch (final IOException e) {
-			e.printStackTrace();
-		}
-		catch (final CreationException e) {
-			e.printStackTrace();
-		}
-		catch (final UnsupportedSourceModelException e) {
-			e.printStackTrace();
-		}
-
-	}
+      e.printStackTrace();
+    } catch (final IOException e) {
+      e.printStackTrace();
+    } catch (final CreationException e) {
+      e.printStackTrace();
+    } catch (final UnsupportedSourceModelException e) {
+      e.printStackTrace();
+    }
+  }
 }

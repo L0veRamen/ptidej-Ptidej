@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc  and others, see in file; API and its implementation
  ******************************************************************************/
@@ -16,34 +16,29 @@ import padl.kernel.IComposition;
 import padl.motif.models.TestMotifModel;
 
 public final class CompositionPattern extends TestMotifModel {
-	public static final char[] AGGREGATE = "Aggregate".toCharArray();
-	public static final char[] AGGREGATED = "Aggregated".toCharArray();
-	private static final char[] COMPOSITION = "composition".toCharArray();
-	private static final char[] COMPOSITION_TEST = "CompositionTest"
-		.toCharArray();
-	private static final long serialVersionUID = 8546899923749077555L;
+  public static final char[] AGGREGATE = "Aggregate".toCharArray();
+  public static final char[] AGGREGATED = "Aggregated".toCharArray();
+  private static final char[] COMPOSITION = "composition".toCharArray();
+  private static final char[] COMPOSITION_TEST = "CompositionTest".toCharArray();
+  private static final long serialVersionUID = 8546899923749077555L;
 
-	public CompositionPattern() {
-		final IClass anAggregateClass =
-			this.getFactory().createClass(
-				CompositionPattern.AGGREGATE,
-				CompositionPattern.AGGREGATE);
-		final IClass anAggregatedClass =
-			this.getFactory().createClass(
-				CompositionPattern.AGGREGATED,
-				CompositionPattern.AGGREGATED);
-		final IComposition aComposition =
-			this.getFactory().createCompositionRelationship(
-				CompositionPattern.COMPOSITION,
-				anAggregatedClass,
-				Cardinality.Many);
+  public CompositionPattern() {
+    final IClass anAggregateClass =
+        this.getFactory().createClass(CompositionPattern.AGGREGATE, CompositionPattern.AGGREGATE);
+    final IClass anAggregatedClass =
+        this.getFactory().createClass(CompositionPattern.AGGREGATED, CompositionPattern.AGGREGATED);
+    final IComposition aComposition =
+        this.getFactory()
+            .createCompositionRelationship(
+                CompositionPattern.COMPOSITION, anAggregatedClass, Cardinality.Many);
 
-		anAggregateClass.addConstituent(aComposition);
+    anAggregateClass.addConstituent(aComposition);
 
-		this.addConstituent(anAggregateClass);
-		this.addConstituent(anAggregatedClass);
-	}
-	public char[] getName() {
-		return CompositionPattern.COMPOSITION_TEST;
-	}
+    this.addConstituent(anAggregateClass);
+    this.addConstituent(anAggregatedClass);
+  }
+
+  public char[] getName() {
+    return CompositionPattern.COMPOSITION_TEST;
+  }
 }

@@ -10,38 +10,38 @@
  ******************************************************************************/
 package test;
 
-import org.junit.Assert;
-
 import junit.framework.TestCase;
+import org.junit.Assert;
 import parser.input.SourceInputsHolder;
 import parser.input.impl.FileListJavaProject;
 import parser.wrapper.JavaParser;
 import parser.wrapper.NamedCompilationUnit;
 
 public class FileListJavaProjectTest extends TestCase {
-	public void testParse() throws Exception {
-		final SourceInputsHolder javaProject = new FileListJavaProject(null,
-				null,
-				"../PADL Creator JavaFile (Eclipse) Parser/target/test-classes/NestingClasses/FileList.txt");
+  public void testParse() throws Exception {
+    final SourceInputsHolder javaProject =
+        new FileListJavaProject(
+            null,
+            null,
+            "../PADL Creator JavaFile (Eclipse) Parser/target/test-classes/NestingClasses/FileList.txt");
 
-		final NamedCompilationUnit[] namedCompilationUnits = new JavaParser(
-				javaProject).parse();
+    final NamedCompilationUnit[] namedCompilationUnits = new JavaParser(javaProject).parse();
 
-		Assert.assertEquals("JavaParserTest", namedCompilationUnits.length, 3);
-	}
+    Assert.assertEquals("JavaParserTest", namedCompilationUnits.length, 3);
+  }
 
-	public void testParseAnyFile() throws Exception {
-		final SourceInputsHolder javaProject = new FileListJavaProject(null,
-				null,
-				"../PADL Creator JavaFile (Eclipse) Parser/target/test-classes/NestingClasses/FileListNotJavaFile.txt");
+  public void testParseAnyFile() throws Exception {
+    final SourceInputsHolder javaProject =
+        new FileListJavaProject(
+            null,
+            null,
+            "../PADL Creator JavaFile (Eclipse) Parser/target/test-classes/NestingClasses/FileListNotJavaFile.txt");
 
-		try {
-			new JavaParser(javaProject).parse();
-			Assert.assertTrue(false);
-		}
-		catch (final Exception e) {
-			Assert.assertTrue(true);
-		}
-
-	}
+    try {
+      new JavaParser(javaProject).parse();
+      Assert.assertTrue(false);
+    } catch (final Exception e) {
+      Assert.assertTrue(true);
+    }
+  }
 }

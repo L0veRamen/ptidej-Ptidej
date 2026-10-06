@@ -1,4 +1,3 @@
 package pom.test.rsc.specific.testNMI;
 
-public class TestCChild00 extends TestCParent01 {
-}
+public class TestCChild00 extends TestCParent01 {}

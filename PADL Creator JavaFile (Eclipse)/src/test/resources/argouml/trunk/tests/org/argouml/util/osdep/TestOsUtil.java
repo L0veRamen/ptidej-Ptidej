@@ -26,27 +26,22 @@ package org.argouml.util.osdep;
 
 import junit.framework.TestCase;
 
-/**
- * Tests OsUtil.java.
- */
+/** Tests OsUtil.java. */
 public class TestOsUtil extends TestCase {
-    /**
-     * Constructor.
-     *
-     * @param name The test case name.
-     */
-    public TestOsUtil(String name) {
-        super(name);
-    }
+  /**
+   * Constructor.
+   *
+   * @param name The test case name.
+   */
+  public TestOsUtil(String name) {
+    super(name);
+  }
 
-    /**
-     * Test all methods.
-     */
-    public void testTesters() {
-        boolean yes = true;
-        assertTrue(OsUtil.isMac() || yes);
-        assertTrue(OsUtil.isSunJdk() || yes);
-        assertTrue(OsUtil.isWin32() || yes);
-    }
+  /** Test all methods. */
+  public void testTesters() {
+    boolean yes = true;
+    assertTrue(OsUtil.isMac() || yes);
+    assertTrue(OsUtil.isSunJdk() || yes);
+    assertTrue(OsUtil.isWin32() || yes);
+  }
 }
-

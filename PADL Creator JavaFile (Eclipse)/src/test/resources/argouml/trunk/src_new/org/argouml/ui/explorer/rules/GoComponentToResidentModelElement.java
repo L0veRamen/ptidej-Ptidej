@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 
@@ -36,39 +35,36 @@ import org.argouml.model.Model;
  * Rule for Component -> Resident Element.
  *
  * @author mvw@tigris.org
- *
  */
 public class GoComponentToResidentModelElement extends AbstractPerspectiveRule {
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
-     */
-    public String getRuleName() {
-        return Translator.localize ("misc.component.resident.modelelement");
-    }
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
+   */
+  public String getRuleName() {
+    return Translator.localize("misc.component.resident.modelelement");
+  }
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
-     */
-    public Collection getChildren(Object parent) {
-        if (Model.getFacade().isAComponent(parent)) {
-            // First get the collection of ElementResidence
-            Iterator eri =
-                Model.getFacade().getResidentElements(parent).iterator();
-            Collection result = new ArrayList();
-            while (eri.hasNext()) {
-                result.add(Model.getFacade().getResident(eri.next()));
-            }
-            return result;
-        }
-        return null;
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
+   */
+  public Collection getChildren(Object parent) {
+    if (Model.getFacade().isAComponent(parent)) {
+      // First get the collection of ElementResidence
+      Iterator eri = Model.getFacade().getResidentElements(parent).iterator();
+      Collection result = new ArrayList();
+      while (eri.hasNext()) {
+        result.add(Model.getFacade().getResident(eri.next()));
+      }
+      return result;
     }
+    return null;
+  }
 
-    /**
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
-     */
-    public Set getDependencies(Object parent) {
-        return null;
-    }
-
+  /**
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
+   */
+  public Set getDependencies(Object parent) {
+    return null;
+  }
 }

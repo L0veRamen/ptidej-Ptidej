@@ -25,7 +25,6 @@
 package org.argouml.uml.ui.behavior.use_cases;
 
 import java.awt.event.ActionEvent;
-
 import org.argouml.model.Model;
 import org.argouml.uml.ui.AbstractActionNewModelElement;
 
@@ -34,33 +33,25 @@ import org.argouml.uml.ui.AbstractActionNewModelElement;
  * @author jaap.branderhorst@xs4all.nl
  * @stereotype singleton
  */
-public class ActionNewExtendExtensionPoint
-    extends AbstractActionNewModelElement {
+public class ActionNewExtendExtensionPoint extends AbstractActionNewModelElement {
 
-    /**
-     * The singleton.
-     */
-    public static final ActionNewExtendExtensionPoint SINGLETON =
-        new ActionNewExtendExtensionPoint();
+  /** The singleton. */
+  public static final ActionNewExtendExtensionPoint SINGLETON = new ActionNewExtendExtensionPoint();
 
-    /**
-     * Constructor for ActionNewExtendExtensionPoint.
-     */
-    protected ActionNewExtendExtensionPoint() {
-        super();
+  /** Constructor for ActionNewExtendExtensionPoint. */
+  protected ActionNewExtendExtensionPoint() {
+    super();
+  }
+
+  /*
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    if (Model.getFacade().isAExtend(getTarget())) {
+      Object point =
+          Model.getUseCasesFactory().buildExtensionPoint(Model.getFacade().getBase(getTarget()));
+      Model.getUseCasesHelper().addExtensionPoint(getTarget(), point);
     }
-
-    /*
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        if (Model.getFacade().isAExtend(getTarget())) {
-            Object point =
-                Model.getUseCasesFactory().buildExtensionPoint(
-                        Model.getFacade().getBase(getTarget()));
-            Model.getUseCasesHelper().addExtensionPoint(getTarget(), point);
-        }
-    }
-
+  }
 }

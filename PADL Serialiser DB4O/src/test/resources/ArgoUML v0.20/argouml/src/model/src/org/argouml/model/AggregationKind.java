@@ -24,22 +24,20 @@
 
 package org.argouml.model;
 
-/**
- * The different AggregationKinds.
- */
+/** The different AggregationKinds. */
 public interface AggregationKind {
-    /**
-     * @return Returns the Aggregate AggregationKind.
-     */
-    Object getAggregate();
+  /**
+   * @return Returns the Aggregate AggregationKind.
+   */
+  Object getAggregate();
 
-    /**
-     * @return Returns the Composite AggregationKind.
-     */
-    Object getComposite();
+  /**
+   * @return Returns the Composite AggregationKind.
+   */
+  Object getComposite();
 
-    /**
-     * @return Returns the None AggregationKind.
-     */
-    Object getNone();
+  /**
+   * @return Returns the None AggregationKind.
+   */
+  Object getNone();
 }

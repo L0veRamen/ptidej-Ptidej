@@ -26,29 +26,27 @@ package org.argouml.persistence;
 
 /**
  * Exception indicating some type of error reading an XMI file.
- * 
+ *
  * @author Tom Morris
  */
 public class XmiFormatException extends OpenException {
 
-    /**
-     * Construct an XmiFormatException with a nested cause.
-     * 
-     * @param message the message
-     * @param cause the underlying error cause
-     */
-    public XmiFormatException(String message, Throwable cause) {
-        super(message, cause);
-    }
-    
-    /**
-     * Construct an XmiFormatException with a nested cause.
-     * 
-     * @param cause the underlying error cause
-     */
-    public XmiFormatException(Throwable cause) {
-        super(cause);
-    }
+  /**
+   * Construct an XmiFormatException with a nested cause.
+   *
+   * @param message the message
+   * @param cause the underlying error cause
+   */
+  public XmiFormatException(String message, Throwable cause) {
+    super(message, cause);
+  }
 
-
+  /**
+   * Construct an XmiFormatException with a nested cause.
+   *
+   * @param cause the underlying error cause
+   */
+  public XmiFormatException(Throwable cause) {
+    super(cause);
+  }
 }

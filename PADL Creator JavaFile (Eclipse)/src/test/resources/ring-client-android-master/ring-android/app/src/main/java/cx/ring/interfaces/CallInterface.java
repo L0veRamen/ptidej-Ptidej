@@ -22,13 +22,12 @@
 package cx.ring.interfaces;
 
 import cx.ring.model.Conference;
-
 import java.util.HashMap;
 
 public interface CallInterface {
-    void confUpdate();
+  void confUpdate();
 
-    void recordingChanged(Conference c, String callID, String filename);
+  void recordingChanged(Conference c, String callID, String filename);
 
-    void rtcpReportReceived(Conference c, HashMap<String, Integer> stats);
+  void rtcpReportReceived(Conference c, HashMap<String, Integer> stats);
 }

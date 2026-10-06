@@ -26,32 +26,31 @@ package org.argouml.uml.diagram.state.ui;
 
 import org.tigris.gef.graph.GraphModel;
 
-/** Class to display graphics for a UML DeepHistoryState in a diagram.
+/**
+ * Class to display graphics for a UML DeepHistoryState in a diagram.
  *
  * @author jrobbins
  */
 public class FigDeepHistoryState extends FigHistoryState {
-    /**
-     * The main constructor
-     */
-    public FigDeepHistoryState() {
-        super();
-    }
+  /** The main constructor */
+  public FigDeepHistoryState() {
+    super();
+  }
 
-    /**
-     * @see org.argouml.uml.diagram.state.ui.FigHistoryState#getH()
-     */
-    public String getH() {
-        return "H*";
-    }
+  /**
+   * @see org.argouml.uml.diagram.state.ui.FigHistoryState#getH()
+   */
+  public String getH() {
+    return "H*";
+  }
 
-    /**
-     * The constructor which links the Fig into the existing UML element
-     * @param gm ignored
-     * @param node the UML element
-     */
-    public FigDeepHistoryState(GraphModel gm, Object node) {
-        super(gm, node);
-    }
-
+  /**
+   * The constructor which links the Fig into the existing UML element
+   *
+   * @param gm ignored
+   * @param node the UML element
+   */
+  public FigDeepHistoryState(GraphModel gm, Object node) {
+    super(gm, node);
+  }
 } /* end class FigDeepHistoryState */

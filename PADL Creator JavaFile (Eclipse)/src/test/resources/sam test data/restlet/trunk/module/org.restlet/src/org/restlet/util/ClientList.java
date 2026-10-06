@@ -28,40 +28,40 @@ import org.restlet.data.Protocol;
 
 /**
  * Modifiable list of client connectors.
+ *
  * @author Jerome Louvel (contact@noelios.com)
  */
-public class ClientList extends WrapperList<Client>
-{
-	/** The context. */
-	private Context context;
+public class ClientList extends WrapperList<Client> {
+  /** The context. */
+  private Context context;
 
-	/**
-	 * Constructor.
-	 * @param context The context.
-	 */
-	public ClientList(Context context)
-	{
-		this.context = context;
-	}
+  /**
+   * Constructor.
+   *
+   * @param context The context.
+   */
+  public ClientList(Context context) {
+    this.context = context;
+  }
 
-	/**
-	 * Adds a new client connector in the map supporting the given protocol.
-	 * @param protocol The connector protocol.
-	 * @return The added client.
-	 */
-	public Client add(Protocol protocol)
-	{
-		Client result = new Client(getContext(), protocol);
-		add(result);
-		return result;
-	}
+  /**
+   * Adds a new client connector in the map supporting the given protocol.
+   *
+   * @param protocol The connector protocol.
+   * @return The added client.
+   */
+  public Client add(Protocol protocol) {
+    Client result = new Client(getContext(), protocol);
+    add(result);
+    return result;
+  }
 
-	/**
-	 * Returns the context.
-	 * @return The context.
-	 */
-	private Context getContext()
-	{
-		return this.context;
-	}
+  /**
+   * Returns the context.
+   *
+   * @return The context.
+   */
+  private Context getContext() {
+    return this.context;
+  }
 }

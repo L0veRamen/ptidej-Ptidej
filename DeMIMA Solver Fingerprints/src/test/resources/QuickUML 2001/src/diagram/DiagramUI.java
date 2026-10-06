@@ -1,27 +1,22 @@
 /**
+ * Java Diagram Package; An extremely flexible and fast multipurpose diagram component for Swing.
+ * Copyright (C) 2001 Eric Crahen <crahen@cse.buffalo.edu>
  *
-    Java Diagram Package; An extremely flexible and fast multipurpose diagram 
-    component for Swing.
-    Copyright (C) 2001  Eric Crahen <crahen@cse.buffalo.edu>
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
+ * <p>This program is free software; you can redistribute it and/or modify it under the terms of the
+ * GNU General Public License as published by the Free Software Foundation; either version 2 of the
+ * License, or (at your option) any later version.
+ *
+ * <p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * <p>You should have received a copy of the GNU General Public License along with this program; if
+ * not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307 USA
  */
-
 package diagram;
 
+import diagram.figures.PolyLink;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
@@ -33,7 +28,6 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-
 import javax.swing.CellRendererPane;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
@@ -43,24 +37,18 @@ import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.plaf.ComponentUI;
 
-import diagram.figures.PolyLink;
-
 /**
  * @class DiagramUI
- *
  * @date 08-20-2001
  * @author Eric Crahen
  * @version 1.0
- *
- * This is the based UI delegate for a Diagram component.
+ *     <p>This is the based UI delegate for a Diagram component.
  */
-public class DiagramUI extends ComponentUI { 
+public class DiagramUI extends ComponentUI {
 
   static { // Install the UI with the UIManager
-
     UIManager.put("diagram.background", new Color(0xEF, 0xEF, 0xEF));
     UIManager.put("diagram.foreground", Color.black);
-
   }
 
   // Associated components
@@ -71,7 +59,7 @@ public class DiagramUI extends ComponentUI {
   protected ModelHandler modelListener = new ModelHandler();
   protected PropertyChangeHandler propertyListener = new PropertyChangeHandler();
 
-  // Layer for sorting the figures 
+  // Layer for sorting the figures
   protected Layer figureLayer = new Layer();
   protected Layer linkLayer = new Layer();
 
@@ -90,54 +78,53 @@ public class DiagramUI extends ComponentUI {
   private Color originalForeground;
   private Color originalBackground;
 
-  /**
-   *
-   */
+  /** */
   public DiagramUI() {
     UIManager.getDefaults().addPropertyChangeListener(propertyListener);
   }
 
   /**
-   * Get a FigureRenderer from the cache, if a renderer of that class does
-   * not yet exist, create and cache on using the default constructor.
+   * Get a FigureRenderer from the cache, if a renderer of that class does not yet exist, create and
+   * cache on using the default constructor.
    *
    * @return FigureRenderer
    */
-  public synchronized static FigureRenderer getRenderer(Class c) {
+  public static synchronized FigureRenderer getRenderer(Class c) {
 
-    FigureRenderer renderer = (FigureRenderer)rendererCache.get(c);
+    FigureRenderer renderer = (FigureRenderer) rendererCache.get(c);
 
-    if(renderer == null) {
-      try { 
-        renderer = (FigureRenderer)c.newInstance();
+    if (renderer == null) {
+      try {
+        renderer = (FigureRenderer) c.newInstance();
         rendererCache.put(c, renderer);
-      } catch(Throwable t) { /* ignore renderers that have no default constructor */ }
+      } catch (Throwable t) {
+        /* ignore renderers that have no default constructor */
+      }
     }
 
     return renderer;
-
   }
 
-
   /**
-   * Get a FigureEditor from the cache, if a renderer of that class does
-   * not yet exist, create and cache on using the default constructor.
+   * Get a FigureEditor from the cache, if a renderer of that class does not yet exist, create and
+   * cache on using the default constructor.
    *
    * @return FigureEditor
    */
-  public synchronized static FigureEditor getEditor(Class c) {
+  public static synchronized FigureEditor getEditor(Class c) {
 
-    FigureEditor editor = (FigureEditor)editorCache.get(c);
+    FigureEditor editor = (FigureEditor) editorCache.get(c);
 
-    if(editor == null) {
-      try { 
-        editor = (FigureEditor)c.newInstance();
+    if (editor == null) {
+      try {
+        editor = (FigureEditor) c.newInstance();
         editorCache.put(c, editor);
-      } catch(Throwable t) { /* ignore editors that have no default constructor */ }
+      } catch (Throwable t) {
+        /* ignore editors that have no default constructor */
+      }
     }
 
     return editor;
-
   }
 
   /**
@@ -149,7 +136,6 @@ public class DiagramUI extends ComponentUI {
     return new DiagramUI();
   }
 
- 
   /**
    * Install this UI on a Diagram
    *
@@ -157,22 +143,20 @@ public class DiagramUI extends ComponentUI {
    */
   public void installUI(JComponent c) {
 
-    if(!(c instanceof Diagram))
+    if (!(c instanceof Diagram))
       throw new RuntimeException("This UI is for Diagram components only");
-    
-    diagram = (Diagram)c;
+
+    diagram = (Diagram) c;
 
     // Install the listeners
     diagram.add(cellRendererPane);
     diagram.addPropertyChangeListener(propertyListener);
 
     DiagramModel model = diagram.getModel();
-    if(model != null)
-      model.addDiagramDataListener(modelListener);
+    if (model != null) model.addDiagramDataListener(modelListener);
 
     SelectionModel selectionModel = diagram.getSelectionModel();
-    if(selectionModel != null)
-      selectionModel.addSelectionListener(modelListener);
+    if (selectionModel != null) selectionModel.addSelectionListener(modelListener);
 
     // Install the key mapping for editors
     InputMap map = c.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
@@ -199,7 +183,6 @@ public class DiagramUI extends ComponentUI {
 
     // Change the colors
     installColors(diagram);
-
   }
 
   /**
@@ -207,14 +190,13 @@ public class DiagramUI extends ComponentUI {
    *
    * @param Diagram
    */
-  protected void installColors(Diagram diagram) {  
+  protected void installColors(Diagram diagram) {
 
     originalForeground = diagram.getForeground();
     originalBackground = diagram.getBackground();
 
     diagram.setBackground(UIManager.getColor("diagram.background"));
     diagram.setForeground(UIManager.getColor("diagram.foreground"));
-    
   }
 
   /**
@@ -226,7 +208,6 @@ public class DiagramUI extends ComponentUI {
 
     diagram.setFigureRenderer(Object.class, getRenderer(DefaultFigureRenderer.class));
     diagram.setFigureRenderer(PolyLink.class, getRenderer(DefaultLinkRenderer.class));
-
   }
 
   /**
@@ -238,7 +219,6 @@ public class DiagramUI extends ComponentUI {
 
     diagram.setFigureEditor(Object.class, getEditor(DefaultFigureEditor.class));
     diagram.setFigureEditor(PolyLink.class, getEditor(DefaultLinkEditor.class));
-
   }
 
   /**
@@ -248,24 +228,21 @@ public class DiagramUI extends ComponentUI {
    */
   public void uninstallUI(JComponent c) {
 
-    if(!(c instanceof Diagram))
+    if (!(c instanceof Diagram))
       throw new RuntimeException("This UI is for Diagram components only");
 
-    if(c != diagram)
-      throw new RuntimeException("This UI is not installed on this Diagram");
+    if (c != diagram) throw new RuntimeException("This UI is not installed on this Diagram");
 
     // Remove the listeners
     diagram.remove(cellRendererPane);
     diagram.removePropertyChangeListener(propertyListener);
 
     DiagramModel model = diagram.getModel();
-    if(model != null)
-      model.removeDiagramDataListener(modelListener);
+    if (model != null) model.removeDiagramDataListener(modelListener);
 
     SelectionModel selectionModel = diagram.getSelectionModel();
-    if(selectionModel != null)
-      selectionModel.removeSelectionListener(modelListener);
-    
+    if (selectionModel != null) selectionModel.removeSelectionListener(modelListener);
+
     // Remove the key mapping for editors
     InputMap map = c.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     map.remove(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0, false));
@@ -294,7 +271,6 @@ public class DiagramUI extends ComponentUI {
 
     linkLayer.removeAll();
     figureLayer.removeAll();
-    
   }
 
   /**
@@ -302,30 +278,25 @@ public class DiagramUI extends ComponentUI {
    *
    * @param Diagram
    */
-  protected void uninstallColors(Diagram diagram) {  
+  protected void uninstallColors(Diagram diagram) {
 
     diagram.setBackground(originalBackground);
     diagram.setForeground(originalForeground);
-    
   }
 
   /**
    * Find the Figure at the given point.
    *
    * @param Point2D
-   *
    * @return Figure or null
    */
   public Figure findFigure(Point2D pt) {
 
     Figure figure = figureLayer.findFigure(pt);
-    if(figure == null) 
-      figure = linkLayer.findFigure(pt);
+    if (figure == null) figure = linkLayer.findFigure(pt);
 
     return figure;
-
   }
-
 
   /**
    * Paint the associated Diagram component
@@ -336,23 +307,18 @@ public class DiagramUI extends ComponentUI {
 
     linkLayer.paintLayer(g);
     figureLayer.paintLayer(g);
-
   }
 
   /**
-   * Refresh a Figure by using the decorated area recommended by the renderer
-   * that paints that figure. this either damages or repaints depending on wether
-   * or not fast refresh is enabled.
+   * Refresh a Figure by using the decorated area recommended by the renderer that paints that
+   * figure. this either damages or repaints depending on wether or not fast refresh is enabled.
    *
    * @param Figure
    */
   public void refreshFigure(Figure figure) {
 
-    if(fastRefresh)
-      repaintFigure(figure);
-    else
-      damageFigure(figure);
-
+    if (fastRefresh) repaintFigure(figure);
+    else damageFigure(figure);
   }
 
   /**
@@ -362,11 +328,8 @@ public class DiagramUI extends ComponentUI {
    */
   public void refreshRegion(Rectangle rc) {
 
-    if(fastRefresh)
-      repaintRegion(rc);
-    else
-      damageRegion(rc);
-
+    if (fastRefresh) repaintRegion(rc);
+    else damageRegion(rc);
   }
 
   /**
@@ -378,28 +341,24 @@ public class DiagramUI extends ComponentUI {
 
     RepaintManager m = RepaintManager.currentManager(diagram);
 
-    if(rc != null)
-      m.addDirtyRegion(diagram, rc.x, rc.y, rc.width, rc.height);
-    else
-      m.markCompletelyDirty(diagram);
+    if (rc != null) m.addDirtyRegion(diagram, rc.x, rc.y, rc.width, rc.height);
+    else m.markCompletelyDirty(diagram);
 
     m.paintDirtyRegions();
-
   }
 
   /**
-   * Repaint a Figure by using the decorated area recommended by the renderer
-   * that paints that figure
+   * Repaint a Figure by using the decorated area recommended by the renderer that paints that
+   * figure
    *
    * @param Figure
    */
   public void repaintFigure(Figure figure) {
 
     FigureRenderer renderer = diagram.getFigureRenderer(figure.getClass());
-    bounds = (Rectangle)renderer.getDecoratedBounds(diagram, figure, bounds);
-    
-    repaintRegion(bounds);
+    bounds = (Rectangle) renderer.getDecoratedBounds(diagram, figure, bounds);
 
+    repaintRegion(bounds);
   }
 
   /**
@@ -411,16 +370,12 @@ public class DiagramUI extends ComponentUI {
 
     RepaintManager m = RepaintManager.currentManager(diagram);
 
-    if(rc == null)
-      m.markCompletelyDirty(diagram);
-    else
-      m.addDirtyRegion(diagram, rc.x, rc.y, rc.width, rc.height);
-
+    if (rc == null) m.markCompletelyDirty(diagram);
+    else m.addDirtyRegion(diagram, rc.x, rc.y, rc.width, rc.height);
   }
 
   /**
-   * Damage a Figure by using the decorated area recommended by the renderer
-   * that paints that figure
+   * Damage a Figure by using the decorated area recommended by the renderer that paints that figure
    *
    * @param Figure
    */
@@ -428,44 +383,38 @@ public class DiagramUI extends ComponentUI {
 
     // Damage the figure
     FigureRenderer renderer = diagram.getFigureRenderer(figure.getClass());
-    bounds = (Rectangle)renderer.getDecoratedBounds(diagram, figure, bounds);   
+    bounds = (Rectangle) renderer.getDecoratedBounds(diagram, figure, bounds);
     damageRegion(bounds);
-
   }
 
-
   /**
-   * Create an association between a link & figure so that the link
-   * can be repainted with the figure.
+   * Create an association between a link & figure so that the link can be repainted with the
+   * figure.
    */
   public void addConnection(Figure figure, Link link) {
-    
+
     // Map the figure to the link
-    ArrayList list = (ArrayList)linkMap.get(figure);
-    if(list == null) {
+    ArrayList list = (ArrayList) linkMap.get(figure);
+    if (list == null) {
       list = new ArrayList();
       linkMap.put(figure, list);
     }
 
     list.add(link);
-    
   }
 
   /**
-   * Break an association between a link & figure so that the link
-   * can no longer be repainted with the figure.
+   * Break an association between a link & figure so that the link can no longer be repainted with
+   * the figure.
    */
   public void removeConnection(Figure figure, Link link) {
 
-    ArrayList list = (ArrayList)linkMap.get(figure);
-    if(list != null) { 
+    ArrayList list = (ArrayList) linkMap.get(figure);
+    if (list != null) {
 
       list.remove(link);
-      if(list.isEmpty())
-        linkMap.remove(figure);
-
+      if (list.isEmpty()) linkMap.remove(figure);
     }
-
   }
 
   /**
@@ -478,51 +427,42 @@ public class DiagramUI extends ComponentUI {
   public Figure[] getConnected(Figure figure, Figure[] array) {
 
     // Get the maped figures
-    ArrayList list = (ArrayList)linkMap.get(figure);
-    if(list != null) {
-      
+    ArrayList list = (ArrayList) linkMap.get(figure);
+    if (list != null) {
+
       // Allocate an array if needed
-      if(array == null)
-        array = new Figure[list.size()];
+      if (array == null) array = new Figure[list.size()];
 
-      array = (Figure[])list.toArray((Object[])array);
+      array = (Figure[]) list.toArray((Object[]) array);
 
-    } else if(array != null && list != null && list.size() > 0)
+    } else if (array != null && list != null && list.size() > 0)
       list.set(0, null); // Terminate array
-      
-    return array;
 
+    return array;
   }
 
   /**
    * @class Layer
-   * 
-   * A Layer keeps track of the z-order for items in a Diagram. The z-order
-   * in which the figures are displayed is not part of the data model, its 
-   * a responibiliy of the view of that data model.
+   *     <p>A Layer keeps track of the z-order for items in a Diagram. The z-order in which the
+   *     figures are displayed is not part of the data model, its a responibiliy of the view of that
+   *     data model.
    */
   protected class Layer {
 
     // List to keep track of items in the layer
     protected ArrayList figureList = new ArrayList();
-    
-    /**
-     * Add a figure to this Layer
-     */
+
+    /** Add a figure to this Layer */
     public void add(Figure f) {
       figureList.add(f);
     }
 
-    /**
-     * Remove all Figures associated with this Layer
-     */
+    /** Remove all Figures associated with this Layer */
     public void removeAll() {
       figureList.clear();
     }
 
-    /**
-     * Remove a Figure from this Layer
-     */
+    /** Remove a Figure from this Layer */
     public void remove(Figure f) {
       figureList.remove(f);
     }
@@ -533,26 +473,24 @@ public class DiagramUI extends ComponentUI {
      * @param Figure
      */
     public void raise(Figure f) {
-      
+
       // Pop it out of the list and Push it back into the back
       figureList.remove(f);
       figureList.add(f);
-      
     }
-    
+
     /**
      * Move a Figure to the top of the list (lower z-order)
      *
      * @param Figure
      */
     public void lower(Figure f) {
-      
+
       // Pop it out of the list and Push it back into the front
       figureList.remove(f);
       figureList.add(0, f);
-      
     }
-    
+
     /**
      * Test the layer to see if it contains a specific Figure
      *
@@ -561,34 +499,28 @@ public class DiagramUI extends ComponentUI {
     public boolean contains(Figure f) {
       return figureList.contains(f);
     }
-    
+
     /**
-     * Find the Figure at the given point. This searches for the higest
-     * z-order match.
+     * Find the Figure at the given point. This searches for the higest z-order match.
      *
-     * @param Object if an instance of Class is provided only a result of
-     * that type can be returned.
-     *
+     * @param Object if an instance of Class is provided only a result of that type can be returned.
      * @return Figure
      */
     public Figure findFigure(Point2D pt) {
-      
+
       // Walk the list backwards to
-      for(int i = figureList.size(); --i >= 0;) {
-        
-        Figure f = (Figure)figureList.get(i);
-        if(f.contains(pt))
-          return f;
-        
+      for (int i = figureList.size(); --i >= 0; ) {
+
+        Figure f = (Figure) figureList.get(i);
+        if (f.contains(pt)) return f;
       }
-      
+
       return null;
-      
     }
 
     /**
-     * Paint the layer on some Diagram. Subclasses can override the
-     * paintComponet method to change how this layer is painted.
+     * Paint the layer on some Diagram. Subclasses can override the paintComponet method to change
+     * how this layer is painted.
      *
      * @param Graphics context to paint on
      */
@@ -598,39 +530,32 @@ public class DiagramUI extends ComponentUI {
 
       SelectionModel selectionModel = diagram.getSelectionModel();
 
-      for(int i=0; i < figureList.size(); i++) {
-      
+      for (int i = 0; i < figureList.size(); i++) {
+
         // Get each Figure and paint it with the renderer the diagram supplies.
-        Figure figure = (Figure)figureList.get(i);
+        Figure figure = (Figure) figureList.get(i);
         FigureRenderer renderer = diagram.getFigureRenderer(figure.getClass());
-        if(renderer == null)
-          throw new RuntimeException("No renderer for this Figure");
+        if (renderer == null) throw new RuntimeException("No renderer for this Figure");
 
         // Draw the item if it intersects the clipping rectangle
-        if(clip == null || figure.intersects(clip)) {
+        if (clip == null || figure.intersects(clip)) {
 
           // Figure out if this is a selected component
           boolean hasFocus = (selectionModel == null) ? false : selectionModel.contains(figure);
-          
+
           // Get the Component that should be used to render this Figure
           Component c = renderer.getRendererComponent(diagram, figure, hasFocus);
-          if(c == null)
-            throw new RuntimeException("No renderer Component for this Figure");
+          if (c == null) throw new RuntimeException("No renderer Component for this Figure");
 
           // Set the bounds of the Component to match its counterpart (Figure)
-          bounds = (Rectangle)renderer.getDecoratedBounds(diagram, figure, bounds);
-          
+          bounds = (Rectangle) renderer.getDecoratedBounds(diagram, figure, bounds);
+
           // Paint the figure
           paintFigure(g, c, bounds);
-          
         }
-        
       }
-
-
     }
 
-    
     /**
      * Paint the figure on the Diagram with the given rendering Component
      *
@@ -641,19 +566,13 @@ public class DiagramUI extends ComponentUI {
     public void paintFigure(Graphics g, Component c, Rectangle r) {
       cellRendererPane.paintComponent(g, c, diagram, r.x, r.y, r.width, r.height, true);
     }
-
-
   } /* Layer */
-
 
   /**
    * @class ModelHandler
-   *
-   * Listens to the DiagramModel for Figures being added, removed, selected and
-   * deselected.
+   *     <p>Listens to the DiagramModel for Figures being added, removed, selected and deselected.
    */
-  protected class ModelHandler 
-    implements DiagramModelListener, DiagramSelectionListener {
+  protected class ModelHandler implements DiagramModelListener, DiagramSelectionListener {
 
     /**
      * Notify of a new figure being added to a DiagramModel
@@ -663,19 +582,17 @@ public class DiagramUI extends ComponentUI {
      */
     public void figureAdded(DiagramModel model, Figure figure) {
 
-      if(figure instanceof Link) {
+      if (figure instanceof Link) {
 
-        Link link = (Link)figure;
-        linkLayer.add(link);      
-        
+        Link link = (Link) figure;
+        linkLayer.add(link);
+
         addConnection(link.getSource(), link);
         addConnection(link.getSink(), link);
 
-      } else
-        figureLayer.add(figure);
-      
+      } else figureLayer.add(figure);
     }
-    
+
     /**
      * Notify of a figure being removed from a DiagramModel
      *
@@ -684,42 +601,30 @@ public class DiagramUI extends ComponentUI {
      */
     public void figureRemoved(DiagramModel model, Figure figure) {
 
-      if(figure instanceof Link) {
+      if (figure instanceof Link) {
 
-        Link link = (Link)figure;
+        Link link = (Link) figure;
         linkLayer.remove(link);
 
         removeConnection(link.getSource(), link);
         removeConnection(link.getSink(), link);
 
-      } else
-        figureLayer.remove(figure);
-
+      } else figureLayer.remove(figure);
     }
-      
-    /**
-     * Figure selected
-     */
+
+    /** Figure selected */
     public void figureAdded(SelectionModel model, Figure figure) {
-      
-      if((figure instanceof Link) && linkLayer.contains(figure))
-        linkLayer.raise(figure);
-      else if(figureLayer.contains(figure))
-        figureLayer.raise(figure);
 
+      if ((figure instanceof Link) && linkLayer.contains(figure)) linkLayer.raise(figure);
+      else if (figureLayer.contains(figure)) figureLayer.raise(figure);
     }
-    
-    /**
-     * Figure deselected
-     */
-    public void figureRemoved(SelectionModel model, Figure figure) { }
-    
-  } /* ModelListener */
 
+    /** Figure deselected */
+    public void figureRemoved(SelectionModel model, Figure figure) {}
+  } /* ModelListener */
 
   /**
    * @class PropertyChangeHandler
-   *
    */
   protected class PropertyChangeHandler implements PropertyChangeListener {
 
@@ -728,64 +633,54 @@ public class DiagramUI extends ComponentUI {
       String propertyName = e.getPropertyName();
 
       // Listen for DiagramModel changes.
-      if(propertyName.equals("model")) {
+      if (propertyName.equals("model")) {
 
-        DiagramModel oldModel = (DiagramModel)e.getOldValue();
-        DiagramModel newModel = (DiagramModel)e.getNewValue();
+        DiagramModel oldModel = (DiagramModel) e.getOldValue();
+        DiagramModel newModel = (DiagramModel) e.getNewValue();
 
-        if(oldModel != null)
-          oldModel.removeDiagramDataListener(modelListener);
+        if (oldModel != null) oldModel.removeDiagramDataListener(modelListener);
 
         linkLayer.removeAll();
         figureLayer.removeAll();
         linkMap.clear();
 
         // Update the layers for the new model
-        if(newModel != null) {
+        if (newModel != null) {
 
-          newModel.addDiagramDataListener(modelListener);       
-          for(Iterator i = newModel.iterator();i.hasNext();) 
-            modelListener.figureAdded(newModel, (Figure)i.next());
-          
-          
+          newModel.addDiagramDataListener(modelListener);
+          for (Iterator i = newModel.iterator(); i.hasNext(); )
+            modelListener.figureAdded(newModel, (Figure) i.next());
         }
 
         // redraw
         repaintDiagram();
 
-      } else if(propertyName.equals("selectionModel")) {
+      } else if (propertyName.equals("selectionModel")) {
 
-        SelectionModel oldModel = (SelectionModel)e.getOldValue();
-        SelectionModel newModel = (SelectionModel)e.getNewValue();
+        SelectionModel oldModel = (SelectionModel) e.getOldValue();
+        SelectionModel newModel = (SelectionModel) e.getNewValue();
 
-        if(oldModel != null)
-          oldModel.removeSelectionListener(modelListener);
-        
-        if (newModel != null) 
-          newModel.addSelectionListener(modelListener);
-        
+        if (oldModel != null) oldModel.removeSelectionListener(modelListener);
+
+        if (newModel != null) newModel.addSelectionListener(modelListener);
+
         repaintDiagram();
 
-      } else if(propertyName.equals("fastRefresh")) {
+      } else if (propertyName.equals("fastRefresh")) {
         fastRefresh = e.getNewValue().equals("true");
-      } else if(propertyName.equals("diagram.background")) {
-        diagram.setBackground((Color)e.getNewValue());
-      } else if(propertyName.equals("diagram.foreground")) {
-        diagram.setForeground((Color)e.getNewValue());
-      } else if(propertyName.equals("diagram.border")) {
-        diagram.setBorder((Border)e.getNewValue());
+      } else if (propertyName.equals("diagram.background")) {
+        diagram.setBackground((Color) e.getNewValue());
+      } else if (propertyName.equals("diagram.foreground")) {
+        diagram.setForeground((Color) e.getNewValue());
+      } else if (propertyName.equals("diagram.border")) {
+        diagram.setBorder((Border) e.getNewValue());
       }
-
     }
-
   } /* PropertyChangeHandler */
 
-  /**
-   * Force a repaint
-   */
+  /** Force a repaint */
   private final void repaintDiagram() {
     diagram.invalidate();
     diagram.repaint();
   }
-
 }

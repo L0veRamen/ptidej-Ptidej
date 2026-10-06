@@ -27,108 +27,105 @@ package org.argouml.model;
 import java.util.Collection;
 
 /**
- * The interface for the factory for ExstensionMechanisms.<p>
+ * The interface for the factory for ExstensionMechanisms.
  *
- * Created from the old ExtensionMechanismsFactory.
+ * <p>Created from the old ExtensionMechanismsFactory.
  */
 public interface ExtensionMechanismsFactory {
-    /**
-     * Create an empty but initialized instance of a UML Stereotype.
-     *
-     * @return an initialized UML Stereotype instance.
-     */
-    //Object createStereotype();
+  /**
+   * Create an empty but initialized instance of a UML Stereotype.
+   *
+   * @return an initialized UML Stereotype instance.
+   */
+  // Object createStereotype();
 
-    /**
-     * Create an empty but initialized instance of a UML TaggedValue.
-     *
-     * @return an initialized UML TaggedValue instance.
-     */
-    Object createTaggedValue();
+  /**
+   * Create an empty but initialized instance of a UML TaggedValue.
+   *
+   * @return an initialized UML TaggedValue instance.
+   */
+  Object createTaggedValue();
 
-    /**
-     * Builds a stereotype for some kind of modelelement.
-     *
-     * TODO: MVW: This needs rethinking/rework! I have the following questions:
-     *       Why does it not search for a stereotype in the namespace using
-     *       properties and only create a new stereotype if it will actually
-     *       be used? Ie, why is there not a
-     *       getStereotype(String name, String baseClass)? (edited by d00mst)
-     *
-     * @param theModelElementObject    a Model Element that the stereotype
-     *                                 will be applied to. The stereotype will
-     *                                 have its BaseClass set to an appropriate
-     *                                 value for this kind of Model Elements.
-     * @param theName                  the name for the stereotype
-     * @param theNamespaceObject       the namespace the stereotype will be
-     *                                 created within.
-     * @return                         the resulting stereotype object
-     * @throws IllegalArgumentException if either argument is null.
-     */
-    Object buildStereotype(Object theModelElementObject,
-            Object theName,
-            Object theNamespaceObject);
+  /**
+   * Builds a stereotype for some kind of modelelement.
+   *
+   * <p>TODO: MVW: This needs rethinking/rework! I have the following questions: Why does it not
+   * search for a stereotype in the namespace using properties and only create a new stereotype if
+   * it will actually be used? Ie, why is there not a getStereotype(String name, String baseClass)?
+   * (edited by d00mst)
+   *
+   * @param theModelElementObject a Model Element that the stereotype will be applied to. The
+   *     stereotype will have its BaseClass set to an appropriate value for this kind of Model
+   *     Elements.
+   * @param theName the name for the stereotype
+   * @param theNamespaceObject the namespace the stereotype will be created within.
+   * @return the resulting stereotype object
+   * @throws IllegalArgumentException if either argument is null.
+   */
+  Object buildStereotype(Object theModelElementObject, Object theName, Object theNamespaceObject);
 
-    /**
-     * Builds an initialized stereotype.
-     *
-     * @param theModelElementObject the baseclass for the new stereotype
-     * @param theName               the name for the new stereotype
-     * @param model the current model of interest
-     * @param models all the models
-     * @return                      the new stereotype
-     */
-    Object buildStereotype(Object theModelElementObject, String theName,
-            Object model, Collection models);
+  /**
+   * Builds an initialized stereotype.
+   *
+   * @param theModelElementObject the baseclass for the new stereotype
+   * @param theName the name for the new stereotype
+   * @param model the current model of interest
+   * @param models all the models
+   * @return the new stereotype
+   */
+  Object buildStereotype(
+      Object theModelElementObject, String theName, Object model, Collection models);
 
-    /**
-     * Builds an initialized stereotype.
-     *
-     * @param text is the name of the stereotype
-     * @param ns namespace where the stereotype lives (is known)
-     * @return an initialized stereotype.
-     */
-    Object buildStereotype(String text, Object ns);
+  /**
+   * Builds an initialized stereotype.
+   *
+   * @param text is the name of the stereotype
+   * @param ns namespace where the stereotype lives (is known)
+   * @return an initialized stereotype.
+   */
+  Object buildStereotype(String text, Object ns);
 
-    /**
-     * Build an initialized instance of a UML TaggedValue.
-     *
-     * @param tag is the tag name (a String).
-     * @param value is the value (a String).
-     * @return an initialized UML TaggedValue instance.
-     */
-    Object buildTaggedValue(String tag, String value);
+  /**
+   * Build an initialized instance of a UML TaggedValue.
+   *
+   * @param tag is the tag name (a String).
+   * @param value is the value (a String).
+   * @return an initialized UML TaggedValue instance.
+   */
+  Object buildTaggedValue(String tag, String value);
 
-    /**
-     * Copies a stereotype.
-     *
-     * @param source is the stereotype to copy.
-     * @param ns is the namespace to put the copy in.
-     * @return a newly created stereotype
-     */
-    Object copyStereotype(Object source, Object ns);
- 
-    /**
-     * Build an initialized instance of a TagDefinition.
-     * @param text is the name of the TagDeginition
-     * @param stereotype is the optional stereotype owning the TagDefinition
-     * @param ns is the namespace to put the TagDefinition.
-     * @return a newly created TagDefinition.
-     */
-    Object buildTagDefinition(String text, Object stereotype, Object ns);
-    
-    /**
-     * Create a TagDefinition
-     * @return a TagDefinition
-     */
-    Object createTagDefinition();
+  /**
+   * Copies a stereotype.
+   *
+   * @param source is the stereotype to copy.
+   * @param ns is the namespace to put the copy in.
+   * @return a newly created stereotype
+   */
+  Object copyStereotype(Object source, Object ns);
 
-    /**
-     * Copy a TagDefinition into the given namespace or stereotype
-     * @param aTd The TagDefinition to copy
-     * @param aNs A Namespace or a stereotype into which place the copy
-     * @return A copy of the tagdefinition
-     */
-    Object copyTagDefinition(Object aTd, Object aNs);
-    
+  /**
+   * Build an initialized instance of a TagDefinition.
+   *
+   * @param text is the name of the TagDeginition
+   * @param stereotype is the optional stereotype owning the TagDefinition
+   * @param ns is the namespace to put the TagDefinition.
+   * @return a newly created TagDefinition.
+   */
+  Object buildTagDefinition(String text, Object stereotype, Object ns);
+
+  /**
+   * Create a TagDefinition
+   *
+   * @return a TagDefinition
+   */
+  Object createTagDefinition();
+
+  /**
+   * Copy a TagDefinition into the given namespace or stereotype
+   *
+   * @param aTd The TagDefinition to copy
+   * @param aNs A Namespace or a stereotype into which place the copy
+   * @return A copy of the tagdefinition
+   */
+  Object copyTagDefinition(Object aTd, Object aNs);
 }

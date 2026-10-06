@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xerces" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -60,143 +60,132 @@ package org.apache.xerces.dom;
 import org.w3c.dom.*;
 
 /**
- * Notations are how the Document Type Description (DTD) records hints
- * about the format of an XML "unparsed entity" -- in other words,
- * non-XML data bound to this document type, which some applications
- * may wish to consult when manipulating the document. A Notation
- * represents a name-value pair, with its nodeName being set to the
- * declared name of the notation.
- * <P>
- * Notations are also used to formally declare the "targets" of
- * Processing Instructions.
- * <P>
- * Note that the Notation's data is non-DOM information; the DOM only
- * records what and where it is.
- * <P>
- * See the XML 1.0 spec, sections 4.7 and 2.6, for more info.
- * <P>
- * Level 1 of the DOM does not support editing Notation contents.
+ * Notations are how the Document Type Description (DTD) records hints about the format of an XML
+ * "unparsed entity" -- in other words, non-XML data bound to this document type, which some
+ * applications may wish to consult when manipulating the document. A Notation represents a
+ * name-value pair, with its nodeName being set to the declared name of the notation.
+ *
+ * <p>Notations are also used to formally declare the "targets" of Processing Instructions.
+ *
+ * <p>Note that the Notation's data is non-DOM information; the DOM only records what and where it
+ * is.
+ *
+ * <p>See the XML 1.0 spec, sections 4.7 and 2.6, for more info.
+ *
+ * <p>Level 1 of the DOM does not support editing Notation contents.
  *
  * @version
- * @since  PR-DOM-Level-1-19980818.
+ * @since PR-DOM-Level-1-19980818.
  */
-public class NotationImpl 
-    extends NodeImpl 
-    implements Notation {
+public class NotationImpl extends NodeImpl implements Notation {
 
-    //
-    // Constants
-    //
+  //
+  // Constants
+  //
 
-    /** Serialization version. */
-    static final long serialVersionUID = -764632195890658402L;
-    
-    //
-    // Data
-    //
+  /** Serialization version. */
+  static final long serialVersionUID = -764632195890658402L;
 
-    /** Public identifier. */
-    protected String publicId;
+  //
+  // Data
+  //
 
-    /** System identifier. */
-    protected String systemId;
+  /** Public identifier. */
+  protected String publicId;
 
-    //
-    // Constructors
-    //
+  /** System identifier. */
+  protected String systemId;
 
-    /** Factory constructor. */
-    public NotationImpl(DocumentImpl ownerDoc, String name) {
-    	super(ownerDoc, name, null);
+  //
+  // Constructors
+  //
+
+  /** Factory constructor. */
+  public NotationImpl(DocumentImpl ownerDoc, String name) {
+    super(ownerDoc, name, null);
+  }
+
+  //
+  // Node methods
+  //
+
+  /**
+   * A short integer indicating what type of node this is. The named constants for this value are
+   * defined in the org.w3c.dom.Node interface.
+   */
+  public short getNodeType() {
+    return Node.NOTATION_NODE;
+  }
+
+  /**
+   * Notations never have a nodeValue.
+   *
+   * @throws DOMException(NO_MODIFICATION_ALLOWED_ERR)
+   */
+  public void setNodeValue(String value) throws DOMException {
+    throw new DOMExceptionImpl(
+        DOMException.NO_MODIFICATION_ALLOWED_ERR, "NO_MODIFICATION_ALLOWED_ERR");
+  }
+
+  //
+  // Notation methods
+  //
+
+  /**
+   * The Public Identifier for this Notation. If no public identifier was specified, this will be
+   * null.
+   */
+  public String getPublicId() {
+
+    if (syncData) {
+      synchronizeData();
     }
-    
-    //
-    // Node methods
-    //
+    return publicId;
+  } // getPublicId():String
 
-    /** 
-     * A short integer indicating what type of node this is. The named
-     * constants for this value are defined in the org.w3c.dom.Node interface.
-     */
-    public short getNodeType() {
-        return Node.NOTATION_NODE;
+  /**
+   * The System Identifier for this Notation. If no system identifier was specified, this will be
+   * null.
+   */
+  public String getSystemId() {
+
+    if (syncData) {
+      synchronizeData();
     }
+    return systemId;
+  } // getSystemId():String
 
-    /** 
-     * Notations never have a nodeValue.
-     * @throws DOMException(NO_MODIFICATION_ALLOWED_ERR)
-     */
-    public void setNodeValue(String value) throws DOMException {
-    	throw new DOMExceptionImpl(DOMException.NO_MODIFICATION_ALLOWED_ERR, 
-    	                           "NO_MODIFICATION_ALLOWED_ERR");
+  //
+  // Public methods
+  //
+
+  /**
+   * NON-DOM: The Public Identifier for this Notation. If no public identifier was specified, this
+   * will be null.
+   */
+  public void setPublicId(String id) {
+
+    if (readOnly) {
+      throw new DOMExceptionImpl(DOMException.NO_MODIFICATION_ALLOWED_ERR, null);
     }
+    if (syncData) {
+      synchronizeData();
+    }
+    publicId = id;
+  } // setPublicId(String)
 
-    //
-    // Notation methods
-    //
+  /**
+   * NON-DOM: The System Identifier for this Notation. If no system identifier was specified, this
+   * will be null.
+   */
+  public void setSystemId(String id) {
 
-    /**
-     * The Public Identifier for this Notation. If no public identifier
-     * was specified, this will be null.  
-     */
-    public String getPublicId() {
-
-        if (syncData) {
-            synchronizeData();
-        }
-    	return publicId;
-
-    } // getPublicId():String
-
-    /**
-     * The System Identifier for this Notation. If no system identifier
-     * was specified, this will be null.  
-     */
-    public String getSystemId() {
-
-        if (syncData) {
-            synchronizeData();
-        }
-    	return systemId;
-
-    } // getSystemId():String
-
-    //
-    // Public methods
-    //
-
-    /** 
-     * NON-DOM: The Public Identifier for this Notation. If no public
-     * identifier was specified, this will be null.  
-     */
-    public void setPublicId(String id) {
-
-    	if (readOnly) {
-    		throw new DOMExceptionImpl(
-    			DOMException.NO_MODIFICATION_ALLOWED_ERR,null);
-        }
-        if (syncData) {
-            synchronizeData();
-        }
-        publicId = id;
-
-    } // setPublicId(String)
-
-    /** 
-     * NON-DOM: The System Identifier for this Notation. If no system
-     * identifier was specified, this will be null.  
-     */
-    public void setSystemId(String id) {
-
-    	if(readOnly) {
-    		throw new DOMExceptionImpl(
-    			DOMException.NO_MODIFICATION_ALLOWED_ERR,null);
-        }
-        if (syncData) {
-            synchronizeData();
-        }
-    	systemId = id;
-
-    } // setSystemId(String)
-
+    if (readOnly) {
+      throw new DOMExceptionImpl(DOMException.NO_MODIFICATION_ALLOWED_ERR, null);
+    }
+    if (syncData) {
+      synchronizeData();
+    }
+    systemId = id;
+  } // setSystemId(String)
 } // class NotationImpl

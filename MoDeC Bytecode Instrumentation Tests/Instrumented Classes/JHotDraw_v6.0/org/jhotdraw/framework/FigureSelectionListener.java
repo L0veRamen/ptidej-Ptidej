@@ -17,9 +17,10 @@ package org.jhotdraw.framework;
  * @version <$CURRENT_VERSION$>
  */
 public interface FigureSelectionListener {
-	/**
-	 * Sent when the figure selection has changed.
-	 * @param view DrawingView
-	 */
-	public void figureSelectionChanged(DrawingView view);
+  /**
+   * Sent when the figure selection has changed.
+   *
+   * @param view DrawingView
+   */
+  public void figureSelectionChanged(DrawingView view);
 }

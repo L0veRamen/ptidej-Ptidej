@@ -24,9 +24,5 @@
 
 package org.argouml.ui;
 
-/**
- * Empty interface used to tag Tabbed panels that accept a Fig Target.
- */
-public interface TabFigTarget extends TabTarget {
-
-}
+/** Empty interface used to tag Tabbed panels that accept a Fig Target. */
+public interface TabFigTarget extends TabTarget {}

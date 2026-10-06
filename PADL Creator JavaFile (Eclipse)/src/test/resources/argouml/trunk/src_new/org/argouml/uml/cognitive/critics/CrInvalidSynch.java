@@ -25,7 +25,6 @@
 package org.argouml.uml.cognitive.critics;
 
 import java.util.Iterator;
-
 import org.argouml.cognitive.Designer;
 import org.argouml.model.Model;
 import org.argouml.uml.cognitive.UMLDecision;
@@ -37,60 +36,45 @@ import org.argouml.uml.cognitive.UMLDecision;
  */
 public class CrInvalidSynch extends CrUML {
 
-    /**
-     * The constructor.
-     */
-    public CrInvalidSynch() {
-        setupHeadAndDesc();
-        addSupportedDecision(UMLDecision.STATE_MACHINES);
-        addTrigger("incoming");
-        addTrigger("outgoing");
+  /** The constructor. */
+  public CrInvalidSynch() {
+    setupHeadAndDesc();
+    addSupportedDecision(UMLDecision.STATE_MACHINES);
+    addTrigger("incoming");
+    addTrigger("outgoing");
+  }
+
+  /**
+   * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(java.lang.Object,
+   *     org.argouml.cognitive.Designer)
+   */
+  public boolean predicate2(Object dm, Designer dsgr) {
+    Object destinationRegion = null;
+    Object sourceRegion = null;
+    Object aux = null;
+    Object tr = null;
+    if (!Model.getFacade().isASynchState(dm)) return NO_PROBLEM;
+    Iterator outgoing = Model.getFacade().getOutgoings(dm).iterator();
+    while (outgoing.hasNext()) {
+      tr = outgoing.next();
+      aux = Model.getFacade().getContainer(Model.getFacade().getTarget(tr));
+      if (destinationRegion == null) destinationRegion = aux;
+      else if (!aux.equals(destinationRegion)) return PROBLEM_FOUND;
+    }
+    Iterator incoming = Model.getFacade().getIncomings(dm).iterator();
+    while (incoming.hasNext()) {
+      tr = incoming.next();
+      aux = Model.getFacade().getContainer(Model.getFacade().getSource(tr));
+      if (sourceRegion == null) sourceRegion = aux;
+      else if (!aux.equals(sourceRegion)) return PROBLEM_FOUND;
     }
 
-    /**
-     * @see org.argouml.uml.cognitive.critics.CrUML#predicate2(java.lang.Object,
-     * org.argouml.cognitive.Designer)
-     */
-    public boolean predicate2(Object dm, Designer dsgr) {
-        Object destinationRegion = null;
-        Object sourceRegion = null;
-        Object aux = null;
-        Object tr = null;
-        if (!Model.getFacade().isASynchState(dm))
-            return NO_PROBLEM;
-        Iterator outgoing = Model.getFacade().getOutgoings(dm).iterator();
-        while (outgoing.hasNext()) {
-            tr = outgoing.next();
-            aux = Model.getFacade().getContainer(Model.getFacade().
-                    getTarget(tr));
-            if (destinationRegion == null)
-                destinationRegion = aux;
-            else if (!aux.equals(destinationRegion))
-                return PROBLEM_FOUND;
-        }
-        Iterator incoming = Model.getFacade().getIncomings(dm).iterator();
-        while (incoming.hasNext()) {
-            tr = incoming.next();
-            aux = Model.getFacade().getContainer(Model.getFacade().
-                    getSource(tr));
-            if (sourceRegion == null)
-                sourceRegion = aux;
-            else if (!aux.equals(sourceRegion))
-                return PROBLEM_FOUND;
-        }
+    if (destinationRegion != null && !Model.getFacade().isAConcurrentRegion(destinationRegion))
+      return PROBLEM_FOUND;
 
-        if (destinationRegion != null
-                && !Model.getFacade().isAConcurrentRegion(destinationRegion)
-        )
-            return PROBLEM_FOUND;
+    if (sourceRegion != null && !Model.getFacade().isAConcurrentRegion(sourceRegion))
+      return PROBLEM_FOUND;
 
-        if (sourceRegion != null
-                && !Model.getFacade().isAConcurrentRegion(sourceRegion)
-        )
-            return PROBLEM_FOUND;
-
-        return NO_PROBLEM;
-    }
-
+    return NO_PROBLEM;
+  }
 } /* end class CrInvalidSynch */
-

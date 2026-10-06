@@ -27,100 +27,78 @@ package org.argouml.model;
 import junit.framework.TestCase;
 
 /**
- * Checks that the {@link UmlFactory#buildNode(Object)} method works with
- * all conceivable alternatives.
+ * Checks that the {@link UmlFactory#buildNode(Object)} method works with all conceivable
+ * alternatives.
  */
 public class TestUmlFactoryBuildNode extends TestCase {
-    /**
-     * Constructor.
-     *
-     * @param arg0 name of the test case
+  /**
+   * Constructor.
+   *
+   * @param arg0 name of the test case
+   */
+  public TestUmlFactoryBuildNode(String arg0) {
+    super(arg0);
+  }
+
+  /** Testing Core elements. */
+  public void testBuildCoreNodes() {
+    assertNotNull(Model.getUmlFactory().buildNode(Model.getMetaTypes().getUMLClass()));
+    assertNotNull(Model.getUmlFactory().buildNode(Model.getMetaTypes().getModel()));
+    assertNotNull(Model.getUmlFactory().buildNode(Model.getMetaTypes().getPackage()));
+    // ...
+  }
+
+  // ActivityGraphs
+
+  /** Testing Use Cases elements. */
+  public void testBuildUseCasesNodes() {
+    assertNotNull(Model.getUmlFactory().buildNode(Model.getMetaTypes().getActor()));
+    assertNotNull(Model.getUmlFactory().buildNode(Model.getMetaTypes().getUseCase()));
+    assertNotNull(Model.getUmlFactory().buildNode(Model.getMetaTypes().getPackage()));
+
+    // Instance (in UML 1.4) and Classifier are abstract and not tested
+
+    /*
+     *  Extend, Include, UseCaseInstance & ExtensionPoint not implemented
      */
-    public TestUmlFactoryBuildNode(String arg0) {
-        super(arg0);
-    }
+    //        assertNotNull(Model.getUmlFactory().buildNode(
+    //                Model.getMetaTypes().getExtend()));
+    //        assertNotNull(Model.getUmlFactory().buildNode(
+    //                Model.getMetaTypes().getInclude()));
+    //        assertNotNull(Model.getUmlFactory().buildNode(
+    //                Model.getMetaTypes().getUseCaseInstance()));
+    //        assertNotNull(Model.getUmlFactory().buildNode(
+    //                Model.getMetaTypes().getExtensionPoint()));
+    // ...
+  }
 
-    /**
-     * Testing Core elements.
+  /** Tests for StateMachines elements. */
+  public void testBuildStateMachineNodes() {
+    assertNotNull(Model.getUmlFactory().buildNode(Model.getMetaTypes().getCompositeState()));
+    assertNotNull(Model.getUmlFactory().buildNode(Model.getMetaTypes().getFinalState()));
+    assertNotNull(Model.getUmlFactory().buildNode(Model.getMetaTypes().getSimpleState()));
+
+    /*
+     * State is concrete in UML 1.3, but becomes abstract in UML 1.4, so we
+     * never allow it to be created (and don't test creation)
      */
-    public void testBuildCoreNodes() {
-        assertNotNull(Model.getUmlFactory().buildNode(
-                Model.getMetaTypes().getUMLClass()));
-        assertNotNull(Model.getUmlFactory().buildNode(
-                Model.getMetaTypes().getModel()));
-        assertNotNull(Model.getUmlFactory().buildNode(
-                Model.getMetaTypes().getPackage()));
-        // ...
-    }
+    //        assertNotNull(Model.getUmlFactory().buildNode(
+    //                Model.getMetaTypes().getState()));
+    assertNotNull(Model.getUmlFactory().buildNode(Model.getMetaTypes().getPseudostate()));
+    assertNotNull(Model.getUmlFactory().buildNode(Model.getMetaTypes().getSynchState()));
+    assertNotNull(Model.getUmlFactory().buildNode(Model.getMetaTypes().getStubState()));
+    assertNotNull(Model.getUmlFactory().buildNode(Model.getMetaTypes().getSubmachineState()));
+    // ...
+  }
 
-    // ActivityGraphs
+  /** Tests for Collaborations elements. */
+  public void testBuildCollaborationsNodes() {
+    assertNotNull(Model.getUmlFactory().buildNode(Model.getMetaTypes().getUMLClass()));
+    // ...
+  }
 
-    /**
-     * Testing Use Cases elements.
-     */
-    public void testBuildUseCasesNodes() {
-        assertNotNull(Model.getUmlFactory().buildNode(
-                Model.getMetaTypes().getActor()));
-        assertNotNull(Model.getUmlFactory().buildNode(
-                Model.getMetaTypes().getUseCase()));
-        assertNotNull(Model.getUmlFactory().buildNode(
-                Model.getMetaTypes().getPackage()));
-
-         // Instance (in UML 1.4) and Classifier are abstract and not tested
-
-        /*
-         *  Extend, Include, UseCaseInstance & ExtensionPoint not implemented
-         */
-//        assertNotNull(Model.getUmlFactory().buildNode(
-//                Model.getMetaTypes().getExtend()));
-//        assertNotNull(Model.getUmlFactory().buildNode(
-//                Model.getMetaTypes().getInclude()));
-//        assertNotNull(Model.getUmlFactory().buildNode(
-//                Model.getMetaTypes().getUseCaseInstance()));
-//        assertNotNull(Model.getUmlFactory().buildNode(
-//                Model.getMetaTypes().getExtensionPoint()));
-        // ...
-    }
-
-    /**
-     * Tests for StateMachines elements.
-     */
-    public void testBuildStateMachineNodes() {
-        assertNotNull(Model.getUmlFactory().buildNode(
-                Model.getMetaTypes().getCompositeState()));
-        assertNotNull(Model.getUmlFactory().buildNode(
-                Model.getMetaTypes().getFinalState()));
-        assertNotNull(Model.getUmlFactory().buildNode(
-                Model.getMetaTypes().getSimpleState()));
-
-        /*
-         * State is concrete in UML 1.3, but becomes abstract in UML 1.4, so we
-         * never allow it to be created (and don't test creation)
-         */
-//        assertNotNull(Model.getUmlFactory().buildNode(
-//                Model.getMetaTypes().getState()));
-        assertNotNull(Model.getUmlFactory().buildNode(
-                Model.getMetaTypes().getPseudostate()));
-        assertNotNull(Model.getUmlFactory().buildNode(
-                Model.getMetaTypes().getSynchState()));
-        assertNotNull(Model.getUmlFactory().buildNode(
-                Model.getMetaTypes().getStubState()));
-        assertNotNull(Model.getUmlFactory().buildNode(
-                Model.getMetaTypes().getSubmachineState()));
-        // ...
-    }
-
-    /**
-     * Tests for Collaborations elements.
-     */
-    public void testBuildCollaborationsNodes() {
-        assertNotNull(Model.getUmlFactory().buildNode(
-                Model.getMetaTypes().getUMLClass()));
-        // ...
-    }
-
-    // CommonBehaviorFactory
-    // DataTypesFactory
-    // ExtensionMechanismsFactory
-    // ModelManagementFactory
+  // CommonBehaviorFactory
+  // DataTypesFactory
+  // ExtensionMechanismsFactory
+  // ModelManagementFactory
 }

@@ -27,34 +27,26 @@ package org.argouml.uml.ui.behavior.collaborations;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.UMLModelElementListModel2;
 
-/**
- * List model that shows the Messages belonging to some
- * AssociationRole.
- *
- */
-public class UMLAssociationRoleMessageListModel
-    extends UMLModelElementListModel2 {
+/** List model that shows the Messages belonging to some AssociationRole. */
+public class UMLAssociationRoleMessageListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLAssociationRoleMessageListModel.
-     */
-    public UMLAssociationRoleMessageListModel() {
-        super("message");
-    }
+  /** Constructor for UMLAssociationRoleMessageListModel. */
+  public UMLAssociationRoleMessageListModel() {
+    super("message");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        setAllElements(Model.getFacade().getMessages(getTarget()));
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    setAllElements(Model.getFacade().getMessages(getTarget()));
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object o) {
-        return Model.getFacade().isAMessage(o)
-            && Model.getFacade().getMessages(getTarget()).contains(o);
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object o) {
+    return Model.getFacade().isAMessage(o)
+        && Model.getFacade().getMessages(getTarget()).contains(o);
+  }
 }

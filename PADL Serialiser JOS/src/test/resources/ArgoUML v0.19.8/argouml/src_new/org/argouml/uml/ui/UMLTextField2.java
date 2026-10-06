@@ -26,9 +26,7 @@ package org.argouml.uml.ui;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import javax.swing.JTextField;
-
 import org.argouml.ui.LookAndFeelMgr;
 import org.argouml.ui.targetmanager.TargetListener;
 import org.argouml.ui.targetmanager.TargettableModelView;
@@ -37,38 +35,34 @@ import org.argouml.ui.targetmanager.TargettableModelView;
  * @since Oct 6, 2002
  * @author jaap.branderhorst@xs4all.nl
  */
-public class UMLTextField2
-    extends JTextField
+public class UMLTextField2 extends JTextField
     implements PropertyChangeListener, TargettableModelView {
 
-    /**
-     * Constructor for UMLTextField2.
-     *
-     * @param doc the plain text document
-     */
-    public UMLTextField2(UMLPlainTextDocument doc) {
-        super(doc, null, 0);
-        setFont(LookAndFeelMgr.getInstance().getSmallFont());
-        addCaretListener(ActionCopy.getInstance());
-        addCaretListener(ActionCut.getInstance());
-        addCaretListener(ActionPaste.getInstance());
-        addFocusListener(ActionPaste.getInstance());
-    }
+  /**
+   * Constructor for UMLTextField2.
+   *
+   * @param doc the plain text document
+   */
+  public UMLTextField2(UMLPlainTextDocument doc) {
+    super(doc, null, 0);
+    setFont(LookAndFeelMgr.getInstance().getSmallFont());
+    addCaretListener(ActionCopy.getInstance());
+    addCaretListener(ActionCut.getInstance());
+    addCaretListener(ActionPaste.getInstance());
+    addFocusListener(ActionPaste.getInstance());
+  }
 
-    /**
-     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
-     */
-    public void propertyChange(PropertyChangeEvent evt) {
-        ((UMLPlainTextDocument) getDocument()).propertyChange(evt);
-    }
+  /**
+   * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+   */
+  public void propertyChange(PropertyChangeEvent evt) {
+    ((UMLPlainTextDocument) getDocument()).propertyChange(evt);
+  }
 
-    /**
-     * @see org.argouml.ui.targetmanager.TargettableModelView#getTargettableModel()
-     */
-    public TargetListener getTargettableModel() {
-       return (TargetListener) getDocument();
-    }
-
+  /**
+   * @see org.argouml.ui.targetmanager.TargettableModelView#getTargettableModel()
+   */
+  public TargetListener getTargettableModel() {
+    return (TargetListener) getDocument();
+  }
 }
-
-

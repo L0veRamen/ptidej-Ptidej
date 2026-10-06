@@ -30,7 +30,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.argouml.i18n.Translator;
 import org.argouml.kernel.Project;
 import org.argouml.kernel.ProjectManager;
@@ -39,58 +38,59 @@ import org.argouml.uml.diagram.ArgoDiagram;
 
 /**
  * Rule for Model->Diagram.
- * @author  alexb
+ *
+ * @author alexb
  * @since 0.15.2, Created on 05 October 2003, 19:18
  */
 public class GoModelToDiagrams extends AbstractPerspectiveRule {
 
-    /*
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
-     */
-    public String getRuleName() {
-        return Translator.localize("misc.model.diagram");
-    }
+  /*
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getRuleName()
+   */
+  public String getRuleName() {
+    return Translator.localize("misc.model.diagram");
+  }
 
-    /*
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
-     */
-    public Collection getChildren(Object model) {
-	if (Model.getFacade().isAModel(model)) {
-	    List returnList = new ArrayList();
-	    Project proj = ProjectManager.getManager().getCurrentProject();
-            for (ArgoDiagram diagram : proj.getDiagramList()) {
-                if (isInPath(diagram.getNamespace(), model)) {
-                        returnList.add(diagram);
-                }
-            }
-            return returnList;
-	}
-	return Collections.EMPTY_SET;
+  /*
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getChildren(java.lang.Object)
+   */
+  public Collection getChildren(Object model) {
+    if (Model.getFacade().isAModel(model)) {
+      List returnList = new ArrayList();
+      Project proj = ProjectManager.getManager().getCurrentProject();
+      for (ArgoDiagram diagram : proj.getDiagramList()) {
+        if (isInPath(diagram.getNamespace(), model)) {
+          returnList.add(diagram);
+        }
+      }
+      return returnList;
     }
+    return Collections.EMPTY_SET;
+  }
 
-    private boolean isInPath(Object namespace, Object model) {
-        if (namespace == model) {
-            return true;
-        }
-        Object ns = Model.getFacade().getNamespace(namespace);
-        while (ns != null) {
-            if (model == ns) {
-                return true;
-            }
-            ns = Model.getFacade().getNamespace(ns);
-        }
-        return false;
+  private boolean isInPath(Object namespace, Object model) {
+    if (namespace == model) {
+      return true;
     }
+    Object ns = Model.getFacade().getNamespace(namespace);
+    while (ns != null) {
+      if (model == ns) {
+        return true;
+      }
+      ns = Model.getFacade().getNamespace(ns);
+    }
+    return false;
+  }
 
-    /*
-     * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
-     */
-    public Set getDependencies(Object parent) {
-        if (Model.getFacade().isAModel(parent)) {
-            Set set = new HashSet();
-            set.add(parent);
-            return set;
-        }
-	return Collections.EMPTY_SET;
+  /*
+   * @see org.argouml.ui.explorer.rules.PerspectiveRule#getDependencies(java.lang.Object)
+   */
+  public Set getDependencies(Object parent) {
+    if (Model.getFacade().isAModel(parent)) {
+      Set set = new HashSet();
+      set.add(parent);
+      return set;
     }
+    return Collections.EMPTY_SET;
+  }
 }

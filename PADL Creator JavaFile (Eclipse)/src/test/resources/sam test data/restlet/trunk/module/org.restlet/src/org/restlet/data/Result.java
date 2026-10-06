@@ -25,106 +25,105 @@ package org.restlet.data;
 import org.restlet.resource.Representation;
 
 /**
- * Contains the results information returned by some methods in Resource. 
+ * Contains the results information returned by some methods in Resource.
+ *
  * @author Jerome Louvel (contact@noelios.com)
  * @deprecated Replace by org.restlet.resource.Result
  */
 @Deprecated
-public class Result
-{
-	/** The optional entity. */
-	private Representation entity;
+public class Result {
+  /** The optional entity. */
+  private Representation entity;
 
-	/** The status. */
-	private Status status;
+  /** The status. */
+  private Status status;
 
-	/** The optional redirection reference. */
-	private Reference redirectionRef;
+  /** The optional redirection reference. */
+  private Reference redirectionRef;
 
-	/**
-	 * Constructor. 
-	 * @param status The status.
-	 */
-	public Result(Status status)
-	{
-		this(status, null, null);
-	}
+  /**
+   * Constructor.
+   *
+   * @param status The status.
+   */
+  public Result(Status status) {
+    this(status, null, null);
+  }
 
-	/**
-	 * Constructor. 
-	 * @param status The status.
-	 * @param entity The entity.
-	 */
-	public Result(Status status, Representation entity)
-	{
-		this(status, entity, null);
-	}
+  /**
+   * Constructor.
+   *
+   * @param status The status.
+   * @param entity The entity.
+   */
+  public Result(Status status, Representation entity) {
+    this(status, entity, null);
+  }
 
-	/**
-	 * Constructor. 
-	 * @param status The status.
-	 * @param entity The entity.
-	 * @param redirectionRef The redirection reference.
-	 */
-	public Result(Status status, Representation entity, Reference redirectionRef)
-	{
-		this.entity = entity;
-		this.status = status;
-		this.redirectionRef = redirectionRef;
-	}
+  /**
+   * Constructor.
+   *
+   * @param status The status.
+   * @param entity The entity.
+   * @param redirectionRef The redirection reference.
+   */
+  public Result(Status status, Representation entity, Reference redirectionRef) {
+    this.entity = entity;
+    this.status = status;
+    this.redirectionRef = redirectionRef;
+  }
 
-	/**
-	 * Returns the entity.
-	 * @return the entity or null.
-	 */
-	public Representation getEntity()
-	{
-		return this.entity;
-	}
+  /**
+   * Returns the entity.
+   *
+   * @return the entity or null.
+   */
+  public Representation getEntity() {
+    return this.entity;
+  }
 
-	/**
-	 * Returns the redirection reference.
-	 * @return the redirection reference or null.
-	 */
-	public Reference getRedirectionRef()
-	{
-		return this.redirectionRef;
-	}
+  /**
+   * Returns the redirection reference.
+   *
+   * @return the redirection reference or null.
+   */
+  public Reference getRedirectionRef() {
+    return this.redirectionRef;
+  }
 
-	/**
-	 * Returns the status.
-	 * @return the status.
-	 */
-	public Status getStatus()
-	{
-		return this.status;
-	}
+  /**
+   * Returns the status.
+   *
+   * @return the status.
+   */
+  public Status getStatus() {
+    return this.status;
+  }
 
-	/**
-	 * Sets the entity.
-	 * @param entity The entity.
-	 */
-	public void setEntity(Representation entity)
-	{
-		this.entity = entity;
-	}
+  /**
+   * Sets the entity.
+   *
+   * @param entity The entity.
+   */
+  public void setEntity(Representation entity) {
+    this.entity = entity;
+  }
 
-	/**
-	 * Sets the redirection reference.
-	 * @param redirectionRef The redirection reference.
-	 */
-	public void setRedirectionRef(Reference redirectionRef)
-	{
-		this.redirectionRef = redirectionRef;
-	}
+  /**
+   * Sets the redirection reference.
+   *
+   * @param redirectionRef The redirection reference.
+   */
+  public void setRedirectionRef(Reference redirectionRef) {
+    this.redirectionRef = redirectionRef;
+  }
 
-	/**
-	 * Sets the status.
-	 * @param status The status.
-	 */
-	public void setStatus(Status status)
-	{
-		this.status = status;
-	}
-
+  /**
+   * Sets the status.
+   *
+   * @param status The status.
+   */
+  public void setStatus(Status status) {
+    this.status = status;
+  }
 }

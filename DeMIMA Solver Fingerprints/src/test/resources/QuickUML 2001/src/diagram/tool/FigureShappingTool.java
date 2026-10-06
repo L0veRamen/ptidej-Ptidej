@@ -1,27 +1,26 @@
 /**
+ * Java Diagram Package; An extremely flexible and fast multipurpose diagram component for Swing.
+ * Copyright (C) 2001 Eric Crahen <crahen@cse.buffalo.edu>
  *
-    Java Diagram Package; An extremely flexible and fast multipurpose diagram 
-    component for Swing.
-    Copyright (C) 2001  Eric Crahen <crahen@cse.buffalo.edu>
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
+ * <p>This program is free software; you can redistribute it and/or modify it under the terms of the
+ * GNU General Public License as published by the Free Software Foundation; either version 2 of the
+ * License, or (at your option) any later version.
+ *
+ * <p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * <p>You should have received a copy of the GNU General Public License along with this program; if
+ * not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+ * 02111-1307 USA
  */
-
 package diagram.tool;
 
+import diagram.Diagram;
+import diagram.DiagramUI;
+import diagram.Figure;
+import diagram.Link;
+import diagram.figures.FigureBorder;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -30,25 +29,15 @@ import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-
 import javax.swing.SwingUtilities;
 import javax.swing.event.MouseInputAdapter;
 
-import diagram.Diagram;
-import diagram.DiagramUI;
-import diagram.Figure;
-import diagram.Link;
-import diagram.figures.FigureBorder;
-
-
 /**
  * @class FigureShapping
- *
  * @date 08-20-2001
  * @author Eric Crahen
  * @version 1.0
- *
- * Add node shaping support to a Diagram.
+ *     <p>Add node shaping support to a Diagram.
  */
 public class FigureShappingTool extends AbstractTool {
 
@@ -59,10 +48,10 @@ public class FigureShappingTool extends AbstractTool {
   private static final Cursor SWNE_CURSOR = new Cursor(Cursor.SW_RESIZE_CURSOR);
 
   // Sizing directions
-  private static final int QUAD_LEFT   = 0x01;
+  private static final int QUAD_LEFT = 0x01;
   private static final int QUAD_MIDDLE = 0x02;
-  private static final int QUAD_RIGHT  = 0x04;
-  private static final int QUAD_TOP    = 0x100;
+  private static final int QUAD_RIGHT = 0x04;
+  private static final int QUAD_TOP = 0x100;
   private static final int QUAD_CENTER = 0x200;
   private static final int QUAD_BOTTOM = 0x400;
 
@@ -73,7 +62,7 @@ public class FigureShappingTool extends AbstractTool {
 
   // Graphics context to paint on
   private Graphics2D graphics;
-  
+
   // Working data
   private Point2D dragPoint;
   private Point2D lastPoint;
@@ -90,7 +79,6 @@ public class FigureShappingTool extends AbstractTool {
 
   private int sizingDirection = -1;
 
-
   /**
    * Install the support in the specified Diagram
    *
@@ -100,7 +88,7 @@ public class FigureShappingTool extends AbstractTool {
     diagram.addMouseListener(mouseHandler);
     diagram.addMouseMotionListener(mouseHandler);
   }
-  
+
   /**
    * Uninstall the support from specified Diagram
    *
@@ -112,49 +100,43 @@ public class FigureShappingTool extends AbstractTool {
     diagram.removeMouseMotionListener(mouseHandler);
 
     reset();
-
   }
 
-  
   /**
    * @class MouseHandler
    */
   protected class MouseHandler extends MouseInputAdapter {
 
     /**
-     * Called when dragging could possibly begin. If the coordinated of this
-     * event fall within the boundaries of some object in the Diagram
-     * then a drag is started.
+     * Called when dragging could possibly begin. If the coordinated of this event fall within the
+     * boundaries of some object in the Diagram then a drag is started.
      *
      * @param MouseEvent
-     *
      * @pre MouseEvent must not have been consumed.
      */
     public void mousePressed(MouseEvent e) {
-      
+
       // Check for left mouse button & a valid selection
-      if(e.isConsumed() || !SwingUtilities.isLeftMouseButton(e))
-        return;
-      
-      diagram = (Diagram)e.getSource();
+      if (e.isConsumed() || !SwingUtilities.isLeftMouseButton(e)) return;
+
+      diagram = (Diagram) e.getSource();
       Point2D pt = e.getPoint();
-      
+
       // Find the figure which was clicked on
       // DiagramModel diagramModel = diagram.getModel();
-      figure = (Figure)diagram.findFigure(pt);
-      
-      if(figure == null || (figure instanceof Link)) {
+      figure = (Figure) diagram.findFigure(pt);
+
+      if (figure == null || (figure instanceof Link)) {
         reset();
         return;
       }
-      
-      
+
       // Get the bounds & figure info
-      bounds  = figure.getBounds2D(bounds);
+      bounds = figure.getBounds2D(bounds);
       center = figure.getCenter(center);
-      
+
       // Check the click point to see if it lies on the boundary of the figure
-      if(!FigureBorder.isBorderPoint(figure, pt)) {
+      if (!FigureBorder.isBorderPoint(figure, pt)) {
         reset();
         return;
       }
@@ -164,23 +146,21 @@ public class FigureShappingTool extends AbstractTool {
 
       // Get a drag outline setup
       outline.setFrame(bounds);
-      
+
       dragPoint = pt;
       getQuadrant(dragPoint);
 
       // Change the cursor
       originalCursor = diagram.getCursor();
       diagram.setCursor(getCursor());
-    
+
       // Save the graphics
       graphics = getGraphics(diagram);
-      
+
       // Get related figures
-      DiagramUI ui = (DiagramUI)diagram.getUI();
+      DiagramUI ui = (DiagramUI) diagram.getUI();
       relatedFigures = ui.getConnected(figure, relatedFigures);
-
-    } 
-
+    }
 
     /**
      * Called as the dragging occurs.
@@ -190,8 +170,7 @@ public class FigureShappingTool extends AbstractTool {
     public void mouseDragged(MouseEvent e) {
 
       // Check for a valid drag message
-      if(dragPoint == null) 
-        return;
+      if (dragPoint == null) return;
 
       Point2D pt = e.getPoint();
 
@@ -201,47 +180,42 @@ public class FigureShappingTool extends AbstractTool {
       paintOutline(dx, dy, false);
 
       lastPoint = pt;
-
     }
 
     /**
-     * Called when the dragging to stops. The Figure that was 
-     * being dragged is moved to its new locations.
+     * Called when the dragging to stops. The Figure that was being dragged is moved to its new
+     * locations.
      *
      * @param MouseEvent
      */
     public void mouseReleased(MouseEvent e) {
 
-      if(dragPoint != null) {
-      
-        if(lastPoint != null) { 
+      if (dragPoint != null) {
+
+        if (lastPoint != null) {
 
           // Erase left over outline
           paintOutline(0, 0, true);
-        
-          // Reshape the figure
-          figure.setBounds(outline.getX(), outline.getY(), 
-                           outline.getWidth(), outline.getHeight());
 
+          // Reshape the figure
+          figure.setBounds(
+              outline.getX(), outline.getY(),
+              outline.getWidth(), outline.getHeight());
         }
 
         // Damage related figures
-        DiagramUI ui = (DiagramUI)diagram.getUI();
+        DiagramUI ui = (DiagramUI) diagram.getUI();
         Figure[] related = relatedFigures;
 
-        for(int j=0; j < related.length && related[j] != null; j++)
-          ui.damageFigure(related[j]);
+        for (int j = 0; j < related.length && related[j] != null; j++) ui.damageFigure(related[j]);
 
         // Reset
-        ((DiagramUI)diagram.getUI()).refreshFigure(figure);
+        ((DiagramUI) diagram.getUI()).refreshFigure(figure);
         reset();
 
         fireToolFinished();
-
       }
-    
     }
-
   }
 
   /**
@@ -249,25 +223,24 @@ public class FigureShappingTool extends AbstractTool {
    *
    * @param dx - position change
    * @param dy - position change
-   *
    * @param boolean true if only need to erase last drawn outline
    */
   private final void paintOutline(double dx, double dy, boolean eraseOnly) {
 
-     // Erase last outline, if any
-    if(lastPoint != null)
-      graphics.drawRect((int)outline.x, (int)outline.y, (int)outline.width, (int)outline.height);
+    // Erase last outline, if any
+    if (lastPoint != null)
+      graphics.drawRect(
+          (int) outline.x, (int) outline.y, (int) outline.width, (int) outline.height);
 
     // Move & draw the dragout line
-    if(!eraseOnly && !(dx == 0 && dy == 0)) {
+    if (!eraseOnly && !(dx == 0 && dy == 0)) {
 
       reshapeOutline(dx, dy);
-      graphics.drawRect((int)outline.x, (int)outline.y, (int)outline.width, (int)outline.height);
-
+      graphics.drawRect(
+          (int) outline.x, (int) outline.y, (int) outline.width, (int) outline.height);
     }
 
-    ((DiagramUI)diagram.getUI()).damageFigure(figure);
-    
+    ((DiagramUI) diagram.getUI()).damageFigure(figure);
   }
 
   /**
@@ -281,35 +254,27 @@ public class FigureShappingTool extends AbstractTool {
     int min = MINIMUM_SIZE;
     double t;
 
-    if(hasQuad(QUAD_LEFT)) {
-      
-      if((t = bounds.getWidth() - dx) > min) {
+    if (hasQuad(QUAD_LEFT)) {
+
+      if ((t = bounds.getWidth() - dx) > min) {
         outline.x = bounds.getX() + dx;
         outline.width = t;
       }
 
-    } else if(hasQuad(QUAD_RIGHT))
+    } else if (hasQuad(QUAD_RIGHT)) if ((t = bounds.getWidth() + dx) > min) outline.width = t;
 
-      if((t = bounds.getWidth() + dx) > min)
-        outline.width = t;
+    if (hasQuad(QUAD_TOP)) {
 
-    if(hasQuad(QUAD_TOP)) {
-
-      if((t = bounds.getHeight() - dy) > min) {
+      if ((t = bounds.getHeight() - dy) > min) {
         outline.y = bounds.getY() + dy;
         outline.height = t;
       }
 
-    } else if(hasQuad(QUAD_BOTTOM))
-
-      if((t = bounds.getHeight() + dy) > min)
-        outline.height = t;
-
+    } else if (hasQuad(QUAD_BOTTOM)) if ((t = bounds.getHeight() + dy) > min) outline.height = t;
   }
 
   /**
-   * Find the direction using the clicked point & the center of 
-   * the target Figure. 
+   * Find the direction using the clicked point & the center of the target Figure.
    *
    * @param Point2D clicked point
    */
@@ -320,30 +285,22 @@ public class FigureShappingTool extends AbstractTool {
 
     double x = pt.getX();
     double y = pt.getY();
-    
+
     double centerX = center.getX();
     double centerY = center.getY();
 
     int dir;
 
-    if(x < centerX - padx) 
-      dir = QUAD_LEFT;
-    else if(x < centerX + padx)  
-      dir = QUAD_MIDDLE;
-    else 
-      dir = QUAD_RIGHT;
+    if (x < centerX - padx) dir = QUAD_LEFT;
+    else if (x < centerX + padx) dir = QUAD_MIDDLE;
+    else dir = QUAD_RIGHT;
 
-    if(y < centerY - pady)  
-      dir |= QUAD_TOP;
-    else if(y < centerY + pady)  
-      dir |= QUAD_CENTER;
-    else
-      dir |= QUAD_BOTTOM;
+    if (y < centerY - pady) dir |= QUAD_TOP;
+    else if (y < centerY + pady) dir |= QUAD_CENTER;
+    else dir |= QUAD_BOTTOM;
 
     sizingDirection = dir;
-
   }
-
 
   /**
    * Test the quadrant flag
@@ -354,7 +311,6 @@ public class FigureShappingTool extends AbstractTool {
     return ((sizingDirection & quad) == quad);
   }
 
-
   /**
    * Guess the right cursor to use based on some point in the Figure
    *
@@ -363,19 +319,15 @@ public class FigureShappingTool extends AbstractTool {
   private final Cursor getCursor() {
 
     // Left/Right only
-    if(hasQuad(QUAD_CENTER|QUAD_LEFT) || hasQuad(QUAD_CENTER|QUAD_RIGHT))
-      return HZ_CURSOR;
+    if (hasQuad(QUAD_CENTER | QUAD_LEFT) || hasQuad(QUAD_CENTER | QUAD_RIGHT)) return HZ_CURSOR;
 
     // Top/Bottom only
-    if(hasQuad(QUAD_MIDDLE|QUAD_TOP) || hasQuad(QUAD_MIDDLE|QUAD_BOTTOM))
-      return VT_CURSOR;
+    if (hasQuad(QUAD_MIDDLE | QUAD_TOP) || hasQuad(QUAD_MIDDLE | QUAD_BOTTOM)) return VT_CURSOR;
 
     // Diagonals
-    if(hasQuad(QUAD_BOTTOM|QUAD_LEFT) || hasQuad(QUAD_TOP|QUAD_RIGHT))
-      return SWNE_CURSOR;
+    if (hasQuad(QUAD_BOTTOM | QUAD_LEFT) || hasQuad(QUAD_TOP | QUAD_RIGHT)) return SWNE_CURSOR;
 
     return SENW_CURSOR;
-
   }
 
   /**
@@ -383,24 +335,21 @@ public class FigureShappingTool extends AbstractTool {
    *
    * @return Graphics2D
    */
-  final private Graphics2D getGraphics(Component c) {
+  private final Graphics2D getGraphics(Component c) {
 
-    Graphics2D g = (Graphics2D)c.getGraphics();
+    Graphics2D g = (Graphics2D) c.getGraphics();
 
     g.setColor(Color.gray);
     g.setXORMode(c.getBackground());
     g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
     return g;
-
   }
-
 
   protected void reset() {
 
-    if(diagram != null && originalCursor != null)
-      diagram.setCursor(originalCursor);
-    
+    if (diagram != null && originalCursor != null) diagram.setCursor(originalCursor);
+
     originalCursor = null;
     diagram = null;
     figure = null;
@@ -408,7 +357,5 @@ public class FigureShappingTool extends AbstractTool {
     lastPoint = dragPoint = null;
 
     java.util.Arrays.fill(relatedFigures, 0, relatedFigures.length, null);
-
   }
-
 }

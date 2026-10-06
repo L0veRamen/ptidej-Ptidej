@@ -30,23 +30,22 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
 /**
  * @author mkl
  */
-class UMLPartitionContentListModel extends  UMLModelElementListModel2 {
+class UMLPartitionContentListModel extends UMLModelElementListModel2 {
 
-    public UMLPartitionContentListModel() {
-        super("contents");
-    }
+  public UMLPartitionContentListModel() {
+    super("contents");
+  }
 
-    protected void buildModelList() {
-        Object partition = getTarget();
-        setAllElements(Model.getFacade().getContents(partition));
-    }
+  protected void buildModelList() {
+    Object partition = getTarget();
+    setAllElements(Model.getFacade().getContents(partition));
+  }
 
-    protected boolean isValidElement(Object element) {
-        if (!Model.getFacade().isAModelElement(element)) {
-            return false;
-        }
-        Object partition = getTarget();
-        return Model.getFacade().getContents(partition).contains(element);
+  protected boolean isValidElement(Object element) {
+    if (!Model.getFacade().isAModelElement(element)) {
+      return false;
     }
-    
+    Object partition = getTarget();
+    return Model.getFacade().getContents(partition).contains(element);
+  }
 }

@@ -28,38 +28,25 @@ import org.argouml.i18n.Translator;
 import org.argouml.uml.ui.ActionNavigateNamespace;
 import org.argouml.util.ConfigLoader;
 
-/**
- * The properties panel for a Permission.
- *
- */
+/** The properties panel for a Permission. */
 public class PropPanelPermission extends PropPanelDependency {
 
-    /**
-     * The serial version.
-     */
-    private static final long serialVersionUID = 5724713380091275451L;
+  /** The serial version. */
+  private static final long serialVersionUID = 5724713380091275451L;
 
-    /**
-     * Construct a property panel for UML Permission elements.
-     */
-    public PropPanelPermission() {
-        super("Permission", ConfigLoader.getTabPropsOrientation());
+  /** Construct a property panel for UML Permission elements. */
+  public PropPanelPermission() {
+    super("Permission", ConfigLoader.getTabPropsOrientation());
 
-        addField(Translator.localize("label.name"),
-                getNameTextField());
-        addField(Translator.localize("label.namespace"),
-                getNamespaceSelector());
+    addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.namespace"), getNamespaceSelector());
 
-        addSeparator();
+    addSeparator();
 
-        addField(Translator.localize("label.suppliers"),
-                getSupplierScroll());
-        addField(Translator.localize("label.clients"),
-                getClientScroll());
+    addField(Translator.localize("label.suppliers"), getSupplierScroll());
+    addField(Translator.localize("label.clients"), getClientScroll());
 
-        addAction(new ActionNavigateNamespace());
-        addAction(getDeleteAction());
-    }
-
+    addAction(new ActionNavigateNamespace());
+    addAction(getDeleteAction());
+  }
 } /* end class PropPanelPermission */
-

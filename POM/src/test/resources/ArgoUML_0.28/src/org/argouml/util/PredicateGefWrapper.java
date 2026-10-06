@@ -25,35 +25,34 @@
 package org.argouml.util;
 
 /**
- * A Predicate which wraps an old style GEF predicate for compatibility during
- * the transition period.  <em>Not to be used for new implementations</em>.
- * 
+ * A Predicate which wraps an old style GEF predicate for compatibility during the transition
+ * period. <em>Not to be used for new implementations</em>.
+ *
  * @author Tom Morris <tfmorris@gmail.com>
- * @deprecated for 0.27.3 by tfmorris.  Will be removed when no longer required
- * by CheckItem.
+ * @deprecated for 0.27.3 by tfmorris. Will be removed when no longer required by CheckItem.
  */
 @Deprecated
 public class PredicateGefWrapper implements Predicate {
 
-    private org.tigris.gef.util.Predicate predicate;
+  private org.tigris.gef.util.Predicate predicate;
 
-    /**
-     * Construct a new Predicate which evaluates the given GEF predication.
-     * 
-     * @param gefPredicate predicate to be evaluated
-     */
-    public PredicateGefWrapper(org.tigris.gef.util.Predicate gefPredicate) {
-        predicate = gefPredicate;
-    }
+  /**
+   * Construct a new Predicate which evaluates the given GEF predication.
+   *
+   * @param gefPredicate predicate to be evaluated
+   */
+  public PredicateGefWrapper(org.tigris.gef.util.Predicate gefPredicate) {
+    predicate = gefPredicate;
+  }
 
-    public boolean evaluate(Object object) {
-        return predicate.predicate(object);
-    }
-    
-    /**
-     * @return the original GEF Predicate
-     */
-    public org.tigris.gef.util.Predicate getGefPredicate() {
-        return predicate;
-    }
+  public boolean evaluate(Object object) {
+    return predicate.predicate(object);
+  }
+
+  /**
+   * @return the original GEF Predicate
+   */
+  public org.tigris.gef.util.Predicate getGefPredicate() {
+    return predicate;
+  }
 }

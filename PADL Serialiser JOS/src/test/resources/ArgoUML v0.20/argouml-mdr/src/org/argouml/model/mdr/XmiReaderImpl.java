@@ -33,7 +33,6 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
-
 import javax.jmi.model.MofPackage;
 import javax.jmi.reflect.RefPackage;
 import javax.jmi.xmi.MalformedXMIException;
@@ -48,7 +47,6 @@ import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-
 import org.apache.log4j.Logger;
 import org.argouml.model.UmlException;
 import org.argouml.model.XmiReader;
@@ -66,326 +64,294 @@ import org.xml.sax.XMLFilter;
 import org.xml.sax.XMLReader;
 
 /**
- * A wrapper around the genuine XmiReader that provides public access with no
- * knowledge of actual UML implementation.
- * 
+ * A wrapper around the genuine XmiReader that provides public access with no knowledge of actual
+ * UML implementation.
+ *
  * @author Bob Tarling
  */
 public class XmiReaderImpl implements XmiReader, UnknownElementsListener {
 
-    private Logger LOG = Logger.getLogger(XmiReaderImpl.class);
-    
-    private MDRModelImplementation parent;
+  private Logger LOG = Logger.getLogger(XmiReaderImpl.class);
 
-    private XmiReferenceResolverImpl resolver;
+  private MDRModelImplementation parent;
 
-    private MofPackage metaModel;
-    
-    /*
-     * Flag indicating unknown element was found in XMI file
-     */
-    private boolean unknownElement;
-    
-    /*
-     * Name of first unknown element found (if not a UML 1.3 name)
-     */
-    private String unknownElementName;
-    
-    /*
-     * Flag indicating that we think unknown element was due to a UML 1.3 file
-     */
-    private boolean uml13;
+  private XmiReferenceResolverImpl resolver;
 
+  private MofPackage metaModel;
 
+  /*
+   * Flag indicating unknown element was found in XMI file
+   */
+  private boolean unknownElement;
 
-    /**
-     * Constructor for XMIReader.
-     * @param parentModelImplementation The ModelImplementation
-     * @param mofModel The Mof metamodel which will be used for reading
-     */
-    public XmiReaderImpl(MDRModelImplementation parentModelImplementation,
-            MofPackage mofModel) {
+  /*
+   * Name of first unknown element found (if not a UML 1.3 name)
+   */
+  private String unknownElementName;
 
-        this.parent = parentModelImplementation;
-        this.metaModel = mofModel;
-    }
+  /*
+   * Flag indicating that we think unknown element was due to a UML 1.3 file
+   */
+  private boolean uml13;
 
-    /**
-     * Parses a given inputsource to a model.
-     * 
-     * @param pIs
-     *            The input source for parsing.
-     * @return The UML model.
-     * @throws UmlException
-     *             if there is a problem
-     */
-    public Collection parse(InputSource pIs) throws UmlException {
+  /**
+   * Constructor for XMIReader.
+   *
+   * @param parentModelImplementation The ModelImplementation
+   * @param mofModel The Mof metamodel which will be used for reading
+   */
+  public XmiReaderImpl(MDRModelImplementation parentModelImplementation, MofPackage mofModel) {
 
-        RefPackage extent = null;
-        MDRepository repository = MDRManager.getDefault().
-                getDefaultRepository();
+    this.parent = parentModelImplementation;
+    this.metaModel = mofModel;
+  }
 
-        Collection newElements = null;
-        String extentName = MDRModelImplementation.EXTENT_NAME;
+  /**
+   * Parses a given inputsource to a model.
+   *
+   * @param pIs The input source for parsing.
+   * @return The UML model.
+   * @throws UmlException if there is a problem
+   */
+  public Collection parse(InputSource pIs) throws UmlException {
 
-        try {
-            LOG.info("Loading '" + pIs.getSystemId() + "' in extent '"
-                    + extentName + "'");
-            if (repository.getExtent(extentName) != null)
-                extent = repository.getExtent(extentName);
-            else
-                extent = repository.createExtent(extentName, metaModel);
+    RefPackage extent = null;
+    MDRepository repository = MDRManager.getDefault().getDefaultRepository();
 
-            InputConfig config = new InputConfig();
-            config.setUnknownElementsListener(this);
-            config.setUnknownElementsIgnored(true);
-            
-            resolver = new XmiReferenceResolverImpl(
-                    new RefPackage[] {extent }, config);
+    Collection newElements = null;
+    String extentName = MDRModelImplementation.EXTENT_NAME;
 
-            config.setReferenceResolver(resolver);
+    try {
+      LOG.info("Loading '" + pIs.getSystemId() + "' in extent '" + extentName + "'");
+      if (repository.getExtent(extentName) != null) extent = repository.getExtent(extentName);
+      else extent = repository.createExtent(extentName, metaModel);
 
-            XMIReader xmiReader = XMIReaderFactory.getDefault().
-                    createXMIReader(config);
+      InputConfig config = new InputConfig();
+      config.setUnknownElementsListener(this);
+      config.setUnknownElementsIgnored(true);
 
-            // Copy stream to a file to be sure it can be repositioned. 
-            // TODO: find a way to remove this, since this *always* alterate the
-            // performances for reading an XMI file, even if it's not UML 1.4.
-            File tmpFile = copySource(pIs);
+      resolver = new XmiReferenceResolverImpl(new RefPackage[] {extent}, config);
 
-            /*
-             * MDR has a hardcoded printStackTrace on all exceptions,
-             * even if they're caught, which is unsightly, so we handle
-             * unknown elements ourselves rather than letting MDR throw
-             * an exception for us to catch.
-             */
-            InputConfig config2 = (InputConfig) xmiReader.getConfiguration();
-            config2.setUnknownElementsListener(this);
-            config2.setUnknownElementsIgnored(true);
-            unknownElement = false;
-            uml13 = false;
+      config.setReferenceResolver(resolver);
 
-            // Disable event delivery during model load
-            parent.getModelEventPump().stopPumpingEvents();
-            
-            try {
-                newElements = 
-                    xmiReader.read(tmpFile.toURI().toString(), extent);
-                
-                // If a UML 1.3 file, attempt to upgrade it to UML 1.4
-                if (uml13) {
-                    LOG.info("XMI file doesn't appear to be UML 1.4 - "
-                            + "attempting UML 1.3->UML 1.4 conversion");
-                    final String[] transformFiles = 
-                        new String[] {
-                            "NormalizeNSUML.xsl", 
-                            "uml13touml14.xsl" 
-                        };
-                    
-                    unknownElement = false;
-                    // InputSource xformedInput = 
-                    //        chainedTransform(transformFiles, pIs);
-                    InputSource xformedInput = serialTransform(transformFiles,
-                            new InputSource(new FileInputStream(tmpFile)));
-                    newElements = xmiReader.read(xformedInput.getByteStream(),
-                            xformedInput.getSystemId(), extent);
-                }
-                
-            } finally {
-                parent.getModelEventPump().startPumpingEvents();  
-            }
-            
-            if (unknownElement) {
-                throw new UmlException("Unknown element in XMI file : "
-                        + unknownElementName);
-            }
-            
-        } catch (CreationFailedException e) {
-            throw new UmlException(e);
-        } catch (MalformedXMIException e) {
-            throw new UmlException(e);
-        } catch (IOException e) {
-            throw new UmlException(e);
-        }
-        LOG.info("Loaded total of " + newElements.size() 
-                + " model element(s).");
-        return newElements;
-    }
-    
-    /**
-     * @see org.argouml.model.XmiReader#parseToModel(org.xml.sax.InputSource)
-     */
-    public Object parseToModel(InputSource is) throws UmlException {
-        Model model = null;
-        Collection newElements = parse(is);
-        if (newElements != null && !newElements.isEmpty()) {
-            Object current;
-            Iterator elements = newElements.iterator();
-            while (elements.hasNext()) {
-                current = elements.next();
-                if (current instanceof Model) {
-                    Model currentModel = (Model) current;
-                    LOG.info("Loaded model '" + currentModel.getName() + "'");
-                    model = currentModel;
-                }
-            }
-        }
-        return model;
-    }
+      XMIReader xmiReader = XMIReaderFactory.getDefault().createXMIReader(config);
 
-    /**
-     * @return the map
-     */
-    public Map getXMIUUIDToObjectMap() {
-        if (resolver != null)
-            return resolver.getIdToObjectMap();
-        return null;
-    }
+      // Copy stream to a file to be sure it can be repositioned.
+      // TODO: find a way to remove this, since this *always* alterate the
+      // performances for reading an XMI file, even if it's not UML 1.4.
+      File tmpFile = copySource(pIs);
 
-    private static final String STYLE_PATH = 
-        "/org/argouml/model/mdr/conversions/";
+      /*
+       * MDR has a hardcoded printStackTrace on all exceptions,
+       * even if they're caught, which is unsightly, so we handle
+       * unknown elements ourselves rather than letting MDR throw
+       * an exception for us to catch.
+       */
+      InputConfig config2 = (InputConfig) xmiReader.getConfiguration();
+      config2.setUnknownElementsListener(this);
+      config2.setUnknownElementsIgnored(true);
+      unknownElement = false;
+      uml13 = false;
 
-    /*
-     * A near clone of this code works fine outside of ArgoUML, but throws a
-     * null pointer exception during the transform when run within ArgoUML I
-     * think it's something to do with the class libraries being used, but I
-     * can't figure out what, so I've done a simpler, less efficient stepwise
-     * translation below in serialTransform
-     */
-    private InputSource chainedTransform(String[] styles, InputSource input)
-        throws UmlException {
-        SAXTransformerFactory stf = (SAXTransformerFactory) TransformerFactory.
-                newInstance();
+      // Disable event delivery during model load
+      parent.getModelEventPump().stopPumpingEvents();
 
-        try {
-            // Set up reader to be first filter in chain
-            SAXParserFactory spf = SAXParserFactory.newInstance();
-            SAXParser parser = spf.newSAXParser();
-            XMLReader last = parser.getXMLReader();
+      try {
+        newElements = xmiReader.read(tmpFile.toURI().toString(), extent);
 
-            // Create filter for each style sheet and chain to previous
-            // filter/reader
-            for (int i = 0; i < styles.length; i++) {
-                String xsltFileName = STYLE_PATH + styles[i];
-                URL xsltUrl = getClass().getResource(xsltFileName);
-                if (xsltUrl == null) {
-                    throw new UmlException("Error opening XSLT style sheet : "
-                            + xsltFileName);
-                }
-                StreamSource xsltStreamSource = new StreamSource(xsltUrl.
-                        openStream());
-                xsltStreamSource.setSystemId(xsltUrl.toExternalForm());
-                XMLFilter filter = stf.newXMLFilter(xsltStreamSource);
+        // If a UML 1.3 file, attempt to upgrade it to UML 1.4
+        if (uml13) {
+          LOG.info(
+              "XMI file doesn't appear to be UML 1.4 - "
+                  + "attempting UML 1.3->UML 1.4 conversion");
+          final String[] transformFiles = new String[] {"NormalizeNSUML.xsl", "uml13touml14.xsl"};
 
-                filter.setParent(last);
-                last = filter;
-            }
-
-            SAXSource transformSource = new SAXSource(last, input);
-
-            // Create temporary file for output
-            // TODO: we should be able to chain this directly to XMI reader
-            File tmpFile = File.createTempFile("zargo_model_", ".xmi");
-            tmpFile.deleteOnExit();
-            StreamResult result = new StreamResult(
-                    new FileOutputStream(tmpFile));
-
-            Transformer transformer = stf.newTransformer();
-            transformer.transform(transformSource, result);
-
-            return new InputSource(new FileInputStream(tmpFile));
-
-        } catch (SAXException e) {
-            throw new UmlException(e);
-        } catch (ParserConfigurationException e) {
-            throw new UmlException(e);
-        } catch (IOException e) {
-            throw new UmlException(e);
-        } catch (TransformerConfigurationException e) {
-            throw new UmlException(e);
-        } catch (TransformerException e) {
-            throw new UmlException(e);
+          unknownElement = false;
+          // InputSource xformedInput =
+          //        chainedTransform(transformFiles, pIs);
+          InputSource xformedInput =
+              serialTransform(transformFiles, new InputSource(new FileInputStream(tmpFile)));
+          newElements =
+              xmiReader.read(xformedInput.getByteStream(), xformedInput.getSystemId(), extent);
         }
 
+      } finally {
+        parent.getModelEventPump().startPumpingEvents();
+      }
+
+      if (unknownElement) {
+        throw new UmlException("Unknown element in XMI file : " + unknownElementName);
+      }
+
+    } catch (CreationFailedException e) {
+      throw new UmlException(e);
+    } catch (MalformedXMIException e) {
+      throw new UmlException(e);
+    } catch (IOException e) {
+      throw new UmlException(e);
     }
+    LOG.info("Loaded total of " + newElements.size() + " model element(s).");
+    return newElements;
+  }
 
-    private InputSource serialTransform(String[] styles, InputSource input)
-        throws UmlException {
-        SAXSource myInput = new SAXSource(input);
-        SAXTransformerFactory stf = (SAXTransformerFactory) TransformerFactory.
-                newInstance();
-        try {
-
-            for (int i = 0; i < styles.length; i++) {
-                // Set up source for style sheet
-                String xsltFileName = STYLE_PATH + styles[i];
-                URL xsltUrl = getClass().getResource(xsltFileName);
-                if (xsltUrl == null) {
-                    throw new UmlException("Error opening XSLT style sheet : "
-                            + xsltFileName);
-                }
-                StreamSource xsltStreamSource = new StreamSource(xsltUrl.
-                        openStream());
-                xsltStreamSource.setSystemId(xsltUrl.toExternalForm());
-
-                // Create & set up temporary output file
-                File tmpOutFile = File.createTempFile("zargo_model_", ".xmi");
-                tmpOutFile.deleteOnExit();
-                StreamResult result = new StreamResult(new FileOutputStream(
-                        tmpOutFile));
-
-                // Create transformer and do transformation
-                Transformer transformer = stf.newTransformer(xsltStreamSource);
-                transformer.transform(myInput, result);
-
-                LOG.info("Wrote converted XMI file - " + tmpOutFile
-                        + " converted using : " + xsltFileName);
-
-                // Set up for next iteration
-                myInput = new SAXSource(new InputSource(new FileInputStream(
-                        tmpOutFile)));
-            }
-            return myInput.getInputSource();
-        } catch (IOException e) {
-            throw new UmlException(e);
-        } catch (TransformerConfigurationException e) {
-            throw new UmlException(e);
-        } catch (TransformerException e) {
-            throw new UmlException(e);
+  /**
+   * @see org.argouml.model.XmiReader#parseToModel(org.xml.sax.InputSource)
+   */
+  public Object parseToModel(InputSource is) throws UmlException {
+    Model model = null;
+    Collection newElements = parse(is);
+    if (newElements != null && !newElements.isEmpty()) {
+      Object current;
+      Iterator elements = newElements.iterator();
+      while (elements.hasNext()) {
+        current = elements.next();
+        if (current instanceof Model) {
+          Model currentModel = (Model) current;
+          LOG.info("Loaded model '" + currentModel.getName() + "'");
+          model = currentModel;
         }
-
+      }
     }
+    return model;
+  }
 
-    private File copySource(InputSource input) throws IOException {
-        byte[] buf = new byte[2048];
-        int len;
+  /**
+   * @return the map
+   */
+  public Map getXMIUUIDToObjectMap() {
+    if (resolver != null) return resolver.getIdToObjectMap();
+    return null;
+  }
+
+  private static final String STYLE_PATH = "/org/argouml/model/mdr/conversions/";
+
+  /*
+   * A near clone of this code works fine outside of ArgoUML, but throws a
+   * null pointer exception during the transform when run within ArgoUML I
+   * think it's something to do with the class libraries being used, but I
+   * can't figure out what, so I've done a simpler, less efficient stepwise
+   * translation below in serialTransform
+   */
+  private InputSource chainedTransform(String[] styles, InputSource input) throws UmlException {
+    SAXTransformerFactory stf = (SAXTransformerFactory) TransformerFactory.newInstance();
+
+    try {
+      // Set up reader to be first filter in chain
+      SAXParserFactory spf = SAXParserFactory.newInstance();
+      SAXParser parser = spf.newSAXParser();
+      XMLReader last = parser.getXMLReader();
+
+      // Create filter for each style sheet and chain to previous
+      // filter/reader
+      for (int i = 0; i < styles.length; i++) {
+        String xsltFileName = STYLE_PATH + styles[i];
+        URL xsltUrl = getClass().getResource(xsltFileName);
+        if (xsltUrl == null) {
+          throw new UmlException("Error opening XSLT style sheet : " + xsltFileName);
+        }
+        StreamSource xsltStreamSource = new StreamSource(xsltUrl.openStream());
+        xsltStreamSource.setSystemId(xsltUrl.toExternalForm());
+        XMLFilter filter = stf.newXMLFilter(xsltStreamSource);
+
+        filter.setParent(last);
+        last = filter;
+      }
+
+      SAXSource transformSource = new SAXSource(last, input);
+
+      // Create temporary file for output
+      // TODO: we should be able to chain this directly to XMI reader
+      File tmpFile = File.createTempFile("zargo_model_", ".xmi");
+      tmpFile.deleteOnExit();
+      StreamResult result = new StreamResult(new FileOutputStream(tmpFile));
+
+      Transformer transformer = stf.newTransformer();
+      transformer.transform(transformSource, result);
+
+      return new InputSource(new FileInputStream(tmpFile));
+
+    } catch (SAXException e) {
+      throw new UmlException(e);
+    } catch (ParserConfigurationException e) {
+      throw new UmlException(e);
+    } catch (IOException e) {
+      throw new UmlException(e);
+    } catch (TransformerConfigurationException e) {
+      throw new UmlException(e);
+    } catch (TransformerException e) {
+      throw new UmlException(e);
+    }
+  }
+
+  private InputSource serialTransform(String[] styles, InputSource input) throws UmlException {
+    SAXSource myInput = new SAXSource(input);
+    SAXTransformerFactory stf = (SAXTransformerFactory) TransformerFactory.newInstance();
+    try {
+
+      for (int i = 0; i < styles.length; i++) {
+        // Set up source for style sheet
+        String xsltFileName = STYLE_PATH + styles[i];
+        URL xsltUrl = getClass().getResource(xsltFileName);
+        if (xsltUrl == null) {
+          throw new UmlException("Error opening XSLT style sheet : " + xsltFileName);
+        }
+        StreamSource xsltStreamSource = new StreamSource(xsltUrl.openStream());
+        xsltStreamSource.setSystemId(xsltUrl.toExternalForm());
 
         // Create & set up temporary output file
         File tmpOutFile = File.createTempFile("zargo_model_", ".xmi");
         tmpOutFile.deleteOnExit();
-        FileOutputStream out = new FileOutputStream(tmpOutFile);
-        InputStream in = input.getByteStream();
+        StreamResult result = new StreamResult(new FileOutputStream(tmpOutFile));
 
-        while ((len = in.read(buf)) > 0) {
-            out.write(buf, 0, len);
-        }
+        // Create transformer and do transformation
+        Transformer transformer = stf.newTransformer(xsltStreamSource);
+        transformer.transform(myInput, result);
 
-        LOG.info("Wrote copied XMI file to " + tmpOutFile);
-        return tmpOutFile;
+        LOG.info("Wrote converted XMI file - " + tmpOutFile + " converted using : " + xsltFileName);
+
+        // Set up for next iteration
+        myInput = new SAXSource(new InputSource(new FileInputStream(tmpOutFile)));
+      }
+      return myInput.getInputSource();
+    } catch (IOException e) {
+      throw new UmlException(e);
+    } catch (TransformerConfigurationException e) {
+      throw new UmlException(e);
+    } catch (TransformerException e) {
+      throw new UmlException(e);
+    }
+  }
+
+  private File copySource(InputSource input) throws IOException {
+    byte[] buf = new byte[2048];
+    int len;
+
+    // Create & set up temporary output file
+    File tmpOutFile = File.createTempFile("zargo_model_", ".xmi");
+    tmpOutFile.deleteOnExit();
+    FileOutputStream out = new FileOutputStream(tmpOutFile);
+    InputStream in = input.getByteStream();
+
+    while ((len = in.read(buf)) > 0) {
+      out.write(buf, 0, len);
     }
 
-    /**
-     * @see org.netbeans.lib.jmi.xmi.UnknownElementsListener#elementFound(java.lang.String)
-     */
-    public void elementFound(String name) {
-        unknownElement = true;
-        if (name.startsWith("Foundation.Core.")) {
-            uml13 = true;
-        } else {
-            if (unknownElementName == null) {
-                unknownElementName = name;
-            }
-            LOG.error("Unknown element named : " + name);
-        }
+    LOG.info("Wrote copied XMI file to " + tmpOutFile);
+    return tmpOutFile;
+  }
+
+  /**
+   * @see org.netbeans.lib.jmi.xmi.UnknownElementsListener#elementFound(java.lang.String)
+   */
+  public void elementFound(String name) {
+    unknownElement = true;
+    if (name.startsWith("Foundation.Core.")) {
+      uml13 = true;
+    } else {
+      if (unknownElementName == null) {
+        unknownElementName = name;
+      }
+      LOG.error("Unknown element named : " + name);
     }
+  }
 }

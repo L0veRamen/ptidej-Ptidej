@@ -33,7 +33,6 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
-
 import org.apache.log4j.Logger;
 import org.argouml.application.api.Argo;
 import org.argouml.cognitive.Designer;
@@ -46,88 +45,80 @@ import org.tigris.gef.ocl.TemplateReader;
 
 /**
  * The file persister for the Todo members.
+ *
  * @author Bob Tarling
  */
 class TodoListMemberFilePersister extends MemberFilePersister {
 
-    private static final Logger LOG =
-        Logger.getLogger(ProjectMemberTodoList.class);
+  private static final Logger LOG = Logger.getLogger(ProjectMemberTodoList.class);
 
-    private static final String TO_DO_TEE = "/org/argouml/persistence/todo.tee";
+  private static final String TO_DO_TEE = "/org/argouml/persistence/todo.tee";
 
-    /**
-     * Load the todo member.
-     * @see org.argouml.persistence.MemberFilePersister#load(org.argouml.kernel.Project,
-     * java.io.InputStream)
-     */
-    public void load(Project project, InputStream inputStream)
-        throws OpenException {
+  /**
+   * Load the todo member.
+   *
+   * @see org.argouml.persistence.MemberFilePersister#load(org.argouml.kernel.Project,
+   *     java.io.InputStream)
+   */
+  public void load(Project project, InputStream inputStream) throws OpenException {
 
-        try {
-            TodoParser parser = new TodoParser();
-            Reader reader = new InputStreamReader(inputStream,
-                    Argo.getEncoding());
-            parser.readTodoList(reader);
-            ProjectMemberTodoList pm = new ProjectMemberTodoList("", project);
-            project.addMember(pm);
-        } catch (Exception e) {
-            if (e instanceof OpenException) {
-                throw (OpenException) e;
-            }
-            throw new OpenException(e);
-        }
+    try {
+      TodoParser parser = new TodoParser();
+      Reader reader = new InputStreamReader(inputStream, Argo.getEncoding());
+      parser.readTodoList(reader);
+      ProjectMemberTodoList pm = new ProjectMemberTodoList("", project);
+      project.addMember(pm);
+    } catch (Exception e) {
+      if (e instanceof OpenException) {
+        throw (OpenException) e;
+      }
+      throw new OpenException(e);
     }
-    
-    @Override
-    public void load(Project project, URL url) throws OpenException {   
-        try {
-            load(project, url.openStream());
-        } catch (IOException e) {
-            throw new OpenException(e);
-        }
+  }
+
+  @Override
+  public void load(Project project, URL url) throws OpenException {
+    try {
+      load(project, url.openStream());
+    } catch (IOException e) {
+      throw new OpenException(e);
     }
+  }
 
-    /*
-     * @see org.argouml.persistence.MemberFilePersister#getMainTag()
-     */
-    public final String getMainTag() {
-        return "todo";
-    }
+  /*
+   * @see org.argouml.persistence.MemberFilePersister#getMainTag()
+   */
+  public final String getMainTag() {
+    return "todo";
+  }
 
+  public void save(ProjectMember member, OutputStream outStream) throws SaveException {
 
-    public void save(ProjectMember member, OutputStream outStream)
-        throws SaveException {
-
-        OCLExpander expander;
-        try {
-            expander =
-                    new OCLExpander(TemplateReader.getInstance()
-                            .read(TO_DO_TEE));
-        } catch (ExpansionException e) {
-            throw new SaveException(e);
-        }
-
-        PrintWriter pw;
-        try {
-            pw = new PrintWriter(new OutputStreamWriter(outStream, "UTF-8"));
-        } catch (UnsupportedEncodingException e1) {
-            throw new SaveException("UTF-8 encoding not supported on platform", 
-                    e1);
-        }
-        
-        try {
-            Designer.disableCritiquing();
-            // WARNING: The GEF implementation of the OutputStream version of 
-            // this method doesn't work - tfm - 20070531
-            expander.expand(pw, member);
-        } catch (ExpansionException e) {
-            throw new SaveException(e);
-        } finally {
-            pw.flush();
-//            pw.close();
-            Designer.enableCritiquing();
-        }
-
+    OCLExpander expander;
+    try {
+      expander = new OCLExpander(TemplateReader.getInstance().read(TO_DO_TEE));
+    } catch (ExpansionException e) {
+      throw new SaveException(e);
     }
 
+    PrintWriter pw;
+    try {
+      pw = new PrintWriter(new OutputStreamWriter(outStream, "UTF-8"));
+    } catch (UnsupportedEncodingException e1) {
+      throw new SaveException("UTF-8 encoding not supported on platform", e1);
+    }
+
+    try {
+      Designer.disableCritiquing();
+      // WARNING: The GEF implementation of the OutputStream version of
+      // this method doesn't work - tfm - 20070531
+      expander.expand(pw, member);
+    } catch (ExpansionException e) {
+      throw new SaveException(e);
+    } finally {
+      pw.flush();
+      //            pw.close();
+      Designer.enableCritiquing();
+    }
+  }
 }

@@ -26,7 +26,6 @@
 package org.argouml.uml.ui.behavior.state_machines;
 
 import javax.swing.JPopupMenu;
-
 import org.argouml.uml.ui.UMLModelElementListModel2;
 import org.argouml.uml.ui.UMLMutableLinkedList;
 import org.argouml.uml.ui.behavior.common_behavior.ActionNewAction;
@@ -38,20 +37,19 @@ import org.argouml.uml.ui.behavior.common_behavior.PopupMenuNewAction;
  */
 public class UMLTransitionEffectList extends UMLMutableLinkedList {
 
-    /**
-     * Constructor for UMLTransitionTriggerList.
-     * @param dataModel the model
-     */
-    public UMLTransitionEffectList(
-        UMLModelElementListModel2 dataModel) {
-        super(dataModel);
-    }
+  /**
+   * Constructor for UMLTransitionTriggerList.
+   *
+   * @param dataModel the model
+   */
+  public UMLTransitionEffectList(UMLModelElementListModel2 dataModel) {
+    super(dataModel);
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLMutableLinkedList#getPopupMenu()
-     */
-    public JPopupMenu getPopupMenu() {
-        return new PopupMenuNewAction(ActionNewAction.Roles.EFFECT, this);
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLMutableLinkedList#getPopupMenu()
+   */
+  public JPopupMenu getPopupMenu() {
+    return new PopupMenuNewAction(ActionNewAction.Roles.EFFECT, this);
+  }
 }

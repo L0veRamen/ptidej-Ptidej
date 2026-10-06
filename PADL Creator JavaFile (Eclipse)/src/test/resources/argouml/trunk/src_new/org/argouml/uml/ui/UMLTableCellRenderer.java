@@ -25,31 +25,23 @@ package org.argouml.uml.ui;
 
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
-
 import org.argouml.model.Model;
 
-/**
- * Basic table cell render which uses the name of a model element as the text.
- */
-public class UMLTableCellRenderer extends DefaultTableCellRenderer implements
-        TableCellRenderer {
+/** Basic table cell render which uses the name of a model element as the text. */
+public class UMLTableCellRenderer extends DefaultTableCellRenderer implements TableCellRenderer {
 
-    /**
-     * Constructor.
-     */
-    public UMLTableCellRenderer() {
-        super();
-    }
+  /** Constructor. */
+  public UMLTableCellRenderer() {
+    super();
+  }
 
-    public void setValue(Object value) {
-        if (Model.getFacade().isAModelElement(value)) {
-            String name = Model.getFacade().getName(value);
-            setText(name);
-        } else {
-            if (value instanceof String)
-                setText((String) value);
-            else
-                setText("");
-        }
+  public void setValue(Object value) {
+    if (Model.getFacade().isAModelElement(value)) {
+      String name = Model.getFacade().getName(value);
+      setText(name);
+    } else {
+      if (value instanceof String) setText((String) value);
+      else setText("");
     }
+  }
 }

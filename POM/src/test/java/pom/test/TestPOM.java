@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -32,43 +32,42 @@ import util.lang.MavenTestGuard;
 
 /**
  * @author Farouk Zaidi
- * @author Yann 
- * since   2004-02-16
+ * @author Yann since 2004-02-16
  */
 public class TestPOM extends TestSuite {
-	public static TestSuite suite() {
-		final TestPOM suite = new TestPOM();
-		suite.setName(TestPOM.class.getName());
+  public static TestSuite suite() {
+    final TestPOM suite = new TestPOM();
+    suite.setName(TestPOM.class.getName());
 
-		suite.addTestSuite(CacheTest.class);
+    suite.addTestSuite(CacheTest.class);
 
-		suite.addTestSuite(ClassPrimitivesTest.class);
-		suite.addTestSuite(CouplingCohesionMetricsTest.class);
-		// Yann 25/11/10: Long, too long!
-		// This test takes too long and is not really
-		// necessary to run in GitHub or elsewhere
-		// when compiling/testing with Maven.
-		if (MavenTestGuard.getInstance().isRunningOutsideMavenTest()) {
-			// TODO Re-enable
-			// suite.addTestSuite(TestLoadJDK10.class);
-		}
-		suite.addTestSuite(MethodPrimitivesTest.class);
-		suite.addTestSuite(MetricRepositoryTest.class);
-		suite.addTestSuite(Pattern4JNMIandNMOTest.class);
-		suite.addTestSuite(OperatorsTest.class);
-		suite.addTestSuite(UnaryMetricsTest.class);
+    suite.addTestSuite(ClassPrimitivesTest.class);
+    suite.addTestSuite(CouplingCohesionMetricsTest.class);
+    // Yann 25/11/10: Long, too long!
+    // This test takes too long and is not really
+    // necessary to run in GitHub or elsewhere
+    // when compiling/testing with Maven.
+    if (MavenTestGuard.getInstance().isRunningOutsideMavenTest()) {
+      // TODO Re-enable
+      // suite.addTestSuite(TestLoadJDK10.class);
+    }
+    suite.addTestSuite(MethodPrimitivesTest.class);
+    suite.addTestSuite(MetricRepositoryTest.class);
+    suite.addTestSuite(Pattern4JNMIandNMOTest.class);
+    suite.addTestSuite(OperatorsTest.class);
+    suite.addTestSuite(UnaryMetricsTest.class);
 
-		suite.addTestSuite(AIDTest.class);
-		suite.addTestSuite(CacheTest.class);
-		suite.addTestSuite(CBOTest.class);
-		suite.addTestSuite(DITTest.class);
-		suite.addTestSuite(DITnoGhostTest.class);
-		suite.addTestSuite(NMITest.class);
-		suite.addTestSuite(NOCTest.class);
-		suite.addTestSuite(UnaryCBOTest.class);
-		suite.addTestSuite(WMC1Test.class);
-		suite.addTestSuite(WMC2Test.class);
+    suite.addTestSuite(AIDTest.class);
+    suite.addTestSuite(CacheTest.class);
+    suite.addTestSuite(CBOTest.class);
+    suite.addTestSuite(DITTest.class);
+    suite.addTestSuite(DITnoGhostTest.class);
+    suite.addTestSuite(NMITest.class);
+    suite.addTestSuite(NOCTest.class);
+    suite.addTestSuite(UnaryCBOTest.class);
+    suite.addTestSuite(WMC1Test.class);
+    suite.addTestSuite(WMC2Test.class);
 
-		return suite;
-	}
+    return suite;
+  }
 }

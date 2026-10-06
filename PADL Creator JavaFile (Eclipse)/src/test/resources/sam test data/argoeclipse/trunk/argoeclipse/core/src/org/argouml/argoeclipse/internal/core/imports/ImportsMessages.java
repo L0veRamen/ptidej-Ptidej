@@ -28,27 +28,27 @@ import org.eclipse.osgi.util.NLS;
 
 /**
  * Imports message bundle.
+ *
  * @author Bogdan Pistol
  */
 public class ImportsMessages extends NLS {
 
-    private static final String BUNDLE_NAME = 
-        "org.argouml.argoeclipse.internal.core." //$NON-NLS-1$
-        + "imports.ImportsMessages"; //$NON-NLS-1$
-    
-    public static String preImport;
-    public static String firstPhase;
-    public static String secondPhase;
-    public static String parsingAction;
-    public static String layoutingAction;
-    public static String programBug;
-    public static String programException;
-    public static String warningConclusion;
-    public static String postImport;
-    public static String importFinished;
-    
-    static {
-        NLS.initializeMessages(BUNDLE_NAME, ImportsMessages.class);
-    }
-    
+  private static final String BUNDLE_NAME =
+      "org.argouml.argoeclipse.internal.core." //$NON-NLS-1$
+          + "imports.ImportsMessages"; //$NON-NLS-1$
+
+  public static String preImport;
+  public static String firstPhase;
+  public static String secondPhase;
+  public static String parsingAction;
+  public static String layoutingAction;
+  public static String programBug;
+  public static String programException;
+  public static String warningConclusion;
+  public static String postImport;
+  public static String importFinished;
+
+  static {
+    NLS.initializeMessages(BUNDLE_NAME, ImportsMessages.class);
+  }
 }

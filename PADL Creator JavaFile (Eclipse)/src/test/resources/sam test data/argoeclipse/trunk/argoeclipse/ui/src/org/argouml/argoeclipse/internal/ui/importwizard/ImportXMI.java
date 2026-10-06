@@ -24,14 +24,17 @@
 
 package org.argouml.argoeclipse.internal.ui.importwizard;
 
-import java.beans.PropertyChangeEvent;
 
+import org.argouml.argoeclipse.internal.core.model.ActionsListener;
+import org.argouml.argoeclipse.internal.core.model.ArgoProject;
+import org.argouml.argoeclipse.internal.core.model.Register;
+import org.argouml.argoeclipse.internal.ui.editor.DiagramEditor;
+import org.argouml.argoeclipse.internal.ui.wizard.ExternalResourcePage;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IPersistableElement;
@@ -39,103 +42,97 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 
-import org.argouml.argoeclipse.internal.core.model.ActionsListener;
-import org.argouml.argoeclipse.internal.core.model.ArgoProject;
-import org.argouml.argoeclipse.internal.core.model.Register;
-import org.argouml.argoeclipse.internal.ui.editor.DiagramEditor;
-import org.argouml.argoeclipse.internal.ui.wizard.ExternalResourcePage;
-
 /**
  * Implementation of Import XMI Wizard.
+ *
  * @author Bogdan Pistol
  */
 public class ImportXMI extends Wizard implements IImportWizard {
 
-    /**
-     * The wizard page.
-     */
-    private ExternalResourcePage page;
-    
-    private static final String EXTENSION = "xmi"; //$NON-NLS-1$
-    
-    /*
-     * @see org.eclipse.jface.wizard.Wizard#addPage(org.eclipse.jface.wizard.IWizardPage)
-     */
-    public void addPages() {
-        if (!Register.getInstance().isRegistered(Register.EDITOR)) {
-            MessageDialog.openError(getShell(),
-                    ImportWizardMessages.editorWarningTitle,
-                    ImportWizardMessages.editorWarningMsg);
-            return;            
-        }
-        page = new ExternalResourcePage(ImportWizardMessages.importXMITitle,
-                ImportWizardMessages.importXMIDescription,
-                new String[] {EXTENSION}, ExternalResourcePage.IMPORT_FILE);
-        addPage(page);
+  /** The wizard page. */
+  private ExternalResourcePage page;
+
+  private static final String EXTENSION = "xmi"; // $NON-NLS-1$
+
+  /*
+   * @see org.eclipse.jface.wizard.Wizard#addPage(org.eclipse.jface.wizard.IWizardPage)
+   */
+  public void addPages() {
+    if (!Register.getInstance().isRegistered(Register.EDITOR)) {
+      MessageDialog.openError(
+          getShell(),
+          ImportWizardMessages.editorWarningTitle,
+          ImportWizardMessages.editorWarningMsg);
+      return;
     }
-    
-    /*
-     * @see org.eclipse.jface.wizard.Wizard#performFinish()
-     */
-    public boolean performFinish() {
-        String result = page.getResourcePath();
-        if (result == null) {
-            return false;
-        }
-        if (((Boolean)ActionsListener.getInstance().getEvent(
-                ActionsListener.SAVE)).booleanValue()
-                && !MessageDialog.openConfirm(getShell(),
-                        ImportWizardMessages.confirmOverwiteTitle,
-                        ImportWizardMessages.confirmOverwiteDescription)) {
-            return false;
-        }
-        
-        ArgoProject.closeProject();
-        EditorPart ed = (EditorPart) Register.getInstance().getRegistered(
-                Register.EDITOR);
-        try {
-            ed.init(ed.getEditorSite(),
-                    new IEditorInput() {
+    page =
+        new ExternalResourcePage(
+            ImportWizardMessages.importXMITitle,
+            ImportWizardMessages.importXMIDescription,
+            new String[] {EXTENSION},
+            ExternalResourcePage.IMPORT_FILE);
+    addPage(page);
+  }
 
-                        public boolean exists() {
-                            return false;
-                        }
-
-                        public ImageDescriptor getImageDescriptor() {
-                            return null;
-                        }
-
-                        public String getName() {
-                            return null;
-                        }
-
-                        public IPersistableElement getPersistable() {
-                            return null;
-                        }
-
-                        public String getToolTipText() {
-                            return null;
-                        }
-
-                        public Object getAdapter(Class adapter) {
-                            return null;
-                        }
-
-                    });
-        } catch (PartInitException e) {
-        }
-        ArgoProject.loadProject(result);
-        ((DiagramEditor) ed).setPartName(new Path(result).lastSegment());
-        ActionsListener.getInstance().setEvent(ActionsListener.SAVE,
-                Boolean.valueOf(true));
-        return true;
+  /*
+   * @see org.eclipse.jface.wizard.Wizard#performFinish()
+   */
+  public boolean performFinish() {
+    String result = page.getResourcePath();
+    if (result == null) {
+      return false;
     }
-    
-    /*
-     * @see org.eclipse.ui.IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
-     */
-    public void init(IWorkbench workbench, IStructuredSelection selection) {                
-        setWindowTitle(ImportWizardMessages.genericImport);
+    if (((Boolean) ActionsListener.getInstance().getEvent(ActionsListener.SAVE)).booleanValue()
+        && !MessageDialog.openConfirm(
+            getShell(),
+            ImportWizardMessages.confirmOverwiteTitle,
+            ImportWizardMessages.confirmOverwiteDescription)) {
+      return false;
     }
 
+    ArgoProject.closeProject();
+    EditorPart ed = (EditorPart) Register.getInstance().getRegistered(Register.EDITOR);
+    try {
+      ed.init(
+          ed.getEditorSite(),
+          new IEditorInput() {
+
+            public boolean exists() {
+              return false;
+            }
+
+            public ImageDescriptor getImageDescriptor() {
+              return null;
+            }
+
+            public String getName() {
+              return null;
+            }
+
+            public IPersistableElement getPersistable() {
+              return null;
+            }
+
+            public String getToolTipText() {
+              return null;
+            }
+
+            public Object getAdapter(Class adapter) {
+              return null;
+            }
+          });
+    } catch (PartInitException e) {
+    }
+    ArgoProject.loadProject(result);
+    ((DiagramEditor) ed).setPartName(new Path(result).lastSegment());
+    ActionsListener.getInstance().setEvent(ActionsListener.SAVE, Boolean.valueOf(true));
+    return true;
+  }
+
+  /*
+   * @see org.eclipse.ui.IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
+   */
+  public void init(IWorkbench workbench, IStructuredSelection selection) {
+    setWindowTitle(ImportWizardMessages.genericImport);
+  }
 }

@@ -30,64 +30,56 @@ import org.argouml.ui.targetmanager.TargetEvent;
 import org.argouml.ui.targetmanager.TargetManager;
 
 /**
- *
  * @author mkl
- *
  */
 public class UMLTimeExpressionModel extends UMLExpressionModel {
 
-    private static final Logger LOG =
-        Logger.getLogger(UMLTimeExpressionModel.class);
+  private static final Logger LOG = Logger.getLogger(UMLTimeExpressionModel.class);
 
-    /**
-     * The constructor.
-     *
-     */
-    public UMLTimeExpressionModel(Object target) {
-        super(target, "when");
+  /** The constructor. */
+  public UMLTimeExpressionModel(Object target) {
+    super(target, "when");
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLExpressionModel2#getExpression()
+   */
+  public Object getExpression() {
+    return Model.getFacade().getWhen(TargetManager.getInstance().getTarget());
+  }
+
+  /*
+   * @see org.argouml.uml.ui.UMLExpressionModel2#setExpression(java.lang.Object)
+   */
+  public void setExpression(Object expression) {
+    Object target = TargetManager.getInstance().getTarget();
+
+    if (target == null) {
+      throw new IllegalStateException("There is no target");
     }
+    Model.getStateMachinesHelper().setWhen(target, expression);
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLExpressionModel2#getExpression()
-     */
-    public Object getExpression() {
-        return Model.getFacade().getWhen(
-                TargetManager.getInstance().getTarget());
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLExpressionModel2#newExpression()
+   */
+  public Object newExpression() {
+    LOG.debug("new time expression");
+    return Model.getDataTypesFactory().createTimeExpression("", "");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLExpressionModel2#setExpression(java.lang.Object)
-     */
-    public void setExpression(Object expression) {
-        Object target = TargetManager.getInstance().getTarget();
+  public void targetAdded(TargetEvent e) {
+    // TODO: Auto-generated method stub
 
-        if (target == null) {
-            throw new IllegalStateException("There is no target");
-        }
-        Model.getStateMachinesHelper().setWhen(target, expression);
-    }
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLExpressionModel2#newExpression()
-     */
-    public Object newExpression() {
-        LOG.debug("new time expression");
-        return Model.getDataTypesFactory().createTimeExpression("", "");
-    }
+  public void targetRemoved(TargetEvent e) {
+    // TODO: Auto-generated method stub
 
-    public void targetAdded(TargetEvent e) {
-        // TODO: Auto-generated method stub
-        
-    }
+  }
 
-    public void targetRemoved(TargetEvent e) {
-        // TODO: Auto-generated method stub
-        
-    }
+  public void targetSet(TargetEvent e) {
+    // TODO: Auto-generated method stub
 
-    public void targetSet(TargetEvent e) {
-        // TODO: Auto-generated method stub
-        
-    }
-
+  }
 }

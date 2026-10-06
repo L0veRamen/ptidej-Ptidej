@@ -26,13 +26,11 @@ package org.argouml.uml.ui.behavior.common_behavior;
 
 import java.awt.event.ActionEvent;
 import java.util.List;
-
 import javax.swing.ImageIcon;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
-
 import org.argouml.i18n.Translator;
 import org.argouml.model.Model;
 import org.argouml.uml.ui.AbstractActionRemoveElement;
@@ -44,177 +42,153 @@ import org.argouml.uml.ui.foundation.core.PropPanelModelElement;
 import org.argouml.uml.ui.foundation.extension_mechanisms.ActionNewStereotype;
 import org.argouml.util.ConfigLoader;
 
-/**
- * Properties panel of an ActionSequence.
- */
+/** Properties panel of an ActionSequence. */
 public class PropPanelActionSequence extends PropPanelModelElement {
 
-    private JScrollPane actionsScroll;
+  private JScrollPane actionsScroll;
 
-    /**
-     * Construct a default property panel for an Action.
-     */
-    public PropPanelActionSequence() {
-        this("ActionSequence", lookupIcon("ActionSequence"));
-    }
+  /** Construct a default property panel for an Action. */
+  public PropPanelActionSequence() {
+    this("ActionSequence", lookupIcon("ActionSequence"));
+  }
 
-    /**
-     * Construct an ActionSequence property panel with the given name and icon.
-     * 
-     * @param name
-     *            the name of the properties panel
-     * @param icon
-     *            the icon to be shown next to the name
-     */
-    public PropPanelActionSequence(String name, ImageIcon icon) {
-        super(name, icon, ConfigLoader.getTabPropsOrientation());
-        initialize();
-    }
+  /**
+   * Construct an ActionSequence property panel with the given name and icon.
+   *
+   * @param name the name of the properties panel
+   * @param icon the icon to be shown next to the name
+   */
+  public PropPanelActionSequence(String name, ImageIcon icon) {
+    super(name, icon, ConfigLoader.getTabPropsOrientation());
+    initialize();
+  }
 
-    /**
-     * The initialization of the panel with its fields and stuff.
-     */
-    public void initialize() {
+  /** The initialization of the panel with its fields and stuff. */
+  public void initialize() {
 
-        addField(Translator.localize("label.name"), getNameTextField());
+    addField(Translator.localize("label.name"), getNameTextField());
 
-//        JList actionsList = new UMLMutableLinkedList(
-//                    new UMLActionSequenceActionListModel(),
-//                    new ActionAddAction(),
-//                    null, // new
-//                    new ActionRemoveAction(),
-//                    true);
-        JList actionsList = new UMLActionSequenceActionList();
-        actionsList.setVisibleRowCount(5);
-        actionsScroll = new JScrollPane(actionsList);
-        addField(Translator.localize("label.actions"),
-                actionsScroll);
+    //        JList actionsList = new UMLMutableLinkedList(
+    //                    new UMLActionSequenceActionListModel(),
+    //                    new ActionAddAction(),
+    //                    null, // new
+    //                    new ActionRemoveAction(),
+    //                    true);
+    JList actionsList = new UMLActionSequenceActionList();
+    actionsList.setVisibleRowCount(5);
+    actionsScroll = new JScrollPane(actionsList);
+    addField(Translator.localize("label.actions"), actionsScroll);
 
-        addAction(new ActionNavigateContainerElement());
-        addAction(new ActionNewStereotype());
-        addAction(getDeleteAction());
-
-    }
-
+    addAction(new ActionNavigateContainerElement());
+    addAction(new ActionNewStereotype());
+    addAction(getDeleteAction());
+  }
 }
 
-/**
- * Model for ActionSequence's list of Actions.
- */
-class UMLActionSequenceActionListModel 
-    extends UMLModelElementOrderedListModel2 {
+/** Model for ActionSequence's list of Actions. */
+class UMLActionSequenceActionListModel extends UMLModelElementOrderedListModel2 {
 
-    /**
-     * Constructor.
-     */
-    public UMLActionSequenceActionListModel() {
-        super("action");
-    }
+  /** Constructor. */
+  public UMLActionSequenceActionListModel() {
+    super("action");
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (getTarget() != null) {
-            setAllElements(Model.getFacade().getActions(getTarget()));
-        }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (getTarget() != null) {
+      setAllElements(Model.getFacade().getActions(getTarget()));
     }
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(java.lang.Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().isAAction(element);
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(java.lang.Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().isAAction(element);
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLModelElementOrderedListModel2#moveDown(int)
-     */
-    protected void moveDown(int index) {
-        Object target = getTarget();
-        List c = Model.getFacade().getActions(target);
-        Object item = c.get(index);
-        Model.getCommonBehaviorHelper().removeAction(target, item);
-        Model.getCommonBehaviorHelper().addAction(target, index + 1, item);
-        buildModelList();
-    }
+  /*
+   * @see org.argouml.uml.ui.UMLModelElementOrderedListModel2#moveDown(int)
+   */
+  protected void moveDown(int index) {
+    Object target = getTarget();
+    List c = Model.getFacade().getActions(target);
+    Object item = c.get(index);
+    Model.getCommonBehaviorHelper().removeAction(target, item);
+    Model.getCommonBehaviorHelper().addAction(target, index + 1, item);
+    buildModelList();
+  }
 }
-
 
 class ActionRemoveAction extends AbstractActionRemoveElement {
 
+  /** Construct an action to remove an Action. */
+  public ActionRemoveAction() {
+    super(Translator.localize("menu.popup.remove"));
+  }
 
-    /**
-     * Construct an action to remove an Action.
-     */
-    public ActionRemoveAction() {
-        super(Translator.localize("menu.popup.remove"));
+  /*
+   * @see org.tigris.gef.undo.UndoableAction#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    super.actionPerformed(e);
+    Object action = getObjectToRemove();
+    if (action != null) {
+      Object as = getTarget();
+      if (Model.getFacade().isAActionSequence(as)) {
+        Model.getCommonBehaviorHelper().removeAction(as, action);
+      }
     }
-
-    /*
-     * @see org.tigris.gef.undo.UndoableAction#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        super.actionPerformed(e);
-        Object action = getObjectToRemove(); 
-        if (action != null) {
-            Object as = getTarget();
-            if (Model.getFacade().isAActionSequence(as)) {
-                Model.getCommonBehaviorHelper().removeAction(as, action);
-            }
-        }
-    }
-    
+  }
 }
 
 class UMLActionSequenceActionList extends UMLMutableLinkedList {
 
-    /**
-     * Constructor.
-     * @param dataModel the model
-     */
-    public UMLActionSequenceActionList() {
-        super(new UMLActionSequenceActionListModel());
-    }
+  /**
+   * Constructor.
+   *
+   * @param dataModel the model
+   */
+  public UMLActionSequenceActionList() {
+    super(new UMLActionSequenceActionListModel());
+  }
 
-    /*
-     * @see org.argouml.uml.ui.UMLMutableLinkedList#getPopupMenu()
-     */
-    public JPopupMenu getPopupMenu() {
-        return new PopupMenuNewAction(ActionNewAction.Roles.MEMBER, this);
-    }
-
+  /*
+   * @see org.argouml.uml.ui.UMLMutableLinkedList#getPopupMenu()
+   */
+  public JPopupMenu getPopupMenu() {
+    return new PopupMenuNewAction(ActionNewAction.Roles.MEMBER, this);
+  }
 }
 
 class PopupMenuNewActionSequenceAction extends JPopupMenu {
 
-    /**
-     * Constructs a new popupmenu. The given parameter role determines what
-     * the purpose is of the actions that can be created via this popupmenu.
-     * The parameter must comply to the interface Roles
-     * defined on ActionNewAction.
-     * @param role the role
-     * @param list the list
-     */
-    public PopupMenuNewActionSequenceAction(String role,
-            UMLMutableLinkedList list) {
-        super();
+  /**
+   * Constructs a new popupmenu. The given parameter role determines what the purpose is of the
+   * actions that can be created via this popupmenu. The parameter must comply to the interface
+   * Roles defined on ActionNewAction.
+   *
+   * @param role the role
+   * @param list the list
+   */
+  public PopupMenuNewActionSequenceAction(String role, UMLMutableLinkedList list) {
+    super();
 
-        JMenu newMenu = new JMenu();
-        newMenu.setText(Translator.localize("action.new"));
+    JMenu newMenu = new JMenu();
+    newMenu.setText(Translator.localize("action.new"));
 
-        newMenu.add(ActionNewCallAction.getInstance());
-        ActionNewCallAction.getInstance().setTarget(list.getTarget());
-        ActionNewCallAction.getInstance().putValue(
-                ActionNewAction.ROLE, role);
+    newMenu.add(ActionNewCallAction.getInstance());
+    ActionNewCallAction.getInstance().setTarget(list.getTarget());
+    ActionNewCallAction.getInstance().putValue(ActionNewAction.ROLE, role);
 
-        add(newMenu);
+    add(newMenu);
 
-        addSeparator();
+    addSeparator();
 
-        ActionRemoveModelElement.SINGLETON.setObjectToRemove(ActionNewAction
-             .getAction(role, list.getTarget()));
-        add(ActionRemoveModelElement.SINGLETON);
-    }
+    ActionRemoveModelElement.SINGLETON.setObjectToRemove(
+        ActionNewAction.getAction(role, list.getTarget()));
+    add(ActionRemoveModelElement.SINGLETON);
+  }
 }
-

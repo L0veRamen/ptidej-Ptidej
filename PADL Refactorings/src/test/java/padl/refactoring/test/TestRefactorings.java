@@ -4,7 +4,7 @@
  * are made available under the terms of the GNU Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
+ *
  * Contributors:
  *     Yann-Gaël Guéhéneuc and others, see in file; API and its implementation
  ******************************************************************************/
@@ -18,18 +18,18 @@ import padl.refactoring.test.method.RefactoringRenameMethodTest;
 
 /**
  * @author Yann-Gaël Guéhéneuc
- * @since  2006/08/08
+ * @since 2006/08/08
  */
 public final class TestRefactorings extends TestSuite {
-	public static TestSuite suite() {
-		final TestRefactorings suite = new TestRefactorings();
-		suite.setName(TestRefactorings.class.getName());
+  public static TestSuite suite() {
+    final TestRefactorings suite = new TestRefactorings();
+    suite.setName(TestRefactorings.class.getName());
 
-		suite.addTestSuite(RefactoringMoveMethodTest.class);
-		suite.addTestSuite(RefactoringPullUpMethodTest.class);
-		suite.addTestSuite(RefactoringPushDownMethodTest.class);
-		suite.addTestSuite(RefactoringRenameMethodTest.class);
+    suite.addTestSuite(RefactoringMoveMethodTest.class);
+    suite.addTestSuite(RefactoringPullUpMethodTest.class);
+    suite.addTestSuite(RefactoringPushDownMethodTest.class);
+    suite.addTestSuite(RefactoringRenameMethodTest.class);
 
-		return suite;
-	}
+    return suite;
+  }
 }

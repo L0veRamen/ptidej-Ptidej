@@ -27,7 +27,6 @@ package org.argouml.uml.diagram.static_structure.ui;
 import java.awt.Font;
 import java.awt.Rectangle;
 import java.beans.PropertyChangeEvent;
-
 import org.argouml.model.Model;
 import org.argouml.notation.NotationProvider;
 import org.argouml.notation.NotationProviderFactory2;
@@ -35,109 +34,106 @@ import org.argouml.uml.diagram.DiagramSettings;
 import org.tigris.gef.presentation.Fig;
 
 /**
- * Fig with specific knowledge of Operation and Reception display. 
- * Makes the text italic in case the Operation or Reception is abstract.
+ * Fig with specific knowledge of Operation and Reception display. Makes the text italic in case the
+ * Operation or Reception is abstract.
  *
  * @since 0.23.5
  * @author Bob Tarling
  */
 public class FigOperation extends FigFeature {
 
-    /**
-     * Constructor.
-     * 
-     * @param x x
-     * @param y x
-     * @param w w
-     * @param h h
-     * @param aFig the fig
-     * @param np the notation provider for the text
-     * @deprecated for 0.27.3 by tfmorris.
-     */
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    public FigOperation(int x, int y, int w, int h, Fig aFig, 
-            NotationProvider np) {
-        super(x, y, w, h, aFig, np);
-    }
+  /**
+   * Constructor.
+   *
+   * @param x x
+   * @param y x
+   * @param w w
+   * @param h h
+   * @param aFig the fig
+   * @param np the notation provider for the text
+   * @deprecated for 0.27.3 by tfmorris.
+   */
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  public FigOperation(int x, int y, int w, int h, Fig aFig, NotationProvider np) {
+    super(x, y, w, h, aFig, np);
+  }
 
-    /**
-     * Construct a fig for a UML Operation.
-     * @deprecated by mvw in V0.27.3. Use the constructor without np parameter.
-     * 
-     * @param owner owning UML element
-     * @param bounds position and size
-     * @param settings rendering settings
-     * @param np notation provider
-     */
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    public FigOperation(Object owner, Rectangle bounds,
-            DiagramSettings settings, NotationProvider np) {
-        super(owner, bounds, settings, np);
-        Model.getPump().addModelEventListener(this, owner, "isAbstract");
-    }
+  /**
+   * Construct a fig for a UML Operation.
+   *
+   * @deprecated by mvw in V0.27.3. Use the constructor without np parameter.
+   * @param owner owning UML element
+   * @param bounds position and size
+   * @param settings rendering settings
+   * @param np notation provider
+   */
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  public FigOperation(
+      Object owner, Rectangle bounds, DiagramSettings settings, NotationProvider np) {
+    super(owner, bounds, settings, np);
+    Model.getPump().addModelEventListener(this, owner, "isAbstract");
+  }
 
-    /**
-     * Construct a fig for a UML Operation
-     * 
-     * @param owner owning UML element
-     * @param bounds position and size
-     * @param settings rendering settings
-     */
-    public FigOperation(Object owner, Rectangle bounds,
-            DiagramSettings settings) {
-        super(owner, bounds, settings);
-        Model.getPump().addModelEventListener(this, owner, "isAbstract");
-    }    
-    /*
-     * @see org.argouml.uml.diagram.ui.FigSingleLineText#setOwner(java.lang.Object)
-     */
-    @SuppressWarnings("deprecation")
-    @Deprecated
-    @Override
-    public void setOwner(Object owner) {
-        super.setOwner(owner);
+  /**
+   * Construct a fig for a UML Operation
+   *
+   * @param owner owning UML element
+   * @param bounds position and size
+   * @param settings rendering settings
+   */
+  public FigOperation(Object owner, Rectangle bounds, DiagramSettings settings) {
+    super(owner, bounds, settings);
+    Model.getPump().addModelEventListener(this, owner, "isAbstract");
+  }
 
-        if (owner != null) {
-            diagramFontChanged(null);
-            Model.getPump().addModelEventListener(this, owner, "isAbstract");
-        }
-    }
+  /*
+   * @see org.argouml.uml.diagram.ui.FigSingleLineText#setOwner(java.lang.Object)
+   */
+  @SuppressWarnings("deprecation")
+  @Deprecated
+  @Override
+  public void setOwner(Object owner) {
+    super.setOwner(owner);
 
-    /*
-     * @see org.argouml.uml.diagram.ui.FigSingleLineText#removeFromDiagram()
-     */
-    @Override
-    public void removeFromDiagram() {
-        Model.getPump().removeModelEventListener(this, getOwner(), 
-                "isAbstract");
-        super.removeFromDiagram();
+    if (owner != null) {
+      diagramFontChanged(null);
+      Model.getPump().addModelEventListener(this, owner, "isAbstract");
     }
+  }
 
-    /*
-     * @see org.argouml.uml.diagram.ui.FigSingleLineText#propertyChange(java.beans.PropertyChangeEvent)
-     */
-    @Override
-    public void propertyChange(PropertyChangeEvent pce) {
-        super.propertyChange(pce);
-        if ("isAbstract".equals(pce.getPropertyName())) {
-            renderingChanged();    
-        }
-    }
+  /*
+   * @see org.argouml.uml.diagram.ui.FigSingleLineText#removeFromDiagram()
+   */
+  @Override
+  public void removeFromDiagram() {
+    Model.getPump().removeModelEventListener(this, getOwner(), "isAbstract");
+    super.removeFromDiagram();
+  }
 
-    /*
-     * If the Operation/Reception is abstract, 
-     * then the text will be set to italics.
-     */
-    @Override
-    protected int getFigFontStyle() {
-        return Model.getFacade().isAbstract(getOwner()) 
-            ? Font.ITALIC : Font.PLAIN;
+  /*
+   * @see org.argouml.uml.diagram.ui.FigSingleLineText#propertyChange(java.beans.PropertyChangeEvent)
+   */
+  @Override
+  public void propertyChange(PropertyChangeEvent pce) {
+    super.propertyChange(pce);
+    if ("isAbstract".equals(pce.getPropertyName())) {
+      renderingChanged();
     }
+  }
 
-    @Override
-    protected int getNotationProviderType() {
-        return NotationProviderFactory2.TYPE_OPERATION;
-    }
+  /*
+   * If the Operation/Reception is abstract,
+   * then the text will be set to italics.
+   */
+  @Override
+  protected int getFigFontStyle() {
+    return Model.getFacade().isAbstract(getOwner()) ? Font.ITALIC : Font.PLAIN;
+  }
+
+  @Override
+  protected int getNotationProviderType() {
+    return NotationProviderFactory2.TYPE_OPERATION;
+  }
 }

@@ -33,34 +33,29 @@ import org.argouml.uml.ui.UMLModelElementListModel2;
  * @author rastaman@tigris.org
  * @since Oct 11, 2005
  */
-class UMLStereotypeTagDefinitionListModel
-    extends UMLModelElementListModel2 {
+class UMLStereotypeTagDefinitionListModel extends UMLModelElementListModel2 {
 
-    /**
-     * Constructor for UMLStereotypeTagDefinitionListModel.
-     */
-    public UMLStereotypeTagDefinitionListModel() {
-        super("dataValue");
-        // TODO: Add referenceValue for tagged values 
-        // which have a non-primitive type
+  /** Constructor for UMLStereotypeTagDefinitionListModel. */
+  public UMLStereotypeTagDefinitionListModel() {
+    super("dataValue");
+    // TODO: Add referenceValue for tagged values
+    // which have a non-primitive type
+  }
+
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
+   */
+  protected void buildModelList() {
+    if (getTarget() != null) {
+      setAllElements(Model.getFacade().getTagDefinitions(getTarget()));
     }
+  }
 
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#buildModelList()
-     */
-    protected void buildModelList() {
-        if (getTarget() != null) {
-            setAllElements(Model.getFacade().getTagDefinitions(getTarget()));
-        }
-    }
-
-    /**
-     * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
-     */
-    protected boolean isValidElement(Object element) {
-        return Model.getFacade().isATagDefinition(element)
-            && Model.getFacade().getTagDefinitions(getTarget())
-            	.contains(element);
-    }
-
+  /**
+   * @see org.argouml.uml.ui.UMLModelElementListModel2#isValidElement(Object)
+   */
+  protected boolean isValidElement(Object element) {
+    return Model.getFacade().isATagDefinition(element)
+        && Model.getFacade().getTagDefinitions(getTarget()).contains(element);
+  }
 }

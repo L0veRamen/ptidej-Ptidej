@@ -32,36 +32,35 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 
 /**
  * Configures the workbench window
+ *
  * @author Tom Morris
  */
 public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
-    /**
-     * Constructor
-     * @param configurer special class to init the base class
-     */
-    public ApplicationWorkbenchWindowAdvisor(
-            IWorkbenchWindowConfigurer configurer) {
-        super(configurer);
-    }
+  /**
+   * Constructor
+   *
+   * @param configurer special class to init the base class
+   */
+  public ApplicationWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
+    super(configurer);
+  }
 
-    /*
-     * @see org.eclipse.ui.application.WorkbenchWindowAdvisor#createActionBarAdvisor(org.eclipse.ui.application.IActionBarConfigurer)
-     */
-    public ActionBarAdvisor createActionBarAdvisor(
-            IActionBarConfigurer configurer) {
-        return new ApplicationActionBarAdvisor(configurer);
-    }
+  /*
+   * @see org.eclipse.ui.application.WorkbenchWindowAdvisor#createActionBarAdvisor(org.eclipse.ui.application.IActionBarConfigurer)
+   */
+  public ActionBarAdvisor createActionBarAdvisor(IActionBarConfigurer configurer) {
+    return new ApplicationActionBarAdvisor(configurer);
+  }
 
-    /*
-     * @see org.eclipse.ui.application.WorkbenchWindowAdvisor#preWindowOpen()
-     */
-    public void preWindowOpen() {
-        IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
-        configurer.setInitialSize(new Point(700, 550));
-        configurer.setShowCoolBar(true);
-        configurer.setShowStatusLine(true);
-        configurer.setTitle(MessageBundle.applicationTitle);
-    }
-    
+  /*
+   * @see org.eclipse.ui.application.WorkbenchWindowAdvisor#preWindowOpen()
+   */
+  public void preWindowOpen() {
+    IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
+    configurer.setInitialSize(new Point(700, 550));
+    configurer.setShowCoolBar(true);
+    configurer.setShowStatusLine(true);
+    configurer.setTitle(MessageBundle.applicationTitle);
+  }
 }

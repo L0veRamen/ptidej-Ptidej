@@ -27,14 +27,12 @@ package org.argouml.uml.diagram.ui;
 import org.argouml.model.Model;
 
 /**
- * A Mode to interpret user input while creating a usage edge.
- * The usage can connect any model elements including those represented
- * by edges as well as nodes.
+ * A Mode to interpret user input while creating a usage edge. The usage can connect any model
+ * elements including those represented by edges as well as nodes.
  */
 public final class ModeCreateUsage extends ModeCreateDependency {
 
-    protected final Object getMetaType() {
-	return Model.getMetaTypes().getUsage();
-    }
-
+  protected final Object getMetaType() {
+    return Model.getMetaTypes().getUsage();
+  }
 }

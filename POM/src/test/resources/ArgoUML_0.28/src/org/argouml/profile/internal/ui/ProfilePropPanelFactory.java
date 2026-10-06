@@ -35,12 +35,11 @@ import org.argouml.uml.ui.PropPanelFactory;
  */
 public class ProfilePropPanelFactory implements PropPanelFactory {
 
-    public PropPanel createPropPanel(Object object) {
-        if (object instanceof CrUML) {
-            return new PropPanelCritic();
-        } else {
-            return null;
-        }
+  public PropPanel createPropPanel(Object object) {
+    if (object instanceof CrUML) {
+      return new PropPanelCritic();
+    } else {
+      return null;
     }
-
+  }
 }

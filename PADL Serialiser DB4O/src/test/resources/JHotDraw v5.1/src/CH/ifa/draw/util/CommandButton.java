@@ -14,33 +14,25 @@ import java.awt.event.ActionListener;
  *
  * @see Command
  */
+public class CommandButton extends Button implements ActionListener {
 
-public  class CommandButton
-		extends Button implements ActionListener {
+  private Command fCommand;
 
-	private Command   fCommand;
+  /** Initializes the button with the given command. The command's name is used as the label. */
+  public CommandButton(Command command) {
+    super(command.name());
+    fCommand = command;
+    addActionListener(this);
+  }
 
-	/**
-	 * Initializes the button with the given command.
-	 * The command's name is used as the label.
-	 */
-	public CommandButton(Command command) {
-		super(command.name());
-		fCommand = command;
-		addActionListener(this);
-	}
-
-	/**
-	 * Executes the command. If the command's name was changed
-	 * as a result of the command the button's label is updated
-	 * accordingly.
-	 */
-	public void actionPerformed(ActionEvent e) {
-		fCommand.execute();
-		if (!getLabel().equals(fCommand.name()) ) {
-			setLabel(fCommand.name());
-		}
-	}
+  /**
+   * Executes the command. If the command's name was changed as a result of the command the button's
+   * label is updated accordingly.
+   */
+  public void actionPerformed(ActionEvent e) {
+    fCommand.execute();
+    if (!getLabel().equals(fCommand.name())) {
+      setLabel(fCommand.name());
+    }
+  }
 }
-
-
