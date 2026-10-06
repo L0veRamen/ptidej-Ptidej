@@ -265,8 +265,8 @@ public class Utils {
 	 */
 	public static boolean isSyntheticBridgeMethod(
 			final ExtendedMethodInfo extendedMethod) {
-		final int bitMaskSyntheticBridge = java.lang.classfile.ClassFile.ACC_BRIDGE
-				| java.lang.classfile.ClassFile.ACC_SYNTHETIC;
+		// JVMS access flags: ACC_BRIDGE (0x0040) and ACC_SYNTHETIC (0x1000).
+		final int bitMaskSyntheticBridge = 0x0040 | 0x1000;
 		return ((extendedMethod.getVisibility()
 				& bitMaskSyntheticBridge) == bitMaskSyntheticBridge);
 	}

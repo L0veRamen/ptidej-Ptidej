@@ -16,16 +16,15 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
+import javax.tools.JavaCompiler;
+import javax.tools.ToolProvider;
 import sad.rule.creator.RULECreator;
 import util.io.ProxyConsole;
-import com.sun.tools.javac.Main;
 
 public class DetectionAlgorithmGenerator {
 	public static void deleteDetectionAlgorithm(final String defectName) {
-		// TODO: Add error check
-		// Added 3 errors checks here
 		if (defectName == null || defectName.isEmpty()) {
-            System.err.println("❌ Error: Defect name is null or empty.");
+            System.err.println("Error: Defect name is null or empty.");
             return;
         }
 		boolean deletedAntipattern = deleteDir(new File(
@@ -35,9 +34,9 @@ public class DetectionAlgorithmGenerator {
             "../SAD/src/sad/codesmell/detection/" + defectName));
 
         if (!deletedAntipattern || !deletedCodeSmell) {
-            System.err.println("⚠ Warning: Some directories could not be deleted for defect: " + defectName);
+            System.err.println("Warning: Some directories could not be deleted for defect: " + defectName);
         } else {
-            System.out.println("✅ Successfully deleted detection algorithm for: " + defectName);
+            System.out.println("Successfully deleted detection algorithm for: " + defectName);
         }
 			
 	}
@@ -74,7 +73,12 @@ public class DetectionAlgorithmGenerator {
 		final String[] ruleCards = ruleCreator.parse();
 
 		// Then, I compile the generated Java code.
-		final List cmdLine = new ArrayList();
+		final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+		if (compiler == null) {
+			throw new IllegalStateException(
+				"A JDK is required to compile generated detection algorithms");
+		}
+		final List<String> cmdLine = new ArrayList<String>();
 		for (int fileIndex = 0; fileIndex < ruleCards.length; fileIndex++) {
 			// Set the classpath for compilation
 			cmdLine.add("-classpath");
@@ -113,9 +117,16 @@ public class DetectionAlgorithmGenerator {
 				x++;
 			}
 
-			final String[] cmdLineArray =
-				(String[]) cmdLine.toArray(new String[cmdLine.size()]);
-			Main.compile(cmdLineArray);
+			final int result = compiler.run(
+				null,
+				null,
+				null,
+				cmdLine.toArray(new String[cmdLine.size()]));
+			if (result != 0) {
+				throw new IllegalStateException(
+					"Compilation failed for generated detection algorithm "
+						+ ruleCards[fileIndex] + " (exit code " + result + ")");
+			}
 		}
 
 		return ruleCards;

@@ -32,27 +32,14 @@
 					</excludes>
 				</configuration>
 			</plugin>
-			<!-- To install cfparse.jar and make it available -->
+			<!-- The project ships with a vendored cfparse.jar; avoid the external Maven lookup
+			     that fails for this legacy dependency. -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-install-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>install-cfparse</id>
-						<phase>validate</phase>
-						<goals>
-							<goal>install-file</goal>
-						</goals>
-						<configuration>
-							<file>src/main/resources/cfparse.jar</file>
-							<groupId>com.ibm.toad</groupId>
-							<artifactId>cfparse</artifactId>
-							<version>1.0</version>
-							<packaging>jar</packaging>
-							<generatePom>true</generatePom>
-						</configuration>
-					</execution>
-				</executions>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
@@ -62,6 +49,9 @@
 		<dependency>
 			<groupId>com.ibm.toad</groupId>
 			<artifactId>cfparse</artifactId>
+			<version>1.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/src/main/resources/cfparse.jar</systemPath>
 		</dependency>
 
 		<dependency>

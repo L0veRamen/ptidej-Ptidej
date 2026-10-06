@@ -15,6 +15,7 @@ import java.awt.Frame;
 import java.awt.HeadlessException;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
+import javax.swing.WindowConstants;
 import ptidej.viewer.utils.Resources;
 import ptidej.viewer.utils.Utils;
 import ptidej.viewer.widget.Dialog;
@@ -87,7 +88,6 @@ public class AboutDialog extends Dialog {
 		AboutDialog.getUniqueInstance().setVisible(true);
 	}
 
-	private JTabbedPane pnlTabs;
 	private AboutDialog(
 		final Frame owner,
 		final String title,
@@ -97,32 +97,27 @@ public class AboutDialog extends Dialog {
 
 		super(owner, title, modal, width, height);
 		AboutDialog.UniqueInstance = this;
+		this.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		this.getContentPane().add(
 			new JLabel(
 				Utils.getImageIcon(Resources.PTIDEJ_LOGO, AboutDialog.class),
 				0),
 			BorderLayout.NORTH);
 
-		this.pnlTabs = new JTabbedPane();
-		this.pnlTabs.addTab(
+		final JTabbedPane tabs = new JTabbedPane();
+		tabs.addTab(
 			Resources.getTabTitle(Resources.PTIDEJ, AboutDialog.class),
 			new ScrollPane(new AboutPtidejPanel()));
-		this.pnlTabs.addTab(
+		tabs.addTab(
 			Resources.getTabTitle(Resources.DEVELOPPERS, AboutDialog.class),
 			new ScrollPane(new AboutDeveloppersPanel()));
-		this.pnlTabs.addTab(
+		tabs.addTab(
 			Resources.getTabTitle(Resources.COPYRIGHT, AboutDialog.class),
 			new ScrollPane(new AboutCopyrightPanel()));
-		this.pnlTabs.addTab(
+		tabs.addTab(
 			Resources.getTabTitle(Resources.TOOLS_SUITE, AboutDialog.class),
 			new ScrollPane(new AboutToolsSuitePanel()));
 
-		this.getContentPane().add(this.pnlTabs, BorderLayout.CENTER);
-		// TODO Redo the PtidejFooter.png image
-		//	this.getContentPane().add(
-		//		new JLabel(Utils.getIcon(
-		//			Constants.PTIDEJ_LOGO_FOOTER,
-		//			AboutDialog.class), 0),
-		//		BorderLayout.SOUTH);
+		this.getContentPane().add(tabs, BorderLayout.CENTER);
 	}
 }

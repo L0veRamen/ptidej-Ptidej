@@ -13,6 +13,11 @@ package ptidej.viewer.action;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Graphics2D;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.awt.event.ActionEvent;
 import java.awt.geom.AffineTransform;
 import java.io.File;
@@ -45,6 +50,7 @@ import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 
 import padl.kernel.IAbstractModel;
+import padl.serialiser.JOSSerialiser;
 import padl.util.ExternalDataProcessor;
 import ptidej.ui.awt.occurrence.PrimitiveFactory;
 import ptidej.viewer.IRepresentation;
@@ -217,16 +223,84 @@ public class FileAction extends AbstractAction {
 			this.exportSVG();
 		}
 		else if (action.equals(Resources.SAVE_ALL)) {
-			// TODO: To implement!
+			this.saveModel();
 		}
 		else if (action.equals(Resources.SAVE_ACTIVE)) {
-			// TODO: To implement!
+			this.saveModel();
 		}
 		else if (action.equals(Resources.PRINT)) {
-			// TODO: To implement!
+			this.printActiveWindow();
 		}
 		else if (action.equals(Resources.EXIT)) {
 			System.exit(0);
+		}
+	}
+
+	private void saveModel() {
+		final AbstractRepresentationWindow window = DesktopPane.getInstance()
+			.getAbstractRepresentationWindow();
+		if (window == null || window.getSourceModel() == null) {
+			return;
+		}
+
+		final File file = Utils.saveFile(
+			DesktopFrame.getInstance(),
+			"",
+			"Save PADL model",
+			"padl",
+			"PADL serialized model");
+		if (file == null) {
+			return;
+		}
+
+		try {
+			JOSSerialiser.getInstance().serialise(
+				window.getSourceModel(), file.getAbsolutePath());
+		}
+		catch (final RuntimeException e) {
+			e.printStackTrace(ProxyConsole.getInstance().errorOutput());
+		}
+	}
+
+	private void printActiveWindow() {
+		final AbstractRepresentationWindow window = DesktopPane.getInstance()
+			.getAbstractRepresentationWindow();
+		if (window == null || window.getAWTCanvas() == null) {
+			return;
+		}
+
+		final PrinterJob printerJob = PrinterJob.getPrinterJob();
+		printerJob.setPrintable(new Printable() {
+			public int print(
+				final Graphics graphics,
+				final PageFormat pageFormat,
+				final int pageIndex) throws PrinterException {
+				if (pageIndex > 0) {
+					return Printable.NO_SUCH_PAGE;
+				}
+
+				final Graphics2D graphics2D = (Graphics2D) graphics;
+				final double scale = Math.min(
+					pageFormat.getImageableWidth()
+						/ window.getAWTCanvas().getWidth(),
+					pageFormat.getImageableHeight()
+						/ window.getAWTCanvas().getHeight());
+				graphics2D.translate(
+					pageFormat.getImageableX(),
+					pageFormat.getImageableY());
+				graphics2D.scale(scale, scale);
+				window.getAWTCanvas().printAll(graphics2D);
+				return Printable.PAGE_EXISTS;
+			}
+		});
+
+		if (printerJob.printDialog()) {
+			try {
+				printerJob.print();
+			}
+			catch (final PrinterException e) {
+				e.printStackTrace(ProxyConsole.getInstance().errorOutput());
+			}
 		}
 	}
 
@@ -309,9 +383,13 @@ public class FileAction extends AbstractAction {
 		final PrimitiveFactory primitiveFactory = (PrimitiveFactory) window
 				.getPrimitiveFactory();
 		final Graphics oldGraphics = primitiveFactory.getGraphics();
-		primitiveFactory.setGraphics(svgGenerator);
-		window.getAWTCanvas().paint(svgGenerator);
-		primitiveFactory.setGraphics(oldGraphics);
+		try {
+			primitiveFactory.setGraphics(svgGenerator);
+			window.getAWTCanvas().paint(svgGenerator);
+		}
+		finally {
+			primitiveFactory.setGraphics(oldGraphics);
+		}
 
 		// Yann 2010/02/07: Size!
 		// I set the size of the SVG graphic.
@@ -338,12 +416,11 @@ public class FileAction extends AbstractAction {
 		// output using UTF-8 encoding.
 		try {
 			// we want to use CSS style attributes
-			final Writer out = new OutputStreamWriter(
+			try (Writer out = new OutputStreamWriter(
 					new FileOutputStream(filePathWithoutExtension + ".svg"),
-					"UTF-8");
-			svgGenerator.stream(out, true);
-			out.flush();
-			out.close();
+					"UTF-8")) {
+				svgGenerator.stream(out, true);
+			}
 
 			// Yann 2010/02/07: Good measure!
 			// For good measure, I also generate a PNG
@@ -356,14 +433,14 @@ public class FileAction extends AbstractAction {
 					Float.valueOf(window.getCanvas().getDimension().height));
 			t.addTranscodingHint(SVGAbstractTranscoder.KEY_WIDTH,
 					Float.valueOf(window.getCanvas().getDimension().width));
-			final TranscoderInput input = new TranscoderInput(
-					new FileReader(filePathWithoutExtension + ".svg"));
-			final OutputStream ostream = new FileOutputStream(
-					filePathWithoutExtension + ".jpg");
-			final TranscoderOutput output = new TranscoderOutput(ostream);
-			t.transcode(input, output);
-			ostream.flush();
-			ostream.close();
+			try (FileReader input = new FileReader(
+					filePathWithoutExtension + ".svg");
+					OutputStream ostream = new FileOutputStream(
+						filePathWithoutExtension + ".jpg")) {
+				t.transcode(
+					new TranscoderInput(input),
+					new TranscoderOutput(ostream));
+			}
 		}
 		catch (final FileNotFoundException e) {
 			e.printStackTrace();

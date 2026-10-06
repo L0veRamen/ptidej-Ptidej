@@ -11,6 +11,7 @@
 package padl.pagerank.test;
 
 import java.io.StringWriter;
+import java.nio.file.Path;
 
 import org.junit.Assert;
 
@@ -32,8 +33,10 @@ public class SanityTest extends TestCase {
 			SanityTest.Generator = new InputDataGeneratorWith9RelationsForCPP(
 					true, true);
 			final StringWriter writer = new StringWriter();
+			final Path fixtureDirectory = Path.of(
+				"target", "test-classes", "Simple").toAbsolutePath();
 			PageRankCallerWithNoParameters.callForSomeCPPFiles("Simple",
-					"../PADL Generator PageRank/target/test-classes/Simple/",
+					fixtureDirectory.toString(),
 					SanityTest.Generator, writer);
 			writer.close();
 		}

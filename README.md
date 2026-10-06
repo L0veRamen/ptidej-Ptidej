@@ -58,9 +58,9 @@ This JAR launches a Swing GUI to interact with the Ptidej Tool Suite.
 
 ## Troubleshooting
 
-Some sub-projects require the features previewed in JDK 21 (which may become available in JDK 22). Thus, tests and programs require adding the JVM argument `--enable-preview` to the command line. The whole projects and some sub-projects also require specific `--add-exports` and `--add-opens` arguments to the JVM, which are also already set in the corresponding `pom.xml` files. Therefore, the JVM arguments are:
+The Maven build targets Java 21. Some compiler-based sub-projects still require specific `--add-exports` and `--add-opens` arguments at runtime; those options are configured in their corresponding `pom.xml` files. The required JVM arguments for those modules are:
 
-```--enable-preview --add-exports jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED --add-exports jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED --add-exports jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED --add-exports jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED --add-exports jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED --add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED```
+```--add-exports jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED --add-exports jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED --add-exports jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED --add-exports jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED --add-exports jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED --add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED```
 
 ## Guidelines
 

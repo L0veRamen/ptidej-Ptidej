@@ -33,11 +33,13 @@ import util.multilingual.MultilingualManager;
  * @since  2007/06/10
  */
 public class MSECreator implements ICodeLevelModelCreator {
-	private final String fileName;
+	private final String[] fileNames;
 
 	public MSECreator(final String[] someFileNames) {
-		// TODO: Must deal with multiple MSE files!
-		this.fileName = someFileNames[0];
+		if (someFileNames == null || someFileNames.length == 0) {
+			throw new IllegalArgumentException("At least one MSE file is required");
+		}
+		this.fileNames = someFileNames.clone();
 	}
 	private ICodeLevelModel buildModel(final Element[] someElements) {
 		return new FAMIXBuilder().build(someElements);
@@ -53,35 +55,40 @@ public class MSECreator implements ICodeLevelModelCreator {
 			MSECreator.class));
 
 		try {
-			final LineNumberReader reader =
-				new LineNumberReader(new InputStreamReader(new FileInputStream(
-					this.fileName)));
-
 			// Yann 2007/02/01: Classes and ghosts
 			// I first populate the model with classes
 			// so that I can build ghosts when appropriate.
-			final StringBuffer buffer = new StringBuffer();
-			String readLine;
-			while ((readLine = reader.readLine()) != null) {
-				buffer.append(readLine);
-				buffer.append('\n');
+			final List<Element> allElements = new ArrayList<Element>();
+			for (final String fileName : this.fileNames) {
+				final StringBuffer buffer = new StringBuffer();
+				try (LineNumberReader reader =
+					new LineNumberReader(new InputStreamReader(
+						new FileInputStream(fileName)))) {
+					String readLine;
+					while ((readLine = reader.readLine()) != null) {
+						buffer.append(readLine);
+						buffer.append('\n');
+					}
+				}
+				// Yann 2007/06/12: Quotes.
+				// I replace double single-quotes by real double quotes
+				// to prevent problem when analysing the MSE file.
+				this.replace(buffer, "''", "\"");
+
+				final MSEParser parser =
+					new MSEParser(new MSELexer(
+						new StringReader(buffer.toString())));
+				final Element[] elements = (Element[]) parser.parse().value;
+				for (final Element element : elements) {
+					allElements.add(element);
+				}
 			}
-			reader.close();
-
-			// Yann 2007/06/12: Quotes.
-			// I replace double single-quotes by real double quotes
-			// to prevent problem when analysing the MSE file.
-			this.replace(buffer, "''", "\"");
-
-			final MSEParser parser =
-				new MSEParser(new MSELexer(new StringReader(buffer.toString())));
-			final Element[] elements = (Element[]) parser.parse().value;
 
 			System.out.println(MultilingualManager.getString(
 				"PARSING_DONE",
 				MSECreator.class));
 
-			return elements;
+			return allElements.toArray(new Element[allElements.size()]);
 		}
 		catch (final FileNotFoundException e) {
 			e.printStackTrace(ProxyConsole.getInstance().errorOutput());
