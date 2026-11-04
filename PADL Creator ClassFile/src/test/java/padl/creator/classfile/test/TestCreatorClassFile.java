@@ -12,6 +12,7 @@ package padl.creator.classfile.test;
 
 import junit.framework.TestSuite;
 import padl.creator.classfile.test.compare.ComparisonTest;
+import padl.creator.classfile.test.creator.CompleteClassFileCreatorTest;
 import padl.creator.classfile.test.fieldaccess.FieldAccessTest;
 import padl.creator.classfile.test.inheritance.InheritanceTest;
 import padl.creator.classfile.test.methodInvocation.MethodInvocationMissingTest;
@@ -28,6 +29,7 @@ public final class TestCreatorClassFile extends TestSuite {
     suite.setName(TestCreatorClassFile.class.getName());
 
     suite.addTestSuite(ComparisonTest.class);
+    suite.addTestSuite(CompleteClassFileCreatorTest.class);
     suite.addTestSuite(FieldAccessTest.class);
     suite.addTestSuite(InheritanceTest.class);
     suite.addTestSuite(MethodInvocationMissingTest.class);

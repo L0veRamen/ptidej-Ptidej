@@ -71,6 +71,7 @@ public final class TestPADLAnalyses extends junit.framework.TestSuite {
     suite.addTestSuite(padl.analysis.packagebuilder.test.SanityTest.class);
 
     suite.addTestSuite(padl.analysis.plantUMLGenerator.test.SanityTest.class);
+    suite.addTestSuite(padl.analysis.plantUMLGenerator.test.PlantUMLVisitorTest.class);
 
     suite.addTestSuite(padl.analysis.systematicuml.test.SanityTest.class);
 
